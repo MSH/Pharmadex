@@ -23,29 +23,26 @@ public class ProductService implements Serializable {
     @Autowired
     ProductDAO productDAO;
 
-    @Autowired
-    ProductFilter productFilter;
-
-    public List<Product> findAllRegisteredProduct(){
+    public List<Product> findAllRegisteredProduct() {
         return productDAO.findRegProducts();
     }
 
-    public String updateProduct(Product prod){
+    public String updateProduct(Product prod) {
         productDAO.updateProduct(prod);
         return "persisted";
     }
 
     @Transactional
-    public Product findProductById(Long id){
+    public Product findProductById(Long id) {
         return productDAO.findProduct(id);
     }
 
-    public List<Company> findCompaniesByProd(Long id){
+    public List<Company> findCompaniesByProd(Long id) {
         return productDAO.findCompanies(id);
     }
 
-    public List<Product> findProductByFilter(){
-        HashMap<String, Object> params = productFilter.getFilters();
+    public List<Product> findProductByFilter(ProductFilter filter) {
+        HashMap<String, Object> params = filter.getFilters();
         return productDAO.findProductByFilter(params);
 
     }
