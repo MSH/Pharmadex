@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="content">
+		<h1><h:outputText value="Hello From JSF" /></h1>
+		Message : #{homeBean.message}<br />
+		<br />
+		<h2>Tasks</h2>
+		<table>
+			<ui:repeat value="#{taskHome.tasks}" var="v_task">
+				<tr>
+					<td>#{v_task.id}</td>
+					<td>#{v_task.description}</td>
+				</tr>
+			</ui:repeat>
+		</table>
+
+
+        <h:form prependId="false">
+        <p:dataTable id="table" value="#{taskHome.tasks}" var="var" emptyMessage="No tasks">
+            <p:column headerText="Task">
+                #{var.id}
+            </p:column>
+            <p:column headerText="Task">
+                #{var.description}
+            </p:column>
+        </p:dataTable>
+
+		   <div
+				style="border-top: 1px solid #d0d0d0; margin-top: 12px; padding-top: 12px">
+				<p:inputText value="#{taskHome.task.description}" id="taskDesc"/>
+                <p:commandButton action="#{taskHome.saveTask}" value="Add" update="table, taskDesc"/>
+                <h:message for="taskDesc" style="color : red;padding-left : 8px"/>
+           </div>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

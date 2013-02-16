@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" xmlns:sec="http://www.springframework.org/security/facelets/tags">
+<ui:composition>
+    <!-- <p:menu model="#{app.menuModel}" style="width:198px" /> -->
+
+    <h:form >
+    <p:menu style="width:216px" >
+        <p:submenu label="#{msgs.Registration}">
+            <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-home" url="/public/applicantlist.faces" ajax="false"/>
+            <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces" ajax="false"/>
+            <p:menuitem value="#{msgs.registration_applications}" icon="ui-icon-gear" url="/secure/prodreghome.faces" ajax="false"/>
+        </p:submenu>
+
+        <sec:isAuthenticated>
+            <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.admin}">
+                <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document" url="/secure/submittedapplications.faces"/>
+                <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document" url="/secure/savedapplications.faces"/>
+            </p:submenu>
+
+            <p:submenu label="#{msgs.registration_search}" rendered="#{userSession.admin||userSession.company||userSession.staff}">
+                <p:menuitem value="#{msgs.applicant_reg_search}" icon="ui-icon-home" url="/public/registrationhome.faces"/>
+                <p:menuitem value="#{msgs.product_reg_search}" icon="ui-icon-document" url="/public/registrationhome.faces"/>
+            </p:submenu>
+
+            <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff}">
+                <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document" url="/internal/processprodlist.faces"/>
+                <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document" url="/internal/processapplist.faces"/>
+            </p:submenu>
+        </sec:isAuthenticated>
+    </p:menu>
+
+
+    </h:form>
+</ui:composition>
+</html>

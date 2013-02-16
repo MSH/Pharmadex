@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<jsp:root
+        xmlns:jsp="http://java.sun.com/JSP/Page"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        version="2.0">
+
+    <ui:composition template="../templates/admin_layout.xhtml">
+        <ui:define name="content">
+
+            <div class="post" style="width: 1024px">
+                <h1 class="title ui-widget-header ui-corner-all"> User Settings</h1>
+            </div>
+
+            <p:panel>
+                <h:form prependId="false">
+                <h:panelGrid columns="2">
+
+                    <h:outputLabel value="#{msgs.User_email}"/>
+                    <p:inputText value="#{userMBean.email}"/>
+
+                    <p:commandLink action="#{userMBean.startReset}" value="Reset" ajax="false"/>
+
+                </h:panelGrid>
+                </h:form>
+            </p:panel>
+
+
+        </ui:define>
+    </ui:composition>
+</jsp:root>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="../templates/registration_layout.xhtml">
+        <ui:define name="content">
+         <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all">Submitted Applications</h1>
+         </div>
+
+        <h:form prependId="false">
+            <p:panel id="data" toggleable="true" toggleSpeed="250" header="Submitted Applications">
+                <f:facet name="header">
+                    <h:outputText value="Applications" />
+                </f:facet>
+                <p:dataTable id="applicants" var="applicant" value="#{processAppBn.pendingApps}">
+                    <p:column headerText="Applicant Name">
+                        <p:commandLink value="#{applicant.appName}"  action="/internal/processapp.faces" ajax="false">
+                            <f:setPropertyActionListener value="#{applicant}" target="#{processAppBn.applicant}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.applicant_submitdate}">
+                        <h:outputLabel converter="javax.faces.DateTime"  value="#{applicant.submitDate}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.registration_status}" >
+                        #{msgs[applicant.state.key]}
+                    </p:column>
+
+                    <p:column headerText="Applicant Country">
+                        #{applicant.address.country.countryName}
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+
+        </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

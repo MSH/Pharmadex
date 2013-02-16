@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="../templates/registration_layout.xhtml">
+        <ui:define name="content">
+         <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all">Recieved Applications</h1>
+         </div>
+
+        <h:form prependId="false">
+            <p:panel id="data" toggleable="true" toggleSpeed="250" header="Submitted Applications">
+                <p:dataTable id="applicantions" var="applicantion" value="#{prodAppMBean.submmittedAppList}" selectionMode="single"
+                        selection="#{prodAppMBean.selectedApplication}" rowKey="#{applicantion.id}"  >
+                        <f:facet name="header">
+                            Click "Product Name" for processing a Product.
+                        </f:facet>
+
+                        <p:column headerText="Product Name">
+                            <p:commandLink value="#{applicantion.prod.prodName}"  action="/internal/processreg.faces" ajax="false">
+                                <f:setPropertyActionListener value="#{applicantion}" target="#{processProdBn.prodApplications}"/>
+                            </p:commandLink>
+                        </p:column>
+
+
+
+                        <p:column headerText="Generic Name">
+                            #{applicantion.prod.genName}
+                        </p:column>
+
+                        <p:column headerText="Registration Status" >
+                            #{msgs[applicantion.regState.key]}
+                        </p:column>
+
+                        <p:column headerText="Date Submitted">
+                            <h:outputLabel converter="javax.faces.DateTime"  value="#{applicantion.submitDate}"/>
+                        </p:column>
+
+                        <p:column headerText="Manufacturer Name">
+                            #{applicantion.prod.applicant.appName}
+                        </p:column>
+
+                    </p:dataTable>
+            </p:panel>
+
+        </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post" style="width: 1024px">
+            <h1 class="title ui-widget-header ui-corner-all"> Applicant Registration</h1>
+        </div>
+
+        <h:form>
+        <p:panel header="#{msgs.applicant_detail}">
+            <p:messages/>
+            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+           		<ui:param name="applicantdata" value="#{applicantMBean.selectedApplicant}" />
+                <ui:param name="input" value="#{true}" />
+           	</ui:decorate>
+
+        </p:panel>
+
+        <p:panel header="#{msgs.person_responsible}">
+            <ui:decorate template="/templates/userdetailtmpl.xhtml">
+           		<ui:param name="userdata" value="#{applicantMBean.user}" />
+           	</ui:decorate>
+
+        </p:panel>
+
+        <div align="center" style="height: 60px">
+            <p:commandButton action="#{applicantMBean.saveApp}" value="#{msgs.global_submit}" ajax="false" />
+            <p:commandButton action="#{applicantMBean.cancelApp}" value="#{msgs.global_cancel}" ajax="false" immediate="true"/>
+        </div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+</html>

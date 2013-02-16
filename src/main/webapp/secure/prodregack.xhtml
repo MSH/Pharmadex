@@ -1,0 +1,32 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../templates/admin_layout.xhtml">
+<ui:define name="content">
+    <div class="post">
+        <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
+    </div>
+
+    <h:form id="reghome">
+     <p:growl id="growl" />
+
+        <p:panel header="Download">
+            <h:panelGrid columns="1" cellpadding="10" cellspacing="10">
+                <p:outputLabel value="Your Application for registration of #{regHomeMbean.product.prodName} is sucessfully submitted.
+                Please click on the link below to download the achnowledgement letter." />
+
+                <p:commandLink actionListener="#{regHomeMbean.PDF}" value="Report" ajax="false"/>
+
+                <p:commandLink action="#{regHomeMbean.cancel}" ajax="false" immediate="true" value="Exit"/>
+            </h:panelGrid>
+        </p:panel>
+
+    </h:form>
+
+
+</ui:define>
+</ui:composition>
+</html>

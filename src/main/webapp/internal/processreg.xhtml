@@ -1,0 +1,293 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions">
+<ui:composition template="../templates/process_reg_layout.xhtml">
+<ui:define name="content">
+
+<h:form id="reghome">
+
+<h:panelGrid columns="2" columnClasses="menu,content">
+<h:panelGrid columns="2" columnClasses="menu,content">
+<p:panel cellspacing="0" cellpadding="0" styleClass="menu">
+    <p:menu style="width:198px" >
+        <p:submenu label="#{msgs.Registration}" >
+            <p:menuitem value="Add Comment" icon="ui-icon-document" onclick="dlg.show()"/>
+            <p:menuitem value="Next Step" icon="ui-icon-document" onclick="stepDlg.show()" rendered="#{userSession.admin||userSession.staff}"/>
+            <p:menuitem value="Register Product" icon="ui-icon-gear" action="#{processProdBn.registerProduct}"
+                        update="@form" rendered="#{processProdBn.readyReg}" />
+        </p:submenu>
+    </p:menu>
+</p:panel>
+
+
+<h:panelGroup styleClass="ui-widget">
+<h1 class="title ui-widget-header ui-corner-all">
+    <table width="750px">
+        <tr>
+            <td>
+                <h:outputLabel value="#{processProdBn.prodApplications.prod.prodName}" styleClass="title"
+                               style="font-weight: bold; font-size: 1.5em"/>
+            </td>
+            <td align="right">
+                <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                <h:outputLabel value="#{msgs[processProdBn.prodApplications.regState.key]}"
+                               style="font-weight: bold;color: #a52a2a;"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h:outputLabel value="Application Number: " styleClass="title"/>
+                <h:outputFormat value="#{processProdBn.prodApplications.id}" styleClass="title"/>
+            </td>
+            <td align="right">
+                <h:outputLabel value="Submitted Date: " styleClass="title"/>
+                <h:outputFormat value="#{processProdBn.prodApplications.submitDate}"/>
+            </td>
+        </tr>
+    </table>
+</h1>
+<p:messages id="messages" showDetail="true" showSummary="true"/>
+
+<p:growl id="growl" showDetail="true" showSummary="true"/>
+
+    <pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
+                 axisPosition="top"
+                 showNavigation="true"
+                 eventStyle="box"
+                 height="130px" >
+    </pe:timeline>
+<p:tabView id="processtab">
+    <p:tab title="Application Information" id="infotab">
+        <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+            <ui:param name="prodAppData" value="#{processProdBn.prodApplications}"/>
+        </ui:decorate>
+    </p:tab>
+
+    <p:tab title="Comments">
+        <p:commandButton icon="ui-icon-document" value="Add Comment" onclick="dlg.show()"/>
+
+        <p:dataTable id="commenttable" value="#{processProdBn.comments}" var="it">
+            <p:column style="width:120px;">
+                <div class="icon-user" style="float:left;"/>
+                <h:outputLabel value="#{it.user.name}" style="font-weight: bold;"/>
+
+                <div style="font-size: smaller;">
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                </div>
+            </p:column>
+
+            <p:column>
+                <div style="padding-left:10px;padding-top:10px;">
+                    <h:outputText value="#{it.comment}"
+                                  escape="false"
+                                  styleClass="text"/>
+                </div>
+            </p:column>
+
+
+        </p:dataTable>
+
+
+    </p:tab>
+
+    <p:tab title="Verification" id="verficationtab" rendered="#{userSession.admin||userSession.staff}">
+
+        <h:outputLabel value="Ensure that Fees is recieved" style="font-weight: bold; font-size: larger;"/>
+        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
+            <h:outputLabel value="Fees Recieved?"/>
+            <h:panelGroup>
+                <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.feeReceived}"/>
+                <h:outputLabel value=" Yes"/>
+            </h:panelGroup>
+        </h:panelGrid>
+
+        <h:outputLabel value="Ensure that applicant details are complete"
+                       style="font-weight: bold; font-size: larger;"/>
+        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
+            <h:outputLabel value="Applicant Details Complete?"/>
+            <h:panelGroup>
+                <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.applicantVerified}"/>
+                <h:outputLabel value=" Yes"/>
+            </h:panelGroup>
+        </h:panelGrid>
+
+        <h:outputLabel value="Check that medicine inputs are correct" style="font-weight: bold; font-size: larger;"/>
+        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
+            <h:outputLabel value="Medicine application complete?"/>
+            <h:panelGroup>
+                <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.productVerified}"/>
+                <h:outputLabel value=" Yes"/>
+            </h:panelGroup>
+        </h:panelGrid>
+
+        <h:outputLabel value="Check that Dossier is recieved and complete"
+                       style="font-weight: bold; font-size: larger;"/>
+        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
+            <h:outputLabel value="Dossier recieved and complete?"/>
+            <h:panelGroup>
+                <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.dossierReceived}"/>
+                <h:outputLabel value=" Yes"/>
+            </h:panelGroup>
+        </h:panelGrid>
+
+        <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
+        <h:outputLabel/>
+        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
+            <h:outputLabel value="Acknowledgement letter details"/>
+            <p:inputText/>
+        </h:panelGrid>
+
+
+    </p:tab>
+
+    <p:tab title="Timeline" rendered="#{userSession.admin||userSession.staff}" id="timelinetab">
+
+        <p:panel header="Status Update of Application">
+
+        <p:dataTable id="timelinetbl" var="timeline" value="#{processProdBn.timeLineList}">
+                <f:facet name="header">
+                    Shows the evolution of the Product Registration.
+                </f:facet>
+
+                <p:column headerText="Application Status">
+                    <h:outputText value="#{msgs[timeline.regState.key]}"
+                                  style="font-weight: bolder; font-size: large;"/>
+                </p:column>
+
+                <p:column headerText="Status Change Date">
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{timeline.statusDate}"/>
+                </p:column>
+
+                <p:column headerText="Status updated by">
+                    #{timeline.user.name}
+                </p:column>
+
+            </p:dataTable>
+
+        </p:panel>
+
+    </p:tab>
+
+    <p:tab title="Additional Information" id="addinfotab" rendered="#{userSession.admin||userSession.staff}">
+        <p:commandButton icon="ui-icon-document" value="Send Applicant Mail" onclick="maildlg.show()"/>
+
+
+        <p:dataTable id="mailtable" value="#{processProdBn.mails}" var="mail">
+            <p:column style="width:120px;" headerText="Date">
+                <div class="icon-user" style="float:left;"/>
+                <b>#{it.user.name}</b>
+
+                <div style="font-size: smaller;">
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{mail.date}"/>
+                </div>
+            </p:column>
+
+            <p:column headerText="Subject">
+                <div style="padding-left:10px;padding-top:10px;">
+                    <h:outputText value="#{mail.subject}"
+                                  escape="false"
+                                  styleClass="text"/>
+                </div>
+            </p:column>
+
+            <p:column headerText="Message">
+                <div style="padding-left:10px;padding-top:10px;">
+                    <h:outputText value="#{mail.message}"
+                                  escape="false"
+                                  styleClass="text"/>
+                </div>
+            </p:column>
+
+            <p:column headerText="Sent By">
+                <div style="padding-left:10px;padding-top:10px;">
+                    <h:outputText value="#{mail.user.name}"
+                                  escape="false"
+                                  styleClass="text"/>
+                </div>
+            </p:column>
+
+        </p:dataTable>
+
+        <p:dialog header="Send Mail" widgetVar="maildlg" resizable="false" modal="true">
+
+            <h:panelGrid columns="2" style="margin-bottom:10px">
+                <h:outputLabel for="tomail" value="To: "/>
+                <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
+                <h:outputLabel for="subject" value="Subject: "/>
+                <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
+                <h:outputLabel for="message" value="Message:"/>
+                <p:inputTextarea id="message" value="#{processProdBn.mail.message}" rows="10" cols="50"/>
+            </h:panelGrid>
+
+            <p:commandButton id="sendmessage" value="Submit" action="#{processProdBn.sendMessage}"
+                             oncomplete="mailDlg.hide()" update="@form"/>
+
+        </p:dialog>
+
+
+    </p:tab>
+
+
+</p:tabView>
+
+<p:dialog header="Add Comment" widgetVar="dlg" resizable="false" id="commentdlg" modal="true">
+
+    <h:panelGrid columns="2" style="margin-bottom:10px">
+        <h:outputLabel for="commenttext" value="Enter Comment:"/>
+        <p:inputTextarea id="commenttext" value="#{processProdBn.selComment.comment}" rows="5" cols="50"/>
+        <h:outputLabel value="Internal Comment"/>
+        <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
+    </h:panelGrid>
+
+    <p:commandButton id="submitButton" value="Submit" action="#{processProdBn.addComment}"
+                     oncomplete="dlg.hide()"
+                     update=":reghome:processtab:commenttable :reghome:commentdlg :reghome:growl :reghome:messages"/>
+
+</p:dialog>
+
+<p:dialog header="Next Step" widgetVar="stepDlg" resizable="false" modal="true">
+
+    <h:panelGrid columns="2" style="margin-bottom:10px">
+        <h:outputLabel for="statuscb" value="Status: "/>
+        <p:selectOneMenu id="statuscb" value="#{processProdBn.timeLine.regState}">
+            <f:selectItems value="#{processProdBn.regSate}" var="type" itemLabel="#{msgs[type.key]}"/>
+        </p:selectOneMenu>
+        <h:outputLabel for="steptext" value="Enter Comment:"/>
+        <p:inputTextarea id="steptext" value="#{processProdBn.timeLine.comment}" rows="5" cols="50"/>
+    </h:panelGrid>
+
+    <p:commandButton id="submittimeline" value="Submit" action="#{processProdBn.addTimeline}"
+                     oncomplete="stepDlg.hide()" update="@form"/>
+
+</p:dialog>
+
+
+<p:dialog id="viewDialog" modal="true" dynamic="true" widgetVar="viewDlg"
+          appendToBody="true" resizable="false" header="Event Details" width="350">
+    <p:fieldset>
+        <h:panelGrid columns="2" columnClasses="formColumn1,formColumn2">
+            <h:outputText value="Release Date:"/>
+            <h:outputText value="#{timeLineEventMBean.selectedEvent.startDate}">
+                <f:convertDateTime pattern="dd MMM yyyy"/>
+            </h:outputText>
+            <h:outputText value="Title:"/>
+            <h:outputText value="#{timeLineEventMBean.selectedEvent.title}"/>
+        </h:panelGrid>
+    </p:fieldset>
+    <h:panelGroup layout="block" style="width:100%; text-align: center;padding: 5px;">
+        <p:commandButton id="close" value="Close" type="button" onclick="viewDlg.hide()"/>
+    </h:panelGroup>
+</p:dialog>
+
+</h:panelGroup>
+</h:panelGrid>
+</h:panelGrid>
+</h:form>
+</ui:define>
+</ui:composition>
+
+
+</html>

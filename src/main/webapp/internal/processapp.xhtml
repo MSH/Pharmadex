@@ -1,0 +1,108 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../templates/process_reg_layout.xhtml">
+<ui:define name="content">
+
+    <h:form id="reghome">
+
+        <h:panelGrid columns="2" columnClasses="menu,content">
+        <h:panelGrid columns="2" columnClasses="menu,content">
+            <p:panel cellspacing="0" cellpadding="0" styleClass="menu">
+                <p:menu style="width:198px" >
+                    <p:submenu label="#{msgs.Registration}">
+                        <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear" action="#{processAppBn.registerApplicant}" ajax="false"/>
+                        <p:menuitem value="#{msgs.global_cancel}" immediate="true" action="#{processAppBn.cancel}" ajax="false"/>
+                    </p:submenu>
+                </p:menu>
+            </p:panel>
+
+
+        <h:panelGroup styleClass="ui-widget">
+            <h1 class="title ui-widget-header ui-corner-all">
+                <table width="750px">
+                    <tr>
+                        <td>
+                            <h:outputLabel value="#{processAppBn.applicant.appName}" styleClass="title" style="font-weight: bold; font-size: 1.5em"/>
+                        </td>
+                        <td align="right">
+                            <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                            <h:outputLabel value="#{processAppBn.applicant.state}" style="font-weight: bold;color: #a52a2a;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputLabel value="Application Number: " styleClass="title" />
+                            <h:outputFormat value="#{processAppBn.applicant.applcntId}" styleClass="title"/>
+                        </td>
+                        <td align="right">
+                            <h:outputLabel value="Submitted Date: " styleClass="title" />
+                            <h:outputFormat value="#{processAppBn.applicant.submitDate}" />
+                        </td>
+                    </tr>
+                </table>
+            </h1>
+            <p:messages id="messages" showDetail="true" showSummary="true"/>
+
+            <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+            <p:panel header="#{msgs.applicant_detail}">
+                <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+               		<ui:param name="applicantdata" value="#{processAppBn.applicant}" />
+               	</ui:decorate>
+
+            </p:panel>
+
+            <p:panel header="#{msgs.Userlist}">
+                <p:dataTable id="usertable" var="user" value="#{processAppBn.userList}" style="width:100%;">
+                    <f:facet name="header" >
+                        <p:commandLink value="#{msgs.global_add}" oncomplete="addUserDlg.show()" immediate="true"/>
+                    </f:facet>
+                   <p:column headerText="#{msgs.User_name}">
+                       <h:outputText value="#{user.name}" />
+                   </p:column>
+
+                    <p:column headerText="#{msgs.User_username}">
+                        <h:outputText value="#{user.username}" />
+                    </p:column>
+
+                   <p:column headerText="#{msgs.User_email}">
+                       <h:outputText value="#{user.email}" />
+                   </p:column>
+                </p:dataTable>
+
+            </p:panel>
+
+
+        </h:panelGroup>
+        </h:panelGrid>
+        </h:panelGrid>
+    </h:form>
+
+    <p:dialog header="#{msgs.user_add}" widgetVar="addUserDlg" id="addUserdlg" resizable="true" modal="true" >
+        <h:form >
+        <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+            <h:outputLabel value="#{msgs.product_innname}" for="username"/>
+            <p:autoComplete id="username" value="#{processAppBn.user}"
+                            completeMethod="#{processAppBn.completeUserList}" dropdown="true"
+                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true" converter="#{userConverter}" >
+            </p:autoComplete>
+
+            <h:panelGroup>
+                <p:commandButton actionListener="#{processAppBn.addUserToApplicant}" value="#{msgs.global_add}" ajax="false" oncomplete="addUserDlg.hide()"/>
+                <p:commandButton action="#{processAppBn.cancelAddUser}" immediate="true" value="#{msgs.global_cancel}" oncomplete="addUserDlg.hide()"/>
+            </h:panelGroup>
+            <h:outputLabel/>
+
+        </h:panelGrid>
+        </h:form>
+    </p:dialog>
+
+</ui:define>
+</ui:composition>
+
+
+</html>
