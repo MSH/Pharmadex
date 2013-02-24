@@ -1,4 +1,4 @@
-body,div,td {
+body, div, td {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
     word-wrap: break-word;
@@ -7,7 +7,7 @@ body,div,td {
 }
 
 tr, tbody {
-    width:1052px;
+    width: 1052px;
 }
 
 .header {
@@ -19,9 +19,9 @@ tr, tbody {
 }
 
 .logoutWelcomeId {
-	float:right;
-	font-size:12px;
-	color:#666;
+    float: right;
+    font-size: 12px;
+    color: #666;
 }
 
 body {
@@ -54,7 +54,7 @@ body {
 }
 
 .banner {
-    margin-bottom:5px;
+    margin-bottom: 5px;
 }
 
 .action-column {
@@ -92,53 +92,53 @@ body {
 }
 
 .ui-growl {
-    top:115px !important;
+    top: 115px !important;
 }
 
 /* Header */
 #logo {
-        width: 960px;
-        height: 55px;
-        margin: 0 auto;
-        padding: 15px 10px 0 10px;
+    width: 960px;
+    height: 55px;
+    margin: 0 auto;
+    padding: 15px 10px 0 10px;
 }
 
 #logo h1, #logo p {
-        float: left;
-        margin: 0;
+    float: left;
+    margin: 0;
 }
 
 #logo h1 {
-        padding: 0 0 0 0;
-        letter-spacing: -1px;
-        font-weight: bolder;
-        font-size: 3em;
-        color: #FFFFFF;
+    padding: 0 0 0 0;
+    letter-spacing: -1px;
+    font-weight: bolder;
+    font-size: 3em;
+    color: #FFFFFF;
 
 }
 
 #logo p {
-        text-transform: uppercase;
-        padding: 47px 0 0 3px;
-        font-size: 10px;
-        color: #FFFFFF;
+    text-transform: uppercase;
+    padding: 47px 0 0 3px;
+    font-size: 10px;
+    color: #FFFFFF;
 }
 
 #logo a {
-        border: none;
-        text-decoration: none;
-        color: #e5ff0d;
+    border: none;
+    text-decoration: none;
+    color: #e5ff0d;
 }
 
 /* Menu */
 #menu {
-        width: 1010px;
-        margin: 0 auto;
-        padding: 0;
-        height: 25px;
+    width: 1010px;
+    margin: 0 auto;
+    padding: 0;
+    height: 25px;
 }
 
-.ui-menubar{
+.ui-menubar {
     width: 1012px;
     margin: 0 auto;
     padding: 3px;
@@ -146,132 +146,135 @@ body {
 }
 
 #menu ul {
-        margin: 0;
-        padding-left: 10px;
-        list-style: none;
+    margin: 0;
+    padding-left: 10px;
+    list-style: none;
 }
 
 #menu li {
-        display: inline;
+    display: inline;
 }
 
 #menu li a {
-        display: block;
-        float: left;
-        height: 42px;
-        margin: 0;
-        padding: 10px 10px 0 10px;
-        text-decoration: none;
-        font-size: 15px;
+    display: block;
+    float: left;
+    height: 42px;
+    margin: 0;
+    padding: 10px 10px 0 10px;
+    text-decoration: none;
+    font-size: 15px;
 }
 
 #menu li a:hover {
-        text-decoration: underline;
+    text-decoration: underline;
 }
 
 /* Footer */
 
 #footer {
-        width: 982px;
-        height: 70px;
-        margin: 0 auto;
-        padding: 0 20px;
+    width: 982px;
+    height: 70px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 #footer p {
-        margin: 0;
-        padding: 25px 0 0 0;
-        text-align: center;
-        font-size: smaller;
+    margin: 0;
+    padding: 25px 0 0 0;
+    text-align: center;
+    font-size: smaller;
 }
 
 #footer a {
 }
 
 #footer .link {
-        float: right;
+    float: right;
 }
 
 #footer .copyright {
-        float: left;
+    float: left;
 }
 
 /* Sidebars */
 
 #sidebar1 {
-        float: left;
-        margin-top: -81px;
-        margin-left: -1px;
-        font-family: Arial,sans-serif;
-        font-size:11px !important;
+    float: left;
+    margin-top: -81px;
+    margin-left: -1px;
+    font-family: Arial, sans-serif;
+    font-size: 11px !important;
 }
 
 #sidebar2 {
-        float: right;
+    float: right;
 }
 
 .sidebar {
-        float: left;
-        width: 240px;
-        padding: 0;
-        font-size: 12px;
+    float: left;
+    width: 240px;
+    padding: 0;
+    font-size: 12px;
 }
 
 .sidebar ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .sidebar li {
-        padding: 0 0 20px 0;
+    padding: 0 0 20px 0;
 }
 
 .sidebar span {
-        cursor: pointer;
+    cursor: pointer;
 }
 
 .sidebar li ul {
 }
 
 .sidebar li li {
-        margin: 0 10px 0 10px;
-        padding: 3px 0px;
+    margin: 0 10px 0 10px;
+    padding: 3px 0px;
 }
 
-
 .sidebar li h2 {
-        height: 40px;
-        margin: 0 0 0 0;
-        padding: 20px 15px 0px 65px;
-        background: url(../images/img04.jpg) no-repeat left top;
-        letter-spacing: -1px;
-        font-size: 16px;
-        font-weight: normal;
-        color: #FFFFFF;
+    height: 40px;
+    margin: 0 0 0 0;
+    padding: 20px 15px 0px 65px;
+    background: url(../images/img04.jpg) no-repeat left top;
+    letter-spacing: -1px;
+    font-size: 16px;
+    font-weight: normal;
+    color: #FFFFFF;
 }
 
 .sidebar a {
 }
 
 .sidebar a:hover {
-        text-decoration: underline;
+    text-decoration: underline;
 }
 
 .sidebar a.ui-menuitem-link:hover {
-        text-decoration: none;
+    text-decoration: none;
 }
 
 .title {
-        height: 30px;
-        padding: 8px 0 10px 20px;
+    height: 30px;
+    padding: 8px 0 10px 20px;
 }
 
 .title a {
-        border-bottom: none;
-        color: #FFFFFF;
+    border-bottom: none;
+    color: #FFFFFF;
 }
 
 .title a:hover {
-        border-bottom: 1px dotted #000000;
+    border-bottom: 1px dotted #000000;
+}
+
+.label {
+    font-weight: bold;
 }

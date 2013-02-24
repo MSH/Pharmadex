@@ -1,6 +1,7 @@
 package org.msh.pharmadex.failure;
 
 import org.msh.pharmadex.auth.OnlineUserBean;
+import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.UserAccess;
@@ -19,37 +20,37 @@ import java.util.List;
 
 @Component("userSession")
 @Scope("session")
-public class UserSessionImpl implements UserSession,Serializable {
+public class UserSessionImpl implements UserSession, Serializable {
 
     private static final long serialVersionUID = 2473412644164656187L;
     private UserAccess userAccess;
-	private boolean displayMessagesKeys;
+    private boolean displayMessagesKeys;
     private String loggedInUser;
     private User loggedInUserObj;
 
-    private boolean admin   = false;
+    private boolean admin = false;
     private boolean company = false;
-    private boolean staff   = false;
+    private boolean staff = false;
     private boolean general = false;
     private boolean inspector = false;
 
-   public void login() {
-       try {
-           FacesContext.getCurrentInstance().getExternalContext().redirect("/pharmadex/j_spring_security_check");
-           System.out.println("reached inside login usersession");
-       } catch (IOException e) {
-           e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-       }
-   }
+    public void login() {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/pharmadex/j_spring_security_check");
+            System.out.println("reached inside login usersession");
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
     public String getLoggedInUser() {
-        if(userAccess!=null)
+        if (userAccess != null)
             return userAccess.getUser().getName();
         else
             return "";
     }
 
-    public String editUser(){
+    public String editUser() {
         System.out.print("inside edituser");
         return "/secure/usersettings.faces";
     }
@@ -64,15 +65,18 @@ public class UserSessionImpl implements UserSession,Serializable {
     @Autowired
     private OnlineUserBean onlineUsersHome;
 
+    @Autowired
+    private WebSession webSession;
+
     /**
      * Register the logout when the user session is finished by time-out
      */
     @Transactional
     public void logout() {
-    	if (userAccess == null) {
-    		return;
-    	}
-    	registerLogout();
+        if (userAccess == null) {
+            return;
+        }
+        registerLogout();
     }
 
     /**
@@ -80,8 +84,8 @@ public class UserSessionImpl implements UserSession,Serializable {
      */
     @Transactional
     public void registerLogin(User user, HttpServletRequest request) {
-    	// get client information
-    	FacesContext facesContext = FacesContext.getCurrentInstance();
+        // get client information
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         String ipAddr = request.getRemoteAddr();
         String app = request.getHeader("User-Agent");
 
@@ -89,33 +93,35 @@ public class UserSessionImpl implements UserSession,Serializable {
         userAccess = new UserAccess();
         userAccess.setUser(user);
         userAccess.setLoginDate(new Date());
-        if (app!=null&&app.length() > 200)
-        	app = app.substring(0, 200);
+        if (app != null && app.length() > 200)
+            app = app.substring(0, 200);
         userAccess.setApplication(app);
         userAccess.setIpAddress(ipAddr);
         onlineUsersHome.add(userAccess);
         userAccessService.saveUserAccess(userAccess);
+        webSession.setUser(user);
+        webSession.setApplicant(user.getApplicant());
         loadUserRoles();
     }
 
     private void loadUserRoles() {
         User user = userAccess.getUser();
         List<Role> roles = user.getRoles();
-        if(roles!=null){
-            for(Role role : roles){
-                if(role.getRolename().equalsIgnoreCase("ROLE_ADMIN")) {
+        if (roles != null) {
+            for (Role role : roles) {
+                if (role.getRolename().equalsIgnoreCase("ROLE_ADMIN")) {
                     setAdmin(true);
                     setStaff(true);
                     setGeneral(true);
                     setInspector(true);
                 }
-                if(role.getRolename().equalsIgnoreCase("ROLE_STAFF"))
+                if (role.getRolename().equalsIgnoreCase("ROLE_STAFF"))
                     setStaff(true);
-                if(role.getRolename().equalsIgnoreCase("ROLE_COMPANY"))
+                if (role.getRolename().equalsIgnoreCase("ROLE_COMPANY"))
                     setCompany(true);
-                if(role.getRolename().equalsIgnoreCase("ROLE_PUBLIC"))
+                if (role.getRolename().equalsIgnoreCase("ROLE_PUBLIC"))
                     setGeneral(true);
-                if(role.getRolename().equalsIgnoreCase("ROLE_INSPECTOR"))
+                if (role.getRolename().equalsIgnoreCase("ROLE_INSPECTOR"))
                     setInspector(true);
             }
         }
@@ -126,13 +132,13 @@ public class UserSessionImpl implements UserSession,Serializable {
      * Register the logout of the current user
      */
     public void registerLogout() {
-    	userAccess.setLogoutDate(new Date());
+        userAccess.setLogoutDate(new Date());
 
         userAccessService.update(userAccess);
         onlineUsersHome.remove(userAccess);
     }
 
-    
+
 //    /**
 //     * Monta a lista de permiss�es do usu�rio
 //     * @param usu
@@ -188,31 +194,28 @@ public class UserSessionImpl implements UserSession,Serializable {
 //    }
 
 
-
-
-
-	/**
-	 * @param userAccess the userLogin to set
-	 */
-	public void setUserAccess(UserAccess userAccess) {
-		this.userAccess = userAccess;
-	}
+    /**
+     * @param userAccess the userLogin to set
+     */
+    public void setUserAccess(UserAccess userAccess) {
+        this.userAccess = userAccess;
+    }
 
     public UserAccess getUserAccess() {
         return userAccess;
     }
 
     public boolean isDisplayMessagesKeys() {
-		return displayMessagesKeys;
-	}
+        return displayMessagesKeys;
+    }
 
 
-	public void setDisplayMessagesKeys(boolean displayMessagesKeys) {
-		this.displayMessagesKeys = displayMessagesKeys;
-	}
+    public void setDisplayMessagesKeys(boolean displayMessagesKeys) {
+        this.displayMessagesKeys = displayMessagesKeys;
+    }
 
     public User getLoggedInUserObj() {
-        if(userAccess!=null)
+        if (userAccess != null)
             return userAccess.getUser();
         else
             return null;

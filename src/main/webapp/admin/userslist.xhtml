@@ -1,103 +1,102 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
-    <h:form id="mainfrm">
-        <p:outputPanel id="userslist">
-            <h:panelGroup id="usercontent">
+<h:form id="mainfrm">
+    <p:outputPanel id="userslist">
+        <h:panelGroup id="usercontent">
 
-                <div class="post">
-                    <h1 class="title ui-widget-header ui-corner-all"> Users List</h1>
-                </div>
+            <div class="post">
+                <h1 class="title ui-widget-header ui-corner-all"> Users List</h1>
+            </div>
 
-                    <p:panel id="userdetail" header="Create/Edit" visible="#{userMBean.showAdd}">
-                    <p:messages/>
-                    <h:panelGrid columns="4" cellspacing="2" cellpadding="2" id="detail">
-                        <h:outputLabel value="#{msgs.User_name}: " for="name"/>
-                        <p:inputText id="name" value="#{userMBean.selectedUser.name}" required="true"
-                                     requiredMessage="#{msgs.requiredvalue}"/>
-                        <h:outputLabel value="#{msgs.User_username}: " for="username"/>
-                        <h:outputLabel id="username" value="#{userMBean.selectedUser.username}"/>
-                        <h:outputLabel value="#{msgs.User_email}: " for="email"/>
-                        <p:inputText id="email" value="#{userMBean.selectedUser.email}"/>
-                        <h:outputLabel value="#{msgs.User_applicant}" for="companyName"/>
-                        <p:inputText id="companyName" value="#{userMBean.selectedUser.companyName}"/>
-                        <h:outputLabel value="#{msgs.User_active}" for="active"/>
-                        <p:selectBooleanCheckbox id="active" value="#{userMBean.selectedUser.enabled}"/>
-                        <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
-                        <p:inputTextarea rows="4" cols="30" id="comment" value="#{userMBean.selectedUser.comments}"/>
-                    </h:panelGrid>
-                    <p:commandButton value="#{msgs.label_save}" action="#{userMBean.saveApp}" />
-                    <p:commandButton value="#{msgs.label_close}" action="#{userMBean.cancelUser}" immediate="true"
-                                     />
-                </p:panel>
-
-
-                    <p:dataTable id="users" var="user" value="#{userMBean.allUsers}" selectionMode="single"
-                                 selection="#{userMBean.selectedUser}" rowKey="#{user.userId}">
-                        <p:ajax listener="#{userMBean.onRowSelect}" event="rowSelect" update=":mainfrm:userdetail :mainfrm:detail"></p:ajax>
-                        <f:facet name="header">
-                            Click "View" button after selecting a row to see details
-                        </f:facet>
-
-                        <p:column headerText="#{msgs.User_name}">
-                            #{user.name}
-                        </p:column>
-
-                        <p:column headerText="#{msgs.User_username}">
-                            #{user.username}
-                        </p:column>
-
-                        <p:column headerText="#{msgs.User_email}">
-                            #{user.email}
-                        </p:column>
-
-                        <p:column headerText="#{msgs.User_applicant}">
-                            #{user.companyName}
-                        </p:column>
-
-                    </p:dataTable>
-            </h:panelGroup>
-        </p:outputPanel>
-        </h:form>
-
-        <p:dialog widgetVar="adduser" modal="true"  resizable="false" header="Add User">
-            <h:form id="adduserfrm">
-            <p:messages/>
-
-                <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                    <ui:param name="userdata" value="#{userMBean.selectedUser}"/>
-                    <ui:param name="input" value="true"/>
-                </ui:decorate>
-
-                <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
-
-                    <h:outputText value="#{msgs.user_type}" />
-                    <p:selectOneMenu value="#{userMBean.selectedUser.type}" >
-                        <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{globalLists.userTypes}" var="type" itemLabel="#{msgs[type.key]}"/>
-                    </p:selectOneMenu>
-
-                    <h:outputText value="#{msgs.global_enable}" />
-                     <p:selectBooleanButton value="#{userMBean.selectedUser.enabled}" onLabel="#{msgs.global_yes}"
-                                            offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
-                     </p:selectBooleanButton>
+            <p:panel id="userdetail" header="Create/Edit" visible="#{userMBean.showAdd}">
+                <p:messages/>
+                <h:panelGrid columns="4" cellspacing="2" cellpadding="2" id="detail">
+                    <h:outputLabel value="#{msgs.User_name}: " for="name"/>
+                    <p:inputText id="name" value="#{userMBean.selectedUser.name}" required="true"
+                                 requiredMessage="#{msgs.requiredvalue}"/>
+                    <h:outputLabel value="#{msgs.User_username}: " for="username"/>
+                    <h:outputLabel id="username" value="#{userMBean.selectedUser.username}"/>
+                    <h:outputLabel value="#{msgs.User_email}: " for="email"/>
+                    <p:inputText id="email" value="#{userMBean.selectedUser.email}"/>
+                    <h:outputLabel value="#{msgs.User_applicant}" for="companyName"/>
+                    <p:inputText id="companyName" value="#{userMBean.selectedUser.companyName}"/>
+                    <h:outputLabel value="#{msgs.User_active}" for="active"/>
+                    <p:selectBooleanCheckbox id="active" value="#{userMBean.selectedUser.enabled}"/>
+                    <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
+                    <p:inputTextarea rows="4" cols="30" id="comment" value="#{userMBean.selectedUser.comments}"/>
                 </h:panelGrid>
-
-                <p:panel header="#{msgs.role}">
-                    <p:pickList id="rolepicklist"  value="#{userMBean.roles}"  effect="bounce"
-                                        var="rolevar" style="align:center;"
-                                        itemValue="#{rolevar}" itemLabel="#{rolevar.rolename}" converter="roleConverter"/>
-                </p:panel>
+                <p:commandButton value="#{msgs.label_save}" action="#{userMBean.saveApp}"/>
+                <p:commandButton value="#{msgs.label_close}" action="#{userMBean.cancelUser}" immediate="true"
+                        />
+            </p:panel>
 
 
+            <p:dataTable id="users" var="user" value="#{userMBean.allUsers}" selectionMode="single"
+                         selection="#{userMBean.selectedUser}" rowKey="#{user.userId}">
+                <p:ajax listener="#{userMBean.onRowSelect}" event="rowSelect"
+                        update=":mainfrm:userdetail :mainfrm:detail"></p:ajax>
+                <f:facet name="header">
+                    Click "View" button after selecting a row to see details
+                </f:facet>
 
-                <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" oncomplete="adduser.hide()" />
-                <p:commandButton action="#{userMBean.cancelUser}" immediate="true" value="#{msgs.global_cancel}"
-                                 oncomplete="adduser.hide()" ajax="false" />
-            </h:form>
-        </p:dialog>
+                <p:column headerText="#{msgs.User_name}">
+                    #{user.name}
+                </p:column>
+
+                <p:column headerText="#{msgs.User_username}">
+                    #{user.username}
+                </p:column>
+
+                <p:column headerText="#{msgs.User_email}">
+                    #{user.email}
+                </p:column>
+
+                <p:column headerText="#{msgs.User_applicant}">
+                    #{user.companyName}
+                </p:column>
+
+            </p:dataTable>
+        </h:panelGroup>
+    </p:outputPanel>
+</h:form>
+
+<p:dialog widgetVar="adduser" modal="true" resizable="false" header="Add User">
+    <h:form id="adduserfrm">
+        <p:messages/>
+
+        <ui:decorate template="/templates/userdetailtmpl.xhtml">
+            <ui:param name="userdata" value="#{userMBean.selectedUser}"/>
+            <ui:param name="input" value="true"/>
+        </ui:decorate>
+
+        <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
+
+            <h:outputText value="#{msgs.user_type}"/>
+            <p:selectOneMenu value="#{userMBean.selectedUser.type}">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalLists.userTypes}" var="type" itemLabel="#{msgs[type.key]}"/>
+            </p:selectOneMenu>
+
+            <h:outputText value="#{msgs.global_enable}"/>
+            <p:selectBooleanButton value="#{userMBean.selectedUser.enabled}" onLabel="#{msgs.global_yes}"
+                                   offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+            </p:selectBooleanButton>
+        </h:panelGrid>
+
+        <p:panel header="#{msgs.role}">
+            <p:pickList id="rolepicklist" value="#{userMBean.roles}" effect="bounce"
+                        var="rolevar" style="align:center;"
+                        itemValue="#{rolevar}" itemLabel="#{rolevar.rolename}" converter="roleConverter"/>
+        </p:panel>
+
+
+        <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" oncomplete="adduser.hide()"/>
+        <p:commandButton action="#{userMBean.cancelUser}" immediate="true" value="#{msgs.global_cancel}"
+                         oncomplete="adduser.hide()" ajax="false"/>
+    </h:form>
+</p:dialog>
 </html>

@@ -2,11 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui" xmlns:s="http://java.sun.com/jsf/composite">
+      xmlns:p="http://primefaces.org/ui">
 <ui:composition template="../templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post" style="width: 1024px">
@@ -16,8 +14,9 @@
         <h:form>
             <p:growl showDetail="true" showSummary="true"/>
             <p:panel header="User Details">
-                <p:messages />
-                <h:panelGrid cellspacing="10px" cellpadding="2px" columns="4" id="user" style="text-justify:auto;" width="100%" columnClasses="col1, col2, col1, col2">
+                <p:messages/>
+                <h:panelGrid cellspacing="10px" cellpadding="2px" columns="4" id="user" style="text-justify:auto;"
+                             width="100%" columnClasses="col1, col2, col1, col2">
                     <h:outputLabel value="#{msgs.User_username}" for="username"/>
                     <p:inputText value="#{registerUserMbean.user.username}" id="username" required="true"/>
 
@@ -25,15 +24,16 @@
                     <h:outputLabel/>
 
                     <h:outputLabel value="#{msgs.User_name}" for="name"/>
-                    <p:inputText value="#{registerUserMbean.user.name}" id="name" required="true" requiredMessage="Please Enter Name"/>
+                    <p:inputText value="#{registerUserMbean.user.name}" id="name" required="true"
+                                 requiredMessage="Please Enter Name"/>
 
                     <h:outputLabel/>
                     <h:outputLabel/>
 
                     <ui:decorate template="/templates/addrtempl.xhtml">
-                   		<ui:param name="addressdata" value="#{registerUserMbean.user.address}" />
-                        <ui:param name="input" value="#{true}" />
-                   	</ui:decorate>
+                        <ui:param name="addressdata" value="#{registerUserMbean.user.address}"/>
+                        <ui:param name="input" value="#{true}"/>
+                    </ui:decorate>
 
                     <h:outputLabel value="#{msgs.applicant_phone}" for="phoneno"/>
                     <p:inputText value="#{registerUserMbean.user.phoneNo}" id="phoneno" required="true"/>
@@ -52,8 +52,10 @@
 
                 </h:panelGrid>
 
-                <p:commandButton value="#{msgs.global_submit}" action="#{registerUserMbean.save}" update="@form" ajax="false"/>
-                <p:commandButton value="#{msgs.global_cancel}" actionListener="#{registerUserMbean.cancel}" immediate="true" />
+                <p:commandButton value="#{msgs.global_submit}" action="#{registerUserMbean.save}" update="@form"
+                                 ajax="false"/>
+                <p:commandButton value="#{msgs.global_cancel}" actionListener="#{registerUserMbean.cancel}"
+                                 immediate="true"/>
             </p:panel>
 
         </h:form>

@@ -1,22 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
-<ui:composition>
-    <h:panelGrid cellspacing="8px" cellpadding="10px" columns="4" id="user" style="text-justify:auto;" width="100%" columnClasses="col1, col2, col1, col2">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:panelGrid cellspacing="8px" cellpadding="10px" columns="4" id="user" style="text-justify:auto;" width="100%"
+                 columnClasses="col1, col2, col1, col2">
         <h:outputLabel value="#{msgs.User_name}" for="name"/>
         <h:outputText value="#{userdata.name}" id="name" style="font-weight: bold;" rendered="#{!input}"/>
-        <p:inputText value="#{userdata.name}" rendered="#{input}" />
+        <p:inputText value="#{userdata.name}" rendered="#{input}"/>
 
         <h:outputLabel/>
         <h:outputLabel/>
 
         <ui:decorate template="/templates/addrtempl.xhtml">
-       		<ui:param name="addressdata" value="#{userdata.address}" />
-            <ui:param name="input" value="#{input}" />
-       	</ui:decorate>
+            <ui:param name="addressdata" value="#{userdata.address}"/>
+            <ui:param name="input" value="#{input}"/>
+        </ui:decorate>
 
         <h:outputLabel value="#{msgs.applicant_phone}" for="phoneno"/>
         <h:outputText value="#{userdata.phoneNo}" id="phoneno" style="font-weight: bold;" rendered="#{!input}"/>
@@ -41,4 +39,3 @@
 
 
 </ui:composition>
-</html>

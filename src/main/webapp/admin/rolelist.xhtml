@@ -1,8 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 <h:panelGroup id="rolepanel">
     <div class="post">
@@ -10,7 +7,8 @@
     </div>
 
     <p:panel header="List of Roles in the system">
-        <p:dataTable id="roletable" var="a" value="#{roleMBean.findAllRoles()}" emptyMessage="#{msgs.label_no_records_found}">
+        <p:dataTable id="roletable" var="a" value="#{roleMBean.findAllRoles()}"
+                     emptyMessage="#{msgs.label_no_records_found}">
             <p:column headerText="Role Name">
                 #{a.rolename}
             </p:column>

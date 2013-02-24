@@ -3,9 +3,6 @@ package org.msh.pharmadex.mbean.product;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.AdminRoute;
-import org.msh.pharmadex.domain.enums.ProdDrugType;
-import org.msh.pharmadex.domain.enums.ProdType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.service.*;
@@ -29,7 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  */
 @Component
 @Scope("session")
-public class RegHomeMbean implements Serializable{
+public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
 
     @Autowired
@@ -80,9 +80,6 @@ public class RegHomeMbean implements Serializable{
     private List<Inn> innList;
     private List<Atc> atcList;
     private List<PharmClassif> pharmClassifList;
-    private List<ProdType> prodTypes;
-    private List<AdminRoute> adminRoutes;
-    private List<ProdDrugType> drugTypes;
     private int tabIndex;
     private ProdApplications prodApplications = new ProdApplications();
     private Product product;
@@ -110,7 +107,7 @@ public class RegHomeMbean implements Serializable{
     private ScheduleEvent event = new DefaultScheduleEvent();
 
     @PostConstruct
-    private void init(){
+    private void init() {
         innList = innService.getInnList();
         product = new Product();
         product.setPharmClassif(new PharmClassif());
@@ -123,13 +120,13 @@ public class RegHomeMbean implements Serializable{
         prodApplications.setProdAppChecklists(prodAppChecklists);
         List<Checklist> allChecklist = prodApplicationsService.findAllChecklist();
         ProdAppChecklist eachProdAppCheck;
-        for(int i=0; allChecklist.size() > i;i++){
+        for (int i = 0; allChecklist.size() > i; i++) {
             eachProdAppCheck = new ProdAppChecklist();
             eachProdAppCheck.setChecklist(allChecklist.get(i));
             eachProdAppCheck.setProdApplications(prodApplications);
             prodAppChecklists.add(eachProdAppCheck);
         }
-        if(getLoggedInUser()!=null && getLoggedInUser().getApplicant()!=null)
+        if (getLoggedInUser() != null && getLoggedInUser().getApplicant() != null)
             product.setApplicant(getLoggedInUser().getApplicant());
         prodApplications.setUser(getLoggedInUser());
         prodApplications.getProd().setInns(selectedInns);
@@ -138,13 +135,13 @@ public class RegHomeMbean implements Serializable{
         prodApplications.setProdAppChecklists(prodAppChecklists);
 
         eventModel = new DefaultScheduleModel();
-        for(Appointment app : appointmentService.getAppointments()){
+        for (Appointment app : appointmentService.getAppointments()) {
             eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
         }
     }
 
     public TreeNode getSelAtcTree() {
-        if(selAtcTree==null){
+        if (selAtcTree == null) {
             populateSelAtcTree();
         }
         return selAtcTree;
@@ -153,64 +150,60 @@ public class RegHomeMbean implements Serializable{
     private void populateSelAtcTree() {
         selAtcTree = new DefaultTreeNode("selAtcTree", null);
         selAtcTree.setExpanded(true);
-        if(atc!=null){
-            List<Atc> parentList =  atc.getParentsTreeList(true);
+        if (atc != null) {
+            List<Atc> parentList = atc.getParentsTreeList(true);
             TreeNode[] nodes = new TreeNode[parentList.size()];
-            for (int i = 0; i < parentList.size(); i++){
-                if(i==0){
-                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode()+": "+parentList.get(i).getAtcName(), selAtcTree);
+            for (int i = 0; i < parentList.size(); i++) {
+                if (i == 0) {
+                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode() + ": " + parentList.get(i).getAtcName(), selAtcTree);
                     nodes[i].setExpanded(true);
-                }else{
-                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode()+": "+parentList.get(i).getAtcName(), nodes[i-1]);
+                } else {
+                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode() + ": " + parentList.get(i).getAtcName(), nodes[i - 1]);
                     nodes[i].setExpanded(true);
                 }
             }
         }
     }
 
-    public void updateAtc(){
+    public void updateAtc() {
         populateSelAtcTree();
     }
 
-    public List<ProdDrugType> getDrugTypes() {
-        return Arrays.asList(ProdDrugType.values());
-    }
-
-    public List<Inn> completeInnCodes(String query){
+    public List<Inn> completeInnCodes(String query) {
         List<Inn> suggestions = new ArrayList<Inn>();
 
-        if(query==null || query.equalsIgnoreCase(""))
+        if (query == null || query.equalsIgnoreCase(""))
             return getInnList();
 
-        for(Inn eachInn:getInnList()){
-            if(eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
+        for (Inn eachInn : getInnList()) {
+            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
                 suggestions.add(eachInn);
         }
         return suggestions;
     }
 
-    public List<Atc> completeAtcNames(String query){
+    public List<Atc> completeAtcNames(String query) {
         List<Atc> suggestions = new ArrayList<Atc>();
 
-        if(query==null || query.equalsIgnoreCase(""))
+        if (query == null || query.equalsIgnoreCase(""))
             return getAtcList();
 
-        for(Atc eachAtc :getAtcList()){
-            if(eachAtc.getAtcName().toLowerCase().startsWith(query.toLowerCase()))
+        for (Atc eachAtc : getAtcList()) {
+            if (eachAtc.getAtcName().toLowerCase().startsWith(query.toLowerCase()))
                 suggestions.add(eachAtc);
         }
         System.out.println("Suggestions size == " + suggestions.size());
         return suggestions;
     }
 
-    public List<Atc> completeAtcCodes(String query){
+    public List<Atc> completeAtcCodes(String query) {
         List<Atc> suggestions = new ArrayList<Atc>();
 
-        if(query==null || query.equalsIgnoreCase(""))
+        if (query == null || query.equalsIgnoreCase(""))
             return getAtcList();
 
-        for(Atc eachAtc :getAtcList()){
-            if(eachAtc.getAtcCode().toLowerCase().startsWith(query.toLowerCase()))
+        for (Atc eachAtc : getAtcList()) {
+            if (eachAtc.getAtcCode().toLowerCase().startsWith(query.toLowerCase()))
                 suggestions.add(eachAtc);
         }
         System.out.println("Suggestions size == " + suggestions.size());
@@ -227,26 +220,27 @@ public class RegHomeMbean implements Serializable{
     }
 
     JasperPrint jasperPrint;
+
     public void reportinit() throws JRException {
         URL resource = getClass().getResource("/reports/letter.jasper");
         HashMap param = new HashMap();
         param.put("appName", applicant.getAppName());
         param.put("prodName", product.getProdName());
-        param.put("subject", "Subject: Application for registering "+product.getProdName()+" ");
-        param.put("body", "Thank you for applying to register "+product.getProdName()+" manufactured by "+applicant.getAppName()
-                +". Your application is successfully submitted and the application number is "+prodApplications.getId()+". " +
+        param.put("subject", "Subject: Application for registering " + product.getProdName() + " ");
+        param.put("body", "Thank you for applying to register " + product.getProdName() + " manufactured by " + applicant.getAppName()
+                + ". Your application is successfully submitted and the application number is " + prodApplications.getId() + ". " +
                 "Please use this application number for any future correspondence.");
         param.put("address1", product.getApplicant().getAddress().getAddress1());
         param.put("address2", product.getApplicant().getAddress().getAddress2());
         param.put("country", product.getApplicant().getAddress().getCountry().getCountryName());
-        jasperPrint= net.sf.jasperreports.engine.JasperFillManager.fillReport(resource.getFile(), param);
+        jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(resource.getFile(), param);
     }
 
     public void PDF() throws JRException, IOException {
         reportinit();
-        javax.servlet.http.HttpServletResponse httpServletResponse=(HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
-        javax.servlet.ServletOutputStream servletOutputStream=httpServletResponse.getOutputStream();
+        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
 
@@ -254,19 +248,19 @@ public class RegHomeMbean implements Serializable{
     }
 
 
-    public String saveApp(){
+    public String saveApp() {
         prodApplications.setUser(getLoggedInUser());
         prodApplications.setProd(product);
-        if(selectedInns !=null && selectedInns.size()>0)
+        if (selectedInns != null && selectedInns.size() > 0)
             product.setInns(selectedInns);
-        if(selectedAtcs !=null && selectedAtcs.size()>0){
+        if (selectedAtcs != null && selectedAtcs.size() > 0) {
             List<Atc> tempAtc = new ArrayList<Atc>();
-            for(Atc atc: selectedAtcs){
+            for (Atc atc : selectedAtcs) {
                 tempAtc.add(atcService.findAtcById(atc.getAtcCode()));
             }
             product.setAtcs(tempAtc);
         }
-        if(companies!=null && companies.size()>0){
+        if (companies != null && companies.size() > 0) {
             product.setCompanies(companies);
         }
 
@@ -274,30 +268,30 @@ public class RegHomeMbean implements Serializable{
         product.setCreatedBy(getLoggedInUser());
         product.setApplicant(applicant);
 
-        try{
-            if(prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted")){
+        try {
+            if (prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted")) {
 //                FacesContext context = FacesContext.getCurrentInstance();
 //                HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 //                WebUtils.setSessionAttribute(request, "regHomeMbean" ,null);
 //                PDF();
                 return "/secure/prodregack.faces";
-            }else
+            } else
                 return null;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            facesContext.addMessage(null, new FacesMessage("Error", " Reason: "+e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage("Error", " Reason: " + e.getMessage()));
             return null;
         }
     }
 
-    public String removeInn(){
+    public String removeInn() {
 
         selectedInns.remove(prodInn);
         return null;
     }
 
-    public String submitApp(){
+    public String submitApp() {
         prodApplications.setRegState(RegState.NEW_APPL);
         TimeLine timeLine = new TimeLine();
         timeLine.setComment("New Application submitted by applicant");
@@ -310,15 +304,15 @@ public class RegHomeMbean implements Serializable{
         return result;
     }
 
-    public String addProdInn(){
+    public String addProdInn() {
         System.out.println("Inside addinn");
         prodInn.setProduct(product);
         selectedInns.add(prodInn);
         prodApplications.getProd().setInns(selectedInns);
 
         List<Atc> a = atcService.findAtcByName(prodInn.getInn().getName());
-        if(a!=null){
-            if(selectedAtcs ==null)
+        if (a != null) {
+            if (selectedAtcs == null)
                 selectedAtcs = new ArrayList<Atc>();
             selectedAtcs.addAll(a);
             prodApplications.getProd().setAtcs(selectedAtcs);
@@ -327,8 +321,8 @@ public class RegHomeMbean implements Serializable{
         return null;
     }
 
-    public String addAtc(){
-        if(selectedAtcs ==null)
+    public String addAtc() {
+        if (selectedAtcs == null)
             selectedAtcs = new ArrayList<Atc>();
         selectedAtcs.add(atc);
         prodApplications.getProd().setAtcs(selectedAtcs);
@@ -336,21 +330,21 @@ public class RegHomeMbean implements Serializable{
         return null;
     }
 
-    public String cancelAddInn(){
+    public String cancelAddInn() {
         selectedInns.remove(prodInn);
         prodInn = null;
         return null;
     }
 
-    public String cancel(){
+    public String cancel() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "regHomeMbean" ,null);
+        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
         return "/public/registrationhome.faces";
     }
 
     public boolean isShowAppReg() {
-        if (getLoggedInUser()!=null && getLoggedInUser().getApplicant()!=null)
+        if (getLoggedInUser() != null && getLoggedInUser().getApplicant() != null)
             return false;
         else
             return true;
@@ -369,7 +363,7 @@ public class RegHomeMbean implements Serializable{
         this.prodApplications = prodApplications;
         this.product = productService.findProductById(prodApplications.getProd().getId());
         this.selectedInns = innService.findInnByProdApp(product.getId());
-        for(Atc atc : product.getAtcs()){
+        for (Atc atc : product.getAtcs()) {
             atc = atcService.findAtcById(atc.getAtcCode());
         }
         this.selectedAtcs = product.getAtcs();
@@ -384,11 +378,11 @@ public class RegHomeMbean implements Serializable{
 
     public Applicant getApplicant() {
         Long id;
-        if(applicant==null){
-            if(product!=null&&product.getApplicant()!=null) {
+        if (applicant == null) {
+            if (product != null && product.getApplicant() != null) {
                 applicant = applicantService.findApplicant(product.getApplicant().getApplcntId());
-            }else{
-                if(getLoggedInUser().getApplicant()!=null)
+            } else {
+                if (getLoggedInUser().getApplicant() != null)
                     applicant = applicantService.findApplicant(getLoggedInUser().getApplicant().getApplcntId());
             }
         }
@@ -404,10 +398,10 @@ public class RegHomeMbean implements Serializable{
     }
 
     public List<ProdInn> getSelectedInns() {
-        if(selectedInns ==null){
-            if(product.getInns()!=null) {
+        if (selectedInns == null) {
+            if (product.getInns() != null) {
                 selectedInns = product.getInns();
-            }else{
+            } else {
                 selectedInns = new ArrayList<ProdInn>();
             }
         }
@@ -420,14 +414,6 @@ public class RegHomeMbean implements Serializable{
 
     public List<PharmClassif> getPharmClassifList() {
         return pharmClassifService.getPharmClassifList();
-    }
-
-    public List<ProdType> getProdTypes() {
-        return Arrays.asList(ProdType.values());
-    }
-
-    public List<AdminRoute> getAdminRoutes() {
-        return Arrays.asList(AdminRoute.values());
     }
 
 
@@ -494,7 +480,7 @@ public class RegHomeMbean implements Serializable{
     }
 
     public User getLoggedInUser() {
-        if(loggedInUser==null)
+        if (loggedInUser == null)
             loggedInUser = userSession.getLoggedInUserObj();
         return loggedInUser;
     }
@@ -565,10 +551,11 @@ public class RegHomeMbean implements Serializable{
     }
 
     private Appointment app = new Appointment();
+
     public void addEvent(ActionEvent actionEvent) {
-        if(event.getId() == null){
+        if (event.getId() == null) {
             eventModel.addEvent(event);
-        }else{
+        } else {
             eventModel.updateEvent(event);
         }
         setAppointment();
@@ -581,7 +568,7 @@ public class RegHomeMbean implements Serializable{
         app.setEnd(event.getEndDate());
         app.setStart(event.getStartDate());
         app.setProdApplications(prodApplications);
-        app.setTile(applicant.getAppName()+" "+product.getProdName());
+        app.setTile(applicant.getAppName() + " " + product.getProdName());
     }
 
     public void setEvent(ScheduleEvent event) {

@@ -3,6 +3,7 @@ package org.msh.pharmadex.service.converter;
 import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
@@ -18,7 +19,8 @@ import java.io.Serializable;
  */
 @FacesConverter(value = "roleConverter", forClass = Role.class)
 @Component
-public class RoleConverter implements Converter,Serializable {
+@Scope("singleton")
+public class RoleConverter implements Converter, Serializable {
 
     private static final long serialVersionUID = -7425826087579166730L;
 
@@ -28,7 +30,7 @@ public class RoleConverter implements Converter,Serializable {
     private Iterable<Role> roles;
 
     public Iterable<Role> getRoles() {
-        if(roles==null)
+        if (roles == null)
             roles = roleDAO.findAll();
         return roles;
     }
@@ -47,7 +49,7 @@ public class RoleConverter implements Converter,Serializable {
                     }
                 }
 
-            } catch(NumberFormatException exception) {
+            } catch (NumberFormatException exception) {
                 exception.printStackTrace();
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid role"));
             }

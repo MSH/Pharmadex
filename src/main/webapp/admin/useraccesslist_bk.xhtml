@@ -1,49 +1,46 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
 
-<ui:composition template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:panelGroup id="useraccesspanel">
+            <div class="post">
+                <h1 class="title ui-widget-header ui-corner-all"> User Access List</h1>
+            </div>
 
-<ui:define name="content">
-    <h:panelGroup id="useraccesspanel">
-        <div class="post">
-            <h1 class="title ui-widget-header ui-corner-all"> User Access List</h1>
-        </div>
+            <p:panel toggleable="true" toggleSpeed="250" header="User History">
+                <p:commandLink action="#{userMBean.exception}"/>
+                <f:facet name="header">
+                    <h:outputText value="#{appBean.name}"/>
+                </f:facet>
+                <p:dataTable id="useraccesstable" var="a" value="#{userAccessMBean.allUserAccess}"
+                             emptyMessage="#{msgs.label_no_records_found}">
+                    <p:column headerText="User Name">
+                        #{a.user.name}
+                    </p:column>
 
-        <p:panel toggleable="true" toggleSpeed="250" header="User History">
-            <p:commandLink action="#{userMBean.exception}"/>
-            <f:facet name="header">
-                <h:outputText value="#{appBean.name}"/>
-            </f:facet>
-            <p:dataTable id="useraccesstable" var="a" value="#{userAccessMBean.allUserAccess}" emptyMessage="#{msgs.label_no_records_found}">
-                <p:column headerText="User Name">
-                    #{a.user.name}
-                </p:column>
+                    <p:column headerText="Application">
+                        #{a.application}
 
-                <p:column headerText="Application">
-                    #{a.application}
+                    </p:column>
 
-                </p:column>
+                    <p:column headerText="IP Address">
+                        #{a.ipAddress}
+                    </p:column>
 
-                <p:column headerText="IP Address">
-                    #{a.ipAddress}
-                </p:column>
+                    <p:column headerText="Login Date">
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{a.loginDate}"/>
+                    </p:column>
 
-                <p:column headerText="Login Date">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{a.loginDate}"/>
-                </p:column>
+                    <p:column headerText="Logout Date">
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{a.logoutDate}"/>
+                    </p:column>
 
-                <p:column headerText="Logout Date">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{a.logoutDate}"/>
-                </p:column>
-
-            </p:dataTable>
-        </p:panel>
-    </h:panelGroup>
+                </p:dataTable>
+            </p:panel>
+        </h:panelGroup>
     </ui:define>
 </ui:composition>
-
-</html>

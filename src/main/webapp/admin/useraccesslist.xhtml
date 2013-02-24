@@ -1,8 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 <h:panelGroup id="useraccesspanel">
     <div class="post">
@@ -13,7 +11,8 @@
         <f:facet name="header">
             <h:outputText value="#{appBean.name}"/>
         </f:facet>
-        <p:dataTable id="useraccesstable" var="a" value="#{userAccessMBean.allUserAccess}" emptyMessage="#{msgs.label_no_records_found}">
+        <p:dataTable id="useraccesstable" var="a" value="#{userAccessMBean.allUserAccess}"
+                     emptyMessage="#{msgs.label_no_records_found}">
             <p:column headerText="User Name">
                 #{a.user.name}
             </p:column>

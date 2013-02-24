@@ -1,13 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
-<ui:composition template="../templates/layout.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
     <ui:define name="content">
         <h:form id="userlist">
             <h:panelGroup id="content">
@@ -20,12 +16,13 @@
                 <p:messages id="messages" showDetail="true" showSummary="true"/>
                 <p:dataTable id="users" var="user" value="#{userMBean.allUsers}">
                     <f:facet name="header">
-                        <p:commandButton value="#{msgs.global_add}" action="#{userMBean.addUser}"  oncomplete="adduser.show();"
-                                         update=":adduserfrm" />
+                        <p:commandButton value="#{msgs.global_add}" action="#{userMBean.addUser}"
+                                         oncomplete="adduser.show();"
+                                         update=":adduserfrm"/>
                     </f:facet>
 
                     <p:column headerText="#{msgs.User_name}">
-                        <p:commandLink value=" #{user.name}" oncomplete="adduser.show();" update=":adduserfrm" >
+                        <p:commandLink value=" #{user.name}" oncomplete="adduser.show();" update=":adduserfrm">
                             <f:setPropertyActionListener value="#{user}" target="#{userMBean.selectedUser}"/>
                             <f:setPropertyActionListener value="#{true}" target="#{userMBean.edit}"/>
                         </p:commandLink>
@@ -71,7 +68,8 @@
                     <h:outputLabel value="#{msgs.user_assigncompany}"/>
                     <p:selectOneMenu value="#{userMBean.userApp.applcntId}">
                         <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{applicantService.findAllApplicants()}" var="applicant" itemLabel="#{applicant.appName}" itemValue="#{applicant.applcntId}"/>
+                        <f:selectItems value="#{applicantService.findAllApplicants()}" var="applicant"
+                                       itemLabel="#{applicant.appName}" itemValue="#{applicant.applcntId}"/>
                     </p:selectOneMenu>
 
 
@@ -80,20 +78,23 @@
                                            offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
                     </p:selectBooleanButton>
 
-                    <p:commandButton action="#{userMBean.resetPassword}" value="#{msgs.reset_password}" oncomplete="adduser.hide()"
-                                     update=":userlist:users :userlist:messages :adduserfrm" rendered="#{userMBean.edit}"/>
+                    <p:commandButton action="#{userMBean.resetPassword}" value="#{msgs.reset_password}"
+                                     oncomplete="adduser.hide()"
+                                     update=":userlist:users :userlist:messages :adduserfrm"
+                                     rendered="#{userMBean.edit}"/>
                 </h:panelGrid>
 
                 <p:panel header="#{msgs.role}">
                     <p:pickList id="rolepicklist" value="#{userMBean.roles}" effect="bounce"
                                 var="rolevar" style="align:center;" converter="#{roleConverter}"
-                                itemValue="#{rolevar}" itemLabel="#{rolevar.rolename}" >
+                                itemValue="#{rolevar}" itemLabel="#{rolevar.rolename}">
                     </p:pickList>
                 </p:panel>
 
 
-                <p:commandButton action="#{userMBean.updateUser}" value="#{msgs.global_update}" oncomplete="adduser.hide()"
-                                 update=":userlist:users :userlist:messages :adduserfrm" rendered="#{userMBean.edit}" />
+                <p:commandButton action="#{userMBean.updateUser}" value="#{msgs.global_update}"
+                                 oncomplete="adduser.hide()"
+                                 update=":userlist:users :userlist:messages :adduserfrm" rendered="#{userMBean.edit}"/>
                 <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" oncomplete="adduser.hide()"
                                  update=":userlist:users :userlist:messages :adduserfrm" rendered="#{!userMBean.edit}"/>
                 <p:commandButton action="#{userMBean.cancelUser}" immediate="true" value="#{msgs.global_cancel}"
@@ -103,4 +104,3 @@
 
     </ui:define>
 </ui:composition>
-</html>
