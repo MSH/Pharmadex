@@ -3,6 +3,7 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.dao.PharmClassifDAO;
 import org.msh.pharmadex.domain.PharmClassif;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,8 @@ import java.util.List;
  * Author: usrivastava
  */
 @Service
-public class PharmClassifService implements Serializable{
+@Scope("singleton")
+public class PharmClassifService implements Serializable {
 
     private static final long serialVersionUID = -806760452220291483L;
 
@@ -24,12 +26,13 @@ public class PharmClassifService implements Serializable{
 
     @Transactional
     public List<PharmClassif> getPharmClassifList() {
+        if (pharmClassifList == null)
             pharmClassifList = pharmClassifDAO.allCountry();
         return pharmClassifList;
     }
 
     @Transactional
-    public PharmClassif findPharmClassifById(long id){
+    public PharmClassif findPharmClassifById(long id) {
         return pharmClassifDAO.find(id);
     }
 }

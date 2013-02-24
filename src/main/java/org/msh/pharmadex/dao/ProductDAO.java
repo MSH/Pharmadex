@@ -26,56 +26,59 @@ import java.util.Map;
  */
 @Repository
 @Transactional
-public class ProductDAO implements Serializable{
+public class ProductDAO implements Serializable {
 
     private static final long serialVersionUID = 6366730721078424594L;
     @PersistenceContext
     EntityManager entityManager;
 
     @Transactional
-    public Product findProduct(long id){
+    public Product findProduct(long id) {
         return entityManager.find(Product.class, id);
     }
 
     @Transactional
-    public List<Product> allApplicants(){
-        return (List<Product>)entityManager.createQuery("select a from Product a").getResultList();
+    public List<Product> allApplicants() {
+        return (List<Product>) entityManager.createQuery("select a from Product a").getResultList();
     }
 
     @Transactional
-    public String saveProduct(Product product){
+    public String saveProduct(Product product) {
         entityManager.persist(product);
         return "persisted";
     }
 
     @Transactional
-    public String updateProduct(Product product){
+    public String updateProduct(Product product) {
         entityManager.merge(product);
         entityManager.flush();
         return "updated";
     }
 
-    public List<Product> findRegProducts(){
+    public List<Product> findRegProducts() {
         return entityManager.createQuery("select p from Product p where p.regState = :regstate")
                 .setParameter("regstate", RegState.REGISTERED).getResultList();
     }
 
-    public List<Company> findCompanies(Long prodId){
+    public List<Company> findCompanies(Long prodId) {
         return entityManager.createQuery("select c from Company c where c.product.id = :prodId")
                 .setParameter("prodId", prodId).getResultList();
     }
 
-    public List<Product> findProductByFilter(HashMap<String, Object> params){
+    public List<Product> findProductByFilter(HashMap<String, Object> params) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> root = query.from(Product.class);
 
         Predicate p = cb.conjunction();
-        for (Map.Entry<String, Object> param: params.entrySet()){
+        for (Map.Entry<String, Object> param : params.entrySet()) {
             p = cb.and(p, cb.equal(root.get(param.getKey()), param.getValue()));
         }
 
-        query.select(root).where(p);
+        if (params.size() > 0)
+            query.select(root).where(p);
+        else
+            query.select(root);
         return entityManager.createQuery(query).getResultList();
     }
 }

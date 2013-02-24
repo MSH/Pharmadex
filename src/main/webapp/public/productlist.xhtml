@@ -1,61 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
-    <ui:composition template="../templates/registration_layout.xhtml">
-        <ui:define name="content">
-         <div class="post">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
             <h1 class="title ui-widget-header ui-corner-all"> Product List</h1>
-         </div>
+        </div>
 
         <h:form prependId="false">
 
-        <p:dataTable id="products" var="product" value="#{productMbean.products}"
-                     filteredValue="#{productMbean.filteredProducts}"
-                     paginator="true" rows="20" paginatorPosition="bottom"
-                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                     rowsPerPageTemplate="20,40,100">
+            <p:dataTable id="products" var="product" value="#{productMbean.products}"
+                         filteredValue="#{productMbean.filteredProducts}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,40,100">
                 <p:column filterBy="#{product.prodName}" sortBy="#{product.prodName}">
                     <f:facet name="header">
-                         <h:outputText value="Product Name" />
+                        <h:outputText value="Product Name"/>
                     </f:facet>
-                    <h:outputText value="#{product.prodName}" />
+                    <h:outputText value="#{product.prodName}"/>
                 </p:column>
 
                 <p:column filterBy="#{product.genName}"
-                          sortBy="#{product.genName}" >
+                          sortBy="#{product.genName}">
                     <f:facet name="header">
-                         <h:outputText value="Generic Name" />
+                        <h:outputText value="Generic Name"/>
                     </f:facet>
                     <h:outputText value="#{product.genName}"/>
                 </p:column>
 
                 <p:column filterBy="#{product.dosForm.dosForm}"
-                          sortBy="#{product.dosForm.dosForm}" >
+                          sortBy="#{product.dosForm.dosForm}">
                     <f:facet name="header">
-                         <h:outputText value="Dosage Form" />
+                        <h:outputText value="Dosage Form"/>
                     </f:facet>
-                    <h:outputText value = "#{product.dosForm.dosForm}"/>
+                    <h:outputText value="#{product.dosForm.dosForm}"/>
                 </p:column>
 
-                <p:column  filterBy="#{product.dosStrength}"
+                <p:column filterBy="#{product.dosStrength}"
                           sortBy="#{product.dosStrength}">
                     <f:facet name="header">
-                         <h:outputText value="Dosage Strength" />
+                        <h:outputText value="Dosage Strength"/>
                     </f:facet>
-                    <h:outputText value="#{product.dosStrength}" />
+                    <h:outputText value="#{product.dosStrength}"/>
+                </p:column>
+
+                <p:column filterBy="#{product.applicant.appName}"
+                          sortBy="#{product.applicant.appName}">
+                    <f:facet name="header">
+                        <h:outputText value="Applicant Name"/>
+                    </f:facet>
+                    <h:outputText value="#{product.applicant.appName}"/>
                 </p:column>
 
                 <p:column filterBy="#{product.prodApplications.registrationDate}"
-                                          sortBy="#{product.prodApplications.registrationDate}">
+                          sortBy="#{product.prodApplications.registrationDate}">
                     <f:facet name="header">
-                         <h:outputText value="Registered Date" />
+                        <h:outputText value="Registered Date"/>
                     </f:facet>
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{product.prodApplications.registrationDate}"/>
+                    <h:outputLabel converter="javax.faces.DateTime"
+                                   value="#{product.prodApplications.registrationDate}"/>
                 </p:column>
 
 
@@ -63,29 +69,28 @@
             <h:panelGrid columns="2" width="100%">
                 <p:panel>
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/excel.png" />
-                        <p:dataExporter type="xls" target="products" fileName="#{msgs.product_list}" />
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="products" fileName="#{msgs.product_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/pdf.png" />
+                        <p:graphicImage value="/resources/images/pdf.png"/>
                         <p:dataExporter type="pdf" target="products" fileName="#{msgs.product_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/csv.png" />
-                        <p:dataExporter type="csv" target="products" fileName="#{msgs.product_list}" />
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="products" fileName="#{msgs.product_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/xml.png" />
-                        <p:dataExporter type="xml" target="products" fileName="#{msgs.product_list}" />
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="products" fileName="#{msgs.product_list}"/>
                     </h:commandLink>
                 </p:panel>
             </h:panelGrid>
 
 
         </h:form>
-        </ui:define>
-    </ui:composition>
-</html>
+    </ui:define>
+</ui:composition>

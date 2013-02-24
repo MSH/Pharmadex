@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Component
 @Scope("request")
-public class ProdAppMBean implements Serializable{
+public class ProdAppMBean implements Serializable {
     private static final long serialVersionUID = -900861644263726931L;
 
     @Autowired
@@ -37,20 +37,20 @@ public class ProdAppMBean implements Serializable{
     private List<ProdApplications> savedAppList;
     private boolean showAdd = false;
     private List<ProdApplications> allApplicationForProcess;
+    private List<ProdApplications> filteredApps;
 
 
-
-    public void onRowSelect(){
+    public void onRowSelect() {
         setShowAdd(true);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.addMessage(null, new FacesMessage("Successful", "Selected " + selectedApplication.getProd().getProdName()));
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
     }
 
-    public String cancelApp(){
+    public String cancelApp() {
         setShowAdd(false);
 //        selectedApplicant = new applicant();
         System.out.print("inside cancelUser");
@@ -66,20 +66,20 @@ public class ProdAppMBean implements Serializable{
     }
 
     public List<ProdApplications> getProdApplicationsList() {
-        if(prodApplicationsList==null)
+        if (prodApplicationsList == null)
             prodApplicationsList = prodApplicationsService.getSubmittedApplications(userSession.getLoggedInUserObj().getUserId());
         return prodApplicationsList;
     }
 
     public List<ProdApplications> getSavedAppList() {
-        System.out.println("user id = "+userSession.getLoggedInUserObj());
-        if(savedAppList==null)
+        System.out.println("user id = " + userSession.getLoggedInUserObj());
+        if (savedAppList == null)
             savedAppList = prodApplicationsService.getSavedApplications(userSession.getLoggedInUserObj().getUserId());
         return savedAppList;
     }
 
     public List<ProdApplications> getSubmmittedAppList() {
-        if(submmittedAppList==null)
+        if (submmittedAppList == null)
             submmittedAppList = prodApplicationsService.getSubmittedApplications(-1);
         return submmittedAppList;
     }
@@ -89,7 +89,7 @@ public class ProdAppMBean implements Serializable{
     }
 
     public List<ProdApplications> getAllApplicationForProcess() {
-        allApplicationForProcess =  prodApplicationsService.getApplications();
+        allApplicationForProcess = prodApplicationsService.getApplications();
         return allApplicationForProcess;
     }
 
@@ -113,5 +113,11 @@ public class ProdAppMBean implements Serializable{
         this.showAdd = showAdd;
     }
 
+    public List<ProdApplications> getFilteredApps() {
+        return filteredApps;
+    }
 
+    public void setFilteredApps(List<ProdApplications> filteredApps) {
+        this.filteredApps = filteredApps;
+    }
 }

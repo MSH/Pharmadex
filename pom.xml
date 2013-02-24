@@ -16,6 +16,7 @@
         <java.version>1.6</java.version>
         <junit.version>4.8.2</junit.version>
         <jasperreports.version>4.8.0</jasperreports.version>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
 
     <dependencies>
@@ -95,8 +96,6 @@
             <version>2.2</version>
             <scope>provided</scope>
         </dependency>
-
-
 
 
         <!-- JPA Persistence Dependencies -->
@@ -215,18 +214,17 @@
 
         <!-- iText dependency -->
         <dependency>
-        	<groupId>com.lowagie</groupId>
-        	<artifactId>itext</artifactId>
-        	<version>2.1.7</version>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
         </dependency>
 
         <!-- Excel expot POI dependency -->
         <dependency>
-        	<groupId>org.apache.poi</groupId>
-        	<artifactId>poi</artifactId>
-        	<version>3.9</version>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.9</version>
         </dependency>
-
 
 
         <!-- Test Dependencies -->

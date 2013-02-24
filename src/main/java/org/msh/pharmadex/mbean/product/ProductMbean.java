@@ -19,13 +19,14 @@ public class ProductMbean implements Serializable {
 
     @Autowired
     private ProductService productService;
-
     private List<Product> products;
     private List<Product> filteredProducts;
 
 
     public List<Product> getProducts() {
-        return productService.findAllRegisteredProduct();
+        if (products == null)
+            products = productService.findAllRegisteredProduct();
+        return products;
     }
 
     public void setProducts(List<Product> products) {

@@ -1,5 +1,6 @@
 package org.msh.pharmadex.service;
 
+import org.msh.pharmadex.domain.Applicant;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,19 +18,23 @@ public class ProductFilter {
     String atcName;
     String prodClassif;
     String innName;
+    Applicant applicant;
 
-    public HashMap<String, Object> getFilters(){
+    public HashMap<String, Object> getFilters() {
         HashMap<String, Object> filter = new HashMap<String, Object>();
-        if(prodName!=null&&!prodName.equalsIgnoreCase(""))
+        if (prodName != null && !prodName.equalsIgnoreCase(""))
             filter.put("prodName", prodName);
-        if(manufName!=null&&!manufName.equalsIgnoreCase(""))
+        if (manufName != null && !manufName.equalsIgnoreCase(""))
             filter.put("manufName", manufName);
-        if(regNumber!=null&&!regNumber.equalsIgnoreCase(""))
+        if (regNumber != null && !regNumber.equalsIgnoreCase(""))
             filter.put("regNumber", regNumber);
-        if(atcName!=null&&!atcName.equalsIgnoreCase(""))
+        if (atcName != null && !atcName.equalsIgnoreCase(""))
             filter.put("atcName", atcName);
-        if(innName!=null&&!innName.equalsIgnoreCase(""))
+        if (innName != null && !innName.equalsIgnoreCase(""))
             filter.put("innName", innName);
+        if (applicant != null)
+            filter.put("applicant", applicant);
+
 
         return filter;
     }
@@ -80,5 +85,14 @@ public class ProductFilter {
 
     public void setInnName(String innName) {
         this.innName = innName;
+    }
+
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
     }
 }

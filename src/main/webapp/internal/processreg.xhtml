@@ -1,23 +1,23 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions">
-<ui:composition template="../templates/process_reg_layout.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions"
+                template="../templates/process_reg_layout.xhtml">
 <ui:define name="content">
 
 <h:form id="reghome">
 
 <h:panelGrid columns="2" columnClasses="menu,content">
 <h:panelGrid columns="2" columnClasses="menu,content">
-<p:panel cellspacing="0" cellpadding="0" styleClass="menu">
-    <p:menu style="width:198px" >
-        <p:submenu label="#{msgs.Registration}" >
+<p:panel styleClass="menu">
+    <p:menu style="width:198px">
+        <p:submenu label="#{msgs.Registration}">
             <p:menuitem value="Add Comment" icon="ui-icon-document" onclick="dlg.show()"/>
-            <p:menuitem value="Next Step" icon="ui-icon-document" onclick="stepDlg.show()" rendered="#{userSession.admin||userSession.staff}"/>
+            <p:menuitem value="Next Step" icon="ui-icon-document" onclick="stepDlg.show()"
+                        rendered="#{userSession.admin||userSession.staff}"/>
             <p:menuitem value="Register Product" icon="ui-icon-gear" action="#{processProdBn.registerProduct}"
-                        update="@form" rendered="#{processProdBn.readyReg}" />
+                        update="@form" rendered="#{processProdBn.readyReg}"/>
         </p:submenu>
     </p:menu>
 </p:panel>
@@ -53,12 +53,12 @@
 
 <p:growl id="growl" showDetail="true" showSummary="true"/>
 
-    <pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
-                 axisPosition="top"
-                 showNavigation="true"
-                 eventStyle="box"
-                 height="130px" >
-    </pe:timeline>
+<pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
+             axisPosition="top"
+             showNavigation="true"
+             eventStyle="box"
+             height="130px">
+</pe:timeline>
 <p:tabView id="processtab">
     <p:tab title="Application Information" id="infotab">
         <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
@@ -147,7 +147,7 @@
 
         <p:panel header="Status Update of Application">
 
-        <p:dataTable id="timelinetbl" var="timeline" value="#{processProdBn.timeLineList}">
+            <p:dataTable id="timelinetbl" var="timeline" value="#{processProdBn.timeLineList}">
                 <f:facet name="header">
                     Shows the evolution of the Product Registration.
                 </f:facet>
@@ -290,4 +290,3 @@
 </ui:composition>
 
 
-</html>
