@@ -1,129 +1,135 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
-    <ui:composition template="../templates/registration_layout.xhtml">
-        <ui:define name="content">
-         <div class="post">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
             <h1 class="title ui-widget-header ui-corner-all"> Application List</h1>
-         </div>
+        </div>
 
         <h:form prependId="false">
             <p:panel header="Create/Edit" visible="#{applicantMBean.showAdd}">
                 <p:messages/>
                 <h:panelGrid columns="4" id="detail">
-                    <h:outputLabel value="ApplcntId:" for="applcntId" />
-                    <p:inputText id="applcntId" value="#{applicantMBean.selectedApplicant.applcntId}" title="ApplcntId" required="true" requiredMessage="The ApplcntId field is required."/>
-                    <h:outputLabel value="AppAddr1:" for="appAddr1" />
-                    <p:inputText id="appAddr1" value="#{applicantMBean.selectedApplicant.address.address1}" title="AppAddr1" />
-                    <h:outputLabel value="AppAddr2:" for="appAddr2" />
-                    <p:inputText id="appAddr2" value="#{applicantMBean.selectedApplicant.address.address2}" title="AppAddr2" />
-                    <h:outputLabel value="AppCntry:" for="appCntry" />
-                    <p:inputTextarea rows="4" cols="30" id="appCntry" value="#{applicantMBean.selectedApplicant.address.country}" title="AppCntry" />
-                    <h:outputLabel value="AppName:" for="appName" />
+                    <h:outputLabel value="ApplcntId:" for="applcntId"/>
+                    <p:inputText id="applcntId" value="#{applicantMBean.selectedApplicant.applcntId}" title="ApplcntId"
+                                 required="true" requiredMessage="The ApplcntId field is required."/>
+                    <h:outputLabel value="AppAddr1:" for="appAddr1"/>
+                    <p:inputText id="appAddr1" value="#{applicantMBean.selectedApplicant.address.address1}"
+                                 title="AppAddr1"/>
+                    <h:outputLabel value="AppAddr2:" for="appAddr2"/>
+                    <p:inputText id="appAddr2" value="#{applicantMBean.selectedApplicant.address.address2}"
+                                 title="AppAddr2"/>
+                    <h:outputLabel value="AppCntry:" for="appCntry"/>
+                    <p:inputTextarea rows="4" cols="30" id="appCntry"
+                                     value="#{applicantMBean.selectedApplicant.address.country}" title="AppCntry"/>
+                    <h:outputLabel value="AppName:" for="appName"/>
                     <p:inputText id="appName" value="#{applicantMBean.selectedApplicant.appName}"
                                  title="AppName" required="true" requiredMessage="The AppName field is required."/>
-                    <h:outputLabel value="AppType:" for="appType" />
-                    <p:inputText id="appType" value="#{applicantMBean.selectedApplicant.appType}" title="AppType" />
-                    <h:outputLabel value="AppZipCd:" for="appZipCd" />
-                    <p:inputText id="appZipCd" value="#{applicantMBean.selectedApplicant.address.zipcode}" title="AppZipCd" />
-                    <h:outputLabel value="ContactName:" for="contactName" />
-                    <p:inputText id="contactName" value="#{applicantMBean.selectedApplicant.contactName}" title="ContactName" required="true" requiredMessage="The ContactName field is required."/>
-                    <h:outputLabel value="Email:" for="email" />
-                    <p:inputText id="email" value="#{applicantMBean.selectedApplicant.email}" title="Email" required="true" requiredMessage="The Email field is required."/>
-                    <h:outputLabel value="FaxNo:" for="faxNo" />
-                    <p:inputText id="faxNo" value="#{applicantMBean.selectedApplicant.faxNo}" title="FaxNo" />
-                    <h:outputLabel value="PhoneNo:" for="phoneNo" />
-                    <p:inputText id="phoneNo" value="#{applicantMBean.selectedApplicant.phoneNo}" title="PhoneNo" />
-                    <h:outputLabel value="State:" for="state" />
-                    <p:inputText id="state" value="#{applicantMBean.selectedApplicant.state}" title="State" />
-                    <h:outputLabel value="Website:" for="website" />
-                    <p:inputText id="website" value="#{applicantMBean.selectedApplicant.website}" title="Website"  />
+                    <h:outputLabel value="AppType:" for="appType"/>
+                    <p:inputText id="appType" value="#{applicantMBean.selectedApplicant.appType}" title="AppType"/>
+                    <h:outputLabel value="AppZipCd:" for="appZipCd"/>
+                    <p:inputText id="appZipCd" value="#{applicantMBean.selectedApplicant.address.zipcode}"
+                                 title="AppZipCd"/>
+                    <h:outputLabel value="ContactName:" for="contactName"/>
+                    <p:inputText id="contactName" value="#{applicantMBean.selectedApplicant.contactName}"
+                                 title="ContactName" required="true"
+                                 requiredMessage="The ContactName field is required."/>
+                    <h:outputLabel value="Email:" for="email"/>
+                    <p:inputText id="email" value="#{applicantMBean.selectedApplicant.email}" title="Email"
+                                 required="true" requiredMessage="The Email field is required."/>
+                    <h:outputLabel value="FaxNo:" for="faxNo"/>
+                    <p:inputText id="faxNo" value="#{applicantMBean.selectedApplicant.faxNo}" title="FaxNo"/>
+                    <h:outputLabel value="PhoneNo:" for="phoneNo"/>
+                    <p:inputText id="phoneNo" value="#{applicantMBean.selectedApplicant.phoneNo}" title="PhoneNo"/>
+                    <h:outputLabel value="State:" for="state"/>
+                    <p:inputText id="state" value="#{applicantMBean.selectedApplicant.state}" title="State"/>
+                    <h:outputLabel value="Website:" for="website"/>
+                    <p:inputText id="website" value="#{applicantMBean.selectedApplicant.website}" title="Website"/>
                 </h:panelGrid>
-                <p:commandButton value="#{msgs.label_save}"  action="#{applicantMBean.saveApp}" update="@form"/>
-                <p:commandButton value="#{msgs.label_close}" action="#{applicantMBean.cancelApp}" immediate="true" update="@form"/>
+                <p:commandButton value="#{msgs.label_save}" action="#{applicantMBean.saveApp}" update="@form"/>
+                <p:commandButton value="#{msgs.label_close}" action="#{applicantMBean.cancelApp}" immediate="true"
+                                 update="@form"/>
             </p:panel>
 
             <p:dataTable id="car" var="applicant" value="#{applicantMBean.allApplicant}" selectionMode="single"
-                        selection="#{applicantMBean.selectedApplicant}" rowKey="#{applicant.applcntId}"  filteredValue="#{applicantMBean.filteredApplicant}"
-                        paginator="true" rows="20"  paginatorPosition="bottom"
-                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                        rowsPerPageTemplate="20,50,100" >
-                        <p:ajax listener="#{applicantMBean.onRowSelect}" event="rowSelect" update="@form"
-                                ></p:ajax>
+                         selection="#{applicantMBean.selectedApplicant}" rowKey="#{applicant.applcntId}"
+                         filteredValue="#{applicantMBean.filteredApplicant}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,50,100">
+                <p:ajax listener="#{applicantMBean.onRowSelect}" event="rowSelect" update="@form"
+                        ></p:ajax>
 
-                        <p:column filterBy="#{applicant.appName}"
-                                  sortBy="#{applicant.appName}">
-                            <f:facet name="header">
-                                 <h:outputText value="Applicant Name" />
-                            </f:facet>
+                <p:column filterBy="#{applicant.appName}"
+                          sortBy="#{applicant.appName}">
+                    <f:facet name="header">
+                        <h:outputText value="Applicant Name"/>
+                    </f:facet>
 
-                            <h:outputText value="#{applicant.appName}"  />
+                    <h:outputText value="#{applicant.appName}"/>
 
-                        </p:column>
+                </p:column>
 
-                        <p:column filterBy="#{applicant.contactName}"
-                                  sortBy="#{applicant.contactName}">
-                            <f:facet name="header">
-                                 <h:outputText value="Contact Name" />
-                            </f:facet>
+                <p:column filterBy="#{applicant.contactName}"
+                          sortBy="#{applicant.contactName}">
+                    <f:facet name="header">
+                        <h:outputText value="Contact Name"/>
+                    </f:facet>
 
-                            <h:outputText value="#{applicant.contactName}"/>
-                        </p:column>
+                    <h:outputText value="#{applicant.contactName}"/>
+                </p:column>
 
-                        <p:column filterBy="#{applicant.email}"
-                                  sortBy="#{applicant.email}">
-                            <f:facet name="header">
-                                 <h:outputText value="Email" />
-                            </f:facet>
-                            <h:outputText value="#{applicant.email}"/>
-                        </p:column>
+                <p:column filterBy="#{applicant.email}"
+                          sortBy="#{applicant.email}">
+                    <f:facet name="header">
+                        <h:outputText value="Email"/>
+                    </f:facet>
+                    <h:outputText value="#{applicant.email}"/>
+                </p:column>
 
-                        <p:column filterBy="#{applicant.phoneNo}"
-                                  sortBy="#{applicant.phoneNo}"
-                                  >
-                            <f:facet name="header">
-                                 <h:outputText value="Phone No." />
-                            </f:facet>
-                            <h:outputText value="#{applicant.phoneNo}"/>
-                        </p:column>
+                <p:column filterBy="#{applicant.phoneNo}"
+                          sortBy="#{applicant.phoneNo}"
+                        >
+                    <f:facet name="header">
+                        <h:outputText value="Phone No."/>
+                    </f:facet>
+                    <h:outputText value="#{applicant.phoneNo}"/>
+                </p:column>
 
-                        <f:facet name="footer">
-                            <p:commandButton value="View" icon="ui-icon-search"
-                                             update="@form" action="#{applicantMBean.onRowSelect}"/>
-                        </f:facet>
+                <f:facet name="footer">
+                    <p:commandButton value="View" icon="ui-icon-search"
+                                     update="@form" action="#{applicantMBean.onRowSelect}"/>
+                </f:facet>
 
-                    </p:dataTable>
+            </p:dataTable>
 
             <h:panelGrid columns="2" width="100%">
                 <p:panel>
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/excel.png" />
-                        <p:dataExporter type="xls" target="" fileName="#{msgs.applicant_list}" />
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/pdf.png" />
+                        <p:graphicImage value="/resources/images/pdf.png"/>
                         <p:dataExporter type="pdf" target="pendingApps" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/csv.png" />
-                        <p:dataExporter type="csv" target="pendingApps" fileName="#{msgs.applicant_list}" />
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="pendingApps" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
-                        <p:graphicImage value="/resources/images/xml.png" />
-                        <p:dataExporter type="xml" target="pendingApps" fileName="#{msgs.applicant_list}" />
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="pendingApps" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
                 </p:panel>
             </h:panelGrid>
 
         </h:form>
-        </ui:define>
-    </ui:composition>
-</html>
+    </ui:define>
+</ui:composition>
