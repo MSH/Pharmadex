@@ -6,7 +6,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:sec="http://www.springframework.org/security/facelets/tags"
-      xmlns:p="http://primefaces.org/ui" xmlns:s="http://java.sun.com/jsf/composite">
+      xmlns:p="http://primefaces.org/ui">
 <ui:composition template="templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post">
@@ -16,102 +16,105 @@
 
         <h:panelGrid columns="2" columnClasses="content, menu">
             <h:panelGroup>
-            <p:galleria value="#{galleriaBean.images}" var="image" style="width:700px;"
-                        filmstripPosition="right" showOverlays="true" showCaptions="true">
-                <p:graphicImage value="/resources/images/galleria/#{image.imageName}"/>
-                <p:galleriaOverlay title="#{image.imageDesc}"/>
-            </p:galleria>
+                <p:galleria value="#{galleriaBean.images}" var="image" style="width:700px;"
+                            filmstripPosition="right" showOverlays="true" showCaptions="true">
+                    <p:graphicImage value="/resources/images/galleria/#{image.imageName}"/>
+                    <p:galleriaOverlay title="#{image.imageDesc}"/>
+                </p:galleria>
 
 
+                <h:panelGroup styleClass="ui-widget">
 
-            <h:panelGroup styleClass="ui-widget">
-
-                <p>The Namibia Medicines Regulatory Council (NMRC) is a statutory body established in terms of the Medicines and
-                    Related Substances Control Act, 2003 (Act No. 13 of 2003), to regulate the use of medicines in Namibia.
-                    The NMRC is appointed by the Minister of Health and Social Services (MoHSS).
-                </p>
-
-
-                <p>The NMRC's is constituted of 12 members as follows:</p>
-                <ul>
-                    <li>Three medical practitioners</li>
-                    <li>Three pharmacists</li>
-                    <li>Two veterinarians</li>
-                    <li>One legal practitioner</li>
-                    <li>One registered nurse</li>
-                    <li>One practitioner</li>
-                    <li>One other person.</li>
-                </ul>
-
-                <h3>NMRC OBJECTIVES</h3>
-
-                <p>The NMRCâ€™s mission is to ensure safe, efficacious, quality medicines, related substances and medical devices
-                    for human and animal use in accordance with recognized international standards and facilitate their availability,
-                    accessibility and affordability. NMRC works through its technical committees to carry out its mandate of regulating
-                    the sale and use of medicines, related substances and medical devices in the country .
-                    The office of the Registrar of Medicines serves as NMRC secretariat and provides administrative and
-                    technical support to the Council. The Registrarâ€™s office is the Subdivision of Pharmaceutical Control
-                    and Inspection within the Division of Pharmaceutical Services of MoHSS.</p>
-
-                <h3>The Subdivision: Pharmaceutical Control and Inspection constituted of the following sections</h3>
-
-                <ol>
-                    <li>
-                        <h4><p:commandLink action="/public/registrationhome.faces"
-                                          value="Product Registration">PRODUCT REGISTRATION</p:commandLink></h4>
-
-                        <p>The Registration Section is responsible for reviewing application dossiers submitted for the registration of medicines,
-                            related substances and medical devices. In addition it also reviews all post registration amendments made to any
-                            registered medicines, related substances and medical devices.</p>
-                    </li>
-
-                    <li>
-                        <h4><h:outputLink view="/register/inspection.xhtml"
-                                          title="Inspection and Licensing">INSPECTION AND LICENSING</h:outputLink>
-                        </h4>
-
-                        <p>The Inspection and Licensing Section is responsible for certification of compliance and enforcement of the Medicines
-                            and Related Substances Control Act, 2003 (Act 13 of 2003). Good Manufacturing Practice Standards and Good Distribution
-                            Practice Standards including Good Pharmacy Practices in Health Facilities that dispense medicines.</p>
-                    </li>
-
-                    <li>
-                        <h4><h:outputLink view="/register/qsl.xhtml"
-                                          title="QSL">QUALITY SURVEILLANCE LABORATORY</h:outputLink></h4>
-
-                        <p>Quality Surveillance Laboratory (QSL) analyses medicines imported into the countryand ascertain medicines quality level
-                            for batch release. Additionally, the laboratory analyses medicine samples from registration and post market surveillance samples
-                            from inspection and is involved with carry out proficiency testing with the World Health Organisation (WHO), amongst others. </p>
-                    </li>
-
-                    <li>
-                        <h4><h:outputLink view="/register/tipc.xhtml"
-                                          title="TIPC">THERAPEUTIC INFORMATION AND PHARMACOVIGILANCE CENTRE.</h:outputLink>
-                        </h4>
-
-                        <p>Therapeutic Information and Pharmacovigilance Centre (TIPC) is the Ministry of Health and Social Servicesâ€™ official
-                            Centre responsible for promotion of the rational and safe use of medicines in Namibia. The centreâ€™s functions are two-fold,
-                            namely, therapeutic information and pharmacovigilance services. It is responsible for the provision of unbiased and up-to-date
-                            therapeutics information for both the health care providers and the general public. It is also responsible for collecting and
-                            recording of all medicine safety problems reported by health care professionals and patients. </p>
-                    </li>
+                    <p>The Namibia Medicines Regulatory Council (NMRC) is a statutory body established in terms of the Medicines and
+                        Related Substances Control Act, 2003 (Act No. 13 of 2003), to regulate the use of medicines in Namibia.
+                        The NMRC is appointed by the Minister of Health and Social Services (MoHSS).
+                    </p>
 
 
-                </ol>
+                    <p>The NMRC's is constituted of 12 members as follows:</p>
+                    <ul>
+                        <li>Three medical practitioners</li>
+                        <li>Three pharmacists</li>
+                        <li>Two veterinarians</li>
+                        <li>One legal practitioner</li>
+                        <li>One registered nurse</li>
+                        <li>One practitioner</li>
+                        <li>One other person.</li>
+                    </ul>
+
+                    <h3>NMRC OBJECTIVES</h3>
+
+                    <p>The NMRCâ€™s mission is to ensure safe, efficacious, quality medicines, related substances and medical devices
+                        for human and animal use in accordance with recognized international standards and facilitate their availability,
+                        accessibility and affordability. NMRC works through its technical committees to carry out its mandate of regulating
+                        the sale and use of medicines, related substances and medical devices in the country .
+                        The office of the Registrar of Medicines serves as NMRC secretariat and provides administrative and
+                        technical support to the Council. The Registrarâ€™s office is the Subdivision of Pharmaceutical Control
+                        and Inspection within the Division of Pharmaceutical Services of MoHSS.</p>
+
+                    <h3>The Subdivision: Pharmaceutical Control and Inspection constituted of the following sections</h3>
+
+                    <ol>
+                        <li>
+                            <h4><p:commandLink action="/public/registrationhome.faces"
+                                               value="Product Registration">PRODUCT REGISTRATION</p:commandLink></h4>
+
+                            <p>The Registration Section is responsible for reviewing application dossiers submitted for the registration of medicines,
+                                related substances and medical devices. In addition it also reviews all post registration amendments made to any
+                                registered medicines, related substances and medical devices.</p>
+                        </li>
+
+                        <li>
+                            <h4><p:commandLink action="/register/inspection.xhtml"
+                                               value="Inspection and Licensing">INSPECTION AND LICENSING</p:commandLink>
+                            </h4>
+
+                            <p>The Inspection and Licensing Section is responsible for certification of compliance and enforcement of the Medicines
+                                and Related Substances Control Act, 2003 (Act 13 of 2003). Good Manufacturing Practice Standards and Good Distribution
+                                Practice Standards including Good Pharmacy Practices in Health Facilities that dispense medicines.</p>
+                        </li>
+
+                        <li>
+                            <h4><p:commandLink action="/register/qsl.xhtml"
+                                               value="QSL">QUALITY SURVEILLANCE LABORATORY</p:commandLink></h4>
+
+                            <p>Quality Surveillance Laboratory (QSL) analyses medicines imported into the countryand ascertain medicines quality level
+                                for batch release. Additionally, the laboratory analyses medicine samples from registration and post market surveillance samples
+                                from inspection and is involved with carry out proficiency testing with the World Health Organisation (WHO), amongst others. </p>
+                        </li>
+
+                        <li>
+                            <h4><p:commandLink action="/register/tipc.xhtml"
+                                               value="TIPC">THERAPEUTIC INFORMATION AND PHARMACOVIGILANCE CENTRE.</p:commandLink>
+                            </h4>
+
+                            <p>Therapeutic Information and Pharmacovigilance Centre (TIPC) is the Ministry of Health and Social Servicesâ€™ official
+                                Centre responsible for promotion of the rational and safe use of medicines in Namibia. The centreâ€™s functions are two-fold,
+                                namely, therapeutic information and pharmacovigilance services. It is responsible for the provision of unbiased and up-to-date
+                                therapeutics information for both the health care providers and the general public. It is also responsible for collecting and
+                                recording of all medicine safety problems reported by health care professionals and patients. </p>
+                        </li>
+
+
+                    </ol>
+
+                </h:panelGroup>
 
             </h:panelGroup>
-
-            </h:panelGroup>
-            <p:panel cellspacing="0" cellpadding="0" styleClass="menu">
+            <p:panel styleClass="menu">
                 <h:form>
-                    <p:menu  style="width:198px;">
+                    <p:menu style="width:198px;">
                         <sec:isAuthenticated>
-                            <p:submenu label="Logged In Users" >
-                                <p:menuitem value="#{msgs.application_status}" action="/secure/submittedapplications.faces" ajax="false"/>
-                                <p:menuitem value="#{msgs.company_info}" action="/secure/appregistration.faces" ajax="false">
-                                    <f:setPropertyActionListener value="#{userSession.loggedInUserObj.applicant}" target="#{applicantMBean.selectedApplicant}"/>
+                            <p:submenu label="Logged In Users">
+                                <p:menuitem value="#{msgs.application_status}"
+                                            action="/secure/submittedapplications.faces" ajax="false"/>
+                                <p:menuitem value="#{msgs.company_info}" action="/secure/appregistration.faces"
+                                            ajax="false">
+                                    <f:setPropertyActionListener value="#{userSession.loggedInUserObj.applicant}"
+                                                                 target="#{applicantMBean.selectedApplicant}"/>
                                 </p:menuitem>
-                                <p:menuitem value="#{msgs.usersettings_preferences}" action="/secure/usersettings.faces" ajax="false"/>
+                                <p:menuitem value="#{msgs.usersettings_preferences}" action="/secure/usersettings.faces"
+                                            ajax="false"/>
                             </p:submenu>
                         </sec:isAuthenticated>
 
