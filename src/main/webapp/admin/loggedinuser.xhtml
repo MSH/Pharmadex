@@ -1,8 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:c="http://java.sun.com/jstl/core"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 <h:panelGroup id="loggedinuserpanel">
     <div class="post">
@@ -17,7 +15,7 @@
             <f:param value="Apps"/>
         </h:outputFormat>
         <p:dataTable id="accesstable" var="b" value="#{onlineUserBean.onlineUsersList}"
-                emptyMessage="#{msgs.label_no_records_found}" >
+                     emptyMessage="#{msgs.label_no_records_found}">
             <f:facet name="#{msgs.headername}">
                 Click "View" button after selecting a row to see details
             </f:facet>
