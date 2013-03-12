@@ -1,12 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
-<ui:composition>
-    <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%" columnClasses="col1, col2, col1, col2">
-        <h:outputLabel value="#{msgs.applicant_name}" for="appname" />
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
+                 columnClasses="col1, col2, col1, col2">
+        <h:outputLabel value="#{msgs.applicant_name}" for="appname"/>
         <p:inputText id="appname" required="true" value="#{applicantdata.appName}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.appName}" rendered="#{!input}" style="font-weight: bold;"/>
         <h:outputLabel/>
@@ -14,8 +13,8 @@
 
 
         <ui:decorate template="/templates/addrtempl.xhtml">
-            <ui:param name="addressdata" value="#{applicantdata.address}" />
-            <ui:param name="input" value="#{input}" />
+            <ui:param name="addressdata" value="#{applicantdata.address}"/>
+            <ui:param name="input" value="#{input}"/>
         </ui:decorate>
 
         <h:outputLabel/>
@@ -23,13 +22,13 @@
 
         <h:outputLabel value="#{msgs.applicant_type}" rendered="#{input}"/>
         <h:selectManyListbox value="#{applicantdata.appType}" rendered="#{input}">
-            <f:selectItems value="#{applicantMBean.appType}" var="atype" itemLabel="#{msgs[atype.key]}" />
+            <f:selectItems value="#{applicantMBean.appType}" var="atype" itemLabel="#{msgs[atype.key]}"/>
         </h:selectManyListbox>
 
         <h:outputLabel/>
         <h:outputLabel/>
 
-        <h:outputLabel value="#{msgs.applicant_filenumber}" />
+        <h:outputLabel value="#{msgs.applicant_filenumber}"/>
         <p:inputText value="#{applicantdata.fileNumber}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.fileNumber}" rendered="#{!input}" style="font-weight: bold;"/>
 
@@ -37,20 +36,18 @@
         <p:inputText value="#{applicantdata.phoneNo}" required="true" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_faxno}" />
+        <h:outputLabel value="#{msgs.applicant_faxno}"/>
         <p:inputText value="#{applicantdata.faxNo}" required="true" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_website}" />
+        <h:outputLabel value="#{msgs.applicant_website}"/>
         <p:inputText value="#{applicantdata.website}" required="true" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.website}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.global_comment}" />
+        <h:outputLabel value="#{msgs.global_comment}"/>
         <p:inputText value="#{applicantdata.comment}" required="true" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.comment}" rendered="#{!input}" style="font-weight: bold;"/>
     </h:panelGrid>
 
 
-
 </ui:composition>
-</html>
