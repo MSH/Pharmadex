@@ -12,43 +12,11 @@
         <h:form prependId="false">
             <p:panel header="Create/Edit" visible="#{applicantMBean.showAdd}">
                 <p:messages/>
-                <h:panelGrid columns="4" id="detail">
-                    <h:outputLabel value="ApplcntId:" for="applcntId"/>
-                    <p:inputText id="applcntId" value="#{applicantMBean.selectedApplicant.applcntId}" title="ApplcntId"
-                                 required="true" requiredMessage="The ApplcntId field is required."/>
-                    <h:outputLabel value="AppAddr1:" for="appAddr1"/>
-                    <p:inputText id="appAddr1" value="#{applicantMBean.selectedApplicant.address.address1}"
-                                 title="AppAddr1"/>
-                    <h:outputLabel value="AppAddr2:" for="appAddr2"/>
-                    <p:inputText id="appAddr2" value="#{applicantMBean.selectedApplicant.address.address2}"
-                                 title="AppAddr2"/>
-                    <h:outputLabel value="AppCntry:" for="appCntry"/>
-                    <p:inputTextarea rows="4" cols="30" id="appCntry"
-                                     value="#{applicantMBean.selectedApplicant.address.country}" title="AppCntry"/>
-                    <h:outputLabel value="AppName:" for="appName"/>
-                    <p:inputText id="appName" value="#{applicantMBean.selectedApplicant.appName}"
-                                 title="AppName" required="true" requiredMessage="The AppName field is required."/>
-                    <h:outputLabel value="AppType:" for="appType"/>
-                    <p:inputText id="appType" value="#{applicantMBean.selectedApplicant.appType}" title="AppType"/>
-                    <h:outputLabel value="AppZipCd:" for="appZipCd"/>
-                    <p:inputText id="appZipCd" value="#{applicantMBean.selectedApplicant.address.zipcode}"
-                                 title="AppZipCd"/>
-                    <h:outputLabel value="ContactName:" for="contactName"/>
-                    <p:inputText id="contactName" value="#{applicantMBean.selectedApplicant.contactName}"
-                                 title="ContactName" required="true"
-                                 requiredMessage="The ContactName field is required."/>
-                    <h:outputLabel value="Email:" for="email"/>
-                    <p:inputText id="email" value="#{applicantMBean.selectedApplicant.email}" title="Email"
-                                 required="true" requiredMessage="The Email field is required."/>
-                    <h:outputLabel value="FaxNo:" for="faxNo"/>
-                    <p:inputText id="faxNo" value="#{applicantMBean.selectedApplicant.faxNo}" title="FaxNo"/>
-                    <h:outputLabel value="PhoneNo:" for="phoneNo"/>
-                    <p:inputText id="phoneNo" value="#{applicantMBean.selectedApplicant.phoneNo}" title="PhoneNo"/>
-                    <h:outputLabel value="State:" for="state"/>
-                    <p:inputText id="state" value="#{applicantMBean.selectedApplicant.state}" title="State"/>
-                    <h:outputLabel value="Website:" for="website"/>
-                    <p:inputText id="website" value="#{applicantMBean.selectedApplicant.website}" title="Website"/>
-                </h:panelGrid>
+                <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                    <ui:param name="applicantdata" value="#{applicantMBean.selectedApplicant}"/>
+                    <ui:param name="input" value="#{false}"/>
+                </ui:decorate>
+
                 <p:commandButton value="#{msgs.label_save}" action="#{applicantMBean.saveApp}" update="@form"/>
                 <p:commandButton value="#{msgs.label_close}" action="#{applicantMBean.cancelApp}" immediate="true"
                                  update="@form"/>
