@@ -44,9 +44,6 @@ public class RegHomeMbean implements Serializable {
     private UserSession userSession;
 
     @Autowired
-    private CountryService countryService;
-
-    @Autowired
     private ApplicantService applicantService;
 
     @Autowired
@@ -68,9 +65,6 @@ public class RegHomeMbean implements Serializable {
     private TimelineService timelineService;
 
     @Autowired
-    private DosageFormService dosageFormService;
-
-    @Autowired
     private AppointmentService appointmentService;
 
     private static Logger logger = Logger.getLogger(RegHomeMbean.class.getName());
@@ -90,8 +84,6 @@ public class RegHomeMbean implements Serializable {
     private Atc atc;
     private User loggedInUser;
     private List<Company> companies = new ArrayList<Company>(10);
-    private List<DosageForm> dosageFormList;
-    private List<DosUom> dosUomList;
 
     private boolean download;
 
@@ -212,11 +204,6 @@ public class RegHomeMbean implements Serializable {
 
     public List<Inn> getInnList() {
         return innService.getInnList();
-    }
-
-
-    public List<Country> getCountries() {
-        return countryService.getCountries();
     }
 
     JasperPrint jasperPrint;
@@ -497,13 +484,6 @@ public class RegHomeMbean implements Serializable {
         this.companies = companies;
     }
 
-    public List<DosageForm> getDosageFormList() {
-        return dosageFormService.findAllDosForm();
-    }
-
-    public List<DosUom> getDosUomList() {
-        return dosageFormService.findAllDosUom();
-    }
 
     public List<ProdAppChecklist> getProdAppChecklists() {
         return prodAppChecklists;

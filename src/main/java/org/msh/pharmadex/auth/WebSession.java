@@ -3,6 +3,7 @@ package org.msh.pharmadex.auth;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.User;
+import org.primefaces.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ public class WebSession {
     private User user;
     private Applicant applicant;
     private Product product;
+    private UploadedFile file;
 
     public User getUser() {
         return user;
@@ -43,5 +45,13 @@ public class WebSession {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
     }
 }

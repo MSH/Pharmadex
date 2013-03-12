@@ -82,14 +82,14 @@
             <h:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
             <p:selectOneMenu id="dosForm" value="#{regHomeMbean.prodApplications.prod.dosForm.uid}">
                 <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{regHomeMbean.dosageFormList}" var="dosForm" itemLabel="#{dosForm.dosForm}"
+                <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
                                itemValue="#{dosForm.uid}"/>
             </p:selectOneMenu>
 
             <h:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
             <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.prodApplications.prod.dosUnit.id}">
                 <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{regHomeMbean.dosUomList}" var="dosUom" itemLabel="#{dosUom.uom}"
+                <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
                                itemValue="#{dosUom.id}"/>
             </p:selectOneMenu>
 
@@ -305,12 +305,15 @@
 
 <p:tab id="checklist" title="#{msgs.checklist}">
     <p:panel header="#{msgs.checklist}">
-        <h:outputLabel value="#{msgs.confirm_payment}"/>
-
-
         <p:dataTable var="checkList" value="#{regHomeMbean.prodAppChecklists}" style="width:100%;">
+            <p:column headerText="">
+                <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+            </p:column>
             <p:column>
                 <h:outputLabel value="#{checkList.checklist.name}"/>
+            </p:column>
+            <p:column>
+                <h:outputLabel value="#{checkList.checklist.module}"/>
             </p:column>
             <p:column>
                 <p:selectBooleanCheckbox value="#{checkList.value}"/>
