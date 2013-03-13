@@ -12,6 +12,8 @@
 <h:panelGrid columns="2" columnClasses="menu,content">
 <p:menu style="width:198px">
     <p:submenu label="#{msgs.Registration}">
+        <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
+                    update="@form"/>
         <p:menuitem value="Add Comment" icon="ui-icon-document" onclick="dlg.show()"/>
         <p:menuitem value="Next Step" icon="ui-icon-document" onclick="stepDlg.show()"
                     rendered="#{userSession.admin||userSession.staff}"/>
@@ -143,7 +145,7 @@
 </p:tab>
 
 <p:tab title="CheckLists" rendered="#{userSession.admin||userSession.staff}" id="checklisttab">
-    <p:dataTable var="checkList" value="#{regHomeMbean.prodAppChecklists}" style="width:100%;">
+    <p:dataTable var="checkList" value="#{processProdBn.checklists}" style="width:100%;">
         <p:column headerText="">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
         </p:column>
@@ -157,7 +159,10 @@
             <p:selectBooleanCheckbox value="#{checkList.value}"/>
         </p:column>
         <p:column headerText="Staff">
-            <p:selectBooleanCheckbox value="#{checkList.value}"/>
+            <p:selectBooleanCheckbox value="#{checkList.staffValue}"/>
+        </p:column>
+        <p:column>
+            <p:inputText value="#{checkList.staffComment}"/>
         </p:column>
     </p:dataTable>
 </p:tab>
@@ -210,6 +215,10 @@
 
         <p:column headerText="#{msgs.uploadedby}">
             <h:outputText value="#{doc.uploadedBy.name}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.registration_status}">
+            <h:outputLabel value="#{msgs[doc.regState.key]}"/>
         </p:column>
 
         <p:column>

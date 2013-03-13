@@ -1,5 +1,7 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.RegState;
+
 import javax.persistence.*;
 
 /**
@@ -31,6 +33,8 @@ public class Attachment extends CreationDetail {
 
     @OneToOne
     private User uploadedBy;
+
+    private RegState regState;
 
     @Lob
     @Column(nullable = false)
@@ -98,5 +102,13 @@ public class Attachment extends CreationDetail {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public RegState getRegState() {
+        return regState;
+    }
+
+    public void setRegState(RegState regState) {
+        this.regState = regState;
     }
 }

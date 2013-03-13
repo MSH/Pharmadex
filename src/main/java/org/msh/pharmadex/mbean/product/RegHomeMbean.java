@@ -554,4 +554,5 @@ public class RegHomeMbean implements Serializable {
     public void setEvent(ScheduleEvent event) {
         this.event = event;
     }
+
 }

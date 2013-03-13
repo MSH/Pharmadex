@@ -40,13 +40,11 @@ public class ProcessProdBn {
 
     private List<org.primefaces.extensions.model.timeline.Timeline> timelinesChartData;
 
-
-
-
     private Comment selComment = new Comment();
     private org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
     private Mail mail = new Mail();
     private boolean readyReg;
+    private List<ProdAppChecklist> checklists;
 
 
     @Autowired
@@ -71,7 +69,7 @@ public class ProcessProdBn {
     private ProductService productService;
 
     @PostConstruct
-    private void init(){
+    private void init() {
         mail.setUser(userSession.getLoggedInUserObj());
         timeLine.setUser(userSession.getLoggedInUserObj());
         selComment.setUser(userSession.getLoggedInUserObj());
@@ -83,7 +81,7 @@ public class ProcessProdBn {
 
     private RegState[] nextStepOptions(RegState regState) {
         RegState[] options = null;
-        switch (regState){
+        switch (regState) {
             case NEW_APPL:
                 options = new RegState[2];
                 options[0] = RegState.FOLLOW_UP;
@@ -137,7 +135,7 @@ public class ProcessProdBn {
     public List<Timeline> getTimelinesChartData() {
         timelinesChartData = new ArrayList<Timeline>();
         Timeline timeline;
-        for(org.msh.pharmadex.domain.TimeLine tm : getTimeLineList()){
+        for (org.msh.pharmadex.domain.TimeLine tm : getTimeLineList()) {
             timeline = new DefaultTimeLine("prodtl", "Product Timeline");
             timeline.addEvent(new DefaultTimelineEvent(tm.getRegState().name(), tm.getStatusDate()));
             timelinesChartData.add(timeline);
@@ -154,7 +152,7 @@ public class ProcessProdBn {
     }
 
     public List<Comment> getComments() {
-            comments = commentService.findAllCommentsByApp(prodApplications.getId(), userSession.isCompany());
+        comments = commentService.findAllCommentsByApp(prodApplications.getId(), userSession.isCompany());
         return comments;
     }
 
@@ -162,8 +160,8 @@ public class ProcessProdBn {
         this.comments = comments;
     }
 
-    public String getDosForm(){
-        System.out.println("items fetched == "+dosageFormService.findAllDosForm().size());
+    public String getDosForm() {
+        System.out.println("items fetched == " + dosageFormService.findAllDosForm().size());
 //        dosageFormService.findAllDosForm().size();
         return null;
     }
@@ -183,7 +181,7 @@ public class ProcessProdBn {
     }
 
     public List<ProdInn> getSelectedInns() {
-        if(prodApplications!=null)
+        if (prodApplications != null)
             return prodApplications.getProd().getInns();
         else
             return null;
@@ -194,7 +192,7 @@ public class ProcessProdBn {
     }
 
     public List<Atc> getSelectedAtcs() {
-        if(prodApplications!=null)
+        if (prodApplications != null)
             return prodApplications.getProd().getAtcs();
         else
             return null;
@@ -208,7 +206,7 @@ public class ProcessProdBn {
         selComment.setDate(new Date());
         selComment.setProdApplications(prodApplications);
         selComment.setUser(userSession.getLoggedInUserObj());
-        selComment= commentService.saveComment(selComment);
+        selComment = commentService.saveComment(selComment);
         selComment = new Comment();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Comment successfully added"));
 
@@ -225,7 +223,7 @@ public class ProcessProdBn {
         return "";
     }
 
-    public String newComment(){
+    public String newComment() {
         System.out.println("Inside new comment");
         return "/home.faces";
     }
@@ -233,7 +231,7 @@ public class ProcessProdBn {
     public String deleteComment(Comment delComment) {
         comments.remove(delComment);
         String result = commentService.deleteComment(delComment);
-        if(result.equals("deleted"))
+        if (result.equals("deleted"))
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Comment successfully deleted "));
         else
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Comment delete failed"));
@@ -257,18 +255,18 @@ public class ProcessProdBn {
     }
 
     public String addTimeline() {
-        if(timeLine.getRegState().equals(RegState.FEE)||timeLine.getRegState().equals(RegState.REGISTERED)){
-            if(!prodApplications.isFeeReceived()){
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail:","Fee not received"));
+        if (timeLine.getRegState().equals(RegState.FEE) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+            if (!prodApplications.isFeeReceived()) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail:", "Fee not received"));
                 timeLine = new TimeLine();
                 return "";
             }
-        }else if(timeLine.getRegState().equals(RegState.VERIFY)||timeLine.getRegState().equals(RegState.REGISTERED)){
-            if(!prodApplications.isApplicantVerified()){
+        } else if (timeLine.getRegState().equals(RegState.VERIFY) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+            if (!prodApplications.isApplicantVerified()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail", "applicant not verified"));
                 timeLine = new TimeLine();
                 return "";
-            }else if(!prodApplications.isProductVerified()||prodApplications.getRegState()==RegState.REGISTERED){
+            } else if (!prodApplications.isProductVerified() || prodApplications.getRegState() == RegState.REGISTERED) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail", "product not verified"));
                 timeLine = new TimeLine();
                 return "";
@@ -287,8 +285,13 @@ public class ProcessProdBn {
         return "";  //To change body of created methods use File | Settings | File Templates.
     }
 
+    public void save() {
+        prodApplications.setProdAppChecklists(checklists);
+        prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj());
+    }
+
     public String registerProduct() {
-        if(!prodApplications.getRegState().equals(RegState.RECOMMENDED)){
+        if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail", "Cannot Register product, Status needs to be updated"));
             return "";
         }
@@ -321,7 +324,7 @@ public class ProcessProdBn {
     }
 
     public List<Company> getCompanies() {
-        if(prodApplications!=null)
+        if (prodApplications != null)
             return prodApplications.getProd().getCompanies();
         else
             return null;
@@ -332,7 +335,7 @@ public class ProcessProdBn {
     }
 
     public List<ProdAppChecklist> getProdAppChecklists() {
-        if(prodApplications!=null)
+        if (prodApplications != null)
             return prodApplications.getProdAppChecklists();
         else
             return null;
@@ -343,7 +346,7 @@ public class ProcessProdBn {
     }
 
     public boolean isReadyReg() {
-        if((userSession.isAdmin()||userSession.isStaff())&&prodApplications.getRegState().equals(RegState.RECOMMENDED))
+        if ((userSession.isAdmin() || userSession.isStaff()) && prodApplications.getRegState().equals(RegState.RECOMMENDED))
             return true;
         else
             return false;
@@ -351,5 +354,14 @@ public class ProcessProdBn {
 
     public void setReadyReg(boolean readyReg) {
         this.readyReg = readyReg;
+    }
+
+    public List<ProdAppChecklist> getChecklists() {
+        checklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
+        return checklists;
+    }
+
+    public void setChecklists(List<ProdAppChecklist> checklists) {
+        this.checklists = checklists;
     }
 }

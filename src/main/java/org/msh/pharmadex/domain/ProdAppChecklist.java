@@ -15,14 +15,19 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="checklist_id")
+    @JoinColumn(name = "checklist_id")
     private Checklist checklist;
 
     @ManyToOne
-    @JoinColumn(name="prod_app_id", nullable = false)
+    @JoinColumn(name = "prod_app_id", nullable = false)
     private ProdApplications prodApplications;
 
     private boolean value;
+
+    private boolean staffValue;
+
+    @Column(length = 100)
+    private String staffComment;
 
     public Long getId() {
         return id;
@@ -54,5 +59,21 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
 
     public void setValue(boolean value) {
         this.value = value;
+    }
+
+    public boolean isStaffValue() {
+        return staffValue;
+    }
+
+    public void setStaffValue(boolean staffValue) {
+        this.staffValue = staffValue;
+    }
+
+    public String getStaffComment() {
+        return staffComment;
+    }
+
+    public void setStaffComment(String staffComment) {
+        this.staffComment = staffComment;
     }
 }

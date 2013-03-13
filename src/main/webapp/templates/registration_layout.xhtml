@@ -14,13 +14,11 @@
     <h:body>
         <h:panelGrid cellspacing="0" cellpadding="0" styleClass="wrapper">
             <h:panelGrid columns="2" columnClasses="menu,content" style="padding-left: 15px;">
-                <p:panel styleClass="menu">
-                    <h:form>
-                        <ui:insert name="menu">
-                            <ui:include src="registration_menu.xhtml"/>
-                        </ui:insert>
-                    </h:form>
-                </p:panel>
+                <h:form>
+                    <ui:insert name="menu">
+                        <ui:include src="registration_menu.xhtml"/>
+                    </ui:insert>
+                </h:form>
                 <h:panelGroup styleClass="ui-widget">
                     <ui:insert name="content"/>
                 </h:panelGroup>
