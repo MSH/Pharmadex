@@ -14,32 +14,32 @@ public interface UserSession {
 
     public String getLoggedInUser();
 
-     public String editUser();
+    public String editUser();
 
-     public void setLoggedInUser(String loggedInUser);
+    public void setLoggedInUser(String loggedInUser);
 
-     /**
-      * Register the logout when the user session is finished by time-out
-      */
-     @Transactional
-     public void logout();
+    /**
+     * Register the logout when the user session is finished by time-out
+     */
+    @Transactional
+    public void logout();
 
-     /**
-      * Register the user login
-      */
-     public void registerLogin(User user, HttpServletRequest request) ;
+    /**
+     * Register the user login
+     */
+    public void registerLogin(User user, HttpServletRequest request);
 
 
-     /**
-      * Register the logout of the current user
-      */
-     public void registerLogout();
+    /**
+     * Register the logout of the current user
+     */
+    public void registerLogout();
 
-     public User getLoggedInUserObj();
+    public User getLoggedInUserObj();
 
-     public UserAccess getUserAccess();
+    public UserAccess getUserAccess();
 
-     public void setLoggedInUserObj(User loggedInUserObj);
+    public void setLoggedInUserObj(User loggedInUserObj);
 
     public boolean isAdmin();
 
@@ -50,4 +50,10 @@ public interface UserSession {
     public boolean isGeneral();
 
     public boolean isInspector();
+
+    public boolean isModerator();
+
+    public boolean isReviewer();
+
+
 }

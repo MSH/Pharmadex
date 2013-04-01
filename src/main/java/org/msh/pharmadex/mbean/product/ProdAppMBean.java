@@ -67,7 +67,7 @@ public class ProdAppMBean implements Serializable {
 
     public List<ProdApplications> getProdApplicationsList() {
         if (prodApplicationsList == null)
-            prodApplicationsList = prodApplicationsService.getSubmittedApplications(userSession.getLoggedInUserObj().getUserId());
+            prodApplicationsList = prodApplicationsService.getSubmittedApplications(userSession);
         return prodApplicationsList;
     }
 
@@ -80,7 +80,7 @@ public class ProdAppMBean implements Serializable {
 
     public List<ProdApplications> getSubmmittedAppList() {
         if (submmittedAppList == null)
-            submmittedAppList = prodApplicationsService.getSubmittedApplications(-1);
+            submmittedAppList = prodApplicationsService.getSubmittedApplications(userSession);
         return submmittedAppList;
     }
 

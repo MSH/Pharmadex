@@ -7,11 +7,10 @@ import org.msh.pharmadex.dao.iface.AppointmentDAO;
 import org.msh.pharmadex.dao.iface.AtcDAO;
 import org.msh.pharmadex.dao.iface.ChecklistDAO;
 import org.msh.pharmadex.dao.iface.ProdAppChecklistDAO;
-import org.msh.pharmadex.domain.Checklist;
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.UserType;
+import org.msh.pharmadex.failure.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,7 +29,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class ProdApplicationsService implements Serializable{
+public class ProdApplicationsService implements Serializable {
 
     private static final long serialVersionUID = 5061629028904167436L;
     @Resource
@@ -66,33 +65,43 @@ public class ProdApplicationsService implements Serializable{
     private DosageFormService dosageFormService;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ProdApplications findProdApplications(long id){
+    public ProdApplications findProdApplications(long id) {
         return prodApplicationsDAO.findProdApplications(id);
     }
 
-    public List<ProdApplications> getApplications(){
-        if(prodApplications==null)
+    public List<ProdApplications> getApplications() {
+        if (prodApplications == null)
             prodApplications = prodApplicationsDAO.allProdApplications();
         return prodApplications;
     }
 
-    public void refresh(){
+    public void refresh() {
         prodApplications = null;
     }
 
-    public List<ProdApplications> getSavedApplications(int userId){
-        return prodApplicationsDAO.findProdApplicationsByState(RegState.SAVED, userId);
+
+    public List<ProdApplications> getSavedApplications(int userId) {
+        return prodApplicationsDAO.findProdApplicationsByStateAndUser(RegState.SAVED, userId);
     }
 
-    public List<ProdApplications> getSubmittedApplications(int userId){
-        if(userId>0)
-            return prodApplicationsDAO.findSubmittedApp(userId);
+    public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
+        if (userSession.isAdmin())
+            prodApplicationsDAO.findSubmittedApp(userSession.getLoggedInUserObj().getUserId());
+        if (userSession.getLoggedInUserObj().getType().equals(UserType.STAFF)) {
+            if (userSession.isModerator()) {
+                return prodApplicationsDAO.findProdApplicationsByState(RegState.NEW_APPL);
+            } else {
+                return prodApplicationsDAO.findProdApplicationsByReviewer(userSession.getLoggedInUserObj().getUserId());
+            }
+
+        } else if (userSession != null)
+            return prodApplicationsDAO.findSubmittedApp(userSession.getLoggedInUserObj().getUserId());
         else
             return prodApplicationsDAO.findSubmittedApp();
     }
 
     @Transactional
-    public String saveApplication(ProdApplications prodApplications, User loggedInUserObj){
+    public String saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
         String result;
         prodApplications.getProd().setCreatedBy(loggedInUserObj);
         prodApplications.setSubmitDate(new Date());
@@ -103,16 +112,16 @@ public class ProdApplicationsService implements Serializable{
         prodApplications.getProd().setDosForm(
                 dosageFormService.findDosagedForm(prodApplications.getProd().getDosForm().getUid()));
 
-        if(prodApplications.getProd().getId()!=null)
+        if (prodApplications.getProd().getId() != null)
             productDAO.updateProduct(prodApplications.getProd());
         else
             productDAO.saveProduct(prodApplications.getProd());
 
-        if(prodApplications.getAppointment()!=null)
+        if (prodApplications.getAppointment() != null)
             appointmentDAO.save(prodApplications.getAppointment());
 
 
-        if(prodApplications.getId()!=null)
+        if (prodApplications.getId() != null)
             result = prodApplicationsDAO.updateApplication(prodApplications);
         else
             result = prodApplicationsDAO.saveApplication(prodApplications);
@@ -120,17 +129,26 @@ public class ProdApplicationsService implements Serializable{
     }
 
     @Transactional
-    public String updateProdApp(ProdApplications prodApplications){
+    public String updateProdApp(ProdApplications prodApplications) {
         return prodApplicationsDAO.updateApplication(prodApplications);
     }
 
     @Transactional
-    public List<ProdAppChecklist> findAllProdChecklist(Long prodAppId){
+    public List<ProdAppChecklist> findAllProdChecklist(Long prodAppId) {
         return prodAppChecklistDAO.findByProdApplications_IdOrderByIdAsc(prodAppId);
     }
 
     @Transactional
-    public List<Checklist> findAllChecklist(){
+    public List<Checklist> findAllChecklist() {
         return (List<Checklist>) checklistDAO.findAll();
+    }
+
+    @Transactional
+    public ProdApplications findProdApplicationByProduct(Long id) {
+        return prodApplicationsDAO.findProdApplicationByProduct(id);
+    }
+
+    public List<Company> findCompanies(Long prodId) {
+        return prodApplicationsDAO.findCompanies(prodId);
     }
 }

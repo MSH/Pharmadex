@@ -6,21 +6,10 @@
                 template="../templates/registration_layout.xhtml">
     <ui:define name="content">
         <div class="post">
-            <h1 class="title ui-widget-header ui-corner-all"> Application List</h1>
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.applicant_list}</h1>
         </div>
 
         <h:form prependId="false">
-            <p:panel header="Create/Edit" visible="#{applicantMBean.showAdd}">
-                <p:messages/>
-                <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                    <ui:param name="applicantdata" value="#{applicantMBean.selectedApplicant}"/>
-                    <ui:param name="input" value="#{false}"/>
-                </ui:decorate>
-
-                <p:commandButton value="#{msgs.label_save}" action="#{applicantMBean.saveApp}" update="@form"/>
-                <p:commandButton value="#{msgs.label_close}" action="#{applicantMBean.cancelApp}" immediate="true"
-                                 update="@form"/>
-            </p:panel>
 
             <p:dataTable id="car" var="applicant" value="#{applicantMBean.allApplicant}" selectionMode="single"
                          selection="#{applicantMBean.selectedApplicant}" rowKey="#{applicant.applcntId}"
@@ -28,8 +17,7 @@
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,50,100">
-                <p:ajax listener="#{applicantMBean.onRowSelect}" event="rowSelect" update="@form"
-                        ></p:ajax>
+
 
                 <p:column filterBy="#{applicant.appName}"
                           sortBy="#{applicant.appName}">
@@ -37,9 +25,13 @@
                         <h:outputText value="Applicant Name"/>
                     </f:facet>
 
-                    <h:outputText value="#{applicant.appName}"/>
 
+                    <p:commandLink id="viewLink" value="#{applicant.appName}" update=":viewDlg"
+                                   oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                        <f:setPropertyActionListener value="#{applicant}" target="#{applicantHome.applicant}"/>
+                    </p:commandLink>
                 </p:column>
+
 
                 <p:column filterBy="#{applicant.contactName}"
                           sortBy="#{applicant.contactName}">
@@ -67,37 +59,41 @@
                     <h:outputText value="#{applicant.phoneNo}"/>
                 </p:column>
 
-                <f:facet name="footer">
-                    <p:commandButton value="View" icon="ui-icon-search"
-                                     update="@form" action="#{applicantMBean.onRowSelect}"/>
-                </f:facet>
-
             </p:dataTable>
 
             <h:panelGrid columns="2" width="100%">
                 <p:panel>
                     <h:commandLink>
                         <p:graphicImage value="/resources/images/excel.png"/>
-                        <p:dataExporter type="xls" target="" fileName="#{msgs.applicant_list}"/>
+                        <p:dataExporter type="xls" target="car" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
                         <p:graphicImage value="/resources/images/pdf.png"/>
-                        <p:dataExporter type="pdf" target="pendingApps" fileName="#{msgs.applicant_list}"/>
+                        <p:dataExporter type="pdf" target="car" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
                         <p:graphicImage value="/resources/images/csv.png"/>
-                        <p:dataExporter type="csv" target="pendingApps" fileName="#{msgs.applicant_list}"/>
+                        <p:dataExporter type="csv" target="car" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
 
                     <h:commandLink>
                         <p:graphicImage value="/resources/images/xml.png"/>
-                        <p:dataExporter type="xml" target="pendingApps" fileName="#{msgs.applicant_list}"/>
+                        <p:dataExporter type="xml" target="car" fileName="#{msgs.applicant_list}"/>
                     </h:commandLink>
                 </p:panel>
             </h:panelGrid>
 
         </h:form>
+
+        <p:dialog header="#{msgs.applicant_detail}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
+                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
+            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+        </p:dialog>
+
     </ui:define>
 </ui:composition>

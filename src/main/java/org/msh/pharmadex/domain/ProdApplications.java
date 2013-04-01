@@ -12,71 +12,70 @@ import java.util.List;
  * Author: usrivastava
  */
 @Entity
-public class ProdApplications extends CreationDetail implements Serializable
-{
+public class ProdApplications extends CreationDetail implements Serializable {
     private static final long serialVersionUID = 3054470055191648660L;
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(unique = true, nullable = false)
-	private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
+    private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "PROD_ID")
-	private Product prod;
+    @OneToOne
+    @JoinColumn(name = "PROD_ID")
+    private Product prod;
 
-	@OneToOne
-    @JoinColumn(name="ORG_CNTRY_ID")
-	private Country originCntry;
+    @OneToOne
+    @JoinColumn(name = "ORG_CNTRY_ID")
+    private Country originCntry;
 
     @Column(length = 100)
-	private String prodRelCntroler;
+    private String prodRelCntroler;
 
     @Column(nullable = false)
-	private String relResponsibility;
+    private String relResponsibility;
 
     @Column(length = 100)
-	private String Representative;
+    private String Representative;
 
-	private boolean packageInsert;
+    private boolean packageInsert;
 
-	private boolean labelEnclosed;
+    private boolean labelEnclosed;
 
     @Column(length = 200)
-	private String appComment;
+    private String appComment;
 
-	private ProdDrugType drugType;
-
-    @Column(length = 20)
-	private String packSize;
+    private ProdDrugType drugType;
 
     @Column(length = 20)
-	private String originCntryReg;
+    private String packSize;
+
+    @Column(length = 20)
+    private String originCntryReg;
 
     @Column(length = 100)
-	private String contType;
+    private String contType;
 
     @Column(length = 20)
-	private String phyAppearance;
+    private String phyAppearance;
 
     @Column(length = 100)
     private String pharmacopeiaStds;
 
     @Column(length = 100)
-	private  String ssnCode;
+    private String ssnCode;
 
     @Column(length = 100)
-	private  String inactiveIngr;
+    private String inactiveIngr;
 
     @Column(length = 20)
-	private String storageCndtn;
+    private String storageCndtn;
 
     @Column(length = 100)
-	private String receiptNo;
+    private String receiptNo;
 
     @Column(length = 100)
-	private String waybillNo;
+    private String waybillNo;
 
-	private RegState regState;
+    private RegState regState;
 
     @Temporal(TemporalType.DATE)
     private Date submitDate;
@@ -92,29 +91,33 @@ public class ProdApplications extends CreationDetail implements Serializable
 
     private boolean feeReceived;
 
-   	private boolean dossierReceived;
+    private boolean dossierReceived;
 
     private boolean applicantVerified;
 
-   	private boolean productVerified;
+    private boolean productVerified;
 
     @Column(length = 100)
-	private String ackLetterNo;
+    private String ackLetterNo;
 
-    @OneToMany(mappedBy = "prodApplications", cascade = { CascadeType.ALL })
-   	private List<Mail> mails;
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<Mail> mails;
 
-    @OneToMany(mappedBy = "prodApplications", cascade = { CascadeType.ALL })
-   	private List<Comment> comments;
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<Comment> comments;
 
-    @OneToMany(mappedBy = "prodApplications", cascade = { CascadeType.ALL })
-   	private List<TimeLine> timeLines;
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<TimeLine> timeLines;
 
-    @OneToMany(mappedBy = "prodApplications", cascade = { CascadeType.ALL })
-   	private List<ProdAppChecklist> prodAppChecklists;
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<ProdAppChecklist> prodAppChecklists;
+
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<StatusUser> statusUser;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="USER_ID", nullable = false)
+    @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
     @OneToOne

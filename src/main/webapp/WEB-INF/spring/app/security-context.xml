@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
-             xmlns:context="http://www.springframework.org/schema/context"
-             xmlns:lang="http://www.springframework.org/schema/lang"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-             xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.1.xsd      http://www.springframework.org/schema/security    http://www.springframework.org/schema/security/spring-security-3.1.xsd        http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+             xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.1.xsd      http://www.springframework.org/schema/security    http://www.springframework.org/schema/security/spring-security-3.1.xsd                  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
     <http auto-config="true" access-denied-page="/pages/accessdenied.xhtml">
-		<intercept-url pattern="/pages/login.faces"/>
+        <intercept-url pattern="/pages/login.faces"/>
         <intercept-url pattern="/*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-		<!--<intercept-url access="IS_AUTHENTICATED_REMEMBERED" pattern="/*"/>-->
-        <intercept-url pattern="/secure/**" access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF" />
-        <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/internal/**" access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF" />
-		<form-login authentication-failure-url="/pages/login1.faces?login_error=true" login-page="/pages/login1.faces"
-                     authentication-success-handler-ref="postSuccessfullAuthHandler" login-processing-url="/j_spring_security_check"/>
-		<logout success-handler-ref="postLogoutSuccessHandler" invalidate-session="true"/>
+        <!--<intercept-url access="IS_AUTHENTICATED_REMEMBERED" pattern="/*"/>-->
+        <intercept-url pattern="/secure/**"
+                       access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER"/>
+        <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
+        <intercept-url pattern="/internal/**"
+                       access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER"/>
+        <form-login authentication-failure-url="/pages/login1.faces?login_error=true" login-page="/pages/login1.faces"
+                    authentication-success-handler-ref="postSuccessfullAuthHandler"
+                    login-processing-url="/j_spring_security_check"/>
+        <logout success-handler-ref="postLogoutSuccessHandler" invalidate-session="true"/>
         <session-management>
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url="/pages/login1.faces"/>
         </session-management>
-		<!--<remember-me key="springdemoRMKey" user-service-ref="userDetailService"/>-->
-	</http>
+        <!--<remember-me key="springdemoRMKey" user-service-ref="userDetailService"/>-->
+    </http>
 
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 
@@ -30,17 +31,17 @@
 
 
     <authentication-manager alias="authenticationManager">
-		<authentication-provider user-service-ref="userDetailsService">
+        <authentication-provider user-service-ref="userDetailsService">
             <password-encoder ref="passwordEncoder">
-                <salt-source ref="saltSource" />
+                <salt-source ref="saltSource"/>
             </password-encoder>
         </authentication-provider>
-	</authentication-manager>
+    </authentication-manager>
 
 
-<!--	<global-method-security>
-		<protect-pointcut access="IS_AUTHENTICATED_REMEMBERED" expression="execution(* org.msh.pharmadex.service.ApplicantService.*(..))"/>
-        <protect-pointcut access="IS_AUTHENTICATED_REMEMBERED" expression="execution(* org.msh.pharmadex.dao.ApplicantDAO.*(..))"/>
-	</global-method-security>
-	-->
+    <!--	<global-method-security>
+            <protect-pointcut access="IS_AUTHENTICATED_REMEMBERED" expression="execution(* org.msh.pharmadex.service.ApplicantService.*(..))"/>
+            <protect-pointcut access="IS_AUTHENTICATED_REMEMBERED" expression="execution(* org.msh.pharmadex.dao.ApplicantDAO.*(..))"/>
+        </global-method-security>
+        -->
 </beans:beans>

@@ -23,6 +23,12 @@ public class Role extends CreationDetail implements Serializable {
     @Column(length = 100, nullable = false)
     private String rolename;
 
+    @Column(length = 100, nullable = false)
+    private String displayname;
+
+    @Column(length = 100, nullable = true)
+    private String description;
+
 
     @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "userId"))
@@ -50,5 +56,21 @@ public class Role extends CreationDetail implements Serializable {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public String getDisplayname() {
+        return displayname;
+    }
+
+    public void setDisplayname(String displayname) {
+        this.displayname = displayname;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
