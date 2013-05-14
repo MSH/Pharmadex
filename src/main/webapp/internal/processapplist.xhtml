@@ -11,7 +11,7 @@
 
         <h:form prependId="false">
             <p:dataTable id="applicants" var="applicant" value="#{processAppBn.pendingApps}">
-                <p:column headerText="Applicant Name">
+                <p:column headerText="#{msgs.registration_applicant}">
                     <p:commandLink value="#{applicant.appName}" action="/internal/processapp.faces" ajax="false">
                         <f:setPropertyActionListener value="#{applicant}" target="#{processAppBn.applicant}"/>
                     </p:commandLink>

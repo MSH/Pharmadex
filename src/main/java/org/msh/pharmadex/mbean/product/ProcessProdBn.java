@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
@@ -46,6 +47,11 @@ public class ProcessProdBn {
     private boolean readyReg;
     private List<ProdAppChecklist> checklists;
 
+    private StatusUser module;
+
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private UserSession userSession;
@@ -67,12 +73,17 @@ public class ProcessProdBn {
 
     @Autowired
     private ProductService productService;
+    private boolean checkReviewStatus;
+
+    @Autowired
+    WebSession webSession;
 
     @PostConstruct
     private void init() {
         mail.setUser(userSession.getLoggedInUserObj());
         timeLine.setUser(userSession.getLoggedInUserObj());
         selComment.setUser(userSession.getLoggedInUserObj());
+
     }
 
     public List<RegState> getRegSate() {
@@ -131,6 +142,7 @@ public class ProcessProdBn {
 
 
     }
+
 
     public List<Timeline> getTimelinesChartData() {
         timelinesChartData = new ArrayList<Timeline>();
@@ -212,6 +224,52 @@ public class ProcessProdBn {
 
         return "";
     }
+
+
+    public void assignProcessor() {
+        if (module == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+        }
+
+        module.setProdApplications(prodApplications);
+        module.setAssignDate(new Date());
+
+        if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+
+
+    }
+
+    public void assignModerator() {
+        prodApplications.setUpdatedDate(new Date());
+
+
+        if (!prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted"))
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+
+
+    }
+
+
+    public void initProcessor() {
+        if (prodApplications != null) {
+            module = prodApplicationsService.findStatusUser(prodApplications.getId());
+            if (module == null) {
+                module = new StatusUser(prodApplications);
+                module.setModule1(new User());
+                module.setModule2(new User());
+                module.setModule3(new User());
+                module.setModule4(new User());
+            }
+        } else {
+            module = new StatusUser();
+            module.setModule1(new User());
+            module.setModule2(new User());
+            module.setModule3(new User());
+            module.setModule4(new User());
+        }
+    }
+
 
     public String sendMessage() {
         mail.setDate(new Date());
@@ -302,6 +360,24 @@ public class ProcessProdBn {
         return addTimeline();
     }
 
+    public String submitReview() {
+        initProcessor();
+        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId())
+            module.setModule1SubmitDt(new Date());
+        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId())
+            module.setModule2SubmitDt(new Date());
+        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId())
+            module.setModule3SubmitDt(new Date());
+        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId())
+            module.setModule4SubmitDt(new Date());
+
+        if (module.getModule1SubmitDt() != null && module.getModule2SubmitDt() != null && module.getModule3SubmitDt() != null && module.getModule4SubmitDt() != null)
+            module.setComplete(true);
+
+        prodApplicationsService.saveProcessors(module);
+        return "";
+    }
+
     public List<Mail> getMails() {
         return mailService.findAllMailSent(prodApplications.getId());
     }
@@ -363,5 +439,66 @@ public class ProcessProdBn {
 
     public void setChecklists(List<ProdAppChecklist> checklists) {
         this.checklists = checklists;
+    }
+
+    public List<User> getProcessors() {
+        return userService.findProcessors();
+    }
+
+    public List<User> getModerators() {
+        return userService.findModerators();
+    }
+
+    public List<User> completeProcessorList(String query) {
+        List<User> suggestions = new ArrayList<User>();
+
+        if (query == null || query.equalsIgnoreCase(""))
+            return getProcessors();
+
+        for (User eachInn : getProcessors()) {
+            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
+                suggestions.add(eachInn);
+        }
+        return suggestions;
+    }
+
+    public List<User> completeModeratorList(String query) {
+        List<User> suggestions = new ArrayList<User>();
+
+        if (query == null || query.equalsIgnoreCase(""))
+            return getModerators();
+
+        for (User eachInn : getModerators()) {
+            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
+                suggestions.add(eachInn);
+        }
+        return suggestions;
+    }
+
+    public StatusUser getModule() {
+        if (module == null)
+            initProcessor();
+        return module;
+    }
+
+    public void setModule(StatusUser module) {
+        this.module = module;
+    }
+
+    public void setCheckReviewStatus(boolean checkReviewStatus) {
+        this.checkReviewStatus = checkReviewStatus;
+    }
+
+    public boolean getCheckReviewStatus() {
+        checkReviewStatus = false;
+        if (userSession.isModerator() && getModule().isComplete())
+            checkReviewStatus = true;
+        else
+            checkReviewStatus = false;
+        return checkReviewStatus;
+    }
+
+    public void getSetChecklist(ProdAppChecklist checklist) {
+        webSession.setProdAppChecklist(checklist);
     }
 }

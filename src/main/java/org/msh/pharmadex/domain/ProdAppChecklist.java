@@ -29,6 +29,22 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     @Column(length = 100)
     private String staffComment;
 
+    @Lob
+    @Column(nullable = true)
+    private byte[] file;
+
+    private boolean fileUploaded;
+
+    @OneToOne
+    private User uploadedBy;
+
+    @Column(length = 100, nullable = true)
+    private String contentType;
+
+    @Column(length = 100, nullable = true)
+    private String fileName;
+
+
     public Long getId() {
         return id;
     }
@@ -75,5 +91,45 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
 
     public void setStaffComment(String staffComment) {
         this.staffComment = staffComment;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
+
+    public boolean isFileUploaded() {
+        return fileUploaded;
+    }
+
+    public void setFileUploaded(boolean fileUploaded) {
+        this.fileUploaded = fileUploaded;
+    }
+
+    public User getUploadedBy() {
+        return uploadedBy;
+    }
+
+    public void setUploadedBy(User uploadedBy) {
+        this.uploadedBy = uploadedBy;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
