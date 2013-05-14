@@ -35,6 +35,7 @@ public class UserSessionImpl implements UserSession, Serializable {
     private boolean inspector = false;
     private boolean moderator = false;
     private boolean reviewer = false;
+    private boolean head = false;
 
     public void login() {
         try {
@@ -129,6 +130,10 @@ public class UserSessionImpl implements UserSession, Serializable {
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_REVIEWER")) {
                     setReviewer(true);
+                    setStaff(true);
+                }
+                if (role.getRolename().equalsIgnoreCase("ROLE_HEAD")) {
+                    setHead(true);
                     setStaff(true);
                 }
             }
@@ -287,5 +292,13 @@ public class UserSessionImpl implements UserSession, Serializable {
 
     public void setReviewer(boolean reviewer) {
         this.reviewer = reviewer;
+    }
+
+    public boolean isHead() {
+        return head;
+    }
+
+    public void setHead(boolean head) {
+        this.head = head;
     }
 }

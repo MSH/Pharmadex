@@ -3,7 +3,6 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.auth.UserDetailsAdapter;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.dao.iface.RoleDAO;
-import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +21,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class UserService implements Serializable{
+public class UserService implements Serializable {
 
     private static final long serialVersionUID = -4704319317657081206L;
     @Autowired
@@ -41,38 +39,40 @@ public class UserService implements Serializable{
     @Autowired
     private ReflectionSaltSource saltSource;
 
-    public User findUser(int id){
+    public User findUser(int id) {
         return userDAO.findUser(id);
     }
 
-    public List<User> findAllUsers(){
+    public List<User> findAllUsers() {
         return userDAO.allUsers();
     }
 
-    public List<User> findUnregisteredUsers(){
+    public List<User> findUnregisteredUsers() {
         return userDAO.findNotRegistered();
     }
 
-    public User findUserByUsername(String username) throws NoResultException{
+
+    public User findUserByUsername(String username) throws NoResultException {
         return userDAO.findByUsername(username);
     }
 
-    public List<User> findUserByApplicant(Long applicantId) throws NoResultException{
+    public List<User> findUserByApplicant(Long applicantId) throws NoResultException {
         return userDAO.findByApplicant(applicantId);
     }
-    public String createUser(User user){
+
+    public String createUser(User user) {
         //Set the user enable to access the system
         user.setEnabled(true);
-        List<Role> rList = new ArrayList<Role>();
-        Role r = roleDAO.findOne(1);
-        rList.add(r);
-        r = roleDAO.findOne(4);
-        rList.add(r);
-        user.setRoles(rList);
+//        List<Role> rList = new ArrayList<Role>();
+//        Role r = roleDAO.findOne(1);
+//        rList.add(r);
+//        r = roleDAO.findOne(4);
+//        rList.add(r);
+//        user.setRoles(rList);
         return userDAO.saveUser(passwordGenerator(user));
     }
 
-    public User passwordGenerator(User user){
+    public User passwordGenerator(User user) {
         UserDetailsAdapter userDetails = new UserDetailsAdapter(user);
         String password = userDetails.getPassword();
         Object salt = saltSource.getSalt(userDetails);
@@ -83,11 +83,11 @@ public class UserService implements Serializable{
         return user;
     }
 
-    public String changePwd(User user, String oldpwd, String newpwd1){
-        User userFromDb =  userDAO.findByUsername(user.getUsername());
+    public String changePwd(User user, String oldpwd, String newpwd1) {
+        User userFromDb = userDAO.findByUsername(user.getUsername());
         Object salt = saltSource.getSalt(new UserDetailsAdapter(user));
 
-        if(!passwordEncoder.isPasswordValid(userFromDb.getPassword(), oldpwd, salt))
+        if (!passwordEncoder.isPasswordValid(userFromDb.getPassword(), oldpwd, salt))
             return "PWDERROR";
 
         user.setPassword(newpwd1);
@@ -96,7 +96,15 @@ public class UserService implements Serializable{
         return "persisted";
     }
 
-    public String updateUser(User user){
+    public List<User> findProcessors() {
+        return userDAO.findProcessors();
+    }
+
+    public List<User> findModerators() {
+        return userDAO.findModerators();
+    }
+
+    public String updateUser(User user) {
         return userDAO.updateUser(user);
     }
 

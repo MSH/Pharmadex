@@ -55,5 +55,7 @@ public interface UserSession {
 
     public boolean isReviewer();
 
+    public boolean isHead();
+
 
 }

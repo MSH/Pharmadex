@@ -20,43 +20,43 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Repository("userDAO")
-public class UserDAO implements Serializable{
+public class UserDAO implements Serializable {
     private static final long serialVersionUID = -3030011694490082788L;
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     EntityManager entityManager;
 
     @Transactional
-    public User findUser(int id){
+    public User findUser(int id) {
         return entityManager.find(User.class, id);
     }
 
     @Transactional
-    public List<User> allUsers(){
+    public List<User> allUsers() {
         return entityManager.createQuery("select u from User u").getResultList();
     }
 
     @Transactional
-    public List<User> findNotRegistered(){
+    public List<User> findNotRegistered() {
         return entityManager.createQuery("select u from User u where u.applicant is null ")
                 .getResultList();
     }
 
     @Transactional
-    public List<User> findByApplicant(Long id){
+    public List<User> findByApplicant(Long id) {
         return entityManager.createQuery("select u from User u where u.applicant.applcntId = :applicantId ")
                 .setParameter("applicantId", id)
                 .getResultList();
     }
 
-    public User findByUsername(String username) throws NoResultException{
+    public User findByUsername(String username) throws NoResultException {
         System.out.println("inside findByUsername ");
-        try{
+        try {
             User u = (User) entityManager.createQuery("select u from User u where u.username = :username")
-                            .setParameter("username", username)
-                            .getSingleResult();
+                    .setParameter("username", username)
+                    .getSingleResult();
             return u;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
 //            throw new NoResultException("User doesnt exist");
 
@@ -69,15 +69,15 @@ public class UserDAO implements Serializable{
         user.setRegistrationDate(new Date());
 //        user.setEnabled(true);
 
-        try{
+        try {
             User u = findByUsernameOrEmail(user);
-            if(u!=null){
-                if(u.getEmail().equalsIgnoreCase(user.getEmail()))
+            if (u != null) {
+                if (u.getEmail().equalsIgnoreCase(user.getEmail()))
                     return "There already exist a user with the same Email address. If you have forgotten your password or email address please click on the forgot password link";
-                else if(u.getUsername().equalsIgnoreCase(user.getUsername()))
+                else if (u.getUsername().equalsIgnoreCase(user.getUsername()))
                     return "A user with the same username already exist in the database. If you have forgotten your password or email address please click on the forgot password link";
             }
-        }catch (NoResultException no){
+        } catch (NoResultException no) {
             entityManager.persist(user);
             return "persisted";
         }
@@ -91,9 +91,22 @@ public class UserDAO implements Serializable{
         return "persisted";
     }
 
-    public User findByUsernameOrEmail(User u) throws NoResultException{
+    public User findByUsernameOrEmail(User u) throws NoResultException {
         return (User) entityManager.createQuery("select u from User u where u.username = :username or u.email = :email ")
                 .setParameter("username", u.getUsername())
                 .setParameter("email", u.getEmail()).getSingleResult();
     }
+
+    public List<User> findProcessors() {
+        return entityManager.createQuery("select u from User u left join u.roles r where r.roleId = :roleId")
+                .setParameter("roleId", 7)
+                .getResultList();  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public List<User> findModerators() {
+        return entityManager.createQuery("select u from User u left join u.roles r where r.roleId = :roleId")
+                .setParameter("roleId", 6)
+                .getResultList();  //To change body of created methods use File | Settings | File Templates.
+    }
+
 }

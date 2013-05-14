@@ -1,6 +1,7 @@
 package org.msh.pharmadex.auth;
 
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.User;
 import org.primefaces.model.UploadedFile;
@@ -22,6 +23,7 @@ public class WebSession {
     private Applicant applicant;
     private Product product;
     private UploadedFile file;
+    private ProdAppChecklist prodAppChecklist;
 
     public User getUser() {
         return user;
@@ -53,5 +55,13 @@ public class WebSession {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public ProdAppChecklist getProdAppChecklist() {
+        return prodAppChecklist;
+    }
+
+    public void setProdAppChecklist(ProdAppChecklist prodAppChecklist) {
+        this.prodAppChecklist = prodAppChecklist;
     }
 }
