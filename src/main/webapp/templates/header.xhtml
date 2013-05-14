@@ -32,8 +32,9 @@
                             -->                            </sec:isAuthenticated>
                         <sec:isAnonymous>
                             <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
-                            -->                                <h:outputLink id="loginLink" value="javascript:void(0)" onclick="logindlg.show()"
-                                                 title="login">
+                            -->                                <h:outputLink id="loginLink" value="javascript:void(0)"
+                                                                             onclick="logindlg.show()"
+                                                                             title="login">
                             <p:graphicImage value="/resources/images/log_in.png"/>
                         </h:outputLink>
                         </sec:isAnonymous>
@@ -155,7 +156,8 @@
                         <tr>
                             <td>
 
-                                <p:commandLink action="#{userMBean.goToResetPwd}" value="#{msgs.reset_password}"/>
+                                <p:commandLink action="#{userMBean.goToResetPwd}" value="#{msgs.reset_password}"
+                                               ajax="false" immediate="true"/>
                             </td>
 
                         </tr>
