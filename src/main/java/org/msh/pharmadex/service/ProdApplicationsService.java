@@ -3,13 +3,9 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
-import org.msh.pharmadex.dao.iface.AppointmentDAO;
-import org.msh.pharmadex.dao.iface.AtcDAO;
-import org.msh.pharmadex.dao.iface.ChecklistDAO;
-import org.msh.pharmadex.dao.iface.ProdAppChecklistDAO;
+import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.failure.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -64,6 +62,9 @@ public class ProdApplicationsService implements Serializable {
     @Autowired
     private DosageFormService dosageFormService;
 
+    @Autowired
+    private StatusUserDAO statusUserDAO;
+
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications findProdApplications(long id) {
         return prodApplicationsDAO.findProdApplications(id);
@@ -81,23 +82,52 @@ public class ProdApplicationsService implements Serializable {
 
 
     public List<ProdApplications> getSavedApplications(int userId) {
-        return prodApplicationsDAO.findProdApplicationsByStateAndUser(RegState.SAVED, userId);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        List<RegState> regState = new ArrayList<RegState>();
+        regState.add(RegState.SAVED);
+        params.put("regState", regState);
+        params.put("userId", userId);
+        return prodApplicationsDAO.getProdAppByParams(params);
     }
 
     public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
-        if (userSession.isAdmin())
-            prodApplicationsDAO.findSubmittedApp(userSession.getLoggedInUserObj().getUserId());
-        if (userSession.getLoggedInUserObj().getType().equals(UserType.STAFF)) {
-            if (userSession.isModerator()) {
-                return prodApplicationsDAO.findProdApplicationsByState(RegState.NEW_APPL);
-            } else {
-                return prodApplicationsDAO.findProdApplicationsByReviewer(userSession.getLoggedInUserObj().getUserId());
-            }
+        List<ProdApplications> prodApplicationses = null;
+        HashMap<String, Object> params = new HashMap<String, Object>();
 
-        } else if (userSession != null)
-            return prodApplicationsDAO.findSubmittedApp(userSession.getLoggedInUserObj().getUserId());
-        else
-            return prodApplicationsDAO.findSubmittedApp();
+        if (userSession.isAdmin()) {
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.FEE);
+            regState.add(RegState.NEW_APPL);
+            regState.add(RegState.DEFAULTED);
+            regState.add(RegState.FOLLOW_UP);
+            regState.add(RegState.RECOMMENDED);
+            regState.add(RegState.REVIEW_BOARD);
+            regState.add(RegState.SCREENING);
+            regState.add(RegState.VERIFY);
+            params.put("regState", regState);
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        } else if (userSession.isModerator()) {
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.REVIEW_BOARD);
+            params.put("regState", regState);
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        } else if (userSession.isReviewer()) {
+            prodApplicationses = prodApplicationsDAO.findProdApplicationsByReviewer(userSession.getLoggedInUserObj().getUserId());
+        } else if (userSession.isHead()) {
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.NEW_APPL);
+            regState.add(RegState.FEE);
+            regState.add(RegState.VERIFY);
+            regState.add(RegState.SCREENING);
+            regState.add(RegState.FOLLOW_UP);
+            regState.add(RegState.RECOMMENDED);
+            params.put("regState", regState);
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        } else if (userSession.isCompany()) {
+            params.put("userId", userSession.getLoggedInUserObj().getUserId());
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        }
+        return prodApplicationses;
     }
 
     @Transactional
@@ -150,5 +180,14 @@ public class ProdApplicationsService implements Serializable {
 
     public List<Company> findCompanies(Long prodId) {
         return prodApplicationsDAO.findCompanies(prodId);
+    }
+
+    public StatusUser findStatusUser(Long prodAppId) {
+        return statusUserDAO.findByProdApplications_Id(prodAppId);
+    }
+
+    public String saveProcessors(StatusUser module) {
+        statusUserDAO.save(module);
+        return "success";
     }
 }

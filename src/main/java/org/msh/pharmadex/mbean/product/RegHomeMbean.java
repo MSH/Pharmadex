@@ -234,41 +234,37 @@ public class RegHomeMbean implements Serializable {
 
     }
 
-
     public String saveApp() {
-        prodApplications.setUser(getLoggedInUser());
-        prodApplications.setProd(product);
-        if (selectedInns != null && selectedInns.size() > 0)
-            product.setInns(selectedInns);
-        if (selectedAtcs != null && selectedAtcs.size() > 0) {
-            List<Atc> tempAtc = new ArrayList<Atc>();
-            for (Atc atc : selectedAtcs) {
-                tempAtc.add(atcService.findAtcById(atc.getAtcCode()));
-            }
-            product.setAtcs(tempAtc);
-        }
-        if (companies != null && companies.size() > 0) {
-            product.setCompanies(companies);
-        }
+        save();
+        return "/secure/savedapplications.faces";
+    }
 
-
-        product.setCreatedBy(getLoggedInUser());
-        product.setApplicant(applicant);
-
+    public void save() {
         try {
-            if (prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted")) {
-//                FacesContext context = FacesContext.getCurrentInstance();
-//                HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-//                WebUtils.setSessionAttribute(request, "regHomeMbean" ,null);
-//                PDF();
-                return "/secure/prodregack.faces";
-            } else
-                return null;
+            prodApplications.setUser(getLoggedInUser());
+            prodApplications.setProd(product);
+            if (selectedInns != null && selectedInns.size() > 0)
+                product.setInns(selectedInns);
+            if (selectedAtcs != null && selectedAtcs.size() > 0) {
+                List<Atc> tempAtc = new ArrayList<Atc>();
+                for (Atc atc : selectedAtcs) {
+                    tempAtc.add(atcService.findAtcById(atc.getAtcCode()));
+                }
+                product.setAtcs(tempAtc);
+            }
+            if (companies != null && companies.size() > 0) {
+                product.setCompanies(companies);
+            }
+
+
+            product.setCreatedBy(getLoggedInUser());
+            product.setApplicant(applicant);
+
+            prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted");
         } catch (Exception e) {
             e.printStackTrace();
             FacesContext facesContext = FacesContext.getCurrentInstance();
             facesContext.addMessage(null, new FacesMessage("Error", " Reason: " + e.getMessage()));
-            return null;
         }
     }
 
@@ -286,9 +282,9 @@ public class RegHomeMbean implements Serializable {
         timeLine.setProdApplications(prodApplications);
         timeLine.setUser(getLoggedInUser());
         timeLine.setStatusDate(new Date());
-        String result = saveApp();
+        save();
 //        timelineService.saveTimeLine(timeLine);
-        return result;
+        return "/secure/prodregack.faces";
     }
 
     public String addProdInn() {
@@ -535,9 +531,14 @@ public class RegHomeMbean implements Serializable {
     public void addEvent(ActionEvent actionEvent) {
         if (event.getId() == null) {
             eventModel.addEvent(event);
+            app.setCreatedDate(new Date());
         } else {
+            app.setUpdatedDate(new Date());
             eventModel.updateEvent(event);
         }
+        app.setStart(event.getStartDate());
+        app.setEnd(event.getEndDate());
+        app.setTile(prodApplications.getProd().getApplicant().getAppName() + "-" + prodApplications.getProd().getProdName());
         setAppointment();
         prodApplications.setAppointment(app);
         event = new DefaultScheduleEvent();

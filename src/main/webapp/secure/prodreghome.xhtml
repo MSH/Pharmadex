@@ -118,7 +118,7 @@
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -224,7 +224,7 @@
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -268,7 +268,7 @@
         </p:dataTable>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -293,7 +293,7 @@
         </h:panelGrid>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -303,7 +303,7 @@
     </p:panel>
 </p:tab>
 
-<p:tab id="checklist" title="#{msgs.checklist}">
+<p:tab id="prodAppChecklist" title="#{msgs.checklist}">
     <p:panel header="#{msgs.checklist}">
         <p:dataTable var="checkList" value="#{regHomeMbean.prodAppChecklists}" style="width:100%;">
             <p:column headerText="">
@@ -322,7 +322,7 @@
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -335,7 +335,7 @@
 <p:tab id="appointment" title="#{msgs.appointment}">
     <p:panel header="#{msgs.selappointment}">
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -363,7 +363,7 @@
         </ui:decorate>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" ajax="false" action="#{regHomeMbean.save}"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -476,8 +476,6 @@
 <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
     <h:form id="event">
         <h:panelGrid id="eventDetails" columns="2">
-            <h:outputLabel for="title" value="Title:"/>
-            <p:inputText id="title" value="#{regHomeMbean.event.title}" required="true"/>
 
             <h:outputLabel for="from" value="From:"/>
             <p:inputMask id="from" value="#{regHomeMbean.event.startDate}" mask="99/99/9999">
