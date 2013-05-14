@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="219"/>
+	<property name="ireport.y" value="17"/>
 	<parameter name="subject" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -25,7 +25,7 @@
 		<band height="79" splitType="Stretch">
 			<image>
 				<reportElement uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a" x="0" y="0" width="187" height="79"/>
-				<imageExpression><![CDATA["/Users/utkarsh/Documents/iReport/logo_header.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:/apache-tomcat-7.0.23/webapps/pharmadex/resources/images/logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b" x="187" y="19" width="385" height="45" forecolor="#006666"/>

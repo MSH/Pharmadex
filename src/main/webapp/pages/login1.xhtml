@@ -2,7 +2,6 @@
 <jsp:root
         xmlns:jsp="http://java.sun.com/JSP/Page"
         xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:f="http://java.sun.com/jsf/core"
         xmlns:p="http://primefaces.org/ui"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         version="2.0">
@@ -16,18 +15,18 @@
 
             <p:panel>
                 <h:panelGrid columns="1">
-                    <h:outputLabel value="Please Login to the system to access this contents"    />
+                    <h:outputLabel value="#{msgs.loginmessage}"/>
 
-                    <h:outputLink id="loginLink" value="javascript:void(0)" onclick="dlg.show()" title="login">
-                        <h:outputLabel value="Click here to Login"/>
+                    <h:outputLink id="loginLink" value="javascript:void(0)" onclick="logindlg.show()" title="login">
+                        <h:outputLabel value="#{msgs.clicktologin}"/>
                     </h:outputLink>
 
                     <div>
-                        <p>You need to be a registered user of Pharamdex to register a product. Please follow the link to register yourself.
-                        <h:outputLink value="/pharmadex/pages/registeruser.faces" title="Register me" >
-                            <h:outputLabel value="Register Me!!!"/>
+                        <p><p:outputLabel value="#{msgs.registermessage}"/>
+                            <h:outputLink value="/pharmadex/pages/registeruser.faces" title="Register me">
+                                <h:outputLabel value="#{msgs.registerme}"/>
                             </h:outputLink>
-<!--                        <a href="${pageContext.request.contextPath}/pages/registeruser.faces"> Register me</a> -->
+                            <!--                        <a href="${pageContext.request.contextPath}/pages/registeruser.faces"> Register me</a> -->
                         </p>
 
                     </div>
