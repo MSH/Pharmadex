@@ -38,5 +38,9 @@ public class GlobalLists {
         return Arrays.asList(ProdDrugType.values());
     }
 
+    public List<Modules> getModules() {
+        return Arrays.asList(Modules.values());
+    }
+
 
 }
