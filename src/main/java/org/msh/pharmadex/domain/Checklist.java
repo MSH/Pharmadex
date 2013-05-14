@@ -19,7 +19,6 @@ public class Checklist extends CreationDetail implements Serializable {
 
     private String moduleNo;
 
-
     public Long getId() {
         return id;
     }
@@ -51,4 +50,5 @@ public class Checklist extends CreationDetail implements Serializable {
     public void setModuleNo(String moduleNo) {
         this.moduleNo = moduleNo;
     }
+
 }

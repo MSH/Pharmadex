@@ -22,7 +22,7 @@
 
         <h:outputLabel value="#{msgs.applicant_type}" rendered="#{input}"/>
         <h:selectManyListbox value="#{applicantdata.appType}" rendered="#{input}">
-            <f:selectItems value="#{applicantMBean.appType}" var="atype" itemLabel="#{msgs[atype.key]}"/>
+            <f:selectItems value="#{globalLists.appType}" var="atype" itemLabel="#{msgs[atype.key]}"/>
         </h:selectManyListbox>
 
         <h:outputLabel/>
