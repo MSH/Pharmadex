@@ -16,7 +16,7 @@
 
         <h:panelGrid columns="2" columnClasses="content, menu">
             <h:panelGroup>
-                <p:galleria value="#{galleriaBean.images}" var="image" style="width:700px;"
+                <p:galleria value="#{galleriaBean.images}" var="image" style="width:800px;"
                             filmstripPosition="right" showOverlays="true" showCaptions="true">
                     <p:graphicImage value="/resources/images/galleria/#{image.imageName}"/>
                     <p:galleriaOverlay title="#{image.imageDesc}"/>
@@ -101,9 +101,9 @@
                 </h:panelGroup>
 
             </h:panelGroup>
-            <p:panel>
+            <h:panelGroup>
                 <h:form>
-                    <p:menu style="width:198px;">
+                    <p:menu style="width:260px;">
                         <sec:isAuthenticated>
                             <p:submenu label="Logged In Users">
                                 <p:menuitem value="#{msgs.application_status}"
@@ -137,7 +137,7 @@
 
                     <!-- end three column -->
                 </h:form>
-            </p:panel>
+            </h:panelGroup>
         </h:panelGrid>
 
     </ui:define>
