@@ -6,10 +6,9 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.service.*;
-import org.primefaces.event.DateSelectEvent;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
-import org.primefaces.event.ScheduleEntrySelectEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -498,12 +497,13 @@ public class RegHomeMbean implements Serializable {
     }
 
 
-    public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
-        event = selectEvent.getScheduleEvent();
+    public void onEventSelect(SelectEvent selectEvent) {
+        event = (ScheduleEvent) selectEvent.getObject();
     }
 
-    public void onDateSelect(DateSelectEvent selectEvent) {
-        event = new DefaultScheduleEvent("", selectEvent.getDate(), selectEvent.getDate(), true);
+    public void onDateSelect(SelectEvent selectEvent) {
+        ScheduleEvent scEvent = (ScheduleEvent) selectEvent.getObject();
+        event = new DefaultScheduleEvent("", scEvent.getStartDate(), scEvent.getEndDate(), true);
     }
 
     public void onEventMove(ScheduleEntryMoveEvent event) {

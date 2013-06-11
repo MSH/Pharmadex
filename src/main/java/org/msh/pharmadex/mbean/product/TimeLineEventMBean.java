@@ -1,9 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
 
-import org.primefaces.extensions.model.timeline.DefaultTimeLine;
-import org.primefaces.extensions.model.timeline.DefaultTimelineEvent;
-import org.primefaces.extensions.model.timeline.Timeline;
+import org.primefaces.extensions.component.timeline.Timeline;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -28,22 +26,22 @@ public class TimeLineEventMBean {
     public List<Timeline> getTimelines() {
         timelines = new ArrayList<Timeline>();
         Calendar cal = Calendar.getInstance();
-        Timeline timeline = new DefaultTimeLine("prh", "Primefaces Release History");
-        cal.set(2011, 4, 10);
-        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.1", cal.getTime()));
-        cal.set(2012, 0, 23);
-        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.2.0", cal.getTime()));
-        cal.set(2012, 3, 02);
-        timeline.addEvent(new DefaultTimelineEvent("Primefaces Extensions 0.3.0", cal.getTime()));
-        cal.set(2012, 3, 16);
-        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.4.0", cal.getTime()));
-        cal.set(2012, 5, 10);
-        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.5.0", cal.getTime()));
-        cal.set(2012, 5, 19);
-        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.5.1", cal.getTime()));
-        cal.set(2012, 8, 26);
-        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.6.0", cal.getTime()));
-        timelines.add(timeline);
+//        Timeline timeline = new DefaultTimeLine("prh", "Primefaces Release History");
+//        cal.set(2011, 4, 10);
+//        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.1", cal.getTime()));
+//        cal.set(2012, 0, 23);
+//        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.2.0", cal.getTime()));
+//        cal.set(2012, 3, 02);
+//        timeline.addEvent(new DefaultTimelineEvent("Primefaces Extensions 0.3.0", cal.getTime()));
+//        cal.set(2012, 3, 16);
+//        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.4.0", cal.getTime()));
+//        cal.set(2012, 5, 10);
+//        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.5.0", cal.getTime()));
+//        cal.set(2012, 5, 19);
+//        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.5.1", cal.getTime()));
+//        cal.set(2012, 8, 26);
+//        timeline.addEvent(new DefaultTimelineEvent("Primefaces-Extensions 0.6.0", cal.getTime()));
+//        timelines.add(timeline);
         return timelines;
     }
 

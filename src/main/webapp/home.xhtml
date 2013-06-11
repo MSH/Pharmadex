@@ -16,10 +16,10 @@
 
         <h:panelGrid columns="2" columnClasses="content, menu">
             <h:panelGroup>
-                <p:galleria value="#{galleriaBean.images}" var="image" style="width:800px;"
-                            filmstripPosition="right" showOverlays="true" showCaptions="true">
-                    <p:graphicImage value="/resources/images/galleria/#{image.imageName}"/>
-                    <p:galleriaOverlay title="#{image.imageDesc}"/>
+                <p:galleria value="#{galleriaBean.images}" var="image" showCaptions="true">
+                    <p:graphicImage value="/resources/images/galleria/#{image.imageName}" alt="#{image.imageName}"
+                                    title="#{image.imageDesc}"/>
+
                 </p:galleria>
 
 

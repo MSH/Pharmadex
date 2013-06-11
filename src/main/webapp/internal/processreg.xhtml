@@ -14,14 +14,14 @@
     <p:submenu label="#{msgs.Registration}">
         <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
                     update="@form"/>
-        <p:menuitem value="Add Comment" icon="ui-icon-document" onclick="dlg.show()"/>
-        <p:menuitem value="Next Step" icon="ui-icon-document" onclick="stepDlg.show()"
+        <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" onclick="dlg.show()"/>
+        <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document" onclick="stepDlg.show()"
                     rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head}"/>
-        <p:menuitem value="Complete Review" icon="ui-icon-gear" action="#{processProdBn.submitReview}"
+        <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear" action="#{processProdBn.submitReview}"
                     update="@form" rendered="#{userSession.reviewer and !processProdBn.module.complete}" ajax="false"/>
-        <p:menuitem value="Register Product" icon="ui-icon-gear" action="#{processProdBn.registerProduct}"
+        <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" action="#{processProdBn.registerProduct}"
                     update="@form" rendered="#{processProdBn.readyReg}"/>
-        <p:menuitem value="Assign Moderator" icon="ui-icon-gear" onclick="moderatordlg.show()"
+        <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear" onclick="moderatordlg.show()"
                     rendered="#{userSession.head}"/>
     </p:submenu>
 </p:menu>
@@ -541,23 +541,6 @@
 
 </p:dialog>
 
-
-<p:dialog id="viewDialog" modal="true" dynamic="true" widgetVar="viewDlg"
-          appendToBody="true" resizable="false" header="Event Details" width="350">
-    <p:fieldset>
-        <h:panelGrid columns="2" columnClasses="formColumn1,formColumn2">
-            <h:outputText value="Release Date:"/>
-            <h:outputText value="#{timeLineEventMBean.selectedEvent.startDate}">
-                <f:convertDateTime pattern="dd MMM yyyy"/>
-            </h:outputText>
-            <h:outputText value="Title:"/>
-            <h:outputText value="#{timeLineEventMBean.selectedEvent.title}"/>
-        </h:panelGrid>
-    </p:fieldset>
-    <h:panelGroup layout="block" style="width:100%; text-align: center;padding: 5px;">
-        <p:commandButton id="close" value="Close" type="button" onclick="viewDlg.hide()"/>
-    </h:panelGroup>
-</p:dialog>
 
 <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
     <p:graphicImage value="/design/ajaxloadingbar.gif"/>

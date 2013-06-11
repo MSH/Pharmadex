@@ -5,9 +5,9 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.service.*;
-import org.primefaces.extensions.model.timeline.DefaultTimeLine;
-import org.primefaces.extensions.model.timeline.DefaultTimelineEvent;
-import org.primefaces.extensions.model.timeline.Timeline;
+import org.primefaces.extensions.component.timeline.Timeline;
+import org.primefaces.extensions.model.timeline.TimelineEvent;
+import org.primefaces.extensions.model.timeline.TimelineModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -33,13 +33,14 @@ public class ProcessProdBn {
     private ProdApplications prodApplications;
     private List<Inn> selectedInns;
     private List<Comment> comments;
-    private List<org.msh.pharmadex.domain.TimeLine> timeLineList;
+    private List<TimeLine> timeLineList;
     private List<Mail> mails;
     private List<Atc> selectedAtcs;
     private List<Company> companies;
     private List<ProdAppChecklist> prodAppChecklists;
+    TimelineModel model;
 
-    private List<org.primefaces.extensions.model.timeline.Timeline> timelinesChartData;
+    private List<Timeline> timelinesChartData;
 
     private Comment selComment = new Comment();
     private org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
@@ -144,15 +145,16 @@ public class ProcessProdBn {
     }
 
 
-    public List<Timeline> getTimelinesChartData() {
+    public TimelineModel getTimelinesChartData() {
         timelinesChartData = new ArrayList<Timeline>();
         Timeline timeline;
+        TimelineModel model = new TimelineModel();
         for (org.msh.pharmadex.domain.TimeLine tm : getTimeLineList()) {
-            timeline = new DefaultTimeLine("prodtl", "Product Timeline");
-            timeline.addEvent(new DefaultTimelineEvent(tm.getRegState().name(), tm.getStatusDate()));
+            timeline = new Timeline();
+            model.add(new TimelineEvent(tm.getRegState().name(), tm.getStatusDate()));
             timelinesChartData.add(timeline);
         }
-        return timelinesChartData;
+        return model;
     }
 
     public Comment getSelComment() {
@@ -500,5 +502,13 @@ public class ProcessProdBn {
 
     public void getSetChecklist(ProdAppChecklist checklist) {
         webSession.setProdAppChecklist(checklist);
+    }
+
+    public TimelineModel getModel() {
+        return model;
+    }
+
+    public void setModel(TimelineModel model) {
+        this.model = model;
     }
 }
