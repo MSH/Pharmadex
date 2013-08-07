@@ -1,10 +1,10 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.domain.Country;
-import org.msh.pharmadex.domain.DosUom;
-import org.msh.pharmadex.domain.DosageForm;
+import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CountryService;
 import org.msh.pharmadex.service.DosageFormService;
+import org.msh.pharmadex.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -21,12 +21,20 @@ public class GlobalEntityLists {
     private List<DosageForm> dosageForms;
     private List<DosUom> dosUoms;
     private List<Country> countries;
+    private List<Product> regProducts;
+    private List<Applicant> regApplicants;
 
     @Autowired
     DosageFormService dosageFormService;
 
     @Autowired
     CountryService countryService;
+
+    @Autowired
+    ApplicantService applicantService;
+
+    @Autowired
+    ProductService productService;
 
     public List<DosageForm> getDosageForms() {
         if (dosageForms == null)
@@ -47,4 +55,23 @@ public class GlobalEntityLists {
         return dosUoms;
     }
 
+    public List<Product> getRegProducts() {
+        if (regProducts == null)
+            regProducts = productService.findAllRegisteredProduct();
+        return regProducts;
+    }
+
+    public List<Applicant> getRegApplicants() {
+        if (regApplicants == null)
+            regApplicants = applicantService.getRegApplicants();
+        return regApplicants;
+    }
+
+    public void setRegProducts(List<Product> regProducts) {
+        this.regProducts = regProducts;
+    }
+
+    public void setRegApplicants(List<Applicant> regApplicants) {
+        this.regApplicants = regApplicants;
+    }
 }

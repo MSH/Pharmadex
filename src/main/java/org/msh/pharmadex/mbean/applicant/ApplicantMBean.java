@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,9 @@ public class ApplicantMBean implements Serializable {
     @Autowired
     private UserSession userSession;
 
+    @Autowired
+    GlobalEntityLists globalEntityLists;
+
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
@@ -71,6 +75,7 @@ public class ApplicantMBean implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
+            globalEntityLists.setRegApplicants(null);
             return "/public/applicantlist.faces";
         } else {
             return null;
@@ -108,9 +113,7 @@ public class ApplicantMBean implements Serializable {
     }
 
     public List<Applicant> getAllApplicant() {
-        if (allApplicant == null)
-            allApplicant = applicantService.getRegApplicants();
-        return allApplicant;
+        return globalEntityLists.getRegApplicants();
     }
 
     public void setAllApplicant(List<Applicant> allApplicant) {

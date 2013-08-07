@@ -19,7 +19,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class ApplicantService implements Serializable{
+public class ApplicantService implements Serializable {
 
     @Resource
     ApplicantDAO applicantDAO;
@@ -27,57 +27,56 @@ public class ApplicantService implements Serializable{
     private List<Applicant> applicants;
 
     @Transactional
-    public Applicant findApplicant(long id){
+    public Applicant findApplicant(long id) {
         return applicantDAO.findApplicant(id);
     }
 
 
     @Transactional
-    public List<Applicant> findAllApplicants(){
+    public List<Applicant> findAllApplicants() {
         return applicantDAO.findAllApplicants();
     }
 
     @Transactional
-    public List<Applicant> getRegApplicants(){
-        if(applicants==null)
-            applicants = applicantDAO.findRegApplicants();
+    public List<Applicant> getRegApplicants() {
+        applicants = applicantDAO.findRegApplicants();
         return applicants;
     }
 
     @Transactional
-    public List<Applicant> getPendingApplicants(){
+    public List<Applicant> getPendingApplicants() {
         System.out.println("inside getPendingApplicants");
         return applicantDAO.findPendingApplicant();
     }
 
     @Transactional
-    public boolean saveApp(Applicant applicant, User loggedInUserObj){
-        try{
+    public boolean saveApp(Applicant applicant, User loggedInUserObj) {
+        try {
             applicant.setState(ApplicantState.NEW_APPLICATION);
             applicantDAO.saveApplicant(applicant);
-            System.out.println("applicant id = "+applicant.getApplcntId());
+            System.out.println("applicant id = " + applicant.getApplcntId());
             loggedInUserObj.setApplicant(applicant);
 //            userService.updateUser(user);
             applicants = null;
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
     @Transactional
-    public boolean updateApp(Applicant applicant, User user){
-        try{
+    public boolean updateApp(Applicant applicant, User user) {
+        try {
             applicantDAO.updateApplicant(applicant);
-            System.out.println("applicant id = "+applicant.getApplcntId());
-            if(user!=null){
+            System.out.println("applicant id = " + applicant.getApplcntId());
+            if (user != null) {
                 user.setApplicant(applicant);
 //                userService.updateUser(user);
             }
             applicants = null;
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -85,7 +84,7 @@ public class ApplicantService implements Serializable{
 
 
     @Transactional
-    public List<Applicant> findApplicantByProduct(Long id){
+    public List<Applicant> findApplicantByProduct(Long id) {
         System.out.println("inside applicant by product");
         return applicantDAO.findApplicantByProduct(id);
     }

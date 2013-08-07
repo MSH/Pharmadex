@@ -24,6 +24,15 @@ public class StatusUser implements Serializable {
     @JoinColumn(name = "module1")
     private User module1;
 
+    private String review1;
+
+    private String review2;
+
+    private String review3;
+
+    private String review4;
+
+
     @OneToOne
     @JoinColumn(name = "module2")
     private User module2;
@@ -50,6 +59,7 @@ public class StatusUser implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date module4SubmitDt;
+
 
     private boolean complete;
 
@@ -171,5 +181,37 @@ public class StatusUser implements Serializable {
 
     public void setComplete(boolean complete) {
         this.complete = complete;
+    }
+
+    public String getReview1() {
+        return review1;
+    }
+
+    public void setReview1(String review1) {
+        this.review1 = review1;
+    }
+
+    public String getReview2() {
+        return review2;
+    }
+
+    public void setReview2(String review2) {
+        this.review2 = review2;
+    }
+
+    public String getReview3() {
+        return review3;
+    }
+
+    public void setReview3(String review3) {
+        this.review3 = review3;
+    }
+
+    public String getReview4() {
+        return review4;
+    }
+
+    public void setReview4(String review4) {
+        this.review4 = review4;
     }
 }

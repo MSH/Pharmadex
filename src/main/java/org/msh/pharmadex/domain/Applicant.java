@@ -17,44 +17,45 @@ import java.util.List;
  */
 @Entity
 @Table(name = "applicant")
-public class Applicant extends CreationDetail implements Serializable{
+public class Applicant extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -9020561842927501066L;
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long applcntId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long applcntId;
 
-	@Column(length = 200, nullable = false)
-	private String appName;
+    @Column(length = 200, nullable = false)
+    private String appName;
 
     @Embedded
     private Address address = new Address();
 
     @ElementCollection(targetClass = ApplicantType.class)
-    @CollectionTable(name = "applicant_type", joinColumns = @JoinColumn(name="applcntId"))
+    @CollectionTable(name = "applicant_type", joinColumns = @JoinColumn(name = "applcntId"))
     @Column(name = "app_type_id")
-	private List<ApplicantType> appType;
+    private List<ApplicantType> appType;
 
-	@Column(length = 50, nullable = false)
-	private String contactName;
+    @Column(length = 50, nullable = false)
+    private String contactName;
 
-	@Column(length = 30)
-	private String phoneNo;
+    @Column(length = 30)
+    private String phoneNo;
 
-	@Column(length = 30)
-	private String faxNo;
+    @Column(length = 30)
+    private String faxNo;
 
-	private String email;
-
-	@Column(length = 50)
-	private String website;
-
-	private ApplicantState state;
+    private String email;
 
     @Column(length = 50)
-   	private String fileNumber;
+    private String website;
+
+    @Enumerated
+    private ApplicantState state;
 
     @Column(length = 50)
-   	private String comment;
+    private String fileNumber;
+
+    @Column(length = 50)
+    private String comment;
 
     @Temporal(TemporalType.DATE)
     private Date submitDate;
@@ -63,10 +64,10 @@ public class Applicant extends CreationDetail implements Serializable{
     private Date registrationDate;
 
 
-	@OneToMany(mappedBy = "applicant",  cascade = { CascadeType.ALL })
-	private List<User> users;
+    @OneToMany(mappedBy = "applicant", cascade = {CascadeType.ALL})
+    private List<User> users;
 
-    @OneToMany(mappedBy = "applicant",  cascade = { CascadeType.ALL })
+    @OneToMany(mappedBy = "applicant", cascade = {CascadeType.ALL})
     private List<Product> products;
 
     public Long getApplcntId() {

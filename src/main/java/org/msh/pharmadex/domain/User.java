@@ -37,6 +37,7 @@ public class User extends CreationDetail implements Serializable {
     @Column(length = 10)
     private String phoneNo;
 
+    @Enumerated
     private UserType type;
 
     @Embedded

@@ -10,15 +10,16 @@ import java.util.Date;
  * Author: usrivastava
  */
 @Entity
-@Table(name="timeline")
+@Table(name = "timeline")
 public class TimeLine implements Serializable {
 
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(unique = true, nullable = false)
-	private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
+    private Long id;
 
     @Column(nullable = false)
+    @Enumerated
     private RegState regState;
 
     @Temporal(TemporalType.DATE)
@@ -28,12 +29,12 @@ public class TimeLine implements Serializable {
     @Column(length = 100)
     private String comment;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-   	@JoinColumn(name="PROD_APP_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROD_APP_ID", nullable = false)
     private ProdApplications prodApplications;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="USER_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
     public Long getId() {

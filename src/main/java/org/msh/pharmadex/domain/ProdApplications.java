@@ -43,6 +43,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 200)
     private String appComment;
 
+    @Enumerated
     private ProdDrugType drugType;
 
     @Column(length = 20)
@@ -75,6 +76,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 100)
     private String waybillNo;
 
+    @Enumerated
     private RegState regState;
 
     @Temporal(TemporalType.DATE)

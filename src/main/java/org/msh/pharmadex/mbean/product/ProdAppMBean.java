@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
 
@@ -39,11 +37,16 @@ public class ProdAppMBean implements Serializable {
     private List<ProdApplications> allApplicationForProcess;
     private List<ProdApplications> filteredApps;
 
+    @Autowired
+    ProcessProdBn processProdBn;
 
-    public void onRowSelect() {
-        setShowAdd(true);
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.addMessage(null, new FacesMessage("Successful", "Selected " + selectedApplication.getProd().getProdName()));
+
+    public String onRowSelect() {
+//        setShowAdd(true);
+//        FacesContext facesContext = FacesContext.getCurrentInstance();
+//        facesContext.addMessage(null, new FacesMessage("Successful", "Selected " + selectedApplication.getProd().getProdName()));
+        processProdBn = null;
+        return "/internal/processreg.faces";
     }
 
     @PostConstruct

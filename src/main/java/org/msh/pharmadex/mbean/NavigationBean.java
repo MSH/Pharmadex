@@ -1,5 +1,7 @@
 package org.msh.pharmadex.mbean;
 
+import org.msh.pharmadex.mbean.product.RegHomeMbean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -10,20 +12,30 @@ import java.io.Serializable;
 public class NavigationBean implements Serializable {
     private static final long serialVersionUID = -1798717174751773194L;
     private String selection;
-    private boolean adminhome=true;
-    private boolean onlineusers=false;
-    private boolean userslist=false;
-    private boolean rolelist=false;
-    private boolean loggedinuser=false;
+    private boolean adminhome = true;
+    private boolean onlineusers = false;
+    private boolean userslist = false;
+    private boolean rolelist = false;
+    private boolean loggedinuser = false;
+
+    @Autowired
+    RegHomeMbean regHomeMbean;
 
     // getters & setters
 
     public void active() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
-       setAdminhome(selection.equals("adminhome"));
-       setOnlineusers(selection.equals("onlineusers"));
-       setUserslist(selection.equals("userslist"));
-       setRolelist(selection.equals("rolelist"));
-       setLoggedinuser(selection.equals("loggedinuser"));
+        setAdminhome(selection.equals("adminhome"));
+        setOnlineusers(selection.equals("onlineusers"));
+        setUserslist(selection.equals("userslist"));
+        setRolelist(selection.equals("rolelist"));
+        setLoggedinuser(selection.equals("loggedinuser"));
+    }
+
+    public String regProductAction() {
+        System.out.println("reached inside regProductAction");
+        regHomeMbean = null;
+        return "/secure/prodreghome.faces";
+
     }
 
     public String getSelection() {

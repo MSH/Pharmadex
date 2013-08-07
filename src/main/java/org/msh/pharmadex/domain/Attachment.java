@@ -34,6 +34,7 @@ public class Attachment extends CreationDetail {
     @OneToOne
     private User uploadedBy;
 
+    @Enumerated
     private RegState regState;
 
     @Lob

@@ -17,10 +17,10 @@
         <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" onclick="dlg.show()"/>
         <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document" onclick="stepDlg.show()"
                     rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head}"/>
-        <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear" action="#{processProdBn.submitReview}"
-                    update="@form" rendered="#{userSession.reviewer and !processProdBn.module.complete}" ajax="false"/>
-        <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" action="#{processProdBn.registerProduct}"
-                    update="@form" rendered="#{processProdBn.readyReg}"/>
+        <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear" onclick="reviewDlg.show()"
+                    rendered="#{userSession.reviewer and !processProdBn.module.complete}"/>
+        <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" onclick="regDlg.show()"
+                    rendered="#{processProdBn.canRegister}"/>
         <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear" onclick="moderatordlg.show()"
                     rendered="#{userSession.head}"/>
     </p:submenu>
@@ -49,6 +49,16 @@
             <td align="right">
                 <h:outputLabel value="Submitted Date: " styleClass="title"/>
                 <h:outputFormat value="#{processProdBn.prodApplications.submitDate}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
+                <h:outputFormat value="#{processProdBn.prodApplications.prod.applicant.appName}"/>
+            </td>
+            <td align="right">
+                <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title" rendered="#{processProdBn.registered}"/>
+                <h:outputFormat value="#{processProdBn.prodApplications.regExpiryDate}"/>
             </td>
         </tr>
     </table>
@@ -91,8 +101,6 @@
                               styleClass="text"/>
             </div>
         </p:column>
-
-
     </p:dataTable>
 
 
@@ -312,25 +320,23 @@
                          oncomplete="mailDlg.hide()" update="@form"/>
 
     </p:dialog>
-
-
 </p:tab>
 
-<p:tab title="Processors" id="processor" rendered="#{userSession.moderator}">
+<p:tab title="#{msgs.processor}" id="processor" rendered="#{userSession.moderator}">
     <p:commandButton icon="ui-icon-document" value="#{msgs.assignprocessor}" onclick="processordlg.show()"/>
 
-    <p:panelGrid columns="4" columnClasses="label value" rendered="#{processProdBn.module != null}" id="processpnl">
+    <p:panelGrid columns="5" columnClasses="label value" rendered="#{processProdBn.module != null}" id="processpnl">
 
         <h:outputText value="#{msgs.module}"/>
         <h:outputText value="#{msgs.processor}" style="font-weight: bold;"/>
         <h:outputText value="#{msgs.assigndate}" style="font-weight: bold;"/>
         <h:outputText value="#{msgs.completeddate}" style="font-weight: bold;"/>
+        <h:outputText value="#{msgs.review_comment}" style="font-weight: bold;"/>
 
 
         <h:outputText value="Module 1 Processor: "/>
 
-        <h:outputText value="#{processProdBn.module.module1.name}"
-                      escape="false"/>
+        <h:outputText value="#{processProdBn.module.module1.name}" escape="false"/>
 
         <h:outputText value="#{processProdBn.module.assignDate}">
             <f:convertDateTime dateStyle="medium" type="date"/>
@@ -339,6 +345,12 @@
         <h:outputText value="#{processProdBn.module.module1SubmitDt}">
             <f:convertDateTime dateStyle="medium" type="date"/>
         </h:outputText>
+
+        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
+                         rendered="#{processProdBn.module.review1 != null}"
+                         action="#{processProdBn.setReviewComment(processProdBn.module.review1)}"
+                         update=":reghome:dlgRevComment"/>
+        <p:outputLabel rendered="#{processProdBn.module.review1 == null}"/>
 
 
         <h:outputText value="Module 2 Processor: "
@@ -355,11 +367,17 @@
             <f:convertDateTime dateStyle="medium" type="date"/>
         </h:outputText>
 
+        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
+                         rendered="#{processProdBn.module.review2 != null}"
+                         action="#{processProdBn.setReviewComment(processProdBn.module.review2)}"
+                         update=":reghome:dlgRevComment"/>
+        <p:outputLabel rendered="#{processProdBn.module.review2 == null}"/>
+
+
         <h:outputText value="Module 3 Processor: "
                       escape="false"/>
 
-        <h:outputText value="#{processProdBn.module.module3.name}"
-                      escape="false"/>
+        <h:outputText value="#{processProdBn.module.module3.name}" escape="false"/>
 
         <h:outputText value="#{processProdBn.module.assignDate}">
             <f:convertDateTime dateStyle="medium" type="date"/>
@@ -368,6 +386,13 @@
         <h:outputText value="#{processProdBn.module.module3SubmitDt}">
             <f:convertDateTime dateStyle="medium" type="date"/>
         </h:outputText>
+
+
+        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
+                         rendered="#{processProdBn.module.review3 != null}"
+                         action="#{processProdBn.setReviewComment(processProdBn.module.review3)}"
+                         update=":reghome:dlgRevComment"/>
+        <p:outputLabel rendered="#{processProdBn.module.review3 == null}"/>
 
 
         <h:outputText value="Module 4 Processor: "
@@ -384,6 +409,11 @@
             <f:convertDateTime dateStyle="medium" type="date"/>
         </h:outputText>
 
+        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
+                         rendered="#{processProdBn.module.review4 != null}"
+                         action="#{processProdBn.setReviewComment(processProdBn.module.review4)}"
+                         update=":reghome:dlgRevComment"/>
+        <p:outputLabel rendered="#{processProdBn.module.review4 == null}"/>
 
     </p:panelGrid>
 
@@ -524,7 +554,7 @@
 </p:dialog>
 
 
-<p:dialog header="Next Step" widgetVar="stepDlg" resizable="false" modal="true"
+<p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true"
           rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head}">
 
     <h:panelGrid columns="2" style="margin-bottom:10px">
@@ -541,6 +571,40 @@
 
 </p:dialog>
 
+<p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regDlg" modal="true">
+
+    <h:panelGrid columns="2" style="margin-bottom:10px">
+        <h:outputLabel value="#{msgs.registration_date}"/>
+        <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"/>
+        <h:outputLabel value="#{msgs.expiry_date}"/>
+        <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"/>
+
+        <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" action="#{processProdBn.registerProduct}"
+                    update="@form" rendered="#{processProdBn.readyReg}"/>
+
+    </h:panelGrid>
+
+    <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBn.registerProduct}"
+                     oncomplete="regDlg.hide()"
+                     update=":reghome:growl :reghome:messages :reghome"/>
+
+</p:dialog>
+
+<p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" resizable="true" id="reviewDlg" modal="true">
+    <p:editor id="editor" value="#{processProdBn.reviewComment}" width="800" height="500"/>
+
+    <h:panelGrid columns="2" style="margin-top:10px">
+        <p:commandButton id="submitReview" value="#{msgs.global_submit}" oncomplete="reviewDlg.hide()"
+                         icon="ui-icon-disk" ajax="true" action="#{processProdBn.submitReview}"/>
+        <p:commandButton id="clearButton" type="button" value="Clear" onclick="reviewDlg.hide()"
+                         icon="ui-icon-close" ajax="false"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog header="Review Comment" widgetVar="dlgRevComment" showEffect="fade" hideEffect="fade" modal="true"
+          id="dlgRevComment" minHeight="500" minWidth="800">
+    <h:outputText id="editordisplay" value="#{processProdBn.reviewComment}" escape="false"/>
+</p:dialog>
 
 <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
     <p:graphicImage value="/design/ajaxloadingbar.gif"/>

@@ -3,6 +3,7 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.auth.UserDetailsAdapter;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.dao.iface.RoleDAO;
+import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,12 +65,12 @@ public class UserService implements Serializable {
     public String createUser(User user) {
         //Set the user enable to access the system
         user.setEnabled(true);
-//        List<Role> rList = new ArrayList<Role>();
-//        Role r = roleDAO.findOne(1);
-//        rList.add(r);
-//        r = roleDAO.findOne(4);
-//        rList.add(r);
-//        user.setRoles(rList);
+        List<Role> rList = new ArrayList<Role>();
+        Role r = roleDAO.findOne(1);
+        rList.add(r);
+        r = roleDAO.findOne(4);
+        rList.add(r);
+        user.setRoles(rList);
         return userDAO.saveUser(passwordGenerator(user));
     }
 

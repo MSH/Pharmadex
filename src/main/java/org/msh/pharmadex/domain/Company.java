@@ -14,34 +14,35 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "company")
-public class Company extends CreationDetail implements Serializable{
+public class Company extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -3707427898846181650L;
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	@Column(length = 200, nullable = false)
-	private String companyName;
+    @Column(length = 200, nullable = false)
+    private String companyName;
 
     @Embedded
     private Address address = new Address();
 
-	@Column(length = 50)
-	private String contactName;
+    @Column(length = 50)
+    private String contactName;
 
-	@Column(length = 30)
-	private String phoneNo;
+    @Column(length = 30)
+    private String phoneNo;
 
-	@Column(length = 30)
-	private String faxNo;
+    @Column(length = 30)
+    private String faxNo;
 
+    @Enumerated
     private CompanyType companyType;
 
     @Column(length = 200)
-   	private String reference;
+    private String reference;
 
     @ManyToOne
-   	@JoinColumn(name="PROD_ID")
+    @JoinColumn(name = "PROD_ID")
     private Product product;
 
     public Long getId() {

@@ -10,65 +10,66 @@
         </div>
 
         <h:form prependId="false">
+            <div style="width:200px;">
+                <p:dataTable id="products" var="product" value="#{productMbean.products}"
+                             filteredValue="#{productMbean.filteredProducts}"
+                             paginator="true" rows="20" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="20,40,100">
+                    <p:column filterBy="#{product.prodName}" sortBy="#{product.prodName}">
+                        <f:facet name="header">
+                            <h:outputText value="Product Name"/>
+                        </f:facet>
+                        <p:commandLink id="viewLink" value="#{product.prodName}" update=":viewDlg"
+                                       oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                            <f:setPropertyActionListener value="#{product}" target="#{productDisplay.product}"/>
+                        </p:commandLink>
+                    </p:column>
 
-            <p:dataTable id="products" var="product" value="#{productMbean.products}"
-                         filteredValue="#{productMbean.filteredProducts}"
-                         paginator="true" rows="20" paginatorPosition="bottom"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="20,40,100">
-                <p:column filterBy="#{product.prodName}" sortBy="#{product.prodName}">
-                    <f:facet name="header">
-                        <h:outputText value="Product Name"/>
-                    </f:facet>
-                    <p:commandLink id="viewLink" value="#{product.prodName}" update=":viewDlg"
-                                   oncomplete="viewDialog.show()" title="Edit" ajax="true">
-                        <f:setPropertyActionListener value="#{product}" target="#{productDisplay.product}"/>
-                    </p:commandLink>
-                </p:column>
+                    <p:column filterBy="#{product.genName}"
+                              sortBy="#{product.genName}">
+                        <f:facet name="header">
+                            <h:outputText value="Generic Name"/>
+                        </f:facet>
+                        <h:outputText value="#{product.genName}"/>
+                    </p:column>
 
-                <p:column filterBy="#{product.genName}"
-                          sortBy="#{product.genName}">
-                    <f:facet name="header">
-                        <h:outputText value="Generic Name"/>
-                    </f:facet>
-                    <h:outputText value="#{product.genName}"/>
-                </p:column>
+                    <p:column filterBy="#{product.dosForm.dosForm}"
+                              sortBy="#{product.dosForm.dosForm}">
+                        <f:facet name="header">
+                            <h:outputText value="Dosage Form"/>
+                        </f:facet>
+                        <h:outputText value="#{product.dosForm.dosForm}"/>
+                    </p:column>
 
-                <p:column filterBy="#{product.dosForm.dosForm}"
-                          sortBy="#{product.dosForm.dosForm}">
-                    <f:facet name="header">
-                        <h:outputText value="Dosage Form"/>
-                    </f:facet>
-                    <h:outputText value="#{product.dosForm.dosForm}"/>
-                </p:column>
+                    <p:column filterBy="#{product.dosStrength}"
+                              sortBy="#{product.dosStrength}">
+                        <f:facet name="header">
+                            <h:outputText value="Dosage Strength"/>
+                        </f:facet>
+                        <h:outputText value="#{product.dosStrength}"/>
+                    </p:column>
 
-                <p:column filterBy="#{product.dosStrength}"
-                          sortBy="#{product.dosStrength}">
-                    <f:facet name="header">
-                        <h:outputText value="Dosage Strength"/>
-                    </f:facet>
-                    <h:outputText value="#{product.dosStrength}"/>
-                </p:column>
+                    <p:column filterBy="#{product.applicant.appName}"
+                              sortBy="#{product.applicant.appName}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.registration_applicant}"/>
+                        </f:facet>
+                        <h:outputText value="#{product.applicant.appName}"/>
+                    </p:column>
 
-                <p:column filterBy="#{product.applicant.appName}"
-                          sortBy="#{product.applicant.appName}">
-                    <f:facet name="header">
-                        <h:outputText value="#{msgs.registration_applicant}"/>
-                    </f:facet>
-                    <h:outputText value="#{product.applicant.appName}"/>
-                </p:column>
-
-                <p:column filterBy="#{product.prodApplications.registrationDate}"
-                          sortBy="#{product.prodApplications.registrationDate}">
-                    <f:facet name="header">
-                        <h:outputText value="Registered Date"/>
-                    </f:facet>
-                    <h:outputLabel converter="javax.faces.DateTime"
-                                   value="#{product.prodApplications.registrationDate}"/>
-                </p:column>
+                    <p:column filterBy="#{product.prodApplications.registrationDate}"
+                              sortBy="#{product.prodApplications.registrationDate}">
+                        <f:facet name="header">
+                            <h:outputText value="Registered Date"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime"
+                                       value="#{product.prodApplications.registrationDate}"/>
+                    </p:column>
 
 
-            </p:dataTable>
+                </p:dataTable>
+            </div>
             <h:panelGrid columns="2" width="100%">
                 <p:panel>
                     <h:commandLink>

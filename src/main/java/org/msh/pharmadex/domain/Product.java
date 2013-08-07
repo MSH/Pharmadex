@@ -44,6 +44,7 @@ public class Product extends CreationDetail implements Serializable {
     private String licNo;
 
     @Column(name = "prod_type")
+    @Enumerated
     private ProdType prodType;
 
     @Column(name = "reg_no", length = 100)
@@ -58,6 +59,7 @@ public class Product extends CreationDetail implements Serializable {
 
     private boolean noAtc;
 
+    @Enumerated
     private AdminRoute adminRoute;
 
     @OneToOne
@@ -79,6 +81,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinColumn(name = "userId")
     private User createdBy;
 
+    @Enumerated
     private RegState regState;
 
 

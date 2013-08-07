@@ -4,6 +4,7 @@ import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.primefaces.extensions.model.timeline.TimelineEvent;
@@ -49,6 +50,8 @@ public class ProcessProdBn {
     private List<ProdAppChecklist> checklists;
 
     private StatusUser module;
+    private boolean registered;
+    private String reviewComment;
 
 
     @Autowired
@@ -71,6 +74,9 @@ public class ProcessProdBn {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    GlobalEntityLists globalEntityLists;
 
     @Autowired
     private ProductService productService;
@@ -115,13 +121,22 @@ public class ProcessProdBn {
                 options[1] = RegState.REVIEW_BOARD;
                 break;
             case REVIEW_BOARD:
-                options = new RegState[2];
-                options[0] = RegState.FOLLOW_UP;
-                options[1] = RegState.RECOMMENDED;
+                if (userSession.isAdmin() || userSession.isModerator()) {
+                    if (getModule().isComplete()) {
+                        options = new RegState[2];
+                        options[0] = RegState.FOLLOW_UP;
+                        options[1] = RegState.RECOMMENDED;
+                    } else {
+                        options = new RegState[1];
+                        options[0] = RegState.FOLLOW_UP;
+                    }
+                }
                 break;
             case RECOMMENDED:
-                options = new RegState[1];
-                options[0] = RegState.REJECTED;
+                if (userSession.isAdmin() || userSession.isModerator() || userSession.isHead()) {
+                    options = new RegState[1];
+                    options[0] = RegState.REJECTED;
+                }
                 break;
             case REGISTERED:
                 options = new RegState[2];
@@ -187,8 +202,8 @@ public class ProcessProdBn {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void setProdApplications(ProdApplications prodApplications) {
-        this.prodApplications = prodApplications;
-        prodApplications = prodApplicationsService.findProdApplications(prodApplications.getId());
+        this.prodApplications = prodApplicationsService.findProdApplications(prodApplications.getId());
+        initProcessor();
 //        prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
 //        this.prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
 
@@ -262,13 +277,16 @@ public class ProcessProdBn {
                 module.setModule2(new User());
                 module.setModule3(new User());
                 module.setModule4(new User());
+            } else {
+                if (module.getModule1() != null)
+                    module.setModule1(userService.findUser(module.getModule1().getUserId()));
+                if (module.getModule2() != null)
+                    module.setModule2(userService.findUser(module.getModule2().getUserId()));
+                if (module.getModule3() != null)
+                    module.setModule3(userService.findUser(module.getModule3().getUserId()));
+                if (module.getModule4() != null)
+                    module.setModule4(userService.findUser(module.getModule4().getUserId()));
             }
-        } else {
-            module = new StatusUser();
-            module.setModule1(new User());
-            module.setModule2(new User());
-            module.setModule3(new User());
-            module.setModule4(new User());
         }
     }
 
@@ -339,7 +357,9 @@ public class ProcessProdBn {
         timeLine.setUser(userSession.getLoggedInUserObj());
         timelineService.saveTimeLine(timeLine);
         prodApplications.setRegState(timeLine.getRegState());
+        prodApplications.getProd().setRegState(timeLine.getRegState());
         prodApplicationsService.updateProdApp(prodApplications);
+        productService.updateProduct(prodApplications.getProd());
         timeLine = new TimeLine();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Status successfully changed"));
         return "";  //To change body of created methods use File | Settings | File Templates.
@@ -359,19 +379,32 @@ public class ProcessProdBn {
         timeLine.setRegState(RegState.REGISTERED);
         prodApplications.setRegistrationDate(new Date());
         prodApplications.getProd().setRegNo("" + (Math.random() * 100000));
+        globalEntityLists.setRegProducts(null);
         return addTimeline();
     }
 
     public String submitReview() {
+        if (reviewComment.isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Review comment can not be empty."));
+            return "";
+        }
         initProcessor();
-        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId())
+        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
             module.setModule1SubmitDt(new Date());
-        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId())
+            module.setReview1(reviewComment);
+        }
+        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
             module.setModule2SubmitDt(new Date());
-        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId())
+            module.setReview2(reviewComment);
+        }
+        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
             module.setModule3SubmitDt(new Date());
-        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId())
+            module.setReview3(reviewComment);
+        }
+        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
             module.setModule4SubmitDt(new Date());
+            module.setReview4(reviewComment);
+        }
 
         if (module.getModule1SubmitDt() != null && module.getModule2SubmitDt() != null && module.getModule3SubmitDt() != null && module.getModule4SubmitDt() != null)
             module.setComplete(true);
@@ -510,5 +543,32 @@ public class ProcessProdBn {
 
     public void setModel(TimelineModel model) {
         this.model = model;
+    }
+
+    public boolean isRegistered() {
+        if (prodApplications.getRegState().equals(RegState.REGISTERED))
+            return true;
+        else
+            return false;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
+
+    public boolean getCanRegister() {
+        if (userSession.isHead() || userSession.isAdmin()) {
+            if (prodApplications.getRegState().equals(RegState.RECOMMENDED))
+                return true;
+        }
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public String getReviewComment() {
+        return reviewComment;
+    }
+
+    public void setReviewComment(String reviewComment) {
+        this.reviewComment = reviewComment;
     }
 }

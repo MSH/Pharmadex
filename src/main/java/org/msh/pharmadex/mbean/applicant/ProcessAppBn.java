@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
@@ -40,6 +41,9 @@ public class ProcessAppBn {
     private UserService userService;
 
     @Autowired
+    GlobalEntityLists globalEntityLists;
+
+    @Autowired
     private MailService mailService;
 
     private User user;
@@ -47,8 +51,8 @@ public class ProcessAppBn {
     private List<User> userList;
 
     @Transactional
-    public void addUserToApplicant(){
-        if(userList==null)
+    public void addUserToApplicant() {
+        if (userList == null)
             userList = new ArrayList<User>();
         userList.add(user);
         applicant.setUsers(userList);
@@ -57,9 +61,10 @@ public class ProcessAppBn {
 
     }
 
-    public String registerApplicant(){
+    public String registerApplicant() {
         applicant.setState(ApplicantState.REGISTERED);
         applicantService.updateApp(applicant, null);
+        globalEntityLists.setRegApplicants(null);
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processAppBn", null);
@@ -67,7 +72,7 @@ public class ProcessAppBn {
 
     }
 
-    public String cancel(){
+    public String cancel() {
         applicant = new Applicant();
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -75,20 +80,20 @@ public class ProcessAppBn {
         return "/internal/processapplist.faces";
     }
 
-    public List<User> completeUserList(String query){
+    public List<User> completeUserList(String query) {
         List<User> suggestions = new ArrayList<User>();
 
-        if(query==null || query.equalsIgnoreCase(""))
+        if (query == null || query.equalsIgnoreCase(""))
             return getAvailableUsers();
 
-        for(User eachInn:getAvailableUsers()){
-            if(eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
+        for (User eachInn : getAvailableUsers()) {
+            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
                 suggestions.add(eachInn);
         }
         return suggestions;
     }
 
-    public String cancelAddUser(){
+    public String cancelAddUser() {
         user = new User();
         return "";
     }

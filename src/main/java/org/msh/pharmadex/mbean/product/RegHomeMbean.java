@@ -502,8 +502,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     public void onDateSelect(SelectEvent selectEvent) {
-        ScheduleEvent scEvent = (ScheduleEvent) selectEvent.getObject();
-        event = new DefaultScheduleEvent("", scEvent.getStartDate(), scEvent.getEndDate(), true);
+        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
     }
 
     public void onEventMove(ScheduleEntryMoveEvent event) {
