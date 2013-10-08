@@ -4,8 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.msh.pharmadex</groupId>
     <artifactId>pharmadex</artifactId>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
     <version>1.0</version>
+    <modules>
+        <module>bangladesh</module>
+        <module>core</module>
+    </modules>
     <name>pharmadex</name>
 
     <properties>
@@ -23,15 +27,16 @@
 
         <!-- JSF Dependencies -->
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.faces</artifactId>
-            <version>2.1.14</version>
+           <groupId>org.glassfish</groupId>
+           <artifactId>javax.faces</artifactId>
+           <version>2.2.0-m15</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>3.5</version>
+            <version>4.0</version>
         </dependency>
 
         <dependency>
@@ -50,6 +55,12 @@
             <groupId>org.primefaces.extensions</groupId>
             <artifactId>primefaces-extensions</artifactId>
             <version>0.7.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.omnifaces</groupId>
+            <artifactId>omnifaces</artifactId>
+            <version>1.5</version>
         </dependency>
 
         <!--
