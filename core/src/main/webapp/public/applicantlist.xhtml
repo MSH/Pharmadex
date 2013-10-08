@@ -1,0 +1,99 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.applicant_list}</h1>
+        </div>
+
+        <h:form prependId="false">
+
+            <p:dataTable id="car" var="applicant" value="#{applicantMBean.allApplicant}" selectionMode="single"
+                         selection="#{applicantMBean.selectedApplicant}" rowKey="#{applicant.applcntId}"
+                         filteredValue="#{applicantMBean.filteredApplicant}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,50,100">
+
+
+                <p:column filterBy="#{applicant.appName}"
+                          sortBy="#{applicant.appName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.registration_applicant}"/>
+                    </f:facet>
+
+
+                    <p:commandLink id="viewLink" value="#{applicant.appName}" update=":viewDlg"
+                                   oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                        <f:setPropertyActionListener value="#{applicant}" target="#{applicantHome.applicant}"/>
+                    </p:commandLink>
+                </p:column>
+
+
+                <p:column filterBy="#{applicant.contactName}"
+                          sortBy="#{applicant.contactName}">
+                    <f:facet name="header">
+                        <h:outputText value="Contact Name"/>
+                    </f:facet>
+
+                    <h:outputText value="#{applicant.contactName}"/>
+                </p:column>
+
+                <p:column filterBy="#{applicant.email}"
+                          sortBy="#{applicant.email}">
+                    <f:facet name="header">
+                        <h:outputText value="Email"/>
+                    </f:facet>
+                    <h:outputText value="#{applicant.email}"/>
+                </p:column>
+
+                <p:column filterBy="#{applicant.phoneNo}"
+                          sortBy="#{applicant.phoneNo}"
+                        >
+                    <f:facet name="header">
+                        <h:outputText value="Phone No."/>
+                    </f:facet>
+                    <h:outputText value="#{applicant.phoneNo}"/>
+                </p:column>
+
+            </p:dataTable>
+
+            <h:panelGrid columns="2" width="100%">
+                <p:panel>
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/pdf.png"/>
+                        <p:dataExporter type="pdf" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+                </p:panel>
+            </h:panelGrid>
+
+        </h:form>
+
+        <p:dialog header="#{msgs.applicant_detail}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
+                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
+            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

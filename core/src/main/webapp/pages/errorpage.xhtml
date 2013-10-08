@@ -1,0 +1,37 @@
+<!--
+  Created by IntelliJ IDEA.
+  User: usrivastava
+  Date: 8/13/13
+  Time: 4:30 PM
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/admin_layout.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:of="http://omnifaces.org/functions"
+>
+    <ui:define name="content">
+        <div class="post" style="width: 1024px">
+            <h1 class="title ui-widget-header ui-corner-all">
+                <ui:insert name="contentTitle"/>
+            </h1>
+        </div>
+
+
+        <ui:insert name="errorContent">
+            <ul>
+                <li>Date/time: #{of:formatDate(now, 'yyyy-MM-dd HH:mm:ss')}</li>
+                <li>User agent: #{header['user-agent']}</li>
+                <li>User IP: #{empty header['x-forwarded-for'] ? request.remoteAddr : fn:split(header['x-forwarded-for'], ',')[0]}</li>
+                <li>Request URI: <a href="#{requestScope['javax.servlet.error.request_uri']}">#{requestScope['javax.servlet.error.request_uri']}</a></li>
+                <li>Ajax request: #{facesContext.partialViewContext.ajaxRequest ? 'Yes' : 'No'}</li>
+                <li>Status code: #{requestScope['javax.servlet.error.status_code']}</li>
+                <li>Exception type: #{requestScope['javax.servlet.error.exception_type']}</li>
+                <li>Exception message: #{requestScope['javax.servlet.error.message']}</li>
+                <li>Stack trace: <pre><code>#{of:printStackTrace(requestScope['javax.servlet.error.exception'])}</code></pre></li>
+            </ul>
+        </ui:insert>
+        <h:outputScript rendered="#{facesContext.partialViewContext.ajaxRequest}">scrollTo(0, 0);</h:outputScript>
+    </ui:define>
+</ui:composition>

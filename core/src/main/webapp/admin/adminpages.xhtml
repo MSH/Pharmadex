@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+
+    <ui:define name="content">
+
+        <h:panelGrid columns="2" columnClasses="menu,content">
+            <h:form id="adminpage">
+                <p:panel styleClass="menu">
+                    <p:menu style="width:198px">
+                        <p:submenu label="#{msgs.User_admin}">
+                            <p:menuitem value="#{msgs.admin_home}" action="#{navigationBean.active}" update=":contents">
+                                <f:setPropertyActionListener value="adminhome" target="#{navigationBean.selection}"/>
+                            </p:menuitem>
+                            <p:menuitem value="#{msgs.admin_onlineusers}" action="#{navigationBean.active}"
+                                        update=":contents">
+                                <f:setPropertyActionListener value="onlineusers" target="#{navigationBean.selection}"/>
+                            </p:menuitem>
+                            <p:menuitem value="#{msgs.Userlist}" action="#{navigationBean.active}" update=":contents"
+                                        ajax="false">
+                                <f:setPropertyActionListener value="userslist" target="#{navigationBean.selection}"/>
+                            </p:menuitem>
+                            <p:menuitem value="#{msgs.admin_rolelist}" action="#{navigationBean.active}"
+                                        update=":contents">
+                                <f:setPropertyActionListener value="rolelist" target="#{navigationBean.selection}"/>
+                            </p:menuitem>
+                            <p:menuitem value="#{msgs.admin_useraccess}" action="#{navigationBean.active}"
+                                        update=":contents">
+                                <f:setPropertyActionListener value="loggedinuser" target="#{navigationBean.selection}"/>
+                            </p:menuitem>
+                        </p:submenu>
+                    </p:menu>
+                </p:panel>
+            </h:form>
+
+
+            <h:panelGroup styleClass="ui-widget" id="contents">
+
+                <h:panelGroup layout="block" styleClass="content" rendered="#{navigationBean.adminhome}">
+                    <ui:include src="adminhome.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="content" rendered="#{navigationBean.userslist}">
+                    <ui:include src="userslist.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="content" rendered="#{navigationBean.onlineusers}">
+                    <ui:include src="loggedinuser.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="content" rendered="#{navigationBean.rolelist}">
+                    <ui:include src="rolelist.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="content" rendered="#{navigationBean.loggedinuser}">
+                    <ui:include src="useraccesslist.xhtml"/>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGrid>
+    </ui:define>
+
+</ui:composition>

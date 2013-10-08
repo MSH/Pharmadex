@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:panelGroup id="useraccesspanel">
+    <div class="post">
+        <h1 class="title ui-widget-header ui-corner-all"> User Access List</h1>
+    </div>
+
+    <p:panel toggleable="true" toggleSpeed="250" header="User History">
+        <f:facet name="header">
+            <h:outputText value="#{appBean.name}"/>
+        </f:facet>
+        <p:dataTable id="useraccesstable" var="a" value="#{userAccessMBean.allUserAccess}"
+                     emptyMessage="#{msgs.label_no_records_found}">
+            <p:column headerText="User Name">
+                #{a.user.name}
+            </p:column>
+
+            <p:column headerText="Application">
+                #{a.application}
+
+            </p:column>
+
+            <p:column headerText="IP Address">
+                #{a.ipAddress}
+            </p:column>
+
+            <p:column headerText="Login Date">
+                <h:outputLabel converter="javax.faces.DateTime" value="#{a.loginDate}"/>
+            </p:column>
+
+            <p:column headerText="Logout Date">
+                <h:outputLabel converter="javax.faces.DateTime" value="#{a.logoutDate}"/>
+            </p:column>
+
+        </p:dataTable>
+    </p:panel>
+</h:panelGroup>
+</html>

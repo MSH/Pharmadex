@@ -1,0 +1,47 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:panelGroup id="loggedinuserpanel">
+    <div class="post">
+        <h1 class="title ui-widget-header ui-corner-all"> Logged in User List</h1>
+    </div>
+
+    <p:panel toggleable="true" toggleSpeed="250" header="Logged in User List">
+        <f:facet name="header">
+            <h:outputText value="#{applicationBean.appName}"/>
+        </f:facet>
+        <h:outputFormat value="#{msgs.label_no_records_found}" rendered="#{!appBean.dataVisible}">
+            <f:param value="Apps"/>
+        </h:outputFormat>
+        <p:dataTable id="accesstable" var="b" value="#{onlineUserBean.onlineUsersList}"
+                     emptyMessage="#{msgs.label_no_records_found}">
+            <f:facet name="#{msgs.headername}">
+                Click "View" button after selecting a row to see details
+            </f:facet>
+
+            <p:column headerText="Application">
+                #{b.userAccess.application}
+
+            </p:column>
+
+            <p:column headerText="IP Address">
+                #{b.userAccess.ipAddress}
+            </p:column>
+
+            <p:column headerText="Login Date">
+                <h:outputLabel converter="javax.faces.DateTime" value="#{b.userAccess.loginDate}"/>
+            </p:column>
+
+            <p:column headerText="Logout Date">
+                #{b.userAccess.logoutDate}
+            </p:column>
+
+            <p:column headerText="User Name">
+                #{b.userAccess.user.name}
+            </p:column>
+
+        </p:dataTable>
+    </p:panel>
+</h:panelGroup>
+</html>

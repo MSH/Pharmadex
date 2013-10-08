@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post" >
+            <h1 class="title ui-widget-header ui-corner-all">#{msgs.pharmacy_registration}</h1>
+        </div>
+
+        <h:form>
+
+            <p:panel header="#{msgs.person_responsible}">
+                <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                    <ui:param name="userdata" value="#{pharmacySiteMbean.user}"/>
+                    <ui:param name="input" value="#{true}"/>
+                </ui:decorate>
+
+            </p:panel>
+
+            <div style="height:10px"/>
+
+            <p:panel header="#{msgs.general_info}">
+                <p:messages/>
+
+
+                <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellspacing="10">
+
+                    <h:outputLabel value="#{msgs.pharmacyname}" for="rxname"/>
+                    <p:inputText id="rxname" required="true" value="#{pharmacySiteMbean.selectedSite.pharmacyName}" />
+
+                    <h:outputLabel/>
+                    <h:outputLabel/>
+
+                    <ui:decorate template="/templates/addrtempl.xhtml">
+                        <ui:param name="addressdata" value="#{pharmacySiteMbean.selectedSite.siteAddress}"/>
+                        <ui:param name="input" value="#{true}"/>
+                    </ui:decorate>
+                </h:panelGrid>
+
+                <p:separator id="customSeparator"  />
+
+                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                    <h:outputLabel value="#{msgs.qualification}" for="qual"/>
+                    <p:inputText id="qual" required="true" value="#{pharmacySiteMbean.selectedSite.applicantQualif}" />
+
+                    <h:outputLabel/>
+                    <h:outputLabel/>
+
+                    <h:outputLabel value="#{msgs.pharmacy_area_coverage}" for="areacoverage"/>
+                    <p:inputText id="areacoverage" required="true" value="#{pharmacySiteMbean.selectedSite.targetArea}" />
+
+                    <h:outputLabel value="#{msgs.pharmacy_est_population}" for="estpopulation"/>
+                    <p:inputText id="estpopulation" required="true" value="#{pharmacySiteMbean.selectedSite.estPopulation}" />
+
+                    <h:outputLabel/>
+                    <h:outputLabel/>
+                </h:panelGrid>
+            </p:panel>
+
+            <div style="height:10px"/>
+
+            <p:panel header="#{msgs.premises_attrib}">
+                <p:dataTable var="checkList" value="#{pharmacySiteMbean.siteChecklists}" style="width:100%;" >
+                    <p:column headerText="">
+                        <h:outputLabel value="#{checkList.siteChecklist.id}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel value="#{checkList.siteChecklist.name}"/>
+                    </p:column>
+                    <p:column>
+                        <p:selectBooleanCheckbox value="#{checkList.value}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+
+            <div align="center" style="height: 60px">
+                <p:commandButton action="#{pharmacySiteMbean.saveApp}" value="#{msgs.global_submit}" ajax="false"/>
+                <p:commandButton action="#{applicantMBean.cancelApp}" value="#{msgs.global_cancel}" ajax="false"
+                                 immediate="true"/>
+            </div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

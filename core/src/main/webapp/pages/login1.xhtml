@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<jsp:root
+        xmlns:jsp="http://java.sun.com/JSP/Page"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        version="2.0">
+
+    <ui:composition template="../templates/admin_layout.xhtml">
+        <ui:define name="content">
+
+            <div class="post" style="width: 1024px">
+                <h1 class="title ui-widget-header ui-corner-all"> User Settings</h1>
+            </div>
+
+            <p:panel>
+                <h:panelGrid columns="1">
+                    <h:outputLabel value="#{msgs.loginmessage}"/>
+
+                    <h:outputLink id="loginLink" value="javascript:void(0)" onclick="logindlg.show()" title="login">
+                        <h:outputLabel value="#{msgs.clicktologin}"/>
+                    </h:outputLink>
+
+                    <div>
+                        <p><p:outputLabel value="#{msgs.registermessage}"/>
+                            <h:link title="Register me" outcome="registeruser">
+                                <h:outputLabel value="#{msgs.registerme}"/>
+                            </h:link>
+                            <!--                        <a href="#{request.contextPath}/pages/registeruser.faces"> Register me</a> -->
+                        </p>
+
+                    </div>
+                </h:panelGrid>
+            </p:panel>
+
+
+        </ui:define>
+    </ui:composition>
+</jsp:root>

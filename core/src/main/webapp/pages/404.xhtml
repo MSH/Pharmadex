@@ -1,0 +1,18 @@
+<!--
+  Created by IntelliJ IDEA.
+  User: usrivastava
+  Date: 8/13/13
+  Time: 4:43 PM
+-->
+<ui:composition template="/pages/errorpage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+    <ui:define name="contentTitle">Wrong URL?</ui:define>
+    <ui:define name="errorContent">
+        <p style="font-weight: bolder">
+            #{msgs.wrongurl}
+        </p>
+        <br/>
+    </ui:define>
+</ui:composition>

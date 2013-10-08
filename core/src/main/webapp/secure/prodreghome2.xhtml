@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> Product Registration</h1>
+        </div>
+        <f:view contentType="text/html">
+            <h:form>
+                <p:wizard flowListener="#{userWizard.onFlowProcess}">
+
+                    <p:tab title="Personal">
+
+                        <p:panel header="Personal Details">
+
+
+                            <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid">
+                                <h:outputText value="Firstname: *"/>
+                                <p:inputText required="true" label="Firstname"
+                                             value="#{userWizard.user.name}"/>
+
+                                <h:outputText value="Lastname: *"/>
+                                <p:inputText required="true" label="Lastname"
+                                             value="#{userWizard.user.username}"/>
+
+                                <h:outputText value="Skip to last: "/>
+                                <h:selectBooleanCheckbox value="#{userWizard.skip}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab title="Address">
+                        <p:panel header="Adress Details">
+
+                            <h:messages errorClass="error"/>
+
+                            <h:panelGrid columns="2" columnClasses="label, value">
+                                <h:outputText value="Street: "/>
+                                <p:inputText value="#{userWizard.user.companyName}"/>
+
+                                <h:outputText value="Skip to last: "/>
+                                <h:selectBooleanCheckbox value="#{userWizard.skip}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab title="Contact">
+                        <p:panel header="Contact Information">
+
+
+                            <h:panelGrid columns="2" columnClasses="label, value">
+                                <h:outputText value="Email: *"/>
+                                <p:inputText required="true" label="Email"
+                                             value="#{userWizard.user.email}"/>
+
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab title="Confirmation">
+                        <p:panel header="Confirmation">
+
+                            <h:panelGrid id="confirmation" columns="6">
+                                <h:outputText value="Firstname: "/>
+                                <h:outputText styleClass="outputLabel"
+                                              value="#{userWizard.user.name}"/>
+
+                                <h:outputText value="Lastname: "/>
+                                <h:outputText styleClass="outputLabel"
+                                              value="#{userWizard.user.username}"/>
+
+                                <h:outputText value="Age: "/>
+                                <h:outputText styleClass="outputLabel"
+                                              value="#{userWizard.user.companyName}"/>>
+
+                                <h:outputText value="Street: "/>
+                                <h:outputText styleClass="outputLabel"
+                                              value="#{userWizard.user.email}"/>
+
+                                <h:outputText/>
+                                <h:outputText/>
+                            </h:panelGrid>
+
+                        </p:panel>
+                    </p:tab>
+
+                </p:wizard>
+            </h:form>
+        </f:view>
+    </ui:define>
+</ui:composition>

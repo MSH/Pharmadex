@@ -1,0 +1,174 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:sec="http://www.springframework.org/security/facelets/tags">
+    <title>#{msgs.header_title}</title>
+    <h:outputStylesheet library="css" name="standard.css"/>
+    <h:outputScript library="js" name="calendar.js"/>
+
+
+    <div class="ui-widget ui-widget-header" style="height: 100px;">
+        <h:form>
+        <div id="logo">
+                <h1>PHARMADEX</h1>
+                <h:panelGroup styleClass="logoutWelcomeId">
+                    <sec:isAuthenticated>
+                        <p:commandLink value="Logged in as #{userSession.loggedInUser} |"></p:commandLink>
+                        <p:commandLink action="#{userSession.editUser}" value="Settings |" immediate="true"
+                                       ajax="false">
+                            <f:setPropertyActionListener value="#{userSession.userAccess.user}"
+                                                         target="#{registerUserMbean.user}"/>
+                        </p:commandLink>
+                        <p:commandLink action="#{userAuthHandler.logout}" value="Logout" ajax="false"/>
+                        <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
+                        -->                            </sec:isAuthenticated>
+                    <sec:isAnonymous>
+                        <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
+                        -->                                <h:outputLink id="loginLink" value="javascript:void(0)"
+                                                                             onclick="logindlg.show()"
+                                                                             title="login">
+                        <p:graphicImage value="/resources/images/log_in.png"/>
+                    </h:outputLink>
+                    </sec:isAnonymous>
+                </h:panelGroup>
+        </div>
+        </h:form>
+    </div>
+
+    <!--        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
+                <ul id="main">
+                    <li class="current_page_item"><a href="#{request.contextPath}/ui/home.jsf" >PrimeUI</a></li>
+                    <li><a href="#{request.contextPath}/mobile/index.jsf" >Registration</a></li>
+                    <li><a href="#{request.contextPath}/push/index.jsf">Inspection</a></li>
+                    <li><a href="#{request.contextPath}/push/index.jsf">TIPS</a></li>
+                    <li><a href="#{request.contextPath}/push/index.jsf">QSL</a></li>
+                    <li><a href="#{request.contextPath}/push/index.jsf">Narcotics Control</a></li>
+                    <li><a href="#{request.contextPath}/push/index.jsf">Administration</a></li>
+                </ul>
+    -->
+    <div>
+        <h:form prependId="false">
+            <p:menubar>
+                <p:menuitem value="#{msgs.label_home}" url="/home.faces" icon="ui-icon-home"/>
+
+                <p:menuitem value="#{msgs.Registration}" url="/public/registrationhome.faces"
+                            icon="ui-icon-folder-collapsed"/>
+
+                <sec:isAuthenticated>
+                    <p:menuitem value="#{msgs.Inspection}" url="/public/inspectionhome.faces"
+                                icon="ui-icon-folder-collapsed"
+                                rendered="#{userSession.admin||userSession.inspector}"/>
+                </sec:isAuthenticated>
+
+                <p:menuitem value="#{msgs.Tipc}" url="/public/tipchome.faces" icon="ui-icon-folder-collapsed"/>
+
+                <p:menuitem value="#{msgs.Qsl}" url="/public/qslhome.faces" icon="ui-icon-folder-collapsed"/>
+
+                <p:menuitem value="#{msgs.Narcotics}" url="/public/narcoticshome.faces"
+                            icon="ui-icon-folder-collapsed"/>
+
+                <sec:isAuthenticated>
+                    <p:submenu label="#{msgs.Admin}" icon="ui-icon-key" rendered="#{userSession.admin}">
+                        <p:menuitem value="#{msgs.admin_onlineusers}" url="/admin/loggedinuser_bk.faces"
+                                    icon="ui-icon-document" ajax="false"/>
+                        <p:menuitem value="#{msgs.Userlist}" url="/admin/userslist_bk.faces" icon="ui-icon-gear"
+                                    ajax="false"/>
+                        <p:menuitem value="#{msgs.admin_rolelist}" url="/admin/rolelist_bk.faces"
+                                    icon="ui-icon-document" ajax="false"/>
+                        <p:menuitem value="#{msgs.admin_useraccess}" url="/admin/useraccesslist_bk.faces"
+                                    icon="ui-icon-document" ajax="false"/>
+                    </p:submenu>
+                </sec:isAuthenticated>
+
+                <!--
+                                <p:submenu label="Edit" icon="ui-icon-pencil">
+                                    <p:menuitem value="Undo" url="#" icon="ui-icon-arrowreturnthick-1-w" helpText="CTRL+Z"></p:menuitem>
+                                    <p:menuitem value="Redo" url="#" icon="ui-icon-arrowreturnthick-1-e" helpText="CTRL+Y"></p:menuitem>
+                                </p:submenu>
+
+                                <p:submenu label="Help" icon="ui-icon-help">
+                                    <p:menuitem value="Contents" url="#" />
+                                    <p:submenu label="Search" icon="ui-icon-search">
+                                        <p:submenu label="Text">
+                                            <p:menuitem value="Workspace" url="#" />
+                                        </p:submenu>
+                                        <p:menuitem value="File" url="#" />
+                                    </p:submenu>
+                                </p:submenu>
+
+                                <p:submenu label="Actions" icon="ui-icon-gear">
+                                    <p:submenu label="Ajax" icon="ui-icon-refresh">
+                                        <p:menuitem value="Save" actionListener="#{buttonBean.save}" icon="ui-icon-disk" update="messages"/>
+                                        <p:menuitem value="Update" actionListener="#{buttonBean.update}" icon="ui-icon-arrowrefresh-1-w" update="messages"/>
+                                    </p:submenu>
+                                    <p:submenu label="Non-Ajax" icon="ui-icon-newwin">
+                                        <p:menuitem value="Delete" actionListener="#{buttonBean.delete}" icon="ui-icon-close" update="messages" ajax="false"/>
+                                    </p:submenu>
+                                </p:submenu>
+
+                                <p:menuitem value="Quit" url="http://www.primefaces.org" icon="ui-icon-close" />
+                -->
+            </p:menubar>
+
+            <p:dialog id="dialog" header="Login" widgetVar="logindlg">
+
+                <table align="center">
+                    <tr>
+                        <td>
+                            <h:outputLabel value="Username:" for="j_username"/>
+
+                        </td>
+                        <td>
+                            <p:inputText id="j_username" required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputLabel value="Password:" for="j_password"/>
+
+                        </td>
+                        <td>
+                            <h:inputSecret id="j_password" required="true">
+                            </h:inputSecret>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+
+                            <h:outputLabel for="_spring_security_remember_me"
+                                           value="Remember me"/>
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox
+                                    id="_spring_security_remember_me"/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+
+                            <p:commandLink action="#{userMBean.goToResetPwd}" value="#{msgs.reset_password}"
+                                           ajax="false" immediate="true"/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:commandButton
+                                    type="submit"
+                                    id="login"
+                                    action="#{userAuthHandler.doLogin}"
+                                    value="Login" ajax="false"/>
+                        </td>
+                    </tr>
+                </table>
+
+            </p:dialog>
+        </h:form>
+    </div>
+
+
+</ui:composition>

@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:panelGrid cellspacing="8px" cellpadding="10px" columns="4" id="user" style="text-justify:auto;" width="100%"
+                 columnClasses="col1, col2, col1, col2">
+        <h:outputLabel value="#{msgs.User_name}" for="name"/>
+        <h:outputText value="#{userdata.name}" id="name" style="font-weight: bold;" rendered="#{!input}"/>
+        <p:inputText value="#{userdata.name}" rendered="#{input}"/>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+        <ui:decorate template="/templates/addrtempl.xhtml">
+            <ui:param name="addressdata" value="#{userdata.address}"/>
+            <ui:param name="input" value="#{input}"/>
+        </ui:decorate>
+
+        <h:outputLabel value="#{msgs.applicant_phone}" for="phoneno"/>
+        <h:outputText value="#{userdata.phoneNo}" id="phoneno" style="font-weight: bold;" rendered="#{!input}"/>
+        <p:inputText value="#{userdata.phoneNo}" rendered="#{input}"/>
+
+        <h:outputLabel value="#{msgs.applicant_faxno}" for="faxno"/>
+        <h:outputText value="#{userdata.faxNo}" id="faxno" style="font-weight: bold;" rendered="#{!input}"/>
+        <p:inputText value="#{userdata.faxNo}" rendered="#{input}"/>
+
+        <h:outputLabel value="#{msgs.User_email}" for="email"/>
+        <h:outputText value="#{userdata.email}" id="email" style="font-weight: bold;" rendered="#{!input}"/>
+        <p:inputText value="#{userdata.email}" rendered="#{input}"/>
+
+        <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
+        <h:outputText value="#{userdata.comments}" id="comment" style="font-weight: bold;" rendered="#{!input}"/>
+        <p:inputText value="#{userdata.comments}" rendered="#{input}"/>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+    </h:panelGrid>
+
+
+</ui:composition>
