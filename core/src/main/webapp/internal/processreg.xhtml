@@ -157,7 +157,7 @@
 </p:tab>
 
 <p:tab title="CheckLists" rendered="#{userSession.admin||userSession.staff}" id="checklisttab">
-    <p:dataTable var="checkList" value="#{processProdBn.siteChecklists}" style="width:100%;">
+    <p:dataTable var="checkList" value="#{processProdBn.checklists}" style="width:100%;">
         <p:column headerText="">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
         </p:column>
