@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.applicant_list}</h1>
+        </div>
+
+        <h:form prependId="false">
+
+            <p:dataTable id="rxsite" var="rxsite" value="#{pharmacySiteMbean.regSites}" selectionMode="single"
+                         selection="#{pharmacySiteMbean.selectedSite}" rowKey="#{rxsite.id}"
+                         filteredValue="#{pharmacySiteMbean.filteredSites}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,50,100">
+
+
+                <p:column filterBy="#{rxsite.pharmacyName}"
+                          sortBy="#{rxsite.pharmacyName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.registration_rxsite}"/>
+                    </f:facet>
+
+
+                    <p:commandLink id="viewLink" value="#{rxsite.pharmacyName}" update=":viewDlg"
+                                   oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                        <f:setPropertyActionListener value="#{rxsite}" target="#{rxSiteHome.site}"/>
+                    </p:commandLink>
+                </p:column>
+
+
+                <p:column filterBy="#{rxsite.applicantName}"
+                          sortBy="#{rxsite.applicantName}">
+                    <f:facet name="header">
+                        <h:outputText value="Email"/>
+                    </f:facet>
+                    <h:outputText value="#{rxsite.applicantName}"/>
+                </p:column>
+
+                <p:column filterBy="#{rxsite.email}"
+                          sortBy="#{rxsite.email}">
+                    <f:facet name="header">
+                        <h:outputText value="Email"/>
+                    </f:facet>
+                    <h:outputText value="#{rxsite.email}"/>
+                </p:column>
+
+                <p:column filterBy="#{rxsite.phoneNo}"
+                          sortBy="#{rxsite.phoneNo}"
+                        >
+                    <f:facet name="header">
+                        <h:outputText value="Phone No."/>
+                    </f:facet>
+                    <h:outputText value="#{rxsite.phoneNo}"/>
+                </p:column>
+
+            </p:dataTable>
+
+            <h:panelGrid columns="2" width="100%">
+                <p:panel>
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="rxsite" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/pdf.png"/>
+                        <p:dataExporter type="pdf" target="rxsite" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="rxsite" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="rxsite" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+                </p:panel>
+            </h:panelGrid>
+
+        </h:form>
+
+        <p:dialog header="#{msgs.rxsitedetail}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
+                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
+
+            <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellspacing="10">
+
+                <h:outputLabel value="#{msgs.pharmacyname}" for="rxname"/>
+                <p:outputLabel id="rxname" value="#{pharmacySiteMbean.selectedSite.pharmacyName}"/>
+
+                <h:outputLabel/>
+                <h:outputLabel/>
+
+                <ui:decorate template="/templates/addrtempl.xhtml">
+                    <ui:param name="addressdata" value="#{pharmacySiteMbean.selectedSite.siteAddress}"/>
+                    <ui:param name="input" value="#{false}"/>
+                </ui:decorate>
+
+                <h:outputLabel value="#{msgs.pharmacy_area_coverage}" for="areacoverage"/>
+                <p:outputLabel id="areacoverage" value="#{pharmacySiteMbean.selectedSite.targetArea}"/>
+
+            </h:panelGrid>
+
+            <p:separator id="customSeparator"/>
+
+            <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                <ui:param name="userdata" value="#{pharmacySiteMbean.user}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+        </p:dialog>
+
+
+    </ui:define>
+</ui:composition>

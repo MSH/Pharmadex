@@ -27,10 +27,10 @@ public class PharmacySite extends CreationDetail implements Serializable {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="address1", column = @Column(name="site_address1")),
-            @AttributeOverride(name="address2", column = @Column(name="site_address2")),
-            @AttributeOverride(name="zipcode", column = @Column(name="site_zipcode")),
-            @AttributeOverride(name="country", column = @Column(name="site_country")),
+            @AttributeOverride(name = "address1", column = @Column(name = "site_address1")),
+            @AttributeOverride(name = "address2", column = @Column(name = "site_address2")),
+            @AttributeOverride(name = "zipcode", column = @Column(name = "site_zipcode")),
+            @AttributeOverride(name = "country", column = @Column(name = "site_country")),
     })
     private Address siteAddress = new Address();
 
@@ -72,7 +72,8 @@ public class PharmacySite extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
-    @OneToMany
+    @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinTable(name = "pharmacy_site_user", joinColumns = @JoinColumn(name = "site_id"), inverseJoinColumns = @JoinColumn(name = "userId"))
     private List<User> users;
 
     public Long getId() {

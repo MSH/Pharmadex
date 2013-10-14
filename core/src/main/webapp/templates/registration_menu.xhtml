@@ -12,10 +12,13 @@
                             ajax="false"/>
                 <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
                             ajax="false"/>
+                <p:menuitem value="#{msgs.registration_rxsite}" icon="ui-icon-document" url="/public/rxsitelist.faces"
+                            ajax="false"/>
             </p:submenu>
 
             <sec:isAuthenticated>
-                <p:submenu label="#{msgs.registration_form}" rendered="#{userSession.general||userSession.company||userSession.admin}">
+                <p:submenu label="#{msgs.registration_form}"
+                           rendered="#{userSession.general||userSession.company||userSession.admin}">
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                 url="/secure/prodreghome.faces" ajax="false"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"

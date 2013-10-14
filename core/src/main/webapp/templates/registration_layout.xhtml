@@ -11,19 +11,19 @@
 
     <ui:define name="content">
         <table>
-                <tr>
-                    <td style="vertical-align: top;">
-                        <ui:insert name="menu">
-                            <ui:include src="registration_menu.xhtml"/>
-                        </ui:insert>
-                    </td>
-                <td>
+            <tr>
+                <td style="vertical-align: top;">
+                    <ui:insert name="menu">
+                        <ui:include src="registration_menu.xhtml"/>
+                    </ui:insert>
+                </td>
+                <td style="width: 805px;">
                     <h:panelGroup styleClass="ui-widget">
                         <ui:insert name="regcontent"/>
                     </h:panelGroup>
                 </td>
             </tr>
-            </table>
+        </table>
     </ui:define>
 </ui:composition>
 </html>

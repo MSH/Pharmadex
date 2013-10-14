@@ -41,9 +41,13 @@ public class PharmacySiteMbean implements Serializable {
 
     private User user;
 
+    private List<PharmacySite> allSites;
+
+    private List<PharmacySite> filteredSites;
+
 
     @PostConstruct
-    private void init(){
+    private void init() {
         selectedSite = new PharmacySite();
         selectedSite.setSiteAddress(new Address());
         selectedSite.getSiteAddress().setCountry(new Country());
@@ -71,7 +75,7 @@ public class PharmacySiteMbean implements Serializable {
         selectedSite.setEmail(user.getEmail());
         selectedSite.setFaxNo(user.getFaxNo());
         selectedSite.setPhoneNo(user.getPhoneNo());
-        if (pharmacySiteService.saveSite(selectedSite).equalsIgnoreCase("persisted")){
+        if (pharmacySiteService.saveSite(selectedSite).equalsIgnoreCase("persisted")) {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
@@ -80,6 +84,21 @@ public class PharmacySiteMbean implements Serializable {
         } else {
             return null;
         }
+    }
+
+    public List<PharmacySite> getAllSites() {
+        return allSites;
+    }
+
+
+    public List<PharmacySite> getRegSites() {
+        allSites = globalEntityLists.getPharmacySites();
+        return allSites;
+    }
+
+
+    public void setAllSites(List<PharmacySite> allSites) {
+        this.allSites = allSites;
     }
 
     public PharmacySite getSelectedSite() {
@@ -104,5 +123,13 @@ public class PharmacySiteMbean implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<PharmacySite> getFilteredSites() {
+        return filteredSites;
+    }
+
+    public void setFilteredSites(List<PharmacySite> filteredSites) {
+        this.filteredSites = filteredSites;
     }
 }
