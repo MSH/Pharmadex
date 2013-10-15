@@ -27,7 +27,9 @@ public class UserDAO implements Serializable {
 
     @Transactional
     public User findUser(int id) {
-        return entityManager.find(User.class, id);
+        return (User) entityManager.createQuery("select u from User u join fetch u.roles r where u.userId = :userid")
+                .setParameter("userid", id)
+                .getSingleResult();
     }
 
     @Transactional

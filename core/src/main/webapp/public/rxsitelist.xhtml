@@ -92,25 +92,25 @@
             <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellspacing="10">
 
                 <h:outputLabel value="#{msgs.pharmacyname}" for="rxname"/>
-                <p:outputLabel id="rxname" value="#{pharmacySiteMbean.selectedSite.pharmacyName}"/>
+                <p:outputLabel id="rxname" value="#{rxSiteHome.site.pharmacyName}"/>
 
                 <h:outputLabel/>
                 <h:outputLabel/>
 
                 <ui:decorate template="/templates/addrtempl.xhtml">
-                    <ui:param name="addressdata" value="#{pharmacySiteMbean.selectedSite.siteAddress}"/>
+                    <ui:param name="addressdata" value="#{rxSiteHome.site.siteAddress}"/>
                     <ui:param name="input" value="#{false}"/>
                 </ui:decorate>
 
                 <h:outputLabel value="#{msgs.pharmacy_area_coverage}" for="areacoverage"/>
-                <p:outputLabel id="areacoverage" value="#{pharmacySiteMbean.selectedSite.targetArea}"/>
+                <p:outputLabel id="areacoverage" value="#{rxSiteHome.site.targetArea}"/>
 
             </h:panelGrid>
 
             <p:separator id="customSeparator"/>
 
             <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                <ui:param name="userdata" value="#{pharmacySiteMbean.user}"/>
+                <ui:param name="userdata" value="#{rxSiteHome.user}"/>
                 <ui:param name="input" value="#{false}"/>
             </ui:decorate>
         </p:dialog>

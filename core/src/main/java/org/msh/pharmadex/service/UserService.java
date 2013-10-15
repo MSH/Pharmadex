@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.io.Serializable;
@@ -41,6 +42,7 @@ public class UserService implements Serializable {
     @Autowired
     private ReflectionSaltSource saltSource;
 
+    @Transactional
     public User findUser(int id) {
         return userDAO.findUser(id);
     }
