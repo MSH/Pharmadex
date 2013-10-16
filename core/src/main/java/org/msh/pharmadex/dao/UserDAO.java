@@ -50,6 +50,13 @@ public class UserDAO implements Serializable {
                 .getResultList();
     }
 
+    @Transactional
+    public List<User> findByRxSite(Long id) {
+        return entityManager.createQuery("select u from User u join u.pharmacySites ps where ps.id = :siteId ")
+                .setParameter("siteId", id)
+                .getResultList();
+    }
+
     public User findByUsername(String username) throws NoResultException {
         System.out.println("inside findByUsername ");
         try {

@@ -24,8 +24,7 @@ public class RxSiteHome implements Serializable {
     private User user;
 
     public User getUser() {
-        user = site.getUsers().get(0);
-        user = userService.findUser(user.getUserId());
+        user = userService.findUsersBySite(site.getId()).get(0);
         return user;
     }
 

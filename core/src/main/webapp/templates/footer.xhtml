@@ -9,7 +9,7 @@
             <h:panelGrid columns="2" cellspacing="0" cellpadding="0">
                 <h:panelGrid width="600" cellspacing="0" cellpadding="0">
                     <h:panelGrid columns="5">
-                        <h:link outcome="home" value="#{msgs.label_home}"/>
+                        <h:link outcome="/home.faces" value="#{msgs.label_home}"/>
                         <h:outputText value="| #{msgs.label_language}:"/>
                         <h:panelGroup>
                             <h:commandLink id="switchToEnglish" action="#{localeBean.setSelectedLocale}">

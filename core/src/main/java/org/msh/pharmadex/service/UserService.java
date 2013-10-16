@@ -51,6 +51,10 @@ public class UserService implements Serializable {
         return userDAO.allUsers();
     }
 
+    public List<User> findUsersBySite(Long id){
+        return userDAO.findByRxSite(id);
+    }
+
     public List<User> findUnregisteredUsers() {
         return userDAO.findNotRegistered();
     }

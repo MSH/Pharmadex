@@ -4,6 +4,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.dao.iface.PharmacySiteDAO;
 import org.msh.pharmadex.dao.iface.SiteChecklistDAO;
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.PharmacySite;
 import org.msh.pharmadex.domain.SiteChecklist;
 import org.msh.pharmadex.domain.User;
@@ -21,8 +22,6 @@ import java.util.List;
  */
 @Service
 public class PharmacySiteService implements Serializable {
-
-    private static final long serialVersionUID = 3764728012503965664L;
 
     @Autowired
     PharmacySiteDAO pharmacySiteDAO;
@@ -47,6 +46,23 @@ public class PharmacySiteService implements Serializable {
     public List<SiteChecklist> findAllCheckList (){
         return IteratorUtils.toList(siteChecklistDAO.findAll().iterator());
     }
+
+    @Transactional
+    public boolean updateApp(PharmacySite rxSite, User user) {
+        try {
+            pharmacySiteDAO.save(rxSite);
+            System.out.println("Site id = " + rxSite.getId());
+            if (user != null) {
+                user.getPharmacySites().add(rxSite);
+//                userService.updateUser(user);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     @Transactional
     public String saveSite(PharmacySite pharmacySite){

@@ -66,8 +66,21 @@ public class User extends CreationDetail implements Serializable {
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
     private List<Role> roles;
+
     private String faxNo;
 
+    @ManyToMany(targetEntity = PharmacySite.class, fetch = FetchType.LAZY)
+    @JoinTable(name = "pharmacy_site_user", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "site_id"))
+    private List<PharmacySite> pharmacySites;
+
+
+    public List<PharmacySite> getPharmacySites() {
+        return pharmacySites;
+    }
+
+    public void setPharmacySites(List<PharmacySite> pharmacySites) {
+        this.pharmacySites = pharmacySites;
+    }
 
     public Integer getUserId() {
         return userId;
