@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all">#{msgs.submitted_applications}</h1>
+        </div>
+
+        <h:form prependId="false">
+            <h:outputFormat id="noRecordsFound" value="#{msgs.label_no_records_found}"
+                            rendered="#{empty pharmacySiteMbean.submittedSites}">
+                <f:param value="#{msgs.lable_rxsites}"/>
+            </h:outputFormat>
+            <p:dataTable id="rxsites" var="applicantion" value="#{pharmacySiteMbean.submittedSites}"
+                         rendered="#{not empty pharmacySiteMbean.submittedSites}">
+                <p:column headerText="#{msgs.pharmacyname}">
+                    <p:commandLink value="#{applicantion.pharmacyName}" action="/internal/processrxsite.faces"
+                                   ajax="false">
+                        <f:setPropertyActionListener value="#{applicantion}"
+                                                     target="#{processRxSiteBn.selectedRxSite}"/>
+                    </p:commandLink>
+                </p:column>
+
+
+                <p:column headerText="#{msgs.applicant_name}">
+                    #{applicantion.applicantName}
+                </p:column>
+
+                <p:column headerText="#{msgs.registration_status}">
+                    #{msgs[applicantion.state.key]}
+                </p:column>
+
+                <p:column headerText="#{msgs.submitted_date}">
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{applicantion.submitDate}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.file_number}">
+                    #{applicantion.fileNumber}
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

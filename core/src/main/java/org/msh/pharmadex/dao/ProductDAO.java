@@ -1,5 +1,6 @@
 package org.msh.pharmadex.dao;
 
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -34,7 +35,9 @@ public class ProductDAO implements Serializable {
 
     @Transactional
     public Product findProduct(long id) {
-        return entityManager.find(Product.class, id);
+        return (Product) entityManager.createQuery("select p from Product p join fetch p.applicant a where p.id = :prodId")
+                .setParameter("prodId", id)
+                .getSingleResult();
     }
 
     @Transactional
@@ -80,6 +83,13 @@ public class ProductDAO implements Serializable {
         else
             query.select(root);
         return entityManager.createQuery(query).getResultList();
+    }
+
+    public Applicant findApplicantByProd(Long id) {
+        return (Applicant) entityManager.createQuery("select a from Applicant a join a.products p where p.id = :prodId")
+                .setParameter("prodId", id)
+                .getSingleResult();
+
     }
 }
 

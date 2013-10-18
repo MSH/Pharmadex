@@ -43,9 +43,10 @@ public class ApplicantDAO implements Serializable {
     }
 
     @Transactional(readOnly = true)
-    public List<Applicant> findApplicantByProduct(Long id) {
-        return (List<Applicant>) entityManager.createQuery("select a from Applicant a inner join a.products p where p.id = :prodId ")
-                .setParameter("prodId", id).getResultList();
+    public Applicant findApplicantByProduct(Long id) {
+        return (Applicant) entityManager.createQuery("select a from Applicant a join a.products p " +
+                "where p.id = :prodId")
+                .setParameter("prodId", id).getSingleResult();
     }
 
     @Transactional(readOnly = true)

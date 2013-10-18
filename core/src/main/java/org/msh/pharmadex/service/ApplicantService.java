@@ -84,7 +84,7 @@ public class ApplicantService implements Serializable {
 
 
     @Transactional
-    public List<Applicant> findApplicantByProduct(Long id) {
+    public Applicant findApplicantByProduct(Long id) {
         System.out.println("inside applicant by product");
         return applicantDAO.findApplicantByProduct(id);
     }

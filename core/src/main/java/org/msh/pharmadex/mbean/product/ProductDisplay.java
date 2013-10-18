@@ -2,10 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.service.AtcService;
-import org.msh.pharmadex.service.InnService;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -21,6 +18,9 @@ public class ProductDisplay {
 
     @Autowired
     ProdApplicationsService prodApplicationsService;
+
+    @Autowired
+    ApplicantService applicantService;
 
     @Autowired
     ProductService productService;
@@ -41,13 +41,12 @@ public class ProductDisplay {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void setProduct(Product product) {
-        this.product = product;
+        this.product = productService.findProductById(product.getId());
         prodApplications = prodApplicationsService.findProdApplicationByProduct(product.getId());
         prodApplications.setProdAppChecklists(prodApplicationsService.findAllProdChecklist(prodApplications.getId()));
-        product.setInns(innService.findInnByProdApp(prodApplications.getId()));
-        product.setCompanies(prodApplicationsService.findCompanies(product.getId()));
-
-        prodApplications.setProd(product);
+        this.product.setInns(innService.findInnByProdApp(prodApplications.getId()));
+        this.product.setCompanies(prodApplicationsService.findCompanies(this.product.getId()));
+        prodApplications.setProd(this.product);
 
 
     }

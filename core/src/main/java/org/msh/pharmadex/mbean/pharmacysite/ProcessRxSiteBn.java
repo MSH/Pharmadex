@@ -1,12 +1,11 @@
 package org.msh.pharmadex.mbean.pharmacysite;
 
-import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.PharmacySite;
+import org.msh.pharmadex.domain.PharmacySiteChecklist;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
-import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.PharmacySiteService;
 import org.msh.pharmadex.service.UserService;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.List;
 @Scope("session")
 public class ProcessRxSiteBn {
 
-    private PharmacySite pharmacySite;
+    private PharmacySite selectedSite;
 
     private List<PharmacySite> pendingRxSite;
 
@@ -51,35 +51,47 @@ public class ProcessRxSiteBn {
     private User user;
     private List<User> availableUsers;
     private List<User> userList;
+    private List<PharmacySiteChecklist> siteChecklists;
 
     @Transactional
     public void addUserToRxSite() {
         if (userList == null)
             userList = new ArrayList<User>();
         userList.add(user);
-        pharmacySite.setUsers(userList);
-        pharmacySiteService.updateApp(pharmacySite, user);
+        selectedSite.setUsers(userList);
+        pharmacySiteService.updateApp(selectedSite, user);
         user = new User();
 
     }
 
     public String registerRxSite() {
-        pharmacySite.setState(ApplicantState.REGISTERED);
-        pharmacySiteService.updateApp(pharmacySite, null);
+        for (PharmacySiteChecklist psc : siteChecklists) {
+            if (!psc.isStaffValue()) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Please verify premises particulars"));
+                return "/internal/processrxsite.faces";
+            }
+
+        }
+        selectedSite.setState(ApplicantState.REGISTERED);
+        pharmacySiteService.updateApp(selectedSite, userSession.getLoggedInUserObj());
         globalEntityLists.setPharmacySites(null);
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "processAppBn", null);
-        return "/internal/processapplist.faces";
+        WebUtils.setSessionAttribute(request, "processRxSiteBn", null);
+        return "/internal/processrxsitelist.faces";
 
     }
 
     public String cancel() {
-        applicant = new Applicant();
+        selectedSite = new PharmacySite();
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "processAppBn", null);
-        return "/internal/processapplist.faces";
+        WebUtils.setSessionAttribute(request, "processRxSiteBn", null);
+
+        if (userSession.isCompany())
+            return "/secure/submittedrxsites.faces";
+        else
+            return "/internal/processrxsitelist.faces";
     }
 
     public List<User> completeUserList(String query) {
@@ -100,20 +112,12 @@ public class ProcessRxSiteBn {
         return "";
     }
 
-    public List<Applicant> getPendingApps() {
-        return applicantService.getPendingApplicants();
+    public List<PharmacySite> getPendingRxSite() {
+        return pharmacySiteService.findAllPharmacySite(ApplicantState.NEW_APPLICATION);
     }
 
-    public void setPendingApps(List<Applicant> pendingApps) {
-        this.pendingApps = pendingApps;
-    }
-
-    public Applicant getApplicant() {
-        return applicant;
-    }
-
-    public void setApplicant(Applicant applicant) {
-        this.applicant = applicant;
+    public void setPendingApps(List<PharmacySite> pendingRxSite) {
+        this.pendingRxSite = pendingRxSite;
     }
 
     public List<User> getAvailableUsers() {
@@ -125,7 +129,7 @@ public class ProcessRxSiteBn {
     }
 
     public User getUser() {
-        return user;
+        return getUserList().get(0);
     }
 
     public void setUser(User user) {
@@ -133,10 +137,27 @@ public class ProcessRxSiteBn {
     }
 
     public List<User> getUserList() {
-        return userService.findUserByApplicant(applicant.getApplcntId());
+        return userService.findUsersBySite(selectedSite.getId());
     }
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
+    }
+
+    public PharmacySite getSelectedRxSite() {
+        return selectedSite;
+    }
+
+    public void setSelectedRxSite(PharmacySite pharmacySite) {
+        this.selectedSite = pharmacySite;
+        siteChecklists = pharmacySiteService.findChecklistBySite(selectedSite.getId());
+    }
+
+    public List<PharmacySiteChecklist> getSiteChecklists() {
+        return siteChecklists;
+    }
+
+    public void setSiteChecklists(List<PharmacySiteChecklist> siteChecklists) {
+        this.siteChecklists = siteChecklists;
     }
 }

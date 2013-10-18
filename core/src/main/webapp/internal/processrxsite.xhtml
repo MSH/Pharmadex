@@ -13,10 +13,11 @@
                     <p:panel styleClass="menu">
                         <p:menu style="width:198px">
                             <p:submenu label="#{msgs.Registration}">
-                                <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
-                                            action="#{processAppBn.registerApplicant}" ajax="false"/>
+                                <p:menuitem value="#{msgs.register_applicant}" icon="ui-icon-gear"
+                                            action="#{processRxSiteBn.registerRxSite}" ajax="false"
+                                            rendered="#{userSession.admin||userSession.staff}"/>
                                 <p:menuitem value="#{msgs.global_cancel}" immediate="true"
-                                            action="#{processAppBn.cancel}" ajax="false"/>
+                                            action="#{processRxSiteBn.cancel}" ajax="false"/>
                             </p:submenu>
                         </p:menu>
                     </p:panel>
@@ -27,23 +28,25 @@
                             <table width="750px">
                                 <tr>
                                     <td>
-                                        <h:outputLabel value="#{processAppBn.applicant.appName}" styleClass="title"
+                                        <h:outputLabel value="#{processRxSiteBn.selectedRxSite.pharmacyName}"
+                                                       styleClass="title"
                                                        style="font-weight: bold; font-size: 1.5em"/>
                                     </td>
                                     <td align="right">
                                         <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
-                                        <h:outputLabel value="#{processAppBn.applicant.state}"
+                                        <h:outputLabel value="#{processRxSiteBn.selectedRxSite.state}"
                                                        style="font-weight: bold;color: #a52a2a;"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <h:outputLabel value="Application Number: " styleClass="title"/>
-                                        <h:outputFormat value="#{processAppBn.applicant.applcntId}" styleClass="title"/>
+                                        <h:outputFormat value="#{processRxSiteBn.selectedRxSite.id}"
+                                                        styleClass="title"/>
                                     </td>
                                     <td align="right">
                                         <h:outputLabel value="Submitted Date: " styleClass="title"/>
-                                        <h:outputFormat value="#{processAppBn.applicant.submitDate}"/>
+                                        <h:outputFormat value="#{processRxSiteBn.selectedRxSite.submitDate}"/>
                                     </td>
                                 </tr>
                             </table>
@@ -52,18 +55,81 @@
 
                         <p:growl id="growl" showDetail="true" showSummary="true"/>
 
-                        <p:panel header="#{msgs.applicant_detail}">
-                            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                                <ui:param name="applicantdata" value="#{processAppBn.applicant}"/>
+                        <p:panel header="#{msgs.person_responsible}">
+                            <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                                <ui:param name="userdata" value="#{processRxSiteBn.user}"/>
+                                <ui:param name="input" value="#{false}"/>
                             </ui:decorate>
 
                         </p:panel>
 
+                        <div style="height:10px"/>
+
+                        <p:panel header="#{msgs.general_info}">
+
+                            <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellspacing="10">
+
+                                <h:outputLabel value="#{msgs.pharmacyname}" for="rxname"/>
+                                <p:inputText id="rxname" required="true"
+                                             value="#{processRxSiteBn.selectedRxSite.pharmacyName}"/>
+
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+
+                                <ui:decorate template="/templates/addrtempl.xhtml">
+                                    <ui:param name="addressdata" value="#{processRxSiteBn.selectedRxSite.siteAddress}"/>
+                                    <ui:param name="input" value="#{true}"/>
+                                </ui:decorate>
+                            </h:panelGrid>
+
+                            <p:separator id="customSeparator"/>
+
+                            <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                                <h:outputLabel value="#{msgs.qualification}" for="qual"/>
+                                <p:inputText id="qual" required="true"
+                                             value="#{processRxSiteBn.selectedRxSite.applicantQualif}"/>
+
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+
+                                <h:outputLabel value="#{msgs.pharmacy_area_coverage}" for="areacoverage"/>
+                                <p:inputText id="areacoverage" required="true"
+                                             value="#{processRxSiteBn.selectedRxSite.targetArea}"/>
+
+                                <h:outputLabel value="#{msgs.pharmacy_est_population}" for="estpopulation"/>
+                                <p:inputText id="estpopulation" required="true"
+                                             value="#{processRxSiteBn.selectedRxSite.estPopulation}"/>
+
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <div style="height:10px"/>
+
+                        <p:panel header="#{msgs.premises_attrib}">
+                            <p:dataTable var="checkList" value="#{processRxSiteBn.siteChecklists}" style="width:100%;">
+                                <p:column headerText="">
+                                    <h:outputLabel value="#{checkList.siteChecklist.id}"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{checkList.siteChecklist.name}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectBooleanCheckbox value="#{checkList.value}" disabled="true"/>
+                                </p:column>
+                                <p:column rendered="#{userSession.admin||userSession.staff}">
+                                    <p:selectBooleanCheckbox value="#{checkList.staffValue}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
                         <p:panel header="#{msgs.Userlist}">
-                            <p:dataTable id="usertable" var="user" value="#{processAppBn.userList}" style="width:100%;">
+                            <p:dataTable id="usertable" var="user" value="#{processRxSiteBn.userList}"
+                                         style="width:100%;">
                                 <f:facet name="header">
                                     <p:commandLink value="#{msgs.global_add}" oncomplete="addUserDlg.show()"
-                                                   immediate="true"/>
+                                                   immediate="true" rendered="#{userSession.admin||userSession.staff}"/>
                                 </f:facet>
                                 <p:column headerText="#{msgs.User_name}">
                                     <h:outputText value="#{user.name}"/>
@@ -90,16 +156,17 @@
             <h:form>
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                     <h:outputLabel value="#{msgs.product_innname}" for="username"/>
-                    <p:autoComplete id="username" value="#{processAppBn.user}"
-                                    completeMethod="#{processAppBn.completeUserList}" dropdown="true"
+                    <p:autoComplete id="username" value="#{processRxSiteBn.user}"
+                                    completeMethod="#{processRxSiteBn.completeUserList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
                                     converter="#{userConverter}">
                     </p:autoComplete>
 
                     <h:panelGroup>
-                        <p:commandButton actionListener="#{processAppBn.addUserToApplicant}" value="#{msgs.global_add}"
+                        <p:commandButton actionListener="#{processRxSiteBn.addUserToRxSite()}"
+                                         value="#{msgs.global_add}"
                                          ajax="false" oncomplete="addUserDlg.hide()"/>
-                        <p:commandButton action="#{processAppBn.cancelAddUser}" immediate="true"
+                        <p:commandButton action="#{processRxSiteBn.cancelAddUser}" immediate="true"
                                          value="#{msgs.global_cancel}" oncomplete="addUserDlg.hide()"/>
                     </h:panelGroup>
                     <h:outputLabel/>

@@ -1,5 +1,6 @@
 package org.msh.pharmadex.service;
 
+import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Product;
@@ -32,9 +33,13 @@ public class ProductService implements Serializable {
         return "persisted";
     }
 
+    @Autowired
+    ApplicantDAO applicantDAO;
+
     @Transactional
     public Product findProductById(Long id) {
-        return productDAO.findProduct(id);
+        Product prod = productDAO.findProduct(4769);
+        return prod;
     }
 
     public List<Company> findCompaniesByProd(Long id) {

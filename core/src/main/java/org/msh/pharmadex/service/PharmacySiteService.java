@@ -3,9 +3,10 @@ package org.msh.pharmadex.service;
 import org.apache.commons.collections.IteratorUtils;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.dao.iface.PharmacySiteDAO;
+import org.msh.pharmadex.dao.iface.RxSiteChecklistDAO;
 import org.msh.pharmadex.dao.iface.SiteChecklistDAO;
-import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.PharmacySite;
+import org.msh.pharmadex.domain.PharmacySiteChecklist;
 import org.msh.pharmadex.domain.SiteChecklist;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
@@ -30,22 +31,26 @@ public class PharmacySiteService implements Serializable {
     SiteChecklistDAO siteChecklistDAO;
 
     @Autowired
+    RxSiteChecklistDAO rxSiteChecklistDAO;
+
+    @Autowired
     UserDAO userDAO;
 
-    public PharmacySite findPharmacySite (Long id){
+    public PharmacySite findPharmacySite(Long id) {
         return (PharmacySite) pharmacySiteDAO.findOne(id);
     }
 
-    public List<PharmacySite> findAllPharmacySite (ApplicantState state){
-        if(state != null)
+    public List<PharmacySite> findAllPharmacySite(ApplicantState state) {
+        if (state != null)
             return pharmacySiteDAO.findByState(state);
         else
             return IteratorUtils.toList(pharmacySiteDAO.findAll().iterator());
     }
 
-    public List<SiteChecklist> findAllCheckList (){
+    public List<SiteChecklist> findAllCheckList() {
         return IteratorUtils.toList(siteChecklistDAO.findAll().iterator());
     }
+
 
     @Transactional
     public boolean updateApp(PharmacySite rxSite, User user) {
@@ -65,17 +70,26 @@ public class PharmacySiteService implements Serializable {
 
 
     @Transactional
-    public String saveSite(PharmacySite pharmacySite){
-        try{
+    public String saveSite(PharmacySite pharmacySite) {
+        try {
             User user = pharmacySite.getUsers().get(0);
             user = userDAO.findUser(user.getUserId());
             List<User> users = new ArrayList<User>();
             users.add(user);
             pharmacySiteDAO.save(pharmacySite);
             return "persisted";
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return "error";
         }
+    }
+
+    public List<PharmacySiteChecklist> findChecklistBySite(Long id) {
+        return rxSiteChecklistDAO.findByPharmacySite_Id(id);
+    }
+
+
+    public List<PharmacySite> findPharmacySiteByStateUser(List<User> users, ApplicantState newApplication) {
+        return pharmacySiteDAO.findByStateAndUsers(newApplication, users);
     }
 }

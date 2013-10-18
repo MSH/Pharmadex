@@ -7,10 +7,10 @@
         <intercept-url pattern="/pages/login.faces"/>
         <intercept-url pattern="/index1.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <!--<intercept-url access="IS_AUTHENTICATED_REMEMBERED" pattern="/*"/>-->
-        <intercept-url pattern="/secure"
+        <intercept-url pattern="/secure/**"
                        access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD"/>
         <intercept-url pattern="/admin" access="ROLE_ADMIN"/>
-        <intercept-url pattern="/internal"
+        <intercept-url pattern="/internal/**"
                        access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD"/>
         <form-login authentication-failure-url="/pages/login1.faces?login_error=true" login-page="/pages/login1.faces"
                     authentication-success-handler-ref="postSuccessfullAuthHandler"

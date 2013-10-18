@@ -45,6 +45,7 @@ public class PharmacySiteMbean implements Serializable {
 
     private List<PharmacySite> filteredSites;
 
+    private List<PharmacySite> submittedSites;
 
     @PostConstruct
     private void init() {
@@ -75,12 +76,13 @@ public class PharmacySiteMbean implements Serializable {
         selectedSite.setEmail(user.getEmail());
         selectedSite.setFaxNo(user.getFaxNo());
         selectedSite.setPhoneNo(user.getPhoneNo());
+        selectedSite.setPharmacySiteChecklists(siteChecklists);
         if (pharmacySiteService.saveSite(selectedSite).equalsIgnoreCase("persisted")) {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
             globalEntityLists.setPharmacySites(null);
-            return "/public/applicantlist.faces";
+            return "/public/rxsitelist.faces";
         } else {
             return null;
         }
@@ -131,5 +133,18 @@ public class PharmacySiteMbean implements Serializable {
 
     public void setFilteredSites(List<PharmacySite> filteredSites) {
         this.filteredSites = filteredSites;
+    }
+
+    public List<PharmacySite> getSubmittedSites() {
+        if (submittedSites == null) {
+            List<User> users = new ArrayList<User>();
+            users.add(userSession.getLoggedInUserObj());
+            submittedSites = pharmacySiteService.findPharmacySiteByStateUser(users, ApplicantState.NEW_APPLICATION);
+        }
+        return submittedSites;
+    }
+
+    public void setSubmittedSites(List<PharmacySite> submittedSites) {
+        this.submittedSites = submittedSites;
     }
 }

@@ -11,51 +11,50 @@
 
         <h:form prependId="false">
 
-            <p:dataTable id="rxsite" var="rxsite" value="#{pharmacySiteMbean.regSites}" selectionMode="single"
-                         selection="#{pharmacySiteMbean.selectedSite}" rowKey="#{rxsite.id}"
+            <p:dataTable id="rxsite" var="applicantion" value="#{pharmacySiteMbean.regSites}"
                          filteredValue="#{pharmacySiteMbean.filteredSites}"
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,50,100">
 
 
-                <p:column filterBy="#{rxsite.pharmacyName}"
-                          sortBy="#{rxsite.pharmacyName}">
+                <p:column filterBy="#{applicantion.pharmacyName}"
+                          sortBy="#{applicantion.pharmacyName}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_rxsite}"/>
                     </f:facet>
 
 
-                    <p:commandLink id="viewLink" value="#{rxsite.pharmacyName}" update=":viewDlg"
+                    <p:commandLink id="viewLink" value="#{applicantion.pharmacyName}" update=":viewDlg"
                                    oncomplete="viewDialog.show()" title="Edit" ajax="true">
-                        <f:setPropertyActionListener value="#{rxsite}" target="#{rxSiteHome.site}"/>
+                        <f:setPropertyActionListener value="#{applicantion}" target="#{rxSiteHome.site}"/>
                     </p:commandLink>
                 </p:column>
 
 
-                <p:column filterBy="#{rxsite.applicantName}"
-                          sortBy="#{rxsite.applicantName}">
+                <p:column filterBy="#{applicantion.applicantName}"
+                          sortBy="#{applicantion.applicantName}">
                     <f:facet name="header">
                         <h:outputText value="Email"/>
                     </f:facet>
-                    <h:outputText value="#{rxsite.applicantName}"/>
+                    <h:outputText value="#{applicantion.applicantName}"/>
                 </p:column>
 
-                <p:column filterBy="#{rxsite.email}"
-                          sortBy="#{rxsite.email}">
+                <p:column filterBy="#{applicantion.email}"
+                          sortBy="#{applicantion.email}">
                     <f:facet name="header">
                         <h:outputText value="Email"/>
                     </f:facet>
-                    <h:outputText value="#{rxsite.email}"/>
+                    <h:outputText value="#{applicantion.email}"/>
                 </p:column>
 
-                <p:column filterBy="#{rxsite.phoneNo}"
-                          sortBy="#{rxsite.phoneNo}"
+                <p:column filterBy="#{applicantion.phoneNo}"
+                          sortBy="#{applicantion.phoneNo}"
                         >
                     <f:facet name="header">
                         <h:outputText value="Phone No."/>
                     </f:facet>
-                    <h:outputText value="#{rxsite.phoneNo}"/>
+                    <h:outputText value="#{applicantion.phoneNo}"/>
                 </p:column>
 
             </p:dataTable>

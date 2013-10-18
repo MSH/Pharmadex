@@ -72,6 +72,9 @@ public class PharmacySite extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
+    @OneToMany(mappedBy = "pharmacySite", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PharmacySiteChecklist> pharmacySiteChecklists;
+
     @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinTable(name = "pharmacy_site_user", joinColumns = @JoinColumn(name = "site_id"), inverseJoinColumns = @JoinColumn(name = "userId"))
     private List<User> users;
@@ -212,5 +215,11 @@ public class PharmacySite extends CreationDetail implements Serializable {
         this.targetArea = targetArea;
     }
 
+    public List<PharmacySiteChecklist> getPharmacySiteChecklists() {
+        return pharmacySiteChecklists;
+    }
 
+    public void setPharmacySiteChecklists(List<PharmacySiteChecklist> pharmacySiteChecklists) {
+        this.pharmacySiteChecklists = pharmacySiteChecklists;
+    }
 }
