@@ -343,18 +343,16 @@ public class RegHomeMbean implements Serializable {
     @Transactional
     public void setProdApplications(ProdApplications prodApplications) {
         this.prodApplications = prodApplications;
-        this.product = productService.findProductById(prodApplications.getProd().getId());
+        this.product = prodApplications.getProd();
         this.selectedInns = innService.findInnByProdApp(product.getId());
-        for (Atc atc : product.getAtcs()) {
-            atc = atcService.findAtcById(atc.getAtcCode());
-        }
-        this.selectedAtcs = product.getAtcs();
+        this.selectedAtcs = productService.findAtcsByProduct(product.getId());
         this.companies = productService.findCompaniesByProd(product.getId());
         this.prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
+        product.setInns(selectedInns);
+        product.setAtcs(selectedAtcs);
+        product.setCompanies(companies);
         this.prodApplications.setProdAppChecklists(prodAppChecklists);
-        this.prodApplications.getProd().setInns(selectedInns);
-        this.prodApplications.getProd().setAtcs(selectedAtcs);
-        this.prodApplications.getProd().setCompanies(companies);
+        this.prodApplications.setProd(this.product);
 
     }
 

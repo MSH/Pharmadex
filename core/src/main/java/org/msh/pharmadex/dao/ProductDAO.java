@@ -1,6 +1,7 @@
 package org.msh.pharmadex.dao;
 
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -91,5 +92,12 @@ public class ProductDAO implements Serializable {
                 .getSingleResult();
 
     }
+
+    public List<Atc> findAtcsByProduct(Long id) {
+        return (List<Atc>) entityManager.createQuery("select atc from Atc atc join atc.products p where p.id = :prodId ")
+                .setParameter("prodId", id)
+                .getResultList();
+    }
+
 }
 

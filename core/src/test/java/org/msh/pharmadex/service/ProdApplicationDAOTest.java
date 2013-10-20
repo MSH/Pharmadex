@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,6 +39,20 @@ public class ProdApplicationDAOTest {
     @After
     public void tearDown() throws Exception {
 
+    }
+
+    @Test
+    public void testFindProdExpiring() throws Exception {
+        Assert.assertEquals(true, true);
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        Calendar c = new GregorianCalendar(2012, 00, 01);
+        params.put("startDt", c.getTime());
+        c.set(2014, 00, 01);
+        params.put("endDt", c.getTime());
+
+        List<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
+        Assert.assertNotNull(prodApps);
     }
 
 

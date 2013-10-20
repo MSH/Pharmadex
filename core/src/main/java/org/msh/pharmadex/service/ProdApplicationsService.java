@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -90,6 +87,20 @@ public class ProdApplicationsService implements Serializable {
         return prodApplicationsDAO.getProdAppByParams(params);
     }
 
+    public String createRenewals() {
+        Calendar currDate = Calendar.getInstance();
+        currDate.add(Calendar.MONTH, 1);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("startDt", currDate.getTime());
+        currDate.add(Calendar.MONTH, 1);
+        params.put("endDt", currDate.getTime());
+
+        List<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
+
+
+        return "";
+    }
+
     public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
         List<ProdApplications> prodApplicationses = null;
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -124,6 +135,17 @@ public class ProdApplicationsService implements Serializable {
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isCompany()) {
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.NEW_APPL);
+            regState.add(RegState.FEE);
+            regState.add(RegState.NEW_APPL);
+            regState.add(RegState.DEFAULTED);
+            regState.add(RegState.FOLLOW_UP);
+            regState.add(RegState.RECOMMENDED);
+            regState.add(RegState.REVIEW_BOARD);
+            regState.add(RegState.SCREENING);
+            regState.add(RegState.VERIFY);
+            params.put("regState", regState);
             params.put("userId", userSession.getLoggedInUserObj().getUserId());
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         }

@@ -50,10 +50,10 @@ public class Product extends CreationDetail implements Serializable {
     @Column(name = "reg_no", length = 100)
     private String regNo;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<ProdInn> inns;
 
-    @ManyToMany(targetEntity = Atc.class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "atc_id"))
     private List<Atc> atcs;
 

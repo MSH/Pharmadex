@@ -46,7 +46,9 @@ public class ProductDisplay {
         prodApplications.setProdAppChecklists(prodApplicationsService.findAllProdChecklist(prodApplications.getId()));
         this.product.setInns(innService.findInnByProdApp(prodApplications.getId()));
         this.product.setCompanies(prodApplicationsService.findCompanies(this.product.getId()));
+        this.product.setAtcs(productService.findAtcsByProduct(product.getId()));
         prodApplications.setProd(this.product);
+        this.product.setProdApplications(prodApplications);
 
 
     }

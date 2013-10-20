@@ -2,6 +2,8 @@ package org.msh.pharmadex.dao;
 
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,10 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Author: usrivastava
@@ -33,8 +32,18 @@ public class ProdApplicationsDAO implements Serializable {
     @Transactional
     public ProdApplications findProdApplicationByProduct(Long prodId) {
         try {
-            ProdApplications prodApp = (ProdApplications) entityManager.createQuery("select a from ProdApplications a left join a.prod.atcs atc where a.prod.id = :prodId ")
-                    .setParameter("prodId", prodId).getSingleResult();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<ProdApplications> cq = cb.createQuery(ProdApplications.class);
+            Root<ProdApplications> paRoot = cq.from(ProdApplications.class);
+            Join<ProdApplications, User> userJoin = paRoot.join("user", JoinType.LEFT);
+            Join<ProdApplications, Product> prodJoin = paRoot.join("prod", JoinType.LEFT);
+
+
+            Predicate p = cb.equal(prodJoin.get("id"), prodId);
+
+            cq.select(paRoot).where(p);
+            ProdApplications prodApp = entityManager.createQuery(cq).getSingleResult();
+
             return prodApp;
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,6 +51,19 @@ public class ProdApplicationsDAO implements Serializable {
         }
 
     }
+
+    @Transactional
+    public List<ProdApplications> findProdExpiring(HashMap<String, Object> params) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<ProdApplications> query = builder.createQuery(ProdApplications.class);
+        Root<ProdApplications> root = query.from(ProdApplications.class);
+
+        Predicate p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
+        query.select(root).where(p);
+        List<ProdApplications> prodApps = entityManager.createQuery(query).getResultList();
+        return prodApps;
+    }
+
 
     @Transactional
     public String saveApplication(ProdApplications prodApplications) {

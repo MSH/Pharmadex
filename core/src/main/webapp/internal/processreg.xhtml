@@ -571,13 +571,16 @@
 
 </p:dialog>
 
-<p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regDlg" modal="true">
+<p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regDlg" modal="true"
+          rendered="#{processProdBn.canRegister}">
 
     <h:panelGrid columns="2" style="margin-bottom:10px">
         <h:outputLabel value="#{msgs.registration_date}"/>
-        <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button" required="true"/>
+        <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
+                    required="true"/>
         <h:outputLabel value="#{msgs.expiry_date}"/>
-        <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button" required="true"/>
+        <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
+                    required="true"/>
 
         <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" action="#{processProdBn.registerProduct}"
                     update="@form" rendered="#{processProdBn.readyReg}"/>

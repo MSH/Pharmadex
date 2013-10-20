@@ -2,6 +2,7 @@ package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProductDAO;
+import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class ProductService implements Serializable {
 
     @Transactional
     public Product findProductById(Long id) {
-        Product prod = productDAO.findProduct(4769);
+        Product prod = productDAO.findProduct(id);
         return prod;
     }
 
@@ -52,4 +53,7 @@ public class ProductService implements Serializable {
 
     }
 
+    public List<Atc> findAtcsByProduct(Long id) {
+        return productDAO.findAtcsByProduct(id);
+    }
 }
