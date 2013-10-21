@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,14 +67,8 @@ public class PharmacySiteService implements Serializable {
         }
     }
 
-
-    @Transactional
     public String saveSite(PharmacySite pharmacySite) {
         try {
-            User user = pharmacySite.getUsers().get(0);
-            user = userDAO.findUser(user.getUserId());
-            List<User> users = new ArrayList<User>();
-            users.add(user);
             pharmacySiteDAO.save(pharmacySite);
             return "persisted";
         } catch (Exception ex) {

@@ -29,6 +29,7 @@ public class ProdApplicationsDAO implements Serializable {
         return entityManager.find(ProdApplications.class, id);
     }
 
+
     @Transactional
     public ProdApplications findProdApplicationByProduct(Long prodId) {
         try {
@@ -36,14 +37,15 @@ public class ProdApplicationsDAO implements Serializable {
             CriteriaQuery<ProdApplications> cq = cb.createQuery(ProdApplications.class);
             Root<ProdApplications> paRoot = cq.from(ProdApplications.class);
             Join<ProdApplications, User> userJoin = paRoot.join("user", JoinType.LEFT);
-            Join<ProdApplications, Product> prodJoin = paRoot.join("prod", JoinType.LEFT);
+            Join<ProdApplications, Product> prodJoin = paRoot.join("prod");
+
+            paRoot.fetch("user", JoinType.LEFT);
 
 
             Predicate p = cb.equal(prodJoin.get("id"), prodId);
 
             cq.select(paRoot).where(p);
             ProdApplications prodApp = entityManager.createQuery(cq).getSingleResult();
-
             return prodApp;
         } catch (Exception e) {
             e.printStackTrace();

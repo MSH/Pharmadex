@@ -130,6 +130,9 @@ public class ProcessProdBn {
                         options = new RegState[1];
                         options[0] = RegState.FOLLOW_UP;
                     }
+                } else {
+                    options = new RegState[1];
+                    options[0] = RegState.FOLLOW_UP;
                 }
                 break;
             case RECOMMENDED:
