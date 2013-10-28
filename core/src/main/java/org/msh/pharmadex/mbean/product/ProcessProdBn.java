@@ -52,6 +52,7 @@ public class ProcessProdBn {
     private StatusUser module;
     private boolean registered;
     private String reviewComment;
+    private ArrayList<Invoice> invoices;
 
 
     @Autowired
@@ -573,5 +574,13 @@ public class ProcessProdBn {
 
     public void setReviewComment(String reviewComment) {
         this.reviewComment = reviewComment;
+    }
+
+    public ArrayList<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(ArrayList<Invoice> invoices) {
+        this.invoices = invoices;
     }
 }

@@ -24,6 +24,14 @@
         <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear" onclick="moderatordlg.show()"
                     rendered="#{userSession.head}"/>
     </p:submenu>
+    <p:submenu label="#{msgs.post_registration}">
+        <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear" onclick="renewdlg.show()"
+                    rendered="#{userSession.head||userSession.admin}"/>
+        <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear" onclick="invoicedlg.show()"
+                    rendered="#{userSession.head||userSession.admin}"/>
+        <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear" onclick="reminderdlg.show()"
+                    rendered="#{userSession.head||userSession.admin}"/>
+    </p:submenu>
 </p:menu>
 
 
@@ -238,7 +246,7 @@
         </p:column>
 
         <p:column headerText="#{msgs.uploaddate}">
-            <h:outputLabel converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
         </p:column>
 
         <p:column headerText="#{msgs.uploadedby}">
@@ -246,7 +254,7 @@
         </p:column>
 
         <p:column headerText="#{msgs.registration_status}">
-            <h:outputLabel value="#{msgs[doc.regState.key]}"/>
+            <h:outputText value="#{msgs[doc.regState.key]}"/>
         </p:column>
 
         <p:column>
@@ -268,6 +276,22 @@
 <p:tab title="Additional Information" id="addinfotab" rendered="#{userSession.admin||userSession.staff}">
     <p:commandButton icon="ui-icon-document" value="Send Applicant Mail" onclick="maildlg.show()"/>
 
+    <p:dataTable id="invoicetable" value="#{processProdBn.invoices}" var="invoice">
+        <p:column headerText="">
+            <p:commandLink value="#{invoice.invoiceNumber}" oncomplete="invoicedlg.show()">
+                <f:setPropertyActionListener value="invoice" target="#{renewalMbn.invoice}"/>
+            </p:commandLink>
+        </p:column>
+        <p:column headerText="">
+            <h:outputText value="#{invoice.invoiceAmt}"/>
+        </p:column>
+        <p:column headerText="">
+            <h:outputText value="#{invoice.invoiceType}"/>
+        </p:column>
+        <p:column headerText="">
+            <h:outputText value="#{invoice.paymentStatus}"/>
+        </p:column>
+    </p:dataTable>
 
     <p:dataTable id="mailtable" value="#{processProdBn.mails}" var="mail">
         <p:column style="width:120px;" headerText="Date">
@@ -591,6 +615,43 @@
                      oncomplete="regDlg.hide()"
                      update=":reghome:growl :reghome:messages :reghome"/>
 
+</p:dialog>
+
+<p:dialog header="#{msgs.issue_invoice}" widgetVar="invoicedlg" resizable="true" id="invoicedlg" modal="true">
+
+    <h:panelGrid columns="4" columnClasses="col1 col2">
+        <p:outputLabel value="#{msgs.reg_number}" for="regnumber"/>
+        <p:outputLabel value="#{renewalMbn.selProduct.prodName}" id="regnumber"/>
+
+        <p:outputLabel value="#{msgs.prodName}" for="prodname"/>
+        <p:outputLabel value="#{renewalMbn.selProduct.prodName}" id="prodname"/>
+
+        <p:outputLabel value="#{msgs.prodgenname}" for="prodgenname"/>
+        <p:outputLabel value="#{renewalMbn.selProduct.genName}" id="prodgenname"/>
+
+        <p:outputLabel value="#{msgs.applicant_name}" for="appname"/>
+        <p:outputLabel value="#{renewalMbn.selProduct.applicant.appName}" id="appname"/>
+
+        <p:outputLabel value="#{msgs.expiry_date}" for="expiryDate"/>
+        <p:outputLabel value="#{renewalMbn.selProduct.prodApplications.regExpiryDate}" id="expiryDate"/>
+
+        <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
+        <p:inputText value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"/>
+
+        <p:outputLabel value="#{msgs.invoice_amt}" for="invamt"/>
+        <p:inputText value="#{renewalMbn.invoice.invoiceAmt}" id="invamt"/>
+
+        <p:outputLabel value="#{msgs.new_ecpiry_date}" for="invno"/>
+        <p:inputText value="#{renewalMbn.invoice.invoiceNumber}" id="invno"/>
+
+    </h:panelGrid>
+
+    <h:panelGrid columns="2" style="margin-top:10px">
+        <p:commandButton id="submitReview" value="#{msgs.global_submit}" oncomplete="invoicedlg.hide()"
+                         icon="ui-icon-disk" ajax="true" action="#{renewalMbn.createInvoice}"/>
+        <p:commandButton id="clearButton" type="button" value="Clear" onclick="invoicedlg.hide()"
+                         icon="ui-icon-close" ajax="false"/>
+    </h:panelGrid>
 </p:dialog>
 
 <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" resizable="true" id="reviewDlg" modal="true">

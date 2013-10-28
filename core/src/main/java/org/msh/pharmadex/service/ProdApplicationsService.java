@@ -87,7 +87,7 @@ public class ProdApplicationsService implements Serializable {
         return prodApplicationsDAO.getProdAppByParams(params);
     }
 
-    public String createRenewals() {
+    public ArrayList<ProdApplications> findExpiringProd() {
         Calendar currDate = Calendar.getInstance();
         currDate.add(Calendar.MONTH, 1);
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -95,10 +95,10 @@ public class ProdApplicationsService implements Serializable {
         currDate.add(Calendar.MONTH, 1);
         params.put("endDt", currDate.getTime());
 
-        List<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
+        ArrayList<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
 
 
-        return "";
+        return prodApps;
     }
 
     public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
@@ -212,4 +212,6 @@ public class ProdApplicationsService implements Serializable {
         statusUserDAO.save(module);
         return "success";
     }
+
+
 }

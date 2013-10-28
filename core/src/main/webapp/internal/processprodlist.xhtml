@@ -9,7 +9,7 @@
         <p:messages id="messages" showDetail="true"/>
         <h:form prependId="false">
 
-            <p:panel header="Registered Products" closable="true">
+            <p:panel header="Registered Products">
                 <h:panelGrid columns="3" cellpadding="5">
                     <h:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
                     <p:autoComplete value="#{regProdMbn.selectedProd}" id="basicPojo"
@@ -24,54 +24,55 @@
 
             </p:panel>
 
-            <p:panel header="Recieved Applications" closable="true">
 
-                <p:dataTable id="applicantions" var="applicantion" value="#{prodAppMBean.submmittedAppList}"
+            <p:panel header="Recieved Applications">
+
+                <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBean.submmittedAppList}"
                              filteredValue="#{prodAppMBean.filteredApps}">
 
 
-                    <p:column filterBy="#{applicantion.prod.prodName}"
-                              sortBy="#{applicantion.prod.prodName}">
+                    <p:column filterBy="#{eachprod.prod.prodName}"
+                              sortBy="#{eachprod.prod.prodName}">
                         <f:facet name="header">
                             <h:outputText value="Product Name"/>
                         </f:facet>
-                        <p:commandLink value="#{applicantion.prod.prodName}" action="#{prodAppMBean.onRowSelect}"
+                        <p:commandLink value="#{eachprod.prod.prodName}" action="#{prodAppMBean.onRowSelect}"
                                        ajax="false">
-                            <f:setPropertyActionListener value="#{applicantion}"
+                            <f:setPropertyActionListener value="#{eachprod}"
                                                          target="#{processProdBn.prodApplications}"/>
                         </p:commandLink>
                     </p:column>
 
 
-                    <p:column filterBy="#{applicantion.prod.genName}"
-                              sortBy="#{applicantion.prod.genName}">
+                    <p:column filterBy="#{eachprod.prod.genName}"
+                              sortBy="#{eachprod.prod.genName}">
                         <f:facet name="header">
                             <h:outputText value="Generic Name"/>
                         </f:facet>
-                        <h:outputText value="#{applicantion.prod.genName}"/>
+                        <h:outputText value="#{eachprod.prod.genName}"/>
                     </p:column>
 
-                    <p:column filterBy="#{msgs[applicantion.regState.key]}"
-                              sortBy="#{msgs[applicantion.regState.key]}">
+                    <p:column filterBy="#{msgs[eachprod.regState.key]}"
+                              sortBy="#{msgs[eachprod.regState.key]}">
                         <f:facet name="header">
                             <h:outputText value="Registration Status"/>
                         </f:facet>
-                        <h:outputText value="#{msgs[applicantion.regState.key]}"/>
+                        <h:outputText value="#{msgs[eachprod.regState.key]}"/>
                     </p:column>
 
-                    <p:column sortBy="#{msgs[applicantion.regState.key]}">
+                    <p:column sortBy="#{msgs[eachprod.regState.key]}">
                         <f:facet name="header">
                             <h:outputText value="Submitted Date"/>
                         </f:facet>
-                        <h:outputLabel converter="javax.faces.DateTime" value="#{applicantion.submitDate}"/>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
                     </p:column>
 
-                    <p:column sortBy="#{applicantion.prod.applicant.appName}"
-                              filterBy="#{applicantion.prod.applicant.appName}">
+                    <p:column sortBy="#{eachprod.prod.applicant.appName}"
+                              filterBy="#{eachprod.prod.applicant.appName}">
                         <f:facet name="header">
                             <h:outputText value="Manufacturer Name"/>
                         </f:facet>
-                        <h:outputLabel value="#{applicantion.prod.applicant.appName}"/>
+                        <h:outputLabel value="#{eachprod.prod.applicant.appName}"/>
                     </p:column>
 
                 </p:dataTable>

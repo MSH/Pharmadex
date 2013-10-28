@@ -62,7 +62,7 @@ public class FileUploadController {
         try {
             ProdApplications prodApplications = processProdBn.getProdApplications();
             file = webSession.getFile();
-            FacesMessage msg = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+            FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
             attach.setFile(IOUtils.toByteArray(file.getInputstream()));
             attach.setProdApplications(prodApplications);
             attach.setFileName(file.getFileName());

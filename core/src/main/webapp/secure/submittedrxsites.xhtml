@@ -14,31 +14,31 @@
                             rendered="#{empty pharmacySiteMbean.submittedSites}">
                 <f:param value="#{msgs.lable_rxsites}"/>
             </h:outputFormat>
-            <p:dataTable id="rxsites" var="applicantion" value="#{pharmacySiteMbean.submittedSites}"
+            <p:dataTable id="rxsites" var="eachprod" value="#{pharmacySiteMbean.submittedSites}"
                          rendered="#{not empty pharmacySiteMbean.submittedSites}">
                 <p:column headerText="#{msgs.pharmacyname}">
-                    <p:commandLink value="#{applicantion.pharmacyName}" action="/internal/processrxsite.faces"
+                    <p:commandLink value="#{eachprod.pharmacyName}" action="/internal/processrxsite.faces"
                                    ajax="false">
-                        <f:setPropertyActionListener value="#{applicantion}"
+                        <f:setPropertyActionListener value="#{eachprod}"
                                                      target="#{processRxSiteBn.selectedRxSite}"/>
                     </p:commandLink>
                 </p:column>
 
 
                 <p:column headerText="#{msgs.applicant_name}">
-                    #{applicantion.applicantName}
+                    #{eachprod.applicantName}
                 </p:column>
 
                 <p:column headerText="#{msgs.registration_status}">
-                    #{msgs[applicantion.state.key]}
+                    #{msgs[eachprod.state.key]}
                 </p:column>
 
                 <p:column headerText="#{msgs.submitted_date}">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{applicantion.submitDate}"/>
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.file_number}">
-                    #{applicantion.fileNumber}
+                    #{eachprod.fileNumber}
                 </p:column>
 
             </p:dataTable>

@@ -24,10 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -35,7 +33,7 @@ import java.util.logging.Logger;
  * Author: usrivastava
  */
 @Component
-@Scope("session")
+@Scope("request")
 public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
 
@@ -65,6 +63,9 @@ public class RegHomeMbean implements Serializable {
 
     @Autowired
     private AppointmentService appointmentService;
+
+    @Autowired
+    private ReportService reportService;
 
     private static Logger logger = Logger.getLogger(RegHomeMbean.class.getName());
     private List<ProdInn> selectedInns;
@@ -96,6 +97,9 @@ public class RegHomeMbean implements Serializable {
     private ScheduleModel lazyEventModel;
 
     private ScheduleEvent event = new DefaultScheduleEvent();
+
+    private JasperPrint jasperPrint;
+
 
     @PostConstruct
     private void init() {
@@ -205,32 +209,13 @@ public class RegHomeMbean implements Serializable {
         return innService.getInnList();
     }
 
-    JasperPrint jasperPrint;
-
-    public void reportinit() throws JRException {
-        URL resource = getClass().getResource("/reports/letter.jasper");
-        HashMap param = new HashMap();
-        param.put("appName", applicant.getAppName());
-        param.put("prodName", product.getProdName());
-        param.put("subject", "Subject: Application for registering " + product.getProdName() + " ");
-        param.put("body", "Thank you for applying to register " + product.getProdName() + " manufactured by " + applicant.getAppName()
-                + ". Your application is successfully submitted and the application number is " + prodApplications.getId() + ". " +
-                "Please use this application number for any future correspondence.");
-        param.put("address1", product.getApplicant().getAddress().getAddress1());
-        param.put("address2", product.getApplicant().getAddress().getAddress2());
-        param.put("country", product.getApplicant().getAddress().getCountry().getCountryName());
-        jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(resource.getFile(), param);
-    }
-
     public void PDF() throws JRException, IOException {
-        reportinit();
+        jasperPrint = reportService.reportinit(product);
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
         javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
-
-
     }
 
     public String saveApp() {

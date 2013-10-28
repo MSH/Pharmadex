@@ -1,0 +1,92 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:panelGroup id="rolepanel">
+            <div class="post">
+                <h1 class="title ui-widget-header ui-corner-all">#{msgs.letter_template}</h1>
+            </div>
+
+            <h:form id="lettertempfrm">
+                <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+                <p:dataTable id="lettertemptable" var="template" value="#{letterMbn.letters}"
+                             emptyMessage="#{msgs.label_no_records_found}">
+                    <f:param value="letter"/>
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}"
+                                         oncomplete="editletter.show();"
+                                         update=":editletterfrm"/>
+                    </f:facet>
+
+
+                    <p:column headerText="#{msgs.global_id}">
+                        #{template.id}
+                    </p:column>
+
+                    <p:column headerText="#{msgs.global_title}">
+                        <p:commandLink value=" #{template.title}" oncomplete="editletter.show();"
+                                       update=":editletterfrm">
+                            <f:setPropertyActionListener value="#{template}" target="#{letterMbn.selLetter}"/>
+                            <f:setPropertyActionListener value="#{template.id}" target="#{letterMbn.selLetterId}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.letter_subject}">
+                        #{template.subject}
+                    </p:column>
+
+                    <p:column headerText="#{msgs.letter_type}">
+                        #{template.letterType.key}
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </h:panelGroup>
+
+        <!-- Dialog to add/edit letter template -->
+        <p:dialog widgetVar="editletter" modal="true" resizable="false" header="#{msgs.letter_template}">
+            <h:form id="editletterfrm">
+                <p:messages showDetail="true" showSummary="true" id="messages"/>
+
+                <h:inputHidden value="#{letterMbn.selLetter.id}"/>
+                <h:panelGrid columns="1">
+                    <h:panelGroup>
+                        <h:panelGrid columns="2" columnClasses="col1, col2">
+                            <h:outputLabel value="#{msgs.global_title}" for="title"/>
+                            <p:inputText value="#{letterMbn.selLetter.title}" id="title"/>
+
+                            <h:outputLabel value="#{msgs.letter_subject}" for="subject"/>
+                            <p:inputText value="#{letterMbn.selLetter.subject}" id="subject"/>
+
+                            <h:outputText value="#{msgs.letter_type}"/>
+                            <p:selectOneMenu value="#{letterMbn.selLetter.letterType}">
+                                <f:selectItem itemLabel="-" itemValue=""/>
+                                <f:selectItems value="#{globalLists.letterTypes}" var="type"
+                                               itemLabel="#{msgs[type.key]}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <!--                <p:editor id="editor" value="#{letterMbn.selLetter.body}" /> -->
+
+                    <p:inputTextarea rows="20" col="50" value="#{letterMbn.selLetter.body}" style="width: 500px;"/>
+
+                    <h:panelGroup>
+                        <p:commandButton action="#{letterMbn.addLetter}" value="#{msgs.global_save}"
+                                         oncomplete="editletter.hide()"
+                                         update=":lettertempfrm:growl :editletterfrm:messages :lettertempfrm:lettertemptable"/>
+                        <p:commandButton action="#{letterMbn.cancel}" immediate="true" value="#{msgs.global_cancel}"
+                                         oncomplete="editletter.hide()" ajax="false"
+                                         update=":lettertempfrm:growl :editletterfrm:messages :lettertempfrm:lettertemptable"/>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+
+    </ui:define>
+</ui:composition>

@@ -55,14 +55,14 @@ public class ProdApplicationsDAO implements Serializable {
     }
 
     @Transactional
-    public List<ProdApplications> findProdExpiring(HashMap<String, Object> params) {
+    public ArrayList<ProdApplications> findProdExpiring(HashMap<String, Object> params) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProdApplications> query = builder.createQuery(ProdApplications.class);
         Root<ProdApplications> root = query.from(ProdApplications.class);
 
         Predicate p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
         query.select(root).where(p);
-        List<ProdApplications> prodApps = entityManager.createQuery(query).getResultList();
+        ArrayList<ProdApplications> prodApps = (ArrayList<ProdApplications>) entityManager.createQuery(query).getResultList();
         return prodApps;
     }
 

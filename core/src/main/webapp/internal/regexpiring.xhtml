@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+
+        <p:messages id="messages" showDetail="true"/>
+        <h:form prependId="false">
+
+            <ui:include src="/internal/processprodtable.xhtml">
+                <ui:param name="panelheader" value="#{msgs.expiring_prod}"/>
+                <ui:param name="prodlist" value="#{expProdMBean.prodApplicationses}"/>
+                <ui:param name="filteredprodlist" value="#{expProdMBean.filteredApps}"/>
+                <ui:param name="prodbean" value="#{expProdMBean}"/>
+                <ui:param name="prodapplications" value="#{processProdBn.prodApplications}"/>
+            </ui:include>
+
+
+        </h:form>
+    </ui:define>
+</ui:composition>

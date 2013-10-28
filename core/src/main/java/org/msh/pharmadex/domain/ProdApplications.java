@@ -117,6 +117,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<StatusUser> statusUser;
 
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<Invoice> invoices;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MODERATOR_ID", nullable = true)
     private User moderator;
@@ -422,5 +425,13 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setModerator(User moderator) {
         this.moderator = moderator;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
     }
 }

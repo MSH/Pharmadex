@@ -11,50 +11,50 @@
 
         <h:form prependId="false">
 
-            <p:dataTable id="rxsite" var="applicantion" value="#{pharmacySiteMbean.regSites}"
+            <p:dataTable id="rxsite" var="eachprod" value="#{pharmacySiteMbean.regSites}"
                          filteredValue="#{pharmacySiteMbean.filteredSites}"
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,50,100">
 
 
-                <p:column filterBy="#{applicantion.pharmacyName}"
-                          sortBy="#{applicantion.pharmacyName}">
+                <p:column filterBy="#{eachprod.pharmacyName}"
+                          sortBy="#{eachprod.pharmacyName}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_rxsite}"/>
                     </f:facet>
 
 
-                    <p:commandLink id="viewLink" value="#{applicantion.pharmacyName}" update=":viewDlg"
+                    <p:commandLink id="viewLink" value="#{eachprod.pharmacyName}" update=":viewDlg"
                                    oncomplete="viewDialog.show()" title="Edit" ajax="true">
-                        <f:setPropertyActionListener value="#{applicantion}" target="#{rxSiteHome.site}"/>
+                        <f:setPropertyActionListener value="#{eachprod}" target="#{rxSiteHome.site}"/>
                     </p:commandLink>
                 </p:column>
 
 
-                <p:column filterBy="#{applicantion.applicantName}"
-                          sortBy="#{applicantion.applicantName}">
+                <p:column filterBy="#{eachprod.applicantName}"
+                          sortBy="#{eachprod.applicantName}">
                     <f:facet name="header">
                         <h:outputText value="Email"/>
                     </f:facet>
-                    <h:outputText value="#{applicantion.applicantName}"/>
+                    <h:outputText value="#{eachprod.applicantName}"/>
                 </p:column>
 
-                <p:column filterBy="#{applicantion.email}"
-                          sortBy="#{applicantion.email}">
+                <p:column filterBy="#{eachprod.email}"
+                          sortBy="#{eachprod.email}">
                     <f:facet name="header">
                         <h:outputText value="Email"/>
                     </f:facet>
-                    <h:outputText value="#{applicantion.email}"/>
+                    <h:outputText value="#{eachprod.email}"/>
                 </p:column>
 
-                <p:column filterBy="#{applicantion.phoneNo}"
-                          sortBy="#{applicantion.phoneNo}"
+                <p:column filterBy="#{eachprod.phoneNo}"
+                          sortBy="#{eachprod.phoneNo}"
                         >
                     <f:facet name="header">
                         <h:outputText value="Phone No."/>
                     </f:facet>
-                    <h:outputText value="#{applicantion.phoneNo}"/>
+                    <h:outputText value="#{eachprod.phoneNo}"/>
                 </p:column>
 
             </p:dataTable>

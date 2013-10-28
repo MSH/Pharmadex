@@ -1,0 +1,62 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <div class="post">
+        <h1 class="title ui-widget-header ui-corner-all"> #{panelheader}</h1>
+    </div>
+
+    <p:dataTable id="prodtable" var="eachprod" value="#{prodlist}"
+                 filteredValue="#{filteredprodlist}">
+
+
+        <p:column filterBy="#{eachprod.prod.prodName}"
+                  sortBy="#{eachprod.prod.prodName}">
+            <f:facet name="header">
+                <h:outputText value="#{msgs.prodName}"/>
+            </f:facet>
+            <p:commandLink value="#{eachprod.prod.prodName}" action="#{prodbean.onRowSelect}" ajax="false">
+                <f:setPropertyActionListener value="#{eachprod}"
+                                             target="#{prodapplications}"/>
+            </p:commandLink>
+        </p:column>
+
+
+        <p:column filterBy="#{eachprod.prod.genName}"
+                  sortBy="#{eachprod.prod.genName}">
+            <f:facet name="header">
+                <h:outputText value="#{msgs.prodgenname}"/>
+            </f:facet>
+            <h:outputText value="#{eachprod.prod.genName}"/>
+        </p:column>
+
+        <p:column filterBy="#{msgs[eachprod.regState.key]}"
+                  sortBy="#{msgs[eachprod.regState.key]}">
+            <f:facet name="header">
+                <h:outputText value="#{msgs.registration_status}"/>
+            </f:facet>
+            <h:outputText value="#{msgs[eachprod.regState.key]}"/>
+        </p:column>
+
+        <p:column sortBy="#{msgs[eachprod.regState.key]}">
+            <f:facet name="header">
+                <h:outputText value="#{msgs.submitted_date}"/>
+            </f:facet>
+            <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
+        </p:column>
+
+        <p:column sortBy="#{eachprod.prod.applicant.appName}"
+                  filterBy="#{eachprod.prod.applicant.appName}">
+            <f:facet name="header">
+                <h:outputText value="#{msgs.manuf_name}"/>
+            </f:facet>
+            <h:outputLabel value="#{eachprod.prod.applicant.appName}"/>
+        </p:column>
+
+    </p:dataTable>
+
+</ui:composition>

@@ -42,5 +42,8 @@ public class GlobalLists {
         return Arrays.asList(Modules.values());
     }
 
+    public List<LetterType> getLetterTypes() {
+        return Arrays.asList(LetterType.values());
+    }
 
 }

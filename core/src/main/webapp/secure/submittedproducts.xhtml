@@ -14,32 +14,32 @@
                             rendered="#{empty prodAppMBean.prodApplicationsList}">
                 <f:param value="#{msgs.lable_products}"/>
             </h:outputFormat>
-            <p:dataTable id="applicantions" var="applicantion" value="#{prodAppMBean.prodApplicationsList}"
+            <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBean.prodApplicationsList}"
                          rendered="#{not empty prodAppMBean.prodApplicationsList}">
 
                 <p:column headerText="Product Name">
-                    <p:commandLink value="#{applicantion.prod.prodName}" action="/internal/processreg.faces"
+                    <p:commandLink value="#{eachprod.prod.prodName}" action="/internal/processreg.faces"
                                    ajax="false">
-                        <f:setPropertyActionListener value="#{applicantion}"
+                        <f:setPropertyActionListener value="#{eachprod}"
                                                      target="#{processProdBn.prodApplications}"/>
                     </p:commandLink>
                 </p:column>
 
 
                 <p:column headerText="Generic Name">
-                    #{applicantion.prod.genName}
+                    #{eachprod.prod.genName}
                 </p:column>
 
                 <p:column headerText="Registration Status">
-                    #{msgs[applicantion.regState.key]}
+                    #{msgs[eachprod.regState.key]}
                 </p:column>
 
                 <p:column headerText="Date Submitted">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{applicantion.submitDate}"/>
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_name}">
-                    #{applicantion.prod.applicant.appName}
+                    #{eachprod.prod.applicant.appName}
                 </p:column>
             </p:dataTable>
 
