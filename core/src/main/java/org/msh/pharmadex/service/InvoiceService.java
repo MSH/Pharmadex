@@ -144,7 +144,6 @@ public class InvoiceService implements Serializable {
         mailService.sendMailWithAttach(mail, true, reminder.getInvoice().getInvoiceFile());
         reminderDAO.save(reminder);
         invoiceDAO.save(invoice);
-
         return "reminder_sent";
 
     }

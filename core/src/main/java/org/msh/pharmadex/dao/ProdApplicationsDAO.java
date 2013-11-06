@@ -60,7 +60,11 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaQuery<ProdApplications> query = builder.createQuery(ProdApplications.class);
         Root<ProdApplications> root = query.from(ProdApplications.class);
 
-        Predicate p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
+        Predicate p = null;
+        if (params.get("startDt") != null && params.get("endDt") != null) {
+            p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
+        }
+
         query.select(root).where(p);
         ArrayList<ProdApplications> prodApps = (ArrayList<ProdApplications>) entityManager.createQuery(query).getResultList();
         return prodApps;
