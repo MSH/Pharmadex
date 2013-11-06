@@ -7,10 +7,15 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.dao.iface.MailDAO;
 import org.msh.pharmadex.domain.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 
 @Service
@@ -34,8 +39,28 @@ public class MailService {
         message.setSentDate(mailObj.getDate());
 
         mailSender.send(message);
-        if(saveMail)
+        if (saveMail)
             mailDAO.save(mailObj);
+    }
+
+    public String sendMailWithAttach(Mail mailObj, boolean saveMail, byte[] attach) throws MessagingException {
+        JavaMailSenderImpl sender = (JavaMailSenderImpl) mailSender;
+        MimeMessage message = sender.createMimeMessage();
+
+        // use the true flag to indicate you need a multipart message
+        MimeMessageHelper helper = null;
+
+        helper = new MimeMessageHelper(message, true);
+        helper.setTo(mailObj.getMailto());
+        helper.setText(mailObj.getMessage());
+        helper.setSubject(mailObj.getSubject());
+        helper.addAttachment("invoice.pdf", new ByteArrayResource(attach));
+        sender.send(helper.getMimeMessage());
+
+        if (saveMail)
+            mailDAO.save(mailObj);
+        return "mail_sent";
+
     }
 
     public void sendAlertMail(String alert) {
@@ -44,7 +69,7 @@ public class MailService {
         mailSender.send(mailMessage);
     }
 
-    public List<Mail> findAllMailSent(Long prodAppId){
+    public List<Mail> findAllMailSent(Long prodAppId) {
         return mailDAO.findByProdApplications_IdOrderByDateDesc(prodAppId);
     }
 

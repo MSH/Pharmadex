@@ -10,6 +10,41 @@
         </div>
 
         <h:form prependId="false">
+            <h:panelGroup rendered="#{not empty prodAppMBean.prodApplicationsList}">
+                <p:outputLabel value="#{msgs.pending_renewals}" style="font-weight: bolder;color: orangered;"/>
+                <p:dataTable id="renewals" var="eachprod" value="#{prodAppMBean.prodApplicationsList}"
+                             rendered="#{not empty prodAppMBean.prodApplicationsList}">
+
+                    <p:column headerText="Product Name">
+                        <p:commandLink value="#{eachprod.prod.prodName}" action="/internal/processreg.faces"
+                                       ajax="false">
+                            <f:setPropertyActionListener value="#{eachprod}"
+                                                         target="#{processProdBn.prodApplications}"/>
+                        </p:commandLink>
+                    </p:column>
+
+
+                    <p:column headerText="Generic Name">
+                        #{eachprod.prod.genName}
+                    </p:column>
+
+                    <p:column headerText="Registration Status">
+                        #{msgs[eachprod.regState.key]}
+                    </p:column>
+
+                    <p:column headerText="Date Submitted">
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.applicant_name}">
+                        #{eachprod.prod.applicant.appName}
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+
+            <p:separator/>
+
+
             <h:outputFormat id="noRecordsFound" value="#{msgs.label_no_records_found}"
                             rendered="#{empty prodAppMBean.prodApplicationsList}">
                 <f:param value="#{msgs.lable_products}"/>

@@ -4,10 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.ProdAppChecklistDAO;
-import org.msh.pharmadex.domain.Attachment;
-import org.msh.pharmadex.domain.Checklist;
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.*;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -22,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Author: usrivastava
@@ -45,6 +43,7 @@ public class FileUploadController {
     private ArrayList<Attachment> attachments;
     private UploadedFile file;
     private Attachment attach = new Attachment();
+    private byte[] invoiceFile;
 
     private ArrayList<Checklist> checklists;
     private ProdAppChecklist prodAppChecklist = new ProdAppChecklist();
@@ -131,6 +130,14 @@ public class FileUploadController {
         return download;
     }
 
+    public StreamedContent invoiceDownload(Invoice invoice) {
+        InputStream ist = new ByteArrayInputStream(invoice.getInvoiceFile());
+        Calendar c = Calendar.getInstance();
+        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "invoice_" + invoice.getInvoiceNumber() + "_" + c.get(Calendar.YEAR));
+//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+        return download;
+    }
+
     public ArrayList<Attachment> getAttachments() {
         if (attachments == null)
             attachments = (ArrayList<Attachment>) attachmentDAO.findByProdApplications_Id(processProdBn.getProdApplications().getId());
@@ -164,5 +171,13 @@ public class FileUploadController {
     public void setProdAppChecklist(ProdAppChecklist prodAppChecklist) {
         webSession.setProdAppChecklist(prodAppChecklist);
         this.prodAppChecklist = prodAppChecklist;
+    }
+
+    public byte[] getInvoiceFile() {
+        return invoiceFile;
+    }
+
+    public void setInvoiceFile(byte[] invoiceFile) {
+        this.invoiceFile = invoiceFile;
     }
 }

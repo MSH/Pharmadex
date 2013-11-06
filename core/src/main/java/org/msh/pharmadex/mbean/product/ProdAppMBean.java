@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.service.InvoiceService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -29,6 +30,9 @@ public class ProdAppMBean implements Serializable {
     @Autowired
     private UserSession userSession;
 
+    @Autowired
+    private InvoiceService invoiceService;
+
     private ProdApplications selectedApplication = new ProdApplications();
     private List<ProdApplications> prodApplicationsList;
     private List<ProdApplications> submmittedAppList;
@@ -36,6 +40,7 @@ public class ProdAppMBean implements Serializable {
     private boolean showAdd = false;
     private List<ProdApplications> allApplicationForProcess;
     private List<ProdApplications> filteredApps;
+    private List<ProdApplications> pendingRenewals;
 
     @Autowired
     ProcessProdBn processProdBn;
@@ -58,6 +63,16 @@ public class ProdAppMBean implements Serializable {
 //        selectedApplicant = new applicant();
         System.out.print("inside cancelUser");
         return "/secure/applicantlist.faces";
+    }
+
+    public List<ProdApplications> getPendingRenewals() {
+        if (pendingRenewals == null)
+            pendingRenewals = invoiceService.findPendingByApplicant(userSession.getLoggedInUserObj());
+        return pendingRenewals;
+    }
+
+    public void setPendingRenewals(List<ProdApplications> pendingRenewals) {
+        this.pendingRenewals = pendingRenewals;
     }
 
     public ProdApplications getSelectedApplication() {

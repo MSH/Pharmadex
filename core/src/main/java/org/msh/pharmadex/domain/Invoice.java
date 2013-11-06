@@ -40,7 +40,7 @@ public class Invoice extends CreationDetail implements Serializable {
     @Column(name = "payment_status", nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Column(name = "payment_amt", length = 100, nullable = false)
+    @Column(name = "payment_amt", length = 100, nullable = true)
     private String paymentAmt;
 
     @Temporal(TemporalType.DATE)

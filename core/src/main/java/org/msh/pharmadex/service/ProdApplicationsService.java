@@ -145,6 +145,7 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.REVIEW_BOARD);
             regState.add(RegState.SCREENING);
             regState.add(RegState.VERIFY);
+            regState.add(RegState.REGISTERED);
             params.put("regState", regState);
             params.put("userId", userSession.getLoggedInUserObj().getUserId());
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
