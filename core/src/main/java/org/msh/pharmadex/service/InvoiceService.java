@@ -60,7 +60,7 @@ public class InvoiceService implements Serializable {
         this.product = product;
 
         try {
-            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
+//            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
             File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
             JasperPrint jasperPrint = initInvoice();
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));

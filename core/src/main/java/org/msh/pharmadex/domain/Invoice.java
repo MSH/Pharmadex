@@ -2,7 +2,6 @@ package org.msh.pharmadex.domain;
 
 
 import org.msh.pharmadex.domain.enums.InvoiceType;
-import org.msh.pharmadex.domain.enums.PaymentStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,16 +35,9 @@ public class Invoice extends CreationDetail implements Serializable {
     @Column(name = "invoice_type", nullable = false)
     private InvoiceType invoiceType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status", nullable = false)
-    private PaymentStatus paymentStatus;
-
-    @Column(name = "payment_amt", length = 100, nullable = true)
-    private String paymentAmt;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "payment_date")
-    private Date paymentDate;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "curr_expiry_date", nullable = false)
@@ -114,22 +106,6 @@ public class Invoice extends CreationDetail implements Serializable {
         this.invoiceType = invoiceType;
     }
 
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public Date getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(Date paymentDate) {
-        this.paymentDate = paymentDate;
-    }
-
     public Date getCurrExpDate() {
         return currExpDate;
     }
@@ -154,14 +130,6 @@ public class Invoice extends CreationDetail implements Serializable {
         this.renewalDate = renewalDate;
     }
 
-    public String getPaymentAmt() {
-        return paymentAmt;
-    }
-
-    public void setPaymentAmt(String paymentAmt) {
-        this.paymentAmt = paymentAmt;
-    }
-
     public List<Reminder> getReminders() {
         return reminders;
     }
@@ -176,5 +144,13 @@ public class Invoice extends CreationDetail implements Serializable {
 
     public void setInvoiceFile(byte[] invoiceFile) {
         this.invoiceFile = invoiceFile;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 }
