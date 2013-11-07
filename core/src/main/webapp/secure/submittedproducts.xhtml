@@ -10,9 +10,9 @@
         </div>
 
         <h:form prependId="false">
-            <h:panelGroup rendered="#{not empty prodAppMBean.prodApplicationsList}">
+            <h:panelGroup rendered="#{not empty prodAppMBean.pendingRenewals}">
                 <p:outputLabel value="#{msgs.pending_renewals}" style="font-weight: bolder;color: orangered;"/>
-                <p:dataTable id="renewals" var="eachprod" value="#{prodAppMBean.prodApplicationsList}"
+                <p:dataTable id="renewals" var="eachprod" value="#{prodAppMBean.pendingRenewals}"
                              rendered="#{not empty prodAppMBean.prodApplicationsList}">
 
                     <p:column headerText="Product Name">
@@ -40,9 +40,8 @@
                         #{eachprod.prod.applicant.appName}
                     </p:column>
                 </p:dataTable>
+                <p:separator/>
             </h:panelGroup>
-
-            <p:separator/>
 
 
             <h:outputFormat id="noRecordsFound" value="#{msgs.label_no_records_found}"

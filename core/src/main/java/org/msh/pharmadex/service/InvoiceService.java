@@ -4,6 +4,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
+import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.dao.iface.InvoiceDAO;
 import org.msh.pharmadex.dao.iface.ReminderDAO;
@@ -42,6 +43,9 @@ public class InvoiceService implements Serializable {
 
     @Autowired
     UserDAO userDAO;
+
+    @Autowired
+    ProdApplicationsDAO prodApplicationsDAO;
 
 
     private Product product;
@@ -150,8 +154,11 @@ public class InvoiceService implements Serializable {
 
     public List<ProdApplications> findPendingByApplicant(User user) {
         List<User> users = userDAO.findByApplicant(user.getApplicant().getApplcntId());
-        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
+//        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("users", users);
+        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
 
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return prodApplicationsDAO.findProdExpiring(params);  //To change body of created methods use File | Settings | File Templates.
     }
 }

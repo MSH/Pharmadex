@@ -6,7 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
+import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,6 +31,9 @@ public class ProdApplicationDAOTest {
 
     @Autowired
     ProdApplicationsDAO prodApplicationsDAO;
+
+    @Autowired
+    UserDAO userDAO;
 
     @Before
     public void setUp() throws Exception {
@@ -53,6 +59,16 @@ public class ProdApplicationDAOTest {
 
         List<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
         Assert.assertNotNull(prodApps);
+
+        params = new HashMap<String, Object>();
+        List<User> users = new ArrayList<User>();
+        users.add(userDAO.findUser(21));
+        params.put("users", users);
+        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
+
+        prodApps = prodApplicationsDAO.findProdExpiring(params);
+        Assert.assertNotNull(prodApps);
+
     }
 
 
@@ -64,6 +80,16 @@ public class ProdApplicationDAOTest {
         ArrayList<RegState> regStates = new ArrayList<RegState>();
         regStates.add(RegState.NEW_APPL);
         regStates.add(RegState.FEE);
+        regStates.add(RegState.NEW_APPL);
+        regStates.add(RegState.FEE);
+        regStates.add(RegState.NEW_APPL);
+        regStates.add(RegState.DEFAULTED);
+        regStates.add(RegState.FOLLOW_UP);
+        regStates.add(RegState.RECOMMENDED);
+        regStates.add(RegState.REVIEW_BOARD);
+        regStates.add(RegState.SCREENING);
+        regStates.add(RegState.VERIFY);
+        regStates.add(RegState.REGISTERED);
 
         params.put("regState", regStates);
         params.put("userId", 2);

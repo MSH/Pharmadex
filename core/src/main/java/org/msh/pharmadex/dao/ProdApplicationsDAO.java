@@ -1,9 +1,7 @@
 package org.msh.pharmadex.dao;
 
-import org.msh.pharmadex.domain.Company;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,10 +57,24 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProdApplications> query = builder.createQuery(ProdApplications.class);
         Root<ProdApplications> root = query.from(ProdApplications.class);
+        Join<ProdApplications, Invoice> invoiceJoin = root.join("invoices");
+        Join<ProdApplications, User> userJoin = root.join("user", JoinType.LEFT);
+        root.fetch("invoices", JoinType.INNER);
 
         Predicate p = null;
         if (params.get("startDt") != null && params.get("endDt") != null) {
             p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
+        }
+        if (params.get("paymentStatus") != null) {
+            p = builder.equal(invoiceJoin.<PaymentStatus>get("paymentStatus"), params.get("paymentStatus"));
+        }
+        if (params.get("users") != null) {
+            List<Integer> userIdList = new ArrayList<Integer>();
+            for (User u : (List<User>) params.get("users")) {
+                userIdList.add(u.getUserId());
+            }
+            Expression<Integer> userIdExp = userJoin.<Integer>get("userId");
+            p = userIdExp.in(userIdList);
         }
 
         query.select(root).where(p);

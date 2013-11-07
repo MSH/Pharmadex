@@ -78,7 +78,7 @@ public class Product extends CreationDetail implements Serializable {
     private ProdApplications prodApplications;
 
     @OneToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "createdBy")
     private User createdBy;
 
     @Enumerated
