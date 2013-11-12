@@ -9,7 +9,6 @@ import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -62,11 +61,15 @@ public class ProdApplicationDAOTest {
 
         params = new HashMap<String, Object>();
         List<User> users = new ArrayList<User>();
-        users.add(userDAO.findUser(21));
+        users.add(userDAO.findUser(20));
         params.put("users", users);
-        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
+//        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
 
-        prodApps = prodApplicationsDAO.findProdExpiring(params);
+        try {
+            prodApps = prodApplicationsDAO.findProdExpiring(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Assert.assertNotNull(prodApps);
 
     }

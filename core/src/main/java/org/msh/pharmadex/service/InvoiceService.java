@@ -7,10 +7,10 @@ import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.dao.iface.InvoiceDAO;
+import org.msh.pharmadex.dao.iface.PaymentDAO;
 import org.msh.pharmadex.dao.iface.ReminderDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.InvoiceType;
-import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.ReminderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,9 @@ public class InvoiceService implements Serializable {
     InvoiceDAO invoiceDAO;
 
     @Autowired
+    PaymentDAO paymentDAO;
+
+    @Autowired
     ReminderDAO reminderDAO;
 
     @Autowired
@@ -46,7 +49,6 @@ public class InvoiceService implements Serializable {
 
     @Autowired
     ProdApplicationsDAO prodApplicationsDAO;
-
 
     private Product product;
     private Invoice invoice;
@@ -157,8 +159,14 @@ public class InvoiceService implements Serializable {
 //        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("users", users);
-        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
+//        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
 
-        return prodApplicationsDAO.findProdExpiring(params);  //To change body of created methods use File | Settings | File Templates.
+        return prodApplicationsDAO.findPendingRenew(params);  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public String savePayment(Payment payment) {
+        invoiceDAO.save(payment.getInvoice());
+//        paymentDAO.save(payment);
+        return "persisted";  //To change body of created methods use File | Settings | File Templates.
     }
 }

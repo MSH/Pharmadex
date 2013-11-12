@@ -33,6 +33,9 @@
         </p:menuitem>
         <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear" action="#{renewalMbn.sendReminder}"
                     rendered="#{userSession.head||userSession.admin}" update=":reghome:growl"/>
+        <p:menuitem value="#{msgs.report_payment}" icon="ui-icon-gear" action="#{renewalMbn.preparePayment()}"
+                    oncomplete="reportpaymentdlg.show()"
+                    rendered="#{userSession.company}" update=":reghome:growl" ajax="true"/>
     </p:submenu>
 </p:menu>
 
@@ -289,7 +292,7 @@
             <h:outputText value="#{invoice.invoiceType}"/>
         </p:column>
         <p:column headerText="#{msgs.payment_status}">
-            <h:outputText value="#{invoice.paymentStatus}"/>
+            <h:outputText value="#{invoice.payment.paymentStatus}"/>
         </p:column>
         <p:column headerText="#{msgs.send_reminder}">
             <p:commandLink value="#{msgs.send_reminder}" action="#{renewalMbn.sendReminder}"
@@ -666,6 +669,53 @@
         <p:commandButton id="createinvoice" value="#{msgs.global_submit}" oncomplete="invoicedlg.hide()"
                          icon="ui-icon-disk" ajax="true" action="#{renewalMbn.createInvoice}"/>
         <p:commandButton id="cnclinvoice" type="button" value="Clear" onclick="invoicedlg.hide()"
+                         icon="ui-icon-close" ajax="false"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog header="#{msgs.report_payment}" widgetVar="reportpaymentdlg" resizable="true" id="reportpaymentdlg"
+          modal="true">
+
+    <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10" cellspacing="10">
+        <p:outputLabel value="#{msgs.reg_number}"/>
+        <h:outputText value="#{renewalMbn.selProduct.regNo}"/>
+
+        <p:outputLabel value="#{msgs.prodName}"/>
+        <h:outputText value="#{renewalMbn.selProduct.prodName}"/>
+
+        <p:outputLabel value="#{msgs.prodgenname}"/>
+        <h:outputText value="#{renewalMbn.selProduct.genName}"/>
+
+        <p:outputLabel value="#{msgs.applicant_name}"/>
+        <h:outputText value="#{renewalMbn.selProduct.applicant.appName}"/>
+
+        <p:outputLabel value="#{msgs.expiry_date}"/>
+        <h:outputText value="#{renewalMbn.selProduct.prodApplications.regExpiryDate}"/>
+
+        <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
+        <h:outputText value="#{renewalMbn.invoice.newExpDate}"/>
+
+        <p:outputLabel value="#{msgs.invoice_amt}" for="payinvamt"/>
+        <h:outputText value="#{renewalMbn.invoice.invoiceAmt}" id="payinvamt"/>
+
+        <p:outputLabel value="#{msgs.invoice_no}" for="payinvno"/>
+        <h:outputText value="#{renewalMbn.invoice.invoiceNumber}" id="payinvno"/>
+
+        <p:outputLabel value="#{msgs.payment_amt}" for="payamt"/>
+        <p:inputText value="#{renewalMbn.payment.paymentAmt}" id="payamt"/>
+
+        <p:outputLabel value="#{msgs.reciept_no}" for="receiptNo"/>
+        <p:inputText value="#{renewalMbn.payment.receiptNo}" id="receiptNo"/>
+
+        <p:outputLabel value="#{msgs.tracking_no}" for="trackingNo"/>
+        <p:inputText value="#{renewalMbn.payment.trackingNo}" id="trackingNo"/>
+
+    </h:panelGrid>
+
+    <h:panelGrid columns="2" style="margin-top:10px">
+        <p:commandButton id="reportpayment" value="#{msgs.global_submit}" oncomplete="reportpaymentdlg.hide()"
+                         icon="ui-icon-disk" ajax="true" action="#{renewalMbn.reportPayment}"/>
+        <p:commandButton id="cnclpayment" type="button" value="Clear" onclick="reportpaymentdlg.hide()"
                          icon="ui-icon-close" ajax="false"/>
     </h:panelGrid>
 </p:dialog>

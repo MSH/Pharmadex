@@ -1,9 +1,11 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Invoice;
+import org.msh.pharmadex.domain.Payment;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.Reminder;
 import org.msh.pharmadex.domain.enums.InvoiceType;
+import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.service.InvoiceService;
 import org.msh.pharmadex.service.ProductService;
@@ -11,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.mail.MessagingException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Author: usrivastava
@@ -39,9 +43,16 @@ public class RenewalMbn implements Serializable {
 
     private Product selProduct;
 
-    private Invoice invoice = new Invoice();
+    private Invoice invoice;
+
+    private Payment payment;
 
     private Reminder reminder;
+
+    @PostConstruct
+    public void init() {
+        preparePayment();
+    }
 
     public void createInvoice() {
         getSelProduct();
@@ -62,6 +73,7 @@ public class RenewalMbn implements Serializable {
 
 
     }
+
 
     public void sendReminder() {
         String result = null;
@@ -93,6 +105,8 @@ public class RenewalMbn implements Serializable {
 
 
     public Invoice getInvoice() {
+        if (invoice == null)
+            invoice = new Invoice();
         return invoice;
     }
 
@@ -117,5 +131,35 @@ public class RenewalMbn implements Serializable {
 
     public void setSelProduct(Product selProduct) {
         this.selProduct = selProduct;
+    }
+
+    public String reportPayment() {
+        payment.setPaymentDate(new Date());
+        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setInvoice(invoice);
+        invoice.setPayment(payment);
+        String result = invoiceService.savePayment(payment);
+
+        return result;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Payment getPayment() {
+        if (payment == null)
+            payment = new Payment();
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public String preparePayment() {
+        List<Invoice> invoices = invoiceService.findInvoicesByProdApp(getSelProduct().getProdApplications().getId());
+        for (Invoice i : invoices) {
+            if (i.getPayment() == null) {
+                invoice = i;
+            }
+        }
+        return "";
     }
 }

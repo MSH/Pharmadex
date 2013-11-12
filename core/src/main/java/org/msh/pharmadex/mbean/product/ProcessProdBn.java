@@ -54,6 +54,8 @@ public class ProcessProdBn {
     private String reviewComment;
     private List<Invoice> invoices;
 
+    @Autowired
+    private InvoiceService invoiceService;
 
     @Autowired
     private UserService userService;
@@ -578,7 +580,7 @@ public class ProcessProdBn {
 
     public List<Invoice> getInvoices() {
         if (invoices == null)
-            return prodApplications.getInvoices();
+            return invoiceService.findInvoicesByProdApp(prodApplications.getId());
         else
             return null;
     }
