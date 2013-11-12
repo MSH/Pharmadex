@@ -5,6 +5,7 @@ import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,4 +216,10 @@ public class ProdApplicationsService implements Serializable {
     }
 
 
+    public List<ProdApplications> findPayNotified() {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("paymentStatus", PaymentStatus.PAID);
+
+        return prodApplicationsDAO.findPendingRenew(params);
+    }
 }
