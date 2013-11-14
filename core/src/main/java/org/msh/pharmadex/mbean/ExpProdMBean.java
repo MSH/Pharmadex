@@ -27,6 +27,7 @@ public class ExpProdMBean implements Serializable {
     private List<ProdApplications> prodApplicationses;
     private List<ProdApplications> filteredApps;
     private List<ProdApplications> notifiedPayProd;
+    private List<ProdApplications> expiredProds;
 
 
     public String onRowSelect() {
@@ -46,6 +47,17 @@ public class ExpProdMBean implements Serializable {
             notifiedPayProd = prodApplicationsService.findPayNotified();
         }
         return notifiedPayProd;
+    }
+
+    public List<ProdApplications> getExpiredProds() {
+        if (expiredProds == null) {
+            expiredProds = prodApplicationsService.findExpiredProd();
+        }
+        return expiredProds;
+    }
+
+    public void setExpiredProds(List<ProdApplications> expiredProds) {
+        this.expiredProds = expiredProds;
     }
 
     public void setNotifiedPayProd(List<ProdApplications> notifiedPayProd) {

@@ -88,26 +88,34 @@ public class ProdApplicationsDAO implements Serializable {
         Root<ProdApplications> root = query.from(ProdApplications.class);
         Join<ProdApplications, Invoice> invoiceJoin = root.join("invoices");
         Join<ProdApplications, User> userJoin = root.join("user", JoinType.LEFT);
-        Join<Invoice, User> payJoin = invoiceJoin.join("payment");
 //        root.fetch("invoices", JoinType.RIGHT);
 
+        List<Predicate> predicateList = new ArrayList<Predicate>();
         Predicate p = null;
-        if (params.get("startDt") != null && params.get("endDt") != null) {
-            p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
-        }
-        if (params.get("paymentStatus") != null) {
-            p = builder.equal(payJoin.<PaymentStatus>get("paymentStatus"), params.get("paymentStatus"));
-        }
-        if (params.get("users") != null) {
-            List<Integer> userIdList = new ArrayList<Integer>();
-            for (User u : (List<User>) params.get("users")) {
-                userIdList.add(u.getUserId());
+
+        for (Map.Entry<String, Object> param : params.entrySet()) {
+            if (param.getKey().equals("startDt") && params.get("endDt") != null) {
+                p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
             }
-            Expression<Integer> userIdExp = userJoin.<Integer>get("userId");
-            p = userIdExp.in(userIdList);
+            if (param.getKey().equals("paymentStatus") && param.getValue() != null) {
+                p = builder.equal(invoiceJoin.<PaymentStatus>get("paymentStatus"), param.getValue());
+            }
+            if (param.getKey().equals("users") && param.getValue() != null) {
+                List<Integer> userIdList = new ArrayList<Integer>();
+                for (User u : (List<User>) params.get("users")) {
+                    userIdList.add(u.getUserId());
+                }
+                Expression<Integer> userIdExp = userJoin.<Integer>get("userId");
+                p = userIdExp.in(userIdList);
+            }
+            predicateList.add(p);
         }
 
-        query.select(root).where(p);
+        Predicate[] predicates = new Predicate[predicateList.size()];
+        predicateList.toArray(predicates);
+        if (predicateList.size() > 0)
+            query.where(predicates);
+
         ArrayList<ProdApplications> prodApps = (ArrayList<ProdApplications>) entityManager.createQuery(query).getResultList();
         return prodApps;
     }
@@ -178,8 +186,8 @@ public class ProdApplicationsDAO implements Serializable {
             } else if (param.getKey().equals("userId") && param.getValue() != null) {
                 Expression userid = user.get("userId");
                 p = cb.equal(userid, param.getValue());
-            } else {
-
+            } else if (param.getKey().equals("regExpDate") && param.getValue() != null) {
+                p = cb.lessThan(prodApp.<Date>get("regExpiryDate"), (Date) param.getValue());
             }
 
             predicateList.add(p);

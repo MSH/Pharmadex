@@ -1,9 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.domain.Invoice;
-import org.msh.pharmadex.domain.Payment;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.Reminder;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.InvoiceType;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.failure.UserSession;
@@ -41,7 +38,17 @@ public class RenewalMbn implements Serializable {
     @Autowired
     UserSession userSession;
 
-    private Product selProduct;
+    private ProdApplications selProApp;
+
+    private Product selProd;
+
+    public Product getSelProd() {
+        return selProApp.getProd();
+    }
+
+    public void setSelProd(Product selProd) {
+        this.selProd = selProd;
+    }
 
     private Invoice invoice;
 
@@ -55,21 +62,21 @@ public class RenewalMbn implements Serializable {
     }
 
     public void createInvoice() {
-        getSelProduct();
-        invoice.setCurrExpDate(selProduct.getProdApplications().getRegExpiryDate());
+        getSelProductApp();
+        invoice.setCurrExpDate(selProApp.getRegExpiryDate());
         invoice.setInvoiceType(InvoiceType.RENEWAL);
         invoice.setIssueDate(new Date());
-        invoice.setProdApplications(selProduct.getProdApplications());
+        invoice.setProdApplications(selProApp);
 
 
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) invoiceService.findInvoicesByProdApp(selProduct.getProdApplications().getId());
+        ArrayList<Invoice> invoices = (ArrayList<Invoice>) invoiceService.findInvoicesByProdApp(selProApp.getId());
         if (invoices == null)
             invoices = new ArrayList<Invoice>();
         invoices.add(invoice);
-        selProduct.getProdApplications().setInvoices(invoices);
+        selProApp.setInvoices(invoices);
         processProdBn.setInvoices(invoices);
 
-        invoiceService.createInvoice(invoice, selProduct);
+        invoiceService.createInvoice(invoice, selProApp);
 
 
     }
@@ -78,7 +85,7 @@ public class RenewalMbn implements Serializable {
     public void sendReminder() {
         String result = null;
         try {
-            result = invoiceService.sendReminder(getSelProduct(), userSession.getLoggedInUserObj(), invoice);
+            result = invoiceService.sendReminder(getSelProductApp(), userSession.getLoggedInUserObj(), invoice);
             if (result.equalsIgnoreCase("reminder_sent")) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Reminder sent"));
@@ -122,20 +129,27 @@ public class RenewalMbn implements Serializable {
         this.reminder = reminder;
     }
 
-    public Product getSelProduct() {
-        if (selProduct == null) {
-            selProduct = processProdBn.getProdApplications().getProd();
+    public ProdApplications getSelProductApp() {
+        if (selProApp == null) {
+            selProApp = processProdBn.getProdApplications();
         }
-        return selProduct;
+        return selProApp;
     }
 
-    public void setSelProduct(Product selProduct) {
-        this.selProduct = selProduct;
+    public void setSelProApp(ProdApplications selProApp) {
+        this.selProApp = selProApp;
+    }
+
+    public void renew() {
+        invoice.setPaymentStatus(PaymentStatus.PAYMENT_VERIFIED);
+        invoice.setPayment(payment);
+        invoiceService.renew(invoice, getSelProductApp());
+
     }
 
     public String reportPayment() {
         payment.setPaymentDate(new Date());
-        payment.setPaymentStatus(PaymentStatus.PAID);
+        invoice.setPaymentStatus(PaymentStatus.PAID);
         payment.setInvoice(invoice);
         invoice.setPayment(payment);
         String result = invoiceService.savePayment(payment);
@@ -154,11 +168,10 @@ public class RenewalMbn implements Serializable {
     }
 
     public String preparePayment() {
-        List<Invoice> invoices = invoiceService.findInvoicesByProdApp(getSelProduct().getProdApplications().getId());
+        List<Invoice> invoices = invoiceService.findInvoicesByProdApp(getSelProductApp().getId());
         for (Invoice i : invoices) {
-            if (i.getPayment() == null) {
-                invoice = i;
-            }
+            setInvoice(i);
+            setPayment(i.getPayment());
         }
         return "";
     }

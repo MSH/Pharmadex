@@ -102,6 +102,17 @@ public class ProdApplicationsService implements Serializable {
         return prodApps;
     }
 
+    public ArrayList<ProdApplications> findExpiredProd() {
+        Calendar currDate = Calendar.getInstance();
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("regExpDate", currDate.getTime());
+        ArrayList<ProdApplications> prodApps = (ArrayList<ProdApplications>) prodApplicationsDAO.getProdAppByParams(params);
+
+
+        return prodApps;
+    }
+
+
     public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
         List<ProdApplications> prodApplicationses = null;
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -219,7 +230,6 @@ public class ProdApplicationsService implements Serializable {
     public List<ProdApplications> findPayNotified() {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("paymentStatus", PaymentStatus.PAID);
-
         return prodApplicationsDAO.findPendingRenew(params);
     }
 }

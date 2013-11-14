@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * Author: usrivastava
  */
 @Component
-@Scope("request")
+@Scope("session")
 public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
 

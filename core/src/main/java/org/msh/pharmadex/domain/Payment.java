@@ -1,8 +1,6 @@
 package org.msh.pharmadex.domain;
 
 
-import org.msh.pharmadex.domain.enums.PaymentStatus;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -20,9 +18,6 @@ public class Payment extends CreationDetail implements Serializable {
     @JoinColumn(name = "inv_id")
     private Invoice invoice;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status", nullable = false)
-    private PaymentStatus paymentStatus;
 
     @Column(name = "payment_amt", length = 100, nullable = true)
     private String paymentAmt;
@@ -51,14 +46,6 @@ public class Payment extends CreationDetail implements Serializable {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
-    }
-
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
     }
 
     public String getPaymentAmt() {

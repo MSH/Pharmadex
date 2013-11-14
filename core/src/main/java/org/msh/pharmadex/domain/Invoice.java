@@ -2,6 +2,7 @@ package org.msh.pharmadex.domain;
 
 
 import org.msh.pharmadex.domain.enums.InvoiceType;
+import org.msh.pharmadex.domain.enums.PaymentStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,6 +28,10 @@ public class Invoice extends CreationDetail implements Serializable {
 
     @Column(name = "invoice_number", length = 100)
     private String invoiceNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status", nullable = false)
+    private PaymentStatus paymentStatus;
 
     @Column(name = "invoice_amt", length = 100, nullable = false)
     private String invoiceAmt;
@@ -152,5 +157,13 @@ public class Invoice extends CreationDetail implements Serializable {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

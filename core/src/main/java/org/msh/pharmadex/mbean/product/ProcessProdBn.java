@@ -126,9 +126,10 @@ public class ProcessProdBn {
             case REVIEW_BOARD:
                 if (userSession.isAdmin() || userSession.isModerator()) {
                     if (getModule().isComplete()) {
-                        options = new RegState[2];
+                        options = new RegState[3];
                         options[0] = RegState.FOLLOW_UP;
                         options[1] = RegState.RECOMMENDED;
+                        options[2] = RegState.NOT_RECOMMENDED;
                     } else {
                         options = new RegState[1];
                         options[0] = RegState.FOLLOW_UP;
@@ -141,11 +142,12 @@ public class ProcessProdBn {
             case RECOMMENDED:
                 if (userSession.isAdmin() || userSession.isModerator() || userSession.isHead()) {
                     options = new RegState[1];
+                    options[0] = RegState.FOLLOW_UP;
                     options[0] = RegState.REJECTED;
                 }
                 break;
             case REGISTERED:
-                options = new RegState[2];
+                options = new RegState[3];
                 options[0] = RegState.DISCONTINUED;
                 options[1] = RegState.XFER_APPLICANCY;
                 break;

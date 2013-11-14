@@ -11,6 +11,7 @@ import org.msh.pharmadex.dao.iface.PaymentDAO;
 import org.msh.pharmadex.dao.iface.ReminderDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.InvoiceType;
+import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.ReminderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,9 +58,9 @@ public class InvoiceService implements Serializable {
         return invoiceDAO.findByProdApplications_Id(id);
     }
 
-    public String createInvoice(Invoice invoice, Product product) {
+    public String createInvoice(Invoice invoice, ProdApplications prodApp) {
         this.invoice = invoice;
-        this.product = product;
+        this.product = prodApp.getProd();
 
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
@@ -84,7 +85,7 @@ public class InvoiceService implements Serializable {
 //        Letter letter = letterService.findByLetterType(LetterType.INVOICE);
 //        String body = letter.getBody();
 //        MessageFormat mf = new MessageFormat(body);
-//        Object[] args = {product.getProdName(), product.getApplicant().getAppName(), product.getProdApplications().getId()};
+//        Object[] args = {prodApp.getProdName(), prodApp.getApplicant().getAppName(), prodApp.getProdApplications().getId()};
 //        body = mf.format(args);
 
         String regExpDt = DateFormat.getDateInstance().format(invoice.getNewExpDate());
@@ -98,10 +99,10 @@ public class InvoiceService implements Serializable {
         param.put("expiry_date", expDt);
         param.put("new_expiry_date", regExpDt);
         param.put("amount", invoice.getInvoiceAmt());
-//        param.put("subject", "Subject: "+letter.getSubject()+" "+ product.getProdName() + " ");
+//        param.put("subject", "Subject: "+letter.getSubject()+" "+ prodApp.getProdName() + " ");
 //        param.put("body", body);
-//        param.put("body", "Thank you for applying to register " + product.getProdName() + " manufactured by " + product.getApplicant().getAppName()
-//                + ". Your application is successfully submitted and the application number is " + product.getProdApplications().getId() + ". "
+//        param.put("body", "Thank you for applying to register " + prodApp.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()
+//                + ". Your application is successfully submitted and the application number is " + prodApp.getProdApplications().getId() + ". "
 //                +"Please use this application number for any future correspondence.");
         param.put("addr1", product.getApplicant().getAddress().getAddress1());
         param.put("addr2", product.getApplicant().getAddress().getAddress2());
@@ -110,7 +111,7 @@ public class InvoiceService implements Serializable {
     }
 
 
-    public String sendReminder(Product selProduct, User user, Invoice invoice) throws MessagingException {
+    public String sendReminder(ProdApplications selProdApp, User user, Invoice invoice) throws MessagingException {
         Reminder reminder = new Reminder();
 
         if (invoice.getInvoiceType().equals(InvoiceType.RENEWAL)) {
@@ -140,8 +141,8 @@ public class InvoiceService implements Serializable {
 
 
         Mail mail = new Mail();
-        mail.setMailto(selProduct.getApplicant().getEmail());
-        mail.setProdApplications(selProduct.getProdApplications());
+        mail.setMailto(selProdApp.getProd().getApplicant().getEmail());
+        mail.setProdApplications(selProdApp);
         mail.setSubject("Pharmadex Registration Renewal");
         mail.setUser(user);
         mail.setDate(new Date());
@@ -159,7 +160,7 @@ public class InvoiceService implements Serializable {
 //        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("users", users);
-//        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
+        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
 
         return prodApplicationsDAO.findPendingRenew(params);  //To change body of created methods use File | Settings | File Templates.
     }
@@ -168,5 +169,13 @@ public class InvoiceService implements Serializable {
         invoiceDAO.save(payment.getInvoice());
 //        paymentDAO.save(payment);
         return "persisted";  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public String renew(Invoice invoice, ProdApplications selProduct) {
+        invoiceDAO.save(invoice);
+        ProdApplications prodApplications = prodApplicationsDAO.findProdApplications(selProduct.getId());
+        prodApplications.setRegExpiryDate(invoice.getNewExpDate());
+        prodApplicationsDAO.saveApplication(prodApplications);
+        return "persisted";
     }
 }
