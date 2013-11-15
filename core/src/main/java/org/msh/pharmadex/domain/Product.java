@@ -1,5 +1,6 @@
 package org.msh.pharmadex.domain;
 
+import org.hibernate.envers.Audited;
 import org.msh.pharmadex.domain.enums.AdminRoute;
 import org.msh.pharmadex.domain.enums.ProdType;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "product")
+@Audited
 public class Product extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -8204053633675277911L;
     @Id

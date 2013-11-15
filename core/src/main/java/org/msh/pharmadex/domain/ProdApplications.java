@@ -1,5 +1,6 @@
 package org.msh.pharmadex.domain;
 
+import org.hibernate.envers.Audited;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Author: usrivastava
  */
 @Entity
+@Audited
 public class ProdApplications extends CreationDetail implements Serializable {
     private static final long serialVersionUID = 3054470055191648660L;
     @Id
