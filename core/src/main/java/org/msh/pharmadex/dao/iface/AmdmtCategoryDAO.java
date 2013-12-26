@@ -1,6 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
-import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.AmdmtCategory;
+import org.msh.pharmadex.domain.enums.AmdmtType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface AtcDAO extends JpaRepository<Atc, Long> {
+public interface AmdmtCategoryDAO extends JpaRepository<AmdmtCategory, Long> {
 
-    public List<Atc> findByAtcName(String atcName);
+    public List<AmdmtCategory> findByAmdmtType(AmdmtType amdmtType);
 
-    public Atc findByAtcCode(String atcCode);
+    public List<AmdmtCategory> findByIdIn(List<String> id);
 
 
 }

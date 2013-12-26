@@ -39,7 +39,8 @@ public class ProcessProdBn {
     private List<Atc> selectedAtcs;
     private List<Company> companies;
     private List<ProdAppChecklist> prodAppChecklists;
-    TimelineModel model;
+    private List<ProdAppAmdmt> prodAppAmdmts;
+    private TimelineModel model;
 
     private List<Timeline> timelinesChartData;
 
@@ -80,6 +81,9 @@ public class ProcessProdBn {
 
     @Autowired
     GlobalEntityLists globalEntityLists;
+
+    @Autowired
+    AmdmtService amdmtService;
 
     @Autowired
     private ProductService productService;
@@ -589,5 +593,14 @@ public class ProcessProdBn {
 
     public void setInvoices(List<Invoice> invoices) {
         this.invoices = invoices;
+    }
+
+    public List<ProdAppAmdmt> getProdAppAmdmts() {
+        prodAppAmdmts = amdmtService.findProdAmdmts(prodApplications.getId());
+        return prodAppAmdmts;
+    }
+
+    public void setProdAppAmdmts(List<ProdAppAmdmt> prodAppAmdmts) {
+        this.prodAppAmdmts = prodAppAmdmts;
     }
 }

@@ -1,7 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.Inn;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,8 +11,7 @@ import org.springframework.data.repository.CrudRepository;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface InnDAO extends CrudRepository<Inn, Long> {
-
+public interface InnDAO extends JpaRepository<Inn, Long> {
 
 
 }

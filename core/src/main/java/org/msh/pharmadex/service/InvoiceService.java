@@ -53,6 +53,7 @@ public class InvoiceService implements Serializable {
 
     private Product product;
     private Invoice invoice;
+    private ProdApplications prodApplications;
 
     public List<Invoice> findInvoicesByProdApp(Long id) {
         return invoiceDAO.findByProdApplications_Id(id);
@@ -60,6 +61,7 @@ public class InvoiceService implements Serializable {
 
     public String createInvoice(Invoice invoice, ProdApplications prodApp) {
         this.invoice = invoice;
+        this.prodApplications = prodApp;
         this.product = prodApp.getProd();
 
         try {
@@ -68,7 +70,7 @@ public class InvoiceService implements Serializable {
             JasperPrint jasperPrint = initInvoice();
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             invoice.setInvoiceFile(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
-            invoiceDAO.save(invoice);
+            invoiceDAO.saveAndFlush(invoice);
 
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -149,8 +151,8 @@ public class InvoiceService implements Serializable {
         mail.setMessage("Please renew your registration. The registration invoice is attached. If you have trouble opening the attachment you can also check it out by logging into your account.");
 
         mailService.sendMailWithAttach(mail, true, reminder.getInvoice().getInvoiceFile());
-        reminderDAO.save(reminder);
-        invoiceDAO.save(invoice);
+        reminderDAO.saveAndFlush(reminder);
+        invoiceDAO.saveAndFlush(invoice);
         return "reminder_sent";
 
     }
@@ -166,13 +168,13 @@ public class InvoiceService implements Serializable {
     }
 
     public String savePayment(Payment payment) {
-        invoiceDAO.save(payment.getInvoice());
+        invoiceDAO.saveAndFlush(payment.getInvoice());
 //        paymentDAO.save(payment);
         return "persisted";  //To change body of created methods use File | Settings | File Templates.
     }
 
     public String renew(Invoice invoice, ProdApplications selProduct) {
-        invoiceDAO.save(invoice);
+        invoiceDAO.saveAndFlush(invoice);
         ProdApplications prodApplications = prodApplicationsDAO.findProdApplications(selProduct.getId());
         prodApplications.setRegExpiryDate(invoice.getNewExpDate());
         prodApplicationsDAO.saveApplication(prodApplications);

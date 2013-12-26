@@ -13,7 +13,7 @@
             <h:panelGroup rendered="#{not empty prodAppMBean.pendingRenewals}">
                 <p:outputLabel value="#{msgs.pending_renewals}" style="font-weight: bolder;color: orangered;"/>
                 <p:dataTable id="renewals" var="eachprod" value="#{prodAppMBean.pendingRenewals}"
-                             rendered="#{not empty prodAppMBean.prodApplicationsList}">
+                             rendered="#{not empty prodAppMBean.pendingRenewals}">
 
                     <p:column headerText="Product Name">
                         <p:commandLink value="#{eachprod.prod.prodName}" action="/internal/processreg.faces"

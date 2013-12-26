@@ -20,23 +20,23 @@ public class CommentService implements Serializable {
 
     List<Comment> comments;
 
-    public List<Comment> findAllCommentsByApp(Long prodApplications_Id, boolean company){
+    public List<Comment> findAllCommentsByApp(Long prodApplications_Id, boolean company) {
         comments = commentDAO.findByProdApplications_IdOrderByDateDesc(prodApplications_Id);
-        if(company){
-            for(Comment comment : comments){
-                if(comment.isInternal())
+        if (company) {
+            for (Comment comment : comments) {
+                if (comment.isInternal())
                     comments.remove(comment);
             }
         }
         return comments;
     }
 
-    public Comment saveComment(Comment comment){
+    public Comment saveComment(Comment comment) {
         comments = null;
-        return commentDAO.save(comment);
+        return commentDAO.saveAndFlush(comment);
     }
 
-    public String deleteComment(Comment comment){
+    public String deleteComment(Comment comment) {
         commentDAO.delete(comment);
         comments = null;
         return "deleted";

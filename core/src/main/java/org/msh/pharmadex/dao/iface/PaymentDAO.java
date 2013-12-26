@@ -1,7 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.Payment;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +11,7 @@ import org.springframework.data.repository.CrudRepository;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface PaymentDAO extends CrudRepository<Payment, Long> {
+public interface PaymentDAO extends JpaRepository<Payment, Long> {
 
 
 }

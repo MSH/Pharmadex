@@ -46,4 +46,8 @@ public class GlobalLists {
         return Arrays.asList(LetterType.values());
     }
 
+    public List<AmdmtType> getAmdmtType() {
+        return Arrays.asList(AmdmtType.values());
+    }
+
 }

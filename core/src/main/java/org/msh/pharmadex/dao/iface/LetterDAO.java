@@ -2,7 +2,7 @@ package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.Letter;
 import org.msh.pharmadex.domain.enums.LetterType;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +12,7 @@ import org.springframework.data.repository.CrudRepository;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface LetterDAO extends CrudRepository<Letter, Long> {
+public interface LetterDAO extends JpaRepository<Letter, Long> {
 
     public Letter findByTitle(String title);
 

@@ -1,7 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface ProdAppChecklistDAO extends CrudRepository<ProdAppChecklist, Long> {
+public interface ProdAppChecklistDAO extends JpaRepository<ProdAppChecklist, Long> {
 
     public List<ProdAppChecklist> findByProdApplications_IdOrderByIdAsc(Long prodApplications_Id);
 

@@ -21,14 +21,14 @@ public class TimelineService implements Serializable {
 
     List<TimeLine> timeLineList;
 
-    public List<TimeLine> findTimelineByApp(Long prodApplications_Id){
+    public List<TimeLine> findTimelineByApp(Long prodApplications_Id) {
         timeLineList = timelineDAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
         return timeLineList;
     }
 
-    public TimeLine saveTimeLine(TimeLine timeLine){
+    public TimeLine saveTimeLine(TimeLine timeLine) {
         timeLineList = null;
-        return timelineDAO.save(timeLine);
+        return timelineDAO.saveAndFlush(timeLine);
     }
 
 }

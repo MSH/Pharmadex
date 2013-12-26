@@ -1,7 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.Invoice;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface InvoiceDAO extends CrudRepository<Invoice, Long> {
+public interface InvoiceDAO extends JpaRepository<Invoice, Long> {
 
     public List<Invoice> findByProdApplications_Id(Long prodApplications_Id);
 

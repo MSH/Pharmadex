@@ -1,7 +1,9 @@
 package org.msh.pharmadex.dao.iface;
 
-import org.msh.pharmadex.domain.Appointment;
+import org.msh.pharmadex.domain.ProdAppAmdmt;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface AppointmentDAO extends JpaRepository<Appointment, Long> {
+public interface ProdAppAmdmtDAO extends JpaRepository<ProdAppAmdmt, Long> {
+
+    public List<ProdAppAmdmt> findByProdApplications_IdOrderByIdAsc(Long prodApplications_Id);
 
 
 }

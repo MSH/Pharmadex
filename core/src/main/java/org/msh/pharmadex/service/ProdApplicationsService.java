@@ -183,7 +183,7 @@ public class ProdApplicationsService implements Serializable {
             productDAO.saveProduct(prodApplications.getProd());
 
         if (prodApplications.getAppointment() != null)
-            appointmentDAO.save(prodApplications.getAppointment());
+            appointmentDAO.saveAndFlush(prodApplications.getAppointment());
 
 
         if (prodApplications.getId() != null)
@@ -222,7 +222,7 @@ public class ProdApplicationsService implements Serializable {
     }
 
     public String saveProcessors(StatusUser module) {
-        statusUserDAO.save(module);
+        statusUserDAO.saveAndFlush(module);
         return "success";
     }
 

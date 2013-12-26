@@ -1,7 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.Reminder;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface ReminderDAO extends CrudRepository<Reminder, Long> {
+public interface ReminderDAO extends JpaRepository<Reminder, Long> {
 
     public List<Reminder> findByInvoice_Id(Long invoice_Id);
 

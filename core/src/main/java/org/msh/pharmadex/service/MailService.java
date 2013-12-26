@@ -40,7 +40,7 @@ public class MailService {
 
         mailSender.send(message);
         if (saveMail)
-            mailDAO.save(mailObj);
+            mailDAO.saveAndFlush(mailObj);
     }
 
     public String sendMailWithAttach(Mail mailObj, boolean saveMail, byte[] attach) throws MessagingException {
@@ -58,7 +58,7 @@ public class MailService {
         sender.send(helper.getMimeMessage());
 
         if (saveMail)
-            mailDAO.save(mailObj);
+            mailDAO.saveAndFlush(mailObj);
         return "mail_sent";
 
     }

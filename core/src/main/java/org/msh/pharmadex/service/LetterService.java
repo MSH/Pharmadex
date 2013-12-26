@@ -43,7 +43,7 @@ public class LetterService implements Serializable {
     }
 
     public String addLetter(Letter selLetter) {
-        letterDAO.save(selLetter);
+        letterDAO.saveAndFlush(selLetter);
         letters = null;
         return "persisted";
     }

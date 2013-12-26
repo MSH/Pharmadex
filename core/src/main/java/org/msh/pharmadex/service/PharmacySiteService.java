@@ -54,7 +54,7 @@ public class PharmacySiteService implements Serializable {
     @Transactional
     public boolean updateApp(PharmacySite rxSite, User user) {
         try {
-            pharmacySiteDAO.save(rxSite);
+            pharmacySiteDAO.saveAndFlush(rxSite);
             System.out.println("Site id = " + rxSite.getId());
             if (user != null) {
                 user.getPharmacySites().add(rxSite);
@@ -69,7 +69,7 @@ public class PharmacySiteService implements Serializable {
 
     public String saveSite(PharmacySite pharmacySite) {
         try {
-            pharmacySiteDAO.save(pharmacySite);
+            pharmacySiteDAO.saveAndFlush(pharmacySite);
             return "persisted";
         } catch (Exception ex) {
             ex.printStackTrace();

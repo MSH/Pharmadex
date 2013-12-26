@@ -1,7 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.SiteChecklist;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,8 +11,7 @@ import org.springframework.data.repository.CrudRepository;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface SiteChecklistDAO extends CrudRepository<SiteChecklist, Long> {
-
+public interface SiteChecklistDAO extends JpaRepository<SiteChecklist, Long> {
 
 
 }

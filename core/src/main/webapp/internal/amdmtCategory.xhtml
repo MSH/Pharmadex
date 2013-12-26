@@ -1,0 +1,33 @@
+<!--
+  Created by IntelliJ IDEA.
+  User: usrivastava
+  Date: 12/3/13
+  Time: 9:49 AM
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:panelGrid columns="4" columnClasses="label input" cellpadding="5" cellspacing="5">
+        <p:outputLabel value="#{msgs.amdmt_type}" for="amdmtypecb"/>
+        <p:selectOneMenu value="#{amendmentMbn.amdmtType}" id="amdmtypecb">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalLists.amdmtType}" var="type" itemLabel="#{msgs[type.key]}"/>
+            <p:ajax update="reghome:amdmtcatpg" listener="#{amendmentMbn.handleAmdmtChange()}"/>
+        </p:selectOneMenu>
+        <h:outputText/>
+        <p:commandButton id="submitAmdmtCat" value="#{msgs.global_nextstep}" oncomplete="dlgAmdment.hide()"
+                         icon="ui-icon-disk" ajax="false" action="#{amendmentMbn.nextAmdmtStep}"/>
+
+    </h:panelGrid>
+
+    <h:panelGrid columns="1" cellspacing="5" cellpadding="5" id="amdmtcatpg">
+        <p:selectManyCheckbox id="amdmtcatcb" value="#{amendmentMbn.selAmdmtS}" layout="pageDirection">
+            <f:selectItems value="#{amendmentMbn.amdmtCategories}" var="amdmt" itemLabel="#{amdmt.fullDesc}"
+                           itemValue="#{amdmt.id}"/>
+        </p:selectManyCheckbox>
+    </h:panelGrid>
+
+</ui:composition>

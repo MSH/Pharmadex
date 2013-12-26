@@ -43,6 +43,8 @@ public class RenewalMbn implements Serializable {
     private Product selProd;
 
     public Product getSelProd() {
+        Product p = selProApp.getProd();
+        p.setProdApplications(selProApp);
         return selProApp.getProd();
     }
 
@@ -67,6 +69,7 @@ public class RenewalMbn implements Serializable {
         invoice.setInvoiceType(InvoiceType.RENEWAL);
         invoice.setIssueDate(new Date());
         invoice.setProdApplications(selProApp);
+        invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
 
 
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) invoiceService.findInvoicesByProdApp(selProApp.getId());

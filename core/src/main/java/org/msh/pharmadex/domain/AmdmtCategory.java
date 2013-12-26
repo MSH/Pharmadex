@@ -30,6 +30,9 @@ public class AmdmtCategory extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private AmdmtType amdmtType;
 
+    @Column(name = "eForm")
+    private boolean eForm;
+
 
     public int getId() {
         return id;
@@ -69,5 +72,18 @@ public class AmdmtCategory extends CreationDetail implements Serializable {
 
     public void setAmdmtType(AmdmtType amdmtType) {
         this.amdmtType = amdmtType;
+    }
+
+    public boolean iseForm() {
+        return eForm;
+    }
+
+    public void seteForm(boolean eForm) {
+        this.eForm = eForm;
+    }
+
+    @Override
+    public String toString() {
+        return "ID = " + id + " categoryCD " + categoryCD;    //To change body of overridden methods use File | Settings | File Templates.
     }
 }
