@@ -116,11 +116,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<ProdAppChecklist> prodAppChecklists;
 
-    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
-    private List<StatusUser> statusUser;
+    @OneToOne(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private StatusUser statusUser;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<Invoice> invoices;
+
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<ProdAppAmdmt> prodAppAmdmts;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MODERATOR_ID", nullable = true)
@@ -435,5 +438,13 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setInvoices(List<Invoice> invoices) {
         this.invoices = invoices;
+    }
+
+    public List<ProdAppAmdmt> getProdAppAmdmts() {
+        return prodAppAmdmts;
+    }
+
+    public void setProdAppAmdmts(List<ProdAppAmdmt> prodAppAmdmts) {
+        this.prodAppAmdmts = prodAppAmdmts;
     }
 }

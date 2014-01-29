@@ -1,6 +1,7 @@
 package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.ProdAppAmdmt;
+import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 public interface ProdAppAmdmtDAO extends JpaRepository<ProdAppAmdmt, Long> {
 
     public List<ProdAppAmdmt> findByProdApplications_IdOrderByIdAsc(Long prodApplications_Id);
+
+    public List<ProdAppAmdmt> findByAmdmtState(AmdmtState amdmtState);
 
 
 }

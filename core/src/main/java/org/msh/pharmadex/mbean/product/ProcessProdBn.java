@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,8 +30,9 @@ import java.util.List;
  */
 @Component
 @Scope("session")
-public class ProcessProdBn {
+public class ProcessProdBn implements Serializable {
 
+    private static final long serialVersionUID = -6299219761842430835L;
     private ProdApplications prodApplications;
     private List<Inn> selectedInns;
     private List<Comment> comments;
@@ -603,4 +605,5 @@ public class ProcessProdBn {
     public void setProdAppAmdmts(List<ProdAppAmdmt> prodAppAmdmts) {
         this.prodAppAmdmts = prodAppAmdmts;
     }
+
 }

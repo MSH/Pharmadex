@@ -62,20 +62,23 @@
 
         <h:panelGrid columns="4">
             <h:outputLabel value="#{msgs.prod_type}"/>
-            <p:selectOneMenu value="#{regHomeMbean.prodApplications.prod.prodType}">
+            <p:selectOneMenu value="#{regHomeMbean.prodApplications.prod.prodType}" required="true"
+                             requiredMessage="#{msgs.valid_prod_type}">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalLists.prodTypes}" var="prodtype" itemLabel="#{msgs[prodtype.key]}"/>
             </p:selectOneMenu>
+
 
             <h:outputLabel/>
             <h:outputLabel/>
 
             <h:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
             <p:inputText id="prodDetailName" value="#{regHomeMbean.prodApplications.prod.prodName}" title="Product Name"
-                         required="true" requiredMessage="The Product Name field is required.">
+                         required="true" requiredMessage="#{msgs.valid_prod_name}">
             </p:inputText>
             <h:outputLabel value="#{msgs.prodgenname}" for="prodGenName"/>
-            <p:inputText id="prodGenName" value="#{regHomeMbean.prodApplications.prod.genName}" title="Generic Name"/>
+            <p:inputText id="prodGenName" value="#{regHomeMbean.prodApplications.prod.genName}" title="Generic Name"
+                         required="true" requiredMessage="#{msgs.valid_}"/>
             <h:outputLabel value="#{msgs.apprvdname}" for="apprvdName"/>
             <p:inputText id="apprvdName" value="#{regHomeMbean.prodApplications.prod.apprvdName}"
                          title="Approved Name"/>

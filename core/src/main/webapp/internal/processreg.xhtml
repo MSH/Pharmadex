@@ -135,16 +135,19 @@
             <h:outputText value="#{amdmt.amdmtCategory.categoryCD}"/>
         </p:column>
 
-        <p:column headerText="#{msgs.amdmt_code}">
-            <h:outputText value="#{amdmt.}"/>
+        <p:column headerText="#{msgs.submitted_date}">
+            <p:commandLink action="/internal/amdmtdetailsDlg.faces" ajax="false">
+                <h:outputText converter="javax.faces.DateTime" value="#{amdmt.createdDate}"/>
+                <f:setPropertyActionListener value="#{amdmt}" target="#{amdmtProcessMBean.prodAppAmdmt}"/>
+            </p:commandLink>
         </p:column>
 
-        <p:column>
-            <div style="padding-left:10px;padding-top:10px;">
-                <h:outputText value="#{it.comment}"
-                              escape="false"
-                              styleClass="text"/>
-            </div>
+        <p:column headerText="#{msgs.amdmt_state}">
+            <h:outputText value="#{amdmt.amdmtState}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.submitted_by}">
+            <h:outputText value="#{amdmt.submittedBy.username}"/>
         </p:column>
     </p:dataTable>
 </p:tab>
@@ -817,7 +820,7 @@
 
 <p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment" showEffect="fade" hideEffect="fade" modal="true"
           id="dlgAmdment" width="800px" height="500px">
-    <ui:include src="amdmtCategory.xhtml"/>
+    <ui:include src="amdmtCategoryDlg.xhtml"/>
 
 </p:dialog>
 

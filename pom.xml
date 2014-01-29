@@ -27,16 +27,16 @@
 
         <!-- JSF Dependencies -->
         <dependency>
-           <groupId>org.glassfish</groupId>
-           <artifactId>javax.faces</artifactId>
-           <version>2.2.0-m15</version>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.faces</artifactId>
+            <version>2.2.0-m15</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>4.0</version>
+            <version>3.5</version>
         </dependency>
 
         <dependency>

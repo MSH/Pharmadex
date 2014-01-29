@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="amdmtHome">
+            <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+
+            <h:panelGrid columns="2" columnClasses="menu,content">
+                <h:panelGrid columns="2" columnClasses="menu,content">
+                    <p:menu style="width:198px">
+                        <p:submenu label="#{msgs.post_registration}" rendered="#{userSession.admin||userSession.staff}">
+                            <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk"
+                                        action="#{amdmtProcessMBean.saveAmdmt}"
+                                        rendered="#{userSession.admin||userSession.staff}" ajax="true"
+                                        update=":amdmtHome"/>
+                            <p:menuitem value="#{msgs.next_step}" icon="ui-icon-check"
+                                        rendered="#{userSession.staff||userSession.admin}"
+                                        action="#{amdmtProcessMBean.nextAmdmtStep}" update=":amdmtHome">
+                            </p:menuitem>
+                            <p:menuitem value="#{msgs.global_back}" icon="ui-icon-circle-arrow-w" ajax="false"
+                                        action="/internal/processreg.faces"
+                                        rendered="#{userSession.staff||userSession.admin}"/>
+
+                        </p:submenu>
+                    </p:menu>
+
+                    <h:panelGroup styleClass="ui-widget">
+
+                        <h1 class="title ui-widget-header ui-corner-all">
+                            <table width="800px">
+                                <tr>
+                                    <td>
+                                        <h:outputLabel value="#{processProdBn.prodApplications.prod.prodName}"
+                                                       styleClass="title"
+                                                       style="font-weight: bold; font-size: 1.5em"/>
+                                    </td>
+                                    <td align="right">
+                                        <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                                        <h:outputLabel value="#{msgs[processProdBn.prodApplications.regState.key]}"
+                                                       style="font-weight: bold;color: #a52a2a;"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h:outputLabel value="Application Number: " styleClass="title"/>
+                                        <h:outputFormat value="#{processProdBn.prodApplications.id}"
+                                                        styleClass="title"/>
+                                    </td>
+                                    <td align="right">
+                                        <h:outputLabel value="Submitted Date: " styleClass="title"/>
+                                        <h:outputFormat value="#{processProdBn.prodApplications.submitDate}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
+                                        <h:outputFormat
+                                                value="#{processProdBn.prodApplications.prod.applicant.appName}"/>
+                                    </td>
+                                    <td align="right">
+                                        <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
+                                                       rendered="#{processProdBn.registered}"/>
+                                        <h:outputFormat value="#{processProdBn.prodApplications.regExpiryDate}"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </h1>
+
+
+                        <p:fieldset>
+                            <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
+                                <h:outputText value="#{msgs.amdmt_type}"/>
+                                <h:outputLabel value="#{amdmtProcessMBean.prodAppAmdmt.amdmtCategory.amdmtType}"/>
+                                <h:outputText value="#{msgs.amdmt_code}"/>
+                                <h:outputLabel value="#{amdmtProcessMBean.prodAppAmdmt.amdmtCategory.categoryCD}"/>
+                                <h:outputText value="#{msgs.amendment_details}"/>
+                                <h:outputText value="#{amdmtProcessMBean.prodAppAmdmt.amdmtCategory.fullDesc}"/>
+
+                                <h:outputText value="#{msgs.amdmt_state}"/>
+                                <h:outputText value="#{amdmtProcessMBean.prodAppAmdmt.amdmtState}"/>
+
+
+                                <h:outputLabel value="#{msgs.global_description}" for="amdmtDesc"/>
+                                <p:outputLabel value="#{amdmtProcessMBean.prodAppAmdmt.amdmtDesc}" id="amdmtDesc"
+                                               cols="75"
+                                               rows="5"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <div style="height: 10px;"/>
+
+                        <p:fieldset rendered="#{userSession.admin||userSession.staff||userSession.head}">
+                            <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
+                                <h:outputLabel value="#{msgs.global_description}" for="staffComment"/>
+                                <p:inputTextarea value="#{amdmtProcessMBean.prodAppAmdmt.staffComment}"
+                                                 id="staffComment" cols="75"
+                                                 rows="5" readonly="#{amdmtProcessMBean.prodAppAmdmt.approved}"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <div style="height: 10px;"/>
+
+
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:panelGrid>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

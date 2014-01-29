@@ -1,5 +1,7 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.AmdmtState;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -27,6 +29,10 @@ public class ProdAppAmdmt extends CreationDetail implements Serializable {
 
     @Column(name = "approved")
     private boolean approved;
+
+    @Column(name = "amdmt_state")
+    @Enumerated(EnumType.STRING)
+    private AmdmtState amdmtState;
 
     @Column(length = 500, name = "staff_comment")
     private String staffComment;
@@ -154,5 +160,13 @@ public class ProdAppAmdmt extends CreationDetail implements Serializable {
 
     public void setSubmittedBy(User submittedBy) {
         this.submittedBy = submittedBy;
+    }
+
+    public AmdmtState getAmdmtState() {
+        return amdmtState;
+    }
+
+    public void setAmdmtState(AmdmtState amdmtState) {
+        this.amdmtState = amdmtState;
     }
 }

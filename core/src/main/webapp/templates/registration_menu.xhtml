@@ -55,6 +55,8 @@
                 </p:submenu>
 
                 <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff}">
+                    <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
+                                url="/internal/amdmtlist.faces"/>
                     <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-document"
                                 url="/internal/regexpiring.faces"/>
                     <p:menuitem value="#{msgs.payment_notfied}" icon="ui-icon-document"

@@ -28,7 +28,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.themes:south-street:1.0.9" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish:javax.faces:2.2.0-m15" level="project" />
-    <orderEntry type="library" name="Maven: org.primefaces:primefaces:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.primefaces:primefaces:3.5" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.themes:start:1.0.8" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.themes:cupertino:1.0.8" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.extensions:primefaces-extensions:0.7.1" level="project" />
