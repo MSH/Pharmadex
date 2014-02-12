@@ -158,13 +158,16 @@ public class InvoiceService implements Serializable {
     }
 
     public List<ProdApplications> findPendingByApplicant(User user) {
-        List<User> users = userDAO.findByApplicant(user.getApplicant().getApplcntId());
-//        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("users", users);
-        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
+        if (user.getApplicant() != null) {
+            List<User> users = userDAO.findByApplicant(user.getApplicant().getApplcntId());
+            //        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            params.put("users", users);
+            params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
 
-        return prodApplicationsDAO.findPendingRenew(params);  //To change body of created methods use File | Settings | File Templates.
+            return prodApplicationsDAO.findPendingRenew(params);  //To change body of created methods use File | Settings | File Templates.
+        } else
+            return null;
     }
 
     public String savePayment(Payment payment) {

@@ -382,21 +382,15 @@
 
     </p:dataTable>
 
-    <p:dialog header="Send Mail" widgetVar="maildlg" resizable="false" modal="true">
+</p:tab>
 
-        <h:panelGrid columns="2" style="margin-bottom:10px">
-            <h:outputLabel for="tomail" value="To: "/>
-            <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
-            <h:outputLabel for="subject" value="Subject: "/>
-            <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
-            <h:outputLabel for="message" value="Message:"/>
-            <p:inputTextarea id="message" value="#{processProdBn.mail.message}" rows="10" cols="50"/>
-        </h:panelGrid>
+<p:tab title="#{msgs.reg_cert}" id="regcerttab" rendered="#{processProdBn.registered}">
 
-        <p:commandButton id="sendmessage" value="Submit" action="#{processProdBn.sendMessage}"
-                         oncomplete="mailDlg.hide()" update="@form"/>
-
-    </p:dialog>
+    <p:commandButton id="invoicedownload" value="#{msgs.reg_cert}" ajax="false"
+                     onclick="PrimeFaces.monitorDownload(start, stop)"
+                     icon="ui-icon-arrowthichk-s">
+        <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
+    </p:commandButton>
 </p:tab>
 
 <p:tab title="#{msgs.processor}" id="processor" rendered="#{userSession.moderator}">
@@ -411,7 +405,7 @@
         <h:outputText value="#{msgs.review_comment}" style="font-weight: bold;"/>
 
 
-        <h:outputText value="Module 1 Processor: "/>
+        <h:outputText value="Module 1 Reviewer: "/>
 
         <h:outputText value="#{processProdBn.module.module1.name}" escape="false"/>
 
@@ -430,7 +424,7 @@
         <p:outputLabel rendered="#{processProdBn.module.review1 == null}"/>
 
 
-        <h:outputText value="Module 2 Processor: "
+        <h:outputText value="Module 2 Reviewer: "
                       escape="false"/>
 
         <h:outputText value="#{processProdBn.module.module2.name}"
@@ -451,7 +445,7 @@
         <p:outputLabel rendered="#{processProdBn.module.review2 == null}"/>
 
 
-        <h:outputText value="Module 3 Processor: "
+        <h:outputText value="Module 3 Reviewer: "
                       escape="false"/>
 
         <h:outputText value="#{processProdBn.module.module3.name}" escape="false"/>
@@ -472,7 +466,7 @@
         <p:outputLabel rendered="#{processProdBn.module.review3 == null}"/>
 
 
-        <h:outputText value="Module 4 Processor: "
+        <h:outputText value="Module 4 Reviewer: "
                       escape="false"/>
 
         <h:outputText value="#{processProdBn.module.module4.name}"
@@ -514,57 +508,6 @@
 
 </p:dialog>
 
-<p:dialog header="Assign Processor" widgetVar="processordlg" resizable="false" id="processordlg" modal="true"
-          rendered="#{userSession.moderator}">
-
-    <p:panelGrid columns="2" columnClasses="label value">
-        <h:outputText value="Module 1: "
-                      escape="false"
-                      styleClass="text"/>
-
-        <p:autoComplete id="module1" value="#{processProdBn.module.module1}"
-                        completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                        var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                        converter="#{userConverter}">
-        </p:autoComplete>
-
-        <h:outputText value="Module 2: "
-                      escape="false"
-                      styleClass="text"/>
-
-        <p:autoComplete id="module2" value="#{processProdBn.module.module2}"
-                        completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                        var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                        converter="#{userConverter}">
-        </p:autoComplete>
-
-        <h:outputText value="Module 3: "
-                      escape="false"
-                      styleClass="text"/>
-
-        <p:autoComplete id="module3" value="#{processProdBn.module.module3}"
-                        completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                        var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                        converter="#{userConverter}">
-        </p:autoComplete>
-
-        <h:outputText value="Module 4: "
-                      escape="false"
-                      styleClass="text"/>
-
-        <p:autoComplete id="module4" value="#{processProdBn.module.module4}"
-                        completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                        var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                        converter="#{userConverter}">
-        </p:autoComplete>
-    </p:panelGrid>
-
-
-    <p:commandButton id="submitButton1" value="Submit" action="#{processProdBn.assignProcessor}"
-                     oncomplete="processordlg.hide()" ajax="false"
-                     update=":reghome:processtab:processpnl :reghome:growl :reghome:messages"/>
-
-</p:dialog>
 
 <p:dialog header="Assign Moderator" widgetVar="moderatordlg" resizable="false" id="moderatordlg" modal="true"
           rendered="#{userSession.head||userSession.admin}">
@@ -828,10 +771,82 @@
     <p:graphicImage value="/design/ajaxloadingbar.gif"/>
 </p:dialog>
 
+<p:dialog header="Send Mail" widgetVar="maildlg" resizable="false" modal="true">
+
+    <h:panelGrid columns="2" style="margin-bottom:10px">
+        <h:outputLabel for="tomail" value="To: "/>
+        <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
+        <h:outputLabel for="subject" value="Subject: "/>
+        <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
+        <h:outputLabel for="message" value="Message:"/>
+        <p:inputTextarea id="message" value="#{processProdBn.mail.message}" rows="10" cols="50"/>
+    </h:panelGrid>
+
+    <p:commandButton id="sendmessage" value="Submit" action="#{processProdBn.sendMessage}"
+                     oncomplete="mailDlg.hide()" update="@form"/>
+
+</p:dialog>
+
 </h:panelGroup>
 </h:panelGrid>
 </h:panelGrid>
 </h:form>
+<p:dialog header="Assign Reviewer" widgetVar="processordlg" resizable="false" id="processorDlg" modal="true"
+          rendered="#{userSession.moderator}">
+    <h:form id="processfrm">
+
+        <p:panel>
+            <h:panelGrid columns="2" columnClasses="label value">
+                <h:outputText value="Module 1: "
+                              escape="false"
+                              styleClass="text"/>
+
+                <p:autoComplete id="module1" value="#{processProdBn.module.module1}"
+                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+                <h:outputText value="Module 2: "
+                              escape="false"
+                              styleClass="text"/>
+
+                <p:autoComplete id="module2" value="#{processProdBn.module.module2}"
+                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+                <h:outputText value="Module 3: "
+                              escape="false"
+                              styleClass="text"/>
+
+                <p:autoComplete id="module3" value="#{processProdBn.module.module3}"
+                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+                <h:outputText value="Module 4: "
+                              escape="false"
+                              styleClass="text"/>
+
+                <p:autoComplete id="module4" value="#{processProdBn.module.module4}"
+                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+            </h:panelGrid>
+
+
+            <p:commandLink id="submitButton1" value="Submit" action="#{processProdBn.assignProcessor}"
+                           oncomplete="processordlg.hide()"
+                           update=":reghome:processtab:processpnl :reghome:messages"/>
+        </p:panel>
+
+    </h:form>
+</p:dialog>
 </ui:define>
 <script type="text/javascript">
     function start() {

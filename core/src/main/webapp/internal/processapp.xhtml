@@ -1,88 +1,85 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
         <h:form id="reghome">
 
-            <h:panelGrid columns="2" columnClasses="menu,content">
-                <h:panelGrid columns="2" columnClasses="menu,content">
-                    <p:panel styleClass="menu">
-                        <p:menu style="width:198px">
-                            <p:submenu label="#{msgs.Registration}">
-                                <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
-                                            action="#{processAppBn.registerApplicant}" ajax="false"/>
-                                <p:menuitem value="#{msgs.global_cancel}" immediate="true"
-                                            action="#{processAppBn.cancel}" ajax="false"/>
-                            </p:submenu>
-                        </p:menu>
+            <h:panelGrid columns="2" columnClasses="menu,content" cellpadding="10px">
+                <p:menu style="width:198px">
+                    <p:submenu label="#{msgs.Registration}">
+                        <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
+                                    action="#{processAppBn.registerApplicant}" ajax="false"/>
+                        <p:menuitem value="#{msgs.global_cancel}" immediate="true"
+                                    icon="ui-icon ui-icon-circle-triangle-w"
+                                    action="#{processAppBn.cancel}" ajax="false"/>
+                    </p:submenu>
+                </p:menu>
+
+
+                <h:panelGroup styleClass="ui-widget">
+                    <h1 class="title ui-widget-header ui-corner-all">
+                        <table width="750px">
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{processAppBn.applicant.appName}" styleClass="title"
+                                                   style="font-weight: bold; font-size: 1.5em"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{processAppBn.applicant.state}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="Application Number: " styleClass="title"/>
+                                    <h:outputFormat value="#{processAppBn.applicant.applcntId}" styleClass="title"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="Submitted Date: " styleClass="title"/>
+                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </h1>
+                    <p:messages id="messages" showDetail="true" showSummary="true"/>
+
+                    <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+                    <p:panel header="#{msgs.applicant_detail}">
+                        <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                            <ui:param name="applicantdata" value="#{processAppBn.applicant}"/>
+                        </ui:decorate>
+
+                    </p:panel>
+
+                    <p:panel header="#{msgs.Userlist}">
+                        <p:dataTable id="usertable" var="user" value="#{processAppBn.userList}" style="width:100%;">
+                            <f:facet name="header">
+                                <p:commandLink value="#{msgs.global_add}" oncomplete="addUserDlg.show()"
+                                               immediate="true"/>
+                            </f:facet>
+                            <p:column headerText="#{msgs.User_name}">
+                                <h:outputText value="#{user.name}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.User_username}">
+                                <h:outputText value="#{user.username}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.User_email}">
+                                <h:outputText value="#{user.email}"/>
+                            </p:column>
+                        </p:dataTable>
+
                     </p:panel>
 
 
-                    <h:panelGroup styleClass="ui-widget">
-                        <h1 class="title ui-widget-header ui-corner-all">
-                            <table width="750px">
-                                <tr>
-                                    <td>
-                                        <h:outputLabel value="#{processAppBn.applicant.appName}" styleClass="title"
-                                                       style="font-weight: bold; font-size: 1.5em"/>
-                                    </td>
-                                    <td align="right">
-                                        <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
-                                        <h:outputLabel value="#{processAppBn.applicant.state}"
-                                                       style="font-weight: bold;color: #a52a2a;"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h:outputLabel value="Application Number: " styleClass="title"/>
-                                        <h:outputFormat value="#{processAppBn.applicant.applcntId}" styleClass="title"/>
-                                    </td>
-                                    <td align="right">
-                                        <h:outputLabel value="Submitted Date: " styleClass="title"/>
-                                        <h:outputFormat value="#{processAppBn.applicant.submitDate}"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </h1>
-                        <p:messages id="messages" showDetail="true" showSummary="true"/>
-
-                        <p:growl id="growl" showDetail="true" showSummary="true"/>
-
-                        <p:panel header="#{msgs.applicant_detail}">
-                            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                                <ui:param name="applicantdata" value="#{processAppBn.applicant}"/>
-                            </ui:decorate>
-
-                        </p:panel>
-
-                        <p:panel header="#{msgs.Userlist}">
-                            <p:dataTable id="usertable" var="user" value="#{processAppBn.userList}" style="width:100%;">
-                                <f:facet name="header">
-                                    <p:commandLink value="#{msgs.global_add}" oncomplete="addUserDlg.show()"
-                                                   immediate="true"/>
-                                </f:facet>
-                                <p:column headerText="#{msgs.User_name}">
-                                    <h:outputText value="#{user.name}"/>
-                                </p:column>
-
-                                <p:column headerText="#{msgs.User_username}">
-                                    <h:outputText value="#{user.username}"/>
-                                </p:column>
-
-                                <p:column headerText="#{msgs.User_email}">
-                                    <h:outputText value="#{user.email}"/>
-                                </p:column>
-                            </p:dataTable>
-
-                        </p:panel>
-
-
-                    </h:panelGroup>
-                </h:panelGrid>
+                </h:panelGroup>
             </h:panelGrid>
         </h:form>
 

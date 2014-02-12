@@ -6,9 +6,9 @@ package org.msh.pharmadex.domain.enums;
 public enum ProdDrugType {
     BIOLOGICAL,
     RADIO_PHARMA,
-    NAT_HEALTH_PROD,
     PHARMACEUTICAL,
-    MEDICAL_DEVICE;
+    MEDICAL_DEVICE,
+    COMPLIMENTARY_MEDS;
 
 
     public String getKey() {

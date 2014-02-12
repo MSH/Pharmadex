@@ -18,7 +18,8 @@ import java.util.List;
 @FacesConverter(value = "userConverter", forClass = User.class)
 @Component
 public class UserConverter implements Converter, Serializable {
-    private static final long serialVersionUID = -1633517224407687494L;
+
+    private static final long serialVersionUID = -6609408645325471825L;
     @Autowired
     private UserService userService;
 
@@ -26,7 +27,7 @@ public class UserConverter implements Converter, Serializable {
 
     public List<User> getUserList() {
         if (userList == null)
-            userList = userService.findUnregisteredUsers();
+            userList = userService.findAllUsers();
         return userList;
     }
 
@@ -46,10 +47,13 @@ public class UserConverter implements Converter, Serializable {
             try {
                 System.out.println("submittedValue == " + submittedValue);
                 int number = Integer.parseInt(submittedValue);
-                for (User p : getUserList()) {
-                    if (p.getUserId().equals(number))
-                        return p;
-                }
+//                for (User p : getUserList()) {
+//                    if (p.getUserId().equals(number)) {
+//                        System.out.println("user name = "+p.getUsername());
+//                        return p;
+//                    }
+//                }
+                return userService.findUser(number);
             } catch (NumberFormatException exception) {
                 return null;
 //                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid INN Code"));
@@ -57,7 +61,7 @@ public class UserConverter implements Converter, Serializable {
             }
         }
 
-        return null;
+//        return null;
     }
 
     public String getAsString(FacesContext facesContext, UIComponent component, Object value) {

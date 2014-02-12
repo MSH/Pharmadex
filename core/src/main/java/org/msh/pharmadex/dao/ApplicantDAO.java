@@ -1,6 +1,7 @@
 package org.msh.pharmadex.dao;
 
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -57,10 +58,14 @@ public class ApplicantDAO implements Serializable {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public String saveApplicant(Applicant applicant) {
-        entityManager.persist(applicant);
+    public Applicant saveApplicant(Applicant applicant) {
+        for (User u : applicant.getUsers()) {
+            u.setApplicant(applicant);
+            entityManager.merge(u);
+        }
+        Applicant a = entityManager.merge(applicant);
         entityManager.flush();
-        return "persisted";
+        return a;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -71,5 +76,10 @@ public class ApplicantDAO implements Serializable {
     }
 
 
+    public User findApplicantDefaultUser(Long applcntId) {
+        return (User) entityManager.createQuery("select u from User u where u.applicant.applcntId = :appID")
+                .setParameter("appID", applcntId)
+                .getSingleResult();
+    }
 }
 

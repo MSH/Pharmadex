@@ -80,7 +80,7 @@ body {
 
 .col2 {
     vertical-align: middle;
-    width: 250px;
+    width: 350px;
 }
 
 .col3 {
@@ -141,7 +141,6 @@ body {
 .ui-menubar {
     width: 1044px;
     margin: 0 auto;
-
 
 }
 
@@ -277,4 +276,9 @@ body {
 
 .label {
     font-weight: bold;
+}
+
+.hint {
+    font-weight: lighter;
+    color: firebrick;
 }

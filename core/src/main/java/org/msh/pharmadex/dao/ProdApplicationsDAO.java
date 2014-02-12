@@ -124,12 +124,14 @@ public class ProdApplicationsDAO implements Serializable {
     @Transactional
     public String saveApplication(ProdApplications prodApplications) {
         entityManager.persist(prodApplications);
+        entityManager.flush();
         return "persisted";
     }
 
     @Transactional
     public String updateApplication(ProdApplications prodApplications) {
         entityManager.merge(prodApplications);
+        entityManager.flush();
         return "persisted";
     }
 

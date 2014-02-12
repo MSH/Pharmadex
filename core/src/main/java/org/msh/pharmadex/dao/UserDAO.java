@@ -1,6 +1,7 @@
 package org.msh.pharmadex.dao;
 
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.UserType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,8 @@ public class UserDAO implements Serializable {
 
     @Transactional
     public List<User> findNotRegistered() {
-        return entityManager.createQuery("select u from User u where u.applicant is null ")
+        return entityManager.createQuery("select u from User u where u.applicant is null and u.type = :userType")
+                .setParameter("userType", UserType.COMPANY)
                 .getResultList();
     }
 

@@ -1,0 +1,81 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <p:panel header="#{msgs.applicant_detail}">
+        <p:messages id="messages"/>
+
+        <h:panelGroup rendered="#{!userSession.staff and  (empty regHomeMbean.applicant.applcntId)}">
+            <h:outputLabel value="#{msgs.prodreghome_reg_info1}"/>
+            <p:commandLink action="appregistration.faces" ajax="false"
+                           immediate="true"> Please click here to register an applicant.</p:commandLink>
+            <h:outputLabel value="#{msgs.prodreghome_reg_info2}"/>
+            <h:outputLabel
+                    value="#{msgs.prodreghome_reg_info3}"/>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{userSession.staff and (empty regHomeMbean.applicant.applcntId)}">
+            <h:outputLabel value="Choose applicant from registeres list"/>
+            <h:panelGrid columns="1" cellpadding="10px">
+                <p:commandLink value="#{msgs.applicant_lookup}" oncomplete="addapplicantDlg.show()"
+                               immediate="true" style="font-weight: bolder; font-size: larger"/>
+                <p:outputLabel value="#{msgs.applicant_lookup_info}" styleClass="hint"/>
+
+            </h:panelGrid>
+        </h:panelGroup>
+
+
+        <h:panelGroup rendered="#{!(empty regHomeMbean.applicant.applcntId)}">
+            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                <ui:param name="applicantdata" value="#{regHomeMbean.applicant}"/>
+                <ui:param name="input" value="false"/>
+            </ui:decorate>
+        </h:panelGroup>
+    </p:panel>
+
+
+    <h:panelGroup rendered="#{!(empty regHomeMbean.applicant.applcntId)}">
+        <p:panel header="#{msgs.person_responsible}">
+
+            <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                <ui:param name="userdata" value="#{regHomeMbean.loggedInUser}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+
+        </p:panel>
+
+        <div align="right">
+            <p:commandButton value="#{msgs.global_cancel}" immediate="true" ajax="false"
+                             action="/public/registrationhome.faces"/>
+            <p:commandButton value="#{msgs.next}" onclick="wizard.next();"/>
+        </div>
+
+    </h:panelGroup>
+
+    <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantDlg" resizable="true" modal="true">
+        <h:form>
+            <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+                <h:outputLabel value="#{msgs.applicant_name}" for="appname"/>
+                <p:autoComplete id="appname" value="#{regHomeMbean.applicant}"
+                                completeMethod="#{regHomeMbean.completeApplicantList}" dropdown="true"
+                                var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" forceSelection="true"
+                                converter="#{applicantConverter}">
+                </p:autoComplete>
+
+                <h:panelGroup>
+                    <p:commandButton value="#{msgs.global_add}" action="#{regHomeMbean.addApptoRegistration}"
+                                     ajax="false" oncomplete="addapplicantDlg.hide()"/>
+                    <p:commandButton action="#{regHomeMbean.cancelAddApplicant}" immediate="true"
+                                     value="#{msgs.global_cancel}" oncomplete="addapplicantDlg.hide()"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+
+            </h:panelGrid>
+        </h:form>
+    </p:dialog>
+
+
+</ui:composition>

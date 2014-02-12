@@ -131,7 +131,11 @@ public class ProcessAppBn {
     }
 
     public List<User> getUserList() {
-        return userService.findUserByApplicant(applicant.getApplcntId());
+        if (userList == null) {
+            if (applicant != null)
+                userList = userService.findUserByApplicant(applicant.getApplcntId());
+        }
+        return userList;
     }
 
     public void setUserList(List<User> userList) {

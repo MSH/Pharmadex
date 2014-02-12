@@ -7,9 +7,11 @@ import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CountryService;
+import org.msh.pharmadex.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +19,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +31,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-@Scope("request")
+@Scope("session")
 public class ApplicantMBean implements Serializable {
     private static final long serialVersionUID = -7233445025890580011L;
     private Applicant selectedApplicant;
@@ -41,6 +44,9 @@ public class ApplicantMBean implements Serializable {
     ApplicantService applicantService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     CountryService countryService;
 
     @Autowired
@@ -49,11 +55,16 @@ public class ApplicantMBean implements Serializable {
     @Autowired
     GlobalEntityLists globalEntityLists;
 
+    private ArrayList<User> userList;
+
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
         selectedApplicant.getAddress().setCountry(new Country());
-        user = userSession.getLoggedInUserObj();
+        if (userSession.isCompany())
+            user = userSession.getLoggedInUserObj();
+        else
+            user = null;
         selectedApplicant.setContactName(user != null ? user.getName() : null);
         selectedApplicant.setEmail(user != null ? user.getEmail() : null);
     }
@@ -98,7 +109,7 @@ public class ApplicantMBean implements Serializable {
 //    }
 
     public void editApp() {
-        System.out.println("inside editApp");
+        System.out.println("inside editUser");
     }
 
     public String cancelApp() {
@@ -106,6 +117,41 @@ public class ApplicantMBean implements Serializable {
         selectedApplicant = new Applicant();
         return "/public/registrationhome.faces?redirect=true";
     }
+
+    @Transactional
+    public void addUserToApplicant() {
+        if (userList == null)
+            userList = new ArrayList<User>();
+        userList.add(user);
+        selectedApplicant.setUsers(userList);
+//        applicantService.updateApp(selectedApplicant, user);
+        user = new User();
+
+    }
+
+    public List<User> completeUserList(String query) {
+        List<User> suggestions = new ArrayList<User>();
+
+        if (query == null || query.equalsIgnoreCase(""))
+            return getAvailableUsers();
+
+        for (User eachInn : getAvailableUsers()) {
+            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
+                suggestions.add(eachInn);
+        }
+        return suggestions;
+    }
+
+    public String cancelAddUser() {
+        user = new User();
+        return "";
+    }
+
+
+    public List<User> getAvailableUsers() {
+        return userService.findUnregisteredUsers();
+    }
+
 
     public Applicant getSelectedApplicant() {
 //        init();
@@ -146,5 +192,17 @@ public class ApplicantMBean implements Serializable {
 
     public void setFilteredApplicant(List<Applicant> filteredApplicant) {
         this.filteredApplicant = filteredApplicant;
+    }
+
+    public ArrayList<User> getUserList() {
+        if (userList == null) {
+            if (selectedApplicant != null)
+                userList = (ArrayList<User>) userService.findUserByApplicant(selectedApplicant.getApplcntId());
+        }
+        return userList;
+    }
+
+    public void setUserList(ArrayList<User> userList) {
+        this.userList = userList;
     }
 }

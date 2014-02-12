@@ -55,7 +55,6 @@ public class ProductDAO implements Serializable {
     @Transactional
     public String updateProduct(Product product) {
         entityManager.merge(product);
-        entityManager.flush();
         return "updated";
     }
 

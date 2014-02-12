@@ -94,6 +94,8 @@ public class ProcessProdBn implements Serializable {
     @Autowired
     WebSession webSession;
 
+    private User user;
+
     @PostConstruct
     private void init() {
         mail.setUser(userSession.getLoggedInUserObj());
@@ -394,7 +396,9 @@ public class ProcessProdBn implements Serializable {
         prodApplications.setRegistrationDate(new Date());
         prodApplications.getProd().setRegNo("" + (Math.random() * 100000));
         globalEntityLists.setRegProducts(null);
-        return addTimeline();
+        addTimeline();
+        prodApplicationsService.createRegCert(prodApplications);
+        return "";
     }
 
     public String submitReview() {
@@ -606,4 +610,7 @@ public class ProcessProdBn implements Serializable {
         this.prodAppAmdmts = prodAppAmdmts;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

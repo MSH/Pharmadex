@@ -24,7 +24,7 @@
         <property name="host" value="smtp.gmail.com"/>
         <property name="port" value="587"/>
         <property name="username" value="epharmadex"/>
-        <property name="password" value="msh12345"/>
+        <property name="password" value="Pharmadex1"/>
         <property name="javaMailProperties">
             <props>
                 <!-- Use SMTP transport protocol -->

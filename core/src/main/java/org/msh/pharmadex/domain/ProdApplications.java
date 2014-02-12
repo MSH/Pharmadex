@@ -136,6 +136,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToOne
     private Appointment appointment;
 
+    @Lob
+    @Column(nullable = true)
+    private byte[] regCert;
+
     public Date getRegExpiryDate() {
         return regExpiryDate;
     }
@@ -446,5 +450,13 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setProdAppAmdmts(List<ProdAppAmdmt> prodAppAmdmts) {
         this.prodAppAmdmts = prodAppAmdmts;
+    }
+
+    public byte[] getRegCert() {
+        return regCert;
+    }
+
+    public void setRegCert(byte[] regCert) {
+        this.regCert = regCert;
     }
 }

@@ -30,7 +30,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-@Scope("request")
+@Scope("session")
 public class UserMBean implements Serializable {
     private User selectedUser;
     private List<User> allUsers;
@@ -59,10 +59,10 @@ public class UserMBean implements Serializable {
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
         allRoles = (List<Role>) roleDAO.findAll();
         selectedRoles = new ArrayList<Role>();
-        roles = new DualListModel<Role>(allRoles,selectedRoles);
+        roles = new DualListModel<Role>(allRoles, selectedRoles);
         selectedUser = new User();
         selectedUser.setAddress(new Address());
         selectedUser.setApplicant(new Applicant());
@@ -70,17 +70,17 @@ public class UserMBean implements Serializable {
     }
 
 
-    public void onRowSelect(){
+    public void onRowSelect() {
         setEdit(true);
 //        FacesContext facesContext = FacesContext.getCurrentInstance();
 //        facesContext.addMessage(null, new FacesMessage("Successful", "Selected " + selectedUser.getName()));
     }
 
-    public String goToResetPwd(){
+    public String goToResetPwd() {
         return "/public/resetpwd.faces";
     }
 
-    public String startReset(){
+    public String startReset() {
         selectedUser = new User();
         selectedUser.setEmail(email);
         selectedUser = userService.findByUsernameOrEmail(selectedUser);
@@ -89,14 +89,14 @@ public class UserMBean implements Serializable {
 
     }
 
-    public String saveUser(){
+    public String saveUser() {
         selectedUser.setRoles(roles.getTarget());
-        if(selectedUser!=null&&selectedUser.getApplicant()!=null&&selectedUser.getApplicant().getApplcntId()!=null)
+        if (selectedUser != null && selectedUser.getApplicant() != null && selectedUser.getApplicant().getApplcntId() != null)
             selectedUser.setApplicant(applicantService.findApplicant(selectedUser.getApplicant().getApplcntId()));
         else
             selectedUser.setApplicant(null);
-        if(isEdit()){
-            updateUser();
+        if (isEdit()) {
+            updateuser();
             return "";
         }
         String password = PassPhrase.getNext();
@@ -110,28 +110,28 @@ public class UserMBean implements Serializable {
         mail.setMessage("Thank you for registering yourself for Pharmadex. In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
-        try{
+        try {
             retvalue = userService.createUser(selectedUser);
-        }catch (ConstraintViolationException e){
+        } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
             return "";
-        }catch (Exception e){
+        } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
             e.printStackTrace();
             return "";
         }
-        if(!retvalue.equalsIgnoreCase("persisted")){
+        if (!retvalue.equalsIgnoreCase("persisted")) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
             return "";
-        }else{
-            try{
+        } else {
+            try {
                 mailService.sendMail(mail, false);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
                 FacesContext context = FacesContext.getCurrentInstance();
                 HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
                 WebUtils.setSessionAttribute(request, "userMBean", null);
                 return "/admin/userslist_bk.faces";
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Error sending email"));
                 return "";
@@ -140,33 +140,34 @@ public class UserMBean implements Serializable {
 
     }
 
-    public String updateUser(){
+    public void updateuser() {
+        System.out.println("------updateUser-----");
         selectedUser.setRoles(roles.getTarget());
-        if(!prevApplicantId.equals(userApp.getApplcntId())){
-            selectedUser.setApplicant(applicantService.findApplicant(userApp.getApplcntId()));
-        }
+//        if(!prevApplicantId.equals(userApp.getApplcntId())){
+//            selectedUser.setApplicant(applicantService.findApplicant(userApp.getApplcntId()));
+//        }
         selectedUser.setUpdatedDate(new Date());
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue = "";
-        try{
+        try {
             retvalue = userService.updateUser(selectedUser);
-        }catch (ConstraintViolationException e){
+        } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
-        }catch (Exception e){
+        } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
             e.printStackTrace();
-       }
-        if(retvalue.equalsIgnoreCase("persisted")){
+        }
+        if (retvalue.equalsIgnoreCase("persisted")) {
             setEdit(false);
             selectedUser = new User();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", selectedUser.getName()+ " successfully updated!!!"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", selectedUser.getName() + " successfully updated!!!"));
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "userMBean", null);
-        }else{
+        } else {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
         }
-        return "/admin/userslist_bk.faces";
+//        return "/admin/userslist_bk.faces";
     }
 
     public void addUser() {
@@ -176,10 +177,10 @@ public class UserMBean implements Serializable {
         setEdit(false);
     }
 
-    public String resetPassword(){
+    public String resetPassword() {
         String password = PassPhrase.getNext();
         selectedUser.setPassword(password);
-        System.out.println("Password == "+password);
+        System.out.println("Password == " + password);
         selectedUser.setUpdatedDate(new Date());
         Mail mail = new Mail();
         mail.setMailto(selectedUser.getEmail());
@@ -189,25 +190,25 @@ public class UserMBean implements Serializable {
         mail.setMessage("Your Pharmadex password has been successfully reset In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
-        try{
+        try {
             retvalue = userService.updateUser(userService.passwordGenerator(selectedUser));
-        }catch (Exception e){
+        } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
             e.printStackTrace();
             return "";
         }
-        if(!retvalue.equalsIgnoreCase("persisted")){
+        if (!retvalue.equalsIgnoreCase("persisted")) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
             return "";
-        }else{
-            try{
+        } else {
+            try {
                 mailService.sendMail(mail, false);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
                 FacesContext context = FacesContext.getCurrentInstance();
                 HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
                 WebUtils.setSessionAttribute(request, "userMBean", null);
                 return "/admin/userslist_bk.faces";
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Error sending email"));
                 return "";
@@ -216,12 +217,7 @@ public class UserMBean implements Serializable {
 
     }
 
-
-    public void editApp(){
-        System.out.println("inside editApp");
-    }
-
-    public void cancelUser(){
+    public void cancelUser() {
         selectedUser = new User();
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -237,7 +233,7 @@ public class UserMBean implements Serializable {
         this.selectedUser = userService.findUser(selectedUser.getUserId());
         this.selectedRoles = this.selectedUser.getRoles();
         roles.setTarget(selectedRoles);
-        if(selectedUser.getApplicant()!=null)
+        if (selectedUser.getApplicant() != null)
             userApp = applicantService.findApplicant(selectedUser.getApplicant().getApplcntId());
         this.prevApplicantId = userApp.getApplcntId();
     }
@@ -251,7 +247,7 @@ public class UserMBean implements Serializable {
     }
 
     public DualListModel<Role> getRoles() {
-        if(roles != null){
+        if (roles != null) {
 
         }
         return roles;

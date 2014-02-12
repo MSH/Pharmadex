@@ -50,7 +50,7 @@
 			<textField>
 				<reportElement uuid="1d30334e-05f6-4db2-94bf-a5226d8c9ec1" x="347" y="10" width="100" height="20"/>
 				<textElement>
-					<font size="12" isBold="false"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Date"]]></textFieldExpression>
 			</textField>
@@ -64,18 +64,22 @@
 			<textField>
 				<reportElement uuid="7ffdcc06-7d7f-4a58-8c84-01b24277945d" x="347" y="34" width="100" height="20"/>
 				<textElement>
-					<font size="12" isBold="false"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Invoice Number"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="4e491979-3b2c-4c15-82c6-ddbaffaeebc9" x="347" y="59" width="100" height="20"/>
-				<textElement/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA["For"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="cd7eb37b-a1c1-4ad8-98ba-b355442327f8" x="347" y="83" width="100" height="20"/>
-				<textElement/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Bill To"]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -101,37 +105,49 @@
 			</textField>
 			<image>
 				<reportElement uuid="1e3db927-c44a-4215-a197-6c0155b91853" x="0" y="10" width="259" height="59"/>
-				<imageExpression><![CDATA["images/logo_header.png"]]></imageExpression>
+				<imageExpression><![CDATA["images/na_logo_header.png"]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement uuid="da3fac4e-2cb0-4204-845e-9776f3205282" x="11" y="79" width="195" height="14"/>
-				<textElement/>
-				<textFieldExpression><![CDATA["4301 North Fairfax Drive "]]></textFieldExpression>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ministry of Health & Social Service "]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="42ed8ae6-1337-4eb5-b0d0-676a659de664" x="11" y="94" width="195" height="14"/>
-				<textElement/>
-				<textFieldExpression><![CDATA["Suite 400"]]></textFieldExpression>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Private Bag 13198"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="00e8a343-6fa5-4a01-a8fc-edaa1e92ca92" x="11" y="108" width="195" height="14"/>
-				<textElement/>
-				<textFieldExpression><![CDATA["Arlington, Virginia 22203"]]></textFieldExpression>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Harvey Street"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="fe8f8585-a345-4422-b30d-3f317bd60a79" x="11" y="122" width="195" height="14"/>
-				<textElement/>
-				<textFieldExpression><![CDATA["United States"]]></textFieldExpression>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Windhoek, Namibia"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="03256fad-0060-4b2d-b645-693ec10159a5" x="11" y="136" width="195" height="14"/>
-				<textElement/>
-				<textFieldExpression><![CDATA["Telephone: 703.524.6575"]]></textFieldExpression>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Telephone: (061) 203 2408"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="f305724a-8b27-4228-9e7a-41e2cfacea08" x="11" y="150" width="195" height="14"/>
-				<textElement/>
-				<textFieldExpression><![CDATA["Fax: 703.524.7898"]]></textFieldExpression>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Fax: (061) 225 048"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="252d03ca-06bc-44ac-80d7-13c2b886e2d5" x="455" y="103" width="100" height="14"/>

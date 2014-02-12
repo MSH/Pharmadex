@@ -138,6 +138,15 @@ public class FileUploadController {
         return download;
     }
 
+    public StreamedContent regCertDownload() {
+        ProdApplications prodApplications = processProdBn.getProdApplications();
+        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
+        Calendar c = Calendar.getInstance();
+        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR));
+//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+        return download;
+    }
+
     public ArrayList<Attachment> getAttachments() {
         if (attachments == null)
             attachments = (ArrayList<Attachment>) attachmentDAO.findByProdApplications_Id(processProdBn.getProdApplications().getId());

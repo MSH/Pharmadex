@@ -4,11 +4,14 @@ import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.domain.enums.UserType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +26,9 @@ public class ApplicantService implements Serializable {
 
     @Resource
     ApplicantDAO applicantDAO;
+
+    @Autowired
+    UserService userService;
 
     private List<Applicant> applicants;
 
@@ -53,10 +59,19 @@ public class ApplicantService implements Serializable {
     public boolean saveApp(Applicant applicant, User loggedInUserObj) {
         try {
             applicant.setState(ApplicantState.NEW_APPLICATION);
-            applicantDAO.saveApplicant(applicant);
+            if (loggedInUserObj.getType().equals(UserType.COMPANY)) {
+                loggedInUserObj.setApplicant(applicant);
+                if (applicant.getUsers() == null) {
+                    applicant.setUsers(new ArrayList<User>());
+                }
+                applicant.getUsers().add(loggedInUserObj);
+            }
+            Applicant a = applicantDAO.saveApplicant(applicant);
+            if (loggedInUserObj.getType().equals(UserType.COMPANY)) {
+                loggedInUserObj.setApplicant(a);
+                userService.updateUser(loggedInUserObj);
+            }
             System.out.println("applicant id = " + applicant.getApplcntId());
-            loggedInUserObj.setApplicant(applicant);
-//            userService.updateUser(user);
             applicants = null;
             return true;
         } catch (Exception e) {
@@ -72,7 +87,7 @@ public class ApplicantService implements Serializable {
             System.out.println("applicant id = " + applicant.getApplcntId());
             if (user != null) {
                 user.setApplicant(applicant);
-//                userService.updateUser(user);
+                userService.updateUser(user);
             }
             applicants = null;
             return true;
@@ -89,4 +104,7 @@ public class ApplicantService implements Serializable {
         return applicantDAO.findApplicantByProduct(id);
     }
 
+    public User getDefaultUser(Long applcntId) {
+        return applicantDAO.findApplicantDefaultUser(applcntId);
+    }
 }

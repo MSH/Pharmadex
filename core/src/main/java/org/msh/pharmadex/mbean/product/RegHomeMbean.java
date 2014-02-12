@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
@@ -67,6 +68,9 @@ public class RegHomeMbean implements Serializable {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private GlobalEntityLists globalEntityLists;
+
     private static Logger logger = Logger.getLogger(RegHomeMbean.class.getName());
     private List<ProdInn> selectedInns;
     private List<Atc> selectedAtcs;
@@ -84,6 +88,7 @@ public class RegHomeMbean implements Serializable {
     private Atc atc;
     private User loggedInUser;
     private List<Company> companies = new ArrayList<Company>(10);
+
 
     private boolean download;
 
@@ -121,13 +126,15 @@ public class RegHomeMbean implements Serializable {
             eachProdAppCheck.setProdApplications(prodApplications);
             prodAppChecklists.add(eachProdAppCheck);
         }
-        if (getLoggedInUser() != null && getLoggedInUser().getApplicant() != null)
+        if (userSession.isCompany())
             product.setApplicant(getLoggedInUser().getApplicant());
         prodApplications.setUser(getLoggedInUser());
         prodApplications.getProd().setInns(selectedInns);
         prodApplications.getProd().setAtcs(selectedAtcs);
         prodApplications.getProd().setCompanies(companies);
         prodApplications.setProdAppChecklists(prodAppChecklists);
+
+        product.setProdApplications(prodApplications);
 
         eventModel = new DefaultScheduleModel();
         for (Appointment app : appointmentService.getAppointments()) {
@@ -252,7 +259,7 @@ public class RegHomeMbean implements Serializable {
         }
     }
 
-    public String removeInn() {
+    public String removeInn(ProdInn prodInn) {
 
         selectedInns.remove(prodInn);
         return null;
@@ -311,10 +318,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     public boolean isShowAppReg() {
-        if (getLoggedInUser() != null && getLoggedInUser().getApplicant() != null)
-            return false;
-        else
-            return true;
+        return !(userSession.isCompany());
     }
 
     public void setShowAppReg(boolean showAppReg) {
@@ -342,14 +346,13 @@ public class RegHomeMbean implements Serializable {
     }
 
     public Applicant getApplicant() {
-        Long id;
         if (applicant == null) {
-            if (product != null && product.getApplicant() != null) {
+            if (product != null && product.getApplicant() != null && product.getApplicant().getApplcntId() != null) {
                 applicant = applicantService.findApplicant(product.getApplicant().getApplcntId());
-            } else {
-                if (getLoggedInUser().getApplicant() != null)
-                    applicant = applicantService.findApplicant(getLoggedInUser().getApplicant().getApplcntId());
-            }
+            } else if (getLoggedInUser().getApplicant() != null) {
+                applicant = applicantService.findApplicant(getLoggedInUser().getApplicant().getApplcntId());
+            } else
+                applicant = new Applicant();
         }
         return applicant;
     }
@@ -538,4 +541,25 @@ public class RegHomeMbean implements Serializable {
         this.event = event;
     }
 
+    public List<Applicant> completeApplicantList(String query) {
+        List<Applicant> suggestions = new ArrayList<Applicant>();
+
+        if (query == null || query.equalsIgnoreCase(""))
+            return globalEntityLists.getRegApplicants();
+
+        for (Applicant eachInn : globalEntityLists.getRegApplicants()) {
+            if (eachInn.getAppName().toLowerCase().startsWith(query.toLowerCase()))
+                suggestions.add(eachInn);
+        }
+        return suggestions;
+    }
+
+    public void cancelAddApplicant() {
+        applicant = new Applicant();
+    }
+
+    public void addApptoRegistration() {
+        loggedInUser = applicantService.getDefaultUser(applicant.getApplcntId());
+
+    }
 }

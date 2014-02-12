@@ -22,17 +22,31 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="100" splitType="Stretch">
 			<image>
-				<reportElement uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a" x="0" y="0" width="187" height="79"/>
-				<imageExpression><![CDATA["images/logo_header.png"]]></imageExpression>
+				<reportElement uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a" x="0" y="0" width="126" height="100"/>
+				<imageExpression><![CDATA["images/na_logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b" x="187" y="19" width="385" height="45" forecolor="#006666"/>
+				<reportElement uuid="d044aae1-f9c8-473e-99fd-6275ea090ca3" x="126" y="37" width="446" height="24"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ministry of Health and Social Services]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5334b5ba-85b1-4397-b327-42069d75a717" x="126" y="0" width="446" height="37" forecolor="#006666"/>
 				<textElement textAlignment="Center">
 					<font size="24" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Pharmadex]]></text>
+				<text><![CDATA[Republic of Namibia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b4f46da8-6a27-4f45-a362-d263dcfe1ce1" x="126" y="61" width="446" height="24"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medicine Control Council]]></text>
 			</staticText>
 		</band>
 	</title>

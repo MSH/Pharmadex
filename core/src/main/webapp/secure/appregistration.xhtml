@@ -8,7 +8,7 @@
             <h1 class="title ui-widget-header ui-corner-all"> #{msgs.applicant_registration}</h1>
         </div>
 
-        <h:form>
+        <h:form id="appreg">
             <p:panel header="#{msgs.applicant_detail}">
                 <p:messages/>
                 <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
@@ -18,12 +18,39 @@
 
             </p:panel>
 
-            <p:panel header="#{msgs.person_responsible}">
-                <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                    <ui:param name="userdata" value="#{applicantMBean.user}"/>
-                </ui:decorate>
+            <h:panelGroup id="userdetail" rendered="#{userSession.company}">
+                <p:panel header="#{msgs.person_responsible}">
+                    <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                        <ui:param name="userdata" value="#{applicantMBean.user}"/>
+                    </ui:decorate>
+                </p:panel>
+            </h:panelGroup>
 
-            </p:panel>
+            <h:panelGroup id="selectuser" rendered="#{userSession.staff}">
+                <p:panel header="#{msgs.person_responsible}">
+                    <h:panelGrid columns="1" cellpadding="10px">
+                        <p:commandLink value="#{msgs.user_lookup}" oncomplete="addUserDlg.show()"
+                                       immediate="true" style="font-weight: bolder; font-size: larger"/>
+                        <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"/>
+
+                    </h:panelGrid>
+
+                    <p:dataTable id="usertable" var="user" value="#{applicantMBean.userList}" style="width:100%;">
+                        <p:column headerText="#{msgs.User_name}">
+                            <h:outputText value="#{user.name}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.User_username}">
+                            <h:outputText value="#{user.username}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.User_email}">
+                            <h:outputText value="#{user.email}"/>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:panel>
+            </h:panelGroup>
 
             <div align="center" style="height: 60px">
                 <p:commandButton action="#{applicantMBean.saveApp}" value="#{msgs.global_submit}" ajax="false"/>
@@ -31,6 +58,30 @@
                                  immediate="true"/>
             </div>
         </h:form>
+
+        <p:dialog header="#{msgs.user_add}" widgetVar="addUserDlg" id="addUserdlg" resizable="true" modal="true">
+            <h:form>
+                <p:outputLabel value="#{msgs.userselect_info}" styleClass="hint"/>
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+                    <h:outputLabel value="#{msgs.User_username}" for="username"/>
+                    <p:autoComplete id="username" value="#{applicantMBean.user}"
+                                    completeMethod="#{applicantMBean.completeUserList}" dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
+
+                    <h:panelGroup>
+                        <p:commandButton actionListener="#{applicantMBean.addUserToApplicant}"
+                                         value="#{msgs.global_add}"
+                                         oncomplete="addUserDlg.hide()" update=":appreg:usertable"/>
+                        <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
+                                         value="#{msgs.global_cancel}" oncomplete="addUserDlg.hide()"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
 
     </ui:define>
 </ui:composition>
