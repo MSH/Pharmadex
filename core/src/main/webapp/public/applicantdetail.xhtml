@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reghome">
+
+            <h:panelGrid columns="1" columnClasses="content" cellpadding="10px">
+
+                <h:panelGroup styleClass="ui-widget">
+                    <h1 class="title ui-widget-header ui-corner-all">
+                        <table width="750px">
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{applicantHome.applicant.appName}" styleClass="title"
+                                                   style="font-weight: bold; font-size: 1.5em"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{applicantHome.applicant.state}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="Application Number: " styleClass="title"/>
+                                    <h:outputFormat value="#{applicantHome.applicant.applcntId}" styleClass="title"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="Submitted Date: " styleClass="title"/>
+                                    <h:outputFormat value="#{applicantHome.applicant.submitDate}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </h1>
+                    <p:messages id="messages" showDetail="true" showSummary="true"/>
+
+                    <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+                    <p:panel header="#{msgs.applicant_detail}">
+                        <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                            <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
+                        </ui:decorate>
+
+                    </p:panel>
+
+                    <p:panel header="#{msgs.product_list}">
+                        <p:dataTable id="products" var="product" value="#{applicantHome.products}">
+                            <p:column sortBy="#{product.prodName}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodName}"/>
+                                </f:facet>
+                                <p:commandLink id="viewLink" value="#{product.prodName}" update=":viewDlg"
+                                               oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                                    <f:setPropertyActionListener value="#{product}" target="#{productDisplay.product}"/>
+                                </p:commandLink>
+                            </p:column>
+
+                            <p:column sortBy="#{product.genName}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodgenname}"/>
+                                </f:facet>
+                                <h:outputText value="#{product.genName}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.dosForm.dosForm}">
+                                <f:facet name="header">
+                                    <h:outputText value="Dosage Form"/>
+                                </f:facet>
+                                <h:outputText value="#{product.dosForm.dosForm}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.dosStrength}">
+                                <f:facet name="header">
+                                    <h:outputText value="Dosage Strength"/>
+                                </f:facet>
+                                <h:outputText value="#{product.dosStrength}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.applicant.appName}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.registration_applicant}"/>
+                                </f:facet>
+                                <h:outputText value="#{product.applicant.appName}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.prodApplications.registrationDate}">
+                                <f:facet name="header">
+                                    <h:outputText value="Registered Date"/>
+                                </f:facet>
+                                <h:outputLabel converter="javax.faces.DateTime"
+                                               value="#{product.prodApplications.registrationDate}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:form>
+
+        <p:dialog header="#{msgs.product_details}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
+                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
+            <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                <ui:param name="prodAppData" value="#{productDisplay.prodApplications}"/>
+            </ui:decorate>
+
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

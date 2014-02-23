@@ -26,8 +26,7 @@
                     </f:facet>
 
 
-                    <p:commandLink id="viewLink" value="#{applicant.appName}" update=":viewDlg"
-                                   oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                    <p:commandLink id="viewLink" value="#{applicant.appName}" action="applicantdetail.faces">
                         <f:setPropertyActionListener value="#{applicant}" target="#{applicantHome.applicant}"/>
                     </p:commandLink>
                 </p:column>

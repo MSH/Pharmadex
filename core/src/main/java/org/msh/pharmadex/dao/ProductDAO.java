@@ -98,5 +98,11 @@ public class ProductDAO implements Serializable {
                 .getResultList();
     }
 
+    public List<Product> findRegProductByApp(Long appID) {
+        return (List<Product>) entityManager.createQuery(" select p from Product p join p.applicant a where a.applcntId = :appID")
+                .setParameter("appID", appID)
+                .getResultList();
+    }
+
 }
 

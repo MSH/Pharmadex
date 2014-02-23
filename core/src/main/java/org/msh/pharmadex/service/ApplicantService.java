@@ -1,7 +1,11 @@
 package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.ApplicantDAO;
+import org.msh.pharmadex.dao.ProductDAO;
+import org.msh.pharmadex.dao.iface.ApplicantTypeDAO;
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.ApplicantType;
+import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.UserType;
@@ -29,6 +33,12 @@ public class ApplicantService implements Serializable {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ApplicantTypeDAO applicantTypeDAO;
+
+    @Autowired
+    ProductDAO productDAO;
 
     private List<Applicant> applicants;
 
@@ -100,11 +110,21 @@ public class ApplicantService implements Serializable {
 
     @Transactional
     public Applicant findApplicantByProduct(Long id) {
-        System.out.println("inside applicant by product");
         return applicantDAO.findApplicantByProduct(id);
     }
 
+    @Transactional
+    public List<Product> findRegProductForApplicant(Long appID) {
+        return productDAO.findRegProductByApp(appID);
+    }
+
+
     public User getDefaultUser(Long applcntId) {
         return applicantDAO.findApplicantDefaultUser(applcntId);
+    }
+
+    @Transactional
+    public List<ApplicantType> findAllApplicantTypes() {
+        return applicantTypeDAO.findAll();
     }
 }

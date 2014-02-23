@@ -56,4 +56,5 @@ public class ProductService implements Serializable {
     public List<Atc> findAtcsByProduct(Long id) {
         return productDAO.findAtcsByProduct(id);
     }
+
 }

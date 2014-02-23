@@ -18,9 +18,9 @@ public class GlobalLists {
         return Arrays.asList(UserType.values());
     }
 
-    public List<ApplicantType> getAppType() {
-        return Arrays.asList(ApplicantType.values());
-    }
+//    public List<ApplicantType> getAppType() {
+//        return Arrays.asList(ApplicantType.values());
+//    }
 
     public List<CompanyType> getCompanyType() {
         return Arrays.asList(CompanyType.values());

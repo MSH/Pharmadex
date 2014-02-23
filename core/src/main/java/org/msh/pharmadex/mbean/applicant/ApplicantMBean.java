@@ -43,6 +43,7 @@ public class ApplicantMBean implements Serializable {
     @Autowired
     ApplicantService applicantService;
 
+
     @Autowired
     UserService userService;
 
@@ -79,7 +80,6 @@ public class ApplicantMBean implements Serializable {
 
     public String saveApp() {
         selectedApplicant.setSubmitDate(new Date());
-        selectedApplicant.setAppType(null);
         if (applicantService.saveApp(selectedApplicant, userSession.getLoggedInUserObj())) {
             selectedApplicant = new Applicant();
             setShowAdd(false);

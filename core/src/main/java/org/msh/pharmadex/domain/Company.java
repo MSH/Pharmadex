@@ -45,6 +45,8 @@ public class Company extends CreationDetail implements Serializable {
     @JoinColumn(name = "PROD_ID")
     private Product product;
 
+    private boolean gmpInsp;
+
     public Long getId() {
         return id;
     }
@@ -115,5 +117,13 @@ public class Company extends CreationDetail implements Serializable {
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public boolean isGmpInsp() {
+        return gmpInsp;
+    }
+
+    public void setGmpInsp(boolean gmpInsp) {
+        this.gmpInsp = gmpInsp;
     }
 }

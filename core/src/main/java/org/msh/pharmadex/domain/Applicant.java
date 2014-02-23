@@ -1,7 +1,6 @@
 package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.domain.enums.ApplicantType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,10 +28,9 @@ public class Applicant extends CreationDetail implements Serializable {
     @Embedded
     private Address address = new Address();
 
-    @ElementCollection(targetClass = ApplicantType.class)
-    @CollectionTable(name = "applicant_type", joinColumns = @JoinColumn(name = "applcntId"))
-    @Column(name = "app_type_id")
-    private List<ApplicantType> appType;
+    @OneToMany
+    private List<ApplicantType> applicantTypes;
+
 
     @Column(length = 50, nullable = false)
     private String contactName;
@@ -86,13 +84,6 @@ public class Applicant extends CreationDetail implements Serializable {
         this.appName = appName;
     }
 
-    public List<ApplicantType> getAppType() {
-        return appType;
-    }
-
-    public void setAppType(List<ApplicantType> appType) {
-        this.appType = appType;
-    }
 
     public List<Product> getProducts() {
         return products;
@@ -196,5 +187,13 @@ public class Applicant extends CreationDetail implements Serializable {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public List<ApplicantType> getApplicantTypes() {
+        return applicantTypes;
+    }
+
+    public void setApplicantTypes(List<ApplicantType> applicantTypes) {
+        this.applicantTypes = applicantTypes;
     }
 }

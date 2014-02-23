@@ -60,12 +60,14 @@ public class UserDAO implements Serializable {
     }
 
     public User findByUsername(String username) throws NoResultException {
-        System.out.println("inside findByUsername ");
         try {
             User u = (User) entityManager.createQuery("select u from User u where u.username = :username")
                     .setParameter("username", username)
                     .getSingleResult();
             return u;
+
+        } catch (NoResultException noe) {
+            return null;
 
         } catch (Exception e) {
             e.printStackTrace();

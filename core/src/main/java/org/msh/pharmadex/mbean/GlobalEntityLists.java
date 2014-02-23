@@ -23,6 +23,8 @@ public class GlobalEntityLists {
     private List<Applicant> regApplicants;
     private List<PharmacySite> pharmacySites;
     private List<AmdmtCategory> amdmtCategories;
+    private List<ApplicantType> applicantTypes;
+    private List<Company> manufacturers;
 
     @Autowired
     DosageFormService dosageFormService;
@@ -42,6 +44,14 @@ public class GlobalEntityLists {
     @Autowired
     AmdmtService amdmtService;
 
+    @Autowired
+    CompanyService companyService;
+
+    public List<Company> getManufacturers() {
+        if (manufacturers == null)
+            manufacturers = companyService.findAllManufacturers();
+        return manufacturers;
+    }
 
     public List<AmdmtCategory> getAmdmtCategories() {
         if (amdmtCategories == null)
@@ -97,4 +107,11 @@ public class GlobalEntityLists {
     public void setRegApplicants(List<Applicant> regApplicants) {
         this.regApplicants = regApplicants;
     }
+
+    public List<ApplicantType> getApplicantTypes() {
+        if (applicantTypes == null)
+            applicantTypes = applicantService.findAllApplicantTypes();
+        return applicantTypes;
+    }
+
 }

@@ -23,7 +23,7 @@ public class AmdmtCategory extends CreationDetail implements Serializable {
     @Column(name = "short_desc")
     private String shortDesc;
 
-    @Column(name = "full_desc")
+    @Column(name = "full_desc", length = 1000)
     private String fullDesc;
 
     @Column(name = "amdmt_type")
