@@ -30,7 +30,7 @@ public class UserAccess implements Serializable {
     @Column(length = 200)
     private String Application;
 
-    @Column(length = 200)
+    @Column(length = 1000)
     private String IpAddress;
 
     public long getId() {
