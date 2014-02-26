@@ -25,6 +25,7 @@ public class GlobalEntityLists {
     private List<AmdmtCategory> amdmtCategories;
     private List<ApplicantType> applicantTypes;
     private List<Company> manufacturers;
+    private List<PharmClassif> pharmClassifs;
 
     @Autowired
     DosageFormService dosageFormService;
@@ -46,6 +47,9 @@ public class GlobalEntityLists {
 
     @Autowired
     CompanyService companyService;
+
+    @Autowired
+    PharmClassifService pharmClassifService;
 
     public List<Company> getManufacturers() {
         if (manufacturers == null)
@@ -114,4 +118,9 @@ public class GlobalEntityLists {
         return applicantTypes;
     }
 
+    public List<PharmClassif> getPharmClassifs() {
+        if (pharmClassifs == null)
+            pharmClassifs = pharmClassifService.getPharmClassifList();
+        return pharmClassifs;
+    }
 }

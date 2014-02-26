@@ -84,6 +84,14 @@
             </p:selectOneMenu>
             <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
 
+            <h:outputLabel value="#{msgs.product_pharmclassif}" for="username"/>
+            <p:autoComplete id="username" value="#{regHomeMbean.prodApplications.prod.pharmClassif}"
+                            completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
+                            var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
+                            converter="#{pharmClassifConverter}">
+            </p:autoComplete>
+
+
             <h:outputLabel value="#{msgs.global_description}" for="prodDesc"/>
             <p:inputTextarea id="prodDesc" value="#{regHomeMbean.prodApplications.prod.prodDesc}" rows="4" cols="50"
                              title="ProdDesc"/>

@@ -554,6 +554,20 @@ public class RegHomeMbean implements Serializable {
         return suggestions;
     }
 
+    public List<PharmClassif> completePharmClassif(String query) {
+        List<PharmClassif> suggestions = new ArrayList<PharmClassif>();
+
+        if (query == null || query.equalsIgnoreCase(""))
+            return globalEntityLists.getPharmClassifs();
+
+        for (PharmClassif eachInn : globalEntityLists.getPharmClassifs()) {
+            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
+                suggestions.add(eachInn);
+        }
+        return suggestions;
+    }
+
+
     public void cancelAddApplicant() {
         applicant = new Applicant();
     }
