@@ -26,7 +26,8 @@
                     </f:facet>
 
 
-                    <p:commandLink id="viewLink" value="#{applicant.appName}" action="applicantdetail.faces">
+                    <p:commandLink id="viewLink" value="#{applicant.appName}" action="applicantdetail.faces"
+                                   ajax="false">
                         <f:setPropertyActionListener value="#{applicant}" target="#{applicantHome.applicant}"/>
                     </p:commandLink>
                 </p:column>

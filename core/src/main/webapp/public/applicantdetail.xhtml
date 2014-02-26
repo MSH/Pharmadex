@@ -3,16 +3,16 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
-                template="../templates/process_reg_layout.xhtml">
+                template="../templates/">
     <ui:define name="content">
 
         <h:form id="reghome">
 
-            <h:panelGrid columns="1" columnClasses="content" cellpadding="10px">
+            <h:panelGrid columns="1" cellpadding="10px">
 
                 <h:panelGroup styleClass="ui-widget">
                     <h1 class="title ui-widget-header ui-corner-all">
-                        <table width="750px">
+                        <table>
                             <tr>
                                 <td>
                                     <h:outputLabel value="#{applicantHome.applicant.appName}" styleClass="title"
@@ -53,7 +53,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.prodName}"/>
                                 </f:facet>
-                                <p:commandLink id="viewLink" value="#{product.prodName}" update=":viewDlg"
+                                <p:commandLink id="viewLink" value="#{product.prodName}" update=":reghome:viewDlg"
                                                oncomplete="viewDialog.show()" title="Edit" ajax="true">
                                     <f:setPropertyActionListener value="#{product}" target="#{productDisplay.product}"/>
                                 </p:commandLink>
@@ -100,15 +100,18 @@
 
                 </h:panelGroup>
             </h:panelGrid>
+
+            <p:dialog header="#{msgs.product_details}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
+                      resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
+                <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                    <ui:param name="prodAppData" value="#{productDisplay.prodApplications}"/>
+                </ui:decorate>
+
+            </p:dialog>
+
+
         </h:form>
 
-        <p:dialog header="#{msgs.product_details}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
-                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
-            <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                <ui:param name="prodAppData" value="#{productDisplay.prodApplications}"/>
-            </ui:decorate>
-
-        </p:dialog>
 
     </ui:define>
 </ui:composition>

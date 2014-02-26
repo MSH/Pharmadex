@@ -6,10 +6,6 @@ body, div, td {
     padding: 0;
 }
 
-tr, tbody {
-    width: 1052px;
-}
-
 .header {
     width: 1052px;
     vertical-align: top;
@@ -171,10 +167,7 @@ body {
 /* Footer */
 
 #footer {
-    width: 982px;
-    height: 70px;
     margin: 0 auto;
-    padding: 0 20px;
 }
 
 #footer p {
@@ -185,6 +178,12 @@ body {
 }
 
 #footer a {
+}
+
+#footer img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #footer .link {
