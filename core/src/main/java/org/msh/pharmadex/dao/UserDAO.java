@@ -62,7 +62,7 @@ public class UserDAO implements Serializable {
     public User findByUsername(String username) throws NoResultException {
         try {
             User u = (User) entityManager.createQuery("select u from User u where u.username = :username")
-                    .setParameter("username", username)
+                        .setParameter("username", username)
                     .getSingleResult();
             return u;
 

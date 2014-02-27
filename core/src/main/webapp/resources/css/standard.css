@@ -7,7 +7,7 @@ body, div, td {
 }
 
 .header {
-    width: 1052px;
+    width: 1054px;
     vertical-align: top;
     text-align: center;
     margin-right: 5px;
@@ -26,8 +26,8 @@ body {
 }
 
 .wrapper {
-    min-width: 1052px;
-    max-width: 1052px;
+    min-width: 1054px;
+    max-width: 1054px;
     margin-right: auto;
     margin-left: auto; /* fix max-width incompatibility in IE6 */
     overflow: hidden;
@@ -51,6 +51,8 @@ body {
 
 .banner {
     margin-bottom: 5px;
+    width: 100%;
+
 }
 
 .action-column {
@@ -261,7 +263,7 @@ body {
 
 .title {
     height: 50px;
-    padding: 8px 0 10px 20px;
+    padding: 10px 10px 10px 10px;
 }
 
 .title a {
@@ -280,4 +282,12 @@ body {
 .hint {
     font-weight: lighter;
     color: firebrick;
+}
+
+.ui-datatable thead th {
+    white-space:normal !important;
+}
+
+.ui-datatable tbody td {
+    white-space:normal !important;
 }
