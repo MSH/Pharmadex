@@ -35,6 +35,8 @@ public class ApplicantHome implements Serializable {
     }
 
     public Applicant getApplicant() {
+
+
         return applicant;
     }
 

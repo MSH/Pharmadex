@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reghome">
+
+            <h:panelGrid columns="1" cellpadding="10px">
+
+                <h:panelGroup styleClass="ui-widget">
+                    <h1 class="title ui-widget-header ui-corner-all">
+                        <table class="banner">
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{productDisplay.prodApplications.prod.prodName}"
+                                                   styleClass="title"
+                                                   style="font-weight: bold; font-size: 1.5em"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{msgs[productDisplay.prodApplications.regState.key]}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="Application Number: " styleClass="title"/>
+                                    <h:outputFormat value="#{productDisplay.prodApplications.id}" styleClass="title"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="Submitted Date: " styleClass="title"/>
+                                    <h:outputFormat value="#{productDisplay.prodApplications.submitDate}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
+                                    <p:commandLink id="viewLink"
+                                                   value="#{productDisplay.prodApplications.prod.applicant.appName}"
+                                                   action="applicantdetail.faces"
+                                                   ajax="false">
+                                        <f:param name="appId"
+                                                 value="productDisplay.prodApplications.prod.applicant.appId"/>
+                                        <f:setPropertyActionListener
+                                                value="#{productDisplay.prodApplications.prod.applicant}"
+                                                target="#{applicantHome.applicant}"/>
+                                    </p:commandLink>
+
+                                    <!--                                    <h:outputFormat value="#{productDisplay.prodApplications.prod.applicant.appName}"/> -->
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
+                                                   rendered="#{not empty productDisplay.prodApplications.regExpiryDate}"/>
+                                    <h:outputFormat value="#{productDisplay.prodApplications.regExpiryDate}"
+                                                    rendered="#{not empty productDisplay.prodApplications.regExpiryDate}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </h1>
+                </h:panelGroup>
+                <p:messages id="messages" showDetail="true" showSummary="true"/>
+
+                <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+                <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                    <ui:param name="prodAppData" value="#{productDisplay.prodApplications}"/>
+                </ui:decorate>
+
+            </h:panelGrid>
+
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>

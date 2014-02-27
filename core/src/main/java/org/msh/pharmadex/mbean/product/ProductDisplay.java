@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.*;
@@ -9,11 +10,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.faces.bean.ManagedProperty;
+import javax.faces.context.Flash;
+
 /**
  * Author: usrivastava
  */
 @Component
-@Scope("session")
+@Scope("request")
 public class ProductDisplay {
 
     @Autowired
@@ -33,7 +37,12 @@ public class ProductDisplay {
 
     private Product product;
 
+    private Applicant applicant;
+
     private ProdApplications prodApplications;
+
+    @ManagedProperty("#{flash}")
+    private Flash flash;
 
     public Product getProduct() {
         return product;
@@ -49,8 +58,7 @@ public class ProductDisplay {
         this.product.setAtcs(productService.findAtcsByProduct(product.getId()));
         prodApplications.setProd(this.product);
         this.product.setProdApplications(prodApplications);
-
-
+        this.applicant = product.getApplicant();
     }
 
 
@@ -60,5 +68,13 @@ public class ProductDisplay {
 
     public void setProdApplications(ProdApplications prodApplications) {
         this.prodApplications = prodApplications;
+    }
+
+    public Flash getFlash() {
+        return flash;
+    }
+
+    public void setFlash(Flash flash) {
+        this.flash = flash;
     }
 }
