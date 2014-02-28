@@ -63,4 +63,13 @@ public class ProductServiceTest {
         Assert.assertEquals("Search by applicant", products.size(), 30);
 
     }
+
+    @Test
+    public void testFindProductEager() {
+        Assert.assertEquals(true, true);
+
+        Product prod = productService.getProduct(Long.valueOf(4781));
+        Assert.assertNotNull(prod);
+
+    }
 }

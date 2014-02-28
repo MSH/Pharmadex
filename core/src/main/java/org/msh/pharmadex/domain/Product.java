@@ -72,7 +72,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinColumn(name = "APP_ID", nullable = false)
     private Applicant applicant;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<Company> companies;
 
     @OneToOne

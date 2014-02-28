@@ -8,11 +8,8 @@ import org.msh.pharmadex.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import java.io.Serializable;
 
 /**
@@ -46,36 +43,19 @@ public class ProductDisplay implements Serializable {
 
     private ProdApplications prodApplications;
 
-    private Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
-
-
     public Product getProduct() {
         return product;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public void setProduct(Product product) {
-        this.product = productService.findProductById(product.getId());
-        prodApplications = prodApplicationsService.findProdApplicationByProduct(product.getId());
-        prodApplications.setProdAppChecklists(prodApplicationsService.findAllProdChecklist(prodApplications.getId()));
-        this.product.setInns(innService.findInnByProdApp(prodApplications.getId()));
-        this.product.setCompanies(prodApplicationsService.findCompanies(this.product.getId()));
-        this.product.setAtcs(productService.findAtcsByProduct(product.getId()));
-        prodApplications.setProd(this.product);
-        this.product.setProdApplications(prodApplications);
-        this.applicant = product.getApplicant();
+        this.product = productService.getProduct(product.getId());
+        this.prodApplications = this.product.getProdApplications();
+        this.applicant = this.product.getApplicant();
         webSession.setApplicant(applicant);
 
 
     }
-
-    public String goToApplicant(Applicant app) {
-//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("applicant", applicant);
-        applicant = webSession.getApplicant();
-
-        return "applicantdetail";
-    }
-
 
     public ProdApplications getProdApplications() {
         return prodApplications;

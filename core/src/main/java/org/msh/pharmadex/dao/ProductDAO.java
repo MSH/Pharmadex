@@ -104,5 +104,25 @@ public class ProductDAO implements Serializable {
                 .getResultList();
     }
 
+    @Transactional
+    public Product findProductEager(Long prodId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Product> query = cb.createQuery(Product.class);
+        Root<Product> root = query.from(Product.class);
+//        Join<Product, ProdApplications> prodAppJoin = root.join("prodApplications");
+//        Join<Product, Atc> atcJoin = root.join("atcs");
+//        Join<Product, Company> companyJoin = root.join("companies");
+
+        root.fetch("prodApplications");
+
+        Predicate p = cb.equal(root.get("id"), prodId);
+
+        query.select(root).where(p);
+        Product prod = entityManager.createQuery(query).getSingleResult();
+        return prod;
+
+
+    }
+
 }
 

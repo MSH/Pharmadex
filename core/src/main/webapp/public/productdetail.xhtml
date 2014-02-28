@@ -6,7 +6,7 @@
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
-        <h:form id="reghome">
+        <h:form id="proddetailform">
 
             <h:panelGrid columns="1" cellpadding="10px">
 
@@ -40,7 +40,7 @@
                                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
                                     <p:commandLink id="viewLink"
                                                    value="#{productDisplay.prodApplications.prod.applicant.appName}"
-                                                   action="#{productDisplay.goToApplicant(productDisplay.prodApplications.prod.applicant)}"
+                                                   action="applicantdetail"
                                                    ajax="false">
                                         <f:param name="appId"
                                                  value="#{productDisplay.prodApplications.prod.applicant.applcntId}"/>

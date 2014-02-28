@@ -226,9 +226,11 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<ProdInn> getSelectedInns() {
-        if (prodApplications != null)
-            return prodApplications.getProd().getInns();
-        else
+        List<ProdInn> prodInn = new ArrayList<ProdInn>();
+        if (prodApplications != null) {
+            prodInn.addAll(prodApplications.getProd().getInns());
+            return prodInn;
+        } else
             return null;
     }
 
@@ -237,10 +239,12 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<Atc> getSelectedAtcs() {
+        List<Atc> atcs = new ArrayList<Atc>();
         if (prodApplications != null)
-            return prodApplications.getProd().getAtcs();
+            atcs.addAll(prodApplications.getProd().getAtcs());
         else
-            return null;
+            atcs = null;
+        return atcs;
     }
 
     public void setSelectedAtcs(List<Atc> selectedAtcs) {
@@ -454,9 +458,10 @@ public class ProcessProdBn implements Serializable {
 
     public List<Company> getCompanies() {
         if (prodApplications != null)
-            return prodApplications.getProd().getCompanies();
+            companies.addAll(prodApplications.getProd().getCompanies());
         else
-            return null;
+            companies = null;
+        return companies;
     }
 
     public void setCompanies(List<Company> companies) {

@@ -8,6 +8,8 @@ import org.primefaces.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: utkarsh
@@ -17,8 +19,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class WebSession {
+public class WebSession implements Serializable {
 
+    private static final long serialVersionUID = -8430895236272272144L;
     private User user;
     private Applicant applicant;
     private Product product;
