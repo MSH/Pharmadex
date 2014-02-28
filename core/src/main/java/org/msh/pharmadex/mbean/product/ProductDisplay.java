@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
@@ -10,15 +11,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+import java.io.Serializable;
 
 /**
  * Author: usrivastava
  */
 @Component
 @Scope("request")
-public class ProductDisplay {
+public class ProductDisplay implements Serializable {
 
     @Autowired
     ProdApplicationsService prodApplicationsService;
@@ -35,14 +37,17 @@ public class ProductDisplay {
     @Autowired
     AtcService atcService;
 
+    @Autowired
+    WebSession webSession;
+
     private Product product;
 
     private Applicant applicant;
 
     private ProdApplications prodApplications;
 
-    @ManagedProperty("#{flash}")
-    private Flash flash;
+    private Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+
 
     public Product getProduct() {
         return product;
@@ -59,6 +64,16 @@ public class ProductDisplay {
         prodApplications.setProd(this.product);
         this.product.setProdApplications(prodApplications);
         this.applicant = product.getApplicant();
+        webSession.setApplicant(applicant);
+
+
+    }
+
+    public String goToApplicant(Applicant app) {
+//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("applicant", applicant);
+        applicant = webSession.getApplicant();
+
+        return "applicantdetail";
     }
 
 
@@ -70,11 +85,11 @@ public class ProductDisplay {
         this.prodApplications = prodApplications;
     }
 
-    public Flash getFlash() {
-        return flash;
+    public Applicant getApplicant() {
+        return applicant;
     }
 
-    public void setFlash(Flash flash) {
-        this.flash = flash;
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
     }
 }

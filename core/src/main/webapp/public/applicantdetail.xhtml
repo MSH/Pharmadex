@@ -53,8 +53,9 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.prodName}"/>
                                 </f:facet>
-                                <p:commandLink id="viewLink" value="#{product.prodName}" update=":reghome:viewDlg"
-                                               oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                                <p:commandLink id="viewLink" value="#{product.prodName}"
+                                               oncomplete="viewDialog.show()" title="Edit" ajax="false"
+                                               action="productdetail">
                                     <f:setPropertyActionListener value="#{product}" target="#{productDisplay.product}"/>
                                 </p:commandLink>
                             </p:column>

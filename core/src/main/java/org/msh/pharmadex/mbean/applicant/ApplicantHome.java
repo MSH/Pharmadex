@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.applicant;
 
+import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ApplicantService;
@@ -20,13 +21,16 @@ public class ApplicantHome implements Serializable {
     @Autowired
     private ApplicantService applicantService;
 
+    @Autowired
+    WebSession webSession;
+
     private Applicant applicant;
 
     private List<Product> products;
 
     public List<Product> getProducts() {
         if (products == null)
-            products = applicantService.findRegProductForApplicant(applicant.getApplcntId());
+            products = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
         return products;
     }
 
@@ -35,7 +39,9 @@ public class ApplicantHome implements Serializable {
     }
 
     public Applicant getApplicant() {
-
+        if (applicant == null) {
+            applicant = webSession.getApplicant();
+        }
 
         return applicant;
     }

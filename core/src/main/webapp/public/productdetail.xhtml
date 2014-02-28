@@ -40,10 +40,10 @@
                                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
                                     <p:commandLink id="viewLink"
                                                    value="#{productDisplay.prodApplications.prod.applicant.appName}"
-                                                   action="applicantdetail.faces"
+                                                   action="#{productDisplay.goToApplicant(productDisplay.prodApplications.prod.applicant)}"
                                                    ajax="false">
                                         <f:param name="appId"
-                                                 value="productDisplay.prodApplications.prod.applicant.appId"/>
+                                                 value="#{productDisplay.prodApplications.prod.applicant.applcntId}"/>
                                         <f:setPropertyActionListener
                                                 value="#{productDisplay.prodApplications.prod.applicant}"
                                                 target="#{applicantHome.applicant}"/>
