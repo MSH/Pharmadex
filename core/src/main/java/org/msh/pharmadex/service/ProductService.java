@@ -36,6 +36,9 @@ public class ProductService implements Serializable {
     @Autowired
     private ProdApplicationsService prodApplicationsService;
 
+    @Autowired
+    ApplicantDAO applicantDAO;
+
     public List<Product> findAllRegisteredProduct() {
         return productDAO.findRegProducts();
     }
@@ -45,14 +48,12 @@ public class ProductService implements Serializable {
         return "persisted";
     }
 
-    @Autowired
-    ApplicantDAO applicantDAO;
 
-    @Transactional
-    public Product findProductById(Long id) {
-        Product prod = productDAO.findProduct(id);
-        return prod;
-    }
+//    @Transactional
+//    public Product findProductById(Long id) {
+//        Product prod = productDAO.findProduct(id);
+//        return prod;
+//    }
 
     public List<Company> findCompaniesByProd(Long id) {
         return productDAO.findCompanies(id);
@@ -68,8 +69,13 @@ public class ProductService implements Serializable {
         return productDAO.findAtcsByProduct(id);
     }
 
+
+    /* Eager fetches the product details
+    *  @Param long id product id
+    *
+    * */
     @Transactional
-    public Product getProduct(Long prodId) {
+    public Product findProduct(Long prodId) {
         Product prod = productDAO.findProductEager(prodId);
         prod.getInns();
         prod.getAtcs();

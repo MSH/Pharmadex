@@ -30,6 +30,10 @@ public class GlobalLists {
         return Arrays.asList(ProdType.values());
     }
 
+    public List<ProdCategory> getProdCategories() {
+        return Arrays.asList(ProdCategory.values());
+    }
+
     public List<AdminRoute> getAdminRoutes() {
         return Arrays.asList(AdminRoute.values());
     }

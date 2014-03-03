@@ -45,9 +45,6 @@ public class RegHomeMbean implements Serializable {
     private ApplicantService applicantService;
 
     @Autowired
-    private PharmClassifService pharmClassifService;
-
-    @Autowired
     private ProdApplicationsService prodApplicationsService;
 
     @Autowired
@@ -58,9 +55,6 @@ public class RegHomeMbean implements Serializable {
 
     @Autowired
     private AtcService atcService;
-
-    @Autowired
-    private TimelineService timelineService;
 
     @Autowired
     private AppointmentService appointmentService;
@@ -80,7 +74,7 @@ public class RegHomeMbean implements Serializable {
     private List<PharmClassif> pharmClassifList;
     private int tabIndex;
     private ProdApplications prodApplications = new ProdApplications();
-    private Product product;
+    private Product product = new Product();
     private Applicant applicant;
     private boolean showAppReg = false;
     private PharmClassif selectedPharmClassif;
@@ -88,37 +82,25 @@ public class RegHomeMbean implements Serializable {
     private Atc atc;
     private User loggedInUser;
     private List<Company> companies = new ArrayList<Company>(10);
-
-
-    private boolean download;
-
     private ProdInn deleteInn;
-
-    private TreeNode atcTree;
     private TreeNode selAtcTree;
-
     private ScheduleModel eventModel;
-
-    private ScheduleModel lazyEventModel;
-
     private ScheduleEvent event = new DefaultScheduleEvent();
-
     private JasperPrint jasperPrint;
 
 
     @PostConstruct
     private void init() {
-        innList = innService.getInnList();
-        product = new Product();
         product.setPharmClassif(new PharmClassif());
         product.setDosForm(new DosageForm());
         product.setDosUnit(new DosUom());
         product.setInns(selectedInns);
         prodApplications.setProd(product);
+        product.setProdApplications(prodApplications);
         prodApplications.setRegState(RegState.SAVED);
         prodAppChecklists = new ArrayList<ProdAppChecklist>();
         prodApplications.setProdAppChecklists(prodAppChecklists);
-        List<Checklist> allChecklist = prodApplicationsService.findAllChecklist();
+        List<Checklist> allChecklist = globalEntityLists.getChecklists();
         ProdAppChecklist eachProdAppCheck;
         for (int i = 0; allChecklist.size() > i; i++) {
             eachProdAppCheck = new ProdAppChecklist();
@@ -126,15 +108,14 @@ public class RegHomeMbean implements Serializable {
             eachProdAppCheck.setProdApplications(prodApplications);
             prodAppChecklists.add(eachProdAppCheck);
         }
-        if (userSession.isCompany())
+        if (userSession.isCompany()){
             product.setApplicant(getLoggedInUser().getApplicant());
-        prodApplications.setUser(getLoggedInUser());
-        prodApplications.getProd().setInns(selectedInns);
-        prodApplications.getProd().setAtcs(selectedAtcs);
-        prodApplications.getProd().setCompanies(companies);
+            prodApplications.setUser(getLoggedInUser());
+        }
+        product.setInns(selectedInns);
+        product.setAtcs(selectedAtcs);
+        product.setCompanies(companies);
         prodApplications.setProdAppChecklists(prodAppChecklists);
-
-        product.setProdApplications(prodApplications);
 
         eventModel = new DefaultScheduleModel();
         for (Appointment app : appointmentService.getAppointments()) {
@@ -213,7 +194,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     public List<Inn> getInnList() {
-        return innService.getInnList();
+        return globalEntityLists.getInns();
     }
 
     public void PDF() throws JRException, IOException {
@@ -380,11 +361,6 @@ public class RegHomeMbean implements Serializable {
         this.selectedInns = selectedInns;
     }
 
-    public List<PharmClassif> getPharmClassifList() {
-        return pharmClassifService.getPharmClassifList();
-    }
-
-
     public PharmClassif getSelectedPharmClassif() {
         return selectedPharmClassif;
     }
@@ -424,7 +400,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     public List<Atc> getAtcList() {
-        return atcService.getAtcList();
+        return globalEntityLists.getAtcs();
     }
 
     public void setAtcList(List<Atc> atcList) {

@@ -54,7 +54,7 @@ public class ReportMBean implements Serializable {
 
     public void PDF(ActionEvent actionEvent) throws JRException, IOException {
         URL resource = getClass().getResource("/reports/letter.jasper");
-        jasperPrint = reportService.reportinit(productService.findProductById(new Long("4772")));
+        jasperPrint = reportService.reportinit(productService.findProduct(Long.valueOf(4772)));
 //        init();
         HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");

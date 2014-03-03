@@ -15,7 +15,7 @@
                         <table class="banner">
                             <tr>
                                 <td>
-                                    <h:outputLabel value="#{productDisplay.prodApplications.prod.prodName}"
+                                    <h:outputLabel value="#{productDisplay.product.prodName}"
                                                    styleClass="title"
                                                    style="font-weight: bold; font-size: 1.5em"/>
                                 </td>
@@ -38,18 +38,14 @@
                             <tr>
                                 <td>
                                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
-                                    <p:commandLink id="viewLink"
-                                                   value="#{productDisplay.prodApplications.prod.applicant.appName}"
-                                                   action="applicantdetail"
+                                    <p:commandLink id="viewLink" value="#{productDisplay.applicant.appName}" action="applicantdetail.faces"
                                                    ajax="false">
-                                        <f:param name="appId"
-                                                 value="#{productDisplay.prodApplications.prod.applicant.applcntId}"/>
-                                        <f:setPropertyActionListener
-                                                value="#{productDisplay.prodApplications.prod.applicant}"
-                                                target="#{applicantHome.applicant}"/>
+                                        <f:param name="applicantID" value="#{productDisplay.applicant.applcntId}"/>
+                                        <f:param name="id" value="#{productDisplay.product.id}"/>
                                     </p:commandLink>
 
-                                    <!--                                    <h:outputFormat value="#{productDisplay.prodApplications.prod.applicant.appName}"/> -->
+
+                                    <!--                                    <h:outputFormat value="#{productDisplay.product.applicant.appName}"/> -->
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"

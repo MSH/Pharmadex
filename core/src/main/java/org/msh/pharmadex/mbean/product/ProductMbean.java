@@ -40,4 +40,9 @@ public class ProductMbean implements Serializable {
     public void setFilteredProducts(List<Product> filteredProducts) {
         this.filteredProducts = filteredProducts;
     }
+
+    public String goToDetails(Product prod) {
+        System.out.println("Product == "+prod.getProdName()+" ID =="+prod.getId());
+        return "productdetail";  //To change body of created methods use File | Settings | File Templates.
+    }
 }

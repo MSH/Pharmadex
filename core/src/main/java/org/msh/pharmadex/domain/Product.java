@@ -3,6 +3,7 @@ package org.msh.pharmadex.domain;
 import org.hibernate.envers.Audited;
 import org.msh.pharmadex.domain.enums.AdminRoute;
 import org.msh.pharmadex.domain.enums.ProdType;
+import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
 
 import javax.persistence.*;
@@ -46,8 +47,12 @@ public class Product extends CreationDetail implements Serializable {
     private String licNo;
 
     @Column(name = "prod_type")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ProdType prodType;
+
+    @Column(name = "prod_cat")
+    @Enumerated(EnumType.STRING)
+    private ProdCategory prodCategory;
 
     @Column(name = "reg_no", length = 100)
     private String regNo;
@@ -133,14 +138,6 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setLicNo(String licNo) {
         this.licNo = licNo;
-    }
-
-    public ProdType getProdType() {
-        return prodType;
-    }
-
-    public void setProdType(ProdType prodType) {
-        this.prodType = prodType;
     }
 
     public User getCreatedBy() {
@@ -253,5 +250,21 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setRegState(RegState regState) {
         this.regState = regState;
+    }
+
+    public ProdType getProdType() {
+        return prodType;
+    }
+
+    public void setProdType(ProdType prodType) {
+        this.prodType = prodType;
+    }
+
+    public ProdCategory getProdCategory() {
+        return prodCategory;
+    }
+
+    public void setProdCategory(ProdCategory prodCategory) {
+        this.prodCategory = prodCategory;
     }
 }

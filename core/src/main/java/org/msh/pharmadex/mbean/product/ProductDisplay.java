@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Author: usrivastava
@@ -34,9 +36,6 @@ public class ProductDisplay implements Serializable {
     @Autowired
     AtcService atcService;
 
-    @Autowired
-    WebSession webSession;
-
     private Product product;
 
     private Applicant applicant;
@@ -44,20 +43,27 @@ public class ProductDisplay implements Serializable {
     private ProdApplications prodApplications;
 
     public Product getProduct() {
+        if(product==null){
+            initFields();
+        }
         return product;
     }
 
-    @Transactional
     public void setProduct(Product product) {
-        this.product = productService.getProduct(product.getId());
+        this.product = product;
+    }
+
+    private void initFields() {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String prodID = params.get("id");
+        product = productService.findProduct(Long.valueOf(prodID));
         this.prodApplications = this.product.getProdApplications();
         this.applicant = this.product.getApplicant();
-        webSession.setApplicant(applicant);
-
-
     }
 
     public ProdApplications getProdApplications() {
+        if(prodApplications==null)
+            initFields();
         return prodApplications;
     }
 

@@ -53,10 +53,10 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.prodName}"/>
                                 </f:facet>
-                                <p:commandLink id="viewLink" value="#{product.prodName}"
-                                               oncomplete="viewDialog.show()" title="Edit" ajax="false"
-                                               action="productdetail">
-                                    <f:setPropertyActionListener value="#{product}" target="#{productDisplay.product}"/>
+                                <p:commandLink id="viewLink" value="#{product.prodName}" action="productdetail"
+                                               ajax="false">
+                                    <f:param name = "id" value="#{product.id}"/>
+                                    <f:param name="applicantID" value="#{applicantHome.applicant.applcntId}"/>
                                 </p:commandLink>
                             </p:column>
 
@@ -101,15 +101,6 @@
 
                 </h:panelGroup>
             </h:panelGrid>
-
-            <p:dialog header="#{msgs.product_details}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
-                      resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
-                <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                    <ui:param name="prodAppData" value="#{productDisplay.prodApplications}"/>
-                </ui:decorate>
-
-            </p:dialog>
-
 
         </h:form>
 

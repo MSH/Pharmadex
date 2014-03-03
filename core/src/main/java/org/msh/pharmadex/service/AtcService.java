@@ -26,8 +26,7 @@ public class AtcService implements Serializable {
 
     @Transactional
     public List<Atc> getAtcList() {
-        if (atcList == null)
-            atcList = (List<Atc>) atcDAO.findAll();
+        atcList = (List<Atc>) atcDAO.findAll();
         return atcList;
     }
 

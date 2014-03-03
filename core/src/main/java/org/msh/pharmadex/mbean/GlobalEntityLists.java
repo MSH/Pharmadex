@@ -26,30 +26,61 @@ public class GlobalEntityLists {
     private List<ApplicantType> applicantTypes;
     private List<Company> manufacturers;
     private List<PharmClassif> pharmClassifs;
+    private List<Inn> inns;
+    private List<Atc> atcs;
+    private List<Checklist> checklists;
 
     @Autowired
-    DosageFormService dosageFormService;
+    private DosageFormService dosageFormService;
 
     @Autowired
-    CountryService countryService;
+    private CountryService countryService;
 
     @Autowired
-    ApplicantService applicantService;
+    private ApplicantService applicantService;
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     @Autowired
-    PharmacySiteService pharmacySiteService;
+    private PharmacySiteService pharmacySiteService;
 
     @Autowired
-    AmdmtService amdmtService;
+    private AmdmtService amdmtService;
 
     @Autowired
-    CompanyService companyService;
+    private CompanyService companyService;
 
     @Autowired
-    PharmClassifService pharmClassifService;
+    private PharmClassifService pharmClassifService;
+
+    @Autowired
+    private InnService innService;
+
+    @Autowired
+    private AtcService atcService;
+
+    @Autowired
+    private ProdApplicationsService prodApplicationsService;
+
+
+    public List<Checklist> getChecklists() {
+        if(checklists==null)
+            checklists = prodApplicationsService.findAllChecklist();
+        return checklists;
+    }
+
+    public List<Atc> getAtcs() {
+        if (atcs == null)
+            atcs = atcService.getAtcList();
+        return atcs;
+    }
+
+    public List<Inn> getInns() {
+        if (inns == null)
+            inns = innService.getInnList();
+        return inns;
+    }
 
     public List<Company> getManufacturers() {
         if (manufacturers == null)

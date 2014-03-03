@@ -29,8 +29,7 @@ public class InnService implements Serializable {
     private List<Inn> innList;
 
     public List<Inn> getInnList() {
-        if (innList == null)
-            innList = (List<Inn>) innDAO.findAll();
+        innList = (List<Inn>) innDAO.findAll();
         return innList;
     }
 

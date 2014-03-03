@@ -23,6 +23,14 @@
     <p:panel header="#{msgs.product_details}">
 
         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
+            <h:outputLabel value="#{msgs.prod_cat}" for="prodCatcb"/>
+            <p:selectOneMenu id="prodCatcb" value="#{regHomeMbean.prodApplications.prod.prodCategory}" required="true"
+                             requiredMessage="#{msgs.valid_prod_type}">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalLists.prodCategories}" var="prodcat" itemLabel="#{msgs[prodcat.key]}"/>
+            </p:selectOneMenu>
+            <p:message for="prodCatcb" showSummary="true" showDetail="false"/>
+
             <h:outputLabel value="#{msgs.prod_type}" for="prodTypecb"/>
             <p:selectOneMenu id="prodTypecb" value="#{regHomeMbean.prodApplications.prod.prodType}" required="true"
                              requiredMessage="#{msgs.valid_prod_type}">
@@ -33,7 +41,7 @@
 
             <h:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
             <p:inputText id="prodDetailName" value="#{regHomeMbean.prodApplications.prod.prodName}" title="Product Name"
-                         required="true" requiredMessage="#{msgs.valid_prod_name}" style="width: 300px;">
+                         required="true" requiredMessage="#{msgs.valid_prod_name}">
             </p:inputText>
             <p:message for="prodDetailName" showSummary="true" showDetail="false"/>
 
@@ -76,20 +84,13 @@
             <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
-            <p:selectOneMenu id="pharmClassifcb" value="#{regHomeMbean.prodApplications.prod.pharmClassif.id}"
-                             required="true" requiredMessage="#{msgs.valid_value_req}">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{regHomeMbean.pharmClassifList}" var="classif" itemLabel="#{classif.displayName}"
-                               itemValue="#{classif.id}"></f:selectItems>
-            </p:selectOneMenu>
-            <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.product_pharmclassif}" for="username"/>
-            <p:autoComplete id="username" value="#{regHomeMbean.prodApplications.prod.pharmClassif}"
+            <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.prodApplications.prod.pharmClassif}"
                             completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
-                            var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
-                            converter="#{pharmClassifConverter}">
+                            var="it" itemLabel="#{it.displayName}" itemValue="#{it.id}" forceSelection="true"
+                            converter="#{pharmClassifConverter}" required="true" requiredMessage="#{msgs.valid_value_req}"
+                            >
             </p:autoComplete>
+            <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
 
 
             <h:outputLabel value="#{msgs.global_description}" for="prodDesc"/>

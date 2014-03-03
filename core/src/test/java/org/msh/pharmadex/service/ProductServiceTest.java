@@ -68,7 +68,7 @@ public class ProductServiceTest {
     public void testFindProductEager() {
         Assert.assertEquals(true, true);
 
-        Product prod = productService.getProduct(Long.valueOf(4781));
+        Product prod = productService.findProduct(Long.valueOf(4781));
         Assert.assertNotNull(prod);
 
     }

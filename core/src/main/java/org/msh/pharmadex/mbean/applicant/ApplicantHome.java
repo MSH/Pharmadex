@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: usrivastava
@@ -21,16 +23,13 @@ public class ApplicantHome implements Serializable {
     @Autowired
     private ApplicantService applicantService;
 
-    @Autowired
-    WebSession webSession;
-
     private Applicant applicant;
 
     private List<Product> products;
 
     public List<Product> getProducts() {
         if (products == null)
-            products = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
+                products = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
         return products;
     }
 
@@ -40,7 +39,9 @@ public class ApplicantHome implements Serializable {
 
     public Applicant getApplicant() {
         if (applicant == null) {
-            applicant = webSession.getApplicant();
+            Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String applicantID = params.get("applicantID");
+            applicant = applicantService.findApplicant(Long.valueOf(applicantID));
         }
 
         return applicant;

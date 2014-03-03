@@ -67,7 +67,7 @@ public class PharmClassifConverter implements Converter, Serializable {
         if (value == null || value.equals("")) {
             return "";
         } else {
-            return String.valueOf(((Inn) value).getId());
+            return String.valueOf(value);
         }
     }
 }
