@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "userConverter", forClass = User.class)
+@FacesConverter(value = "userConverter")
 @Component
 public class UserConverter implements Converter, Serializable {
 

@@ -1,6 +1,5 @@
 package org.msh.pharmadex.service.converter;
 
-import org.msh.pharmadex.domain.Inn;
 import org.msh.pharmadex.domain.PharmClassif;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "pharmClassifConverter", forClass = PharmClassif.class)
+@FacesConverter(value = "pharmClassifConverter")
 @Component
 @Scope("singleton")
 public class PharmClassifConverter implements Converter, Serializable {

@@ -87,8 +87,9 @@
             <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.prodApplications.prod.pharmClassif}"
                             completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
                             var="it" itemLabel="#{it.displayName}" itemValue="#{it.id}" forceSelection="true"
-                            converter="#{pharmClassifConverter}" required="true" requiredMessage="#{msgs.valid_value_req}"
-                            >
+                            converter="#{pharmClassifConverter}" required="true"
+                            requiredMessage="#{msgs.valid_value_req}"
+                    >
             </p:autoComplete>
             <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
 
@@ -407,7 +408,7 @@
         <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
             <h:outputLabel value="#{msgs.atc_name}" for="atcname"/>
             <p:autoComplete id="atcname" value="#{regHomeMbean.atc}"
-                            completeMethod="#{regHomeMbean.completeAtcNames}"
+                            completeMethod="#{regHomeMbean.regATCHelper.completeAtcNames}"
                             var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
                             forceSelection="true">
                 <p:ajax event="itemSelect" update="@form" listener="#{regHomeMbean.updateAtc}"/>
@@ -415,7 +416,7 @@
 
             <h:outputLabel value="#{msgs.atc_code}" for="atccode"/>
             <p:autoComplete id="atccode" value="#{regHomeMbean.atc}"
-                            completeMethod="#{regHomeMbean.completeAtcCodes}"
+                            completeMethod="#{regHomeMbean.regATCHelper.completeAtcCodes()}"
                             var="it" itemLabel="#{it.atcCode}" itemValue="#{it}" converter="#{atcCodeConverter}"
                             forceSelection="true">
                 <p:ajax event="itemSelect" update="@form" listener="#{regHomeMbean.updateAtc}"/>
@@ -423,7 +424,7 @@
         </h:panelGrid>
 
 
-        <p:tree value="#{regHomeMbean.selAtcTree}" var="node" id="treeMultiple" selectionMode="single">
+        <p:tree value="#{regHomeMbean.regATCHelper.selAtcTree}" var="node" id="treeMultiple" selectionMode="single">
             <p:treeNode>
                 <h:outputText value="#{node}"/>
             </p:treeNode>

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "productConverter", forClass = Product.class)
+@FacesConverter(value = "productConverter")
 @Component
 public class ProductConverter implements Converter, Serializable {
     private static final long serialVersionUID = -1976549120206232303L;

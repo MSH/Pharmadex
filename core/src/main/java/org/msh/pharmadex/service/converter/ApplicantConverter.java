@@ -17,40 +17,40 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "applicantConverter", forClass = Applicant.class)
+@FacesConverter(value = "applicantConverter")
 @Component
-public class ApplicantConverter implements Converter,Serializable{
+public class ApplicantConverter implements Converter, Serializable {
     @Autowired
     private ApplicantService applicantService;
 
     private List<Applicant> applicantList;
 
     public List<Applicant> getApplicantList() {
-        if(applicantList==null)
+        if (applicantList == null)
             applicantList = applicantService.findAllApplicants();
         return applicantList;
     }
 
-    public Applicant findApplicantByID(String name){
-       for (Applicant c : getApplicantList()){
-           if(String.valueOf(c.getApplcntId()).equalsIgnoreCase(name))
-               return c;
-       }
-       return null;
+    public Applicant findApplicantByID(String name) {
+        for (Applicant c : getApplicantList()) {
+            if (String.valueOf(c.getApplcntId()).equalsIgnoreCase(name))
+                return c;
+        }
+        return null;
     }
 
 
     public Object getAsObject(FacesContext facesContext, UIComponent component, String submittedValue) {
-            if (submittedValue.trim().equals("")) {
+        if (submittedValue.trim().equals("")) {
             return null;
         } else {
             try {
 //                int number = Integer.parseInt(submittedValue);
                 for (Applicant p : getApplicantList()) {
-                    if(String.valueOf(p.getApplcntId()).equalsIgnoreCase(submittedValue))
+                    if (String.valueOf(p.getApplcntId()).equalsIgnoreCase(submittedValue))
                         return p;
                 }
-            } catch(NumberFormatException exception) {
+            } catch (NumberFormatException exception) {
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid Applicant"));
             }
         }

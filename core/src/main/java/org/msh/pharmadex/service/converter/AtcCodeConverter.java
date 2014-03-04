@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "atcCodeConverter", forClass = Atc.class)
+@FacesConverter(value = "atcCodeConverter")
 @Component
 @Scope("singleton")
 public class AtcCodeConverter implements Converter, Serializable {

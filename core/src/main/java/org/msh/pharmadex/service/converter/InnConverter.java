@@ -1,6 +1,5 @@
 package org.msh.pharmadex.service.converter;
 
-import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.Inn;
 import org.msh.pharmadex.service.InnService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "innConverter", forClass = Atc.class)
+@FacesConverter(value = "innConverter")
 @Component
 @Scope("singleton")
 public class InnConverter implements Converter, Serializable {

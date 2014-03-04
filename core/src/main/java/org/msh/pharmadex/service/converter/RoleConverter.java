@@ -17,7 +17,7 @@ import java.io.Serializable;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "roleConverter", forClass = Role.class)
+@FacesConverter(value = "roleConverter")
 @Component
 @Scope("singleton")
 public class RoleConverter implements Converter, Serializable {

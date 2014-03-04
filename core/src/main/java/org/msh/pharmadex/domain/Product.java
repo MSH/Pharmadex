@@ -2,8 +2,8 @@ package org.msh.pharmadex.domain;
 
 import org.hibernate.envers.Audited;
 import org.msh.pharmadex.domain.enums.AdminRoute;
-import org.msh.pharmadex.domain.enums.ProdType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
+import org.msh.pharmadex.domain.enums.ProdType;
 import org.msh.pharmadex.domain.enums.RegState;
 
 import javax.persistence.*;
@@ -80,7 +80,7 @@ public class Product extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<Company> companies;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_APP_ID")
     private ProdApplications prodApplications;
 

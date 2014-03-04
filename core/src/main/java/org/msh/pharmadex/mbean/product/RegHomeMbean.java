@@ -7,10 +7,14 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.*;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -83,10 +87,10 @@ public class RegHomeMbean implements Serializable {
     private User loggedInUser;
     private List<Company> companies = new ArrayList<Company>(10);
     private ProdInn deleteInn;
-    private TreeNode selAtcTree;
     private ScheduleModel eventModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
     private JasperPrint jasperPrint;
+    private RegATCHelper regATCHelper;
 
 
     @PostConstruct
@@ -108,7 +112,7 @@ public class RegHomeMbean implements Serializable {
             eachProdAppCheck.setProdApplications(prodApplications);
             prodAppChecklists.add(eachProdAppCheck);
         }
-        if (userSession.isCompany()){
+        if (userSession.isCompany()) {
             product.setApplicant(getLoggedInUser().getApplicant());
             prodApplications.setUser(getLoggedInUser());
         }
@@ -116,6 +120,7 @@ public class RegHomeMbean implements Serializable {
         product.setAtcs(selectedAtcs);
         product.setCompanies(companies);
         prodApplications.setProdAppChecklists(prodAppChecklists);
+        regATCHelper = new RegATCHelper(atc, globalEntityLists);
 
         eventModel = new DefaultScheduleModel();
         for (Appointment app : appointmentService.getAppointments()) {
@@ -123,75 +128,19 @@ public class RegHomeMbean implements Serializable {
         }
     }
 
-    public TreeNode getSelAtcTree() {
-        if (selAtcTree == null) {
-            populateSelAtcTree();
-        }
-        return selAtcTree;
-    }
-
-    private void populateSelAtcTree() {
-        selAtcTree = new DefaultTreeNode("selAtcTree", null);
-        selAtcTree.setExpanded(true);
-        if (atc != null) {
-            List<Atc> parentList = atc.getParentsTreeList(true);
-            TreeNode[] nodes = new TreeNode[parentList.size()];
-            for (int i = 0; i < parentList.size(); i++) {
-                if (i == 0) {
-                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode() + ": " + parentList.get(i).getAtcName(), selAtcTree);
-                    nodes[i].setExpanded(true);
-                } else {
-                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode() + ": " + parentList.get(i).getAtcName(), nodes[i - 1]);
-                    nodes[i].setExpanded(true);
-                }
-            }
-        }
-    }
-
-    public void updateAtc() {
-        populateSelAtcTree();
-    }
-
     public List<Inn> completeInnCodes(String query) {
-        List<Inn> suggestions = new ArrayList<Inn>();
-
-        if (query == null || query.equalsIgnoreCase(""))
-            return getInnList();
-
-        for (Inn eachInn : getInnList()) {
-            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachInn);
-        }
-        return suggestions;
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getInns());
     }
 
-    public List<Atc> completeAtcNames(String query) {
-        List<Atc> suggestions = new ArrayList<Atc>();
 
-        if (query == null || query.equalsIgnoreCase(""))
-            return getAtcList();
-
-        for (Atc eachAtc : getAtcList()) {
-            if (eachAtc.getAtcName().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachAtc);
-        }
-        System.out.println("Suggestions size == " + suggestions.size());
-        return suggestions;
+    public List<Applicant> completeApplicantList(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getRegApplicants());
     }
 
-    public List<Atc> completeAtcCodes(String query) {
-        List<Atc> suggestions = new ArrayList<Atc>();
-
-        if (query == null || query.equalsIgnoreCase(""))
-            return getAtcList();
-
-        for (Atc eachAtc : getAtcList()) {
-            if (eachAtc.getAtcCode().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachAtc);
-        }
-        System.out.println("Suggestions size == " + suggestions.size());
-        return suggestions;
+    public List<PharmClassif> completePharmClassif(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getPharmClassifs());
     }
+
 
     public List<Inn> getInnList() {
         return globalEntityLists.getInns();
@@ -517,32 +466,6 @@ public class RegHomeMbean implements Serializable {
         this.event = event;
     }
 
-    public List<Applicant> completeApplicantList(String query) {
-        List<Applicant> suggestions = new ArrayList<Applicant>();
-
-        if (query == null || query.equalsIgnoreCase(""))
-            return globalEntityLists.getRegApplicants();
-
-        for (Applicant eachInn : globalEntityLists.getRegApplicants()) {
-            if (eachInn.getAppName().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachInn);
-        }
-        return suggestions;
-    }
-
-    public List<PharmClassif> completePharmClassif(String query) {
-        List<PharmClassif> suggestions = new ArrayList<PharmClassif>();
-
-        if (query == null || query.equalsIgnoreCase(""))
-            return globalEntityLists.getPharmClassifs();
-
-        for (PharmClassif eachInn : globalEntityLists.getPharmClassifs()) {
-            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachInn);
-        }
-        return suggestions;
-    }
-
 
     public void cancelAddApplicant() {
         applicant = new Applicant();
@@ -551,5 +474,13 @@ public class RegHomeMbean implements Serializable {
     public void addApptoRegistration() {
         loggedInUser = applicantService.getDefaultUser(applicant.getApplcntId());
 
+    }
+
+    public RegATCHelper getRegATCHelper() {
+        return regATCHelper;
+    }
+
+    public void setRegATCHelper(RegATCHelper regATCHelper) {
+        this.regATCHelper = regATCHelper;
     }
 }
