@@ -19,10 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Backing bean to process the application made for registration
@@ -34,6 +31,8 @@ public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
     private ProdApplications prodApplications;
+    private Product product;
+    private Applicant applicant;
     private List<Inn> selectedInns;
     private List<Comment> comments;
     private List<TimeLine> timeLineList;
@@ -213,7 +212,20 @@ public class ProcessProdBn implements Serializable {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications getProdApplications() {
+        if (prodApplications == null) {
+            initProdApps();
+        }
         return prodApplications;
+    }
+
+    private void initProdApps() {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String prodID = params.get("id");
+        product = productService.findProduct(Long.valueOf(prodID));
+        this.prodApplications = this.product.getProdApplications();
+        this.applicant = this.product.getApplicant();
+
+        initProcessor();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -581,7 +593,7 @@ public class ProcessProdBn implements Serializable {
 
     public boolean getCanRegister() {
         if (userSession.isHead() || userSession.isAdmin()) {
-            if (prodApplications.getRegState().equals(RegState.RECOMMENDED))
+            if (getProdApplications().getRegState().equals(RegState.RECOMMENDED))
                 return true;
         }
         return false;  //To change body of created methods use File | Settings | File Templates.
@@ -617,5 +629,23 @@ public class ProcessProdBn implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Product getProduct() {
+        if (product == null)
+            getProdApplications();
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
     }
 }
