@@ -7,16 +7,15 @@ import java.util.Date;
 
 @Entity
 @Table(name = "appointment")
-public class Appointment extends CreationDetail implements Serializable
-{
+public class Appointment extends CreationDetail implements Serializable {
 
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(unique = true)
-	private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true)
+    private Long id;
 
-	@Column(length = 100)
-	private String tile;
+    @Column(length = 100)
+    private String tile;
 
     @Temporal(TemporalType.DATE)
     private Date start;
@@ -26,7 +25,7 @@ public class Appointment extends CreationDetail implements Serializable
 
     private boolean allday;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private ProdApplications prodApplications;
 
 

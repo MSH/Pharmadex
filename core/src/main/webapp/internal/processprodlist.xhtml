@@ -9,7 +9,7 @@
         <p:messages id="messages" showDetail="true"/>
         <h:form prependId="false">
 
-            <p:panel header="Registered Products">
+            <p:panel header="#{msgs.registration_product}">
                 <h:panelGrid columns="3" cellpadding="5">
                     <h:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
                     <p:autoComplete value="#{regProdMbn.selectedProd}" id="basicPojo"
@@ -25,7 +25,7 @@
             </p:panel>
 
 
-            <p:panel header="Recieved Applications">
+            <p:panel header="#{msgs.recieved_applications}">
 
                 <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBean.submmittedAppList}"
                              filteredValue="#{prodAppMBean.filteredApps}">
@@ -36,10 +36,9 @@
                         <f:facet name="header">
                             <h:outputText value="Product Name"/>
                         </f:facet>
-                        <p:commandLink value="#{eachprod.prod.prodName}" action="#{prodAppMBean.onRowSelect}"
+                        <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}" action="processreg"
                                        ajax="false">
-                            <f:setPropertyActionListener value="#{eachprod}"
-                                                         target="#{processProdBn.prodApplications}"/>
+                            <f:param name="id" value="#{eachprod.prod.id}"/>
                         </p:commandLink>
                     </p:column>
 

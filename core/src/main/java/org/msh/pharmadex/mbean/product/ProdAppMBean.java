@@ -90,7 +90,6 @@ public class ProdAppMBean implements Serializable {
     }
 
     public List<ProdApplications> getSavedAppList() {
-        System.out.println("user id = " + userSession.getLoggedInUserObj());
         if (savedAppList == null)
             savedAppList = prodApplicationsService.getSavedApplications(userSession.getLoggedInUserObj().getUserId());
         return savedAppList;

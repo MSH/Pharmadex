@@ -1,5 +1,6 @@
 package org.msh.pharmadex.dao;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.Company;
@@ -119,6 +120,17 @@ public class ProductDAO implements Serializable {
 
         query.select(root).where(p);
         Product prod = entityManager.createQuery(query).getSingleResult();
+        Hibernate.initialize(prod.getInns());
+        Hibernate.initialize(prod.getAtcs());
+        Hibernate.initialize(prod.getCompanies());
+        Hibernate.initialize(prod.getProdApplications());
+
+        Hibernate.initialize(prod.getProdApplications().getInvoices());
+        Hibernate.initialize(prod.getProdApplications().getComments());
+        Hibernate.initialize(prod.getProdApplications().getMails());
+        Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
+        Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
+        Hibernate.initialize(prod.getProdApplications().getTimeLines());
         return prod;
 
 

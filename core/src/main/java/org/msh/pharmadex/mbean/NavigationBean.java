@@ -34,7 +34,7 @@ public class NavigationBean implements Serializable {
     public String regProductAction() {
         System.out.println("reached inside regProductAction");
         regHomeMbean = null;
-        return "/secure/prodreghome.faces";
+        return "/secure/prodreghome.faces?faces-redirect=true";
 
     }
 

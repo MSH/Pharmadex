@@ -1,6 +1,5 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
@@ -8,7 +7,6 @@ import org.msh.pharmadex.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
@@ -43,7 +41,7 @@ public class ProductDisplay implements Serializable {
     private ProdApplications prodApplications;
 
     public Product getProduct() {
-        if(product==null){
+        if (product == null) {
             initFields();
         }
         return product;
@@ -62,7 +60,7 @@ public class ProductDisplay implements Serializable {
     }
 
     public ProdApplications getProdApplications() {
-        if(prodApplications==null)
+        if (prodApplications == null)
             initFields();
         return prodApplications;
     }

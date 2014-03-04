@@ -43,7 +43,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinColumn(name = "DOSUNIT_ID")
     private DosUom dosUnit;
 
-    @Column(name = "lic_no", nullable = false, length = 50)
+    @Column(name = "lic_no", length = 50)
     private String licNo;
 
     @Column(name = "prod_type")
@@ -90,6 +90,13 @@ public class Product extends CreationDetail implements Serializable {
 
     @Enumerated
     private RegState regState;
+
+    public Product() {
+    }
+
+    public Product(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
+    }
 
 
     public Long getId() {

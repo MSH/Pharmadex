@@ -1,5 +1,6 @@
 package org.msh.pharmadex.dao;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -24,7 +25,9 @@ public class ProdApplicationsDAO implements Serializable {
 
     @Transactional
     public ProdApplications findProdApplications(long id) {
-        return entityManager.find(ProdApplications.class, id);
+        ProdApplications prodApp = entityManager.find(ProdApplications.class, id);
+        Hibernate.initialize(prodApp);
+        return prodApp;
     }
 
 

@@ -75,7 +75,21 @@ public class ProdApplicationsService implements Serializable {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications findProdApplications(long id) {
-        return prodApplicationsDAO.findProdApplications(id);
+        ProdApplications prodApp = prodApplicationsDAO.findProdApplications(id);
+        prodApp.getProd();
+        prodApp.getComments();
+        prodApp.getTimeLines();
+        prodApp.getProdAppChecklists();
+        prodApp.getProdAppAmdmts();
+        prodApp.getInvoices();
+        prodApp.getMails();
+        prodApp.getInvoices();
+        prodApp.getComments();
+        prodApp.getMails();
+        prodApp.getProdAppAmdmts();
+        prodApp.getProdAppChecklists();
+        prodApp.getTimeLines();
+        return prodApp;
     }
 
     public List<ProdApplications> getApplications() {

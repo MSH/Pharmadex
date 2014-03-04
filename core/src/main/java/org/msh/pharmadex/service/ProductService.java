@@ -77,15 +77,6 @@ public class ProductService implements Serializable {
     @Transactional
     public Product findProduct(Long prodId) {
         Product prod = productDAO.findProductEager(prodId);
-        prod.getInns();
-        prod.getAtcs();
-        prod.getCompanies();
-        prod.getProdApplications().getInvoices();
-        prod.getProdApplications().getComments();
-        prod.getProdApplications().getMails();
-        prod.getProdApplications().getProdAppAmdmts();
-        prod.getProdApplications().getProdAppChecklists();
-        prod.getProdApplications().getTimeLines();
         return prod;
     }
 

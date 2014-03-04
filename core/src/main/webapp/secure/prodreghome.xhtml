@@ -24,7 +24,7 @@
 
         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
             <h:outputLabel value="#{msgs.prod_cat}" for="prodCatcb"/>
-            <p:selectOneMenu id="prodCatcb" value="#{regHomeMbean.prodApplications.prod.prodCategory}" required="true"
+            <p:selectOneMenu id="prodCatcb" value="#{regHomeMbean.product.prodCategory}" required="true"
                              requiredMessage="#{msgs.valid_prod_type}">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalLists.prodCategories}" var="prodcat" itemLabel="#{msgs[prodcat.key]}"/>
@@ -32,7 +32,7 @@
             <p:message for="prodCatcb" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.prod_type}" for="prodTypecb"/>
-            <p:selectOneMenu id="prodTypecb" value="#{regHomeMbean.prodApplications.prod.prodType}" required="true"
+            <p:selectOneMenu id="prodTypecb" value="#{regHomeMbean.product.prodType}" required="true"
                              requiredMessage="#{msgs.valid_prod_type}">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalLists.prodTypes}" var="prodtype" itemLabel="#{msgs[prodtype.key]}"/>
@@ -40,18 +40,18 @@
             <p:message for="prodTypecb" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
-            <p:inputText id="prodDetailName" value="#{regHomeMbean.prodApplications.prod.prodName}" title="Product Name"
+            <p:inputText id="prodDetailName" value="#{regHomeMbean.product.prodName}" title="Product Name"
                          required="true" requiredMessage="#{msgs.valid_prod_name}">
             </p:inputText>
             <p:message for="prodDetailName" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.prodgenname}" for="prodGenName"/>
-            <p:inputText id="prodGenName" value="#{regHomeMbean.prodApplications.prod.genName}" title="Generic Name"
+            <p:inputText id="prodGenName" value="#{regHomeMbean.product.genName}" title="Generic Name"
                          required="true" requiredMessage="#{msgs.valid_gen_name}"/>
             <p:message for="prodGenName" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
-            <p:selectOneMenu id="dosForm" value="#{regHomeMbean.prodApplications.prod.dosForm.uid}"
+            <p:selectOneMenu id="dosForm" value="#{regHomeMbean.product.dosForm.uid}"
                              requiredMessage="#{msgs.valid_dos_form}" required="true">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
@@ -61,7 +61,7 @@
 
 
             <h:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
-            <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.prodApplications.prod.dosUnit.id}"
+            <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.product.dosUnit.id}"
                              requiredMessage="#{msgs.valid_dos_form}" required="true">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
@@ -70,13 +70,13 @@
             <p:message for="dosUnit" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
-            <p:inputText id="dosStrength" value="#{regHomeMbean.prodApplications.prod.dosStrength}" title="DosStrength"
+            <p:inputText id="dosStrength" value="#{regHomeMbean.product.dosStrength}" title="DosStrength"
                          required="true" requiredMessage="#{msgs.dos_strength}: Value required">
             </p:inputText>
             <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
-            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.prodApplications.prod.adminRoute}" required="true"
+            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.product.adminRoute}" required="true"
                              requiredMessage="#{msgs.valid_value_req}">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalLists.adminRoutes}" var="type" itemLabel="#{msgs[type.key]}"/>
@@ -84,9 +84,9 @@
             <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
-            <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.prodApplications.prod.pharmClassif}"
+            <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.product.pharmClassif}"
                             completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
-                            var="it" itemLabel="#{it.displayName}" itemValue="#{it.id}" forceSelection="true"
+                            var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
                             converter="#{pharmClassifConverter}" required="true"
                             requiredMessage="#{msgs.valid_value_req}"
                     >
@@ -95,13 +95,13 @@
 
 
             <h:outputLabel value="#{msgs.global_description}" for="prodDesc"/>
-            <p:inputTextarea id="prodDesc" value="#{regHomeMbean.prodApplications.prod.prodDesc}" rows="4" cols="50"
+            <p:inputTextarea id="prodDesc" value="#{regHomeMbean.product.prodDesc}" rows="4" cols="50"
                              title="ProdDesc"/>
         </h:panelGrid>
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -151,7 +151,7 @@
             <h:panelGroup>
                 <h:outputLabel value="#{msgs.atc_noatc}" for="noatc"/>
                 <p:selectBooleanCheckbox id="noatc"
-                                         value="#{regHomeMbean.prodApplications.prod.noAtc}"> </p:selectBooleanCheckbox>
+                                         value="#{regHomeMbean.product.noAtc}"> </p:selectBooleanCheckbox>
                 <p:commandLink value="#{msgs.atc_lookup}" immediate="true" oncomplete="addAtcDlg.show()"/>
             </h:panelGroup>
             <h:outputLabel/>
@@ -216,7 +216,7 @@
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -260,7 +260,7 @@
         </p:dataTable>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -285,7 +285,7 @@
         </h:panelGrid>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -314,7 +314,7 @@
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -327,7 +327,7 @@
 <p:tab id="appointment" title="#{msgs.appointment}">
     <p:panel header="#{msgs.selappointment}">
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.save}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -355,7 +355,7 @@
         </ui:decorate>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" ajax="false" action="#{regHomeMbean.save}"/>
+            <p:commandButton value="#{msgs.global_save}" ajax="false" action="#{regHomeMbean.saveApp}"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>

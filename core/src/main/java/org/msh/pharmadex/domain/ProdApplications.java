@@ -133,7 +133,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Appointment appointment;
 
     @Lob

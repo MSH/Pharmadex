@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -49,13 +50,7 @@ public class RegHomeMbean implements Serializable {
     private ApplicantService applicantService;
 
     @Autowired
-    private ProdApplicationsService prodApplicationsService;
-
-    @Autowired
     private ProductService productService;
-
-    @Autowired
-    private InnService innService;
 
     @Autowired
     private AtcService atcService;
@@ -73,65 +68,65 @@ public class RegHomeMbean implements Serializable {
     private List<ProdInn> selectedInns;
     private List<Atc> selectedAtcs;
     private List<ProdAppChecklist> prodAppChecklists;
-    private List<Inn> innList;
-    private List<Atc> atcList;
-    private List<PharmClassif> pharmClassifList;
-    private int tabIndex;
-    private ProdApplications prodApplications = new ProdApplications();
-    private Product product = new Product();
+    private ProdApplications prodApplications;
+    private Product product;
     private Applicant applicant;
     private boolean showAppReg = false;
     private PharmClassif selectedPharmClassif;
     private ProdInn prodInn;
     private Atc atc;
     private User loggedInUser;
-    private List<Company> companies = new ArrayList<Company>(10);
+    private List<Company> companies;
     private ProdInn deleteInn;
     private ScheduleModel eventModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
     private JasperPrint jasperPrint;
     private RegATCHelper regATCHelper;
 
-
     @PostConstruct
     private void init() {
-        product.setPharmClassif(new PharmClassif());
-        product.setDosForm(new DosageForm());
-        product.setDosUnit(new DosUom());
-        product.setInns(selectedInns);
-        prodApplications.setProd(product);
-        product.setProdApplications(prodApplications);
-        prodApplications.setRegState(RegState.SAVED);
-        prodAppChecklists = new ArrayList<ProdAppChecklist>();
-        prodApplications.setProdAppChecklists(prodAppChecklists);
-        List<Checklist> allChecklist = globalEntityLists.getChecklists();
-        ProdAppChecklist eachProdAppCheck;
-        for (int i = 0; allChecklist.size() > i; i++) {
-            eachProdAppCheck = new ProdAppChecklist();
-            eachProdAppCheck.setChecklist(allChecklist.get(i));
-            eachProdAppCheck.setProdApplications(prodApplications);
-            prodAppChecklists.add(eachProdAppCheck);
-        }
-        if (userSession.isCompany()) {
-            product.setApplicant(getLoggedInUser().getApplicant());
-            prodApplications.setUser(getLoggedInUser());
-        }
-        product.setInns(selectedInns);
-        product.setAtcs(selectedAtcs);
-        product.setCompanies(companies);
-        prodApplications.setProdAppChecklists(prodAppChecklists);
-        regATCHelper = new RegATCHelper(atc, globalEntityLists);
+        if (prodApplications == null) {
+            prodApplications = new ProdApplications();
+            if (product == null)
+                product = new Product(prodApplications);
+            product.setDosForm(new DosageForm());
+            product.setDosUnit(new DosUom());
+            product.setPharmClassif(new PharmClassif());
+            selectedInns = new ArrayList<ProdInn>();
+            product.setInns(selectedInns);
+            prodApplications.setProd(product);
+            product.setProdApplications(prodApplications);
+            prodApplications.setRegState(RegState.SAVED);
+            prodAppChecklists = new ArrayList<ProdAppChecklist>();
+            prodApplications.setProdAppChecklists(prodAppChecklists);
+            List<Checklist> allChecklist = globalEntityLists.getChecklists();
+            ProdAppChecklist eachProdAppCheck;
+            for (int i = 0; allChecklist.size() > i; i++) {
+                eachProdAppCheck = new ProdAppChecklist();
+                eachProdAppCheck.setChecklist(allChecklist.get(i));
+                eachProdAppCheck.setProdApplications(prodApplications);
+                prodAppChecklists.add(eachProdAppCheck);
+            }
+            if (userSession.isCompany()) {
+                product.setApplicant(getLoggedInUser().getApplicant());
+                prodApplications.setUser(getLoggedInUser());
+            }
+            product.setInns(selectedInns);
+            product.setAtcs(selectedAtcs);
+            product.setCompanies(companies);
+            prodApplications.setProdAppChecklists(prodAppChecklists);
 
-        eventModel = new DefaultScheduleModel();
-        for (Appointment app : appointmentService.getAppointments()) {
-            eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
+            eventModel = new DefaultScheduleModel();
+            for (Appointment app : appointmentService.getAppointments()) {
+                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
+            }
         }
+        regATCHelper = new RegATCHelper(atc, globalEntityLists);
     }
 
     public List<Inn> completeInnCodes(String query) {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getInns());
     }
-
 
     public List<Applicant> completeApplicantList(String query) {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getRegApplicants());
@@ -139,11 +134,6 @@ public class RegHomeMbean implements Serializable {
 
     public List<PharmClassif> completePharmClassif(String query) {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getPharmClassifs());
-    }
-
-
-    public List<Inn> getInnList() {
-        return globalEntityLists.getInns();
     }
 
     public void PDF() throws JRException, IOException {
@@ -155,55 +145,40 @@ public class RegHomeMbean implements Serializable {
         javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
     }
 
-    public String saveApp() {
-        save();
-        return "/secure/savedapplications.faces";
-    }
-
-    public void save() {
-        try {
-            prodApplications.setUser(getLoggedInUser());
-            prodApplications.setProd(product);
-            if (selectedInns != null && selectedInns.size() > 0)
-                product.setInns(selectedInns);
-            if (selectedAtcs != null && selectedAtcs.size() > 0) {
-                List<Atc> tempAtc = new ArrayList<Atc>();
-                for (Atc atc : selectedAtcs) {
-                    tempAtc.add(atcService.findAtcById(atc.getAtcCode()));
-                }
-                product.setAtcs(tempAtc);
-            }
-            if (companies != null && companies.size() > 0) {
-                product.setCompanies(companies);
-            }
-
-
+    @Transactional
+    public void saveApp() {
+        prodApplications.setUser(getLoggedInUser());
+        if (product.getId() == null)
             product.setCreatedBy(getLoggedInUser());
-            product.setApplicant(applicant);
-
-            prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted");
-        } catch (Exception e) {
-            e.printStackTrace();
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            facesContext.addMessage(null, new FacesMessage("Error", " Reason: " + e.getMessage()));
-        }
+        productService.updateProduct(product);
     }
 
     public String removeInn(ProdInn prodInn) {
-
         selectedInns.remove(prodInn);
         return null;
     }
 
+    @Transactional
     public String submitApp() {
-        prodApplications.setRegState(RegState.NEW_APPL);
+        FacesContext context = FacesContext.getCurrentInstance();
+        ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+
+        List<TimeLine> timeLines = new ArrayList<TimeLine>();
         TimeLine timeLine = new TimeLine();
-        timeLine.setComment("New Application submitted by applicant");
+        timeLine.setComment(bundle.getString("timeline_newapp"));
         timeLine.setRegState(RegState.NEW_APPL);
         timeLine.setProdApplications(prodApplications);
         timeLine.setUser(getLoggedInUser());
         timeLine.setStatusDate(new Date());
-        save();
+        timeLines.add(timeLine);
+
+        prodApplications.setTimeLines(timeLines);
+        prodApplications.setRegState(RegState.NEW_APPL);
+
+        saveApp();
+
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
 //        timelineService.saveTimeLine(timeLine);
         return "/secure/prodregack.faces";
     }
@@ -261,18 +236,14 @@ public class RegHomeMbean implements Serializable {
 
     @Transactional
     public void setProdApplications(ProdApplications prodApplications) {
-        this.prodApplications = prodApplications;
-        this.product = prodApplications.getProd();
-        this.selectedInns = innService.findInnByProdApp(product.getId());
-        this.selectedAtcs = productService.findAtcsByProduct(product.getId());
-        this.companies = productService.findCompaniesByProd(product.getId());
-        this.prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
-        product.setInns(selectedInns);
-        product.setAtcs(selectedAtcs);
-        product.setCompanies(companies);
-        this.prodApplications.setProdAppChecklists(prodAppChecklists);
-        this.prodApplications.setProd(this.product);
-
+//        this.prodApplications = prodApplicationsService.findProdApplications(prodApplications.getId());
+        product = productService.findProduct(prodApplications.getProd().getId());
+        this.prodApplications = product.getProdApplications();
+        selectedInns = product.getInns();
+        selectedAtcs = product.getAtcs();
+        companies = product.getCompanies();
+        prodAppChecklists = prodApplications.getProdAppChecklists();
+        applicant = product.getApplicant();
     }
 
     public Applicant getApplicant() {
@@ -291,18 +262,7 @@ public class RegHomeMbean implements Serializable {
         this.applicant = applicant;
     }
 
-    public void setInnList(List<Inn> innList) {
-        this.innList = innList;
-    }
-
     public List<ProdInn> getSelectedInns() {
-        if (selectedInns == null) {
-            if (product.getInns() != null) {
-                selectedInns = product.getInns();
-            } else {
-                selectedInns = new ArrayList<ProdInn>();
-            }
-        }
         return selectedInns;
     }
 
@@ -346,14 +306,6 @@ public class RegHomeMbean implements Serializable {
 
     public void setAtc(Atc atc) {
         this.atc = atc;
-    }
-
-    public List<Atc> getAtcList() {
-        return globalEntityLists.getAtcs();
-    }
-
-    public void setAtcList(List<Atc> atcList) {
-        this.atcList = atcList;
     }
 
     public ProdInn getDeleteInn() {
