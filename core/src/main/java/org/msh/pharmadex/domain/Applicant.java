@@ -1,6 +1,7 @@
 package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.domain.enums.ProdType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,11 +29,10 @@ public class Applicant extends CreationDetail implements Serializable {
     @Embedded
     private Address address = new Address();
 
-    @OneToMany
-    private List<ApplicantType> applicantTypes;
+    @OneToOne
+    private ApplicantType applicantType;
 
-
-    @Column(length = 50, nullable = false)
+    @Column(length = 255)
     private String contactName;
 
     @Column(length = 30)
@@ -46,11 +46,17 @@ public class Applicant extends CreationDetail implements Serializable {
     @Column(length = 50)
     private String website;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ApplicantState state;
+
+    @Enumerated(EnumType.STRING)
+    private ProdType prodType;
 
     @Column(length = 50)
     private String fileNumber;
+
+    @Column(length = 255)
+    private String licNo;
 
     @Column(length = 50)
     private String comment;
@@ -61,6 +67,8 @@ public class Applicant extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
+    @Temporal(TemporalType.DATE)
+    private Date regExpiryDate;
 
     @OneToMany(mappedBy = "applicant", cascade = {CascadeType.ALL})
     private List<User> users;
@@ -189,11 +197,40 @@ public class Applicant extends CreationDetail implements Serializable {
         this.registrationDate = registrationDate;
     }
 
-    public List<ApplicantType> getApplicantTypes() {
-        return applicantTypes;
+    public ApplicantType getApplicantType() {
+        return applicantType;
     }
 
-    public void setApplicantTypes(List<ApplicantType> applicantTypes) {
-        this.applicantTypes = applicantTypes;
+    public void setApplicantType(ApplicantType applicantType) {
+        this.applicantType = applicantType;
+    }
+
+    public Date getRegExpiryDate() {
+        return regExpiryDate;
+    }
+
+    public void setRegExpiryDate(Date regExpiryDate) {
+        this.regExpiryDate = regExpiryDate;
+    }
+
+    public ProdType getProdType() {
+        return prodType;
+    }
+
+    public void setProdType(ProdType prodType) {
+        this.prodType = prodType;
+    }
+
+    public String getLicNo() {
+        return licNo;
+    }
+
+    public void setLicNo(String licNo) {
+        this.licNo = licNo;
+    }
+
+    @Override
+    public String toString() {
+        return getAppName();    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

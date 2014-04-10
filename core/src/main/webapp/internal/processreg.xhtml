@@ -51,7 +51,7 @@
     <table class="banner">
         <tr>
             <td>
-                <h:outputLabel value="#{processProdBn.prodApplications.prod.prodName}" styleClass="title"
+                <h:outputLabel value="#{processProdBn.product.prodName}" styleClass="title"
                                style="font-weight: bold; font-size: 1.5em"/>
             </td>
             <td align="right">
@@ -73,7 +73,7 @@
         <tr>
             <td>
                 <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
-                <h:outputFormat value="#{processProdBn.prodApplications.prod.applicant.appName}"/>
+                <h:outputFormat value="#{processProdBn.applicant.appName}"/>
             </td>
             <td align="right">
                 <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title" rendered="#{processProdBn.registered}"/>
@@ -95,7 +95,7 @@
 <p:tabView id="processtab" style="width: 830px;" dynamic="true" cache="true">
 <p:tab title="Application Information" id="infotab">
     <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-        <ui:param name="prodAppData" value="#{processProdBn.prodApplications}"/>
+        <ui:param name="prodData" value="#{processProdBn.product}"/>
     </ui:decorate>
 </p:tab>
 
@@ -393,7 +393,7 @@
     </p:commandButton>
 </p:tab>
 
-<p:tab title="#{msgs.processor}" id="processor" rendered="#{userSession.moderator}">
+<p:tab title="#{msgs.processor}" id="processor" rendered="#{userSession.moderator||userSession.head}">
     <p:commandButton icon="ui-icon-document" value="#{msgs.assignprocessor}" onclick="processordlg.show()"/>
 
     <p:panelGrid columns="5" columnClasses="label value" rendered="#{processProdBn.module != null}" id="processpnl">

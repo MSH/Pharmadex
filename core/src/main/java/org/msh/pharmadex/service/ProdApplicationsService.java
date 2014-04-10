@@ -92,6 +92,74 @@ public class ProdApplicationsService implements Serializable {
         return prodApp;
     }
 
+    public List<RegState> nextStepOptions(RegState regState, UserSession userSession, StatusUser module) {
+        RegState[] options = null;
+        switch (regState) {
+            case NEW_APPL:
+                options = new RegState[2];
+                options[0] = RegState.FOLLOW_UP;
+                options[1] = RegState.FEE;
+                break;
+            case FEE:
+                options = new RegState[2];
+                options[0] = RegState.FOLLOW_UP;
+                options[1] = RegState.VERIFY;
+                break;
+            case VERIFY:
+                options = new RegState[2];
+                options[0] = RegState.FOLLOW_UP;
+                options[1] = RegState.SCREENING;
+                break;
+            case SCREENING:
+                options = new RegState[2];
+                options[0] = RegState.FOLLOW_UP;
+                options[1] = RegState.REVIEW_BOARD;
+                break;
+            case REVIEW_BOARD:
+                if (userSession.isAdmin() || userSession.isModerator()) {
+                    if (module.isComplete()) {
+                        options = new RegState[3];
+                        options[0] = RegState.FOLLOW_UP;
+                        options[1] = RegState.RECOMMENDED;
+                        options[2] = RegState.NOT_RECOMMENDED;
+                    } else {
+                        options = new RegState[1];
+                        options[0] = RegState.FOLLOW_UP;
+                    }
+                } else {
+                    options = new RegState[1];
+                    options[0] = RegState.FOLLOW_UP;
+                }
+                break;
+            case RECOMMENDED:
+                if (userSession.isAdmin() || userSession.isModerator() || userSession.isHead()) {
+                    options = new RegState[1];
+                    options[0] = RegState.FOLLOW_UP;
+                    options[0] = RegState.REJECTED;
+                }
+                break;
+            case REGISTERED:
+                options = new RegState[3];
+                options[0] = RegState.DISCONTINUED;
+                options[1] = RegState.XFER_APPLICANCY;
+                break;
+            case FOLLOW_UP:
+                options = new RegState[7];
+                options[0] = RegState.FEE;
+                options[1] = RegState.VERIFY;
+                options[2] = RegState.SCREENING;
+                options[3] = RegState.REVIEW_BOARD;
+                options[4] = RegState.SCREENING;
+                options[5] = RegState.REVIEW_BOARD;
+                options[6] = RegState.DEFAULTED;
+                break;
+        }
+        return Arrays.asList(options);
+
+
+    }
+
+
     public List<ProdApplications> getApplications() {
         if (prodApplications == null)
             prodApplications = prodApplicationsDAO.allProdApplications();

@@ -5,6 +5,7 @@ import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,5 +23,11 @@ public class CompanyService implements Serializable {
 
     public List<Company> findAllManufacturers() {
         return companyDAO.findByCompanyTypeOrderByCompanyNameAsc(CompanyType.MANUFACTURER);
+    }
+
+    @Transactional
+    public String removeCompany(Company company) {
+        companyDAO.delete(company);
+        return "removed";
     }
 }

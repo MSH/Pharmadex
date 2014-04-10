@@ -35,7 +35,7 @@ public class Company extends CreationDetail implements Serializable {
     @Column(length = 30)
     private String faxNo;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private CompanyType companyType;
 
     @Column(length = 200)

@@ -19,7 +19,7 @@ public class TimeLine implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RegState regState;
 
     @Temporal(TemporalType.DATE)

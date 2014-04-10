@@ -37,7 +37,7 @@ public class User extends CreationDetail implements Serializable {
     @Column(length = 10)
     private String phoneNo;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private UserType type;
 
     @Embedded
@@ -216,5 +216,10 @@ public class User extends CreationDetail implements Serializable {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return getName();    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

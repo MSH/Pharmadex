@@ -6,6 +6,7 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.primefaces.extensions.model.timeline.TimelineEvent;
 import org.primefaces.extensions.model.timeline.TimelineModel;
@@ -19,7 +20,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Backing bean to process the application made for registration
@@ -33,13 +37,10 @@ public class ProcessProdBn implements Serializable {
     private ProdApplications prodApplications;
     private Product product;
     private Applicant applicant;
-    private List<Inn> selectedInns;
     private List<Comment> comments;
     private List<TimeLine> timeLineList;
     private List<Mail> mails;
-    private List<Atc> selectedAtcs;
     private List<Company> companies;
-    private List<ProdAppChecklist> prodAppChecklists;
     private List<ProdAppAmdmt> prodAppAmdmts;
     private TimelineModel model;
 
@@ -55,18 +56,13 @@ public class ProcessProdBn implements Serializable {
     private boolean registered;
     private String reviewComment;
     private List<Invoice> invoices;
-
-    @Autowired
-    private InvoiceService invoiceService;
+    private String prodID;
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserSession userSession;
-
-    @Autowired
-    private DosageFormService dosageFormService;
 
     @Autowired
     private CommentService commentService;
@@ -88,94 +84,24 @@ public class ProcessProdBn implements Serializable {
 
     @Autowired
     private ProductService productService;
-    private boolean checkReviewStatus;
+    private boolean checkReviewStatus = false;
 
     @Autowired
     WebSession webSession;
-
-    private User user;
 
     @PostConstruct
     private void init() {
         mail.setUser(userSession.getLoggedInUserObj());
         timeLine.setUser(userSession.getLoggedInUserObj());
         selComment.setUser(userSession.getLoggedInUserObj());
-
     }
 
     public List<RegState> getRegSate() {
-        return Arrays.asList(nextStepOptions(prodApplications.getRegState()));
+        return prodApplicationsService.nextStepOptions(prodApplications.getRegState(), userSession, getModule());
     }
-
-    private RegState[] nextStepOptions(RegState regState) {
-        RegState[] options = null;
-        switch (regState) {
-            case NEW_APPL:
-                options = new RegState[2];
-                options[0] = RegState.FOLLOW_UP;
-                options[1] = RegState.FEE;
-                break;
-            case FEE:
-                options = new RegState[2];
-                options[0] = RegState.FOLLOW_UP;
-                options[1] = RegState.VERIFY;
-                break;
-            case VERIFY:
-                options = new RegState[2];
-                options[0] = RegState.FOLLOW_UP;
-                options[1] = RegState.SCREENING;
-                break;
-            case SCREENING:
-                options = new RegState[2];
-                options[0] = RegState.FOLLOW_UP;
-                options[1] = RegState.REVIEW_BOARD;
-                break;
-            case REVIEW_BOARD:
-                if (userSession.isAdmin() || userSession.isModerator()) {
-                    if (getModule().isComplete()) {
-                        options = new RegState[3];
-                        options[0] = RegState.FOLLOW_UP;
-                        options[1] = RegState.RECOMMENDED;
-                        options[2] = RegState.NOT_RECOMMENDED;
-                    } else {
-                        options = new RegState[1];
-                        options[0] = RegState.FOLLOW_UP;
-                    }
-                } else {
-                    options = new RegState[1];
-                    options[0] = RegState.FOLLOW_UP;
-                }
-                break;
-            case RECOMMENDED:
-                if (userSession.isAdmin() || userSession.isModerator() || userSession.isHead()) {
-                    options = new RegState[1];
-                    options[0] = RegState.FOLLOW_UP;
-                    options[0] = RegState.REJECTED;
-                }
-                break;
-            case REGISTERED:
-                options = new RegState[3];
-                options[0] = RegState.DISCONTINUED;
-                options[1] = RegState.XFER_APPLICANCY;
-                break;
-            case FOLLOW_UP:
-                options = new RegState[7];
-                options[0] = RegState.FEE;
-                options[1] = RegState.VERIFY;
-                options[2] = RegState.SCREENING;
-                options[3] = RegState.REVIEW_BOARD;
-                options[4] = RegState.SCREENING;
-                options[5] = RegState.REVIEW_BOARD;
-                options[6] = RegState.DEFAULTED;
-                break;
-        }
-        return options;
-
-
-    }
-
 
     public TimelineModel getTimelinesChartData() {
+        getProdApplications();
         timelinesChartData = new ArrayList<Timeline>();
         Timeline timeline;
         TimelineModel model = new TimelineModel();
@@ -187,80 +113,40 @@ public class ProcessProdBn implements Serializable {
         return model;
     }
 
-    public Comment getSelComment() {
-        return selComment;
-    }
-
-    public void setSelComment(Comment selComment) {
-        this.selComment = selComment;
-    }
-
-    public List<Comment> getComments() {
-        comments = commentService.findAllCommentsByApp(prodApplications.getId(), userSession.isCompany());
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public String getDosForm() {
-        System.out.println("items fetched == " + dosageFormService.findAllDosForm().size());
-//        dosageFormService.findAllDosForm().size();
-        return null;
-    }
-
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications getProdApplications() {
-        if (prodApplications == null) {
+        if (prodApplications == null || webSession.getProdApplications() != null) {
             initProdApps();
+            webSession.setProdApplications(null);
         }
         return prodApplications;
     }
 
     private void initProdApps() {
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String prodID = params.get("id");
-        product = productService.findProduct(Long.valueOf(prodID));
-        this.prodApplications = this.product.getProdApplications();
-        this.applicant = this.product.getApplicant();
+        prodID = params.get("id");
 
+        if (prodID == null || prodID.equals(""))
+            prodID = "" + webSession.getProduct().getId();
+        webSession.setProduct(null);
+
+        product = productService.findProduct(Long.valueOf(prodID));
+        prodApplications = this.product.getProdApplications();
+        applicant = this.product.getApplicant();
+        prodAppAmdmts = prodApplications.getProdAppAmdmts();
+        comments = prodApplications.getComments();
+        invoices = prodApplications.getInvoices();
+        mails = prodApplications.getMails();
+        timeLineList = prodApplications.getTimeLines();
+        checklists = prodApplications.getProdAppChecklists();
         initProcessor();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public void setProdApplications(ProdApplications prodApplications) {
-        this.prodApplications = prodApplicationsService.findProdApplications(prodApplications.getId());
-        initProcessor();
+        this.prodApplications = prodApplications;
 //        prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
 //        this.prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
 
-    }
-
-    public List<ProdInn> getSelectedInns() {
-        List<ProdInn> prodInn = new ArrayList<ProdInn>();
-        if (prodApplications != null) {
-            prodInn.addAll(prodApplications.getProd().getInns());
-            return prodInn;
-        } else
-            return null;
-    }
-
-    public void setSelectedInns(List<Inn> selectedInns) {
-        this.selectedInns = selectedInns;
-    }
-
-    public List<Atc> getSelectedAtcs() {
-        List<Atc> atcs = new ArrayList<Atc>();
-        if (prodApplications != null)
-            atcs.addAll(prodApplications.getProd().getAtcs());
-        else
-            atcs = null;
-        return atcs;
-    }
-
-    public void setSelectedAtcs(List<Atc> selectedAtcs) {
-        this.selectedAtcs = selectedAtcs;
     }
 
     public String addComment() {
@@ -268,9 +154,9 @@ public class ProcessProdBn implements Serializable {
         selComment.setProdApplications(prodApplications);
         selComment.setUser(userSession.getLoggedInUserObj());
         selComment = commentService.saveComment(selComment);
+        comments.add(selComment);
         selComment = new Comment();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Comment successfully added"));
-
         return "";
     }
 
@@ -279,24 +165,18 @@ public class ProcessProdBn implements Serializable {
         if (module == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
         }
-
         module.setProdApplications(prodApplications);
         module.setAssignDate(new Date());
 
         if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
-
-
     }
 
     public void assignModerator() {
         prodApplications.setUpdatedDate(new Date());
 
-
         if (!prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted"))
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
-
-
     }
 
 
@@ -328,6 +208,7 @@ public class ProcessProdBn implements Serializable {
         mail.setUser(userSession.getLoggedInUserObj());
         mail.setProdApplications(prodApplications);
         mailService.sendMail(mail, true);
+        mails.add(mail);
         mail = new Mail();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Message sent successfully"));
         return "";
@@ -349,7 +230,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<TimeLine> getTimeLineList() {
-        return timelineService.findTimelineByApp(prodApplications.getId());
+        return timeLineList;
     }
 
     public void setTimeLineList(List<TimeLine> timeLineList) {
@@ -388,8 +269,9 @@ public class ProcessProdBn implements Serializable {
         timeLine.setStatusDate(new Date());
         timeLine.setUser(userSession.getLoggedInUserObj());
         timelineService.saveTimeLine(timeLine);
+        timeLineList.add(timeLine);
         prodApplications.setRegState(timeLine.getRegState());
-        prodApplications.getProd().setRegState(timeLine.getRegState());
+        product.setRegState(timeLine.getRegState());
         prodApplicationsService.updateProdApp(prodApplications);
         productService.updateProduct(prodApplications.getProd());
         timeLine = new TimeLine();
@@ -410,7 +292,7 @@ public class ProcessProdBn implements Serializable {
         timeLine = new TimeLine();
         timeLine.setRegState(RegState.REGISTERED);
         prodApplications.setRegistrationDate(new Date());
-        prodApplications.getProd().setRegNo("" + (Math.random() * 100000));
+        product.setRegNo("" + (Math.random() * 100000));
         globalEntityLists.setRegProducts(null);
         addTimeline();
         prodApplicationsService.createRegCert(prodApplications);
@@ -448,7 +330,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<Mail> getMails() {
-        return mailService.findAllMailSent(prodApplications.getId());
+        return mails;
     }
 
     public void setMails(List<Mail> mails) {
@@ -469,26 +351,11 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<Company> getCompanies() {
-        if (prodApplications != null)
-            companies.addAll(prodApplications.getProd().getCompanies());
-        else
-            companies = null;
         return companies;
     }
 
     public void setCompanies(List<Company> companies) {
         this.companies = companies;
-    }
-
-    public List<ProdAppChecklist> getProdAppChecklists() {
-        if (prodApplications != null)
-            return prodApplications.getProdAppChecklists();
-        else
-            return null;
-    }
-
-    public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
-        this.prodAppChecklists = prodAppChecklists;
     }
 
     public boolean isReadyReg() {
@@ -503,7 +370,6 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<ProdAppChecklist> getChecklists() {
-        checklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
         return checklists;
     }
 
@@ -520,29 +386,11 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<User> completeProcessorList(String query) {
-        List<User> suggestions = new ArrayList<User>();
-
-        if (query == null || query.equalsIgnoreCase(""))
-            return getProcessors();
-
-        for (User eachInn : getProcessors()) {
-            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachInn);
-        }
-        return suggestions;
+        return JsfUtils.completeSuggestions(query, getProcessors());
     }
 
     public List<User> completeModeratorList(String query) {
-        List<User> suggestions = new ArrayList<User>();
-
-        if (query == null || query.equalsIgnoreCase(""))
-            return getModerators();
-
-        for (User eachInn : getModerators()) {
-            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachInn);
-        }
-        return suggestions;
+        return JsfUtils.completeSuggestions(query, getModerators());
     }
 
     public StatusUser getModule() {
@@ -560,16 +408,13 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean getCheckReviewStatus() {
-        checkReviewStatus = false;
+        if (prodApplications == null)
+            getProdApplications();
         if (userSession.isModerator() && getModule().isComplete())
             checkReviewStatus = true;
         else
             checkReviewStatus = false;
         return checkReviewStatus;
-    }
-
-    public void getSetChecklist(ProdAppChecklist checklist) {
-        webSession.setProdAppChecklist(checklist);
     }
 
     public TimelineModel getModel() {
@@ -608,10 +453,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<Invoice> getInvoices() {
-        if (invoices == null)
-            return invoiceService.findInvoicesByProdApp(prodApplications.getId());
-        else
-            return null;
+        return invoices;
     }
 
     public void setInvoices(List<Invoice> invoices) {
@@ -619,16 +461,11 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<ProdAppAmdmt> getProdAppAmdmts() {
-        prodAppAmdmts = amdmtService.findProdAmdmts(prodApplications.getId());
         return prodAppAmdmts;
     }
 
     public void setProdAppAmdmts(List<ProdAppAmdmt> prodAppAmdmts) {
         this.prodAppAmdmts = prodAppAmdmts;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Product getProduct() {
@@ -647,5 +484,21 @@ public class ProcessProdBn implements Serializable {
 
     public void setApplicant(Applicant applicant) {
         this.applicant = applicant;
+    }
+
+    public Comment getSelComment() {
+        return selComment;
+    }
+
+    public void setSelComment(Comment selComment) {
+        this.selComment = selComment;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

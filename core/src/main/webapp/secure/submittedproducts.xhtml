@@ -16,10 +16,12 @@
                              rendered="#{not empty prodAppMBean.pendingRenewals}">
 
                     <p:column headerText="Product Name">
-                        <p:commandLink value="#{eachprod.prod.prodName}" action="/internal/processreg.faces"
+                        <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}"
+                                       action="/internal/processreg?faces-redirect=true"
                                        ajax="false">
-                            <f:setPropertyActionListener value="#{eachprod}"
-                                                         target="#{processProdBn.prodApplications}"/>
+                            <f:param name="id" value="#{eachprod.prod.id}"/>
+                            <f:setPropertyActionListener value="#{eachprod}" target="#{webSession.prodApplications}"/>
+                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{webSession.product}"/>
                         </p:commandLink>
                     </p:column>
 
@@ -52,11 +54,15 @@
                          rendered="#{not empty prodAppMBean.prodApplicationsList}">
 
                 <p:column headerText="Product Name">
-                    <p:commandLink value="#{eachprod.prod.prodName}" action="/internal/processreg.faces"
-                                   ajax="false">
-                        <f:setPropertyActionListener value="#{eachprod}"
-                                                     target="#{processProdBn.prodApplications}"/>
-                    </p:commandLink>
+                    <p:column headerText="Product Name">
+                        <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}"
+                                       action="/internal/processreg?faces-redirect=true"
+                                       ajax="false">
+                            <f:param name="id" value="#{eachprod.prod.id}"/>
+                            <f:setPropertyActionListener value="#{eachprod}" target="#{webSession.prodApplications}"/>
+                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{webSession.product}"/>
+                        </p:commandLink>
+                    </p:column>
                 </p:column>
 
 

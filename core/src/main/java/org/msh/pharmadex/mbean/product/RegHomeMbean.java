@@ -62,6 +62,9 @@ public class RegHomeMbean implements Serializable {
     private ReportService reportService;
 
     @Autowired
+    private CompanyService companyService;
+
+    @Autowired
     private GlobalEntityLists globalEntityLists;
 
     private static Logger logger = Logger.getLogger(RegHomeMbean.class.getName());
@@ -82,6 +85,9 @@ public class RegHomeMbean implements Serializable {
     private ScheduleEvent event = new DefaultScheduleEvent();
     private JasperPrint jasperPrint;
     private RegATCHelper regATCHelper;
+    private boolean showCompany = false;
+    private boolean showDrugPrice = false;
+    private List<DrugPrice> drugPrices;
 
     @PostConstruct
     private void init() {
@@ -112,9 +118,13 @@ public class RegHomeMbean implements Serializable {
                 prodApplications.setUser(getLoggedInUser());
             }
             product.setInns(selectedInns);
+            selectedAtcs = new ArrayList<Atc>();
             product.setAtcs(selectedAtcs);
+            companies = new ArrayList<Company>(10);
             product.setCompanies(companies);
             prodApplications.setProdAppChecklists(prodAppChecklists);
+            Pricing pricing = new Pricing(new ArrayList<DrugPrice>());
+            prodApplications.setPricing(pricing);
 
             eventModel = new DefaultScheduleModel();
             for (Appointment app : appointmentService.getAppointments()) {
@@ -158,6 +168,12 @@ public class RegHomeMbean implements Serializable {
         return null;
     }
 
+    public void removeCompany(Company selectedCompany) {
+        if (selectedCompany.getId() != null)
+            companyService.removeCompany(selectedCompany);
+        companies.remove(selectedCompany);
+    }
+
     @Transactional
     public String submitApp() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -174,6 +190,7 @@ public class RegHomeMbean implements Serializable {
 
         prodApplications.setTimeLines(timeLines);
         prodApplications.setRegState(RegState.NEW_APPL);
+        prodApplications.setSubmitDate(new Date());
 
         saveApp();
 
@@ -204,7 +221,7 @@ public class RegHomeMbean implements Serializable {
         if (selectedAtcs == null)
             selectedAtcs = new ArrayList<Atc>();
         selectedAtcs.add(atc);
-        prodApplications.getProd().setAtcs(selectedAtcs);
+//        prodApplications.getProd().setAtcs(selectedAtcs);
         atc = null;
         return null;
     }
@@ -244,6 +261,7 @@ public class RegHomeMbean implements Serializable {
         companies = product.getCompanies();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = product.getApplicant();
+        drugPrices = prodApplications.getPricing().getDrugPrices();
     }
 
     public Applicant getApplicant() {
@@ -424,7 +442,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     public void addApptoRegistration() {
-        loggedInUser = applicantService.getDefaultUser(applicant.getApplcntId());
+        product.setApplicant(applicant);
 
     }
 
@@ -434,5 +452,31 @@ public class RegHomeMbean implements Serializable {
 
     public void setRegATCHelper(RegATCHelper regATCHelper) {
         this.regATCHelper = regATCHelper;
+    }
+
+    public boolean isShowCompany() {
+        return showCompany;
+    }
+
+    public void setShowCompany(boolean showCompany) {
+        this.showCompany = showCompany;
+    }
+
+    public List<DrugPrice> getDrugPrices() {
+        if (drugPrices == null)
+            drugPrices = getProduct().getProdApplications().getPricing().getDrugPrices();
+        return drugPrices;
+    }
+
+    public void setDrugPrices(List<DrugPrice> drugPrices) {
+        this.drugPrices = drugPrices;
+    }
+
+    public boolean isShowDrugPrice() {
+        return showDrugPrice;
+    }
+
+    public void setShowDrugPrice(boolean showDrugPrice) {
+        this.showDrugPrice = showDrugPrice;
     }
 }

@@ -1,8 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Company;
-import org.msh.pharmadex.domain.Country;
-import org.msh.pharmadex.domain.enums.CompanyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,41 +8,46 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import java.io.Serializable;
 
 /**
  * Author: usrivastava
  */
 @Component
 @Scope("request")
-public class CompanyMBean {
+public class CompanyMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(CompanyMBean.class);
+    private static final long serialVersionUID = 4226719621949851455L;
 
     @Autowired
     RegHomeMbean regHomeMbean;
 
     private Company selectedCompany;
 
-
     @PostConstruct
     private void init() {
+        System.out.println("inside companymbean");
         logger.debug("------------------------------------------------------------------------------------");
         logger.debug(" Company Bean instantiating ");
         logger.debug("------------------------------------------------------------------------------------");
 
-        selectedCompany = new Company();
-        selectedCompany.getAddress().setCountry(new Country());
-        selectedCompany.setCompanyType(CompanyType.MANUFACTURER);
+
+//        selectedCompany = new Company();
+//        selectedCompany.getAddress().setCountry(new Country());
+//        selectedCompany.setCompanyType(CompanyType.MANUFACTURER);
     }
 
-    public String addCompany() {
-        selectedCompany.setProduct(regHomeMbean.getProduct());
-        regHomeMbean.getCompanies().add(selectedCompany);
-        return null;
-    }
-
-    public String removeCompany() {
-        regHomeMbean.getCompanies().remove(selectedCompany);
-        return null;
+    public void addCompany() {
+        try {
+            selectedCompany.setProduct(regHomeMbean.getProduct());
+            regHomeMbean.getCompanies().add(selectedCompany);
+            regHomeMbean.setShowCompany(false);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+        }
     }
 
     public String cancelAdd() {
@@ -52,12 +55,13 @@ public class CompanyMBean {
     }
 
     public Company getSelectedCompany() {
+        if (selectedCompany == null)
+            selectedCompany = new Company();
         return selectedCompany;
     }
 
     public void setSelectedCompany(Company selectedCompany) {
         this.selectedCompany = selectedCompany;
     }
-
 
 }

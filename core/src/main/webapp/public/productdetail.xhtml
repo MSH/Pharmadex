@@ -21,7 +21,7 @@
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{msgs[productDisplay.prodApplications.regState.key]}"
+                                    <h:outputLabel value="#{productDisplay.product.regState}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
                             </tr>
@@ -38,8 +38,9 @@
                             <tr>
                                 <td>
                                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
-                                    <p:commandLink id="viewLink" value="#{productDisplay.applicant.appName}" action="applicantdetail.faces"
-                                                   ajax="false">
+                                    <p:commandLink id="viewLink" value="#{productDisplay.applicant.appName}"
+                                                   action="applicantdetail.faces"
+                                                   ajax="false" style="color: darkblue;">
                                         <f:param name="applicantID" value="#{productDisplay.applicant.applcntId}"/>
                                         <f:param name="id" value="#{productDisplay.product.id}"/>
                                     </p:commandLink>
@@ -62,7 +63,7 @@
                 <p:growl id="growl" showDetail="true" showSummary="true"/>
 
                 <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                    <ui:param name="prodAppData" value="#{productDisplay.prodApplications}"/>
+                    <ui:param name="prodData" value="#{productDisplay.product}"/>
                 </ui:decorate>
 
             </h:panelGrid>

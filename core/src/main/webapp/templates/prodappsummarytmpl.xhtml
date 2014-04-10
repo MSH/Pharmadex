@@ -5,14 +5,14 @@
     <p:accordionPanel value="Product Information" activeIndex="0" multiple="true">
         <p:tab title="#{msgs.applicant_detail}">
             <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                <ui:param name="applicantdata" value="#{prodAppData.prod.applicant}"/>
+                <ui:param name="applicantdata" value="#{prodData.applicant}"/>
                 <ui:param name="input" value="#{false}"/>
             </ui:decorate>
         </p:tab>
 
         <p:tab title="#{msgs.person_responsible}">
             <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                <ui:param name="userdata" value="#{prodAppData.user}"/>
+                <ui:param name="userdata" value="#{prodData.prodApplications.user}"/>
                 <ui:param name="input" value="#{false}"/>
             </ui:decorate>
         </p:tab>
@@ -21,41 +21,38 @@
             <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
 
                 <h:outputLabel value="#{msgs.prodName}:"/>
-                <h:outputLabel value="#{prodAppData.prod.prodName}"/>
+                <h:outputLabel value="#{prodData.prodName}"/>
 
                 <h:outputLabel value="#{msgs.prod_type}:"/>
-                <h:outputLabel value="#{msgs[prodAppData.prod.prodType.key]}"/>
+                <h:outputLabel value="#{prodData.prodType}"/>
 
                 <h:outputLabel value="#{msgs.prodgenname}:"/>
-                <h:outputLabel value="#{prodAppData.prod.genName}"/>
-
-                <h:outputLabel value="#{msgs.apprvdname}:"/>
-                <h:outputLabel value="#{prodAppData.prod.apprvdName}"/>
+                <h:outputLabel value="#{prodData.genName}"/>
 
                 <h:outputLabel value="#{msgs.dos_form}"/>
-                <h:outputLabel value="#{prodAppData.prod.dosForm.dosForm}"/>
+                <h:outputLabel value="#{prodData.dosForm.dosForm}"/>
 
                 <h:outputLabel value="Dosage Strength:" style="font-weight: bold;"/>
-                <h:outputLabel value="#{prodAppData.prod.dosStrength}"/>
+                <h:outputLabel value="#{prodData.dosStrength}"/>
 
                 <h:outputLabel value="#{msgs.dos_unit}"/>
-                <h:outputLabel value="#{prodAppData.prod.dosUnit.uom}"/>
+                <h:outputLabel value="#{prodData.dosUnit.uom}"/>
 
                 <h:outputLabel value="#{msgs.admin_route}"/>
-                <h:outputLabel value="#{msgs[prodAppData.prod.adminRoute.key]}"/>
+                <h:outputLabel value="#{prodData.adminRoute}"/>
 
                 <h:outputLabel value="#{msgs.product_pharmclassif}"/>
-                <h:outputLabel value="#{prodAppData.prod.pharmClassif.displayName}"/>
+                <h:outputLabel value="#{prodData.pharmClassif.displayName}"/>
 
                 <h:outputLabel value="#{msgs.global_description}"/>
-                <h:outputLabel value="#{prodAppData.prod.prodDesc}"/>
+                <h:outputLabel value="#{prodData.prodDesc}"/>
             </h:panelGrid>
         </p:tab>
 
         <p:tab title="#{msgs.inn_header}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
                 <h:outputLabel value="#{msgs.inn_header}:"/>
-                <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.prod.inns}" style="width:100%;">
+                <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodData.inns}" style="width:100%;">
                     <p:column headerText="Substance">
                         <h:outputText value="#{prodInn.inn.name}"/>
                     </p:column>
@@ -79,7 +76,7 @@
         <p:tab title="#{msgs.atc_header}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
                 <h:outputLabel value="#{msgs.atc_header}" style="font-weight: bold;"/>
-                <p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.prod.atcs}" style="width:100%;">
+                <p:dataTable id="atcsummarytable" var="atc" value="#{prodData.atcs}" style="width:100%;">
                     <p:column headerText="#{msgs.atc_code}">
                         <h:outputText value="#{atc.atcCode}"/>
                     </p:column>
@@ -95,38 +92,38 @@
         <p:tab title="#{msgs.application_detail}">
             <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
                 <h:outputLabel value="#{msgs.product_drug_type}"/>
-                <h:outputLabel value="#{prodAppData.drugType}"/>
+                <h:outputLabel value="#{prodData.prodApplications.drugType}"/>
 
                 <h:outputLabel value="#{msgs.product_relcntrlr}:" style="font-weight: bold;"/>
-                <h:outputLabel value="#{prodAppData.representative}"/>
+                <h:outputLabel value="#{prodData.prodApplications.representative}"/>
 
                 <h:outputLabel value="#{msgs.product_packsize}:" style="font-weight: bold;"/>
-                <h:outputLabel value="#{prodAppData.packSize}"/>
+                <h:outputLabel value="#{prodData.prodApplications.packSize}"/>
 
                 <h:outputLabel value="#{msgs.product_conttype}"/>
-                <h:outputLabel value="#{prodAppData.contType}"/>
+                <h:outputLabel value="#{prodData.prodApplications.contType}"/>
 
                 <h:outputLabel value="#{msgs.product_storcndtn}"/>
-                <h:outputLabel value="#{prodAppData.storageCndtn}"/>
+                <h:outputLabel value="#{prodData.prodApplications.storageCndtn}"/>
 
 
                 <h:outputLabel value="#{msgs.product_apperance}"/>
-                <h:outputLabel value="#{prodAppData.phyAppearance}"/>
+                <h:outputLabel value="#{prodData.prodApplications.phyAppearance}"/>
 
                 <h:outputLabel value="#{msgs.product_regNoCntry}"/>
-                <h:outputLabel value="#{prodAppData.originCntryReg}"/>
+                <h:outputLabel value="#{prodData.prodApplications.originCntryReg}"/>
 
 
                 <h:outputLabel value="#{msgs.product_active}"/>
-                <p:inputTextarea value="#{prodAppData.pharmacopeiaStds}" readonly="true"/>
+                <p:inputTextarea value="#{prodData.prodApplications.pharmacopeiaStds}" readonly="true"/>
 
                 <h:outputLabel value="#{msgs.product_ssncode}"/>
-                <h:outputLabel value="#{prodAppData.ssnCode}"/>
+                <h:outputLabel value="#{prodData.prodApplications.ssnCode}"/>
             </h:panelGrid>
         </p:tab>
 
         <p:tab title="#{msgs.manufacturer_detail}">
-            <p:dataTable id="companyTable" var="company" value="#{prodAppData.prod.companies}" style="width:100%;">
+            <p:dataTable id="companyTable" var="company" value="#{prodData.companies}" style="width:100%;">
                 <p:column headerText="#{msgs.applicant_name}">
                     <h:outputText value="#{company.companyName}"/>
                 </p:column>
@@ -151,16 +148,16 @@
             <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
                 <h:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
-                <h:outputLabel id="receiptno" value="#{prodAppData.receiptNo}"/>
+                <h:outputLabel id="receiptno" value="#{prodData.prodApplications.receiptNo}"/>
 
                 <h:outputLabel value="#{msgs.waybillno}" for="waybillno"/>
-                <h:outputLabel id="waybillno" value="#{prodAppData.waybillNo}"/>
+                <h:outputLabel id="waybillno" value="#{prodData.prodApplications.waybillNo}"/>
             </h:panelGrid>
 
         </p:tab>
 
         <p:tab title="#{msgs.checklist}">
-            <p:dataTable var="checkList" value="#{prodAppData.prodAppChecklists}" style="width:100%;">
+            <p:dataTable var="checkList" value="#{prodData.prodApplications.prodAppChecklists}" style="width:100%;">
                 <p:column>
                     <h:outputLabel value="#{checkList.checklist.name}"/>
                 </p:column>

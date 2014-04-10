@@ -14,9 +14,6 @@ public class PharmClassif extends CreationDetail implements Serializable {
     @Column(unique = true)
     private int id;
 
-    @Column(name = "CatSTY")
-    private int pharmaCat;
-
     @Column(name = "No")
     private String no;
 
@@ -35,14 +32,6 @@ public class PharmClassif extends CreationDetail implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getPharmaCat() {
-        return pharmaCat;
-    }
-
-    public void setPharmaCat(int pharmaCat) {
-        this.pharmaCat = pharmaCat;
     }
 
     public String getNo() {

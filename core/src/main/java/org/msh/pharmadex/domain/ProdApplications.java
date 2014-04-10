@@ -25,15 +25,15 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @JoinColumn(name = "PROD_ID")
     private Product prod;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Pricing pricing;
+
     @OneToOne
     @JoinColumn(name = "ORG_CNTRY_ID")
     private Country originCntry;
 
     @Column(length = 100)
     private String prodRelCntroler;
-
-    @Column(nullable = false)
-    private String relResponsibility;
 
     @Column(length = 100)
     private String Representative;
@@ -45,7 +45,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 200)
     private String appComment;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ProdDrugType drugType;
 
     @Column(length = 20)
@@ -78,7 +78,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 100)
     private String waybillNo;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RegState regState;
 
     @Temporal(TemporalType.DATE)
@@ -194,14 +194,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setProdRelCntroler(String prodRelCntroler) {
         this.prodRelCntroler = prodRelCntroler;
-    }
-
-    public String getRelResponsibility() {
-        return relResponsibility;
-    }
-
-    public void setRelResponsibility(String relResponsibility) {
-        this.relResponsibility = relResponsibility;
     }
 
     public String getRepresentative() {
@@ -458,5 +450,13 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setRegCert(byte[] regCert) {
         this.regCert = regCert;
+    }
+
+    public Pricing getPricing() {
+        return pricing;
+    }
+
+    public void setPricing(Pricing pricing) {
+        this.pricing = pricing;
     }
 }

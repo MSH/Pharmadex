@@ -17,8 +17,8 @@
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}" forceSelection="true"
                             />
-                    <p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false"/>
-
+                    <p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">
+                    </p:commandButton>
                 </h:panelGrid>
 
 
@@ -39,6 +39,7 @@
                         <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}" action="processreg"
                                        ajax="false">
                             <f:param name="id" value="#{eachprod.prod.id}"/>
+                            <f:setPropertyActionListener value="#{eachprod}" target="#{webSession.prodApplications}"/>
                         </p:commandLink>
                     </p:column>
 

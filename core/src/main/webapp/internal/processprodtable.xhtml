@@ -19,9 +19,11 @@
             <f:facet name="header">
                 <h:outputText value="#{msgs.prodName}"/>
             </f:facet>
-            <p:commandLink value="#{eachprod.prod.prodName}" action="#{prodbean.onRowSelect}" ajax="false">
-                <f:setPropertyActionListener value="#{eachprod}"
-                                             target="#{prodapplications}"/>
+            <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}" action="/internal/processreg"
+                           ajax="false">
+                <f:setPropertyActionListener value="#{eachprod}" target="#{webSession.prodApplications}"/>
+                <f:setPropertyActionListener value="#{eachprod.prod}" target="#{webSession.product}"/>
+                <f:param name="id" value="#{eachprod.prod.id}"/>
             </p:commandLink>
         </p:column>
 

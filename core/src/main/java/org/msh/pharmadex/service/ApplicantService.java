@@ -71,6 +71,7 @@ public class ApplicantService implements Serializable {
             applicant.setState(ApplicantState.NEW_APPLICATION);
             if (loggedInUserObj.getType().equals(UserType.COMPANY)) {
                 loggedInUserObj.setApplicant(applicant);
+                applicant.setContactName(loggedInUserObj.getName());
                 if (applicant.getUsers() == null) {
                     applicant.setUsers(new ArrayList<User>());
                 }

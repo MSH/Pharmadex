@@ -3,11 +3,13 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
-    <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
+    <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="companydetail" width="100%"
                  columnClasses="col1, col2, col1, col2">
-        <h:outputLabel value="#{msgs.applicant_name}" for="appname"/>
-        <p:inputText id="appname" required="true" value="#{companydata.companyName}" rendered="#{input}"/>
+
+        <h:outputLabel value="#{msgs.applicant_name}" for="companyname"/>
+        <p:inputText id="companyname" required="true" value="#{companydata.companyName}" rendered="#{input}"/>
         <h:outputLabel value="#{companydata.companyName}" rendered="#{!input}" style="font-weight: bold;"/>
+
         <h:outputLabel/>
         <h:outputLabel/>
 
@@ -21,8 +23,8 @@
         <h:outputLabel/>
         <h:outputLabel/>
 
-        <h:outputLabel value="#{msgs.company_type}" rendered="#{input}"/>
-        <p:selectOneMenu value="#{companydata.companyType}">
+        <h:outputLabel value="#{msgs.company_type}" rendered="#{input}" for="companyTypecb"/>
+        <p:selectOneMenu value="#{companydata.companyType}" id="companyTypecb">
             <f:selectItem itemLabel="-" itemValue=""/>
             <f:selectItems value="#{globalLists.companyType}" var="type" itemLabel="#{msgs[type.key]}"/>
         </p:selectOneMenu>
@@ -31,16 +33,16 @@
         <h:outputLabel/>
         <h:outputLabel/>
 
-        <h:outputLabel value="#{msgs.applicant_filenumber}"/>
-        <p:inputText value="#{companydata.reference}" rendered="#{input}"/>
+        <h:outputLabel value="#{msgs.applicant_filenumber}" for="ref"/>
+        <p:inputText value="#{companydata.reference}" rendered="#{input}" id="ref"/>
         <h:outputLabel value="#{companydata.reference}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_phone}" style="text-align: right"/>
-        <p:inputText value="#{companydata.phoneNo}" required="true" rendered="#{input}"/>
+        <h:outputLabel value="#{msgs.applicant_phone}" style="text-align: right;" for="cphoneno"/>
+        <p:inputText value="#{companydata.phoneNo}" required="true" rendered="#{input}" id="cphoneno"/>
         <h:outputLabel value="#{companydata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_faxno}"/>
-        <p:inputText value="#{companydata.faxNo}" required="true" rendered="#{input}"/>
+        <h:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno"/>
+        <p:inputText value="#{companydata.faxNo}" required="true" rendered="#{input}" id="cfaxno"/>
         <h:outputLabel value="#{companydata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
     </h:panelGrid>

@@ -34,7 +34,7 @@ public class Attachment extends CreationDetail {
     @OneToOne
     private User uploadedBy;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RegState regState;
 
     @Lob

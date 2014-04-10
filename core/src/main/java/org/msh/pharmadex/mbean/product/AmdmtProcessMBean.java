@@ -33,11 +33,6 @@ public class AmdmtProcessMBean implements Serializable {
     private List<ProdApplications> filteredApps;
     private ProdAppAmdmt prodAppAmdmt = new ProdAppAmdmt();
 
-
-    public String onRowSelect() {
-        return "/internal/processreg.faces";
-    }
-
     public void nextAmdmtStep() {
 //        prodAppAmdmt = processProdBn.getProdAppAmdmt();
         this.prodAppAmdmt = prodAppAmdmt;

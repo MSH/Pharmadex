@@ -32,4 +32,9 @@ public class ApplicantType extends CreationDetail implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return name;    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

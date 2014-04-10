@@ -114,7 +114,7 @@ public class ProductDAO implements Serializable {
 //        Join<Product, Atc> atcJoin = root.join("atcs");
 //        Join<Product, Company> companyJoin = root.join("companies");
 
-        root.fetch("prodApplications");
+//        root.fetch("prodApplications");
 
         Predicate p = cb.equal(root.get("id"), prodId);
 
@@ -124,13 +124,20 @@ public class ProductDAO implements Serializable {
         Hibernate.initialize(prod.getAtcs());
         Hibernate.initialize(prod.getCompanies());
         Hibernate.initialize(prod.getProdApplications());
+        Hibernate.initialize(prod.getApplicant());
 
-        Hibernate.initialize(prod.getProdApplications().getInvoices());
-        Hibernate.initialize(prod.getProdApplications().getComments());
-        Hibernate.initialize(prod.getProdApplications().getMails());
-        Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
-        Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
-        Hibernate.initialize(prod.getProdApplications().getTimeLines());
+        if (prod.getProdApplications() != null) {
+            Hibernate.initialize(prod.getProdApplications().getInvoices());
+            Hibernate.initialize(prod.getProdApplications().getComments());
+            Hibernate.initialize(prod.getProdApplications().getMails());
+            Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
+            Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
+            Hibernate.initialize(prod.getProdApplications().getTimeLines());
+            Hibernate.initialize(prod.getProdApplications().getPricing());
+            if (prod.getProdApplications().getPricing() != null) {
+                Hibernate.initialize(prod.getProdApplications().getPricing().getDrugPrices());
+            }
+        }
         return prod;
 
 

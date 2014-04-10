@@ -1,6 +1,7 @@
 package org.msh.pharmadex.mbean.applicant;
 
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.failure.UserSession;
@@ -8,6 +9,7 @@ import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CountryService;
 import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -92,6 +94,11 @@ public class ApplicantMBean implements Serializable {
             return null;
         }
     }
+
+    public List<ApplicantType> completeApplicantTypeList(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getApplicantTypes());
+    }
+
 
 //    @PostConstruct
 //    private void init(){

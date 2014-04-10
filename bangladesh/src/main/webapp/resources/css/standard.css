@@ -6,10 +6,6 @@ body, div, td {
     padding: 0;
 }
 
-tr, tbody {
-    width: 1054px;
-}
-
 .header {
     width: 1054px;
     vertical-align: top;
@@ -22,7 +18,6 @@ tr, tbody {
     float: right;
     font-size: 12px;
     color: #666;
-    padding: 10px 10px;
 }
 
 body {
@@ -31,7 +26,7 @@ body {
 }
 
 .wrapper {
-    min-width: 800px;
+    min-width: 1054px;
     max-width: 1054px;
     margin-right: auto;
     margin-left: auto; /* fix max-width incompatibility in IE6 */
@@ -48,6 +43,7 @@ body {
 }
 
 .content {
+    width: 770px;
     height: auto;
     vertical-align: top;
     text-align: left;
@@ -55,6 +51,8 @@ body {
 
 .banner {
     margin-bottom: 5px;
+    width: 100%;
+
 }
 
 .action-column {
@@ -80,7 +78,7 @@ body {
 
 .col2 {
     vertical-align: middle;
-    width: 250px;
+    width: 350px;
 }
 
 .col3 {
@@ -88,10 +86,8 @@ body {
 }
 
 .ui-widget {
-/*    font-size: 98% !important; */
+    font-size: 98% !important;
 }
-
-
 
 .ui-growl {
     top: 115px !important;
@@ -102,7 +98,7 @@ body {
     height: 100px;
     margin: 0 auto;
     padding: 0px 0px 0 0px;
-    background-image:url(../resources/images/Top_05.jpg) ;
+    background-image: url(../resources/images/Top_05.jpg);
     background-repeat: repeat;
     background-position: center;
 }
@@ -127,7 +123,7 @@ body {
     color: #FFFFFF;
 }
 
-.logo h3{
+.logo h3 {
     float: left;
     padding: 50 0 0 0;
     letter-spacing: -1px;
@@ -155,10 +151,7 @@ body {
     width: 1044px;
     margin: 0 auto;
 
-
 }
-
-
 
 #menu ul {
     margin: 0;
@@ -187,9 +180,7 @@ body {
 /* Footer */
 
 #footer {
-    width: 1054px;
     margin: 0 auto;
-    padding: 10px;
 }
 
 #footer p {
@@ -200,6 +191,12 @@ body {
 }
 
 #footer a {
+}
+
+#footer img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #footer .link {
@@ -276,14 +273,14 @@ body {
 }
 
 .title {
-    height: 25px;
-    padding: 8px 0 10px 20px;
-    color: darkgreen;
+    height: 50px;
+    padding: 10px 10px 10px 10px;
 }
 
 .title a {
     border-bottom: none;
-    color: #FFFFFF;
+    color: darkblue;
+
 }
 
 .title a:hover {
@@ -292,4 +289,20 @@ body {
 
 .label {
     font-weight: bold;
+}
+
+.hint {
+    font-weight: lighter;
+    color: firebrick;
+}
+
+.ui-datatable thead th {
+    white-space: normal !important;
+}
+
+.ui-datatable tbody td {
+    white-space: normal !important;
+}
+
+.ui-inputfield {
 }

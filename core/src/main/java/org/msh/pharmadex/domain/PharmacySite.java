@@ -57,7 +57,7 @@ public class PharmacySite extends CreationDetail implements Serializable {
     @Column(length = 50)
     private String website;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ApplicantState state;
 
     @Column(length = 50)

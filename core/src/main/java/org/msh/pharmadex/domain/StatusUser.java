@@ -24,12 +24,16 @@ public class StatusUser implements Serializable {
     @JoinColumn(name = "module1")
     private User module1;
 
+    @Column(length = 5000)
     private String review1;
 
+    @Column(length = 5000)
     private String review2;
 
+    @Column(length = 5000)
     private String review3;
 
+    @Column(length = 5000)
     private String review4;
 
 

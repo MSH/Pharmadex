@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
@@ -29,6 +30,9 @@ public class RegProdMbn {
     @Autowired
     ProcessProdBn processProdBn;
 
+    @Autowired
+    WebSession webSession;
+
     private Product selectedProd;
 
     public List<Product> completeProduct(String query) {
@@ -43,14 +47,18 @@ public class RegProdMbn {
     }
 
     public String searchProduct() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         if (selectedProd == null)
             return null;
-        ProdApplications pa = prodApplicationsService.findProdApplicationByProduct(selectedProd.getId());
+
+        webSession.setProdApplications(selectedProd.getProdApplications());
+        webSession.setProduct(selectedProd);
+
+        ProdApplications pa = selectedProd.getProdApplications();
         if (pa != null) {
             processProdBn.setProdApplications(pa);
             return "/internal/processreg.faces";
         } else {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
             facesContext.addMessage(null, new FacesMessage("Error:", "Product Application does not exist for this product. " +
                     "It is an older product registered before implementation of Pharmadex. Please check the paper record for further information"));
             return null;

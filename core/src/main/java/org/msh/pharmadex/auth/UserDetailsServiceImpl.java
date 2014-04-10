@@ -28,13 +28,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private User user;
 
 
-   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
         UserDetails userDetails = null;
 //        User newUser = new User();
 //       newUser.setName("Utkarsh Srivastava");
 //        newUser.setPassword("test");
 //        newUser.setUsername(username);
-//        newUser.setEnabled(true);
+//        newUser.setEnabled(true);            9
 //        newUser.setCompanyName("New Company");
 //        newUser.setEmail("a@a.com");
 //        newUser.setType(org.msh.pharmadex.domain.enums.UserType.NMRC);
@@ -43,10 +43,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         User userEntity = userDAO.findByUsername(username);
         if (userEntity == null) {
-          throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("User not found");
         }
         userDetails = new UserDetailsAdapter(userEntity);
-       setUser(userEntity);
+        setUser(userEntity);
         return userDetails;
     }
 

@@ -11,7 +11,7 @@
 
     <div class="ui-widget ui-widget-header" style="height: 100px;">
         <h:form>
-        <div id="logo">
+            <div id="logo">
                 <h1>PHARMADEX</h1>
                 <h:panelGroup styleClass="logoutWelcomeId">
                     <sec:isAuthenticated>
@@ -27,13 +27,13 @@
                     <sec:isAnonymous>
                         <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
                         -->                                <h:outputLink id="loginLink" value="javascript:void(0)"
-                                                                             onclick="logindlg.show()"
-                                                                             title="login">
+                                                                         onclick="logindlg.show()"
+                                                                         title="login">
                         <p:graphicImage value="/resources/images/log_in.png"/>
                     </h:outputLink>
                     </sec:isAnonymous>
                 </h:panelGroup>
-        </div>
+            </div>
         </h:form>
     </div>
 
@@ -62,11 +62,13 @@
                                 rendered="#{userSession.admin||userSession.inspector}"/>
                 </sec:isAuthenticated>
 
-                <p:menuitem value="#{msgs.Tipc}" url="/public/tipchome.faces" icon="ui-icon-folder-collapsed"/>
+                <p:menuitem value="#{msgs.Tipc}" url="/public/tipchome.faces" icon="ui-icon-folder-collapsed"
+                            rendered="false"/>
 
-                <p:menuitem value="#{msgs.Qsl}" url="/public/qslhome.faces" icon="ui-icon-folder-collapsed"/>
+                <p:menuitem value="#{msgs.Qsl}" url="/public/qslhome.faces" icon="ui-icon-folder-collapsed"
+                            rendered="false"/>
 
-                <p:menuitem value="#{msgs.Narcotics}" url="/public/narcoticshome.faces"
+                <p:menuitem value="#{msgs.Narcotics}" url="/public/narcoticshome.faces" rendered="false"
                             icon="ui-icon-folder-collapsed"/>
 
                 <sec:isAuthenticated>

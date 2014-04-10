@@ -1,9 +1,6 @@
 package org.msh.pharmadex.auth;
 
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
 import org.primefaces.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -27,6 +24,7 @@ public class WebSession implements Serializable {
     private Product product;
     private UploadedFile file;
     private ProdAppChecklist prodAppChecklist;
+    private ProdApplications prodApplications;
 
     public User getUser() {
         return user;
@@ -66,5 +64,13 @@ public class WebSession implements Serializable {
 
     public void setProdAppChecklist(ProdAppChecklist prodAppChecklist) {
         this.prodAppChecklist = prodAppChecklist;
+    }
+
+    public ProdApplications getProdApplications() {
+        return prodApplications;
+    }
+
+    public void setProdApplications(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
     }
 }

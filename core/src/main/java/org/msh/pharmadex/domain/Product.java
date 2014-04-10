@@ -66,7 +66,7 @@ public class Product extends CreationDetail implements Serializable {
 
     private boolean noAtc;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private AdminRoute adminRoute;
 
     @OneToOne
@@ -88,7 +88,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinColumn(name = "createdBy")
     private User createdBy;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RegState regState;
 
     public Product() {
