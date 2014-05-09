@@ -1,7 +1,6 @@
 package org.msh.pharmadex.domain;
 
 import org.hibernate.envers.Audited;
-import org.msh.pharmadex.domain.enums.AdminRoute;
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.ProdType;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -66,7 +65,8 @@ public class Product extends CreationDetail implements Serializable {
 
     private boolean noAtc;
 
-    @Enumerated(EnumType.STRING)
+    @OneToOne
+    @JoinColumn(name = "ADMIN_ROUTE_ID")
     private AdminRoute adminRoute;
 
     @OneToOne

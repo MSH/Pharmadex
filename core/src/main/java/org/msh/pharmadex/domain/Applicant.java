@@ -1,12 +1,12 @@
 package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.domain.enums.ProdType;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,9 +48,6 @@ public class Applicant extends CreationDetail implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private ApplicantState state;
-
-    @Enumerated(EnumType.STRING)
-    private ProdType prodType;
 
     @Column(length = 50)
     private String fileNumber;
@@ -211,14 +208,6 @@ public class Applicant extends CreationDetail implements Serializable {
 
     public void setRegExpiryDate(Date regExpiryDate) {
         this.regExpiryDate = regExpiryDate;
-    }
-
-    public ProdType getProdType() {
-        return prodType;
-    }
-
-    public void setProdType(ProdType prodType) {
-        this.prodType = prodType;
     }
 
     public String getLicNo() {

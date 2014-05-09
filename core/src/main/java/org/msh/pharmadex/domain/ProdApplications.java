@@ -120,6 +120,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private StatusUser statusUser;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<Invoice> invoices;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
@@ -458,5 +461,13 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setPricing(Pricing pricing) {
         this.pricing = pricing;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

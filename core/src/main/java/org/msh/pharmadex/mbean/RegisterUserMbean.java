@@ -82,15 +82,15 @@ public class RegisterUserMbean implements Serializable {
             retvalue = userService.createUser(user);
         } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
-            return "/page/userregister.faces";
+            return "/page/registeruser.faces";
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
             e.printStackTrace();
-            return "/page/userregister.faces";
+            return "/page/registeruser.faces";
         }
         if (!retvalue.equalsIgnoreCase("persisted")) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
-            return "/page/userregister.faces";
+            return "/page/registeruser.faces";
         } else {
             try {
                 mailService.sendMail(mail, false);
@@ -119,15 +119,15 @@ public class RegisterUserMbean implements Serializable {
             retvalue = userService.updateUser(user);
         } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
-            return "/page/userregister.faces";
+            return "/page/registeruser.faces";
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
             e.printStackTrace();
-            return "/page/userregister.faces";
+            return "/page/registeruser.faces";
         }
         if (!retvalue.equalsIgnoreCase("persisted")) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
-            return "/page/userregister.faces";
+            return "/page/registeruser.faces";
         } else {
             return "/public/registrationhome.faces";
         }

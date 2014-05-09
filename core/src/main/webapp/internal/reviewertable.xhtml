@@ -1,0 +1,83 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <p:commandButton icon="ui-icon-document" value="#{msgs.assignprocessor}" oncomplete="reviewdlg.show()"
+                     action="#{processProdBn.initProcessorAdd}"/>
+
+    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}">
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.processor}"/>
+            </f:facet>
+            <p:commandLink id="viewLink" value="#{each.user.name}" action="/internal/review.faces"
+                           ajax="false">
+                <f:setPropertyActionListener value="#{each}" target="#{webSession.review}"/>
+            </p:commandLink>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.assigndate}"/>
+            </f:facet>
+            <h:outputLabel converter="javax.faces.DateTime" value="#{each.assignDate}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.completeddate}"/>
+            </f:facet>
+            <h:outputLabel converter="javax.faces.DateTime" value="#{each.submitDate}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.recommendation}"/>
+            </f:facet>
+            <h:outputText value="#{msgs[each.recomendType.key]}"/>
+        </p:column>
+
+        <p:column>
+            <p:commandButton id="deletereview" action="#{processProdBn.deleteReview(each)}"
+                             icon="ui-icon-trash"
+                             update=":reghome:processtab:reviwertbl :reghome:processtab:reviewDlg :reghome:messages"/>
+        </p:column>
+    </p:dataTable>
+
+    <p:dialog header="#{msgs.assignreviewer}" widgetVar="reviewdlg" resizable="false" id="reviewDlg" modal="true"
+              rendered="#{userSession.moderator}">
+
+        <p:panel>
+            <h:panelGrid columns="2" columnClasses="label value">
+
+                <h:outputText value="#{msgs.processor}"
+                              escape="false"
+                              styleClass="text"/>
+
+                <p:autoComplete id="module3" value="#{processProdBn.review.user}"
+                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+            </h:panelGrid>
+
+
+            <p:commandLink id="submitButton1" value="Submit" action="#{processProdBn.assignReviewer}"
+                           oncomplete="reviewdlg.hide()"
+                           update=":reghome:processtab:reviwertbl :reghome:processtab:reviewDlg :reghome:messages"/>
+        </p:panel>
+
+    </p:dialog>
+
+
+</ui:composition>

@@ -22,7 +22,7 @@ public class CompanyService implements Serializable {
     CompanyDAO companyDAO;
 
     public List<Company> findAllManufacturers() {
-        return companyDAO.findByCompanyTypeOrderByCompanyNameAsc(CompanyType.MANUFACTURER);
+        return companyDAO.findByCompanyTypeOrderByCompanyNameAsc(CompanyType.FIN_PROD_MANUF);
     }
 
     @Transactional

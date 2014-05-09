@@ -30,10 +30,6 @@ public class GlobalLists {
         return Arrays.asList(ProdCategory.values());
     }
 
-    public List<AdminRoute> getAdminRoutes() {
-        return Arrays.asList(AdminRoute.values());
-    }
-
     public List<ProdDrugType> getDrugTypes() {
         return Arrays.asList(ProdDrugType.values());
     }
@@ -49,5 +45,10 @@ public class GlobalLists {
     public List<AmdmtType> getAmdmtType() {
         return Arrays.asList(AmdmtType.values());
     }
+
+    public List<RecomendType> getRecomendType() {
+        return Arrays.asList(RecomendType.values());
+    }
+
 
 }

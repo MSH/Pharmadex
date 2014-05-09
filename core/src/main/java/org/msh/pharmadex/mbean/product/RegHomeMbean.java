@@ -98,6 +98,7 @@ public class RegHomeMbean implements Serializable {
             product.setDosForm(new DosageForm());
             product.setDosUnit(new DosUom());
             product.setPharmClassif(new PharmClassif());
+            product.setAdminRoute(new AdminRoute());
             selectedInns = new ArrayList<ProdInn>();
             product.setInns(selectedInns);
             prodApplications.setProd(product);

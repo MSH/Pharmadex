@@ -39,8 +39,9 @@ public class ApplicantDAO implements Serializable {
 
     @Transactional(readOnly = true)
     public List<Applicant> findRegApplicants() {
-        return (List<Applicant>) entityManager.createQuery("select a from Applicant a where a.state = :state")
-                .setParameter("state", ApplicantState.REGISTERED).getResultList();
+        return (List<Applicant>) entityManager.createQuery("from Applicant a where a.state = :state ")
+                .setParameter("state", ApplicantState.REGISTERED)
+                .getResultList();
     }
 
     @Transactional(readOnly = true)

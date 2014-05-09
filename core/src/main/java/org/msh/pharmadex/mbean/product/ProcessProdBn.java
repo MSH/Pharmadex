@@ -1,6 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.WebSession;
+import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.failure.UserSession;
@@ -34,29 +35,6 @@ import java.util.Map;
 public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
-    private ProdApplications prodApplications;
-    private Product product;
-    private Applicant applicant;
-    private List<Comment> comments;
-    private List<TimeLine> timeLineList;
-    private List<Mail> mails;
-    private List<Company> companies;
-    private List<ProdAppAmdmt> prodAppAmdmts;
-    private TimelineModel model;
-
-    private List<Timeline> timelinesChartData;
-
-    private Comment selComment = new Comment();
-    private org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
-    private Mail mail = new Mail();
-    private boolean readyReg;
-    private List<ProdAppChecklist> checklists;
-
-    private StatusUser module;
-    private boolean registered;
-    private String reviewComment;
-    private List<Invoice> invoices;
-    private String prodID;
 
     @Autowired
     private UserService userService;
@@ -84,20 +62,59 @@ public class ProcessProdBn implements Serializable {
 
     @Autowired
     private ProductService productService;
-    private boolean checkReviewStatus = false;
+
+    @Autowired
+    private ReviewDAO reviewDAO;
 
     @Autowired
     WebSession webSession;
+
+    private ProdApplications prodApplications;
+    private Product product;
+    private Applicant applicant;
+    private List<Comment> comments;
+    private List<TimeLine> timeLineList;
+    private List<Mail> mails;
+    private List<Company> companies;
+    private List<ProdAppAmdmt> prodAppAmdmts;
+    private TimelineModel model;
+
+    private List<Timeline> timelinesChartData;
+
+    private Comment selComment = new Comment();
+    private org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
+    private Mail mail = new Mail();
+    private boolean readyReg;
+    private List<ProdAppChecklist> checklists;
+    private List<Review> reviews;
+    private Review review = new Review();
+
+    private StatusUser module;
+    private boolean registered;
+    private String reviewComment;
+    private List<Invoice> invoices;
+    private String prodID;
+
+    private boolean checkReviewStatus = false;
+
 
     @PostConstruct
     private void init() {
         mail.setUser(userSession.getLoggedInUserObj());
         timeLine.setUser(userSession.getLoggedInUserObj());
         selComment.setUser(userSession.getLoggedInUserObj());
+        review = new Review();
+        review.setUser(new User());
     }
 
     public List<RegState> getRegSate() {
         return prodApplicationsService.nextStepOptions(prodApplications.getRegState(), userSession, getModule());
+    }
+
+    public String findReview() {
+        review = reviewDAO.findByUser_UserIdAndProdApplications_Id(userSession.getLoggedInUserObj().getUserId(), prodApplications.getId());
+        webSession.setReview(review);
+        return "/internal/review";
     }
 
     public TimelineModel getTimelinesChartData() {
@@ -139,6 +156,7 @@ public class ProcessProdBn implements Serializable {
         mails = prodApplications.getMails();
         timeLineList = prodApplications.getTimeLines();
         checklists = prodApplications.getProdAppChecklists();
+        reviews = prodApplications.getReviews();
         initProcessor();
     }
 
@@ -171,6 +189,29 @@ public class ProcessProdBn implements Serializable {
         if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
     }
+
+    public void initProcessorAdd() {
+        review = new Review();
+        review.setUser(new User());
+        review.setProdApplications(prodApplications);
+        review.setAssignDate(new Date());
+    }
+
+    public void assignReviewer() {
+        if (review == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+        }
+        review.setProdApplications(prodApplications);
+        review.setAssignDate(new Date());
+
+        if (!prodApplicationsService.saveReviewers(review).equalsIgnoreCase("success"))
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+        else
+            reviews.add(review);
+
+        review = new Review();
+    }
+
 
     public void assignModerator() {
         prodApplications.setUpdatedDate(new Date());
@@ -229,6 +270,19 @@ public class ProcessProdBn implements Serializable {
         return "";
     }
 
+    public String deleteReview(Review review) {
+        reviews.remove(review);
+        try {
+            reviewDAO.delete(review);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Comment successfully deleted "));
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Comment delete failed"));
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
     public List<TimeLine> getTimeLineList() {
         return timeLineList;
     }
@@ -281,6 +335,7 @@ public class ProcessProdBn implements Serializable {
 
     public void save() {
         prodApplications.setProdAppChecklists(checklists);
+        prodApplications.setReviews(reviews);
         prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj());
     }
 
@@ -500,5 +555,21 @@ public class ProcessProdBn implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 }

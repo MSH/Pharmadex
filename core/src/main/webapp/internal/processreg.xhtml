@@ -20,6 +20,10 @@
                     rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head}"/>
         <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear" onclick="reviewDlg.show()"
                     rendered="#{userSession.reviewer and !processProdBn.module.complete}"/>
+        <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
+                    rendered="#{userSession.reviewer and !processProdBn.module.complete}"
+                    action="#{processProdBn.findReview}" ajax="false"/>
+
         <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" onclick="regDlg.show()"
                     rendered="#{processProdBn.canRegister}"/>
         <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear" onclick="moderatordlg.show()"
@@ -311,7 +315,7 @@
     </p:dataTable>
 </p:tab>
 
-<p:tab title="Additional Information" id="addinfotab" rendered="#{userSession.admin||userSession.staff}">
+<p:tab title="#{msgs.add_info}" id="addinfotab" rendered="#{userSession.admin||userSession.staff}">
 
     <p:dataTable id="invoicetable" value="#{processProdBn.invoices}" var="invoice">
         <p:column headerText="#{msgs.invoice_no}">
@@ -393,7 +397,14 @@
     </p:commandButton>
 </p:tab>
 
+<p:tab title="#{msgs.processor}" id="process" rendered="#{userSession.moderator||userSession.head}">
+    <ui:include src="reviewertable.xhtml"/>
+</p:tab>
+
+
 <p:tab title="#{msgs.processor}" id="processor" rendered="#{userSession.moderator||userSession.head}">
+
+
     <p:commandButton icon="ui-icon-document" value="#{msgs.assignprocessor}" onclick="processordlg.show()"/>
 
     <p:panelGrid columns="5" columnClasses="label value" rendered="#{processProdBn.module != null}" id="processpnl">

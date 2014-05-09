@@ -11,14 +11,16 @@ import org.msh.pharmadex.domain.enums.AmdmtType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Author: usrivastava
  */
 @Component
-public class AmdmtService {
+public class AmdmtService implements Serializable {
 
+    private static final long serialVersionUID = 7705194423798800232L;
     @Autowired
     private AmdmtCategoryDAO amdmtCategoryDAO;
 

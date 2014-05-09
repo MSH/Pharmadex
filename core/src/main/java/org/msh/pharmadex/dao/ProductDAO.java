@@ -134,6 +134,8 @@ public class ProductDAO implements Serializable {
             Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
             Hibernate.initialize(prod.getProdApplications().getTimeLines());
             Hibernate.initialize(prod.getProdApplications().getPricing());
+            if (prod.getProdApplications().getReviews() != null)
+                Hibernate.initialize(prod.getProdApplications().getReviews());
             if (prod.getProdApplications().getPricing() != null) {
                 Hibernate.initialize(prod.getProdApplications().getPricing().getDrugPrices());
             }

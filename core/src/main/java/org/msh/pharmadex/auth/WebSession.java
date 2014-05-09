@@ -25,6 +25,7 @@ public class WebSession implements Serializable {
     private UploadedFile file;
     private ProdAppChecklist prodAppChecklist;
     private ProdApplications prodApplications;
+    private Review review;
 
     public User getUser() {
         return user;
@@ -72,5 +73,13 @@ public class WebSession implements Serializable {
 
     public void setProdApplications(ProdApplications prodApplications) {
         this.prodApplications = prodApplications;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 }

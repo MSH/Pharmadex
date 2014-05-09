@@ -70,6 +70,9 @@ public class ProdApplicationsService implements Serializable {
     @Autowired
     private StatusUserDAO statusUserDAO;
 
+    @Autowired
+    private ReviewDAO reviewDAO;
+
     ProdApplications prodApp;
     Product product;
 
@@ -319,6 +322,11 @@ public class ProdApplicationsService implements Serializable {
         return "success";
     }
 
+    public String saveReviewers(Review review) {
+        reviewDAO.saveAndFlush(review);
+        return "success";
+    }
+
 
     public List<ProdApplications> findPayNotified() {
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -354,7 +362,7 @@ public class ProdApplicationsService implements Serializable {
 
         String companyName = "";
         for (Company c : product.getCompanies()) {
-            if (c.getCompanyType().equals(CompanyType.MANUFACTURER))
+            if (c.getCompanyType().equals(CompanyType.API_MANUF))
                 companyName = c.getCompanyName();
         }
 

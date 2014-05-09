@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,8 +15,9 @@ import java.util.List;
  */
 @Component
 @Scope("singleton")
-public class GlobalEntityLists {
+public class GlobalEntityLists implements Serializable {
 
+    private static final long serialVersionUID = 5852117386686135477L;
     private List<DosageForm> dosageForms;
     private List<DosUom> dosUoms;
     private List<Country> countries;
@@ -29,6 +31,8 @@ public class GlobalEntityLists {
     private List<Inn> inns;
     private List<Atc> atcs;
     private List<Checklist> checklists;
+    private List<AdminRoute> adminRoutes;
+
 
     @Autowired
     private DosageFormService dosageFormService;
@@ -63,9 +67,12 @@ public class GlobalEntityLists {
     @Autowired
     private ProdApplicationsService prodApplicationsService;
 
+    @Autowired
+    private AdminRouteService adminRouteService;
+
 
     public List<Checklist> getChecklists() {
-        if(checklists==null)
+        if (checklists == null)
             checklists = prodApplicationsService.findAllChecklist();
         return checklists;
     }
@@ -153,5 +160,11 @@ public class GlobalEntityLists {
         if (pharmClassifs == null)
             pharmClassifs = pharmClassifService.getPharmClassifList();
         return pharmClassifs;
+    }
+
+    public List<AdminRoute> getAdminRoutes() {
+        if (adminRoutes == null)
+            adminRoutes = adminRouteService.getAdminRoutes();
+        return adminRoutes;
     }
 }

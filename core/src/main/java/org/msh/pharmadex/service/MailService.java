@@ -16,10 +16,11 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.Serializable;
 import java.util.List;
 
 @Service
-public class MailService {
+public class MailService implements Serializable {
 
     @Autowired
     private MailSender mailSender;

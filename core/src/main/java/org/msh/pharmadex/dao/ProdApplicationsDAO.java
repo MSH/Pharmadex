@@ -159,8 +159,7 @@ public class ProdApplicationsDAO implements Serializable {
     }
 
     public List<ProdApplications> findProdApplicationsByReviewer(Integer userId) {
-        return entityManager.createQuery("select p from ProdApplications p left join p.statusUser s where (s.module1.userId = :userId or s.module2.userId = :userId" +
-                " or s.module3.userId = :userId or s.module4.userId = :userId) and p.regState = :regState")
+        return entityManager.createQuery("select p from ProdApplications p left join p.reviews r where r.user.userId = :userId and p.regState = :regState")
                 .setParameter("userId", userId)
                 .setParameter("regState", RegState.REVIEW_BOARD)
                 .getResultList();

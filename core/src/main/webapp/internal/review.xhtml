@@ -1,0 +1,109 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <div style="width: 1054px;">
+            <h:form id="reghome">
+                <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.complete_review}</h1>
+                </div>
+
+                <p:panel>
+                    <h:panelGrid columns="4" columnClasses="value, label, value, label  " cellpadding="10px"
+                                 cellspacing="10px">
+                        <p:outputLabel value="#{msgs.processor}: "/>
+                        <p:outputLabel value="#{reviewBn.review.user.name}"/>
+
+                        <p:outputLabel value="#{msgs.assigndate}: "/>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{reviewBn.review.assignDate}"/>
+
+                        <p:outputLabel value="#{msgs.submitted_date}"
+                                       rendered="not empty #{reviewBn.review.submitDate}: "/>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{reviewBn.review.submitDate}"
+                                       rendered="not empty #{reviewBn.review.submitDate}"/>
+
+                        <h:outputText value="#{msgs.recommendation}"
+                                      rendered="not empty #{reviewBn.review.recomendType}"/>
+                        <h:outputText value="#{msgs[reviewBn.review.recomendType.key]}"
+                                      rendered="not empty #{reviewBn.review.recomendType}"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <div style="height: 10px;"/>
+
+                <div align="right">
+                    <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
+                                     update=":reghome"/>
+                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" ajax="false"/>
+                    <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{reviewBn.cancelReview}"
+                                     ajax="false"/>
+                </div>
+
+                <div style="height: 10px;"/>
+
+                <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+                    <h:outputText value="#{msgs.recommendation}" rendered="#{!reviewBn.submitted}"/>
+
+                    <p:selectOneMenu id="statuscb" value="#{reviewBn.review.recomendType}">
+                        <f:selectItem itemLabel="-"/>
+                        <f:selectItems value="#{globalLists.recomendType}" var="type" itemLabel="#{msgs[type.key]}"/>
+                    </p:selectOneMenu>
+
+                </h:panelGrid>
+
+                <div style="height: 10px;"/>
+
+                <p:dataTable var="checkList" value="#{reviewBn.reviewChecklists}" style="width:100%;">
+                    <p:column headerText="">
+                        <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel value="#{checkList.checklist.name}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel value="#{checkList.checklist.module}"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.global_comment}">
+                        <p:inputTextarea value="#{checkList.comments}"
+                                         readonly="#{!userSession.reviewer and !reviewBn.submitted}" rows="2"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.concerns}">
+                        <p:inputTextarea value="#{checkList.concerns}"
+                                         readonly="#{!userSession.reviewer and !reviewBn.submitted}" rows="2"/>
+                    </p:column>
+                    <!--        <p:column>
+                                <p:commandButton icon="ui-icon-document" onclick="moduledlg.show()"
+                                                 action="#{fileUploadController.setProdAppChecklist(checkList)}"
+                                                 rendered="#{!checkList.fileUploaded}"/>
+
+                            </p:column>
+                            <p:column>
+                                <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                                 onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                 icon="ui-icon-arrowstop-1-s" rendered="#{checkList.fileUploaded}"
+                                        >
+                                    <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
+                                </p:commandButton>
+                            </p:column>
+                            -->
+                </p:dataTable>
+
+            </h:form>
+        </div>
+
+        <div style="height: 10px;"/>
+
+    </ui:define>
+</ui:composition>

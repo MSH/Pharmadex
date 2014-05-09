@@ -59,7 +59,6 @@
             </p:selectOneMenu>
             <p:message for="dosForm" showSummary="true" showDetail="false"/>
 
-
             <h:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
             <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.product.dosUnit.id}"
                              requiredMessage="#{msgs.valid_dos_form}" required="true">
@@ -76,10 +75,11 @@
             <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
 
             <h:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
-            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.product.adminRoute}" required="true"
+            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.product.adminRoute.id}" required="true"
                              requiredMessage="#{msgs.valid_value_req}">
                 <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalLists.adminRoutes}" var="type" itemLabel="#{msgs[type.key]}"/>
+                <f:selectItems value="#{globalEntityLists.adminRoutes}" var="type" itemLabel="#{type.name}"
+                               itemValue="#{type.id}"/>
             </p:selectOneMenu>
             <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
 
