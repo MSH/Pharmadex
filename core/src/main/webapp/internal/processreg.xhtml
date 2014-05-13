@@ -18,8 +18,6 @@
         <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" onclick="dlg.show()"/>
         <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document" onclick="stepDlg.show()"
                     rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head}"/>
-        <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear" onclick="reviewDlg.show()"
-                    rendered="#{userSession.reviewer and !processProdBn.module.complete}"/>
         <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                     rendered="#{userSession.reviewer and !processProdBn.module.complete}"
                     action="#{processProdBn.findReview}" ajax="false"/>
@@ -401,106 +399,6 @@
     <ui:include src="reviewertable.xhtml"/>
 </p:tab>
 
-
-<p:tab title="#{msgs.processor}" id="processor" rendered="#{userSession.moderator||userSession.head}">
-
-
-    <p:commandButton icon="ui-icon-document" value="#{msgs.assignprocessor}" onclick="processordlg.show()"/>
-
-    <p:panelGrid columns="5" columnClasses="label value" rendered="#{processProdBn.module != null}" id="processpnl">
-
-        <h:outputText value="#{msgs.module}"/>
-        <h:outputText value="#{msgs.processor}" style="font-weight: bold;"/>
-        <h:outputText value="#{msgs.assigndate}" style="font-weight: bold;"/>
-        <h:outputText value="#{msgs.completeddate}" style="font-weight: bold;"/>
-        <h:outputText value="#{msgs.review_comment}" style="font-weight: bold;"/>
-
-
-        <h:outputText value="Module 1 Reviewer: "/>
-
-        <h:outputText value="#{processProdBn.module.module1.name}" escape="false"/>
-
-        <h:outputText value="#{processProdBn.module.assignDate}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-        <h:outputText value="#{processProdBn.module.module1SubmitDt}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
-                         rendered="#{processProdBn.module.review1 != null}"
-                         action="#{processProdBn.setReviewComment(processProdBn.module.review1)}"
-                         update=":reghome:dlgRevComment"/>
-        <p:outputLabel rendered="#{processProdBn.module.review1 == null}"/>
-
-
-        <h:outputText value="Module 2 Reviewer: "
-                      escape="false"/>
-
-        <h:outputText value="#{processProdBn.module.module2.name}"
-                      escape="false"/>
-
-        <h:outputText value="#{processProdBn.module.assignDate}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-        <h:outputText value="#{processProdBn.module.module2SubmitDt}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
-                         rendered="#{processProdBn.module.review2 != null}"
-                         action="#{processProdBn.setReviewComment(processProdBn.module.review2)}"
-                         update=":reghome:dlgRevComment"/>
-        <p:outputLabel rendered="#{processProdBn.module.review2 == null}"/>
-
-
-        <h:outputText value="Module 3 Reviewer: "
-                      escape="false"/>
-
-        <h:outputText value="#{processProdBn.module.module3.name}" escape="false"/>
-
-        <h:outputText value="#{processProdBn.module.assignDate}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-        <h:outputText value="#{processProdBn.module.module3SubmitDt}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-
-        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
-                         rendered="#{processProdBn.module.review3 != null}"
-                         action="#{processProdBn.setReviewComment(processProdBn.module.review3)}"
-                         update=":reghome:dlgRevComment"/>
-        <p:outputLabel rendered="#{processProdBn.module.review3 == null}"/>
-
-
-        <h:outputText value="Module 4 Reviewer: "
-                      escape="false"/>
-
-        <h:outputText value="#{processProdBn.module.module4.name}"
-                      escape="false"/>
-
-        <h:outputText value="#{processProdBn.module.assignDate}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-        <h:outputText value="#{processProdBn.module.module4SubmitDt}">
-            <f:convertDateTime dateStyle="medium" type="date"/>
-        </h:outputText>
-
-        <p:commandButton icon="ui-icon-document" oncomplete="dlgRevComment.show()"
-                         rendered="#{processProdBn.module.review4 != null}"
-                         action="#{processProdBn.setReviewComment(processProdBn.module.review4)}"
-                         update=":reghome:dlgRevComment"/>
-        <p:outputLabel rendered="#{processProdBn.module.review4 == null}"/>
-
-    </p:panelGrid>
-
-
-</p:tab>
 
 </p:tabView>
 

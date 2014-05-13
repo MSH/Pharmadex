@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,8 +62,14 @@ public class ReviewBn implements Serializable {
     }
 
     public String submitReview() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (review.getRecomendType() == null) {
+            facesContext.addMessage(null, new FacesMessage("Recommendation field cannot be empty.", "Please enter recommendation in order to submit the review."));
+        }
 
-        return "";
+        review.setSubmitDate(new Date());
+        saveReview();
+        return "/internal/processreg";
     }
 
     public String cancelReview() {
@@ -86,7 +95,7 @@ public class ReviewBn implements Serializable {
     }
 
     public boolean isSubmitted() {
-        if (review.getSubmitDate() != null)
+        if (review != null && review.getSubmitDate() != null)
             submitted = true;
         return submitted;
     }

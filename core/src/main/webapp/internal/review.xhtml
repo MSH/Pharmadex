@@ -29,15 +29,16 @@
                         <p:outputLabel value="#{msgs.assigndate}: "/>
                         <h:outputLabel converter="javax.faces.DateTime" value="#{reviewBn.review.assignDate}"/>
 
-                        <p:outputLabel value="#{msgs.submitted_date}"
-                                       rendered="not empty #{reviewBn.review.submitDate}: "/>
+                        <p:outputLabel value="#{msgs.submitted_date}" rendered="#{reviewBn.submitted}"
+                                />
                         <h:outputLabel converter="javax.faces.DateTime" value="#{reviewBn.review.submitDate}"
-                                       rendered="not empty #{reviewBn.review.submitDate}"/>
+                                       rendered="#{reviewBn.submitted}"
+                                />
 
-                        <h:outputText value="#{msgs.recommendation}"
-                                      rendered="not empty #{reviewBn.review.recomendType}"/>
-                        <h:outputText value="#{msgs[reviewBn.review.recomendType.key]}"
-                                      rendered="not empty #{reviewBn.review.recomendType}"/>
+                        <h:outputText value="#{msgs.recommendation}" rendered="#{reviewBn.submitted}"
+                                />
+                        <h:outputText value="#{msgs[reviewBn.review.recomendType.key]}" rendered="#{reviewBn.submitted}"
+                                />
                     </h:panelGrid>
                 </p:panel>
 
@@ -46,15 +47,17 @@
                 <div align="right">
                     <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
                                      update=":reghome"/>
-                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" ajax="false"/>
-                    <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{reviewBn.cancelReview}"
+                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" update=":reghome"
+                                     ajax="false"/>
+                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewBn.cancelReview}"
                                      ajax="false"/>
                 </div>
 
                 <div style="height: 10px;"/>
 
-                <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
-                    <h:outputText value="#{msgs.recommendation}" rendered="#{!reviewBn.submitted}"/>
+                <h:panelGrid columns="2" cellpadding="10" cellspacing="10"
+                             rendered="#{userSession.reviewer and !reviewBn.submitted}">
+                    <h:outputText value="#{msgs.recommendation}"/>
 
                     <p:selectOneMenu id="statuscb" value="#{reviewBn.review.recomendType}">
                         <f:selectItem itemLabel="-"/>
@@ -77,11 +80,11 @@
                     </p:column>
                     <p:column headerText="#{msgs.global_comment}">
                         <p:inputTextarea value="#{checkList.comments}"
-                                         readonly="#{!userSession.reviewer and !reviewBn.submitted}" rows="2"/>
+                                         readonly="#{!userSession.reviewer or reviewBn.submitted}" rows="2"/>
                     </p:column>
                     <p:column headerText="#{msgs.concerns}">
                         <p:inputTextarea value="#{checkList.concerns}"
-                                         readonly="#{!userSession.reviewer and !reviewBn.submitted}" rows="2"/>
+                                         readonly="#{!userSession.reviewer or !reviewBn.submitted}" rows="2"/>
                     </p:column>
                     <!--        <p:column>
                                 <p:commandButton icon="ui-icon-document" onclick="moduledlg.show()"
