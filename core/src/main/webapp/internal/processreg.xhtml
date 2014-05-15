@@ -700,62 +700,6 @@
 </h:panelGrid>
 </h:panelGrid>
 </h:form>
-<p:dialog header="Assign Reviewer" widgetVar="processordlg" resizable="false" id="processorDlg" modal="true"
-          rendered="#{userSession.moderator}">
-    <h:form id="processfrm">
-
-        <p:panel>
-            <h:panelGrid columns="2" columnClasses="label value">
-                <h:outputText value="Module 1: "
-                              escape="false"
-                              styleClass="text"/>
-
-                <p:autoComplete id="module1" value="#{processProdBn.module.module1}"
-                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
-
-                <h:outputText value="Module 2: "
-                              escape="false"
-                              styleClass="text"/>
-
-                <p:autoComplete id="module2" value="#{processProdBn.module.module2}"
-                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
-
-                <h:outputText value="Module 3: "
-                              escape="false"
-                              styleClass="text"/>
-
-                <p:autoComplete id="module3" value="#{processProdBn.module.module3}"
-                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
-
-                <h:outputText value="Module 4: "
-                              escape="false"
-                              styleClass="text"/>
-
-                <p:autoComplete id="module4" value="#{processProdBn.module.module4}"
-                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
-
-            </h:panelGrid>
-
-
-            <p:commandLink id="submitButton1" value="Submit" action="#{processProdBn.assignProcessor}"
-                           oncomplete="processordlg.hide()"
-                           update=":reghome:processtab:processpnl :reghome:messages"/>
-        </p:panel>
-
-    </h:form>
-</p:dialog>
 </ui:define>
 <script type="text/javascript">
     function start() {

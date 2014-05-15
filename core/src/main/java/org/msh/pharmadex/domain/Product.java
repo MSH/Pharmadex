@@ -1,6 +1,7 @@
 package org.msh.pharmadex.domain;
 
 import org.hibernate.envers.Audited;
+import org.msh.pharmadex.domain.enums.AgeGroup;
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.ProdType;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -48,6 +49,10 @@ public class Product extends CreationDetail implements Serializable {
     @Column(name = "prod_type")
     @Enumerated(EnumType.STRING)
     private ProdType prodType;
+
+    @Column(name = "age_group")
+    @Enumerated(EnumType.STRING)
+    private AgeGroup ageGroup;
 
     @Column(name = "prod_cat")
     @Enumerated(EnumType.STRING)
@@ -273,5 +278,13 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setProdCategory(ProdCategory prodCategory) {
         this.prodCategory = prodCategory;
+    }
+
+    public AgeGroup getAgeGroup() {
+        return ageGroup;
+    }
+
+    public void setAgeGroup(AgeGroup ageGroup) {
+        this.ageGroup = ageGroup;
     }
 }

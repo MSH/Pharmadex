@@ -47,8 +47,13 @@ public class Review implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date submitDate;
 
+    @Lob
+    @Column(nullable = false)
+    private byte[] file;
+
     @OneToMany(mappedBy = "review", cascade = {CascadeType.ALL})
     private List<ReviewChecklist> reviewChecklists;
+
 
     public Long getId() {
         return id;
@@ -106,5 +111,11 @@ public class Review implements Serializable {
         this.reviewChecklists = reviewChecklists;
     }
 
+    public byte[] getFile() {
+        return file;
+    }
 
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
 }

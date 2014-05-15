@@ -4,17 +4,24 @@
 
 package org.msh.pharmadex.mbean.product;
 
+import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewChecklist;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ReviewService;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +31,7 @@ import java.util.List;
  * Author: usrivastava
  */
 @Component
-@Scope("request")
+@Scope("session")
 public class ReviewBn implements Serializable {
 
     private static final long serialVersionUID = -1555668282210872889L;
@@ -46,6 +53,49 @@ public class ReviewBn implements Serializable {
 
     @Autowired
     private WebSession webSession;
+
+    private UploadedFile file;
+
+    private boolean attach;
+
+    public boolean isAttach() {
+        if (review.getFile().length > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public void setAttach(boolean attach) {
+        this.attach = attach;
+    }
+
+    public void handleFileUpload() {
+        FacesMessage msg;
+        if (file != null) {
+            msg = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            try {
+                review.setFile(IOUtils.toByteArray(file.getInputstream()));
+                saveReview();
+            } catch (IOException e) {
+                msg = new FacesMessage("Error", file.getFileName() + " is not uploaded.");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        } else {
+            msg = new FacesMessage("Error", file.getFileName() + " is not uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+    }
+
+    public StreamedContent fileDownload() {
+        byte[] file1 = review.getFile();
+        InputStream ist = new ByteArrayInputStream(file1);
+        StreamedContent download = new DefaultStreamedContent(ist);
+//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+        return download;
+    }
 
 
     public List<ReviewChecklist> getReviewChecklists() {
@@ -102,5 +152,13 @@ public class ReviewBn implements Serializable {
 
     public void setSubmitted(boolean submitted) {
         this.submitted = submitted;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
     }
 }

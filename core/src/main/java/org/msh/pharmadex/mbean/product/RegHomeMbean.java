@@ -480,4 +480,6 @@ public class RegHomeMbean implements Serializable {
     public void setShowDrugPrice(boolean showDrugPrice) {
         this.showDrugPrice = showDrugPrice;
     }
+
+
 }

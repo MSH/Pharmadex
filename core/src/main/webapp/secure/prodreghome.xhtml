@@ -83,6 +83,14 @@
             </p:selectOneMenu>
             <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
 
+            <h:outputLabel value="#{msgs.age_group}" for="ageGroupcb"/>
+            <p:selectOneMenu id="ageGroupcb" value="#{regHomeMbean.product.ageGroup}" required="true"
+                             requiredMessage="#{msgs.valid_prod_type}">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalLists.ageGroupes}" var="ageGrp" itemLabel="#{msgs[ageGrp.key]}"/>
+            </p:selectOneMenu>
+            <p:message for="ageGroupcb" showSummary="true" showDetail="false"/>
+
             <h:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
             <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.product.pharmClassif}"
                             completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
