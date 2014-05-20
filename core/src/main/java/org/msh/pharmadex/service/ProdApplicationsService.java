@@ -95,7 +95,7 @@ public class ProdApplicationsService implements Serializable {
         return prodApp;
     }
 
-    public List<RegState> nextStepOptions(RegState regState, UserSession userSession, StatusUser module) {
+    public List<RegState> nextStepOptions(RegState regState, UserSession userSession, boolean reviewStatus) {
         RegState[] options = null;
         switch (regState) {
             case NEW_APPL:
@@ -120,7 +120,7 @@ public class ProdApplicationsService implements Serializable {
                 break;
             case REVIEW_BOARD:
                 if (userSession.isAdmin() || userSession.isModerator()) {
-                    if (module.isComplete()) {
+                    if (reviewStatus) {
                         options = new RegState[3];
                         options[0] = RegState.FOLLOW_UP;
                         options[1] = RegState.RECOMMENDED;
@@ -400,5 +400,13 @@ public class ProdApplicationsService implements Serializable {
         }
 
         return "created";
+    }
+
+    public ProdApplications getProdApp() {
+        return prodApp;
+    }
+
+    public void setProdApp(ProdApplications prodApp) {
+        this.prodApp = prodApp;
     }
 }

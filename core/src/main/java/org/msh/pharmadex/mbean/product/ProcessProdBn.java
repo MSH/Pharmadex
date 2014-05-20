@@ -108,7 +108,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<RegState> getRegSate() {
-        return prodApplicationsService.nextStepOptions(prodApplications.getRegState(), userSession, getModule());
+        return prodApplicationsService.nextStepOptions(prodApplications.getRegState(), userSession, getCheckReviewStatus());
     }
 
     public String findReview() {
@@ -465,11 +465,16 @@ public class ProcessProdBn implements Serializable {
     public boolean getCheckReviewStatus() {
         if (prodApplications == null)
             getProdApplications();
-        if (userSession.isModerator() && getModule().isComplete())
-            checkReviewStatus = true;
-        else
-            checkReviewStatus = false;
+        for (Review each : prodApplications.getReviews()) {
+            if (!each.isSubmitted()) {
+                checkReviewStatus = false;
+                break;
+            } else {
+                checkReviewStatus = true;
+            }
+        }
         return checkReviewStatus;
+
     }
 
     public TimelineModel getModel() {

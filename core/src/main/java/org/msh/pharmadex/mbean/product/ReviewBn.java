@@ -49,8 +49,6 @@ public class ReviewBn implements Serializable {
 
     private List<ReviewChecklist> reviewChecklists;
 
-    private boolean submitted;
-
     @Autowired
     private WebSession webSession;
 
@@ -59,7 +57,7 @@ public class ReviewBn implements Serializable {
     private boolean attach;
 
     public boolean isAttach() {
-        if (review.getFile().length > 0)
+        if (review.getFile() != null && review.getFile().length > 0)
             return true;
         else
             return false;
@@ -142,16 +140,6 @@ public class ReviewBn implements Serializable {
 
     public void setReview(Review review) {
         this.review = review;
-    }
-
-    public boolean isSubmitted() {
-        if (review != null && review.getSubmitDate() != null)
-            submitted = true;
-        return submitted;
-    }
-
-    public void setSubmitted(boolean submitted) {
-        this.submitted = submitted;
     }
 
     public UploadedFile getFile() {

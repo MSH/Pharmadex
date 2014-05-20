@@ -29,15 +29,16 @@
                         <p:outputLabel value="#{msgs.assigndate}: "/>
                         <h:outputLabel converter="javax.faces.DateTime" value="#{reviewBn.review.assignDate}"/>
 
-                        <p:outputLabel value="#{msgs.submitted_date}" rendered="#{reviewBn.submitted}"
+                        <p:outputLabel value="#{msgs.submitted_date}" rendered="#{reviewBn.review.submitted}"
                                 />
                         <h:outputLabel converter="javax.faces.DateTime" value="#{reviewBn.review.submitDate}"
-                                       rendered="#{reviewBn.submitted}"
+                                       rendered="#{reviewBn.review.submitted}"
                                 />
 
-                        <h:outputText value="#{msgs.recommendation}" rendered="#{reviewBn.submitted}"
+                        <h:outputText value="#{msgs.recommendation}" rendered="#{reviewBn.review.submitted}"
                                 />
-                        <h:outputText value="#{msgs[reviewBn.review.recomendType.key]}" rendered="#{reviewBn.submitted}"
+                        <h:outputText value="#{msgs[reviewBn.review.recomendType.key]}"
+                                      rendered="#{reviewBn.review.submitted}"
                                 />
                     </h:panelGrid>
                 </p:panel>
@@ -46,9 +47,10 @@
 
                 <div align="right">
                     <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
-                                     update=":reghome"/>
+                                     update=":reghome"
+                                     rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
                     <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" update=":reghome"
-                                     ajax="false"/>
+                                     ajax="false" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
                     <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewBn.cancelReview}"
                                      ajax="false"/>
                 </div>
@@ -56,25 +58,28 @@
                 <div style="height: 10px;"/>
 
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10"
-                             rendered="#{userSession.reviewer and !reviewBn.submitted}">
+                             rendered="#{userSession.reviewer and !reviewBn.review.submitted}">
                     <h:outputText value="#{msgs.recommendation}"/>
+
 
                     <p:selectOneMenu id="statuscb" value="#{reviewBn.review.recomendType}">
                         <f:selectItem itemLabel="-"/>
                         <f:selectItems value="#{globalLists.recomendType}" var="type" itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
 
-                    <p:fileUpload value="#{reviewBn.file}" mode="simple"/>
+                    <h:outputText value="Upload File"/>
+                    <p:fileUpload value="#{reviewBn.file}" mode="simple" rendered="#{!reviewBn.attach}"/>
 
-                    <p:commandButton value="Submit" ajax="false"
-                                     actionListener="#{reviewBn.handleFileUpload}"/>
+                    <h:outputText value=""/>
+                    <p:commandLink value="#{msgs.global_upload}" ajax="false"
+                                   actionListener="#{reviewBn.handleFileUpload}" rendered="#{!reviewBn.attach}"/>
 
                 </h:panelGrid>
 
                 <div style="height: 10px;"/>
 
                 <div>
-                    <p:commandButton id="downloadLink" value="Download" ajax="true"
+                    <p:commandButton id="downloadLink" value="Download Attachment" ajax="true"
                                      onclick="PrimeFaces.monitorDownload(start, stop)" immediate="true"
                                      icon="ui-icon-arrowthichk-s" rendered="#{reviewBn.attach}">
                         <p:fileDownload value="#{reviewBn.fileDownload()}"/>
@@ -94,11 +99,11 @@
                     </p:column>
                     <p:column headerText="#{msgs.global_comment}">
                         <p:inputTextarea value="#{checkList.comments}"
-                                         readonly="#{!userSession.reviewer or reviewBn.submitted}" rows="2"/>
+                                         readonly="#{!userSession.reviewer or reviewBn.review.submitted}" rows="2"/>
                     </p:column>
                     <p:column headerText="#{msgs.concerns}">
                         <p:inputTextarea value="#{checkList.concerns}"
-                                         readonly="#{!userSession.reviewer or !reviewBn.submitted}" rows="2"/>
+                                         readonly="#{!userSession.reviewer or reviewBn.review.submitted}" rows="2"/>
                     </p:column>
                     <!--        <p:column>
                                 <p:commandButton icon="ui-icon-document" onclick="moduledlg.show()"

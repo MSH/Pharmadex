@@ -20,8 +20,8 @@
                 <h:outputText value="#{msgs.processor}"/>
             </f:facet>
             <p:commandLink id="viewLink" value="#{each.user.name}" action="/internal/review.faces"
-                           ajax="false">
-                <f:setPropertyActionListener value="#{each}" target="#{webSession.review}"/>
+                           ajax="false" immediate="true">
+            <f:setPropertyActionListener value="#{each}" target="#{webSession.review}"/>
             </p:commandLink>
         </p:column>
 

@@ -48,11 +48,14 @@ public class Review implements Serializable {
     private Date submitDate;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = true)
     private byte[] file;
 
     @OneToMany(mappedBy = "review", cascade = {CascadeType.ALL})
     private List<ReviewChecklist> reviewChecklists;
+
+    @Transient
+    private boolean submitted;
 
 
     public Long getId() {
@@ -117,5 +120,16 @@ public class Review implements Serializable {
 
     public void setFile(byte[] file) {
         this.file = file;
+    }
+
+    public boolean isSubmitted() {
+        if (submitDate != null)
+            submitted = true;
+        return submitted;
+    }
+
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 }
