@@ -36,30 +36,30 @@
         <repository>
             <id>core</id>
             <name>Core Maven Webapp</name>
-            <url>file:C:/Users/usrivastava/.m2/repository/</url>
+            <url>file:/Users/utkarsh/.m2/repository/</url>
         </repository>
     </repositories>
 
     <build>
         <plugins>
-              <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                  <overlays>
-                    <overlay>
-                      <groupId>org.msh.pharmadex</groupId>
-                      <artifactId>core</artifactId>
-<!--                      <excludes>
-                        <exclude>WEB-INF/classes/images/sampleimage-dependency.jpg</exclude>
-                      </excludes>
--->
-                    </overlay>
-                  </overlays>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.msh.pharmadex</groupId>
+                            <artifactId>core</artifactId>
+                            <!--                      <excludes>
+                                                    <exclude>WEB-INF/classes/images/sampleimage-dependency.jpg</exclude>
+                                                  </excludes>
+                            -->
+                        </overlay>
+                    </overlays>
                 </configuration>
-              </plugin>
-            </plugins>
+            </plugin>
+        </plugins>
         <finalName>bangladesh</finalName>
     </build>
 </project>
