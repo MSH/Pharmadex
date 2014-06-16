@@ -9,12 +9,12 @@
     <h:outputScript library="js" name="calendar.js"/>
 
 
-    <div class="ui-widget ui-widget-header" style="height: 100px;">
+    <div class="ui-widget ui-widget-header" style="height: 120px;">
         <h:form>
             <div id="logo">
-                <h:panelGroup>
+                <h:panelGroup style="align-content: center;">
                     <a href="${request.contextPath}/home.faces">
-                        <img src="${request.contextPath}/resources/images/NMRC_Logo_colour.png"/>
+                        <img src="${request.contextPath}/resources/images/header.png"/>
                     </a>
                 </h:panelGroup>
                 <h:panelGroup styleClass="logoutWelcomeId">
@@ -59,7 +59,7 @@
 
                 <p:menuitem value="#{msgs.Registration}" url="/public/registrationhome.faces"
                             icon="ui-icon-folder-collapsed"/>
-
+<!--
                 <sec:isAuthenticated>
                     <p:menuitem value="#{msgs.Inspection}" url="/public/inspectionhome.faces"
                                 icon="ui-icon-folder-collapsed"
@@ -72,6 +72,8 @@
 
                 <p:menuitem value="#{msgs.Narcotics}" url="/public/narcoticshome.faces"
                             icon="ui-icon-folder-collapsed"/>
+
+-->
 
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.Admin}" icon="ui-icon-key" rendered="#{userSession.admin}">
