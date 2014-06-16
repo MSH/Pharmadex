@@ -95,12 +95,11 @@ body {
 
 /* Header */
 #logo {
-    height: 100px;
     margin: 0 auto;
     padding: 0px 0px 0 0px;
-    background-image: url(../resources/images/bg.png);
     background-repeat: repeat;
     background-position: center;
+    background-color: #5c9ccc;
 }
 
 #logo h1, #logo p {
@@ -305,4 +304,9 @@ body {
 }
 
 .ui-inputfield {
+}
+
+.fy-required-field{
+    background: url(../images/iconRequired.gif) no-repeat scroll left top transparent;
+    padding-left:15px;
 }

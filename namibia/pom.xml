@@ -26,18 +26,20 @@
         </dependency>
         <dependency>
             <groupId>org.primefaces.themes</groupId>
-            <artifactId>south-street</artifactId>
-            <version>1.0.9</version>
+            <artifactId>redmond</artifactId>
+            <version>1.0.10</version>
         </dependency>
 
     </dependencies>
+
     <repositories>
         <repository>
             <id>core</id>
             <name>Core Maven Webapp</name>
-            <url>file:/Users/utkarsh/.m2/repository/</url>
+            <url>file:C:/Users/usrivastava/.m2/repository/</url>
         </repository>
     </repositories>
+
 
     <build>
         <plugins>

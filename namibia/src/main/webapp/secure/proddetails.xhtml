@@ -1,0 +1,93 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+        <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
+            <h:outputLabel value="#{msgs.prod_cat}" for="prodCatcb" styleClass="fy-required-field"/>
+            <p:selectOneMenu id="prodCatcb" value="#{regHomeMbean.product.prodCategory}" required="true"
+                             requiredMessage="#{msgs.valid_prod_type}">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalLists.prodCategories}" var="prodcat" itemLabel="#{msgs[prodcat.key]}"/>
+            </p:selectOneMenu>
+            <p:message for="prodCatcb" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
+            <p:selectOneMenu id="cbdrugtype" value="#{regHomeMbean.prodApplications.drugType}">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalLists.drugTypes}" var="dt" itemLabel="#{msgs[dt.key]}"/>
+            </p:selectOneMenu>
+            <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
+            <p:inputText id="prodDetailName" value="#{regHomeMbean.product.prodName}" title="Product Name"
+                         required="true" requiredMessage="#{msgs.valid_prod_name}">
+            </p:inputText>
+            <p:message for="prodDetailName" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.prodgenname}" for="prodGenName"/>
+            <p:inputText id="prodGenName" value="#{regHomeMbean.product.genName}" title="Generic Name"
+                         required="true" requiredMessage="#{msgs.valid_gen_name}"/>
+            <p:message for="prodGenName" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
+            <p:selectOneMenu id="dosForm" value="#{regHomeMbean.product.dosForm.uid}"
+                             requiredMessage="#{msgs.valid_dos_form}" required="true">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
+                               itemValue="#{dosForm.uid}"/>
+            </p:selectOneMenu>
+            <p:message for="dosForm" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
+            <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.product.dosUnit.id}"
+                             requiredMessage="#{msgs.valid_dos_form}" required="true">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
+                               itemValue="#{dosUom.id}"/>
+            </p:selectOneMenu>
+            <p:message for="dosUnit" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
+            <p:inputText id="dosStrength" value="#{regHomeMbean.product.dosStrength}" title="DosStrength"
+                         required="true" requiredMessage="#{msgs.dos_strength}: Value required">
+            </p:inputText>
+            <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
+            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.product.adminRoute.id}" required="true"
+                             requiredMessage="#{msgs.valid_value_req}">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalEntityLists.adminRoutes}" var="type" itemLabel="#{type.name}"
+                               itemValue="#{type.id}"/>
+            </p:selectOneMenu>
+            <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.age_group}" for="ageGroupcb"/>
+            <p:selectOneMenu id="ageGroupcb" value="#{regHomeMbean.product.ageGroup}" required="true"
+                             requiredMessage="#{msgs.valid_prod_type}">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalLists.ageGroupes}" var="ageGrp" itemLabel="#{msgs[ageGrp.key]}"/>
+            </p:selectOneMenu>
+            <p:message for="ageGroupcb" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
+            <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.product.pharmClassif}"
+                            completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
+                            var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
+                            converter="#{pharmClassifConverter}" required="true"
+                            requiredMessage="#{msgs.valid_value_req}"
+                    >
+            </p:autoComplete>
+            <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
+
+
+            <h:outputLabel value="#{msgs.prod_desc}" for="prodDesc"/>
+            <p:inputTextarea id="prodDesc" value="#{regHomeMbean.product.prodDesc}" rows="4" cols="50"
+                             title="ProdDesc"/>
+        </h:panelGrid>
+
+
+</ui:composition>
