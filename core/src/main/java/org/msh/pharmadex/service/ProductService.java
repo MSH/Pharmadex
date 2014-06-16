@@ -43,9 +43,8 @@ public class ProductService implements Serializable {
         return productDAO.findRegProducts();
     }
 
-    public String updateProduct(Product prod) {
-        productDAO.updateProduct(prod);
-        return "persisted";
+    public Product updateProduct(Product prod) {
+        return productDAO.updateProduct(prod);
     }
 
 

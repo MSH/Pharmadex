@@ -29,15 +29,24 @@ public class Product extends CreationDetail implements Serializable {
     @Column(name = "prod_desc", length = 200)
     private String prodDesc;
 
+    @Column(name = "ingredient", length = 500)
+    private String ingredient;
+
     @Column(name = "gen_name", length = 150)
     private String genName;
+
+    @Column(name = "new_chem_name", length = 150)
+    private String newChemicalName;
 
     @OneToOne
     @JoinColumn(name = "DOSFORM_ID")
     private DosageForm dosForm;
 
     @Column(name = "dosage_strength")
-    private Double dosStrength;
+    private String dosStrength;
+
+    @Column(name="new_chemical_entity")
+    private boolean newChemicalEntity;
 
     @OneToOne
     @JoinColumn(name = "DOSUNIT_ID")
@@ -68,7 +77,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "atc_id"))
     private List<Atc> atcs;
 
-    private boolean noAtc;
+    private boolean noAtc = false;
 
     @OneToOne
     @JoinColumn(name = "ADMIN_ROUTE_ID")
@@ -136,11 +145,11 @@ public class Product extends CreationDetail implements Serializable {
         this.genName = genName;
     }
 
-    public Double getDosStrength() {
+    public String getDosStrength() {
         return dosStrength;
     }
 
-    public void setDosStrength(Double dosStrength) {
+    public void setDosStrength(String dosStrength) {
         this.dosStrength = dosStrength;
     }
 
@@ -286,5 +295,29 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setAgeGroup(AgeGroup ageGroup) {
         this.ageGroup = ageGroup;
+    }
+
+    public String getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(String ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public boolean isNewChemicalEntity() {
+        return newChemicalEntity;
+    }
+
+    public void setNewChemicalEntity(boolean newChemicalEntity) {
+        this.newChemicalEntity = newChemicalEntity;
+    }
+
+    public String getNewChemicalName() {
+        return newChemicalName;
+    }
+
+    public void setNewChemicalName(String newChemicalName) {
+        this.newChemicalName = newChemicalName;
     }
 }

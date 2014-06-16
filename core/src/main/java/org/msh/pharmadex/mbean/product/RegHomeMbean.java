@@ -8,13 +8,11 @@ import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.RegistrationUtil;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultScheduleEvent;
-import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.ScheduleEvent;
-import org.primefaces.model.ScheduleModel;
+import org.primefaces.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -29,10 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -87,6 +82,7 @@ public class RegHomeMbean implements Serializable {
     private RegATCHelper regATCHelper;
     private boolean showCompany = false;
     private boolean showDrugPrice = false;
+    private boolean showNCE = false;
     private List<DrugPrice> drugPrices;
 
     @PostConstruct
@@ -126,13 +122,14 @@ public class RegHomeMbean implements Serializable {
             prodApplications.setProdAppChecklists(prodAppChecklists);
             Pricing pricing = new Pricing(new ArrayList<DrugPrice>());
             prodApplications.setPricing(pricing);
+            atc = new Atc();
 
-            eventModel = new DefaultScheduleModel();
-            for (Appointment app : appointmentService.getAppointments()) {
-                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
-            }
+//            eventModel = new DefaultScheduleModel();
+//            for (Appointment app : appointmentService.getAppointments()) {
+//                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
+//            }
         }
-        regATCHelper = new RegATCHelper(atc, globalEntityLists);
+//        regATCHelper = new RegATCHelper(atc, globalEntityLists);
     }
 
     public List<Inn> completeInnCodes(String query) {
@@ -159,9 +156,10 @@ public class RegHomeMbean implements Serializable {
     @Transactional
     public void saveApp() {
         prodApplications.setUser(getLoggedInUser());
+        product.setApplicant(getApplicant());
         if (product.getId() == null)
             product.setCreatedBy(getLoggedInUser());
-        productService.updateProduct(product);
+        product = productService.updateProduct(product);
     }
 
     public String removeInn(ProdInn prodInn) {
@@ -175,10 +173,22 @@ public class RegHomeMbean implements Serializable {
         companies.remove(selectedCompany);
     }
 
+    public void nceChangeListener(){
+        if(product.isNewChemicalEntity())
+            showNCE = true;
+        else
+            showNCE = false;
+
+
+    }
+
     @Transactional
     public String submitApp() {
         FacesContext context = FacesContext.getCurrentInstance();
         ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+
+        RegistrationUtil registrationUtil = new RegistrationUtil();
+        prodApplications.setProdAppNo(registrationUtil.generateAppNo(prodApplications.getId()));
 
         List<TimeLine> timeLines = new ArrayList<TimeLine>();
         TimeLine timeLine = new TimeLine();
@@ -201,6 +211,8 @@ public class RegHomeMbean implements Serializable {
         return "/secure/prodregack.faces";
     }
 
+
+
     public String addProdInn() {
         System.out.println("Inside addinn");
         prodInn.setProduct(product);
@@ -216,6 +228,10 @@ public class RegHomeMbean implements Serializable {
         }
         prodInn = null;
         return null;
+    }
+
+    public void openAddATC (){
+        regATCHelper = new RegATCHelper(atc, globalEntityLists);
     }
 
     public String addAtc() {
@@ -266,7 +282,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     public Applicant getApplicant() {
-        if (applicant == null) {
+        if (applicant==null || applicant.getApplcntId()==null) {
             if (product != null && product.getApplicant() != null && product.getApplicant().getApplcntId() != null) {
                 applicant = applicantService.findApplicant(product.getApplicant().getApplcntId());
             } else if (getLoggedInUser().getApplicant() != null) {
@@ -479,6 +495,63 @@ public class RegHomeMbean implements Serializable {
 
     public void setShowDrugPrice(boolean showDrugPrice) {
         this.showDrugPrice = showDrugPrice;
+    }
+
+    public boolean isShowNCE() {
+        return showNCE;
+    }
+
+    public void setShowNCE(boolean showNCE) {
+        this.showNCE = showNCE;
+    }
+
+    private TreeNode selAtcTree;
+
+    public TreeNode getSelAtcTree() {
+        if (selAtcTree == null) {
+            populateSelAtcTree();
+        }
+        return selAtcTree;
+    }
+
+    private void populateSelAtcTree() {
+        selAtcTree = new DefaultTreeNode("selAtcTree", null);
+        selAtcTree.setExpanded(true);
+        if (atc != null) {
+            List<Atc> parentList = atc.getParentsTreeList(true);
+            TreeNode[] nodes = new TreeNode[parentList.size()];
+            for (int i = 0; i < parentList.size(); i++) {
+                if (i == 0) {
+                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode() + ": " + parentList.get(i).getAtcName(), selAtcTree);
+                    nodes[i].setExpanded(true);
+                } else {
+                    nodes[i] = new DefaultTreeNode(parentList.get(i).getAtcCode() + ": " + parentList.get(i).getAtcName(), nodes[i - 1]);
+                    nodes[i].setExpanded(true);
+                }
+            }
+        }
+    }
+
+    public void updateAtc() {
+        populateSelAtcTree();
+    }
+
+    public List<Atc> completeAtcNames(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getAtcs());
+    }
+
+    public List<Atc> completeAtcCodes(String query) {
+        List<Atc> suggestions = new ArrayList<Atc>();
+
+        if (query == null || query.equalsIgnoreCase(""))
+            return globalEntityLists.getAtcs();
+
+        for (Atc eachAtc : globalEntityLists.getAtcs()) {
+            if (eachAtc.getAtcCode().toLowerCase().startsWith(query.toLowerCase()))
+                suggestions.add(eachAtc);
+        }
+        System.out.println("Suggestions size == " + suggestions.size());
+        return suggestions;
     }
 
 

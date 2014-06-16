@@ -18,7 +18,7 @@
                          rowsPerPageTemplate="20,40,100">
                 <p:column filterBy="#{product.prodName}" sortBy="#{product.prodName}">
                     <f:facet name="header">
-                        <h:outputText value="Product Name"/>
+                        <h:outputText value="#{msgs.prod_name}"/>
                     </f:facet>
                     <p:commandLink id="viewLink" value="#{product.prodName}" action="productdetail"
                                    ajax="false">
@@ -30,15 +30,23 @@
                 <p:column filterBy="#{product.genName}"
                           sortBy="#{product.genName}">
                     <f:facet name="header">
-                        <h:outputText value="Generic Name"/>
+                        <h:outputText value="#{msgs.prodgenname}"/>
                     </f:facet>
                     <h:outputText value="#{product.genName}"/>
+                </p:column>
+
+                <p:column filterBy="#{product.regNo}"
+                          sortBy="#{product.regNo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.reg_number}"/>
+                    </f:facet>
+                    <h:outputText value="#{product.regNo}"/>
                 </p:column>
 
                 <p:column filterBy="#{product.dosForm.dosForm}"
                           sortBy="#{product.dosForm.dosForm}">
                     <f:facet name="header">
-                        <h:outputText value="Dosage Form"/>
+                        <h:outputText value="#{msgs.prod_dos_form}"/>
                     </f:facet>
                     <h:outputText value="#{product.dosForm.dosForm}"/>
                 </p:column>
@@ -46,7 +54,7 @@
                 <p:column filterBy="#{product.dosStrength}"
                           sortBy="#{product.dosStrength}">
                     <f:facet name="header">
-                        <h:outputText value="Dosage Strength"/>
+                        <h:outputText value="#{msgs.dos_strength}"/>
                     </f:facet>
                     <h:outputText value="#{product.dosStrength}"/>
                 </p:column>

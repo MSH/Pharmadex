@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <ui:composition template="../templates/admin_layout.xhtml">
     <ui:define name="content">
@@ -42,10 +43,14 @@
                     <p:inputText value="#{registerUserMbean.user.faxNo}" id="faxno"/>
 
                     <h:outputLabel value="#{msgs.User_email}" for="email"/>
-                    <p:inputText value="#{registerUserMbean.user.email}" id="email" required="true"/>
+                    <p:inputText value="#{registerUserMbean.user.email}" id="email" required="true" validatorMessage="#{msgs.valid_email}">
+                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                    </p:inputText>
 
+<!--
                     <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
                     <p:inputText value="#{registerUserMbean.user.comments}" id="comment"/>
+-->
 
                     <h:outputLabel/>
                     <h:outputLabel/>

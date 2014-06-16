@@ -112,7 +112,7 @@ public class UserService implements Serializable {
         return userDAO.findModerators();
     }
 
-    public String updateUser(User user) {
+    public User updateUser(User user) {
         return userDAO.updateUser(user);
     }
 

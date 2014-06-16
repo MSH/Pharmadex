@@ -43,12 +43,15 @@
         <h:outputLabel value="#{applicantdata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <h:outputLabel value="#{msgs.applicant_website}"/>
-        <p:inputText value="#{applicantdata.website}" required="true" rendered="#{input}"/>
+        <p:inputText value="#{applicantdata.website}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.website}" rendered="#{!input}" style="font-weight: bold;"/>
 
+<!--
         <h:outputLabel value="#{msgs.global_comment}"/>
         <p:inputText value="#{applicantdata.comment}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.comment}" rendered="#{!input}" style="font-weight: bold;"/>
+-->
+
     </h:panelGrid>
 
 

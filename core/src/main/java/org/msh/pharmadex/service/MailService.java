@@ -4,8 +4,12 @@ package org.msh.pharmadex.service;
  * Author: usrivastava
  */
 
+import org.msh.pharmadex.dao.iface.LetterDAO;
 import org.msh.pharmadex.dao.iface.MailDAO;
+import org.msh.pharmadex.domain.Letter;
 import org.msh.pharmadex.domain.Mail;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.MailSender;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,6 +35,9 @@ public class MailService implements Serializable {
 
     @Autowired
     private MailDAO mailDAO;
+
+    @Autowired
+    private LetterService letterService;
 
     public void sendMail(Mail mailObj, boolean saveMail) {
         SimpleMailMessage message = new SimpleMailMessage();

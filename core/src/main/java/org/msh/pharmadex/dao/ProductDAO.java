@@ -54,9 +54,8 @@ public class ProductDAO implements Serializable {
     }
 
     @Transactional
-    public String updateProduct(Product product) {
-        entityManager.merge(product);
-        return "updated";
+    public Product updateProduct(Product product) {
+        return entityManager.merge(product);
     }
 
     public List<Product> findRegProducts() {

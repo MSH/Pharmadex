@@ -47,7 +47,7 @@ public class AtcConverter implements Converter, Serializable {
         } else {
             try {
                 for (Atc p : getAtcList()) {
-                    if (p.getAtcCode() == submittedValue) {
+                    if (p.getAtcCode().equals(submittedValue)) {
                         return p;
                     }
                 }

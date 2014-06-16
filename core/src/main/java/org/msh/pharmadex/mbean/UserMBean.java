@@ -148,16 +148,15 @@ public class UserMBean implements Serializable {
 //        }
         selectedUser.setUpdatedDate(new Date());
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        String retvalue = "";
         try {
-            retvalue = userService.updateUser(selectedUser);
+            selectedUser = userService.updateUser(selectedUser);
         } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
             e.printStackTrace();
         }
-        if (retvalue.equalsIgnoreCase("persisted")) {
+        if (selectedUser!=null) {
             setEdit(false);
             selectedUser = new User();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", selectedUser.getName() + " successfully updated!!!"));
@@ -165,7 +164,7 @@ public class UserMBean implements Serializable {
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "userMBean", null);
         } else {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "No User"));
         }
 //        return "/admin/userslist_bk.faces";
     }
@@ -189,16 +188,15 @@ public class UserMBean implements Serializable {
         mail.setDate(new Date());
         mail.setMessage("Your Pharmadex password has been successfully reset In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        String retvalue;
         try {
-            retvalue = userService.updateUser(userService.passwordGenerator(selectedUser));
+            selectedUser = userService.updateUser(userService.passwordGenerator(selectedUser));
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
             e.printStackTrace();
             return "";
         }
-        if (!retvalue.equalsIgnoreCase("persisted")) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
+        if (selectedUser==null) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to save User."));
             return "";
         } else {
             try {

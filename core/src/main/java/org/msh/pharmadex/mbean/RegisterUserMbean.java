@@ -2,9 +2,12 @@ package org.msh.pharmadex.mbean;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.auth.PassPhrase;
+import org.msh.pharmadex.domain.Letter;
 import org.msh.pharmadex.domain.Mail;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.slf4j.Logger;
@@ -47,6 +50,9 @@ public class RegisterUserMbean implements Serializable {
     @Autowired
     private UserSettingBean userSettingBean;
 
+    @Autowired
+    private LetterService letterService;
+
 
     @PostConstruct
     private void init() {
@@ -70,12 +76,6 @@ public class RegisterUserMbean implements Serializable {
         logger.info("\"password ============== \"+password");
         logger.info("======================================== ");
         user.setPassword(password);
-        Mail mail = new Mail();
-        mail.setMailto(user.getEmail());
-        mail.setSubject("Pharmadex User Registration");
-        mail.setUser(user);
-        mail.setDate(new Date());
-        mail.setMessage("Thank you for registering yourself for Pharmadex. In order to access the system please use the username '" + user.getUsername() + "' and password '" + password + "' ");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {
@@ -93,6 +93,14 @@ public class RegisterUserMbean implements Serializable {
             return "/page/registeruser.faces";
         } else {
             try {
+                Letter letter = letterService.findByLetterType(LetterType.NEW_USER_REGISTRATION);
+                Mail mail = new Mail();
+                mail.setMailto(user.getEmail());
+                mail.setSubject(letter.getSubject());
+                mail.setUser(user);
+                mail.setDate(new Date());
+//                mail.setMessage(letter.getBody());
+                mail.setMessage("Thank you for registering with Namibian Regulatory Council. In order to access the system please use the username '"+user.getUsername()+"' and password '"+password+"' without the quotes.");
                 mailService.sendMail(mail, false);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
                 return "/public/registrationhome.faces";
@@ -116,7 +124,7 @@ public class RegisterUserMbean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {
-            retvalue = userService.updateUser(user);
+            user = userService.updateUser(user);
         } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
             return "/page/registeruser.faces";
@@ -125,8 +133,8 @@ public class RegisterUserMbean implements Serializable {
             e.printStackTrace();
             return "/page/registeruser.faces";
         }
-        if (!retvalue.equalsIgnoreCase("persisted")) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
+        if (user==null) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to save."));
             return "/page/registeruser.faces";
         } else {
             return "/public/registrationhome.faces";

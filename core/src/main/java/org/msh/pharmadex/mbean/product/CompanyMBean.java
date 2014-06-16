@@ -1,6 +1,8 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Company;
+import org.msh.pharmadex.domain.Country;
+import org.msh.pharmadex.service.CountryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,11 @@ public class CompanyMBean implements Serializable {
     @Autowired
     RegHomeMbean regHomeMbean;
 
+    @Autowired
+    CountryService countryService;
+
     private Company selectedCompany;
+
 
     @PostConstruct
     private void init() {
@@ -41,6 +47,10 @@ public class CompanyMBean implements Serializable {
 
     public void addCompany() {
         try {
+            Country c = selectedCompany.getAddress().getCountry();
+            c = countryService.findCountryById(c.getId());
+            selectedCompany.getAddress().setCountry(c);
+
             selectedCompany.setProduct(regHomeMbean.getProduct());
             regHomeMbean.getCompanies().add(selectedCompany);
             regHomeMbean.setShowCompany(false);

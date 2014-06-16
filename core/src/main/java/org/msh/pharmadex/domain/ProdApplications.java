@@ -38,6 +38,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 100)
     private String Representative;
 
+    @Column(length = 100)
+    private String prodAppNo;
+
+    @Column(length = 500)
+    private String ingrdStatment;
+
     private boolean packageInsert;
 
     private boolean labelEnclosed;
@@ -470,4 +476,21 @@ public class ProdApplications extends CreationDetail implements Serializable {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
+
+    public String getProdAppNo() {
+        return prodAppNo;
+    }
+
+    public void setProdAppNo(String prodAppNo) {
+        this.prodAppNo = prodAppNo;
+    }
+
+    public String getIngrdStatment() {
+        return ingrdStatment;
+    }
+
+    public void setIngrdStatment(String ingrdStatment) {
+        this.ingrdStatment = ingrdStatment;
+    }
 }
+

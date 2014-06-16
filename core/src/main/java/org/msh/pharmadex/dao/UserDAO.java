@@ -82,26 +82,26 @@ public class UserDAO implements Serializable {
         user.setRegistrationDate(new Date());
 //        user.setEnabled(true);
 
-        try {
-            User u = findByUsernameOrEmail(user);
-            if (u != null) {
-                if (u.getEmail().equalsIgnoreCase(user.getEmail()))
-                    return "There already exist a user with the same Email address. If you have forgotten your password or email address please click on the forgot password link";
-                else if (u.getUsername().equalsIgnoreCase(user.getUsername()))
-                    return "A user with the same username already exist in the database. If you have forgotten your password or email address please click on the forgot password link";
-            }
-        } catch (NoResultException no) {
+//        try {
+//            User u = findByUsernameOrEmail(user);
+//            if (u != null) {
+//                if (u.getEmail().equalsIgnoreCase(user.getEmail()))
+//                    return "There already exist a user with the same Email address. If you have forgotten your password or email address please click on the forgot password link";
+//                else if (u.getUsername().equalsIgnoreCase(user.getUsername()))
+//                    return "A user with the same username already exist in the database. If you have forgotten your password or email address please click on the forgot password link";
+//            }
+//        } catch (NoResultException no) {
             entityManager.persist(user);
             return "persisted";
-        }
-        return "";
+//        }
+//        return "";
     }
 
     @Transactional
-    public String updateUser(User user) {
-        entityManager.merge(user);
+    public User updateUser(User user) {
+        user = entityManager.merge(user);
         entityManager.flush();
-        return "persisted";
+        return user;
     }
 
     public User findByUsernameOrEmail(User u) throws NoResultException {

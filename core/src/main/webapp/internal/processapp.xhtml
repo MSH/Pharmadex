@@ -12,7 +12,7 @@
                 <p:menu style="width:198px">
                     <p:submenu label="#{msgs.Registration}">
                         <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
-                                    action="#{processAppBn.registerApplicant}" ajax="false"/>
+                                    action="#{processAppBn.registerApplicant}" ajax="false" rendered="#{!userSession.company}"/>
                         <p:menuitem value="#{msgs.global_cancel}" immediate="true"
                                     icon="ui-icon ui-icon-circle-triangle-w"
                                     action="#{processAppBn.cancel}" ajax="false"/>

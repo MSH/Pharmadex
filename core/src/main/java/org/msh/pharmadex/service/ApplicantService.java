@@ -66,7 +66,7 @@ public class ApplicantService implements Serializable {
     }
 
     @Transactional
-    public boolean saveApp(Applicant applicant, User loggedInUserObj) {
+    public Applicant saveApp(Applicant applicant, User loggedInUserObj) {
         try {
             applicant.setState(ApplicantState.NEW_APPLICATION);
             if (loggedInUserObj.getType().equals(UserType.COMPANY)) {
@@ -80,14 +80,14 @@ public class ApplicantService implements Serializable {
             Applicant a = applicantDAO.saveApplicant(applicant);
             if (loggedInUserObj.getType().equals(UserType.COMPANY)) {
                 loggedInUserObj.setApplicant(a);
-                userService.updateUser(loggedInUserObj);
+                loggedInUserObj = userService.updateUser(loggedInUserObj);
             }
             System.out.println("applicant id = " + applicant.getApplcntId());
             applicants = null;
-            return true;
+            return a;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

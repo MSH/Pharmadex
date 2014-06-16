@@ -82,13 +82,17 @@ public class ApplicantMBean implements Serializable {
 
     public String saveApp() {
         selectedApplicant.setSubmitDate(new Date());
-        if (applicantService.saveApp(selectedApplicant, userSession.getLoggedInUserObj())) {
+        selectedApplicant = applicantService.saveApp(selectedApplicant, userSession.getLoggedInUserObj());
+        if (selectedApplicant!=null) {
+            if(userSession.isCompany())
+                userSession.getLoggedInUserObj().setApplicant(selectedApplicant);
             selectedApplicant = new Applicant();
             setShowAdd(false);
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
             globalEntityLists.setRegApplicants(null);
+            userSession.setDisplayAppReg(false);
             return "/public/applicantlist.faces";
         } else {
             return null;

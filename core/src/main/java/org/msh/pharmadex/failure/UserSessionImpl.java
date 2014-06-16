@@ -37,6 +37,7 @@ public class UserSessionImpl implements UserSession, Serializable {
     private boolean moderator = false;
     private boolean reviewer = false;
     private boolean head = false;
+    private boolean displayAppReg = false;
 
     public void login() {
         try {
@@ -119,8 +120,13 @@ public class UserSessionImpl implements UserSession, Serializable {
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_STAFF"))
                     setStaff(true);
-                if (role.getRolename().equalsIgnoreCase("ROLE_COMPANY"))
+                if (role.getRolename().equalsIgnoreCase("ROLE_COMPANY")) {
                     setCompany(true);
+                    if(user.getApplicant()!=null)
+                        displayAppReg=false;
+                    else
+                        displayAppReg=true;
+                }
                 if (role.getRolename().equalsIgnoreCase("ROLE_PUBLIC"))
                     setGeneral(true);
                 if (role.getRolename().equalsIgnoreCase("ROLE_MODERATOR")) {
@@ -297,7 +303,20 @@ public class UserSessionImpl implements UserSession, Serializable {
         return head;
     }
 
+    @Override
+    public boolean isBangladesh() {
+        return false;
+    }
+
     public void setHead(boolean head) {
         this.head = head;
+    }
+
+    public boolean isDisplayAppReg() {
+        return displayAppReg;
+    }
+
+    public void setDisplayAppReg(boolean displayAppReg) {
+        this.displayAppReg = displayAppReg;
     }
 }

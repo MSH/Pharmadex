@@ -22,91 +22,7 @@
 <p:tab id="proddetails" title="#{msgs.product_details}">
     <p:panel header="#{msgs.product_details}">
 
-        <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
-            <h:outputLabel value="#{msgs.prod_cat}" for="prodCatcb"/>
-            <p:selectOneMenu id="prodCatcb" value="#{regHomeMbean.product.prodCategory}" required="true"
-                             requiredMessage="#{msgs.valid_prod_type}">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalLists.prodCategories}" var="prodcat" itemLabel="#{msgs[prodcat.key]}"/>
-            </p:selectOneMenu>
-            <p:message for="prodCatcb" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.prod_type}" for="prodTypecb"/>
-            <p:selectOneMenu id="prodTypecb" value="#{regHomeMbean.product.prodType}" required="true"
-                             requiredMessage="#{msgs.valid_prod_type}">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalLists.prodTypes}" var="prodtype" itemLabel="#{msgs[prodtype.key]}"/>
-            </p:selectOneMenu>
-            <p:message for="prodTypecb" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
-            <p:inputText id="prodDetailName" value="#{regHomeMbean.product.prodName}" title="Product Name"
-                         required="true" requiredMessage="#{msgs.valid_prod_name}">
-            </p:inputText>
-            <p:message for="prodDetailName" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.prodgenname}" for="prodGenName"/>
-            <p:inputText id="prodGenName" value="#{regHomeMbean.product.genName}" title="Generic Name"
-                         required="true" requiredMessage="#{msgs.valid_gen_name}"/>
-            <p:message for="prodGenName" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
-            <p:selectOneMenu id="dosForm" value="#{regHomeMbean.product.dosForm.uid}"
-                             requiredMessage="#{msgs.valid_dos_form}" required="true">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
-                               itemValue="#{dosForm.uid}"/>
-            </p:selectOneMenu>
-            <p:message for="dosForm" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
-            <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.product.dosUnit.id}"
-                             requiredMessage="#{msgs.valid_dos_form}" required="true">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
-                               itemValue="#{dosUom.id}"/>
-            </p:selectOneMenu>
-            <p:message for="dosUnit" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
-            <p:inputText id="dosStrength" value="#{regHomeMbean.product.dosStrength}" title="DosStrength"
-                         required="true" requiredMessage="#{msgs.dos_strength}: Value required">
-            </p:inputText>
-            <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
-            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.product.adminRoute.id}" required="true"
-                             requiredMessage="#{msgs.valid_value_req}">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.adminRoutes}" var="type" itemLabel="#{type.name}"
-                               itemValue="#{type.id}"/>
-            </p:selectOneMenu>
-            <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.age_group}" for="ageGroupcb"/>
-            <p:selectOneMenu id="ageGroupcb" value="#{regHomeMbean.product.ageGroup}" required="true"
-                             requiredMessage="#{msgs.valid_prod_type}">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalLists.ageGroupes}" var="ageGrp" itemLabel="#{msgs[ageGrp.key]}"/>
-            </p:selectOneMenu>
-            <p:message for="ageGroupcb" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
-            <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.product.pharmClassif}"
-                            completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
-                            var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
-                            converter="#{pharmClassifConverter}" required="true"
-                            requiredMessage="#{msgs.valid_value_req}"
-                    >
-            </p:autoComplete>
-            <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
-
-
-            <h:outputLabel value="#{msgs.global_description}" for="prodDesc"/>
-            <p:inputTextarea id="prodDesc" value="#{regHomeMbean.product.prodDesc}" rows="4" cols="50"
-                             title="ProdDesc"/>
-        </h:panelGrid>
-
+        <ui:include src="proddetails.xhtml"/>
 
         <div align="right">
             <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"/>
@@ -121,8 +37,20 @@
 
 <p:tab id="appdetails" title="#{msgs.application_detail}">
     <p:panel header="#{msgs.application_detail}">
-        <h:panelGrid columns="2" style="width: 100%;">
+
+        <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10">
+            <p:outputLabel value="#{msgs.new_chemical_entity}" for="nceChkbox" styleClass="label" />
+            <p:selectBooleanCheckbox value="#{regHomeMbean.product.newChemicalEntity}" id="nceChkbox">
+                <p:ajax update=":reghome:adddetailgrid" listener="#{regHomeMbean.nceChangeListener}"
+                        process="@form"/>
+            </p:selectBooleanCheckbox>
+            <p:outputLabel value="#{msgs.new_chemical_name}" styleClass="label"
+                           rendered="#{regHomeMbean.product.newChemicalEntity}" />
+            <p:inputText id="nceInput" value="#{regHomeMbean.product.newChemicalName}" style="width: 300px;"
+                         rendered="#{regHomeMbean.product.newChemicalEntity}" />
             <h:outputLabel value="#{msgs.inn_header}" style="width: 60px;" styleClass="label"/>
+
+
             <p:dataTable id="inntable" var="prodInn" value="#{regHomeMbean.selectedInns}" style="width:100%;"
                          emptyMessage="No Inns selected"
                     >
@@ -156,12 +84,14 @@
             </p:dataTable>
 
             <h:outputLabel value="#{msgs.atc_header}" style="width: 60px;" styleClass="label"/>
-            <h:panelGroup>
-                <h:outputLabel value="#{msgs.atc_noatc}" for="noatc"/>
+
+
+            <h:panelGrid columns="3" cellspacing="10">
+                <h:outputLabel value="#{msgs.atc_noatc}: " for="noatc"/>
                 <p:selectBooleanCheckbox id="noatc"
                                          value="#{regHomeMbean.product.noAtc}"> </p:selectBooleanCheckbox>
-                <p:commandLink value="#{msgs.atc_lookup}" immediate="true" oncomplete="addAtcDlg.show()"/>
-            </h:panelGroup>
+                <p:commandLink value="#{msgs.atc_lookup}" oncomplete="addAtcDlg.show()" action="#{regHomeMbean.openAddATC()}"/>
+            </h:panelGrid>
             <h:outputLabel/>
 
             <p:dataTable id="atctable" var="atc" value="#{regHomeMbean.selectedAtcs}" style="width:100%;">
@@ -175,47 +105,7 @@
             </p:dataTable>
         </h:panelGrid>
 
-        <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
-            <h:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
-            <p:selectOneMenu id="cbdrugtype" value="#{regHomeMbean.prodApplications.drugType}">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalLists.drugTypes}" var="dt" itemLabel="#{msgs[dt.key]}"/>
-            </p:selectOneMenu>
-            <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
-            <p:inputText id="inpacksize" value="#{regHomeMbean.prodApplications.packSize}" style="width: 300px"/>
-            <p:message for="inpacksize" showSummary="true" showDetail="false"/>
-
-
-            <h:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
-            <p:inputTextarea id="inconttype" value="#{regHomeMbean.prodApplications.contType}" style="width: 300px"/>
-            <p:message for="inconttype" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
-            <p:inputText id="instorecndtn" value="#{regHomeMbean.prodApplications.storageCndtn}" style="width: 300px"/>
-            <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
-
-
-            <h:outputLabel value="#{msgs.product_apperance}" for="inapperance"/>
-            <p:inputText id="inapperance" value="#{regHomeMbean.prodApplications.phyAppearance}" style="width: 300px"/>
-            <p:message for="inapperance" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.product_regNoCntry}" for="inregNoCntry"/>
-            <p:inputTextarea id="inregNoCntry" value="#{regHomeMbean.prodApplications.originCntryReg}"
-                             style="width: 300px"/>
-            <p:message for="inregNoCntry" showSummary="true" showDetail="false"/>
-
-
-            <h:outputLabel value="#{msgs.product_active}" for="inpharmstd"/>
-            <p:inputTextarea id="inpharmstd" value="#{regHomeMbean.prodApplications.pharmacopeiaStds}"
-                             style="width: 300px"/>
-            <p:message for="inpharmstd" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.product_ssncode}" for="inssncode"/>
-            <p:inputText id="inssncode" value="#{regHomeMbean.prodApplications.ssnCode}" style="width: 300px"/>
-            <p:message for="inssncode" showSummary="true" showDetail="false"/>
-        </h:panelGrid>
+        <ui:include src="prodadddetails.xhtml"/>
 
 
         <div align="right">
@@ -234,36 +124,41 @@
     <h:messages errorClass="error"/>
 
     <p:panel header="#{msgs.manufacturer_detail}">
+        <h:panelGrid columns="1" cellspacing="10" id="companygrid" width="100%">
+
+            <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
 
 
-        <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.companies}" style="width:100%;">
-            <f:facet name="header">
-                <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()" update="@form">
-                    <f:setPropertyActionListener value="true" target="#{regHomeMbean.showCompany}"/>
-                </p:commandLink>
-            </f:facet>
-            <p:column headerText="#{msgs.applicant_name}">
-                <h:outputText value="#{company.companyName}"/>
-            </p:column>
+            <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.companies}" style="width:100%;">
+                <f:facet name="header">
+                    <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()" update="@form">
+                        <f:setPropertyActionListener value="true" target="#{regHomeMbean.showCompany}"/>
+                    </p:commandLink>
+                </f:facet>
+                <p:column headerText="#{msgs.applicant_name}">
+                    <h:outputText value="#{company.companyName}"/>
+                </p:column>
 
-            <p:column headerText="#{msgs.applicant_country}">
-                <h:outputText value="#{company.address.country.countryName}"/>
-            </p:column>
+                <p:column headerText="#{msgs.applicant_country}">
+                    <h:outputText value="#{company.address.country.countryName}"/>
+                </p:column>
 
-            <p:column headerText="#{msgs.applicant_type}">
-                <h:outputText value="#{msgs[company.companyType.key]}"/>
-            </p:column>
+                <p:column headerText="#{msgs.applicant_type}">
+                    <h:outputText value="#{msgs[company.companyType.key]}"/>
+                </p:column>
 
-            <p:column headerText="Reference">
-                <h:outputText value="#{company.reference}"/>
-            </p:column>
+                <p:column headerText="Reference">
+                    <h:outputText value="#{company.reference}"/>
+                </p:column>
 
-            <p:column>
-                <p:commandButton action="#{regHomeMbean.removeCompany(company)}" value="#{msgs.global_delete}"
-                                 update=":reghome:addCompanyDlg :reghome:companyTable">
-                </p:commandButton>
-            </p:column>
-        </p:dataTable>
+                <p:column>
+                    <p:commandButton action="#{regHomeMbean.removeCompany(company)}" value="#{msgs.global_delete}"
+                                     update=":reghome:addCompanyDlg :reghome:companygrid">
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+        </h:panelGrid>
 
         <div align="right">
             <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
@@ -276,29 +171,27 @@
 
     <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanyDlg" resizable="true" modal="true"
               rendered="#{regHomeMbean.showCompany}">
-        <h:form id="comdlg">
-            <ui:decorate template="/templates/companydetailtmpl.xhtml">
-                <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
-                <ui:param name="input" value="#{true}"/>
-            </ui:decorate>
+        <ui:decorate template="/templates/companydetailtmpl.xhtml">
+            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
+            <ui:param name="input" value="#{true}"/>
+        </ui:decorate>
 
-            <h:outputLabel/>
+        <h:outputLabel/>
 
-            <h:panelGroup>
-                <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}"
-                                 oncomplete="addCompanyDlg.hide()" ajax="false"/>
-                <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
-                                 oncomplete="addCompanyDlg.hide()" ajax="false"
-                                 update=":reghome:addCompanyDlg :reghome:companyTable"/>
-            </h:panelGroup>
-            <h:outputLabel/>
-        </h:form>
+        <h:panelGroup>
+            <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}"
+                             oncomplete="addCompanyDlg.hide()" update=":reghome:addCompanyDlg :reghome:companygrid"/>
+            <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                             oncomplete="addCompanyDlg.hide()" ajax="false"
+                             update=":reghome:addCompanyDlg :reghome:companyTable"/>
+        </h:panelGroup>
+        <h:outputLabel/>
     </p:dialog>
 
 
 </p:tab>
 
-<p:tab id="pricing" title="#{msgs.product_pricing}">
+<p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.bangladesh}">
     <p:panel header="#{msgs.product_pricing_general}">
 
         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
@@ -392,7 +285,7 @@
 
 <p:tab id="payment" title="#{msgs.payment_info}">
     <p:panel header="#{msgs.payment_info}">
-        <h:outputLabel value="#{msgs.confirm_payment}"/>
+        <h:outputLabel value="#{msgs.confirm_payment}" styleClass="label"/>
 
         <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
@@ -443,7 +336,7 @@
     </p:panel>
 </p:tab>
 
-<p:tab id="appointment" title="#{msgs.appointment}">
+<p:tab id="appointment" title="#{msgs.appointment}" rendered="false">
     <p:panel header="#{msgs.selappointment}">
         <div align="right">
             <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
@@ -524,26 +417,21 @@
 
 <p:dialog header="ATC Lookup" widgetVar="addAtcDlg" resizable="true" modal="true">
     <h:form id="atcdetail">
-        <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+        <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid" id="atclookupgrid">
             <h:outputLabel value="#{msgs.atc_name}" for="atcname"/>
             <p:autoComplete id="atcname" value="#{regHomeMbean.atc}"
-                            completeMethod="#{regHomeMbean.regATCHelper.completeAtcNames}"
+                            completeMethod="#{regHomeMbean.completeAtcNames}"
                             var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
-                            forceSelection="true">
-                <p:ajax event="itemSelect" update="@form" listener="#{regHomeMbean.regATCHelper.updateAtc}"/>
+                            forceSelection="true" >
+                <p:ajax event="itemSelect" listener="#{regHomeMbean.updateAtc}" update=":atcdetail"/>
             </p:autoComplete>
 
             <h:outputLabel value="#{msgs.atc_code}" for="atccode"/>
-            <p:autoComplete id="atccode" value="#{regHomeMbean.atc}"
-                            completeMethod="#{regHomeMbean.regATCHelper.completeAtcCodes}"
-                            var="it" itemLabel="#{it.atcCode}" itemValue="#{it}" converter="#{atcCodeConverter}"
-                            forceSelection="true">
-                <p:ajax event="itemSelect" update="@form" listener="#{regHomeMbean.regATCHelper.updateAtc}"/>
-            </p:autoComplete>
+            <p:outputLabel value="#{regHomeMbean.atc.atcCode}" id="atccode"/>
         </h:panelGrid>
 
 
-        <p:tree value="#{regHomeMbean.regATCHelper.selAtcTree}" var="node" id="treeMultiple" selectionMode="single">
+        <p:tree value="#{regHomeMbean.selAtcTree}" var="node" id="treeMultiple" selectionMode="single">
             <p:treeNode>
                 <h:outputText value="#{node}"/>
             </p:treeNode>

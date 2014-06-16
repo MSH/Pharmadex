@@ -294,3 +294,8 @@ body {
 
 .ui-inputfield {
 }
+
+.fy-required-field{
+    background: url(../images/iconRequired.gif) no-repeat scroll left top transparent;
+    padding-left:15px;
+}
