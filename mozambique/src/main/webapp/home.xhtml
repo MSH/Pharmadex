@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.Home_Welcome}</h1>
+        </div>
+
+        <div>
+        <table>
+            <tr>
+                <td style="width: 790px;padding-right: 10px">
+                    <p:galleria value="#{galleriaBean.images}" var="image" showCaptions="true" panelWidth="750" panelHeight="350">
+                        <p:graphicImage value="/resources/images/galleria/#{image.imageName}" alt="#{image.imageName}"
+                                        title="#{image.imageDesc}" width="750px" height="340px"/>
+
+                    </p:galleria>
+                </td>
+
+
+                <td style="vertical-align: top; ">
+                <h:form>
+                    <p:menu style="width:260px;">
+                        <sec:isAuthenticated>
+                            <p:submenu label="Logged In Users">
+                                <p:menuitem value="#{msgs.application_status}"
+                                            action="/secure/submittedapplications.faces" ajax="false"/>
+                                <p:menuitem value="#{msgs.company_info}" action="/secure/appregistration.faces"
+                                            ajax="false">
+                                    <f:setPropertyActionListener value="#{userSession.loggedInUserObj.applicant}"
+                                                                 target="#{applicantMBean.selectedApplicant}"/>
+                                </p:menuitem>
+                                <p:menuitem value="#{msgs.usersettings_preferences}" action="/secure/usersettings.faces"
+                                            ajax="false"/>
+                            </p:submenu>
+                        </sec:isAuthenticated>
+
+                        <p:submenu label="#{msgs.home_links}">
+                            <p:menuitem value="#{msgs.Home_download}" url="downloads.faces"/>
+                            <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces"/>
+                            <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces"/>
+                            <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces"/>
+                        </p:submenu>
+
+                        <p:submenu label="Quick Links">
+                            <p:menuitem value="Registered Products" action="/public/productlist.faces"/>
+                            <p:menuitem value="Registered Manufacturers" url="/public/applicantlist.faces"/>
+                            <p:menuitem value="Licensing" url="contactus.faces"/>
+                            <p:menuitem value="Request for Product Analysis" url="contactus.faces"/>
+                            <p:menuitem value="Therapetics Request Information" url="contactus.faces"/>
+                            <p:menuitem value="Pharmacovigilance" url="contactus.faces"/>
+                        </p:submenu>
+                    </p:menu>
+
+                    <!-- end three column -->
+                </h:form>
+                </td>
+                </tr>
+            </table>
+
+            <div class="content">
+
+                    <p>The Directorate General of Drug Administration (DGDA) under the Ministry of Health and Family Welfare,
+                        Government of the People's Republic of Bangladesh, is the Drug Regulatory Authority of the country.
+                        This DGDA supervises and implements all prevailing Drug Regulations in the country and regulates all activities related to import,
+                        procurement of raw and packing materials, production and import of finished drugs, export, sales, pricing, etc.
+                        of all kinds of medicines including those of Ayurvedic, Unani, Herbal and Homoeopathic systems.drugs and medicines.
+
+                    </p>
+                    <p>
+                        At present, there are 35 district offices under the DGDA in the country.
+                        All the officers of the DGDA function as "Drug Inspector"  in pursuant to the Drug Laws and assist the Licensing Authority to  discharging his responsibilities properly.
+                        Besides, a number of Committees, such as Drug Control Committee (DCC), Standing Committee for imports of raw materials and finished drugs,
+                        Pricing Committee and a number of other relevant Committees, which comprise of experts of different fields, are there to advice
+                        Licensing Authority and recommend him about the matters related to drugs and medicines.
+                    </p>
+
+            </div>
+
+
+       </div>
+    </ui:define>
+</ui:composition>
+</html>

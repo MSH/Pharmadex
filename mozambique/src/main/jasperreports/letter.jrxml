@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="4"/>
+	<parameter name="subject" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="appNumber" class="java.lang.String"/>
+	<parameter name="address1" class="java.lang.String"/>
+	<parameter name="address2" class="java.lang.String"/>
+	<parameter name="country" class="java.lang.String"/>
+	<parameter name="body" class="java.lang.String"/>
+	<parameter name="footer" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
+	</parameter>
+	<parameter name="registrar" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from product where id = $P{id}]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="createdDate" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="updatedDate" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="adminRoute" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="apprvd_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dosage_strength" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="gen_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="lic_no" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="noAtc" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_desc" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_type" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="reg_no" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="APP_ID" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="userId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DOSFORM_ID" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DOSUNIT_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PHARM_CLASSIF_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROD_APP_ID" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="regstate" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<image>
+				<reportElement uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a" x="0" y="0" width="123" height="86"/>
+				<imageExpression><![CDATA["images/na_logo_header.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b" x="123" y="1" width="449" height="37" forecolor="#006666"/>
+				<textElement textAlignment="Center">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Directorate General of Drug Administration (DGDA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13" x="123" y="38" width="449" height="24"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ministry of Health and Family Welfare]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46" x="123" y="62" width="449" height="24"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Government of the People's Republic of Bangladesh]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="320" splitType="Stretch">
+			<textField>
+				<reportElement uuid="6b43134a-46d0-4c5e-a185-c3d7204ca5af" x="22" y="27" width="236" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cdca1d07-5238-4e18-8532-75c337d1cd61" x="22" y="47" width="236" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cdca1d07-5238-4e18-8532-75c337d1cd61" x="22" y="67" width="236" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cdca1d07-5238-4e18-8532-75c337d1cd61" x="22" y="87" width="236" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{country}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="90df44ba-fda0-408e-a417-cbe38290996e" x="0" y="117" width="572" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subject}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2cad77db-1ed1-44d7-ae91-b6c05a09bc7b" x="0" y="148" width="572" height="72"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{body}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7" x="0" y="6" width="100" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[To,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b" x="0" y="282" width="572" height="31"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="f862559b-8b50-4802-a550-1df8d5af8aee" x="0" y="262" width="572" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{registrar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="9" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
