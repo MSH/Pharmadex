@@ -65,7 +65,7 @@
         <tr>
             <td>
                 <h:outputLabel value="Application Number: " styleClass="title"/>
-                <h:outputFormat value="#{processProdBn.prodApplications.id}" styleClass="title"/>
+                <h:outputFormat value="#{processProdBn.prodApplications.prodAppNo}" styleClass="title"/>
             </td>
             <td align="right">
                 <h:outputLabel value="Submitted Date: " styleClass="title"/>
@@ -99,59 +99,6 @@
     <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
         <ui:param name="prodData" value="#{processProdBn.product}"/>
     </ui:decorate>
-</p:tab>
-
-<p:tab title="Comments">
-    <p:commandButton icon="ui-icon-document" value="Add Comment" onclick="dlg.show()"/>
-
-    <p:dataTable id="commenttable" value="#{processProdBn.comments}" var="it">
-        <p:column style="width:120px;">
-            <p:outputLabel styleClass="ui-icon ui-icon-comment" style="display:inline-block;"/>
-            <p:outputLabel value="#{it.user.name}" styleClass="label"/>
-
-            <div style="font-size: smaller;">
-                <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
-            </div>
-        </p:column>
-
-        <p:column>
-            <div style="padding-left:10px;padding-top:10px;">
-                <h:outputText value="#{it.comment}"
-                              escape="false"
-                              styleClass="text"/>
-            </div>
-        </p:column>
-    </p:dataTable>
-
-
-</p:tab>
-
-<p:tab title="#{msgs.amdmt_history}">
-
-    <p:dataTable id="amdmtHist" value="#{processProdBn.prodAppAmdmts}" var="amdmt">
-        <p:column headerText="#{msgs.amdmt_type}">
-            <h:outputText value="#{amdmt.amdmtCategory.amdmtType}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.amdmt_code}">
-            <h:outputText value="#{amdmt.amdmtCategory.categoryCD}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.submitted_date}">
-            <p:commandLink action="/internal/amdmtdetailsDlg.faces" ajax="false">
-                <h:outputText converter="javax.faces.DateTime" value="#{amdmt.createdDate}"/>
-                <f:setPropertyActionListener value="#{amdmt}" target="#{amdmtProcessMBean.prodAppAmdmt}"/>
-            </p:commandLink>
-        </p:column>
-
-        <p:column headerText="#{msgs.amdmt_state}">
-            <h:outputText value="#{amdmt.amdmtState}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.submitted_by}">
-            <h:outputText value="#{amdmt.submittedBy.username}"/>
-        </p:column>
-    </p:dataTable>
 </p:tab>
 
 <p:tab title="Verification" id="verficationtab" rendered="#{userSession.admin||userSession.staff}">
@@ -194,13 +141,14 @@
         </h:panelGroup>
     </h:panelGrid>
 
-    <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
-    <h:outputLabel/>
-    <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
-        <h:outputLabel value="Acknowledgement letter details"/>
-        <p:inputText/>
-    </h:panelGrid>
-
+    <!--
+        <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
+        <h:outputLabel/>
+        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
+            <h:outputLabel value="Acknowledgement letter details"/>
+            <p:inputText/>
+        </h:panelGrid>
+    -->
 
 </p:tab>
 
@@ -239,6 +187,32 @@
             </p:commandButton>
         </p:column>
     </p:dataTable>
+</p:tab>
+
+
+<p:tab title="Comments">
+    <p:commandButton icon="ui-icon-document" value="Add Comment" onclick="dlg.show()"/>
+
+    <p:dataTable id="commenttable" value="#{processProdBn.comments}" var="it">
+        <p:column style="width:120px;">
+            <p:outputLabel styleClass="ui-icon ui-icon-comment" style="display:inline-block;"/>
+            <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+            <div style="font-size: smaller;">
+                <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+            </div>
+        </p:column>
+
+        <p:column>
+            <div style="padding-left:10px;padding-top:10px;">
+                <h:outputText value="#{it.comment}"
+                              escape="false"
+                              styleClass="text"/>
+            </div>
+        </p:column>
+    </p:dataTable>
+
+
 </p:tab>
 
 <p:tab title="Timeline" rendered="#{userSession.admin||userSession.staff}" id="timelinetab">
@@ -384,6 +358,34 @@
 
     </p:dataTable>
 
+</p:tab>
+
+<p:tab title="#{msgs.amdmt_history}">
+
+    <p:dataTable id="amdmtHist" value="#{processProdBn.prodAppAmdmts}" var="amdmt">
+        <p:column headerText="#{msgs.amdmt_type}">
+            <h:outputText value="#{amdmt.amdmtCategory.amdmtType}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.amdmt_code}">
+            <h:outputText value="#{amdmt.amdmtCategory.categoryCD}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.submitted_date}">
+            <p:commandLink action="/internal/amdmtdetailsDlg.faces" ajax="false">
+                <h:outputText converter="javax.faces.DateTime" value="#{amdmt.createdDate}"/>
+                <f:setPropertyActionListener value="#{amdmt}" target="#{amdmtProcessMBean.prodAppAmdmt}"/>
+            </p:commandLink>
+        </p:column>
+
+        <p:column headerText="#{msgs.amdmt_state}">
+            <h:outputText value="#{amdmt.amdmtState}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.submitted_by}">
+            <h:outputText value="#{amdmt.submittedBy.username}"/>
+        </p:column>
+    </p:dataTable>
 </p:tab>
 
 <p:tab title="#{msgs.reg_cert}" id="regcerttab" rendered="#{processProdBn.registered}">
