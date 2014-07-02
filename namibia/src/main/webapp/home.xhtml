@@ -31,9 +31,11 @@
                         <h:form>
                             <p:menu style="width:260px;">
                                 <p:submenu label="#{msgs.home_quicklinks}">
-                                    <p:menuitem value="#{msgs.registration_product}" action="/public/productlist.faces"/>
-                                    <p:menuitem value="#{msgs.registration_applicant}" url="/public/applicantlist.faces"/>
-                                    <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces"/>
+                                    <p:menuitem value="#{msgs.registration_product}" action="/public/productlist.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.registration_applicant}" url="/public/applicantlist.faces" ajax="false"/>
+                                    <sec:isAnonymous>
+                                        <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false" />
+                                    </sec:isAnonymous>
                                 </p:submenu>
 
                                 <sec:isAuthenticated>
@@ -53,10 +55,10 @@
                                 </sec:isAuthenticated>
 
                                 <p:submenu label="#{msgs.home_links}">
-                                    <p:menuitem value="#{msgs.Home_guidelines}" url="/public/guidelines.faces"/>
-                                    <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces"/>
-                                    <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces"/>
-                                    <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces"/>
+                                    <p:menuitem value="#{msgs.Home_guidelines}" url="/public/guidelines.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces" ajax="false"/>
                                 </p:submenu>
 
                             </p:menu>

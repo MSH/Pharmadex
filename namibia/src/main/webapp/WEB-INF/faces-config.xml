@@ -13,9 +13,6 @@
         </resource-bundle>
         <locale-config>
             <default-locale>en</default-locale>
-            <supported-locale>en</supported-locale>
-            <supported-locale>de</supported-locale>
-            <supported-locale>es</supported-locale>
         </locale-config>
     </application>
     <factory>

@@ -7,32 +7,32 @@
 
     <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
 
-        <h:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
+        <p:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
         <p:inputText id="inpacksize" value="#{regHomeMbean.prodApplications.packSize}" />
         <p:message for="inpacksize" showSummary="true" showDetail="false"/>
 
 
-        <h:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
+        <p:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
         <p:inputTextarea id="inconttype" value="#{regHomeMbean.prodApplications.contType}" />
         <p:message for="inconttype" showSummary="true" showDetail="false"/>
 
-        <h:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
+        <p:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
         <p:inputText id="instorecndtn" value="#{regHomeMbean.prodApplications.storageCndtn}" />
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
-        <h:outputLabel value="#{msgs.product_regNoCntry}" for="inregNoCntry"/>
+        <p:outputLabel value="#{msgs.product_regNoCntry}" for="inregNoCntry"/>
         <p:inputTextarea id="inregNoCntry" value="#{regHomeMbean.prodApplications.originCntryReg}"
                          style="width: 300px"/>
         <p:message for="inregNoCntry" showSummary="true" showDetail="false"/>
 
 
-        <h:outputLabel value="#{msgs.product_active}" for="inpharmstd"/>
+        <p:outputLabel value="#{msgs.product_active}" for="inpharmstd"/>
         <p:inputTextarea id="inpharmstd" value="#{regHomeMbean.prodApplications.pharmacopeiaStds}"
                          style="width: 300px"/>
         <p:message for="inpharmstd" showSummary="true" showDetail="false"/>
 
 
-        <h:outputLabel value="#{msgs.statement_ingrd}" for="statement"/>
+        <p:outputLabel value="#{msgs.statement_ingrd}" for="statement"/>
         <p:inputTextarea id="statement" value="#{regHomeMbean.prodApplications.ingrdStatment}" rows="4" cols="50"
                          title="ProdDesc"/>
         <p:message for="inpharmstd" showSummary="true" showDetail="false"/>
