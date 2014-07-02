@@ -85,7 +85,7 @@ public class ProcessProdBn implements Serializable {
     private org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
     private Mail mail = new Mail();
     private boolean readyReg;
-    private List<ProdAppChecklist> checklists;
+    private List<ProdAppChecklist> prodAppChecklists;
     private List<Review> reviews;
     private Review review = new Review();
 
@@ -94,6 +94,7 @@ public class ProcessProdBn implements Serializable {
     private String reviewComment;
     private List<Invoice> invoices;
     private String prodID;
+    private List<ProdInn> prodInns;
 
     private boolean checkReviewStatus = false;
 
@@ -148,16 +149,21 @@ public class ProcessProdBn implements Serializable {
         webSession.setProduct(null);
 
         product = productService.findProduct(Long.valueOf(prodID));
-        prodApplications = this.product.getProdApplications();
-        applicant = this.product.getApplicant();
+        setFieldValues();
+        initProcessor();
+    }
+
+    private void setFieldValues() {
+        prodApplications = product.getProdApplications();
+        prodInns = product.getInns();
+        applicant = product.getApplicant();
         prodAppAmdmts = prodApplications.getProdAppAmdmts();
         comments = prodApplications.getComments();
         invoices = prodApplications.getInvoices();
         mails = prodApplications.getMails();
         timeLineList = prodApplications.getTimeLines();
-        checklists = prodApplications.getProdAppChecklists();
+        prodAppChecklists = prodApplications.getProdAppChecklists();
         reviews = prodApplications.getReviews();
-        initProcessor();
     }
 
     public void setProdApplications(ProdApplications prodApplications) {
@@ -218,6 +224,9 @@ public class ProcessProdBn implements Serializable {
 
         if (!prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted"))
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+        else
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Moderator added successfully."));
+
     }
 
 
@@ -327,16 +336,27 @@ public class ProcessProdBn implements Serializable {
         prodApplications.setRegState(timeLine.getRegState());
         product.setRegState(timeLine.getRegState());
         prodApplicationsService.updateProdApp(prodApplications);
-        productService.updateProduct(prodApplications.getProd());
+        try {
+            productService.updateProduct(prodApplications.getProd());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Status successfully changed"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save Status"));
+        }
         timeLine = new TimeLine();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Status successfully changed"));
         return "";  //To change body of created methods use File | Settings | File Templates.
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void save() {
-        prodApplications.setProdAppChecklists(checklists);
-        prodApplications.setReviews(reviews);
-        prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj());
+//        prodApplications.setProdAppChecklists(prodAppChecklists);
+//        prodApplications.setReviews(reviews);
+        try {
+            product = productService.updateProduct(product);
+            setFieldValues();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String registerProduct() {
@@ -424,12 +444,12 @@ public class ProcessProdBn implements Serializable {
         this.readyReg = readyReg;
     }
 
-    public List<ProdAppChecklist> getChecklists() {
-        return checklists;
+    public List<ProdAppChecklist> getProdAppChecklists() {
+        return prodAppChecklists;
     }
 
-    public void setChecklists(List<ProdAppChecklist> checklists) {
-        this.checklists = checklists;
+    public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
+        this.prodAppChecklists = prodAppChecklists;
     }
 
     public List<User> getProcessors() {
@@ -577,4 +597,14 @@ public class ProcessProdBn implements Serializable {
     public void setReview(Review review) {
         this.review = review;
     }
+
+    public List<ProdInn> getProdInns() {
+        return prodInns;
+    }
+
+    public void setProdInns(List<ProdInn> prodInns) {
+        this.prodInns = prodInns;
+    }
+
+
 }

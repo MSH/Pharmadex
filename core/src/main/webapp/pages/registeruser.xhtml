@@ -13,51 +13,68 @@
         </div>
 
         <h:form>
-            <p:growl showDetail="true" showSummary="true"/>
+            <p:growl showSummary="true"/>
             <p:panel header="User Details">
-                <p:messages/>
-                <h:panelGrid cellspacing="10px" cellpadding="2px" columns="4" id="user"
-                             width="100%" columnClasses="col1, col2, col1, col2">
-                    <h:outputLabel value="#{msgs.User_username}" for="username"/>
-                    <p:inputText value="#{registerUserMbean.user.username}" id="username" required="true"/>
+                <h:panelGrid cellspacing="10px" cellpadding="2px" columns="3" id="user"
+                             width="100%" columnClasses="col1, col2">
+                    <p:outputLabel value="#{msgs.User_username}" for="username" styleClass="label"/>
+                    <p:inputText value="#{registerUserMbean.user.username}" id="username" required="true"
+                                 styleClass="value"/>
+                    <p:message for="username"/>
 
-                    <h:outputLabel/>
-                    <h:outputLabel/>
 
-                    <h:outputLabel value="#{msgs.User_name}" for="name"/>
+                    <p:outputLabel value="#{msgs.User_name}" for="name" styleClass="label"/>
                     <p:inputText value="#{registerUserMbean.user.name}" id="name" required="true"
                                  requiredMessage="Please Enter Name"/>
+                    <p:message for="name"/>
 
-                    <h:outputLabel/>
-                    <h:outputLabel/>
+                    <p:outputLabel value="#{msgs.applicant_addr1}" for="addr1"/>
+                    <p:inputText value="#{registerUserMbean.user.address.address1}" required="true" id="addr1"/>
+                    <p:message for="addr1"/>
 
-                    <ui:decorate template="/templates/addrtempl.xhtml">
-                        <ui:param name="addressdata" value="#{registerUserMbean.user.address}"/>
-                        <ui:param name="input" value="#{true}"/>
-                    </ui:decorate>
 
-                    <h:outputLabel value="#{msgs.applicant_phone}" for="phoneno"/>
+                    <p:outputLabel/>
+                    <p:inputText value="#{registerUserMbean.user.address.address2}"/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.applicant_zipcd}" for="zipcd"/>
+                    <p:inputText value="#{registerUserMbean.user.address.zipcode}" required="true" id="zipcd"/>
+                    <p:message for="zipcd"/>
+
+                    <p:outputLabel value="#{msgs.applicant_country}" for="country"/>
+                    <p:selectOneMenu value="#{registerUserMbean.user.address.country.id}" id="country" required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{cntry.countryName}"
+                                       itemValue="#{cntry.id}"/>
+                    </p:selectOneMenu>
+                    <p:message for="country"/>
+
+                    <p:outputLabel value="#{msgs.applicant_phone}" for="phoneno" styleClass="label"/>
                     <p:inputText value="#{registerUserMbean.user.phoneNo}" id="phoneno" required="true"/>
+                    <p:message for="phoneno"/>
 
-                    <h:outputLabel value="#{msgs.applicant_faxno}" for="faxno"/>
+                    <p:outputLabel value="#{msgs.applicant_faxno}" for="faxno" styleClass="label"/>
                     <p:inputText value="#{registerUserMbean.user.faxNo}" id="faxno"/>
+                    <p:message for="faxno"/>
 
-                    <h:outputLabel value="#{msgs.User_email}" for="email"/>
-                    <p:inputText value="#{registerUserMbean.user.email}" id="email" required="true" validatorMessage="#{msgs.valid_email}">
-                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                    <p:outputLabel value="#{msgs.User_email}" for="email" styleClass="label"/>
+                    <p:inputText value="#{registerUserMbean.user.email}" id="email" required="true"
+                                 validatorMessage="#{msgs.valid_email}">
+                        <f:validateRegex
+                                pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
                     </p:inputText>
+                    <p:message for="email"/>
 
-<!--
-                    <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
-                    <p:inputText value="#{registerUserMbean.user.comments}" id="comment"/>
--->
 
-                    <h:outputLabel/>
-                    <h:outputLabel/>
+                    <!--
+                                        <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
+                                        <p:inputText value="#{registerUserMbean.user.comments}" id="comment"/>
+                    -->
+
 
                 </h:panelGrid>
 
-                <p:commandButton value="#{msgs.global_submit}" action="#{registerUserMbean.save}" update="@form"
+                <p:commandButton value="#{msgs.global_submit}" action="#{registerUserMbean.save}" update=":growl"
                                  ajax="false"/>
                 <p:commandButton value="#{msgs.global_cancel}" actionListener="#{registerUserMbean.cancel}"
                                  immediate="true"/>

@@ -4,26 +4,26 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
-        <h:outputLabel value="#{msgs.applicant_addr1}"/>
-        <p:inputText value="#{addressdata.address1}" required="true" rendered="#{input}"/>
-        <h:outputLabel value="#{addressdata.address1}" rendered="#{!input}" style="font-weight: bold;"/>
+    <p:outputLabel value="#{msgs.applicant_addr1}*"/>
+    <p:inputText value="#{addressdata.address1}" required="true" rendered="#{input}"/>
+    <h:outputLabel value="#{addressdata.address1}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel/>
-        <h:outputLabel/>
+    <h:outputLabel/>
+    <h:outputLabel/>
 
-        <h:outputLabel/>
-        <p:inputText value="#{addressdata.address2}" rendered="#{input}"/>
-        <h:outputLabel value="#{addressdata.address2}" rendered="#{!input}" style="font-weight: bold;"/>
+    <p:outputLabel/>
+    <p:inputText value="#{addressdata.address2}" rendered="#{input}"/>
+    <h:outputLabel value="#{addressdata.address2}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_zipcd}"/>
-        <p:inputText value="#{addressdata.zipcode}" required="true" rendered="#{input}"/>
-        <h:outputLabel value="#{addressdata.zipcode}" rendered="#{!input}" style="font-weight: bold;"/>
+    <p:outputLabel value="#{msgs.applicant_zipcd}*"/>
+    <p:inputText value="#{addressdata.zipcode}" rendered="#{input}"/>
+    <h:outputLabel value="#{addressdata.zipcode}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_country}"/>
-        <p:selectOneMenu value="#{addressdata.country.id}" rendered="#{input}">
-            <f:selectItem itemLabel="-" itemValue=""/>
-            <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{cntry.countryName}"
-                           itemValue="#{cntry.id}"/>
-        </p:selectOneMenu>
-        <h:outputLabel value="#{addressdata.country.countryName}" rendered="#{!input}" style="font-weight: bold;"/>
+    <p:outputLabel value="#{msgs.applicant_country}*"/>
+    <p:selectOneMenu value="#{addressdata.country.id}" rendered="#{input}" required="true">
+        <f:selectItem itemLabel="-" itemValue=""/>
+        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{cntry.countryName}"
+                       itemValue="#{cntry.id}"/>
+    </p:selectOneMenu>
+    <h:outputLabel value="#{addressdata.country.countryName}" rendered="#{!input}" style="font-weight: bold;"/>
 </ui:composition>

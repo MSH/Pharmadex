@@ -14,7 +14,7 @@
 <p:menu style="width:198px">
     <p:submenu label="#{msgs.Registration}">
         <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
-                    update="@form"/>
+                    update="@form" process="@form" ajax="false"/>
         <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" onclick="dlg.show()"/>
         <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document" onclick="stepDlg.show()"
                     rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head}"/>
@@ -94,7 +94,7 @@
 
 <p:messages id="messages" showDetail="true" showSummary="true"/>
 
-<p:tabView id="processtab" style="width: 830px;" dynamic="true" cache="true">
+<p:tabView id="processtab" style="width: 830px;" cache="true">
 <p:tab title="Application Information" id="infotab">
     <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
         <ui:param name="prodData" value="#{processProdBn.product}"/>
@@ -153,7 +153,7 @@
 </p:tab>
 
 <p:tab title="CheckLists" rendered="#{userSession.admin||userSession.staff}" id="checklisttab">
-    <p:dataTable var="checkList" value="#{processProdBn.checklists}" style="width:100%;">
+    <p:dataTable var="checkList" value="#{processProdBn.prodAppChecklists}" style="width:100%;">
         <p:column headerText="">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
         </p:column>
@@ -289,78 +289,11 @@
 
 <p:tab title="#{msgs.add_info}" id="addinfotab" rendered="#{userSession.admin||userSession.staff}">
 
-    <p:dataTable id="invoicetable" value="#{processProdBn.invoices}" var="invoice">
-        <p:column headerText="#{msgs.invoice_no}">
-            <p:commandLink value="#{invoice.invoiceNumber}" oncomplete="invoicedlg.show()">
-                <f:setPropertyActionListener value="#{invoice}" target="#{renewalMbn.invoice}"/>
-            </p:commandLink>
-        </p:column>
-        <p:column headerText="#{msgs.invoice_amt}">
-            <h:outputText value="#{invoice.invoiceAmt}"/>
-        </p:column>
-        <p:column headerText="#{msgs.invoice_type}">
-            <h:outputText value="#{invoice.invoiceType}"/>
-        </p:column>
-        <p:column headerText="#{msgs.payment_status}">
-            <h:outputText value="#{invoice.paymentStatus}"/>
-        </p:column>
-        <p:column headerText="#{msgs.send_reminder}">
-            <p:commandLink value="#{msgs.send_reminder}" action="#{renewalMbn.sendReminder}"
-                           update=":reghome:growl :reghome:processtab:mailtable ">
-                <f:setPropertyActionListener value="#{invoice}" target="#{renewalMbn.invoice}"/>
-            </p:commandLink>
-        </p:column>
-        <p:column headerText="#{msgs.Home_download}">
-            <p:commandButton id="invoicedownload" value="#{msgs.Home_download}" ajax="false"
-                             onclick="PrimeFaces.monitorDownload(start, stop)"
-                             icon="ui-icon-arrowthichk-s">
-                <p:fileDownload value="#{fileUploadController.invoiceDownload(invoice)}"/>
-            </p:commandButton>
-        </p:column>
-    </p:dataTable>
-
-    <p:separator/>
-
-    <p:commandButton icon="ui-icon-document" value="Send Applicant Mail" onclick="maildlg.show()"/>
-    <p:dataTable id="mailtable" value="#{processProdBn.mails}" var="mail" style="width: 830px;">
-        <p:column style="width:120px;" headerText="Date">
-            <div class="icon-user" style="float:left;"/>
-            <b>#{it.user.name}</b>
-
-            <div style="font-size: smaller;">
-                <h:outputLabel converter="javax.faces.DateTime" value="#{mail.date}"/>
-            </div>
-        </p:column>
-
-        <p:column headerText="Subject">
-            <div style="padding-left:10px;padding-top:10px;">
-                <h:outputText value="#{mail.subject}"
-                              escape="false"
-                              styleClass="text"/>
-            </div>
-        </p:column>
-
-        <p:column headerText="Message">
-            <div style="padding-left:10px;padding-top:10px;">
-                <h:outputText value="#{mail.message}"
-                              escape="false"
-                              styleClass="text"/>
-            </div>
-        </p:column>
-
-        <p:column headerText="Sent By">
-            <div style="padding-left:10px;padding-top:10px;">
-                <h:outputText value="#{mail.user.name}"
-                              escape="false"
-                              styleClass="text"/>
-            </div>
-        </p:column>
-
-    </p:dataTable>
+    <ui:include src="prodprocessaddinfo.xhtml"/>
 
 </p:tab>
 
-<p:tab title="#{msgs.amdmt_history}">
+<p:tab title="#{msgs.amdmt_history}" rendered="#{processProdBn.registered}">
 
     <p:dataTable id="amdmtHist" value="#{processProdBn.prodAppAmdmts}" var="amdmt">
         <p:column headerText="#{msgs.amdmt_type}">
@@ -446,7 +379,7 @@
 <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg" modal="true">
 
     <h:panelGrid columns="2" style="margin-bottom:10px">
-        <h:outputLabel for="attachtitle" value="#{msgs.title}"/>
+        <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
         <p:inputText id="attachtitle" value="#{fileUploadController.attach.title}"/>
         <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
         <p:inputTextarea id="attachcomment" value="#{fileUploadController.attach.comment}" rows="5" cols="50"/>

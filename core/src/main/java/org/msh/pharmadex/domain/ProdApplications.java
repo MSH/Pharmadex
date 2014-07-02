@@ -1,6 +1,7 @@
 package org.msh.pharmadex.domain;
 
 import org.hibernate.envers.Audited;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
 
@@ -53,6 +54,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private ProdDrugType drugType;
+
+    @Enumerated(EnumType.STRING)
+    private ProdAppType prodAppType;
 
     @Column(length = 20)
     private String packSize;
@@ -144,6 +148,11 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Appointment appointment;
+
+    @Column(length = 500)
+    private String dossLoc;
+
+    private boolean sendToGazette;
 
     @Lob
     @Column(nullable = true)
@@ -491,6 +500,30 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setIngrdStatment(String ingrdStatment) {
         this.ingrdStatment = ingrdStatment;
+    }
+
+    public String getDossLoc() {
+        return dossLoc;
+    }
+
+    public void setDossLoc(String dossLoc) {
+        this.dossLoc = dossLoc;
+    }
+
+    public ProdAppType getProdAppType() {
+        return prodAppType;
+    }
+
+    public void setProdAppType(ProdAppType prodAppType) {
+        this.prodAppType = prodAppType;
+    }
+
+    public boolean isSendToGazette() {
+        return sendToGazette;
+    }
+
+    public void setSendToGazette(boolean sendToGazette) {
+        this.sendToGazette = sendToGazette;
     }
 }
 
