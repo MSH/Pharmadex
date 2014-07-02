@@ -95,12 +95,17 @@ body {
 
 /* Header */
 #logo {
-    height: 100px;
+    height: 110px;
     margin: 0 auto;
     padding: 0px 0px 0 0px;
-    background-image: url(../resources/images/Top_05.jpg);
     background-repeat: repeat;
     background-position: center;
+}
+
+.logo {
+    color: rgb(253, 214, 5);
+    font-size: xx-large;
+    vertical-align: top;
 }
 
 #logo h1, #logo p {
