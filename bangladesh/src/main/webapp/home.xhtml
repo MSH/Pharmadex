@@ -43,19 +43,19 @@
                         </sec:isAuthenticated>
 
                         <p:submenu label="#{msgs.home_links}">
-                            <p:menuitem value="#{msgs.Home_download}" url="downloads.faces"/>
-                            <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces"/>
-                            <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces"/>
-                            <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces"/>
+                            <p:menuitem value="#{msgs.Home_download}" url="downloads.faces" ajax="false"/>
+                            <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces" ajax="false"/>
+                            <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces" ajax="false"/>
+                            <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces" ajax="false"/>
                         </p:submenu>
 
                         <p:submenu label="Quick Links">
-                            <p:menuitem value="Registered Products" action="/public/productlist.faces"/>
-                            <p:menuitem value="Registered Manufacturers" url="/public/applicantlist.faces"/>
-                            <p:menuitem value="Licensing" url="contactus.faces"/>
-                            <p:menuitem value="Request for Product Analysis" url="contactus.faces"/>
-                            <p:menuitem value="Therapetics Request Information" url="contactus.faces"/>
-                            <p:menuitem value="Pharmacovigilance" url="contactus.faces"/>
+                            <p:menuitem value="Registered Products" action="/public/productlist.faces" ajax="false"/>
+                            <p:menuitem value="Registered Manufacturers" url="/public/applicantlist.faces" ajax="false"/>
+                            <p:menuitem value="Licensing" url="contactus.faces" ajax="false"/>
+                            <p:menuitem value="Request for Product Analysis" url="contactus.faces" ajax="false"/>
+                            <p:menuitem value="Therapetics Request Information" url="contactus.faces" ajax="false"/>
+                            <p:menuitem value="Pharmacovigilance" url="contactus.faces" ajax="false"/>
                         </p:submenu>
                     </p:menu>
 
