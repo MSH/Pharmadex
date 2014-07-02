@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean;
 
+import org.msh.pharmadex.dao.iface.ChecklistDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.service.*;
@@ -30,7 +31,6 @@ public class GlobalEntityLists implements Serializable {
     private List<PharmClassif> pharmClassifs;
     private List<Inn> inns;
     private List<Atc> atcs;
-    private List<Checklist> checklists;
     private List<AdminRoute> adminRoutes;
 
 
@@ -70,12 +70,6 @@ public class GlobalEntityLists implements Serializable {
     @Autowired
     private AdminRouteService adminRouteService;
 
-
-    public List<Checklist> getChecklists() {
-        if (checklists == null)
-            checklists = prodApplicationsService.findAllChecklist();
-        return checklists;
-    }
 
     public List<Atc> getAtcs() {
         if (atcs == null)

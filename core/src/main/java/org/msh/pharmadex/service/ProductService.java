@@ -19,6 +19,7 @@ import java.util.List;
  * Author: usrivastava
  */
 @Service
+@Transactional
 public class ProductService implements Serializable {
 
 
@@ -43,7 +44,9 @@ public class ProductService implements Serializable {
         return productDAO.findRegProducts();
     }
 
-    public Product updateProduct(Product prod) {
+    @Transactional
+    public Product updateProduct(Product prod) throws Exception{
+
         return productDAO.updateProduct(prod);
     }
 

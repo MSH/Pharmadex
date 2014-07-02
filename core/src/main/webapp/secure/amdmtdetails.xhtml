@@ -11,7 +11,7 @@
             <h:panelGrid columns="2" columnClasses="menu,content">
                 <h:panelGrid columns="2" columnClasses="menu,content">
                     <p:menu style="width:198px">
-                        <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
+                        <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered and !amendmentMbn.newAmdmt}">
                             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
                                         action="#{renewalMbn.preparePayment()}"
                                         oncomplete="renewdlg.show()"
@@ -69,7 +69,13 @@
                             </table>
                         </h1>
 
-                        <ui:repeat var="amdmt" value="#{amendmentMbn.prodAppAmdmts}">
+                        <p:panel>
+                            <p:outputLabel value="Please submit a new Application for the changes." rendered="#{amendmentMbn.newAmdmt}"/>
+                        </p:panel>
+
+                        <h:panelGrid columns="1" rendered="#{!amendmentMbn.newAmdmt}">
+
+                        <ui:repeat var="amdmt" value="#{amendmentMbn.prodAppAmdmts}" >
                             <p:accordionPanel multiple="true">
                                 <p:tab title="#{amdmt.amdmtCategory.shortDesc}">
                                     <h:panelGrid columns="1" columnClasses="label value">
@@ -82,7 +88,7 @@
 
                             </p:accordionPanel>
                         </ui:repeat>
-
+                        </h:panelGrid>
                     </h:panelGroup>
                 </h:panelGrid>
             </h:panelGrid>

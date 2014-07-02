@@ -228,7 +228,7 @@ public class ProdApplicationsService implements Serializable {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+            prodApplicationses = prodApplicationsDAO.findProdApplicationsByModerator(userSession.getLoggedInUserObj().getUserId());
         } else if (userSession.isReviewer()) {
             prodApplicationses = prodApplicationsDAO.findProdApplicationsByReviewer(userSession.getLoggedInUserObj().getUserId());
         } else if (userSession.isHead()) {
@@ -238,6 +238,7 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.VERIFY);
             regState.add(RegState.SCREENING);
             regState.add(RegState.FOLLOW_UP);
+            regState.add(RegState.REVIEW_BOARD);
             regState.add(RegState.RECOMMENDED);
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
@@ -361,20 +362,39 @@ public class ProdApplicationsService implements Serializable {
         param.put("appName", product.getApplicant().getAppName());
 
         String companyName = "";
+        String fprcName = "";
+        String fprrName ="";
         for (Company c : product.getCompanies()) {
-            if (c.getCompanyType().equals(CompanyType.API_MANUF))
+            if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF))
                 companyName = c.getCompanyName();
+            if (c.getCompanyType().equals(CompanyType.FPRC))
+                fprcName = c.getCompanyName();
+            if (c.getCompanyType().equals(CompanyType.FPRR))
+                fprrName = c.getCompanyName();
         }
 
         param.put("manufName", companyName);
+        param.put("fprcName", fprcName);
+        param.put("frrName", fprrName);
         param.put("regDate", regDt);
         param.put("issueDate", regDt);
+        param.put("dosform", product.getDosForm().getDosForm());
+        param.put("conditions", "Attached");
+
+
 //        param.put("subject", "Subject: "+letter.getSubject()+" "+ prodApp.getProdName() + " ");
 //        param.put("body", body);
 //        param.put("body", "Thank you for applying to register " + prodApp.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()
 //                + ". Your application is successfully submitted and the application number is " + prodApp.getProdApplications().getId() + ". "
 //                +"Please use this application number for any future correspondence.");
         param.put("footer", "Johannes");
+
+        Calendar calendar = Calendar.getInstance();
+        param.put("currDay", calendar.get(Calendar.DAY_OF_MONTH));
+        String currMnthYr ="";
+        currMnthYr = ""+calendar.get(Calendar.MONTH)+"/"+calendar.get(Calendar.YEAR);
+        param.put("currDay", ""+calendar.get(Calendar.DAY_OF_MONTH));
+
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 

@@ -30,15 +30,16 @@ public class ReportService implements Serializable {
         HashMap param = new HashMap();
         param.put("appName", product.getApplicant().getAppName());
         param.put("prodName", product.getProdName());
-        param.put("subject", "Subject: ");
+        param.put("subject", "Product Registration for  "+product.getProdName()+" recieved");
 //                + letter.getSubject() + " " + product.getProdName() + " ");
 //        param.put("body", body);
         param.put("body", "Thank you for applying to register " + product.getProdName() + " manufactured by " + product.getApplicant().getAppName()
-                + ". Your application is successfully submitted and the application number is " + product.getProdApplications().getId() + ". "
+                + ". Your application is successfully submitted and the application number is " + product.getProdApplications().getProdAppNo() + ". "
                 + "Please use this application number for any future correspondence.");
         param.put("address1", product.getApplicant().getAddress().getAddress1());
         param.put("address2", product.getApplicant().getAddress().getAddress2());
         param.put("country", product.getApplicant().getAddress().getCountry().getCountryName());
+        param.put("registrar", "Johannes");
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 }

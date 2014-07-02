@@ -3,19 +3,19 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                template="../templates/registration_layout.xhtml">
-    <ui:define name="regcontent">
-        <div class="post">
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post" style="width: 1054px;">
             <h1 class="title ui-widget-header ui-corner-all"> #{msgs.registration_product}</h1>
         </div>
 
         <h:form prependId="false">
 
-            <p:dataTable id="products" var="product" value="#{productMbean.products}"
+            <p:dataTable id="products" var="product" value="#{productMbean.products}" tableStyle="width: auto"
                          filteredValue="#{productMbean.filteredProducts}"
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="20,40,100">
+                         rowsPerPageTemplate="20,40,100" >
                 <p:column filterBy="#{product.prodName}" sortBy="#{product.prodName}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prod_name}"/>
@@ -57,6 +57,14 @@
                         <h:outputText value="#{msgs.dos_strength}"/>
                     </f:facet>
                     <h:outputText value="#{product.dosStrength}"/>
+                </p:column>
+
+                <p:column filterBy="#{product.prodCategory}"
+                          sortBy="#{product.prodCategory}"  >
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prod_cat}"/>
+                    </f:facet>
+                    <h:outputText value="#{product.prodCategory}"/>
                 </p:column>
 
                 <p:column filterBy="#{product.applicant.appName}"

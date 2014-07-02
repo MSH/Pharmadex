@@ -30,6 +30,10 @@ public class GlobalLists {
         return Arrays.asList(ProdCategory.values());
     }
 
+    public List<ProdAppType> getProdAppType() {
+        return Arrays.asList(ProdAppType.values());
+    }
+
     public List<ProdDrugType> getDrugTypes() {
         return Arrays.asList(ProdDrugType.values());
     }

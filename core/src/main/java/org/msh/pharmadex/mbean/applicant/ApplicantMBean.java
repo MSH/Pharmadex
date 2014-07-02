@@ -33,7 +33,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-@Scope("session")
+@Scope("request")
 public class ApplicantMBean implements Serializable {
     private static final long serialVersionUID = -7233445025890580011L;
     private Applicant selectedApplicant;
@@ -64,8 +64,10 @@ public class ApplicantMBean implements Serializable {
     private void init() {
         selectedApplicant = new Applicant();
         selectedApplicant.getAddress().setCountry(new Country());
-        if (userSession.isCompany())
+        if (userSession.isCompany()) {
             user = userSession.getLoggedInUserObj();
+            countryService.findCountryById(user.getAddress().getCountry().getId());
+        }
         else
             user = null;
         selectedApplicant.setContactName(user != null ? user.getName() : null);

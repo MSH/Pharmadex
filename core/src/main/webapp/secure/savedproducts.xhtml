@@ -33,6 +33,10 @@
                     #{msgs[eachprod.regState.key]}
                 </p:column>
 
+                <p:column headerText="#{msgs.prod_cat}">
+                    #{msgs[eachprod.prod.prodCategory.key]}
+                </p:column>
+
                 <p:column headerText="Date Submitted">
                     <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
                 </p:column>

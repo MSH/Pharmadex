@@ -68,7 +68,7 @@ public class UserService implements Serializable {
         return userDAO.findByApplicant(applicantId);
     }
 
-    public String createUser(User user) {
+    public String createPublicUser(User user) {
         //Set the user enable to access the system
         user.setEnabled(true);
         List<Role> rList = new ArrayList<Role>();
@@ -79,6 +79,12 @@ public class UserService implements Serializable {
         user.setRoles(rList);
         return userDAO.saveUser(passwordGenerator(user));
     }
+
+    public String createUser(User user){
+        return userDAO.saveUser(passwordGenerator(user));
+    }
+
+
 
     public User passwordGenerator(User user) {
         UserDetailsAdapter userDetails = new UserDetailsAdapter(user);

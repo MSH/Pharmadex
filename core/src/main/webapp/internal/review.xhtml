@@ -12,8 +12,8 @@
     <ui:define name="content">
 
         <div style="width: 1054px;">
-            <h:form id="reghome" enctype="multipart/form-data">
-                <p:growl id="growl" showDetail="true" showSummary="true"/>
+            <h:form id="reviewHome" enctype="multipart/form-data">
+                <p:growl id="growl" showSummary="true"/>
 
 
                 <div class="post">
@@ -47,9 +47,9 @@
 
                 <div align="right">
                     <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
-                                     update=":reghome"
+                                     update=":reviewHome" process=":reviewHome:reviewgrid @this"
                                      rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
-                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" update=":reghome"
+                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" update=":reviewHome"
                                      ajax="false" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
                     <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewBn.cancelReview}"
                                      ajax="false"/>
@@ -59,10 +59,11 @@
 
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10"
                              rendered="#{userSession.reviewer and !reviewBn.review.submitted}">
-                    <h:outputText value="#{msgs.recommendation}"/>
+                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
 
 
-                    <p:selectOneMenu id="statuscb" value="#{reviewBn.review.recomendType}">
+                    <p:selectOneMenu id="recomcb" value="#{reviewBn.review.recomendType}" required="true"
+                                     requiredMessage="Please enter your recommendation">
                         <f:selectItem itemLabel="-"/>
                         <f:selectItems value="#{globalLists.recomendType}" var="type" itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
@@ -87,41 +88,42 @@
 
                 </div>
 
-                <p:dataTable var="checkList" value="#{reviewBn.reviewChecklists}" style="width:100%;">
-                    <p:column headerText="">
-                        <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
-                    </p:column>
-                    <p:column>
-                        <h:outputLabel value="#{checkList.checklist.name}"/>
-                    </p:column>
-                    <p:column>
-                        <h:outputLabel value="#{checkList.checklist.module}"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.global_comment}">
-                        <p:inputTextarea value="#{checkList.comments}"
-                                         readonly="#{!userSession.reviewer or reviewBn.review.submitted}" rows="2"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.concerns}">
-                        <p:inputTextarea value="#{checkList.concerns}"
-                                         readonly="#{!userSession.reviewer or reviewBn.review.submitted}" rows="2"/>
-                    </p:column>
-                    <!--        <p:column>
-                                <p:commandButton icon="ui-icon-document" onclick="moduledlg.show()"
-                                                 action="#{fileUploadController.setProdAppChecklist(checkList)}"
-                                                 rendered="#{!checkList.fileUploaded}"/>
+                <h:panelGrid id="reviewgrid" columns="1" width="100%">
+                    <p:dataTable var="checkList" value="#{reviewBn.reviewChecklists}" style="width:100%;">
+                        <p:column headerText="">
+                            <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+                        </p:column>
+                        <p:column>
+                            <h:outputLabel value="#{checkList.checklist.name}"/>
+                        </p:column>
+                        <p:column>
+                            <h:outputLabel value="#{checkList.checklist.module}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs.global_comment}">
+                            <p:inputTextarea value="#{checkList.comments}"
+                                             readonly="#{!userSession.reviewer or reviewBn.review.submitted}" rows="2"/>
+                        </p:column>
+                        <p:column headerText="#{msgs.concerns}">
+                            <p:inputTextarea value="#{checkList.concerns}"
+                                             readonly="#{!userSession.reviewer or reviewBn.review.submitted}" rows="2"/>
+                        </p:column>
+                        <!--        <p:column>
+                                    <p:commandButton icon="ui-icon-document" onclick="moduledlg.show()"
+                                                     action="#{fileUploadController.setProdAppChecklist(checkList)}"
+                                                     rendered="#{!checkList.fileUploaded}"/>
 
-                            </p:column>
-                            <p:column>
-                                <p:commandButton id="downloadLink" value="Download" ajax="false"
-                                                 onclick="PrimeFaces.monitorDownload(start, stop)"
-                                                 icon="ui-icon-arrowstop-1-s" rendered="#{checkList.fileUploaded}"
-                                        >
-                                    <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
-                                </p:commandButton>
-                            </p:column>
-                            -->
-                </p:dataTable>
-
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                                     onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                     icon="ui-icon-arrowstop-1-s" rendered="#{checkList.fileUploaded}"
+                                            >
+                                        <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
+                                    </p:commandButton>
+                                </p:column>
+                                -->
+                    </p:dataTable>
+                </h:panelGrid>
             </h:form>
         </div>
 

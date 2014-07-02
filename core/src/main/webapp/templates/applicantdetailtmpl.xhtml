@@ -4,12 +4,12 @@
                 xmlns:p="http://primefaces.org/ui">
     <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
                  columnClasses="col1, col2, col1, col2">
-        <h:outputLabel value="#{msgs.applicant_name}" for="appname"/>
+        <p:outputLabel value="#{msgs.applicant_name}" for="appname"/>
         <p:inputText id="appname" required="true" value="#{applicantdata.appName}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.appName}" rendered="#{!input}" style="font-weight: bold;"/>
-        <h:outputLabel/>
-        <h:outputLabel/>
 
+        <h:outputLabel/>
+        <h:outputLabel/>
 
         <ui:decorate template="/templates/addrtempl.xhtml">
             <ui:param name="addressdata" value="#{applicantdata.address}"/>
@@ -19,11 +19,11 @@
         <h:outputLabel/>
         <h:outputLabel/>
 
-        <h:outputLabel value="#{msgs.applicant_type}"/>
+        <p:outputLabel value="#{msgs.applicant_type}*"/>
         <p:autoComplete id="mod" value="#{applicantdata.applicantType}" rendered="#{input}"
                         completeMethod="#{applicantMBean.completeApplicantTypeList}" dropdown="true"
                         var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
-                        converter="#{applicantTypeConverter}">
+                        converter="#{applicantTypeConverter}" required="true">
         </p:autoComplete>
         <h:outputLabel value="#{applicantdata.applicantType}" rendered="#{!input}" style="font-weight: bold;"/>
 
@@ -34,15 +34,15 @@
         <p:inputText value="#{applicantdata.fileNumber}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.fileNumber}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_phone}" style="text-align: right"/>
+        <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right"/>
         <p:inputText value="#{applicantdata.phoneNo}" required="true" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_faxno}"/>
-        <p:inputText value="#{applicantdata.faxNo}" required="true" rendered="#{input}"/>
+        <p:outputLabel value="#{msgs.applicant_faxno}"/>
+        <p:inputText value="#{applicantdata.faxNo}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel value="#{msgs.applicant_website}"/>
+        <p:outputLabel value="#{msgs.applicant_website}"/>
         <p:inputText value="#{applicantdata.website}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.website}" rendered="#{!input}" style="font-weight: bold;"/>
 

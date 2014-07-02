@@ -22,19 +22,19 @@ public class User extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer userId;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 255, nullable = false)
     private String name;
 
     @Column(length = 80, unique = true, nullable = false)
     private String username;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 255, nullable = false)
     private String password;
 
-    @Column(nullable = false, length = 80, unique = false)
+    @Column(nullable = false, length = 255, unique = false)
     private String email;
 
-    @Column(length = 10)
+    @Column(length = 255)
     private String phoneNo;
 
     @Enumerated(EnumType.STRING)
@@ -47,13 +47,13 @@ public class User extends CreationDetail implements Serializable {
 
     private String companyName;
 
-    @Column(length = 6)
+    @Column(length = 255)
     private Locale language;
 
-    @Column(length = 50)
+    @Column(length = 255)
     private TimeZone timeZone;
 
-    @Column(length = 200)
+    @Column(length = 255)
     private String comments;
 
     @ManyToOne

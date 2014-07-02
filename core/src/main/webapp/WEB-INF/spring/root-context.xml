@@ -51,4 +51,8 @@
     <!-- Spring task schedule configuration -->
     <task:annotation-driven/>
 
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+
 </beans>

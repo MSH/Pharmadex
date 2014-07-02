@@ -9,6 +9,7 @@ import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RegistrationUtil;
+import org.primefaces.event.FlowEvent;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -27,7 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -62,108 +66,182 @@ public class RegHomeMbean implements Serializable {
     @Autowired
     private GlobalEntityLists globalEntityLists;
 
+    @Autowired
+    private ChecklistService checklistService;
+
     private static Logger logger = Logger.getLogger(RegHomeMbean.class.getName());
     private List<ProdInn> selectedInns;
     private List<Atc> selectedAtcs;
     private List<ProdAppChecklist> prodAppChecklists;
+    private List<Company> companies;
+    private List<DrugPrice> drugPrices;
+
     private ProdApplications prodApplications;
     private Product product;
     private Applicant applicant;
-    private boolean showAppReg = false;
     private PharmClassif selectedPharmClassif;
     private ProdInn prodInn;
     private Atc atc;
     private User loggedInUser;
-    private List<Company> companies;
     private ProdInn deleteInn;
+    private Pricing pricing;
+
     private ScheduleModel eventModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
+
     private JasperPrint jasperPrint;
     private RegATCHelper regATCHelper;
+
+    private boolean showAppReg = false;
     private boolean showCompany = false;
     private boolean showDrugPrice = false;
     private boolean showNCE = false;
-    private List<DrugPrice> drugPrices;
 
     @PostConstruct
     private void init() {
         if (prodApplications == null) {
             prodApplications = new ProdApplications();
-            if (product == null)
-                product = new Product(prodApplications);
+            product = new Product(prodApplications);
+            prodApplications.setProd(product);
+            product.setProdApplications(prodApplications);
+
+            //Initialize associated product entities
             product.setDosForm(new DosageForm());
             product.setDosUnit(new DosUom());
             product.setPharmClassif(new PharmClassif());
             product.setAdminRoute(new AdminRoute());
-            selectedInns = new ArrayList<ProdInn>();
-            product.setInns(selectedInns);
-            prodApplications.setProd(product);
-            product.setProdApplications(prodApplications);
+
+            //being a new application. set regstate as saved
             prodApplications.setRegState(RegState.SAVED);
-            prodAppChecklists = new ArrayList<ProdAppChecklist>();
-            prodApplications.setProdAppChecklists(prodAppChecklists);
-            List<Checklist> allChecklist = globalEntityLists.getChecklists();
-            ProdAppChecklist eachProdAppCheck;
-            for (int i = 0; allChecklist.size() > i; i++) {
-                eachProdAppCheck = new ProdAppChecklist();
-                eachProdAppCheck.setChecklist(allChecklist.get(i));
-                eachProdAppCheck.setProdApplications(prodApplications);
-                prodAppChecklists.add(eachProdAppCheck);
+
+            if (selectedInns == null) {
+                //Initialize Inns
+                selectedInns = new ArrayList<ProdInn>();
+                product.setInns(selectedInns);
             }
+            if (selectedAtcs == null) {
+                //Initialize Atcs if null
+                selectedAtcs = new ArrayList<Atc>();
+                product.setAtcs(selectedAtcs);
+            }
+
+            if (pricing == null) {
+                pricing = new Pricing(new ArrayList<DrugPrice>());
+                prodApplications.setPricing(pricing);
+            }
+
+            //Initialize companies if null
+            if (companies == null) {
+                companies = new ArrayList<Company>();
+                product.setCompanies(companies);
+            }
+
+            //Set logged in user company as the company.
             if (userSession.isCompany()) {
                 product.setApplicant(getLoggedInUser().getApplicant());
                 prodApplications.setUser(getLoggedInUser());
             }
-            product.setInns(selectedInns);
-            selectedAtcs = new ArrayList<Atc>();
-            product.setAtcs(selectedAtcs);
-            companies = new ArrayList<Company>(10);
-            product.setCompanies(companies);
-            prodApplications.setProdAppChecklists(prodAppChecklists);
-            Pricing pricing = new Pricing(new ArrayList<DrugPrice>());
-            prodApplications.setPricing(pricing);
-            atc = new Atc();
-
 //            eventModel = new DefaultScheduleModel();
 //            for (Appointment app : appointmentService.getAppointments()) {
 //                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
 //            }
         }
-//        regATCHelper = new RegATCHelper(atc, globalEntityLists);
     }
 
-    public List<Inn> completeInnCodes(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getInns());
-    }
-
-    public List<Applicant> completeApplicantList(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getRegApplicants());
-    }
-
-    public List<PharmClassif> completePharmClassif(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getPharmClassifs());
-    }
 
     public void PDF() throws JRException, IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
         jasperPrint = reportService.reportinit(product);
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
         javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
+
+    }
+
+    //fires everytime you click on next or prev button on the wizard
+    @Transactional
+    public String onFlowProcess(FlowEvent event) {
+        String currentWizardStep = event.getOldStep();
+        String nextWizardStep = event.getNewStep();
+        try {
+            initializeNewApp(currentWizardStep);
+            if (!currentWizardStep.equals("prodreg"))
+                saveApp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesMessage msg = new FacesMessage(e.getMessage(), "Detail....");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            nextWizardStep = currentWizardStep; // keep wizard on current step if error
+        }
+        return nextWizardStep; // return new step if all ok
+    }
+
+    //Used to initialize field values only for new applications. For saved applications the values are assigned in setprodapplications
+    @Transactional
+    private void initializeNewApp(String currentWizardStep) {
+        if (currentWizardStep.equals("prodreg")&& product.getId()==null) {
+        } else if (currentWizardStep.equals("proddetails")) {
+            //Only initialize once for new product applications. For saved application it is initialized in the setprodapplication method
+            if (prodAppChecklists==null||prodAppChecklists.size()<1) {
+                prodAppChecklists = new ArrayList<ProdAppChecklist>();
+                prodApplications.setProdAppChecklists(prodAppChecklists);
+                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(),true);
+                ProdAppChecklist eachProdAppCheck;
+                    for (int i = 0; allChecklist.size() > i; i++) {
+                    eachProdAppCheck = new ProdAppChecklist();
+                    eachProdAppCheck.setChecklist(allChecklist.get(i));
+                    eachProdAppCheck.setProdApplications(prodApplications);
+                    prodAppChecklists.add(eachProdAppCheck);
+                }
+                prodApplications.setProdAppChecklists(prodAppChecklists);
+
+            }
+        } else if (currentWizardStep.equals("appdetails")) {
+        } else if (currentWizardStep.equals("manufdetail")) {
+        } else if (currentWizardStep.equals("pricing")) {
+        } else if (currentWizardStep.equals("payment")) {
+        } else if (currentWizardStep.equals("prodAppChecklist")) {
+
+        } else if (currentWizardStep.equals("appointment")) {
+
+        } else if (currentWizardStep.equals("summary")) {
+
+        }
+
     }
 
     @Transactional
     public void saveApp() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
         prodApplications.setUser(getLoggedInUser());
+        product.setProdApplications(prodApplications);
         product.setApplicant(getApplicant());
         if (product.getId() == null)
             product.setCreatedBy(getLoggedInUser());
-        product = productService.updateProduct(product);
+        try {
+            product = productService.updateProduct(product);
+            prodApplications = product.getProdApplications();
+            setFieldValues();
+            context.addMessage(null, new FacesMessage("Application saved successfully."));
+        } catch (Exception e) {
+            e.printStackTrace();
+            context.addMessage(null, new FacesMessage("Error saving application."));
+        }
+
     }
 
     public String removeInn(ProdInn prodInn) {
         selectedInns.remove(prodInn);
+        return null;
+    }
+
+    public String removeAtc(Atc atc) {
+        selectedAtcs.remove(atc);
         return null;
     }
 
@@ -173,13 +251,11 @@ public class RegHomeMbean implements Serializable {
         companies.remove(selectedCompany);
     }
 
-    public void nceChangeListener(){
-        if(product.isNewChemicalEntity())
+    public void nceChangeListener() {
+        if (product.isNewChemicalEntity())
             showNCE = true;
         else
             showNCE = false;
-
-
     }
 
     @Transactional
@@ -205,32 +281,38 @@ public class RegHomeMbean implements Serializable {
 
         saveApp();
 
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
+        context.addMessage(null, new FacesMessage("Application submitted successfully."));
+
+
 //        timelineService.saveTimeLine(timeLine);
         return "/secure/prodregack.faces";
     }
-
 
 
     public String addProdInn() {
         System.out.println("Inside addinn");
         prodInn.setProduct(product);
         selectedInns.add(prodInn);
-        prodApplications.getProd().setInns(selectedInns);
+        product.setInns(selectedInns);
 
-        List<Atc> a = atcService.findAtcByName(prodInn.getInn().getName());
-        if (a != null) {
-            if (selectedAtcs == null)
-                selectedAtcs = new ArrayList<Atc>();
-            selectedAtcs.addAll(a);
-            prodApplications.getProd().setAtcs(selectedAtcs);
+        try {
+            List<Atc> a = atcService.findAtcByName(prodInn.getInn().getName());
+            if (a != null) {
+                if (selectedAtcs == null)
+                    selectedAtcs = new ArrayList<Atc>();
+                selectedAtcs.addAll(a);
+                product.setAtcs(selectedAtcs);
+            }
+            prodInn = null;
+        }catch (Exception e){
+            FacesMessage msg = new FacesMessage(e.getMessage(), "Detail....");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Inn cannot be empty."));
+
         }
-        prodInn = null;
         return null;
     }
 
-    public void openAddATC (){
+    public void openAddATC() {
         regATCHelper = new RegATCHelper(atc, globalEntityLists);
     }
 
@@ -273,16 +355,21 @@ public class RegHomeMbean implements Serializable {
 //        this.prodApplications = prodApplicationsService.findProdApplications(prodApplications.getId());
         product = productService.findProduct(prodApplications.getProd().getId());
         this.prodApplications = product.getProdApplications();
+        setFieldValues();
+    }
+
+    //used to set all the field values after insert/update operation
+    private void setFieldValues() {
         selectedInns = product.getInns();
         selectedAtcs = product.getAtcs();
         companies = product.getCompanies();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = product.getApplicant();
-        drugPrices = prodApplications.getPricing().getDrugPrices();
+//        drugPrices = prodApplications.getPricing().getDrugPrices();
     }
 
     public Applicant getApplicant() {
-        if (applicant==null || applicant.getApplcntId()==null) {
+        if (applicant == null || applicant.getApplcntId() == null) {
             if (product != null && product.getApplicant() != null && product.getApplicant().getApplcntId() != null) {
                 applicant = applicantService.findApplicant(product.getApplicant().getApplcntId());
             } else if (getLoggedInUser().getApplicant() != null) {
@@ -552,6 +639,18 @@ public class RegHomeMbean implements Serializable {
         }
         System.out.println("Suggestions size == " + suggestions.size());
         return suggestions;
+    }
+
+    public List<Inn> completeInnCodes(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getInns());
+    }
+
+    public List<Applicant> completeApplicantList(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getRegApplicants());
+    }
+
+    public List<PharmClassif> completePharmClassif(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getPharmClassifs());
     }
 
 

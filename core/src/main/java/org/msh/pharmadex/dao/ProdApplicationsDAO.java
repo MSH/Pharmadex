@@ -165,6 +165,19 @@ public class ProdApplicationsDAO implements Serializable {
                 .getResultList();
     }
 
+    public List<ProdApplications> findProdApplicationsByHead(Integer userId) {
+        return entityManager.createQuery("select p from ProdApplications p left join p.reviews r where r.user.userId = :userId and p.regState = :regState")
+                .setParameter("userId", userId)
+                .setParameter("regState", RegState.REVIEW_BOARD)
+                .getResultList();
+    }
+
+    public List<ProdApplications> findProdApplicationsByModerator(Integer userId) {
+        return entityManager.createQuery("select p from ProdApplications p left join p.moderator r where r.userId = :userId ")
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
     /**
      * Fetches prodapplications from data base based on passed parameters
      * Construct the parameters with the field name as string and the  vlaue as an object.

@@ -47,10 +47,10 @@
                                 </sec:isAuthenticated>
 
                                 <p:submenu label="#{msgs.home_links}">
-                                    <p:menuitem value="#{msgs.Home_download}" url="downloads.faces"/>
-                                    <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces"/>
-                                    <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces"/>
-                                    <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces"/>
+                                    <p:menuitem value="#{msgs.Home_download}" url="downloads.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces" ajax="false"/>
                                 </p:submenu>
 
                                 <p:submenu label="Quick Links">
@@ -58,11 +58,11 @@
                                                 ajax="false"/>
                                     <p:menuitem value="Registered Products" action="/public/productlist.faces"
                                                 ajax="false"/>
-                                    <p:menuitem value="Registered Manufacturers" url="/public/applicantlist.faces"/>
-                                    <p:menuitem value="Licensing" url="contactus.faces"/>
-                                    <p:menuitem value="Request for Product Analysis" url="contactus.faces"/>
-                                    <p:menuitem value="Therapetics Request Information" url="contactus.faces"/>
-                                    <p:menuitem value="Pharmacovigilance" url="contactus.faces"/>
+                                    <p:menuitem value="Registered Manufacturers" url="/public/applicantlist.faces" ajax="false"/>
+                                    <p:menuitem value="Licensing" url="contactus.faces" ajax="false"/>
+                                    <p:menuitem value="Request for Product Analysis" url="contactus.faces" ajax="false"/>
+                                    <p:menuitem value="Therapetics Request Information" url="contactus.faces" ajax="false"/>
+                                    <p:menuitem value="Pharmacovigilance" url="contactus.faces" ajax="false"/>
                                 </p:submenu>
                             </p:menu>
 
@@ -125,7 +125,7 @@
 
                     <li>
 
-                        test
+                       <h4> Quality Surveillance Laboratory (QSL)</h4>
                         <p>Quality Surveillance Laboratory (QSL) analyses medicines imported into the countryand ascertain medicines quality level
                             for batch release. Additionally, the laboratory analyses medicine samples from registration and post market surveillance samples
                             from inspection and is involved with carry out proficiency testing with the World Health Organisation (WHO), amongst others. </p>

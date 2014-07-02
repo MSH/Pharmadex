@@ -84,7 +84,7 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 try {
                     // Push some useful stuff to the request scope for use in the page
                     requestMap.put("currentViewId", vee.getViewId());
-                    navigationHandler.handleNavigation(facesContext, null, "/pages/error.faces");
+                    navigationHandler.handleNavigation(facesContext, null, "/home.faces");
                     facesContext.renderResponse();
                 } finally {
                     i.remove();

@@ -52,8 +52,9 @@ public class CompanyMBean implements Serializable {
             selectedCompany.getAddress().setCountry(c);
 
             selectedCompany.setProduct(regHomeMbean.getProduct());
-            regHomeMbean.getCompanies().add(selectedCompany);
+            regHomeMbean.getProduct().getCompanies().add(selectedCompany);
             regHomeMbean.setShowCompany(false);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Company added"));
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
@@ -61,6 +62,9 @@ public class CompanyMBean implements Serializable {
     }
 
     public String cancelAdd() {
+
+        selectedCompany = null;
+        regHomeMbean.setShowCompany(false);
         return null;
     }
 

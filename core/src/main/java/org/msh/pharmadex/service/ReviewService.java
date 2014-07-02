@@ -7,6 +7,7 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.dao.iface.ReviewChecklistDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.domain.Checklist;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewChecklist;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
@@ -27,19 +28,19 @@ public class ReviewService implements Serializable {
     @Autowired
     private ReviewDAO reviewDAO;
 
-    @Autowired
-    private ReviewChecklistDAO reviewChecklistDAO;
-
-    @Autowired
+   @Autowired
     private GlobalEntityLists globalEntityLists;
 
-    public Review findReview(Long id) {
+    @Autowired
+    private ChecklistService checklistService;
+
+    public Review findReview(Long id, ProdApplications prodApplications) {
         Review review = reviewDAO.findOne(id);
         List<ReviewChecklist> reviewChecklists = review.getReviewChecklists();
         if (reviewChecklists.size() < 1) {
             reviewChecklists = new ArrayList<ReviewChecklist>();
             review.setReviewChecklists(reviewChecklists);
-            List<Checklist> allChecklist = globalEntityLists.getChecklists();
+            List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
             ReviewChecklist eachReviewChecklist;
             for (int i = 0; allChecklist.size() > i; i++) {
                 eachReviewChecklist = new ReviewChecklist();

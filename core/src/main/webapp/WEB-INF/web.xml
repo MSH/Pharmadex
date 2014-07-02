@@ -6,7 +6,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-         version="3.0">
+         version="3.0" metadata-complete="true">
 
     <!-- The definition of the Root Spring Container shared by all Servlets
         and Filters -->
@@ -30,10 +30,12 @@
         <param-value>true</param-value>
     </context-param>
 
+<!--
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+-->
 
     <!-- Creates the Spring Container shared by all Servlets and Filters -->
     <listener>
@@ -65,7 +67,15 @@
             <url-pattern>/spring/</url-pattern>
         </servlet-mapping>
     -->
+    <filter>
+        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+    </filter>
 
+    <filter-mapping>
+        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -83,15 +93,6 @@
         <url-pattern>/j_spring_security_logout</url-pattern>
     </filter-mapping>
 
-    <filter>
-        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
-        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
     <filter>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
@@ -111,12 +112,12 @@
         <filter-name>facesExceptionFilter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
-
+<!--
     <context-param>
         <param-name>facelets.DEVELOPMENT</param-name>
         <param-value>true</param-value>
     </context-param>
-
+-->
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>

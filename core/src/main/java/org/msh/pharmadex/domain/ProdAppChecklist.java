@@ -15,7 +15,7 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "checklist_id")
+    @JoinColumn(name = "checklist_id", nullable = false)
     private Checklist checklist;
 
     @ManyToOne

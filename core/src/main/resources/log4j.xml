@@ -22,7 +22,15 @@
 	<logger name="org.springframework.beans">
 		<level value="info" />
 	</logger>
-	
+    
+    <logger name="org.springframework.orm.jpa">
+        <level value="info"/>
+    </logger>
+
+    <logger name="org.springframework.transaction">
+        <level value="info"/>
+    </logger>
+
 	<logger name="org.springframework.context">
 		<level value="info" />
 	</logger>

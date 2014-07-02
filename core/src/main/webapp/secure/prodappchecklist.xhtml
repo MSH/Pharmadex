@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dataTable var="checkList" value="#{regHomeMbean.prodAppChecklists}" style="width:100%;"
+                 sortBy="#{checkList.checklist.id}">
+        <p:column headerText="">
+            <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+        </p:column>
+        <p:column>
+            <h:outputLabel value="#{checkList.checklist.name}"/>
+        </p:column>
+        <p:column>
+            <h:outputLabel value="#{checkList.checklist.module}"/>
+        </p:column>
+        <p:column>
+            <p:selectBooleanCheckbox value="#{checkList.value}" />
+        </p:column>
+    </p:dataTable>
+
+</ui:composition>

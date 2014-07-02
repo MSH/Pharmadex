@@ -4,7 +4,9 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.auth.PassPhrase;
 import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.model.DualListModel;
@@ -54,6 +56,9 @@ public class UserMBean implements Serializable {
     @Autowired
     RoleDAO roleDAO;
 
+    @Autowired
+    LetterService letterService;
+
     public String exception() throws Exception {
         throw new Exception();
     }
@@ -102,12 +107,14 @@ public class UserMBean implements Serializable {
         String password = PassPhrase.getNext();
         selectedUser.setPassword(password);
         selectedUser.setRegistrationDate(new Date());
+        Letter letter = letterService.findByLetterType(LetterType.NEW_USER_REGISTRATION);
         Mail mail = new Mail();
         mail.setMailto(selectedUser.getEmail());
-        mail.setSubject("Pharmadex User Registration");
+        mail.setSubject(letter.getSubject());
+        mail.setMailto(selectedUser.getEmail());
         mail.setUser(selectedUser);
         mail.setDate(new Date());
-        mail.setMessage("Thank you for registering yourself for Pharmadex. In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
+        mail.setMessage("Thank you for registering with Namibian Medicines Regulatory Council. In order to access the system please use the username '"+selectedUser.getUsername()+"' and password '"+password+"' without the quotes.");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {

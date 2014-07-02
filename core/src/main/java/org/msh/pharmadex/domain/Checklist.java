@@ -19,6 +19,18 @@ public class Checklist extends CreationDetail implements Serializable {
 
     private String moduleNo;
 
+    @Column(name = "header")
+    private boolean header;
+
+    @Column(name = "new_med")
+    private boolean newMed;
+
+    @Column(name = "gen_med")
+    private boolean genMed;
+
+    @Column(name = "recognized_med")
+    private boolean recognizedMed;
+
     public Long getId() {
         return id;
     }
@@ -51,4 +63,35 @@ public class Checklist extends CreationDetail implements Serializable {
         this.moduleNo = moduleNo;
     }
 
+    public boolean isHeader() {
+        return header;
+    }
+
+    public void setHeader(boolean header) {
+        this.header = header;
+    }
+
+    public boolean isNewMed() {
+        return newMed;
+    }
+
+    public void setNewMed(boolean newMed) {
+        this.newMed = newMed;
+    }
+
+    public boolean isGenMed() {
+        return genMed;
+    }
+
+    public void setGenMed(boolean genMed) {
+        this.genMed = genMed;
+    }
+
+    public boolean isRecognizedMed() {
+        return recognizedMed;
+    }
+
+    public void setRecognizedMed(boolean recognizedMed) {
+        this.recognizedMed = recognizedMed;
+    }
 }

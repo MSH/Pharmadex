@@ -3,6 +3,8 @@ package org.msh.pharmadex.dao.iface;
 import org.msh.pharmadex.domain.AdminRoute;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: usrivastava

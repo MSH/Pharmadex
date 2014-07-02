@@ -1,5 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
                 template="../templates/registration_layout.xhtml">
 
 
@@ -7,6 +8,9 @@
         <div class="post">
             <h1 class="title ui-widget-header ui-corner-all"> Medicine Registration</h1>
         </div>
+
+        <p:growl />
+        <p:messages />
 
         <div>
             <p>Registration of medicines is focal point of any regulatory framework. The registration section is responsible for reviewing application dossiers submitted for the registration of medicines, related substances and medical devices. In addition it also reviews all post registration amendments madeto any registered medicines, related substances and medical devices.Those in need of applying for registration of medicines in Namibia are guided to download and acquaint themselves with the registration guidelines and the medicines application form, the MRF.</p>
@@ -33,9 +37,9 @@
             <p>
                 In order to register a product you must be a registered user of the website and login to the website. If you are not a registered user you can register
                 yourself by clicking on the link
-                <p:outputLink value="../pages/registeruser.faces">
+                <h:outputLink value="../pages/registeruser.faces">
                     <p:outputLabel value="register me"/>
-                </p:outputLink>
+                </h:outputLink>
             </p>
         </div>
 

@@ -7,6 +7,8 @@ import org.msh.pharmadex.domain.enums.ProdType;
 import org.msh.pharmadex.domain.enums.RegState;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,22 +22,28 @@ public class Product extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @Column(name = "prod_name", length = 100)
+    @Column(name = "prod_name", length = 500)
+    @Size(max=500, min = 3)
     private String prodName;
 
-    @Column(name = "apprvd_name", length = 100)
+    @Column(name = "apprvd_name", length = 500)
+    @Size(max=500, min = 3)
     private String apprvdName;
 
-    @Column(name = "prod_desc", length = 200)
+    @Column(name = "prod_desc", length = 500)
+    @Size(max=500, min = 3)
     private String prodDesc;
 
     @Column(name = "ingredient", length = 500)
+    @Size(max=500, min = 3)
     private String ingredient;
 
-    @Column(name = "gen_name", length = 150)
+    @Column(name = "gen_name", length = 500)
+    @Size(max=500, min = 3)
     private String genName;
 
-    @Column(name = "new_chem_name", length = 150)
+    @Column(name = "new_chem_name", length = 500)
+    @Size(max=500, min = 3)
     private String newChemicalName;
 
     @OneToOne
@@ -96,6 +104,7 @@ public class Product extends CreationDetail implements Serializable {
 
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_APP_ID")
+    @NotNull
     private ProdApplications prodApplications;
 
     @OneToOne

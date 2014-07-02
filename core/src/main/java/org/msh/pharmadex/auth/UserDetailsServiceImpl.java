@@ -39,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //        newUser.setEmail("a@a.com");
 //        newUser.setType(org.msh.pharmadex.domain.enums.UserType.NMRC);
 //
-//       userService.createUser(newUser);
+//       userService.createPublicUser(newUser);
 
         User userEntity = userDAO.findByUsername(username);
         if (userEntity == null) {

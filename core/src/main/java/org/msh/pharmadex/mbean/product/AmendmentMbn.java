@@ -47,8 +47,15 @@ public class AmendmentMbn implements Serializable {
 
     private List<ProdAppAmdmt> prodAppAmdmts;
 
+    private boolean newAmdmt;
+
     public void handleAmdmtChange() {
         amdmtCategories = amdmtService.findAmdmtCategoryByType(amdmtType);
+        if (amdmtType.equals(AmdmtType.NEW))
+            newAmdmt = true;
+        else
+            newAmdmt = false;
+
     }
 
     public String submitAmdments() {
@@ -134,5 +141,13 @@ public class AmendmentMbn implements Serializable {
 
     public void setProdAppAmdmts(List<ProdAppAmdmt> prodAppAmdmts) {
         this.prodAppAmdmts = prodAppAmdmts;
+    }
+
+    public boolean isNewAmdmt() {
+        return newAmdmt;
+    }
+
+    public void setNewAmdmt(boolean newAmdmt) {
+        this.newAmdmt = newAmdmt;
     }
 }

@@ -132,7 +132,7 @@ public class ReviewBn implements Serializable {
 
     public Review getReview() {
         if (review == null) {
-            review = reviewService.findReview(webSession.getReview().getId());
+            review = reviewService.findReview(webSession.getReview().getId(), processProdBn.getProdApplications());
             reviewChecklists = review.getReviewChecklists();
         }
         return review;

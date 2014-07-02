@@ -79,18 +79,18 @@ public class RegisterUserMbean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {
-            retvalue = userService.createUser(user);
+            retvalue = userService.createPublicUser(user);
         } catch (ConstraintViolationException e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
-            return "/page/registeruser.faces";
+            facesContext.addMessage(null, new FacesMessage("There is a user already registered with the same email address. If you forgot your password click on the reset password link at the login dialog box. Thank You."));
+            return "";
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage("There was an error registering the user. Please contact NMRC to register."));
             e.printStackTrace();
-            return "/page/registeruser.faces";
+            return "";
         }
         if (!retvalue.equalsIgnoreCase("persisted")) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
-            return "/page/registeruser.faces";
+            facesContext.addMessage(null, new FacesMessage(retvalue));
+            return "";
         } else {
             try {
                 Letter letter = letterService.findByLetterType(LetterType.NEW_USER_REGISTRATION);
@@ -100,9 +100,9 @@ public class RegisterUserMbean implements Serializable {
                 mail.setUser(user);
                 mail.setDate(new Date());
 //                mail.setMessage(letter.getBody());
-                mail.setMessage("Thank you for registering with Namibian Regulatory Council. In order to access the system please use the username '"+user.getUsername()+"' and password '"+password+"' without the quotes.");
+                mail.setMessage("Thank you for registering with Namibian Medicines Regulatory Council. In order to access the system please use the username '"+user.getUsername()+"' and password '"+password+"' without the quotes.");
                 mailService.sendMail(mail, false);
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
+                facesContext.addMessage(null, new FacesMessage("You have been successfully registered. Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
                 return "/public/registrationhome.faces";
             } catch (Exception e) {
                 e.printStackTrace();

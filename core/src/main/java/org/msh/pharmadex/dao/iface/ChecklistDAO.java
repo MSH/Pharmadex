@@ -3,6 +3,8 @@ package org.msh.pharmadex.dao.iface;
 import org.msh.pharmadex.domain.Checklist;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: usrivastava
@@ -12,6 +14,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 
 public interface ChecklistDAO extends JpaRepository<Checklist, Long> {
+
+    public List<Checklist> findByHeader(boolean header);
+
+    public List<Checklist> findByGenMedAndHeader(boolean genMed, boolean header);
+
+    public List<Checklist> findByNewMedAndHeader(boolean newMed, boolean header);
+
+    public List<Checklist> findByHeaderAndRecognizedMed(boolean header, boolean recognizedMed);
 
 
 }
