@@ -60,10 +60,10 @@ public class ApplicantDAO implements Serializable {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Applicant saveApplicant(Applicant applicant) {
-        for (User u : applicant.getUsers()) {
-            u.setApplicant(applicant);
-            entityManager.merge(u);
-        }
+//        for (User u : applicant.getUsers()) {
+//            u.setApplicant(applicant);
+//            entityManager.merge(u);
+//        }
         Applicant a = entityManager.merge(applicant);
         entityManager.flush();
         return a;

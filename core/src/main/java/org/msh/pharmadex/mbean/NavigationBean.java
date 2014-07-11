@@ -1,10 +1,11 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.mbean.product.RegHomeMbean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 @Component
@@ -18,9 +19,6 @@ public class NavigationBean implements Serializable {
     private boolean rolelist = false;
     private boolean loggedinuser = false;
 
-    @Autowired
-    RegHomeMbean regHomeMbean;
-
     // getters & setters
 
     public void active() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
@@ -33,8 +31,19 @@ public class NavigationBean implements Serializable {
 
     public String regProductAction() {
         System.out.println("reached inside regProductAction");
-        regHomeMbean = null;
-        return "/secure/prodreghome.faces?faces-redirect=true";
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
+        return "/secure/prodreghome.faces";
+
+    }
+
+    public String regApplicantAction() {
+        System.out.println("reached inside regApplicantAction");
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "applicantMBean", null);
+        return "/secure/appregistration.faces";
 
     }
 

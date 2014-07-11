@@ -117,15 +117,16 @@ public class UserSessionImpl implements UserSession, Serializable {
                     setStaff(true);
                     setGeneral(true);
                     setInspector(true);
+                    setDisplayAppReg(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_STAFF"))
                     setStaff(true);
                 if (role.getRolename().equalsIgnoreCase("ROLE_COMPANY")) {
                     setCompany(true);
-                    if(user.getApplicant()!=null)
-                        displayAppReg=false;
+                    if (user.getApplicant() != null)
+                        displayAppReg = false;
                     else
-                        displayAppReg=true;
+                        displayAppReg = true;
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_PUBLIC"))
                     setGeneral(true);

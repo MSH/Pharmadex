@@ -32,6 +32,9 @@
                         <p:commandLink value="#{msgs.user_lookup}" oncomplete="addUserDlg.show()"
                                        immediate="true" style="font-weight: bolder; font-size: larger"/>
                         <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"/>
+                        <p:commandLink value="#{msgs.user_add}" oncomplete="newUserDlg.show()" immediate="true"
+                                       style="font-weight: bolder; font-size: larger"
+                                       action="#{applicantMBean.initNewUser}"/>
 
                     </h:panelGrid>
 
@@ -80,6 +83,32 @@
                     <h:outputLabel/>
 
                 </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.user_add}" widgetVar="newUserDlg" id="newUserdlg" resizable="true" modal="true">
+            <h:form id="newuser">
+                <p:growl showSummary="true"/>
+
+                <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                    <ui:param name="userdata" value="#{applicantMBean.user}"/>
+                    <ui:param name="input" value="#{true}"/>
+                </ui:decorate>
+
+
+                <h:panelGroup>
+                    <p:commandButton action="#{applicantMBean.newUser}"
+                                     value="#{msgs.global_add}"
+                                     oncomplete="newUserDlg.hide()" update=":appreg:usertable"/>
+                    <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
+                                     value="#{msgs.global_cancel}" oncomplete="newUserDlg.hide()"/>
+                </h:panelGroup>
+
+                <p:commandButton value="#{msgs.global_submit}" action="#{applicantMBean.save}" update=":growl"
+                                 ajax="false"/>
+                <p:commandButton value="#{msgs.global_cancel}" actionListener="#{applicantMBean.cancel}"
+                                 immediate="true"/>
+
             </h:form>
         </p:dialog>
 

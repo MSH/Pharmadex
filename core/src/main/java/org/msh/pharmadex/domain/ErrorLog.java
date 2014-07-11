@@ -1,7 +1,5 @@
 package org.msh.pharmadex.domain;
 
-import org.msh.pharmadex.domain.enums.RegState;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -47,7 +45,7 @@ public class ErrorLog implements Serializable {
     private String stackTrace;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", nullable = false)
+    @JoinColumn(name = "USER_ID", nullable = true)
     private User user;
 
     public Long getId() {

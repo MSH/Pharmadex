@@ -69,6 +69,9 @@ public class RegHomeMbean implements Serializable {
     @Autowired
     private ChecklistService checklistService;
 
+    @Autowired
+    private UserService userService;
+
     private static Logger logger = Logger.getLogger(RegHomeMbean.class.getName());
     private List<ProdInn> selectedInns;
     private List<Atc> selectedAtcs;
@@ -96,6 +99,8 @@ public class RegHomeMbean implements Serializable {
     private boolean showCompany = false;
     private boolean showDrugPrice = false;
     private boolean showNCE = false;
+
+    private User applicantUser;
 
     @PostConstruct
     private void init() {
@@ -138,8 +143,9 @@ public class RegHomeMbean implements Serializable {
 
             //Set logged in user company as the company.
             if (userSession.isCompany()) {
-                product.setApplicant(getLoggedInUser().getApplicant());
-                prodApplications.setUser(getLoggedInUser());
+                applicantUser = getLoggedInUser();
+                product.setApplicant(applicantUser.getApplicant());
+                prodApplications.setUser(applicantUser);
             }
 //            eventModel = new DefaultScheduleModel();
 //            for (Appointment app : appointmentService.getAppointments()) {
@@ -183,15 +189,15 @@ public class RegHomeMbean implements Serializable {
     //Used to initialize field values only for new applications. For saved applications the values are assigned in setprodapplications
     @Transactional
     private void initializeNewApp(String currentWizardStep) {
-        if (currentWizardStep.equals("prodreg")&& product.getId()==null) {
+        if (currentWizardStep.equals("prodreg") && product.getId() == null) {
         } else if (currentWizardStep.equals("proddetails")) {
             //Only initialize once for new product applications. For saved application it is initialized in the setprodapplication method
-            if (prodAppChecklists==null||prodAppChecklists.size()<1) {
+            if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
                 prodAppChecklists = new ArrayList<ProdAppChecklist>();
                 prodApplications.setProdAppChecklists(prodAppChecklists);
-                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(),true);
+                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
                 ProdAppChecklist eachProdAppCheck;
-                    for (int i = 0; allChecklist.size() > i; i++) {
+                for (int i = 0; allChecklist.size() > i; i++) {
                     eachProdAppCheck = new ProdAppChecklist();
                     eachProdAppCheck.setChecklist(allChecklist.get(i));
                     eachProdAppCheck.setProdApplications(prodApplications);
@@ -218,9 +224,9 @@ public class RegHomeMbean implements Serializable {
     public void saveApp() {
         FacesContext context = FacesContext.getCurrentInstance();
         ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
-        prodApplications.setUser(getLoggedInUser());
+        prodApplications.setUser(applicantUser);
         product.setProdApplications(prodApplications);
-        product.setApplicant(getApplicant());
+        product.setApplicant(applicantUser.getApplicant());
         if (product.getId() == null)
             product.setCreatedBy(getLoggedInUser());
         try {
@@ -304,7 +310,7 @@ public class RegHomeMbean implements Serializable {
                 product.setAtcs(selectedAtcs);
             }
             prodInn = null;
-        }catch (Exception e){
+        } catch (Exception e) {
             FacesMessage msg = new FacesMessage(e.getMessage(), "Detail....");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Inn cannot be empty."));
 
@@ -545,9 +551,16 @@ public class RegHomeMbean implements Serializable {
         applicant = new Applicant();
     }
 
+    @Transactional
     public void addApptoRegistration() {
+        applicant = applicantService.findApplicant(applicant.getApplcntId());
         product.setApplicant(applicant);
-
+        if (applicant.getUsers().size() > 0) {
+            User u = applicant.getUsers().get(0);
+            setApplicantUser(userService.findUser(u.getUserId()));
+        } else {
+            setApplicantUser(null);
+        }
     }
 
     public RegATCHelper getRegATCHelper() {
@@ -653,5 +666,11 @@ public class RegHomeMbean implements Serializable {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getPharmClassifs());
     }
 
+    public User getApplicantUser() {
+        return applicantUser;
+    }
 
+    public void setApplicantUser(User applicantUser) {
+        this.applicantUser = applicantUser;
+    }
 }

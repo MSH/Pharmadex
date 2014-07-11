@@ -3,10 +3,8 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.ApplicantTypeDAO;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.ApplicantType;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.dao.iface.RoleDAO;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,9 @@ public class ApplicantService implements Serializable {
     @Autowired
     ProductDAO productDAO;
 
+    @Autowired
+    RoleDAO roleDAO;
+
     private List<Applicant> applicants;
 
     @Transactional
@@ -69,19 +70,26 @@ public class ApplicantService implements Serializable {
     public Applicant saveApp(Applicant applicant, User loggedInUserObj) {
         try {
             applicant.setState(ApplicantState.NEW_APPLICATION);
-            if (loggedInUserObj.getType().equals(UserType.COMPANY)) {
-                loggedInUserObj.setApplicant(applicant);
-                applicant.setContactName(loggedInUserObj.getName());
-                if (applicant.getUsers() == null) {
-                    applicant.setUsers(new ArrayList<User>());
-                }
+            if (applicant.getUsers() == null) {
+                applicant.setUsers(new ArrayList<User>());
                 applicant.getUsers().add(loggedInUserObj);
             }
-            Applicant a = applicantDAO.saveApplicant(applicant);
-            if (loggedInUserObj.getType().equals(UserType.COMPANY)) {
-                loggedInUserObj.setApplicant(a);
-                loggedInUserObj = userService.updateUser(loggedInUserObj);
+
+            for (User user : applicant.getUsers()) {
+                if (user.getType().equals(UserType.COMPANY)) {
+                    user.setApplicant(applicant);
+                    applicant.setContactName(user.getName());
+                }
+                if (user.getRoles() == null || user.getRoles().size() < 1) {
+                    List<Role> rList = new ArrayList<Role>();
+                    Role r = roleDAO.findOne(1);
+                    rList.add(r);
+                    r = roleDAO.findOne(4);
+                    rList.add(r);
+                    user.setRoles(rList);
+                }
             }
+            Applicant a = applicantDAO.saveApplicant(applicant);
             System.out.println("applicant id = " + applicant.getApplcntId());
             applicants = null;
             return a;

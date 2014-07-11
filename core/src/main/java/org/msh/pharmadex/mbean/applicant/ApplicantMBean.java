@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
@@ -33,9 +34,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-@Scope("request")
+@Scope("session")
 public class ApplicantMBean implements Serializable {
-    private static final long serialVersionUID = -7233445025890580011L;
     private Applicant selectedApplicant;
     private List<Applicant> allApplicant;
     private List<Applicant> filteredApplicant;
@@ -63,15 +63,19 @@ public class ApplicantMBean implements Serializable {
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
-        selectedApplicant.getAddress().setCountry(new Country());
         if (userSession.isCompany()) {
             user = userSession.getLoggedInUserObj();
-            countryService.findCountryById(user.getAddress().getCountry().getId());
+            selectedApplicant.getAddress().setCountry(countryService.findCountryById(user.getAddress().getCountry().getId()));
+            selectedApplicant.setContactName(user != null ? user.getName() : null);
+            selectedApplicant.setEmail(user != null ? user.getEmail() : null);
+        } else {
+            if (selectedApplicant.getAddress() != null)
+                selectedApplicant.getAddress().setCountry(new Country());
+            if (user == null) {
+                user = new User();
+                user.getAddress().setCountry(new Country());
+            }
         }
-        else
-            user = null;
-        selectedApplicant.setContactName(user != null ? user.getName() : null);
-        selectedApplicant.setEmail(user != null ? user.getEmail() : null);
     }
 
     public void onRowSelect() {
@@ -82,10 +86,17 @@ public class ApplicantMBean implements Serializable {
         facesContext.addMessage(null, new FacesMessage("Successful", "Selected " + selectedApplicant.getAppName()));
     }
 
+    public void initNewUser() {
+        user = new User();
+        user.setType(UserType.COMPANY);
+        user.setEnabled(false);
+    }
+
     public String saveApp() {
         selectedApplicant.setSubmitDate(new Date());
-        selectedApplicant = applicantService.saveApp(selectedApplicant, userSession.getLoggedInUserObj());
+        selectedApplicant = applicantService.saveApp(selectedApplicant, user);
         if (selectedApplicant!=null) {
+            user.setApplicant(selectedApplicant);
             if(userSession.isCompany())
                 userSession.getLoggedInUserObj().setApplicant(selectedApplicant);
             selectedApplicant = new Applicant();
@@ -128,11 +139,30 @@ public class ApplicantMBean implements Serializable {
     public String cancelApp() {
         setShowAdd(false);
         selectedApplicant = new Applicant();
-        return "/public/registrationhome.faces?redirect=true";
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "applicantMBean", null);
+        return "/public/registrationhome.faces";
     }
 
     @Transactional
     public void addUserToApplicant() {
+        if (userList == null)
+            userList = new ArrayList<User>();
+        userList.add(user);
+        selectedApplicant.setUsers(userList);
+//        applicantService.updateApp(selectedApplicant, user);
+        user = new User();
+
+    }
+
+    @Transactional
+    public void newUser() {
+        user.setEnabled(false);
+        user.setType(UserType.COMPANY);
+        String username = user.getName().replaceAll("\\s", "");
+        user.setUsername(username);
+        user.setPassword(username);
         if (userList == null)
             userList = new ArrayList<User>();
         userList.add(user);

@@ -41,17 +41,12 @@
         <p:panel header="#{msgs.person_responsible}">
 
             <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                <ui:param name="userdata" value="#{regHomeMbean.loggedInUser}"/>
+                <ui:param name="userdata" value="#{regHomeMbean.applicantUser}"/>
                 <ui:param name="input" value="#{false}"/>
             </ui:decorate>
 
         </p:panel>
 
-        <div align="right">
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" ajax="false"
-                             action="/public/registrationhome.faces"/>
-            <p:commandButton value="#{msgs.next}" onclick="wizard.next();"/>
-        </div>
 
     </h:panelGroup>
 

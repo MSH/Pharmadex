@@ -12,12 +12,18 @@
 
 <h:form id="reghome">
 <p:growl id="growl" showSummary="true"/>
-<pe:ajaxErrorHandler />
+<pe:ajaxErrorHandler/>
 
-<p:wizard widgetVar="wizard" showNavBar="false" flowListener="#{regHomeMbean.onFlowProcess}" >
-<p:tab id="prodreg" title="#{msgs.applicant_detail}" >
+<p:wizard widgetVar="wizard" showNavBar="false" flowListener="#{regHomeMbean.onFlowProcess}">
+<p:tab id="prodreg" title="#{msgs.applicant_detail}">
 
     <ui:include src="appinfosub.xhtml"/>
+
+    <div align="right">
+        <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
+                         ajax="false"/>
+        <p:commandButton value="#{msgs.next}" onclick="wizard.next();"/>
+    </div>
 
 </p:tab>
 
@@ -27,7 +33,8 @@
         <ui:include src="proddetails.xhtml"/>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" update=":reghome :reghome:growl" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"
+                             update=":reghome :reghome:growl" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -41,15 +48,15 @@
     <p:panel header="#{msgs.application_detail}">
 
         <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10">
-            <p:outputLabel value="#{msgs.new_chemical_entity}" for="nceChkbox" styleClass="label" />
+            <p:outputLabel value="#{msgs.new_chemical_entity}" for="nceChkbox" styleClass="label"/>
             <p:selectBooleanCheckbox value="#{regHomeMbean.product.newChemicalEntity}" id="nceChkbox">
                 <p:ajax update=":reghome:adddetailgrid" listener="#{regHomeMbean.nceChangeListener}"
                         process="@form"/>
             </p:selectBooleanCheckbox>
             <p:outputLabel value="#{msgs.new_chemical_name}" styleClass="label"
-                           rendered="#{regHomeMbean.product.newChemicalEntity}" />
+                           rendered="#{regHomeMbean.product.newChemicalEntity}"/>
             <p:inputText id="nceInput" value="#{regHomeMbean.product.newChemicalName}" style="width: 300px;"
-                         rendered="#{regHomeMbean.product.newChemicalEntity}" />
+                         rendered="#{regHomeMbean.product.newChemicalEntity}"/>
             <h:outputLabel value="#{msgs.inn_header}" style="width: 60px;" styleClass="label"/>
 
 
@@ -92,7 +99,8 @@
                 <h:outputLabel value="#{msgs.atc_noatc}: " for="noatc"/>
                 <p:selectBooleanCheckbox id="noatc"
                                          value="#{regHomeMbean.product.noAtc}"> </p:selectBooleanCheckbox>
-                <p:commandLink value="#{msgs.atc_lookup}" oncomplete="addAtcDlg.show()" action="#{regHomeMbean.openAddATC()}"/>
+                <p:commandLink value="#{msgs.atc_lookup}" oncomplete="addAtcDlg.show()"
+                               action="#{regHomeMbean.openAddATC()}"/>
             </h:panelGrid>
             <h:outputLabel/>
 
@@ -117,7 +125,8 @@
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" update=":reghome :reghome:growl" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"
+                             update=":reghome :reghome:growl" ajax="false"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
@@ -137,7 +146,8 @@
 
             <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.product.companies}" style="width:100%;">
                 <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()" update="@form" process="@form">
+                    <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()" update="@form"
+                                   process="@form">
                         <f:setPropertyActionListener value="true" target="#{regHomeMbean.showCompany}"/>
                     </p:commandLink>
                 </f:facet>
@@ -158,8 +168,10 @@
                 </p:column>
 
                 <p:column>
-                    <p:commandButton action="#{regHomeMbean.removeCompany(company)}" value="#{msgs.global_delete}" ajax="false"
-                                     update=":reghome:addCompanyDlg :reghome:companygrid :reghome:growl" process="@form">
+                    <p:commandButton action="#{regHomeMbean.removeCompany(company)}" value="#{msgs.global_delete}"
+                                     ajax="false"
+                                     update=":reghome:addCompanyDlg :reghome:companygrid :reghome:growl"
+                                     process="@form">
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
@@ -171,7 +183,7 @@
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
             <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="wizard.next();" />
+            <p:commandButton value="#{msgs.next}" onclick="wizard.next();"/>
         </div>
     </p:panel>
 
@@ -187,7 +199,8 @@
 
         <h:panelGroup>
             <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}" ajax="false"
-                             oncomplete="addCompanyDlg.hide()" update=":reghome:addCompanyDlg :reghome:manufdetail :reghome:companygrid" process="@form"/>
+                             oncomplete="addCompanyDlg.hide()"
+                             update=":reghome:addCompanyDlg :reghome:manufdetail :reghome:companygrid" process="@form"/>
             <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
                              oncomplete="addCompanyDlg.hide()" ajax="false"
                              update=":reghome:addCompanyDlg :reghome:companyTable"/>
@@ -378,8 +391,8 @@
 
 <p:dialog header="Add Active Substances" widgetVar="addInnDlg" resizable="true" modal="true">
     <h:form id="addInnFrm">
-        <p:messages />
-        <pe:ajaxErrorHandler />
+        <p:messages/>
+        <pe:ajaxErrorHandler/>
         <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
             <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
             <p:autoComplete id="innname" value="#{regHomeMbean.prodInn.inn}"
@@ -401,8 +414,11 @@
 
             <h:panelGroup>
                 <p:commandButton action="#{regHomeMbean.addProdInn}" value="#{msgs.global_add}" ajax="false"
-                                 update=":reghome:atctable :reghome:inntable :addInnFrm" oncomplete="!if(args.validationFailed) addInnDlg.hide()" process=":reghome:inntable :addInnFrm"/>
-                <p:commandButton action="#{regHomeMbean.cancelAddInn}" immediate="true" value="#{msgs.global_cancel}" ajax="false"
+                                 update=":reghome:atctable :reghome:inntable :addInnFrm"
+                                 oncomplete="!if(args.validationFailed) addInnDlg.hide()"
+                                 process=":reghome:inntable :addInnFrm"/>
+                <p:commandButton action="#{regHomeMbean.cancelAddInn}" immediate="true" value="#{msgs.global_cancel}"
+                                 ajax="false"
                                  oncomplete="addInnDlg.hide()" update=":addInnFrm"/>
             </h:panelGroup>
             <h:outputLabel/>
@@ -418,7 +434,7 @@
             <p:autoComplete id="atcname" value="#{regHomeMbean.atc}"
                             completeMethod="#{regHomeMbean.completeAtcNames}"
                             var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
-                            forceSelection="true" >
+                            forceSelection="true">
                 <p:ajax event="itemSelect" listener="#{regHomeMbean.updateAtc}" update=":atcdetail"/>
             </p:autoComplete>
 
