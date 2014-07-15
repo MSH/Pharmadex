@@ -34,12 +34,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private Country originCntry;
 
     @Column(length = 100)
-    private String prodRelCntroler;
-
-    @Column(length = 100)
-    private String Representative;
-
-    @Column(length = 100)
     private String prodAppNo;
 
     @Column(length = 500)
@@ -49,7 +43,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean labelEnclosed;
 
-    @Column(length = 200)
+    @Column(length = 500)
     private String appComment;
 
     @Enumerated(EnumType.STRING)
@@ -58,34 +52,37 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProdAppType prodAppType;
 
-    @Column(length = 20)
+    @Column(length = 500)
     private String packSize;
 
-    @Column(length = 20)
+    @Column(length = 500)
     private String originCntryReg;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String contType;
 
-    @Column(length = 20)
+    @Column(length = 500)
+    private String shelfLife;
+
+    @Column(length = 500)
     private String phyAppearance;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String pharmacopeiaStds;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String ssnCode;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String inactiveIngr;
 
-    @Column(length = 20)
+    @Column(length = 500)
     private String storageCndtn;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String receiptNo;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String waybillNo;
 
     @Enumerated(EnumType.STRING)
@@ -111,7 +108,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean productVerified;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String ackLetterNo;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
@@ -204,22 +201,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setOriginCntry(Country originCntry) {
         this.originCntry = originCntry;
-    }
-
-    public String getProdRelCntroler() {
-        return prodRelCntroler;
-    }
-
-    public void setProdRelCntroler(String prodRelCntroler) {
-        this.prodRelCntroler = prodRelCntroler;
-    }
-
-    public String getRepresentative() {
-        return Representative;
-    }
-
-    public void setRepresentative(String representative) {
-        Representative = representative;
     }
 
     public boolean isPackageInsert() {
@@ -524,6 +505,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setSendToGazette(boolean sendToGazette) {
         this.sendToGazette = sendToGazette;
+    }
+
+    public String getShelfLife() {
+        return shelfLife;
+    }
+
+    public void setShelfLife(String shelfLife) {
+        this.shelfLife = shelfLife;
     }
 }
 

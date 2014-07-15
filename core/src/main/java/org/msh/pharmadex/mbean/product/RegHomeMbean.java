@@ -226,7 +226,7 @@ public class RegHomeMbean implements Serializable {
         ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
         prodApplications.setUser(applicantUser);
         product.setProdApplications(prodApplications);
-        product.setApplicant(applicantUser.getApplicant());
+//        product.setApplicant(applicantUser.getApplicant());
         if (product.getId() == null)
             product.setCreatedBy(getLoggedInUser());
         try {
@@ -659,7 +659,8 @@ public class RegHomeMbean implements Serializable {
     }
 
     public List<Applicant> completeApplicantList(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getRegApplicants());
+        List<Applicant> applicants = applicantService.findAllApplicants();
+        return JsfUtils.completeSuggestions(query, applicants);
     }
 
     public List<PharmClassif> completePharmClassif(String query) {

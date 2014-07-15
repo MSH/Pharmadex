@@ -12,7 +12,8 @@
                 <p:menu style="width:198px">
                     <p:submenu label="#{msgs.Registration}">
                         <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
-                                    action="#{processAppBn.registerApplicant}" ajax="false" rendered="#{!userSession.company}"/>
+                                    action="#{processAppBn.registerApplicant}" ajax="false"
+                                    rendered="#{!userSession.company}"/>
                         <p:menuitem value="#{msgs.global_cancel}" immediate="true"
                                     icon="ui-icon ui-icon-circle-triangle-w"
                                     action="#{processAppBn.cancel}" ajax="false"/>
@@ -86,7 +87,7 @@
         <p:dialog header="#{msgs.user_add}" widgetVar="addUserDlg" id="addUserdlg" resizable="true" modal="true">
             <h:form>
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
-                    <h:outputLabel value="#{msgs.product_innname}" for="username"/>
+                    <h:outputLabel value="#{msgs.User_name}" for="username"/>
                     <p:autoComplete id="username" value="#{processAppBn.user}"
                                     completeMethod="#{processAppBn.completeUserList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"

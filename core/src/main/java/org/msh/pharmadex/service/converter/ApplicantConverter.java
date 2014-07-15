@@ -65,5 +65,9 @@ public class ApplicantConverter implements Converter, Serializable {
             return String.valueOf(value);
         }
     }
+
+    public void setApplicantList(List<Applicant> applicantList) {
+        this.applicantList = applicantList;
+    }
 }
 

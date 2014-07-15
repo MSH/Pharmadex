@@ -97,6 +97,9 @@
                 <h:outputLabel value="#{msgs.product_drug_type}"/>
                 <h:outputLabel value="#{prodData.prodApplications.drugType}"/>
 
+                <h:outputLabel value="#{msgs.product_shelflife}:" style="font-weight: bold;"/>
+                <h:outputLabel value="#{prodData.prodApplications.shelfLife}"/>
+
                 <h:outputLabel value="#{msgs.product_packsize}:" style="font-weight: bold;"/>
                 <h:outputLabel value="#{prodData.prodApplications.packSize}"/>
 
@@ -142,7 +145,7 @@
 
         </p:tab>
 
-        <p:tab title="#{msgs.payment_info}">
+        <p:tab title="#{msgs.payment_info}" rendered="#{userSession.staff}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
                 <h:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>

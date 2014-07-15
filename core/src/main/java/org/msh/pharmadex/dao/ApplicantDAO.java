@@ -1,5 +1,6 @@
 package org.msh.pharmadex.dao;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
@@ -59,14 +60,20 @@ public class ApplicantDAO implements Serializable {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Applicant saveApplicant(Applicant applicant) {
+    public Applicant saveApplicant(Applicant applicant) throws Exception {
 //        for (User u : applicant.getUsers()) {
 //            u.setApplicant(applicant);
 //            entityManager.merge(u);
 //        }
-        Applicant a = entityManager.merge(applicant);
-        entityManager.flush();
-        return a;
+
+        try {
+            Applicant a = entityManager.merge(applicant);
+            return a;
+        } catch (ConstraintViolationException ex) {
+            ex.printStackTrace();
+            throw new Exception("duplicate");
+
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

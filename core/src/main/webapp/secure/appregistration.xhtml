@@ -104,10 +104,6 @@
                                      value="#{msgs.global_cancel}" oncomplete="newUserDlg.hide()"/>
                 </h:panelGroup>
 
-                <p:commandButton value="#{msgs.global_submit}" action="#{applicantMBean.save}" update=":growl"
-                                 ajax="false"/>
-                <p:commandButton value="#{msgs.global_cancel}" actionListener="#{applicantMBean.cancel}"
-                                 immediate="true"/>
 
             </h:form>
         </p:dialog>

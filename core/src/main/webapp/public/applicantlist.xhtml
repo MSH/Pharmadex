@@ -33,6 +33,15 @@
                 </p:column>
 
 
+                <p:column filterBy="#{applicant.applicantType.name}"
+                          sortBy="#{applicant.applicantType.name}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.applicant_type}"/>
+                    </f:facet>
+
+                    <h:outputText value="#{applicant.applicantType.name}"/>
+                </p:column>
+
                 <p:column filterBy="#{applicant.contactName}"
                           sortBy="#{applicant.contactName}">
                     <f:facet name="header">
