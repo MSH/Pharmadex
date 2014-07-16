@@ -7,6 +7,8 @@ import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.UserType;
+import org.msh.pharmadex.mbean.GlobalEntityLists;
+import org.msh.pharmadex.service.converter.ApplicantConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,12 @@ public class ApplicantService implements Serializable {
 
     @Autowired
     RoleDAO roleDAO;
+
+    @Autowired
+    GlobalEntityLists globalEntityLists;
+
+    @Autowired
+    ApplicantConverter applicantConverter;
 
     private List<Applicant> applicants;
 
@@ -91,6 +99,8 @@ public class ApplicantService implements Serializable {
             }
             Applicant a = applicantDAO.saveApplicant(applicant);
             System.out.println("applicant id = " + applicant.getApplcntId());
+            globalEntityLists.setRegApplicants(null);
+            applicantConverter.setApplicantList(null);
             applicants = null;
             return a;
         } catch (Exception e) {
