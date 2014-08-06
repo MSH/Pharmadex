@@ -29,7 +29,7 @@
                 <h:form>
                     <p:menu style="width:260px;">
                         <sec:isAuthenticated>
-                            <p:submenu label="Logged In Users">
+                            <p:submenu label="#{msgs.admin_loggedinuser}">
                                 <p:menuitem value="#{msgs.application_status}"
                                             action="/secure/submittedapplications.faces" ajax="false"/>
                                 <p:menuitem value="#{msgs.company_info}" action="/secure/appregistration.faces"
