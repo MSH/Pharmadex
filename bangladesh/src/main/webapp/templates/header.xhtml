@@ -19,7 +19,7 @@
                 </h:panelGroup>
                 <h:panelGroup styleClass="logoutWelcomeId">
                     <sec:isAuthenticated>
-                        <p:commandLink value="Logged in as #{userSession.loggedInUser} |"></p:commandLink>
+                        <p:commandLink value="#{msgs.admin_loggedinuser} #{userSession.loggedInUser} |"></p:commandLink>
                         <p:commandLink action="#{userSession.editUser}" value="Settings |" immediate="true"
                                        ajax="false">
                             <f:setPropertyActionListener value="#{userSession.userAccess.user}"
