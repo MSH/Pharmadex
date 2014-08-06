@@ -8,14 +8,13 @@
     <application>
         <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
         <resource-bundle>
-            <base-name>i18n.Messages</base-name>
+            <base-name>org.msh.pharmadex.auth.DBResourceBundle</base-name>
             <var>msgs</var>
         </resource-bundle>
         <locale-config>
-            <default-locale>en</default-locale>
+            <default-locale>pt</default-locale>
             <supported-locale>en</supported-locale>
             <supported-locale>pt</supported-locale>
-            <supported-locale>es</supported-locale>
         </locale-config>
     </application>
     <factory>

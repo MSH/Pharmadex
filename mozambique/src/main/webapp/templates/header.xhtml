@@ -4,75 +4,105 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:sec="http://www.springframework.org/security/facelets/tags">
-    <title>#{msgs.header_title}</title>
-    <h:outputStylesheet library="css" name="standard.css"/>
-    <h:outputScript library="js" name="calendar.js"/>
-    <style>
-        ul.ui-menu-child {
-            white-space: nowrap;
-            width: 220px !important;
-        }
-    </style>
+<title>#{msgs.header_title}</title>
+<h:outputStylesheet library="css" name="standard.css"/>
+<h:outputScript library="js" name="calendar.js"/>
+<style>
+    ul.ui-menu-child {
+        white-space: nowrap;
+        width: 220px !important;
+    }
+</style>
 
 
-    <div class="ui-widget ui-widget-header" style="height: 110px;">
-        <h:form>
-            <div id="logo">
-                <h:panelGrid columns="3" width="100%">
-                    <a href="${request.contextPath}/home.faces">
-                        <img src="${request.contextPath}/resources/images/logo_mz.png"/>
-                    </a>
-                    <h:panelGrid columns="1" cellspacing="5">
-                        <p:outputLabel value="REPÚBLICA DE MOÇAMBIQUE" styleClass="logo"/>
-                        <p:outputLabel value="MINISTÉRIO DA SAÚDE" style="font-weight: bold; font-size: medium;"/>
-                        <p:outputLabel value="Departamento Farmacêutico"
-                                       style="font-weight: bold; font-size: large;"/>
-                    </h:panelGrid>
-                    <h:panelGroup styleClass="logoutWelcomeId">
-                        <sec:isAuthenticated>
-                            <p:commandLink value="Logged in as #{userSession.loggedInUser} |"></p:commandLink>
-                            <p:commandLink action="#{userSession.editUser}" value="Settings |" immediate="true"
-                                           ajax="false">
-                                <f:setPropertyActionListener value="#{userSession.userAccess.user}"
-                                                             target="#{registerUserMbean.user}"/>
-                            </p:commandLink>
-                            <p:commandLink action="#{userAuthHandler.logout}" value="Logout" ajax="false"/>
-                            <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
-                            -->                            </sec:isAuthenticated>
-                        <sec:isAnonymous>
-                            <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
-                            -->                                <h:outputLink id="loginLink" value="javascript:void(0)"
-                                                                         onclick="logindlg.show()"
-                                                                         title="login">
+<div class="ui-widget ui-widget-header" style="height: 110px;">
+    <h:form>
+        <div id="logo">
+            <h:panelGrid columns="3" width="100%">
+                <a href="${request.contextPath}/home.faces">
+                    <img src="${request.contextPath}/resources/images/logo_mz.png"/>
+                </a>
+                <h:panelGrid columns="1" cellspacing="5">
+                    <p:outputLabel value="REPÚBLICA DE MOÇAMBIQUE" styleClass="logo"/>
+                    <p:outputLabel value="MINISTÉRIO DA SAÚDE" style="font-weight: bold; font-size: medium;"/>
+                    <p:outputLabel value="Departamento Farmacêutico"
+                                   style="font-weight: bold; font-size: large;"/>
+                </h:panelGrid>
+                <h:panelGroup styleClass="logoutWelcomeId">
+                    <sec:isAuthenticated>
+                        <p:commandLink value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"></p:commandLink>
+                        <p:commandLink action="#{userSession.editUser}" value="#{msgs.admin_settings} |"
+                                       immediate="true"
+                                       ajax="false">
+                            <f:setPropertyActionListener value="#{userSession.userAccess.user}"
+                                                         target="#{registerUserMbean.user}"/>
+                        </p:commandLink>
+                        <p:commandLink action="#{userAuthHandler.logout}" value="#{msgs.admin_logout}" ajax="false"/>
+                        <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
+                        -->                            </sec:isAuthenticated>
+                    <sec:isAnonymous>
+                        <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
+                        -->
+
+                        <h:panelGrid columns="4">
+                            <h:outputText value="#{msgs.label_language}:" style="color:#ffffff;"/>
+                            <h:panelGroup>
+                                <h:commandLink id="switchToEnglish" action="#{localeBean.setSelectedLocale()}">
+                                    <f:param name="locale" value="en"/>
+                                    <h:graphicImage library="images" name="en.png" alt="#{msgs.label_language_switch}"/>
+                                </h:commandLink>
+                                <p:tooltip for="switchToEnglish">
+                                    <h:outputFormat value="#{msgs.label_language_switch}">
+                                        <f:param value="English"/>
+                                    </h:outputFormat>
+                                </p:tooltip>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <h:commandLink id="switchToGerman" action="#{localeBean.setSelectedLocale()}">
+                                    <f:param name="locale" value="pt"/>
+                                    <h:graphicImage library="images" name="pt.png" alt="#{msgs.label_language_switch}"/>
+                                </h:commandLink>
+                                <p:tooltip for="switchToGerman">
+                                    <h:outputFormat value="#{msgs.label_language_switch}">
+                                        <f:param value="Portuguese"/>
+                                    </h:outputFormat>
+                                </p:tooltip>
+                            </h:panelGroup>
+
+                        <h:outputLink id="loginLink" value="javascript:void(0)"
+                                      onclick="logindlg.show()"
+                                      title="login">
                             <p:graphicImage value="/resources/images/log_in.png"/>
                         </h:outputLink>
-                        </sec:isAnonymous>
-                    </h:panelGroup>
-                </h:panelGrid>
-            </div>
-        </h:form>
-    </div>
+                        </h:panelGrid>
+                    </sec:isAnonymous>
+                </h:panelGroup>
+            </h:panelGrid>
+        </div>
+    </h:form>
+</div>
 
-    <!--        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-                <ul id="main">
-                    <li class="current_page_item"><a href="#{request.contextPath}/ui/home.jsf" >PrimeUI</a></li>
-                    <li><a href="#{request.contextPath}/mobile/index.jsf" >Registration</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">Inspection</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">TIPS</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">QSL</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">Narcotics Control</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">Administration</a></li>
-                </ul>
-    -->
-    <div>
-        <h:form prependId="false">
+<!--        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
+            <ul id="main">
+                <li class="current_page_item"><a href="#{request.contextPath}/ui/home.jsf" >PrimeUI</a></li>
+                <li><a href="#{request.contextPath}/mobile/index.jsf" >Registration</a></li>
+                <li><a href="#{request.contextPath}/push/index.jsf">Inspection</a></li>
+                <li><a href="#{request.contextPath}/push/index.jsf">TIPS</a></li>
+                <li><a href="#{request.contextPath}/push/index.jsf">QSL</a></li>
+                <li><a href="#{request.contextPath}/push/index.jsf">Narcotics Control</a></li>
+                <li><a href="#{request.contextPath}/push/index.jsf">Administration</a></li>
+            </ul>
+-->
+<div>
+    <h:form prependId="false">
         <p:menubar>
             <p:menuitem value="#{msgs.label_home}" url="/home.faces" icon="ui-icon-home"/>
 
             <p:submenu label="#{msgs.Registration}">
                 <p:menuitem value="#{msgs.Registration}" icon="ui-icon-home" url="/public/registrationhome.faces"
                             ajax="false"/>
-                <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-document" url="/public/applicantlist.faces"
+                <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-document"
+                            url="/public/applicantlist.faces"
                             ajax="false"/>
                 <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
                             ajax="false"/>
@@ -80,10 +110,10 @@
                                             ajax="false"/>
                 -->
 
-                <p:separator />
+                <p:separator/>
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.registration_form}"
-                               rendered="#{userSession.general||userSession.company||userSession.admin}">
+                               rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
                         <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                     url="/secure/prodreghome.faces" ajax="false"/>
                         <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
@@ -96,7 +126,7 @@
                     </p:submenu>
 
 
-                    <p:separator />
+                    <p:separator/>
                     <p:submenu label="#{msgs.current_applications}"
                                rendered="#{userSession.company||userSession.admin}">
                         <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
@@ -109,7 +139,7 @@
                         -->
                     </p:submenu>
 
-                    <p:separator />
+                    <p:separator/>
                     <!--
                                     <p:submenu label="#{msgs.registration_search}"
                                                rendered="#{userSession.admin||userSession.company||userSession.staff}">
@@ -120,7 +150,7 @@
                                     </p:submenu>
                     -->
 
-                    <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff}">
+                    <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
                         <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                     url="/internal/processprodlist.faces"/>
                         <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
@@ -131,8 +161,8 @@
                         -->
                     </p:submenu>
 
-                    <p:separator />
-                    <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff}">
+                    <p:separator/>
+                    <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
                         <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
                                     url="/internal/amdmtlist.faces"/>
                         <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-document"
@@ -184,63 +214,63 @@
 
         </p:menubar>
 
-            <p:dialog id="dialog" header="Login" widgetVar="logindlg">
+        <p:dialog id="dialog" header="Login" widgetVar="logindlg">
 
-                <table align="center">
-                    <tr>
-                        <td>
-                            <h:outputLabel value="Username:" for="j_username"/>
+            <table align="center">
+                <tr>
+                    <td>
+                        <h:outputLabel value="Username:" for="j_username"/>
 
-                        </td>
-                        <td>
-                            <p:inputText id="j_username" required="true"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <h:outputLabel value="Password:" for="j_password"/>
+                    </td>
+                    <td>
+                        <p:inputText id="j_username" required="true"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:outputLabel value="Password:" for="j_password"/>
 
-                        </td>
-                        <td>
-                            <h:inputSecret id="j_password" required="true">
-                            </h:inputSecret>
-                        </td>
-                    </tr>
+                    </td>
+                    <td>
+                        <h:inputSecret id="j_password" required="true">
+                        </h:inputSecret>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td>
+                <tr>
+                    <td>
 
-                            <h:outputLabel for="_spring_security_remember_me"
-                                           value="Remember me"/>
-                        </td>
-                        <td>
-                            <h:selectBooleanCheckbox
-                                    id="_spring_security_remember_me"/>
-                        </td>
+                        <h:outputLabel for="_spring_security_remember_me"
+                                       value="Remember me"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox
+                                id="_spring_security_remember_me"/>
+                    </td>
 
-                    </tr>
-                    <tr>
-                        <td>
+                </tr>
+                <tr>
+                    <td>
 
-                            <p:commandLink action="#{userMBean.goToResetPwd}" value="#{msgs.reset_password}"
-                                           ajax="false" immediate="true"/>
-                        </td>
+                        <p:commandLink action="#{userMBean.goToResetPwd}" value="#{msgs.reset_password}"
+                                       ajax="false" immediate="true"/>
+                    </td>
 
-                    </tr>
-                    <tr>
-                        <td>
-                            <p:commandButton
-                                    type="submit"
-                                    id="login"
-                                    action="#{userAuthHandler.doLogin}"
-                                    value="Login" ajax="false"/>
-                        </td>
-                    </tr>
-                </table>
+                </tr>
+                <tr>
+                    <td>
+                        <p:commandButton
+                                type="submit"
+                                id="login"
+                                action="#{userAuthHandler.doLogin}"
+                                value="Login" ajax="false"/>
+                    </td>
+                </tr>
+            </table>
 
-            </p:dialog>
-        </h:form>
-    </div>
+        </p:dialog>
+    </h:form>
+</div>
 
 
 </ui:composition>
