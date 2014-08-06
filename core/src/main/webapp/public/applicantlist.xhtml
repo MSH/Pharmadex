@@ -45,7 +45,7 @@
                 <p:column filterBy="#{applicant.contactName}"
                           sortBy="#{applicant.contactName}">
                     <f:facet name="header">
-                        <h:outputText value="Contact Name"/>
+                        <h:outputText value="#{msgs.applicant_contactname}"/>
                     </f:facet>
 
                     <h:outputText value="#{applicant.contactName}"/>
@@ -54,7 +54,7 @@
                 <p:column filterBy="#{applicant.email}"
                           sortBy="#{applicant.email}">
                     <f:facet name="header">
-                        <h:outputText value="Email"/>
+                        <h:outputText value="#{msgs.User_email}"/>
                     </f:facet>
                     <h:outputText value="#{applicant.email}"/>
                 </p:column>
@@ -63,7 +63,7 @@
                           sortBy="#{applicant.phoneNo}"
                         >
                     <f:facet name="header">
-                        <h:outputText value="Phone No."/>
+                        <h:outputText value="#{msgs.applicant_phone}"/>
                     </f:facet>
                     <h:outputText value="#{applicant.phoneNo}"/>
                 </p:column>

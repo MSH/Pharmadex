@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,6 +61,9 @@ public class ApplicantMBean implements Serializable {
 
     private ArrayList<User> userList;
 
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
@@ -79,11 +83,9 @@ public class ApplicantMBean implements Serializable {
     }
 
     public void onRowSelect() {
-        System.out.println("inside onrowselect");
         setShowAdd(true);
-        System.out.println("inside onrowselect");
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.addMessage(null, new FacesMessage("Successful", "Selected " + selectedApplicant.getAppName()));
+        facesContext = FacesContext.getCurrentInstance();
+        facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), "Selected " + selectedApplicant.getAppName()));
     }
 
     public void initNewUser() {
@@ -97,14 +99,15 @@ public class ApplicantMBean implements Serializable {
         selectedApplicant = applicantService.saveApp(selectedApplicant, user);
         if (selectedApplicant != null) {
             user.setApplicant(selectedApplicant);
-            if (userSession.isCompany())
+            if (userSession.isCompany()) {
                 userSession.getLoggedInUserObj().setApplicant(selectedApplicant);
+                userSession.setDisplayAppReg(false);
+            }
             selectedApplicant = new Applicant();
             setShowAdd(false);
-            FacesContext context = FacesContext.getCurrentInstance();
-            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+            facesContext = FacesContext.getCurrentInstance();
+            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
-            userSession.setDisplayAppReg(false);
             return "/public/applicantlist.faces";
         } else {
             return null;
@@ -138,8 +141,8 @@ public class ApplicantMBean implements Serializable {
     public String cancelApp() {
         setShowAdd(false);
         selectedApplicant = new Applicant();
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "applicantMBean", null);
         return "/public/registrationhome.faces";
     }
