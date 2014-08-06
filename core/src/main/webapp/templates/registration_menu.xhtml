@@ -46,7 +46,7 @@
                                 url="/public/registrationhome.faces"/>
                 </p:submenu>
 
-                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff}">
+                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
                     <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                 url="/internal/processprodlist.faces"/>
                     <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"

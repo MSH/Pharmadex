@@ -19,18 +19,18 @@
                                                    style="font-weight: bold; font-size: 1.5em"/>
                                 </td>
                                 <td align="right">
-                                    <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{msgs.registration_status}: " style="font-weight: bold;color: #a52a2a;"/>
                                     <h:outputLabel value="#{applicantHome.applicant.state}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <h:outputLabel value="Application Number: " styleClass="title"/>
+                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
                                     <h:outputFormat value="#{applicantHome.applicant.applcntId}" styleClass="title"/>
                                 </td>
                                 <td align="right">
-                                    <h:outputLabel value="Submitted Date: " styleClass="title"/>
+                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
                                     <h:outputFormat value="#{applicantHome.applicant.submitDate}"/>
                                 </td>
                             </tr>
@@ -69,7 +69,7 @@
 
                             <p:column sortBy="#{product.dosForm.dosForm}">
                                 <f:facet name="header">
-                                    <h:outputText value="Dosage Form"/>
+                                    <h:outputText value="#{msgs.dos_form}"/>
                                 </f:facet>
                                 <h:outputText value="#{product.dosForm.dosForm}"/>
                             </p:column>
@@ -90,7 +90,7 @@
 
                             <p:column sortBy="#{product.prodApplications.registrationDate}">
                                 <f:facet name="header">
-                                    <h:outputText value="Registered Date"/>
+                                    <h:outputText value="#{msgs.registration_date}"/>
                                 </f:facet>
                                 <h:outputLabel converter="javax.faces.DateTime"
                                                value="#{product.prodApplications.registrationDate}"/>

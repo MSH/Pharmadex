@@ -14,7 +14,7 @@
 
         <h:form>
             <p:growl showSummary="true"/>
-            <p:panel header="User Details">
+            <p:panel header="#{msgs.user_details}">
                 <h:panelGrid cellspacing="10px" cellpadding="2px" columns="3" id="user"
                              width="100%" columnClasses="col1, col2">
                     <p:outputLabel value="#{msgs.User_username}" for="username" styleClass="label"/>
@@ -25,7 +25,7 @@
 
                     <p:outputLabel value="#{msgs.User_name}" for="name" styleClass="label"/>
                     <p:inputText value="#{registerUserMbean.user.name}" id="name" required="true"
-                                 requiredMessage="Please Enter Name"/>
+                                 requiredMessage="#{msgs.username_validate}"/>
                     <p:message for="name"/>
 
                     <p:outputLabel value="#{msgs.applicant_addr1}" for="addr1"/>
@@ -44,7 +44,7 @@
                     <p:outputLabel value="#{msgs.applicant_country}" for="country"/>
                     <p:selectOneMenu value="#{registerUserMbean.user.address.country.id}" id="country" required="true">
                         <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{cntry.countryName}"
+                        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{msgs[cntry.key]}"
                                        itemValue="#{cntry.id}"/>
                     </p:selectOneMenu>
                     <p:message for="country"/>

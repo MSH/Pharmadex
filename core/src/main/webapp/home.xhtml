@@ -16,7 +16,7 @@
         <div>
             <table>
                 <tr>
-                    <td style="width: 790px;padding-right: 10px">
+                    <td style="width: 790px;padding-right:;ight: 10px">
                         <p:galleria value="#{galleriaBean.images}" var="image" showCaptions="true" panelWidth="750"
                                     panelHeight="350">
                             <p:graphicImage value="/resources/images/galleria/#{image.imageName}"
@@ -31,7 +31,7 @@
                         <h:form>
                             <p:menu style="width:260px;">
                                 <sec:isAuthenticated>
-                                    <p:submenu label="Logged In Users">
+                                    <p:submenu label="#{msgs.admin_loggedinuser}">
                                         <p:menuitem value="#{msgs.application_status}"
                                                     action="/secure/submittedapplications.faces" ajax="false"/>
                                         <p:menuitem value="#{msgs.company_info}" action="/secure/appregistration.faces"

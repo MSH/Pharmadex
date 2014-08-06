@@ -30,6 +30,8 @@
         <param-value>true</param-value>
     </context-param>
 
+
+
 <!--
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
@@ -67,6 +69,7 @@
             <url-pattern>/spring/</url-pattern>
         </servlet-mapping>
     -->
+
     <filter>
         <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
         <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>

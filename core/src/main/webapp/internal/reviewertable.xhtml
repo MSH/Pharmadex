@@ -10,8 +10,6 @@
                 xmlns:p="http://primefaces.org/ui">
 
 
-    <p:commandButton icon="ui-icon-document" value="#{msgs.assignprocessor}" oncomplete="reviewdlg.show()"
-                     action="#{processProdBn.initProcessorAdd}"/>
 
     <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}">
 
@@ -49,36 +47,12 @@
         <p:column>
             <p:commandButton id="deletereview" action="#{processProdBn.deleteReview(each)}"
                              icon="ui-icon-trash"
-                             update=":reghome:processtab:reviwertbl :reghome:processtab:reviewDlg :reghome:messages"
+                             update=":reghome:processtab:reviwertbl :reghome:assignreviewDlg :reghome:messages"
                              rendered="#{empty each.recomendType}"/>
         </p:column>
     </p:dataTable>
 
-    <p:dialog header="#{msgs.assignreviewer}" widgetVar="reviewdlg" resizable="false" id="reviewDlg" modal="true"
-              rendered="#{userSession.moderator}">
 
-        <p:panel>
-            <h:panelGrid columns="2" columnClasses="label value">
-
-                <h:outputText value="#{msgs.processor}"
-                              escape="false"
-                              styleClass="text"/>
-
-                <p:autoComplete id="module3" value="#{processProdBn.review.user}"
-                                completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
-
-            </h:panelGrid>
-
-
-            <p:commandLink id="submitButton1" value="Submit" action="#{processProdBn.assignReviewer}"
-                           oncomplete="reviewdlg.hide()"
-                           update=":reghome:processtab:reviwertbl :reghome:processtab:reviewDlg :reghome:messages"/>
-        </p:panel>
-
-    </p:dialog>
 
 
 </ui:composition>

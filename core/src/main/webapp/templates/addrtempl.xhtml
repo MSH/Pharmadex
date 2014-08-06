@@ -22,8 +22,8 @@
     <p:outputLabel value="#{msgs.applicant_country}*"/>
     <p:selectOneMenu value="#{addressdata.country.id}" rendered="#{input}" required="true">
         <f:selectItem itemLabel="-" itemValue=""/>
-        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{cntry.countryName}"
+        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{msgs[cntry.key]}"
                        itemValue="#{cntry.id}"/>
     </p:selectOneMenu>
-    <h:outputLabel value="#{addressdata.country.countryName}" rendered="#{!input}" style="font-weight: bold;"/>
+    <h:outputLabel value="#{msgs[addressdata.country.key]}" rendered="#{!input}" style="font-weight: bold;"/>
 </ui:composition>

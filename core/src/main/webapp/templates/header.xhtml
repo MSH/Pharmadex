@@ -72,7 +72,7 @@
 
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.registration_form}"
-                               rendered="#{userSession.general||userSession.company||userSession.admin}">
+                               rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
                         <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                     action="#{navigationBean.regProductAction}" ajax="false"/>
                         <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
@@ -95,7 +95,7 @@
 
                     <p:separator/>
                     <p:submenu label="#{msgs.registration_search}"
-                               rendered="#{userSession.admin||userSession.company||userSession.staff}">
+                               rendered="false">
                         <p:menuitem value="#{msgs.applicant_reg_search}" icon="ui-icon-home"
                                     url="/public/registrationhome.faces"/>
                         <p:menuitem value="#{msgs.product_reg_search}" icon="ui-icon-document"
@@ -103,7 +103,8 @@
                     </p:submenu>
 
                     <p:separator/>
-                    <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff}">
+                    <p:submenu label="#{msgs.reg_processing}"
+                               rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">
                         <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                     url="/internal/processprodlist.faces"/>
                         <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
@@ -113,7 +114,8 @@
                     </p:submenu>
 
                     <p:separator/>
-                    <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff}">
+                    <p:submenu label="#{msgs.post_reg_proces}"
+                               rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
                         <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
                                     url="/internal/amdmtlist.faces"/>
                         <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-document"

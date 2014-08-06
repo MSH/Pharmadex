@@ -20,18 +20,18 @@
                                                    style="font-weight: bold; font-size: 1.5em"/>
                                 </td>
                                 <td align="right">
-                                    <h:outputLabel value="Status: " style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{msgs.registration_status}: " style="font-weight: bold;color: #a52a2a;"/>
                                     <h:outputLabel value="#{productDisplay.product.regState}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <h:outputLabel value="Application Number: " styleClass="title"/>
+                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
                                     <h:outputFormat value="#{productDisplay.prodApplications.id}" styleClass="title"/>
                                 </td>
                                 <td align="right">
-                                    <h:outputLabel value="Submitted Date: " styleClass="title"/>
+                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
                                     <h:outputFormat value="#{productDisplay.prodApplications.submitDate}"/>
                                 </td>
                             </tr>

@@ -10,15 +10,15 @@
 
         <h:panelGroup rendered="#{!userSession.staff and  (empty regHomeMbean.applicant.applcntId)}">
             <h:outputLabel value="#{msgs.prodreghome_reg_info1}"/>
-            <p:commandLink action="appregistration.faces" ajax="false"
-                           immediate="true"> Please click here to register an applicant.</p:commandLink>
+            <p:commandLink action="appregistration.faces" ajax="false" value="Please click here to register an applicant."
+                           immediate="true"/>
             <h:outputLabel value="#{msgs.prodreghome_reg_info2}"/>
             <h:outputLabel
                     value="#{msgs.prodreghome_reg_info3}"/>
         </h:panelGroup>
 
         <h:panelGroup rendered="#{userSession.staff and (empty regHomeMbean.applicant.applcntId)}">
-            <h:outputLabel value="Choose applicant from registeres list"/>
+            <h:outputLabel value="#{msgs.select_applicant_list}"/>
             <h:panelGrid columns="1" cellpadding="10px">
                 <p:commandLink value="#{msgs.applicant_lookup}" oncomplete="addapplicantDlg.show()"
                                immediate="true" style="font-weight: bolder; font-size: larger"/>

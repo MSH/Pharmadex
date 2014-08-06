@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="dbresource">
+            <div class="post">
+                <h1 class="title ui-widget-header ui-corner-all"> Administration Home</h1>
+            </div>
+
+        <p:messages id="message" showSummary="true" />
+
+        <h:panelGrid id="adminpanel" columns="1" cellspacing="10" cellpadding="10" >
+
+            <p:outputLabel value="Read from properties file and insert in Database"/>
+            <p:commandLink value="Start" action="#{DBResourceMbn.startInsert}" ajax="false"/>
+
+            <p:outputLabel value="Move data from lookup table to DB"/>
+            <p:commandLink value="Start" action="#{DBResourceMbn.insertLookup}" ajax="false"/>
+
+
+        </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

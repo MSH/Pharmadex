@@ -46,7 +46,7 @@
                 <p:column filterBy="#{product.dosForm.dosForm}"
                           sortBy="#{product.dosForm.dosForm}">
                     <f:facet name="header">
-                        <h:outputText value="#{msgs.prod_dos_form}"/>
+                        <h:outputText value="#{msgs.dos_form}"/>
                     </f:facet>
                     <h:outputText value="#{product.dosForm.dosForm}"/>
                 </p:column>
@@ -78,7 +78,7 @@
                 <p:column filterBy="#{product.prodApplications.registrationDate}"
                           sortBy="#{product.prodApplications.registrationDate}">
                     <f:facet name="header">
-                        <h:outputText value="Registered Date"/>
+                        <h:outputText value="#{msgs.registration_date}"/>
                     </f:facet>
                     <h:outputLabel converter="javax.faces.DateTime"
                                    value="#{product.prodApplications.registrationDate}"/>

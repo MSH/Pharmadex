@@ -45,7 +45,7 @@
             <p:selectOneMenu id="dosForm" value="#{regHomeMbean.product.dosForm.uid}"
                              requiredMessage="#{msgs.valid_dos_form}" required="true">
                 <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
+                <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{msgs[dosForm.key]}"
                                itemValue="#{dosForm.uid}"/>
             </p:selectOneMenu>
             <p:message for="dosForm" showSummary="true" showDetail="false"/>

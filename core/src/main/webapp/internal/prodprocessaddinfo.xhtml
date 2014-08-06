@@ -9,11 +9,6 @@
     <h:panelGrid columns="2" cellspacing="10" cellpadding="10" width="100%">
         <p:outputLabel value="#{msgs.doss_loc}" for="dossloc" styleClass="label"/>
         <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="dossloc"/>
-
-        <p:outputLabel value="#{msgs.send_gazette}" for="gazette" styleClass="label"/>
-        <p:selectBooleanButton onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"/>
-        <p:inputText value="#{processProdBn.prodApplications.sendToGazette}" id="gazette"/>
-
     </h:panelGrid>
 
     <p:dataTable id="invoicetable" value="#{processProdBn.invoices}" var="invoice">
@@ -48,9 +43,9 @@
 
     <p:separator/>
 
-    <p:commandButton icon="ui-icon-document" value="Send Applicant Mail" onclick="maildlg.show()"/>
+    <p:commandButton icon="ui-icon-document" value="#{msgs.send_mail}" onclick="maildlg.show()"/>
     <p:dataTable id="mailtable" value="#{processProdBn.mails}" var="mail" style="width: 830px;">
-        <p:column style="width:120px;" headerText="Date">
+        <p:column style="width:120px;" headerText="#{msgs.global_date}">
             <div class="icon-user" style="float:left;"/>
             <b>#{it.user.name}</b>
 
@@ -59,7 +54,7 @@
             </div>
         </p:column>
 
-        <p:column headerText="Subject">
+        <p:column headerText="#{msgs.letter_subject}">
             <div style="padding-left:10px;padding-top:10px;">
                 <h:outputText value="#{mail.subject}"
                               escape="false"
@@ -67,7 +62,7 @@
             </div>
         </p:column>
 
-        <p:column headerText="Message">
+        <p:column headerText="#{msgs.message}">
             <div style="padding-left:10px;padding-top:10px;">
                 <h:outputText value="#{mail.message}"
                               escape="false"
@@ -75,7 +70,7 @@
             </div>
         </p:column>
 
-        <p:column headerText="Sent By">
+        <p:column headerText="#{msgs.sent_by}">
             <div style="padding-left:10px;padding-top:10px;">
                 <h:outputText value="#{mail.user.name}"
                               escape="false"

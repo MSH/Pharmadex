@@ -67,15 +67,15 @@
                     <p:commandLink value="#{msgs.global_add}" action="#{regHomeMbean.openAddInn}"
                                    oncomplete="addInnDlg.show()" update=":addInnFrm" process="@form"/>
                 </f:facet>
-                <p:column headerText="Substance">
+                <p:column headerText="#{msgs.active_substance}">
                     <h:outputText value="#{prodInn.inn.name}"/>
                 </p:column>
 
-                <p:column headerText="Quantity">
+                <p:column headerText="#{msgs.global_quantity}">
                     <h:outputText value="#{prodInn.quantity}"/>
                 </p:column>
 
-                <p:column headerText="Unit">
+                <p:column headerText="#{msgs.dos_unit}">
                     <h:outputText value="#{prodInn.uom}"/>
                 </p:column>
 
@@ -144,7 +144,7 @@
             <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
 
 
-            <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.product.companies}" style="width:100%;">
+            <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.product.companyList}" style="width:100%;">
                 <f:facet name="header">
                     <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()" update="@form"
                                    process="@form">
@@ -156,15 +156,15 @@
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_country}">
-                    <h:outputText value="#{company.address.country.countryName}"/>
+                    <h:outputText value="#{msgs[company.address.country.key]    }"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_type}">
                     <h:outputText value="#{msgs[company.companyType.key]}"/>
                 </p:column>
 
-                <p:column headerText="Reference">
-                    <h:outputText value="#{company.reference}"/>
+                <p:column headerText="#{msgs.applicant_phone}">
+                    <h:outputText value="#{company.phoneNo}"/>
                 </p:column>
 
                 <p:column>
@@ -398,13 +398,13 @@
             <p:autoComplete id="innname" value="#{regHomeMbean.prodInn.inn}"
                             completeMethod="#{regHomeMbean.completeInnCodes}"
                             var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{innConverter}"
-                            forceSelection="true" required="true" requiredMessage="Inn field cannot be empty">
+                            forceSelection="true" required="true" requiredMessage="#{msgs.product_innname_valid}">
             </p:autoComplete>
 
-            <h:outputLabel value="#{msgs.inn_qty}" for="innqty"/>
+            <h:outputLabel value="#{msgs.global_quantity}" for="innqty"/>
             <p:inputText id="innqty" value="#{regHomeMbean.prodInn.quantity}"/>
 
-            <h:outputLabel value="#{msgs.inn_unit}" for="innunit"/>
+            <h:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
             <p:inputText id="innunit" value="#{regHomeMbean.prodInn.uom}"/>
 
             <h:outputLabel value="#{msgs.inn_ref}" for="innref"/>
