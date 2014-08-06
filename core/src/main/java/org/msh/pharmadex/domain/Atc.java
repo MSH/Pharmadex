@@ -10,12 +10,11 @@ import java.util.List;
 @Table(name = "atc")
 public class Atc extends CreationDetail implements Serializable
 {
-    private static final long serialVersionUID = 3971294019547576336L;
     @Id
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
    	private String atcCode;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 500, nullable = false)
     private String atcName;
 
    	@ManyToOne
@@ -32,7 +31,7 @@ public class Atc extends CreationDetail implements Serializable
    	private String legacyId;
 
     @ManyToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "atc_id"), inverseJoinColumns = @JoinColumn(name = "prod_id"))
+    @JoinTable(name = "prod_atc")
     private List<Product> products;
 
 

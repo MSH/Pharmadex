@@ -26,7 +26,7 @@ public class Invoice extends CreationDetail implements Serializable {
     @Column(name = "issue_date", nullable = false)
     private Date issueDate;
 
-    @Column(name = "invoice_number", length = 100)
+    @Column(name = "invoice_number", length = 255)
     private String invoiceNumber;
 
     @Enumerated(EnumType.STRING)

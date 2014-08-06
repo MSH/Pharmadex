@@ -1,5 +1,7 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.util.RegistrationUtil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -15,11 +17,20 @@ public class DosageForm implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long uid;
 
-	@Column(name = "dosageform", length = 200, nullable = false)
+	@Column(name = "dosageform", length = 255, nullable = false)
 	private String dosForm;
 
     @Column(name = "Discontinued")
     private boolean inactive;
+
+    @Transient
+    private String key;
+
+    public String getKey() {
+        String delimiter = "_";
+        key = this.getClass().getSimpleName()+delimiter+ RegistrationUtil.formatString(getDosForm());
+        return key;
+    }
 
     public Long getUid() {
         return uid;

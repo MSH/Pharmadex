@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.auth.PassPhrase;
+import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.Letter;
 import org.msh.pharmadex.domain.Mail;
 import org.msh.pharmadex.domain.User;
@@ -23,12 +24,13 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
  */
 @Component
-@Scope("request")
+@Scope("session")
 public class RegisterUserMbean implements Serializable {
     private static final long serialVersionUID = -5045721468877947576L;
     private User user;
@@ -53,38 +55,42 @@ public class RegisterUserMbean implements Serializable {
     @Autowired
     private LetterService letterService;
 
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     @PostConstruct
     private void init() {
         if (userSession.getLoggedInUserObj() != null)
             user = userSession.getLoggedInUserObj();
-        else
+        else {
             user = new User();
+            user.getAddress().setCountry(new Country());
+        }
     }
 
     public String cancel() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "registerUserMbean", null);
         return "/public/registrationhome.faces";
     }
 
     public String save() {
+        facesContext = FacesContext.getCurrentInstance();
         user.setType(org.msh.pharmadex.domain.enums.UserType.COMPANY);
         String password = PassPhrase.getNext();
         logger.info("======================================== ");
         logger.info("\"password ============== \"+password");
         logger.info("======================================== ");
         user.setPassword(password);
-        FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {
             retvalue = userService.createPublicUser(user);
         } catch (ConstraintViolationException e) {
-            facesContext.addMessage(null, new FacesMessage("There is a user already registered with the same email address. If you forgot your password click on the reset password link at the login dialog box. Thank You."));
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("user_exists_valid")));
             return "";
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage("There was an error registering the user. Please contact NMRC to register."));
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("user_register_error")));
             e.printStackTrace();
             return "";
         }
@@ -100,13 +106,13 @@ public class RegisterUserMbean implements Serializable {
                 mail.setUser(user);
                 mail.setDate(new Date());
 //                mail.setMessage(letter.getBody());
-                mail.setMessage("Thank you for registering with Namibian Medicines Regulatory Council. In order to access the system please use the username '"+user.getUsername()+"' and password '"+password+"' without the quotes.");
+                mail.setMessage(bundle.getString("email_user_reg1") +user.getUsername()+ bundle.getString("email_user_reg2") +password+ bundle.getString("email_user_reg3"));
                 mailService.sendMail(mail, false);
-                facesContext.addMessage(null, new FacesMessage("You have been successfully registered. Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
+                facesContext.addMessage(null, new FacesMessage(bundle.getString("user_email_success")));
                 return "/public/registrationhome.faces";
             } catch (Exception e) {
                 e.printStackTrace();
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Error sending email"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
                 return null;
             }
         }
@@ -121,20 +127,20 @@ public class RegisterUserMbean implements Serializable {
 //        mail.setUser(user);
 //        mail.setDate(new Date());
 //        mail.setMessage("Thank you for registering yourself for Pharmadex. In order to access the system please use the username '" + user.getUsername() + "' and password '" + password + "' ");
-        FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
+        facesContext = FacesContext.getCurrentInstance();
         try {
             user = userService.updateUser(user);
         } catch (ConstraintViolationException e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
             return "/page/registeruser.faces";
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
             e.printStackTrace();
             return "/page/registeruser.faces";
         }
         if (user==null) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to save."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("save_error")));
             return "/page/registeruser.faces";
         } else {
             return "/public/registrationhome.faces";
@@ -166,11 +172,10 @@ public class RegisterUserMbean implements Serializable {
     }
 
     public String changePwd() throws NoSuchFieldException, IllegalAccessException {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-
+        facesContext = FacesContext.getCurrentInstance();
         String result = userService.changePwd(user, oldpwd, newpwd1);
         if (result.equalsIgnoreCase("PWDERROR")) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Password incorrect!!!"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("password_error")));
             return null;
         }
 
@@ -178,9 +183,9 @@ public class RegisterUserMbean implements Serializable {
             userSettingBean.setPreference(true);
             userSettingBean.setSelection("preference");
             userSettingBean.active();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Password successfully changed!!!"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("password_success")));
         } else {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ""));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
         }
         return null;
     }

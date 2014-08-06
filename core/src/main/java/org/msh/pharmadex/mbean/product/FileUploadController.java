@@ -18,8 +18,7 @@ import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 
 /**
  * Author: usrivastava
@@ -48,6 +47,9 @@ public class FileUploadController {
     private ArrayList<Checklist> checklists;
     private ProdAppChecklist prodAppChecklist = new ProdAppChecklist();
 
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
         webSession.setFile(file);
@@ -58,6 +60,7 @@ public class FileUploadController {
     }
 
     public void addDocument() {
+        facesContext = FacesContext.getCurrentInstance();
         try {
             ProdApplications prodApplications = processProdBn.getProdApplications();
             file = webSession.getFile();
@@ -73,8 +76,8 @@ public class FileUploadController {
             webSession.setFile(null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (IOException e) {
-            FacesMessage msg = new FacesMessage("Failed", file.getFileName() + " upload failed.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+            facesContext.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
@@ -82,13 +85,14 @@ public class FileUploadController {
 
     public void deleteDoc(Attachment attach) {
         try {
-            FacesMessage msg = new FacesMessage("Deleted", attach.getFileName() + " is deleted");
+            facesContext = FacesContext.getCurrentInstance();
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_delete"), attach.getFileName() + resourceBundle.getString("is_deleted"));
             attachmentDAO.delete(attach);
             attachments = null;
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            facesContext.addMessage(null, msg);
         } catch (Exception e) {
-            FacesMessage msg = new FacesMessage("Failed", file.getFileName() + " cannot be deleted.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("cannot_delte"));
+            facesContext.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
@@ -96,6 +100,7 @@ public class FileUploadController {
     }
 
     public void addModuleDoc() {
+        facesContext = FacesContext.getCurrentInstance();
         try {
             file = webSession.getFile();
             prodAppChecklist = webSession.getProdAppChecklist();
@@ -109,8 +114,8 @@ public class FileUploadController {
             webSession.setProdAppChecklist(null);
             webSession.setFile(null);
         } catch (IOException e) {
-            FacesMessage msg = new FacesMessage("Failed", file.getFileName() + " upload failed.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+            facesContext.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 

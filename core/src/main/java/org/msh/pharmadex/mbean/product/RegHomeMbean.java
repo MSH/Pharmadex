@@ -101,6 +101,9 @@ public class RegHomeMbean implements Serializable {
     private boolean showNCE = false;
 
     private User applicantUser;
+    FacesContext context = FacesContext.getCurrentInstance();
+    ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+
 
     @PostConstruct
     private void init() {
@@ -138,7 +141,7 @@ public class RegHomeMbean implements Serializable {
             //Initialize companies if null
             if (companies == null) {
                 companies = new ArrayList<Company>();
-                product.setCompanies(companies);
+//                product.setCompanies(companies);
             }
 
             //Set logged in user company as the company.
@@ -156,7 +159,7 @@ public class RegHomeMbean implements Serializable {
 
 
     public void PDF() throws JRException, IOException {
-        FacesContext context = FacesContext.getCurrentInstance();
+        context = FacesContext.getCurrentInstance();
         jasperPrint = reportService.reportinit(product);
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
@@ -171,6 +174,7 @@ public class RegHomeMbean implements Serializable {
     //fires everytime you click on next or prev button on the wizard
     @Transactional
     public String onFlowProcess(FlowEvent event) {
+        context = FacesContext.getCurrentInstance();
         String currentWizardStep = event.getOldStep();
         String nextWizardStep = event.getNewStep();
         try {
@@ -180,7 +184,7 @@ public class RegHomeMbean implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             FacesMessage msg = new FacesMessage(e.getMessage(), "Detail....");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            context.addMessage(null, msg);
             nextWizardStep = currentWizardStep; // keep wizard on current step if error
         }
         return nextWizardStep; // return new step if all ok
@@ -222,8 +226,7 @@ public class RegHomeMbean implements Serializable {
 
     @Transactional
     public void saveApp() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+        context = FacesContext.getCurrentInstance();
         prodApplications.setUser(applicantUser);
         product.setProdApplications(prodApplications);
 //        product.setApplicant(applicantUser.getApplicant());
@@ -233,10 +236,10 @@ public class RegHomeMbean implements Serializable {
             product = productService.updateProduct(product);
             prodApplications = product.getProdApplications();
             setFieldValues();
-            context.addMessage(null, new FacesMessage("Application saved successfully."));
+            context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
         } catch (Exception e) {
             e.printStackTrace();
-            context.addMessage(null, new FacesMessage("Error saving application."));
+            context.addMessage(null, new FacesMessage(bundle.getString("save_app_error")));
         }
 
     }
@@ -266,9 +269,7 @@ public class RegHomeMbean implements Serializable {
 
     @Transactional
     public String submitApp() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
-
+        context = FacesContext.getCurrentInstance();
         RegistrationUtil registrationUtil = new RegistrationUtil();
         prodApplications.setProdAppNo(registrationUtil.generateAppNo(prodApplications.getId()));
 
@@ -287,7 +288,7 @@ public class RegHomeMbean implements Serializable {
 
         saveApp();
 
-        context.addMessage(null, new FacesMessage("Application submitted successfully."));
+        context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
 
 
 //        timelineService.saveTimeLine(timeLine);
@@ -296,7 +297,7 @@ public class RegHomeMbean implements Serializable {
 
 
     public String addProdInn() {
-        System.out.println("Inside addinn");
+        context = FacesContext.getCurrentInstance();
         prodInn.setProduct(product);
         selectedInns.add(prodInn);
         product.setInns(selectedInns);
@@ -312,7 +313,7 @@ public class RegHomeMbean implements Serializable {
             prodInn = null;
         } catch (Exception e) {
             FacesMessage msg = new FacesMessage(e.getMessage(), "Detail....");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Inn cannot be empty."));
+            context.addMessage(null, new FacesMessage(bundle.getString("product_innname_valid")));
 
         }
         return null;
@@ -338,7 +339,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     public String cancel() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "regHomeMbean", null);
         return "/public/registrationhome.faces";
@@ -368,7 +369,7 @@ public class RegHomeMbean implements Serializable {
     private void setFieldValues() {
         selectedInns = product.getInns();
         selectedAtcs = product.getAtcs();
-        companies = product.getCompanies();
+//        companies = product.getCompanies();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = product.getApplicant();
 //        drugPrices = prodApplications.getPricing().getDrugPrices();
@@ -509,7 +510,7 @@ public class RegHomeMbean implements Serializable {
     }
 
     private void addMessage(FacesMessage message) {
-        FacesContext.getCurrentInstance().addMessage(null, message);
+        context.addMessage(null, message);
     }
 
     public ScheduleEvent getEvent() {
@@ -650,7 +651,6 @@ public class RegHomeMbean implements Serializable {
             if (eachAtc.getAtcCode().toLowerCase().startsWith(query.toLowerCase()))
                 suggestions.add(eachAtc);
         }
-        System.out.println("Suggestions size == " + suggestions.size());
         return suggestions;
     }
 

@@ -2,6 +2,8 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Country;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.CountryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -29,35 +34,38 @@ public class CompanyMBean implements Serializable {
     @Autowired
     CountryService countryService;
 
+    @Autowired
+    CompanyService companyService;
+
     private Company selectedCompany;
 
-
-    @PostConstruct
-    private void init() {
-        System.out.println("inside companymbean");
-        logger.debug("------------------------------------------------------------------------------------");
-        logger.debug(" Company Bean instantiating ");
-        logger.debug("------------------------------------------------------------------------------------");
-
-
-//        selectedCompany = new Company();
-//        selectedCompany.getAddress().setCountry(new Country());
-//        selectedCompany.setCompanyType(CompanyType.MANUFACTURER);
-    }
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     public void addCompany() {
         try {
+            facesContext = FacesContext.getCurrentInstance();
             Country c = selectedCompany.getAddress().getCountry();
             c = countryService.findCountryById(c.getId());
             selectedCompany.getAddress().setCountry(c);
 
-            selectedCompany.setProduct(regHomeMbean.getProduct());
-            regHomeMbean.getProduct().getCompanies().add(selectedCompany);
+            companyService.saveCompany(selectedCompany);
+
+            if(selectedCompany.getProducts()==null)
+                selectedCompany.setProducts(new ArrayList<Product>());
+            selectedCompany.getProducts().add(regHomeMbean.getProduct());
+
+            List<Company> companyList = regHomeMbean.getProduct().getCompanyList();
+            if(companyList==null) {
+                companyList = new ArrayList<Company>();
+                regHomeMbean.getProduct().setCompanyList(companyList);
+            }
+            companyList.add(selectedCompany);
             regHomeMbean.setShowCompany(false);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Company added"));
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("company_add_success")));
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), e.getMessage()));
         }
     }
 

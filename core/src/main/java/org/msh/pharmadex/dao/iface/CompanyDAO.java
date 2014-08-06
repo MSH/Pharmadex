@@ -12,4 +12,5 @@ import java.util.List;
 public interface CompanyDAO extends JpaRepository<Company, Long> {
 
     public List<Company> findByCompanyTypeOrderByCompanyNameAsc(CompanyType companyType);
+
 }

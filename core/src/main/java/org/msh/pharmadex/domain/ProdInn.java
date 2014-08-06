@@ -14,13 +14,13 @@ public class ProdInn extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 255, nullable = true)
     private String quantity;
 
-    @Column(length = 20, nullable = true)
+    @Column(length = 255, nullable = true)
     private String uom;
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 255, nullable = true)
     private String RefStd;
 
     @OneToOne

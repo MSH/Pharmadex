@@ -8,10 +8,10 @@ import java.io.Serializable;
 public class LocalizedNameComp implements Serializable {
 	private static final long serialVersionUID = -957982131483299044L;
 
-	@Column(name="name1", length=100, nullable=true)
+	@Column(name="name1", length=255, nullable=true)
 	private String name1;
 
-	@Column(name="name2", length=100)
+	@Column(name="name2", length=255)
 	private String name2;
 
 

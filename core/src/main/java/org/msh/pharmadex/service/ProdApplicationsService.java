@@ -114,9 +114,13 @@ public class ProdApplicationsService implements Serializable {
                 options[1] = RegState.SCREENING;
                 break;
             case SCREENING:
-                options = new RegState[2];
+                if (!userSession.isStaff()) {
+                    options = new RegState[2];
+                    options[1] = RegState.REVIEW_BOARD;
+                }else{
+                    options = new RegState[1];
+                }
                 options[0] = RegState.FOLLOW_UP;
-                options[1] = RegState.REVIEW_BOARD;
                 break;
             case REVIEW_BOARD:
                 if (userSession.isAdmin() || userSession.isModerator()) {
@@ -155,6 +159,10 @@ public class ProdApplicationsService implements Serializable {
                 options[4] = RegState.SCREENING;
                 options[5] = RegState.REVIEW_BOARD;
                 options[6] = RegState.DEFAULTED;
+                break;
+            case NOT_RECOMMENDED:
+                options = new RegState[1];
+                options[0] = RegState.REJECTED;
                 break;
         }
         return Arrays.asList(options);
@@ -226,11 +234,18 @@ public class ProdApplicationsService implements Serializable {
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isModerator()) {
             List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.FOLLOW_UP);
+            regState.add(RegState.SCREENING);
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.findProdApplicationsByModerator(userSession.getLoggedInUserObj().getUserId());
+            params.put("moderatorId", userSession.getLoggedInUserObj().getUserId());
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isReviewer()) {
-            prodApplicationses = prodApplicationsDAO.findProdApplicationsByReviewer(userSession.getLoggedInUserObj().getUserId());
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.REVIEW_BOARD);
+            params.put("regState", regState);
+            params.put("reviewerId", userSession.getLoggedInUserObj().getUserId());
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isHead()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.NEW_APPL);
@@ -240,6 +255,15 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.FOLLOW_UP);
             regState.add(RegState.REVIEW_BOARD);
             regState.add(RegState.RECOMMENDED);
+            regState.add(RegState.NOT_RECOMMENDED);
+            params.put("regState", regState);
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        } else if (userSession.isStaff()) {
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.NEW_APPL);
+            regState.add(RegState.FEE);
+            regState.add(RegState.VERIFY);
+            regState.add(RegState.FOLLOW_UP);
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isCompany()) {
@@ -262,36 +286,26 @@ public class ProdApplicationsService implements Serializable {
     }
 
     @Transactional
-    public String saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
+    public ProdApplications saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
         String result;
         prodApplications.getProd().setCreatedBy(loggedInUserObj);
         prodApplications.setSubmitDate(new Date());
         prodApplications.getProd().setLicNo("licno");
 
-        applicantDAO.updateApplicant(prodApplications.getProd().getApplicant());
+//        applicantDAO.updateApplicant(prodApplications.getProd().getApplicant());
 
-        prodApplications.getProd().setDosForm(
-                dosageFormService.findDosagedForm(prodApplications.getProd().getDosForm().getUid()));
+//        prodApplications.getProd().setDosForm(
+//                dosageFormService.findDosagedForm(prodApplications.getProd().getDosForm().getUid()));
 
         if (prodApplications.getAppointment() != null)
             appointmentDAO.save(prodApplications.getAppointment());
 
-        if (prodApplications.getId() != null)
-            result = prodApplicationsDAO.updateApplication(prodApplications);
-        else
-            result = prodApplicationsDAO.saveApplication(prodApplications);
-
-        if (prodApplications.getProd().getId() != null)
-            productDAO.updateProduct(prodApplications.getProd());
-        else
-            productDAO.saveProduct(prodApplications.getProd());
-
-
-        return result;
+        prodApplications = prodApplicationsDAO.updateApplication(prodApplications);
+        return prodApplications;
     }
 
     @Transactional
-    public String updateProdApp(ProdApplications prodApplications) {
+    public ProdApplications updateProdApp(ProdApplications prodApplications) {
         return prodApplicationsDAO.updateApplication(prodApplications);
     }
 
@@ -364,16 +378,16 @@ public class ProdApplicationsService implements Serializable {
         String companyName = "";
         String fprcName = "";
         String fprrName ="";
-        for (Company c : product.getCompanies()) {
-            if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF))
-                companyName = c.getCompanyName();
-            if (c.getCompanyType().equals(CompanyType.FPRC))
-                fprcName = c.getCompanyName();
-            if (c.getCompanyType().equals(CompanyType.FPRR))
-                fprrName = c.getCompanyName();
-        }
+//        for (Company c : product.getCompanies()) {
+//            if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF))
+//                companyName = c.getCompanyName();
+//            if (c.getCompanyType().equals(CompanyType.FPRC))
+//                fprcName = c.getCompanyName();
+//            if (c.getCompanyType().equals(CompanyType.FPRR))
+//                fprrName = c.getCompanyName();
+//        }
 
-        param.put("manufName", companyName);
+        param.put("manufName", product.getManufName());
         param.put("fprcName", fprcName);
         param.put("frrName", fprrName);
         param.put("regDate", regDt);

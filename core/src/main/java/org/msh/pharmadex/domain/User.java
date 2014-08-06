@@ -25,7 +25,7 @@ public class User extends CreationDetail implements Serializable {
     @Column(length = 255, nullable = false)
     private String name;
 
-    @Column(length = 80, unique = true, nullable = false)
+    @Column(length = 255, unique = true, nullable = false)
     private String username;
 
     @Column(length = 255, nullable = false)

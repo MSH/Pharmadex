@@ -19,7 +19,7 @@ public class Payment extends CreationDetail implements Serializable {
     private Invoice invoice;
 
 
-    @Column(name = "payment_amt", length = 100, nullable = true)
+    @Column(name = "payment_amt", length = 255, nullable = true)
     private String paymentAmt;
 
     @Temporal(TemporalType.DATE)

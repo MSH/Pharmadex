@@ -20,9 +20,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,6 +56,10 @@ public class UserMBean implements Serializable {
 
     @Autowired
     LetterService letterService;
+
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    java.util.ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
 
     public String exception() throws Exception {
         throw new Exception();
@@ -114,33 +116,33 @@ public class UserMBean implements Serializable {
         mail.setMailto(selectedUser.getEmail());
         mail.setUser(selectedUser);
         mail.setDate(new Date());
-        mail.setMessage("Thank you for registering with Namibian Medicines Regulatory Council. In order to access the system please use the username '"+selectedUser.getUsername()+"' and password '"+password+"' without the quotes.");
+        mail.setMessage(bundle.getString("email_user_reg1")+selectedUser.getUsername()+bundle.getString("email_user_reg2")+password+bundle.getString("email_user_reg3"));
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {
             retvalue = userService.createUser(selectedUser);
         } catch (ConstraintViolationException e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
             return "";
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
             e.printStackTrace();
             return "";
         }
         if (!retvalue.equalsIgnoreCase("persisted")) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", retvalue));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), retvalue));
             return "";
         } else {
             try {
                 mailService.sendMail(mail, false);
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("send_password_success")));
                 FacesContext context = FacesContext.getCurrentInstance();
                 HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
                 WebUtils.setSessionAttribute(request, "userMBean", null);
                 return "/admin/userslist_bk.faces";
             } catch (Exception e) {
                 e.printStackTrace();
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Error sending email"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
                 return "";
             }
         }
@@ -148,7 +150,6 @@ public class UserMBean implements Serializable {
     }
 
     public void updateuser() {
-        System.out.println("------updateUser-----");
         selectedUser.setRoles(roles.getTarget());
 //        if(!prevApplicantId.equals(userApp.getApplcntId())){
 //            selectedUser.setApplicant(applicantService.findApplicant(userApp.getApplcntId()));
@@ -158,20 +159,20 @@ public class UserMBean implements Serializable {
         try {
             selectedUser = userService.updateUser(selectedUser);
         } catch (ConstraintViolationException e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Email already exists"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
             e.printStackTrace();
         }
         if (selectedUser!=null) {
             setEdit(false);
             selectedUser = new User();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", selectedUser.getName() + " successfully updated!!!"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), selectedUser.getName() + bundle.getString("global.success")));
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "userMBean", null);
         } else {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "No User"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("no_user")));
         }
 //        return "/admin/userslist_bk.faces";
     }
@@ -198,24 +199,24 @@ public class UserMBean implements Serializable {
         try {
             selectedUser = userService.updateUser(userService.passwordGenerator(selectedUser));
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
             e.printStackTrace();
             return "";
         }
         if (selectedUser==null) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to save User."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("save_error")));
             return "";
         } else {
             try {
                 mailService.sendMail(mail, false);
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your password has been mailed to the email address provided at the time of registration. Please use the password to log into the system and change your password"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("send_password_success")));
                 FacesContext context = FacesContext.getCurrentInstance();
                 HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
                 WebUtils.setSessionAttribute(request, "userMBean", null);
                 return "/admin/userslist_bk.faces";
             } catch (Exception e) {
                 e.printStackTrace();
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Error sending email"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
                 return "";
             }
         }

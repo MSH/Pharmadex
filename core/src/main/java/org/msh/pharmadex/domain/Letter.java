@@ -17,7 +17,7 @@ public class Letter extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 100)
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
 
     @Enumerated(EnumType.STRING)

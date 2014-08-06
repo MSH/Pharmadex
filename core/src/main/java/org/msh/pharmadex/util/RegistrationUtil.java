@@ -19,4 +19,19 @@ public class RegistrationUtil {
         prodAppNo = year + month + "/" + no;
         return prodAppNo;
     }
+
+    public static String formatString(String dosForm) {
+        String value = dosForm.trim();
+        value = value.toUpperCase();
+        value = value.replaceAll(", ","_");
+        value = value.replaceAll(" / ","_");
+        value = value.replaceAll("/ ","_");
+        value = value.replaceAll("/","_");
+        value = value.replaceAll("\\(","_");
+        value = value.replaceAll("\\)","_");
+        value = value.replaceAll("'","_");
+        value = value.replaceAll("\\.","_");
+        value = value.replaceAll("\\s","_");
+        return value;
+    }
 }

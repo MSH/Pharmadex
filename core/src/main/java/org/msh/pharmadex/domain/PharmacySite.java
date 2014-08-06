@@ -22,7 +22,7 @@ public class PharmacySite extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 255, nullable = false)
     private String pharmacyName;
 
     @Embedded
@@ -34,36 +34,36 @@ public class PharmacySite extends CreationDetail implements Serializable {
     })
     private Address siteAddress = new Address();
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 255, nullable = false)
     private String applicantName;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 255, nullable = false)
     private String applicantQualif;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 255, nullable = false)
     private String estPopulation;
 
-    @Column(length = 50)
+    @Column(length = 255)
     private String targetArea;
 
-    @Column(length = 30)
+    @Column(length = 255)
     private String phoneNo;
 
-    @Column(length = 30)
+    @Column(length = 255)
     private String faxNo;
 
     private String email;
 
-    @Column(length = 50)
+    @Column(length = 255)
     private String website;
 
     @Enumerated(EnumType.STRING)
     private ApplicantState state;
 
-    @Column(length = 50)
+    @Column(length = 255)
     private String fileNumber;
 
-    @Column(length = 50)
+    @Column(length = 500)
     private String comment;
 
     @Temporal(TemporalType.DATE)

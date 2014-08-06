@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -25,14 +26,18 @@ public class DrugPriceMBean implements Serializable {
 
     private DrugPrice selectedDrugPrice;
 
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
     public void addDrugPrice() {
         try {
+            facesContext = FacesContext.getCurrentInstance();
             selectedDrugPrice.setPricing(regHomeMbean.getProdApplications().getPricing());
             regHomeMbean.getDrugPrices().add(selectedDrugPrice);
             regHomeMbean.setShowCompany(false);
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("msgs"), e.getMessage()));
         }
     }
 

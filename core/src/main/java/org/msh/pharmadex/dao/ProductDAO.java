@@ -58,7 +58,7 @@ public class ProductDAO implements Serializable {
         Product prod = entityManager.merge(product);
         Hibernate.initialize(prod.getInns());
         Hibernate.initialize(prod.getAtcs());
-        Hibernate.initialize(prod.getCompanies());
+//        Hibernate.initialize(prod.getCompanies());
         Hibernate.initialize(prod.getProdApplications());
         Hibernate.initialize(prod.getApplicant());
         if (prod.getProdApplications() != null) {
@@ -73,6 +73,9 @@ public class ProductDAO implements Serializable {
                 Hibernate.initialize(prod.getProdApplications().getReviews());
             if (prod.getProdApplications().getPricing() != null) {
                 Hibernate.initialize(prod.getProdApplications().getPricing().getDrugPrices());
+            }
+            if(prod.getCompanyList() !=null){
+                Hibernate.initialize(prod.getCompanyList());
             }
         }
 
@@ -142,7 +145,7 @@ public class ProductDAO implements Serializable {
         Product prod = entityManager.createQuery(query).getSingleResult();
         Hibernate.initialize(prod.getInns());
         Hibernate.initialize(prod.getAtcs());
-        Hibernate.initialize(prod.getCompanies());
+        Hibernate.initialize(prod.getCompanyList());
         Hibernate.initialize(prod.getProdApplications());
         Hibernate.initialize(prod.getApplicant());
 

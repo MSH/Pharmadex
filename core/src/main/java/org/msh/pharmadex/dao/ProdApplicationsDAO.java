@@ -127,15 +127,13 @@ public class ProdApplicationsDAO implements Serializable {
     @Transactional
     public String saveApplication(ProdApplications prodApplications) {
         entityManager.persist(prodApplications);
-        entityManager.flush();
         return "persisted";
     }
 
     @Transactional
-    public String updateApplication(ProdApplications prodApplications) {
-        entityManager.merge(prodApplications);
-        entityManager.flush();
-        return "persisted";
+    public ProdApplications updateApplication(ProdApplications prodApplications) {
+        ProdApplications p = entityManager.merge(prodApplications);
+        return p;
     }
 
     public List<Company> findCompanies(Long prodId) {
@@ -191,8 +189,7 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProdApplications> query = cb.createQuery(ProdApplications.class);
         Root<ProdApplications> prodApp = query.from(ProdApplications.class);
-        Join user = prodApp.join("user", JoinType.LEFT);
-        Join statusUser = prodApp.join("statusUser", JoinType.LEFT);
+//        Join statusUser = prodApp.join("statusUser", JoinType.LEFT);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
         Predicate p = null;
@@ -201,8 +198,17 @@ public class ProdApplicationsDAO implements Serializable {
                 Expression<String> exp = prodApp.get("regState");
                 p = exp.in(params.get("regState"));
             } else if (param.getKey().equals("userId") && param.getValue() != null) {
+                Join user = prodApp.join("user", JoinType.LEFT);
                 Expression userid = user.get("userId");
                 p = cb.equal(userid, param.getValue());
+            } else if (param.getKey().equals("moderatorId") && param.getValue() != null) {
+                Join user = prodApp.join("moderator", JoinType.LEFT);
+                Expression moderatorId = user.get("userId");
+                p = cb.equal(moderatorId, param.getValue());
+            } else if (param.getKey().equals("reviewerId") && param.getValue() != null) {
+                Join<Review, ProdApplications> user = prodApp.join("reviews", JoinType.LEFT).join("user");
+                Expression reviewId = user.get("userId");
+                p = cb.equal(reviewId, param.getValue());
             } else if (param.getKey().equals("regExpDate") && param.getValue() != null) {
                 p = cb.lessThan(prodApp.<Date>get("regExpiryDate"), (Date) param.getValue());
             }

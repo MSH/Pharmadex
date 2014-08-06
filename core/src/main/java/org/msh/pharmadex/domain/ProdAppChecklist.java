@@ -26,7 +26,7 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
 
     private boolean staffValue;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String staffComment;
 
     @Lob
@@ -38,10 +38,10 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     @OneToOne
     private User uploadedBy;
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 255, nullable = true)
     private String contentType;
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 255, nullable = true)
     private String fileName;
 
 

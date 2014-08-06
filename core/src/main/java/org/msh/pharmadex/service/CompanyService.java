@@ -30,4 +30,9 @@ public class CompanyService implements Serializable {
         companyDAO.delete(company);
         return "removed";
     }
+
+    @Transactional
+    public Company saveCompany(Company company){
+        return companyDAO.save(company);
+    }
 }

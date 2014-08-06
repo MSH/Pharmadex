@@ -11,6 +11,8 @@ import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.primefaces.extensions.model.timeline.TimelineEvent;
 import org.primefaces.extensions.model.timeline.TimelineModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,7 @@ import java.util.Map;
 public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
+    private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
 
     @Autowired
     private UserService userService;
@@ -98,6 +101,8 @@ public class ProcessProdBn implements Serializable {
 
     private boolean checkReviewStatus = false;
 
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     @PostConstruct
     private void init() {
@@ -141,7 +146,8 @@ public class ProcessProdBn implements Serializable {
     }
 
     private void initProdApps() {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
         prodID = params.get("id");
 
         if (prodID == null || prodID.equals(""))
@@ -174,26 +180,30 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String addComment() {
+        facesContext = FacesContext.getCurrentInstance();
         selComment.setDate(new Date());
         selComment.setProdApplications(prodApplications);
         selComment.setUser(userSession.getLoggedInUserObj());
         selComment = commentService.saveComment(selComment);
         comments.add(selComment);
         selComment = new Comment();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Comment successfully added"));
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("comment_success")));
         return "";
     }
 
 
     public void assignProcessor() {
+        facesContext = FacesContext.getCurrentInstance();
         if (module == null) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
         }
         module.setProdApplications(prodApplications);
         module.setAssignDate(new Date());
 
         if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
     }
 
     public void initProcessorAdd() {
@@ -204,14 +214,15 @@ public class ProcessProdBn implements Serializable {
     }
 
     public void assignReviewer() {
+        facesContext = FacesContext.getCurrentInstance();
         if (review == null) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
         }
         review.setProdApplications(prodApplications);
         review.setAssignDate(new Date());
 
         if (!prodApplicationsService.saveReviewers(review).equalsIgnoreCase("success"))
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
         else
             reviews.add(review);
 
@@ -220,12 +231,16 @@ public class ProcessProdBn implements Serializable {
 
 
     public void assignModerator() {
-        prodApplications.setUpdatedDate(new Date());
+        try {
+            facesContext = FacesContext.getCurrentInstance();
+            prodApplications.setUpdatedDate(new Date());
+            prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj());
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("moderator_add_success")));
+        } catch (Exception e) {
+            logger.error("Problems saving moderator {}", "processprodbn", e);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+        }
 
-        if (!prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj()).equalsIgnoreCase("persisted"))
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error adding processor."));
-        else
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Moderator added successfully."));
 
     }
 
@@ -254,38 +269,41 @@ public class ProcessProdBn implements Serializable {
 
 
     public String sendMessage() {
+        facesContext = FacesContext.getCurrentInstance();
         mail.setDate(new Date());
         mail.setUser(userSession.getLoggedInUserObj());
         mail.setProdApplications(prodApplications);
         mailService.sendMail(mail, true);
         mails.add(mail);
         mail = new Mail();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Message sent successfully"));
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("send_success")));
         return "";
     }
 
     public String newComment() {
-        System.out.println("Inside new comment");
         return "/home.faces";
     }
 
     public String deleteComment(Comment delComment) {
+        facesContext = FacesContext.getCurrentInstance();
         comments.remove(delComment);
         String result = commentService.deleteComment(delComment);
         if (result.equals("deleted"))
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Comment successfully deleted "));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("comment_del_success")));
         else
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Comment delete failed"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("comment_del_fail")));
         return "";
     }
 
     public String deleteReview(Review review) {
         reviews.remove(review);
+        facesContext = FacesContext.getCurrentInstance();
         try {
             reviewDAO.delete(review);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Comment successfully deleted "));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    resourceBundle.getString("global.success"), resourceBundle.getString("comment_del_success")));
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Comment delete failed"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("comment_del_fail")));
             e.printStackTrace();
         }
         return "";
@@ -309,39 +327,42 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String addTimeline() {
-        if (timeLine.getRegState().equals(RegState.FEE) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-            if (!prodApplications.isFeeReceived()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail:", "Fee not received"));
-                timeLine = new TimeLine();
-                return "";
-            }
-        } else if (timeLine.getRegState().equals(RegState.VERIFY) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-            if (!prodApplications.isApplicantVerified()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail", "applicant not verified"));
-                timeLine = new TimeLine();
-                return "";
-            } else if (!prodApplications.isProductVerified() || prodApplications.getRegState() == RegState.REGISTERED) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail", "product not verified"));
-                timeLine = new TimeLine();
-                return "";
+        facesContext = FacesContext.getCurrentInstance();
+        product = productService.findProduct(Long.valueOf(prodID));
+        setFieldValues();
+        initProcessor();
 
-            }
-        }
-
-        timeLine.setProdApplications(prodApplications);
-        timeLine.setStatusDate(new Date());
-        timeLine.setUser(userSession.getLoggedInUserObj());
-        timelineService.saveTimeLine(timeLine);
-        timeLineList.add(timeLine);
-        prodApplications.setRegState(timeLine.getRegState());
-        product.setRegState(timeLine.getRegState());
-        prodApplicationsService.updateProdApp(prodApplications);
         try {
-            productService.updateProduct(prodApplications.getProd());
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Status successfully changed"));
+            if (timeLine.getRegState().equals(RegState.FEE) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+                if (!prodApplications.isFeeReceived()) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
+                    timeLine = new TimeLine();
+                    return "";
+                }
+            } else if (timeLine.getRegState().equals(RegState.VERIFY) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+                if (!prodApplications.isApplicantVerified()) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("app_not_verified")));
+                    timeLine = new TimeLine();
+                    return "";
+                } else if (!prodApplications.isProductVerified() || prodApplications.getRegState() == RegState.REGISTERED) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("app_not_verified")));
+                    timeLine = new TimeLine();
+                    return "";
+
+                }
+            }
+
+            timeLine.setProdApplications(prodApplications);
+            timeLine.setStatusDate(new Date());
+            timeLine.setUser(userSession.getLoggedInUserObj());
+            timeLineList.add(timeLine);
+            prodApplications.setRegState(timeLine.getRegState());
+            product.setRegState(timeLine.getRegState());
+            prodApplications = prodApplicationsService.updateProdApp(prodApplications);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
         } catch (Exception e) {
             e.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save Status"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
         }
         timeLine = new TimeLine();
         return "";  //To change body of created methods use File | Settings | File Templates.
@@ -360,23 +381,36 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String registerProduct() {
+        facesContext = FacesContext.getCurrentInstance();
         if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fail", "Cannot Register product, Status needs to be updated"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
             return "";
         }
         timeLine = new TimeLine();
         timeLine.setRegState(RegState.REGISTERED);
-        prodApplications.setRegistrationDate(new Date());
+//        prodApplications.setRegistrationDate(new Date());
         product.setRegNo("" + (Math.random() * 100000));
         globalEntityLists.setRegProducts(null);
-        addTimeline();
+
+        timeLine.setProdApplications(prodApplications);
+        timeLine.setStatusDate(new Date());
+        timeLine.setUser(userSession.getLoggedInUserObj());
+        timeLineList.add(timeLine);
+        prodApplications.setRegState(timeLine.getRegState());
+        product.setRegState(timeLine.getRegState());
+//        prodApplications = prodApplicationsService.updateProdApp(prodApplications);
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+
         prodApplicationsService.createRegCert(prodApplications);
+        timeLine = new TimeLine();
         return "";
     }
 
     public String submitReview() {
+        facesContext = FacesContext.getCurrentInstance();
         if (reviewComment.isEmpty()) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Review comment can not be empty."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    resourceBundle.getString("global_fail"), resourceBundle.getString("review_comment_empty_valid")));
             return "";
         }
         initProcessor();
@@ -483,7 +517,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean getCheckReviewStatus() {
-        if (prodApplications == null)
+//        if (prodApplications.getId() == null)
             getProdApplications();
         for (Review each : prodApplications.getReviews()) {
             if (!each.isSubmitted()) {
@@ -583,6 +617,13 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<Review> getReviews() {
+        if(reviews == null ) {
+            if(product!=null) {
+                product = productService.findProduct(product.getId());
+                setFieldValues();
+                initProcessor();
+            }
+        }
         return reviews;
     }
 

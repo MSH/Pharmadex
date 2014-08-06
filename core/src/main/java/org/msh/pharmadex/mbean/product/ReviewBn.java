@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Backing bean to capture review of products
@@ -56,6 +57,9 @@ public class ReviewBn implements Serializable {
 
     private boolean attach;
 
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
     public boolean isAttach() {
         if (review.getFile() != null && review.getFile().length > 0)
             return true;
@@ -69,19 +73,21 @@ public class ReviewBn implements Serializable {
 
     public void handleFileUpload() {
         FacesMessage msg;
+        facesContext = FacesContext.getCurrentInstance();
+
         if (file != null) {
-            msg = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            msg = new FacesMessage(bundle.getString("global.success"), file.getFileName() + bundle.getString("upload_success"));
+            facesContext.addMessage(null, msg);
             try {
                 review.setFile(IOUtils.toByteArray(file.getInputstream()));
                 saveReview();
             } catch (IOException e) {
-                msg = new FacesMessage("Error", file.getFileName() + " is not uploaded.");
+                msg = new FacesMessage(bundle.getString("global_fail"), file.getFileName() + bundle.getString("upload_fail"));
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         } else {
-            msg = new FacesMessage("Error", file.getFileName() + " is not uploaded.");
+            msg = new FacesMessage(bundle.getString("global_fail"), file.getFileName() + bundle.getString("upload_fail"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -110,13 +116,13 @@ public class ReviewBn implements Serializable {
     }
 
     public String submitReview() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
         if (review.getRecomendType() == null) {
-            facesContext.addMessage(null, new FacesMessage("Recommendation field cannot be empty.", "Please enter recommendation in order to submit the review."));
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
         }
 
         review.setSubmitDate(new Date());
         saveReview();
+        processProdBn.setReviews(null);
         return "/internal/processreg";
     }
 

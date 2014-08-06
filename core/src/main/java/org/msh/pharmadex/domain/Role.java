@@ -20,13 +20,13 @@ public class Role extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer roleId;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 255, nullable = false)
     private String rolename;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 255, nullable = false)
     private String displayname;
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 255, nullable = true)
     private String description;
 
 

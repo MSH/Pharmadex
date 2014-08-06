@@ -20,25 +20,25 @@ public class ErrorLog implements Serializable {
     @Column(nullable = false)
     private Date errorDate;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String browserName;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String userIP;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String requestURI;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String ajaxRequest;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String statusCode;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String exceptionType;
 
-    @Column(length = 100)
+    @Column(length = 1000)
     private String exceptionMessage;
 
     @Column

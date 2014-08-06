@@ -14,7 +14,7 @@ public class Appointment extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String tile;
 
     @Temporal(TemporalType.DATE)

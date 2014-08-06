@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -33,6 +34,10 @@ public class AmdmtProcessMBean implements Serializable {
     private List<ProdApplications> filteredApps;
     private ProdAppAmdmt prodAppAmdmt = new ProdAppAmdmt();
 
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+
     public void nextAmdmtStep() {
 //        prodAppAmdmt = processProdBn.getProdAppAmdmt();
         this.prodAppAmdmt = prodAppAmdmt;
@@ -48,11 +53,11 @@ public class AmdmtProcessMBean implements Serializable {
 
         String result = amdmtService.saveAmdmt(prodAppAmdmt);
         prodApplicationses = null;
-
+        facesContext = FacesContext.getCurrentInstance();
         if (result.equalsIgnoreCase("persisted"))
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Saved", "State successfully changed"));
+           facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_save"), resourceBundle.getString("global.success")));
         else
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to move it to next step. Make sure all the required fields are entered."));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("next_step_error")));
 
     }
 

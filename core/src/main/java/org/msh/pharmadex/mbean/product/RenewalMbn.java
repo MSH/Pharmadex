@@ -15,9 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.mail.MessagingException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Author: usrivastava
@@ -41,6 +39,9 @@ public class RenewalMbn implements Serializable {
     private ProdApplications selProApp;
 
     private Product selProd;
+
+    FacesContext context = FacesContext.getCurrentInstance();
+    java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
 
     public Product getSelProd() {
         Product p = selProApp.getProd();
@@ -87,25 +88,22 @@ public class RenewalMbn implements Serializable {
 
     public void sendReminder() {
         String result = null;
+        context = FacesContext.getCurrentInstance();
         try {
             result = invoiceService.sendReminder(getSelProductApp(), userSession.getLoggedInUserObj(), invoice);
             if (result.equalsIgnoreCase("reminder_sent")) {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Reminder sent"));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("reminder_sent")));
             } else if (result.equalsIgnoreCase("no_invoice")) {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No Invoice", "No invoice present"));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, bundle.getString("no_invoice"), bundle.getString("no_invoice")));
             } else {
 
             }
         } catch (MessagingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error during sending the reminder"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("message")));
         } catch (Exception ex) {
             ex.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error during the process"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
         }
     }
 

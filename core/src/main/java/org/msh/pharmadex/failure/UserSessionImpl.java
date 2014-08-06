@@ -56,7 +56,6 @@ public class UserSessionImpl implements UserSession, Serializable {
     }
 
     public String editUser() {
-        System.out.print("inside edituser");
         return "/secure/usersettings.faces";
     }
 
@@ -119,8 +118,10 @@ public class UserSessionImpl implements UserSession, Serializable {
                     setInspector(true);
                     setDisplayAppReg(true);
                 }
-                if (role.getRolename().equalsIgnoreCase("ROLE_STAFF"))
+                if (role.getRolename().equalsIgnoreCase("ROLE_STAFF")) {
                     setStaff(true);
+                    setDisplayAppReg(true);
+                }
                 if (role.getRolename().equalsIgnoreCase("ROLE_COMPANY")) {
                     setCompany(true);
                     if (user.getApplicant() != null)
@@ -132,15 +133,18 @@ public class UserSessionImpl implements UserSession, Serializable {
                     setGeneral(true);
                 if (role.getRolename().equalsIgnoreCase("ROLE_MODERATOR")) {
                     setModerator(true);
-                    setStaff(true);
+//                    setStaff(true);
+                    setDisplayAppReg(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_REVIEWER")) {
                     setReviewer(true);
-                    setStaff(true);
+//                    setStaff(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_HEAD")) {
                     setHead(true);
                     setStaff(true);
+                    setDisplayAppReg(true);
+
                 }
             }
         }

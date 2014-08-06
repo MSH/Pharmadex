@@ -1,10 +1,7 @@
 package org.msh.pharmadex.domain;
 
 import org.hibernate.envers.Audited;
-import org.msh.pharmadex.domain.enums.AgeGroup;
-import org.msh.pharmadex.domain.enums.ProdCategory;
-import org.msh.pharmadex.domain.enums.ProdType;
-import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -75,7 +72,7 @@ public class Product extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProdCategory prodCategory;
 
-    @Column(name = "reg_no", length = 100)
+    @Column(name = "reg_no", length = 255)
     private String regNo;
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
@@ -95,12 +92,16 @@ public class Product extends CreationDetail implements Serializable {
     @JoinColumn(name = "PHARM_CLASSIF_ID")
     private PharmClassif pharmClassif;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "APP_ID", nullable = false)
     private Applicant applicant;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    private List<Company> companies;
+//    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+//    private List<Company> companies;
+
+    @ManyToMany(targetEntity = Company.class, fetch = FetchType.LAZY)
+    @JoinTable(name = "prod_company", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "company_id"))
+    private List<Company> companyList;
 
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_APP_ID")
@@ -113,6 +114,9 @@ public class Product extends CreationDetail implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private RegState regState;
+
+    @Transient
+    private String manufName;
 
     public Product() {
     }
@@ -258,13 +262,13 @@ public class Product extends CreationDetail implements Serializable {
         this.applicant = applicant;
     }
 
-    public List<Company> getCompanies() {
-        return companies;
-    }
-
-    public void setCompanies(List<Company> companies) {
-        this.companies = companies;
-    }
+//    public List<Company> getCompanies() {
+//        return companies;
+//    }
+//
+//    public void setCompanies(List<Company> companies) {
+//        this.companies = companies;
+//    }
 
     public ProdApplications getProdApplications() {
         return prodApplications;
@@ -328,5 +332,26 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setNewChemicalName(String newChemicalName) {
         this.newChemicalName = newChemicalName;
+    }
+
+    public List<Company> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<Company> companyList) {
+        this.companyList = companyList;
+    }
+
+    public String getManufName() {
+        for(Company c : getCompanyList()){
+            if(c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+                return c.getCompanyName();
+            }
+        }
+        return manufName;
+    }
+
+    public void setManufName(String manufName) {
+        this.manufName = manufName;
     }
 }

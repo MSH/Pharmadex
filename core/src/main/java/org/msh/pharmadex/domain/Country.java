@@ -2,6 +2,8 @@ package org.msh.pharmadex.domain;
 
 
 
+import org.msh.pharmadex.util.RegistrationUtil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -13,11 +15,22 @@ public class Country extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 255, nullable = false)
     private String countryName;
 
     @Column(length = 30, nullable = false)
     private String countryCD;
+
+    @Transient
+    private String key;
+
+    public String getKey() {
+        if(countryName!=null&&!countryName.equalsIgnoreCase("")) {
+            String delimiter = "_";
+            key = this.getClass().getSimpleName() + delimiter + RegistrationUtil.formatString(getCountryName());
+        }
+        return key;
+    }
 
     public Long getId() {
         return id;

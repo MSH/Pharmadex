@@ -16,7 +16,7 @@ public class Comment implements Serializable
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(length = 255)
+	@Column(length = 500)
 	private String comment;
 
 	private boolean internal;

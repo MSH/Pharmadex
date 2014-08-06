@@ -17,13 +17,13 @@ public class Mail implements Serializable
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(length = 255)
+	@Column(length = 500)
 	private String message;
 
-    @Column(length = 100)
+    @Column(length = 255)
    	private String subject;
 
-    @Column(length = 100)
+    @Column(length = 255)
    	private String mailto;
 
 	@ManyToOne (fetch = FetchType.LAZY)

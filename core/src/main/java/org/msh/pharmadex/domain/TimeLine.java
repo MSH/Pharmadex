@@ -26,10 +26,10 @@ public class TimeLine implements Serializable {
     @Column(nullable = false)
     private Date statusDate;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String comment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "PROD_APP_ID", nullable = false)
     private ProdApplications prodApplications;
 

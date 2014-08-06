@@ -16,16 +16,16 @@ public class Attachment extends CreationDetail {
     @Column(unique = true)
     private Long id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String title;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String contentType;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String fileName;
 
-    @Column(length = 200)
+    @Column(length = 500)
     private String comment;
 
     @OneToOne

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @Component
 @Scope("request")
@@ -21,7 +23,8 @@ public class LetterMbn implements Serializable {
     private List<Letter> letters;
     private Letter selLetter = new Letter();
 
-    FacesContext facesContext = FacesContext.getCurrentInstance();
+    FacesContext context = FacesContext.getCurrentInstance();
+    ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
 
     private Long selLetterId;
 
@@ -32,9 +35,9 @@ public class LetterMbn implements Serializable {
         System.out.println("" + selLetter.getBody());
         String result = letterService.addLetter(selLetter);
         if (result.equalsIgnoreCase("persisted")) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "" + selLetter.getTitle() + " was created successfully."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), MessageFormat.format(bundle.getString("create_success"), selLetter.getTitle())));
         } else {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "There was an error creating " + selLetter.getTitle()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "There was an error creating " + selLetter.getTitle()));
         }
         selLetter = new Letter();
     }

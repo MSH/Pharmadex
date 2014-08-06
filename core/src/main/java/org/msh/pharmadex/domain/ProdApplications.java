@@ -33,7 +33,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @JoinColumn(name = "ORG_CNTRY_ID")
     private Country originCntry;
 
-    @Column(length = 100)
+    @Column(length = 255)
     private String prodAppNo;
 
     @Column(length = 500)

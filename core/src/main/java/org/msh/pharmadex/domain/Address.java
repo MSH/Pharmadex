@@ -13,13 +13,13 @@ import java.io.Serializable;
 @Embeddable
 public class Address implements Serializable{
     private static final long serialVersionUID = 5188310112489422198L;
-    @Column(length = 200)
+    @Column(length = 500)
    	private String address1;
 
-   	@Column(length = 200)
+   	@Column(length = 500)
    	private String address2;
 
-   	@Column(length = 200)
+   	@Column(length = 500)
    	private String zipcode;
 
    @OneToOne

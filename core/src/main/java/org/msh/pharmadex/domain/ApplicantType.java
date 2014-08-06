@@ -14,7 +14,7 @@ public class ApplicantType extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @Column(length = 250)
+    @Column(length = 500)
     private String name;
 
     public Long getId() {

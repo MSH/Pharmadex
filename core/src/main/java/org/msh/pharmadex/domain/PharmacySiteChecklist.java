@@ -26,7 +26,7 @@ public class PharmacySiteChecklist extends CreationDetail implements Serializabl
 
     private boolean staffValue;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String staffComment;
 
     public Long getId() {

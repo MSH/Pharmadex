@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -33,7 +35,11 @@ public class RegProdMbn {
     @Autowired
     WebSession webSession;
 
+    FacesContext context = FacesContext.getCurrentInstance();
+    ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+
     private Product selectedProd;
+
 
     public List<Product> completeProduct(String query) {
         List<Product> suggestions = new ArrayList<Product>();
@@ -59,8 +65,7 @@ public class RegProdMbn {
             processProdBn.setProdApplications(pa);
             return "/internal/processreg.faces";
         } else {
-            facesContext.addMessage(null, new FacesMessage("Error:", "Product Application does not exist for this product. " +
-                    "It is an older product registered before implementation of Pharmadex. Please check the paper record for further information"));
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("global_fail"), bundle.getString("legacy_prod_message")));
             return null;
         }
     }

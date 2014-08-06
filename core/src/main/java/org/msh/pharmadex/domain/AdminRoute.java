@@ -1,5 +1,7 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.util.RegistrationUtil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,6 +25,14 @@ public class AdminRoute implements Serializable {
     @Column(name = "code", length = 500, nullable = true)
     private String code;
 
+    @Transient
+    private String key;
+
+    public String getKey() {
+        String delimiter = "_";
+        key = this.getClass().getSimpleName()+delimiter+ RegistrationUtil.formatString(getName());
+        return key;
+    }
 
     public int getId() {
         return id;

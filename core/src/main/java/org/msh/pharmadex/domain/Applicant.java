@@ -23,7 +23,7 @@ public class Applicant extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long applcntId;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 500, nullable = false)
     private String appName;
 
     @Embedded
@@ -32,30 +32,30 @@ public class Applicant extends CreationDetail implements Serializable {
     @OneToOne
     private ApplicantType applicantType;
 
-    @Column(length = 255)
+    @Column(length = 500)
     private String contactName;
 
-    @Column(length = 30)
+    @Column(length = 500)
     private String phoneNo;
 
-    @Column(length = 30)
+    @Column(length = 500)
     private String faxNo;
 
     private String email;
 
-    @Column(length = 50)
+    @Column(length = 500)
     private String website;
 
     @Enumerated(EnumType.STRING)
     private ApplicantState state;
 
-    @Column(length = 50)
+    @Column(length = 500)
     private String fileNumber;
 
-    @Column(length = 255)
+    @Column(length = 500)
     private String licNo;
 
-    @Column(length = 50)
+    @Column(length = 500)
     private String comment;
 
     @Temporal(TemporalType.DATE)

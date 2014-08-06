@@ -20,6 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Backing bean to process the application made for registration
@@ -53,7 +54,9 @@ public class ProcessRxSiteBn {
     private List<User> userList;
     private List<PharmacySiteChecklist> siteChecklists;
 
-    @Transactional
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
     public void addUserToRxSite() {
         if (userList == null)
             userList = new ArrayList<User>();
@@ -65,9 +68,10 @@ public class ProcessRxSiteBn {
     }
 
     public String registerRxSite() {
+        facesContext = FacesContext.getCurrentInstance();
         for (PharmacySiteChecklist psc : siteChecklists) {
             if (!psc.isStaffValue()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Please verify premises particulars"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", resourceBundle.getString("premises_particular_valid")));
                 return "/internal/processrxsite.faces";
             }
 
@@ -75,17 +79,16 @@ public class ProcessRxSiteBn {
         selectedSite.setState(ApplicantState.REGISTERED);
         pharmacySiteService.updateApp(selectedSite, userSession.getLoggedInUserObj());
         globalEntityLists.setPharmacySites(null);
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processRxSiteBn", null);
         return "/internal/processrxsitelist.faces";
 
     }
 
     public String cancel() {
+        facesContext = FacesContext.getCurrentInstance();
         selectedSite = new PharmacySite();
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processRxSiteBn", null);
 
         if (userSession.isCompany())
