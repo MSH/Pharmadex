@@ -173,13 +173,6 @@
 				</textElement>
 				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="0" y="262" width="572" height="20" uuid="f862559b-8b50-4802-a550-1df8d5af8aee"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{registrar}]]></textFieldExpression>
-			</textField>
 		</band>
 	</columnHeader>
 	<detail>
