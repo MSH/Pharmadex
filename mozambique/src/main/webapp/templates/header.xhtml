@@ -69,11 +69,11 @@
                                 </p:tooltip>
                             </h:panelGroup>
 
-                        <h:outputLink id="loginLink" value="javascript:void(0)"
-                                      onclick="logindlg.show()"
-                                      title="login">
-                            <p:graphicImage value="/resources/images/log_in.png"/>
-                        </h:outputLink>
+                            <h:outputLink id="loginLink" value="javascript:void(0)"
+                                          onclick="logindlg.show()"
+                                          title="login">
+                                <p:graphicImage value="/resources/images/log_in.png"/>
+                            </h:outputLink>
                         </h:panelGrid>
                     </sec:isAnonymous>
                 </h:panelGroup>
@@ -150,7 +150,8 @@
                                     </p:submenu>
                     -->
 
-                    <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
+                    <p:submenu label="#{msgs.reg_processing}"
+                               rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
                         <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                     url="/internal/processprodlist.faces"/>
                         <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
@@ -162,7 +163,8 @@
                     </p:submenu>
 
                     <p:separator/>
-                    <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
+                    <p:submenu label="#{msgs.post_reg_proces}"
+                               rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
                         <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
                                     url="/internal/amdmtlist.faces"/>
                         <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-document"
