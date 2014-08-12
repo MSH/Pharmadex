@@ -34,7 +34,8 @@ public class DrugPriceMBean implements Serializable {
             facesContext = FacesContext.getCurrentInstance();
             selectedDrugPrice.setPricing(regHomeMbean.getProdApplications().getPricing());
             regHomeMbean.getDrugPrices().add(selectedDrugPrice);
-            regHomeMbean.setShowCompany(false);
+            regHomeMbean.setShowDrugPrice(false);
+            selectedDrugPrice = new DrugPrice();
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("msgs"), e.getMessage()));

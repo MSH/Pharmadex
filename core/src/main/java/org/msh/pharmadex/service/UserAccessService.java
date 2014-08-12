@@ -1,7 +1,10 @@
 package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.UserAccessDAO;
+import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.UserAccess;
+import org.msh.pharmadex.domain.Workspace;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,13 @@ public class UserAccessService implements Serializable{
     private static final long serialVersionUID = 1652556697442962034L;
     @Resource
     UserAccessDAO userAccessDAO;
+
+    @Autowired
+    WorkspaceDAO workspaceDAO;
+
+    public Workspace getWorkspace(){
+        return workspaceDAO.findOne((long) 1);
+    }
 
     public List<UserAccess> getUserAccessList(){
         return userAccessDAO.allUserAccess();

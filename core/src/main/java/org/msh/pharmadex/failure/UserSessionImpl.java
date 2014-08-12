@@ -5,6 +5,7 @@ import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.UserAccess;
+import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.service.UserAccessService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.faces.context.FacesContext;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,6 +40,7 @@ public class UserSessionImpl implements UserSession, Serializable {
     private boolean reviewer = false;
     private boolean head = false;
     private boolean displayAppReg = false;
+    private boolean displayPricing = false;
 
     public void login() {
         try {
@@ -103,7 +106,20 @@ public class UserSessionImpl implements UserSession, Serializable {
         userAccessService.saveUserAccess(userAccess);
         webSession.setUser(user);
         webSession.setApplicant(user.getApplicant());
+        setWorkspaceParam();
         loadUserRoles();
+    }
+
+    private void setWorkspaceParam() {
+        try {
+            Workspace w = userAccessService.getWorkspace();
+            setDisplayPricing(w.isDisplatPricing());
+        }catch (NoResultException e){
+            setDisplayPricing(false);
+        }catch (Exception e){
+            e.printStackTrace();
+            setDisplayPricing(false);
+        }
     }
 
     private void loadUserRoles() {
@@ -308,11 +324,6 @@ public class UserSessionImpl implements UserSession, Serializable {
         return head;
     }
 
-    @Override
-    public boolean isBangladesh() {
-        return false;
-    }
-
     public void setHead(boolean head) {
         this.head = head;
     }
@@ -323,5 +334,13 @@ public class UserSessionImpl implements UserSession, Serializable {
 
     public void setDisplayAppReg(boolean displayAppReg) {
         this.displayAppReg = displayAppReg;
+    }
+
+    public boolean isDisplayPricing() {
+        return displayPricing;
+    }
+
+    public void setDisplayPricing(boolean displayPricing) {
+        this.displayPricing = displayPricing;
     }
 }

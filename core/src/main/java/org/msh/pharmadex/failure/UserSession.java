@@ -57,9 +57,9 @@ public interface UserSession {
 
     public boolean isHead();
 
-    public boolean isBangladesh();
-
     public boolean isDisplayAppReg();
 
     public void setDisplayAppReg(boolean displayAppReg);
+
+    public boolean isDisplayPricing();
 }
