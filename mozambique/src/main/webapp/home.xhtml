@@ -41,9 +41,9 @@
                                 <sec:isAuthenticated>
                                     <p:submenu label="#{msgs.admin_loggedinuser}">
                                         <p:menuitem value="#{msgs.application_status}"
-                                                    action="/secure/submittedproducts.faces" ajax="false"/>
+                                                    action="/secure/submittedproducts.faces" ajax="false" rendered="#{userSession.company}"/>
                                         <p:menuitem value="#{msgs.applicant_detail}" action="/internal/processapp.faces"
-                                                    ajax="false">
+                                                    ajax="false" rendered="#{userSession.company}">
                                             <f:setPropertyActionListener
                                                     value="#{userSession.loggedInUserObj.applicant}"
                                                     target="#{processAppBn.applicant}" />
