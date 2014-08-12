@@ -31,7 +31,8 @@ public class Atc extends CreationDetail implements Serializable
    	private String legacyId;
 
     @ManyToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "prod_atc")
+    @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "atc_id"), inverseJoinColumns = @JoinColumn(name = "prod_id"))
+
     private List<Product> products;
 
 
