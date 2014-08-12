@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
+	<property name="ireport.zoom" value="1.1"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="currDay" class="java.lang.String"/>
+	<parameter name="currMnthYr" class="java.lang.String"/>
+	<parameter name="regName" class="java.lang.String"/>
+	<parameter name="regNumber" class="java.lang.String"/>
+	<parameter name="activeIngredient" class="java.lang.String"/>
+	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="manufName" class="java.lang.String"/>
+	<parameter name="regDate" class="java.lang.String"/>
+	<parameter name="issueDate" class="java.lang.String"/>
+	<parameter name="dosform" class="java.lang.String"/>
+	<parameter name="fprcName" class="java.lang.String"/>
+	<parameter name="frrName" class="java.lang.String"/>
+	<parameter name="conditions" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="738" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="26" width="572" height="26" uuid="82138211-28f7-4623-8738-759b7065c68f"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ministry of Health and Family Welfare]]></text>
+			</staticText>
+			<image>
+				<reportElement x="222" y="78" width="137" height="125" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
+				<imageExpression><![CDATA["images/na_namibia_header.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="52" width="572" height="26" uuid="72df8617-6275-409e-acfc-328219996595"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Government of the People's Republic of Bangladesh]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="203" width="572" height="26" uuid="ab25f915-c494-4bec-8838-e31fd0ac24fc"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MEDICINE REGISTRATION CERTIFICATE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="239" width="572" height="66" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
+				<textElement textAlignment="Justified">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[It is hereby certified that the Directorate general of Drug Administration (DGDA) has approved in terms section 19(4) of the Medicines and Related Substances Control Act, 2003 (Act No. 13 of 2003), the registration of the medicine described below subject to the conditions set out below:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="307" width="265" height="20" uuid="7a15fa2a-c444-48c9-a03e-6a6bf81bb77d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[1.	Registration name:            ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="327" width="265" height="20" uuid="c973897a-d359-4b40-a158-4314d697c547"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[2.	Registration number:       ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="347" width="265" height="20" uuid="bbf50eef-cea9-46d7-9c68-970b1277e2a3"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[3.	Date of registration:         ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="367" width="572" height="43" uuid="86f046c0-3c1c-4a5a-a964-f4d517b08ed5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[4.	Approved name of each active ingredient and quantities thereof per dosage unit or per suitable mass or volume or unit of medicine:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="444" width="265" height="20" uuid="b0c0d8fb-650c-4111-8880-f85b0f07e6d7"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[5.          Dosage form:  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="464" width="265" height="20" uuid="d3e74a10-4216-4411-ae26-3ce61fdea898"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[6.	Registered in the name of the applicant:	]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="484" width="265" height="20" uuid="6aaebab1-ae2a-4fe9-bf27-785b3156ba5d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[7.	Name of manufacturer:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="529" width="296" height="20" uuid="c587027c-dcbc-4bbd-8207-4818cd9823f1"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[8.	Name of the final product release controller:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="582" width="296" height="20" uuid="44c3512a-396e-4f58-9ab6-2f1b9a7ee539"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[9.	Name of the final release responsibility: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="632" width="296" height="20" uuid="444b589f-0948-42bc-acc7-a7118ba7ac76"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[10.   Conditions under which medicine is registered]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="652" width="136" height="20" uuid="0df9b0b4-7f95-4502-926c-09aca188eb82"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Issued at Windhoek on]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="136" y="652" width="100" height="20" uuid="d79561d7-8390-4d5e-bb2f-9f692da6a7ef"/>
+				<textFieldExpression><![CDATA[$P{currDay}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="236" y="652" width="50" height="20" uuid="2b3ce198-f448-4068-b636-9bcb4bbe9ada"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[day of ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="286" y="652" width="286" height="20" uuid="0b5ba879-db8a-4ee2-82ac-df9eb9c0aaf2"/>
+				<textFieldExpression><![CDATA[$P{currMnthYr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="717" width="189" height="20" uuid="eb4c8c76-fd81-44bd-8cf8-35ac2c49250f"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="265" y="307" width="307" height="20" uuid="41032866-b59f-43fd-8cc8-b52d25b4d776"/>
+				<textFieldExpression><![CDATA[$P{regName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="327" width="307" height="20" uuid="7ad2e76a-ed36-40a9-8fd9-8320a4cc0e7e"/>
+				<textFieldExpression><![CDATA[$P{regNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="347" width="307" height="20" uuid="9181d3fd-2141-48e4-8453-3493a39a2057"/>
+				<textFieldExpression><![CDATA[$P{regDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="410" width="572" height="34" uuid="412e9bda-b199-441a-a0b1-6f6adfa74519"/>
+				<textFieldExpression><![CDATA[$P{activeIngredient}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="444" width="307" height="20" uuid="890cd6b5-3d38-4fcf-9a0b-d040da403182"/>
+				<textFieldExpression><![CDATA[$P{dosform}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="464" width="307" height="20" uuid="f0723acd-4c0b-4fe9-a43c-08940d870b31"/>
+				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="504" width="572" height="25" uuid="b91bd911-7cb0-4fc3-b2ac-02f22ae717e5"/>
+				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="549" width="572" height="33" uuid="59621f15-41b4-455b-9919-b5fb02383f08"/>
+				<textFieldExpression><![CDATA[$P{fprcName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="602" width="572" height="30" uuid="87e735dd-975d-4117-9f56-0fa4c7d21891"/>
+				<textFieldExpression><![CDATA[$P{frrName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="296" y="632" width="276" height="20" uuid="d5411fbe-0269-4e27-a4ba-8173e9d3cadd"/>
+				<textFieldExpression><![CDATA[$P{conditions}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="572" height="26" forecolor="#006666" uuid="130d9b46-40e1-4492-8341-9328b9856ede"/>
+				<textElement textAlignment="Center">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Directorate General of Drug Administration (DGDA)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="14" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

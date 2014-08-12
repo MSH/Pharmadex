@@ -26,41 +26,43 @@
 
 
                 <td style="vertical-align: top; ">
-                <h:form>
-                    <p:menu style="width:260px;">
-                        <sec:isAuthenticated>
-                            <p:submenu label="#{msgs.admin_loggedinuser}">
-                                <p:menuitem value="#{msgs.application_status}"
-                                            action="/secure/submittedapplications.faces" ajax="false"/>
-                                <p:menuitem value="#{msgs.company_info}" action="/secure/appregistration.faces"
-                                            ajax="false">
-                                    <f:setPropertyActionListener value="#{userSession.loggedInUserObj.applicant}"
-                                                                 target="#{applicantMBean.selectedApplicant}"/>
-                                </p:menuitem>
-                                <p:menuitem value="#{msgs.usersettings_preferences}" action="/secure/usersettings.faces"
-                                            ajax="false"/>
+                    <h:form>
+                        <p:menu style="width:260px;">
+                            <p:submenu label="#{msgs.home_quicklinks}">
+                                <p:menuitem value="#{msgs.registration_product}" ajax="false"
+                                            action="/public/productlist.faces"/>
+                                <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
+                                            url="/public/applicantlist.faces"/>
+                                <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false"/>
                             </p:submenu>
-                        </sec:isAuthenticated>
 
-                        <p:submenu label="#{msgs.home_links}">
-                            <p:menuitem value="#{msgs.Home_download}" url="downloads.faces" ajax="false"/>
-                            <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces" ajax="false"/>
-                            <p:menuitem value="#{msgs.Home_aboutus}" url="aboutUs.faces" ajax="false"/>
-                            <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces" ajax="false"/>
-                        </p:submenu>
+                            <sec:isAuthenticated>
+                                <p:submenu label="#{msgs.admin_loggedinuser}">
+                                    <p:menuitem value="#{msgs.application_status}"
+                                                action="/secure/submittedproducts.faces" ajax="false" rendered="#{userSession.company}"/>
+                                    <p:menuitem value="#{msgs.applicant_detail}" action="/internal/processapp.faces"
+                                                ajax="false" rendered="#{userSession.company}">
+                                        <f:setPropertyActionListener
+                                                value="#{userSession.loggedInUserObj.applicant}"
+                                                target="#{processAppBn.applicant}" />
+                                    </p:menuitem>
+                                    <p:menuitem value="#{msgs.usersettings_preferences}"
+                                                action="/secure/usersettings.faces"
+                                                ajax="false"/>
+                                </p:submenu>
+                            </sec:isAuthenticated>
 
-                        <p:submenu label="Quick Links">
-                            <p:menuitem value="Registered Products" action="/public/productlist.faces" ajax="false"/>
-                            <p:menuitem value="Registered Manufacturers" url="/public/applicantlist.faces" ajax="false"/>
-                            <p:menuitem value="Licensing" url="contactus.faces" ajax="false"/>
-                            <p:menuitem value="Request for Product Analysis" url="contactus.faces" ajax="false"/>
-                            <p:menuitem value="Therapetics Request Information" url="contactus.faces" ajax="false"/>
-                            <p:menuitem value="Pharmacovigilance" url="contactus.faces" ajax="false"/>
-                        </p:submenu>
-                    </p:menu>
+                            <p:submenu label="#{msgs.home_links}">
+                                <p:menuitem value="#{msgs.Home_aboutus}" url="/public/aboutus.faces" ajax="false"/>
+                                <p:menuitem value="#{msgs.Home_guidelines}" url="/public/guidelines.faces" ajax="false"/>
+                                <p:menuitem value="#{msgs.Home_newsevents}" url="newsevent.faces" ajax="false"/>
+                                <p:menuitem value="#{msgs.Home_contactus}" url="contactus.faces" ajax="false"/>
+                            </p:submenu>
 
-                    <!-- end three column -->
-                </h:form>
+                        </p:menu>
+
+                        <!-- end three column -->
+                    </h:form>
                 </td>
                 </tr>
             </table>
