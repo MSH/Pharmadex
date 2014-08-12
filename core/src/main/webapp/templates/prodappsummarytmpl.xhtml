@@ -145,6 +145,35 @@
 
         </p:tab>
 
+        <p:tab title="#{msgs.product_pricing_comparison}" rendered="#{userSession.displayPricing}">
+            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2 col1 col2">
+                <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
+                <p:outputLabel id="msrp" value="#{prodData.prodApplications.pricing.msrp}"/>
+
+                <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
+                <p:outputLabel id="priceperdose" value="#{prodData.prodApplications.pricing.pricePerDose}"/>
+
+                <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
+                <p:outputLabel id="priceperday" value="#{prodData.prodApplications.pricing.pricePerDay}"/>
+
+                <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
+                <p:outputLabel id="treatcost" value="#{prodData.prodApplications.pricing.treatCost}"/>
+            </h:panelGrid>
+
+
+            <p:dataTable id="pricetable" var="price" value="#{prodData.prodApplications.pricing.drugPrices}" style="width:100%;">
+                <p:column headerText="#{msgs.drug_price_name}">
+                    <h:outputText value="#{price.drugName}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.drug_price_msrp}">
+                    <h:outputText value="#{price.msrp}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:tab>
+
         <p:tab title="#{msgs.payment_info}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 

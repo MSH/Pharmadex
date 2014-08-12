@@ -12,20 +12,23 @@
                             ajax="false"/>
                 <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
                             ajax="false"/>
-                <p:menuitem value="#{msgs.registration_rxsite}" icon="ui-icon-document" url="/public/rxsitelist.faces"
-                            ajax="false"/>
+                <!--                <p:menuitem value="#{msgs.registration_rxsite}" icon="ui-icon-document" url="/public/rxsitelist.faces"
+                                            ajax="false"/>
+                -->
             </p:submenu>
 
             <sec:isAuthenticated>
                 <p:submenu label="#{msgs.registration_form}"
-                           rendered="#{userSession.general||userSession.company||userSession.admin}">
+                           rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                 action="#{navigationBean.regProductAction}" ajax="false"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                 action="#{navigationBean.regApplicantAction}"
                                 ajax="false" rendered="#{userSession.displayAppReg}"/>
-                    <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"
-                                url="/secure/pharmacyregistration.faces" ajax="false"/>
+                    <!--
+                                        <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"
+                                                    url="/secure/pharmacyregistration.faces" ajax="false"/>
+                    -->
                 </p:submenu>
 
 
@@ -34,25 +37,31 @@
                                 url="/secure/submittedproducts.faces"/>
                     <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
                                 url="/secure/savedproducts.faces"/>
-                    <p:menuitem value="#{msgs.submitted_rxsite}" icon="ui-icon-document"
-                                url="/secure/submittedrxsites.faces"/>
+                    <!--
+                                        <p:menuitem value="#{msgs.submitted_rxsite}" icon="ui-icon-document"
+                                                    url="/secure/submittedrxsites.faces"/>
+                    -->
                 </p:submenu>
 
-                <p:submenu label="#{msgs.registration_search}"
-                           rendered="#{userSession.admin||userSession.company||userSession.staff}">
-                    <p:menuitem value="#{msgs.applicant_reg_search}" icon="ui-icon-home"
-                                url="/public/registrationhome.faces"/>
-                    <p:menuitem value="#{msgs.product_reg_search}" icon="ui-icon-document"
-                                url="/public/registrationhome.faces"/>
-                </p:submenu>
+                <!--
+                                <p:submenu label="#{msgs.registration_search}"
+                                           rendered="#{userSession.admin||userSession.company||userSession.staff}">
+                                    <p:menuitem value="#{msgs.applicant_reg_search}" icon="ui-icon-home"
+                                                url="/public/registrationhome.faces"/>
+                                    <p:menuitem value="#{msgs.product_reg_search}" icon="ui-icon-document"
+                                                url="/public/registrationhome.faces"/>
+                                </p:submenu>
+                -->
 
-                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
+                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
                     <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                 url="/internal/processprodlist.faces"/>
                     <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
                                 url="/internal/processapplist.faces"/>
-                    <p:menuitem value="#{msgs.rxsite_reg_process}" icon="ui-icon-document"
-                                url="/internal/processrxsitelist.faces"/>
+                    <!--
+                                        <p:menuitem value="#{msgs.rxsite_reg_process}" icon="ui-icon-document"
+                                                    url="/internal/processrxsitelist.faces"/>
+                    -->
                 </p:submenu>
 
                 <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff}">
@@ -64,8 +73,10 @@
                                 url="/internal/paymentnotified.faces"/>
                     <p:menuitem value="#{msgs.reg_expired}" icon="ui-icon-document"
                                 url="/internal/expiredreg.faces"/>
-                    <p:menuitem value="#{msgs.reg_expired_notified}" icon="ui-icon-document"
-                                url="/internal/processrxsitelist.faces"/>
+                    <!--
+                                        <p:menuitem value="#{msgs.reg_expired_notified}" icon="ui-icon-document"
+                                                    url="/internal/processrxsitelist.faces"/>
+                    -->
                 </p:submenu>
             </sec:isAuthenticated>
         </p:menu>

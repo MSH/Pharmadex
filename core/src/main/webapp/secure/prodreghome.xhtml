@@ -139,12 +139,14 @@
 
 <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
     <p:panel header="#{msgs.manufacturer_detail}">
+        <p:messages/>
         <h:panelGrid columns="1" cellspacing="10" id="companygrid" width="100%">
 
             <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
 
 
-            <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.product.companyList}" style="width:100%;">
+            <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.product.companyList}"
+                         style="width:100%;">
                 <f:facet name="header">
                     <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()" update="@form"
                                    process="@form">
@@ -211,32 +213,33 @@
 
 </p:tab>
 
-<p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.bangladesh}">
+<p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.displayPricing}">
     <p:panel header="#{msgs.product_pricing_general}">
+        <p:messages/>
 
         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
-            <h:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
+            <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
             <p:inputText id="msrp" value="#{regHomeMbean.prodApplications.pricing.msrp}"
                          title="#{msgs.product_pricing_max}"
                          required="true" requiredMessage="#{msgs.valid_value_req}">
             </p:inputText>
             <p:message for="msrp" showSummary="true" showDetail="false"/>
 
-            <h:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
+            <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
             <p:inputText id="priceperdose" value="#{regHomeMbean.prodApplications.pricing.pricePerDose}"
                          title="#{msgs.product_pricing_perdose}"
                          required="true" requiredMessage="#{msgs.valid_value_req}">
             </p:inputText>
             <p:message for="priceperdose" showSummary="true" showDetail="false"/>
 
-            <h:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
+            <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
             <p:inputText id="priceperday" value="#{regHomeMbean.prodApplications.pricing.pricePerDay}"
                          title="#{msgs.product_pricing_perdose}"
                          required="true" requiredMessage="#{msgs.valid_value_req}">
             </p:inputText>
             <p:message for="priceperday" showSummary="true" showDetail="false"/>
 
-            <h:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
+            <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
             <p:inputText id="treatcost" value="#{regHomeMbean.prodApplications.pricing.treatCost}"
                          title="#{msgs.product_pricing_perdose}"
                          required="true" requiredMessage="#{msgs.valid_value_req}">
@@ -249,7 +252,8 @@
     <p:panel header="#{msgs.product_price_comparison}">
         <p:dataTable id="pricetable" var="price" value="#{regHomeMbean.drugPrices}" style="width:100%;">
             <f:facet name="header">
-                <p:commandLink value="#{msgs.global_add}" oncomplete="addPricingDlg.show()" update="@form">
+                <p:commandLink value="#{msgs.global_add}" oncomplete="addPricingDlg.show()" update="@form"
+                               process="@form">
                     <f:setPropertyActionListener value="true" target="#{regHomeMbean.showDrugPrice}"/>
                 </p:commandLink>
             </f:facet>
@@ -273,8 +277,9 @@
     </p:panel>
 
     <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingDlg" resizable="true"
-              modal="true" rendered="#{regHomeMbean.showCompany}">
-        <h:form id="pricingdlg">
+              modal="true" rendered="#{regHomeMbean.showDrugPrice}">
+
+        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10" cellspacing="10">
             <h:outputLabel value="#{msgs.drug_price_name}" for="dpname"/>
             <p:inputText id="dpname" value="#{drugPriceMBean.selectedDrugPrice.drugName}"
                          title="#{msgs.product_pricing_perdose}"
@@ -288,17 +293,17 @@
                          required="true" requiredMessage="#{msgs.valid_value_req}">
             </p:inputText>
             <p:message for="dpmsrp" showSummary="true" showDetail="false"/>
+        </h:panelGrid>
 
 
-            <h:panelGroup>
-                <p:commandButton action="#{drugPriceMBean.addDrugPrice}" value="#{msgs.global_add}"
-                                 oncomplete="addPricingDlg.hide()" ajax="false"/>
-                <p:commandButton action="#{drugPriceMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
-                                 oncomplete="addPricingDlg.hide()" ajax="false"
-                                 update=":reghome:addPricingDlg :reghome:pricingTable"/>
-            </h:panelGroup>
-            <h:outputLabel/>
-        </h:form>
+        <h:panelGroup>
+            <p:commandButton action="#{drugPriceMBean.addDrugPrice}" value="#{msgs.global_add}"
+                             oncomplete="addPricingDlg.hide()" ajax="false"/>
+            <p:commandButton action="#{drugPriceMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                             oncomplete="addPricingDlg.hide()" ajax="false"
+                             update=":reghome:addPricingDlg :reghome:pricingTable"/>
+        </h:panelGroup>
+        <h:outputLabel/>
     </p:dialog>
 
 </p:tab>
