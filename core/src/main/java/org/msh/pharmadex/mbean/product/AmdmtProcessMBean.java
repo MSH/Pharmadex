@@ -3,7 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.domain.ProdAppAmdmt;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.service.AmdmtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

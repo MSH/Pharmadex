@@ -125,4 +125,12 @@ public class UserService implements Serializable {
     public User findByUsernameOrEmail(User u) {
         return userDAO.findByUsernameOrEmail(u);
     }
+
+    public boolean isUsernameDuplicated(String username) {
+        return userDAO.isUsernameDuplicated(username);
+    }
+
+    public boolean isEmailDuplicated(String email) {
+        return userDAO.isEmailDuplicated(email);
+    }
 }

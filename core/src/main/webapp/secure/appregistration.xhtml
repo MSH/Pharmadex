@@ -89,6 +89,7 @@
         <p:dialog header="#{msgs.user_add}" widgetVar="newUserDlg" id="newUserdlg" resizable="true" modal="true">
             <h:form id="newuser">
                 <p:growl showSummary="true"/>
+                <p:messages/>
 
                 <ui:decorate template="/templates/userdetailtmpl.xhtml">
                     <ui:param name="userdata" value="#{applicantMBean.user}"/>
@@ -99,7 +100,7 @@
                 <h:panelGroup>
                     <p:commandButton action="#{applicantMBean.newUser}"
                                      value="#{msgs.global_add}"
-                                     oncomplete="newUserDlg.hide()" update=":appreg:usertable"/>
+                                     oncomplete="if (!args.validationFailed) newUserDlg.hide()" update=":appreg:usertable :newuser"/>
                     <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
                                      value="#{msgs.global_cancel}" oncomplete="newUserDlg.hide()"/>
                 </h:panelGroup>

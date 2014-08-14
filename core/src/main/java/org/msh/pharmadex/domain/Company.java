@@ -48,6 +48,13 @@ public class Company extends CreationDetail implements Serializable {
 
     private boolean gmpInsp;
 
+    public Company() {
+    }
+
+    public Company(String companyName) {
+        this.companyName = companyName;
+    }
+
     public Long getId() {
         return id;
     }
@@ -126,5 +133,10 @@ public class Company extends CreationDetail implements Serializable {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    @Override
+    public String toString(){
+        return getCompanyName();
     }
 }

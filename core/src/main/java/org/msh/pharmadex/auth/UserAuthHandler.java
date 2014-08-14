@@ -1,6 +1,5 @@
 package org.msh.pharmadex.auth;
 
-import org.msh.pharmadex.failure.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

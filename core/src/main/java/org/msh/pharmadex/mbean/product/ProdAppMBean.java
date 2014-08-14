@@ -1,8 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.service.InvoiceService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,6 @@ public class ProdAppMBean implements Serializable {
 
     @Autowired
     private UserSession userSession;
-
-    @Autowired
-    private WebSession webSession;
 
     @Autowired
     private InvoiceService invoiceService;

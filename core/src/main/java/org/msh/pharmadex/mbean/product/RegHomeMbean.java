@@ -2,9 +2,9 @@ package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
@@ -14,6 +14,8 @@ import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -32,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 /**
  * Author: usrivastava
@@ -41,6 +42,8 @@ import java.util.logging.Logger;
 @Scope("session")
 public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
+
+    private Logger logger = LoggerFactory.getLogger(RegHomeMbean.class);
 
     @Autowired
     private UserSession userSession;
@@ -72,7 +75,7 @@ public class RegHomeMbean implements Serializable {
     @Autowired
     private UserService userService;
 
-    private static Logger logger = Logger.getLogger(RegHomeMbean.class.getName());
+
     private List<ProdInn> selectedInns;
     private List<Atc> selectedAtcs;
     private List<ProdAppChecklist> prodAppChecklists;
@@ -236,7 +239,7 @@ public class RegHomeMbean implements Serializable {
             product = productService.updateProduct(product);
             prodApplications = product.getProdApplications();
             setFieldValues();
-            context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
+            context.addMessage(null, new FacesMessage(bundle.getString("app_save_success")));
         } catch (Exception e) {
             e.printStackTrace();
             context.addMessage(null, new FacesMessage(bundle.getString("save_app_error")));
@@ -245,19 +248,30 @@ public class RegHomeMbean implements Serializable {
     }
 
     public String removeInn(ProdInn prodInn) {
+        context = FacesContext.getCurrentInstance();
         selectedInns.remove(prodInn);
+        context.addMessage(null, new FacesMessage(bundle.getString("inn_removed")));
         return null;
     }
 
     public String removeAtc(Atc atc) {
+        context = FacesContext.getCurrentInstance();
         selectedAtcs.remove(atc);
+        context.addMessage(null, new FacesMessage(bundle.getString("atc_removed")));
+        return null;
+    }
+
+    public String removeDrugPrice(DrugPrice drugPrice) {
+        context = FacesContext.getCurrentInstance();
+        drugPrices.remove(drugPrice);
+        context.addMessage(null, new FacesMessage(bundle.getString("drugprice_removed")));
         return null;
     }
 
     public void removeCompany(Company selectedCompany) {
-        if (selectedCompany.getId() != null)
-            companyService.removeCompany(selectedCompany);
+        context = FacesContext.getCurrentInstance();
         companies.remove(selectedCompany);
+        context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
     }
 
     public void nceChangeListener() {
@@ -369,11 +383,13 @@ public class RegHomeMbean implements Serializable {
     private void setFieldValues() {
         selectedInns = product.getInns();
         selectedAtcs = product.getAtcs();
-//        companies = product.getCompanies();
+        companies = product.getCompanyList();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = product.getApplicant();
         drugPrices = prodApplications.getPricing().getDrugPrices();
     }
+
+
 
     public Applicant getApplicant() {
         if (applicant == null || applicant.getApplcntId() == null) {

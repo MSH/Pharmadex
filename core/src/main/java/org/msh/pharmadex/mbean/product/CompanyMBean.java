@@ -3,17 +3,22 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.CountryService;
+import org.msh.pharmadex.util.JsfUtils;
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +37,9 @@ public class CompanyMBean implements Serializable {
     RegHomeMbean regHomeMbean;
 
     @Autowired
+    GlobalEntityLists globalEntityLists;
+
+    @Autowired
     CountryService countryService;
 
     @Autowired
@@ -42,6 +50,7 @@ public class CompanyMBean implements Serializable {
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
+    @Transactional
     public void addCompany() {
         try {
             facesContext = FacesContext.getCurrentInstance();
@@ -49,7 +58,10 @@ public class CompanyMBean implements Serializable {
             c = countryService.findCountryById(c.getId());
             selectedCompany.getAddress().setCountry(c);
 
-            companyService.saveCompany(selectedCompany);
+            if(selectedCompany.getId()==null)
+                selectedCompany = companyService.saveCompany(selectedCompany);
+            else
+                selectedCompany = companyService.findCompanyById(selectedCompany.getId());
 
             if(selectedCompany.getProducts()==null)
                 selectedCompany.setProducts(new ArrayList<Product>());
@@ -69,6 +81,29 @@ public class CompanyMBean implements Serializable {
         }
     }
 
+    public void companyChangeEventListener(SelectEvent event) {
+        logger.error("inside companyChangeEventListener");
+        logger.error("Selected company is " + selectedCompany.getCompanyName());
+        logger.error("event "+event.getObject());
+
+
+    }
+
+    public void companyChangeEventListener(AjaxBehaviorEvent event) {
+        logger.error("inside companyChangeEventListener");
+        logger.error("Selected company is " + selectedCompany.getCompanyName());
+        logger.error("event "+event.getSource());
+
+
+    }
+
+
+    public void initAddCompany() {
+        selectedCompany = new Company();
+        regHomeMbean.setShowCompany(true);
+    }
+
+
     public String cancelAdd() {
 
         selectedCompany = null;
@@ -85,5 +120,11 @@ public class CompanyMBean implements Serializable {
     public void setSelectedCompany(Company selectedCompany) {
         this.selectedCompany = selectedCompany;
     }
+
+    public List<Company> completeCompany(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getManufacturers());
+    }
+
+
 
 }

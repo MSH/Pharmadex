@@ -1,9 +1,9 @@
 package org.msh.pharmadex.mbean.applicant;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.MailService;

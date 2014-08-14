@@ -2,12 +2,12 @@ package org.msh.pharmadex.mbean;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.auth.PassPhrase;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.Letter;
 import org.msh.pharmadex.domain.Mail;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;

@@ -1,8 +1,8 @@
 package org.msh.pharmadex.util;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ErrorLogDAO;
 import org.msh.pharmadex.domain.ErrorLog;
-import org.msh.pharmadex.failure.UserSession;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 

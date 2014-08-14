@@ -1,11 +1,14 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
     <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
                  columnClasses="col1, col2, col1, col2">
         <p:outputLabel value="#{msgs.applicant_name}" for="appname"/>
-        <p:inputText id="appname" required="true" value="#{applicantdata.appName}" rendered="#{input}"/>
+        <p:inputText id="appname" required="true" value="#{applicantdata.appName}" rendered="#{input}">
+            <f:validator binding="#{applicantNameValidator}"/>
+                </p:inputText>
         <h:outputLabel value="#{applicantdata.appName}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <h:outputLabel/>

@@ -3,7 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.InvoiceType;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
-import org.msh.pharmadex.failure.UserSession;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.service.InvoiceService;
 import org.msh.pharmadex.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;

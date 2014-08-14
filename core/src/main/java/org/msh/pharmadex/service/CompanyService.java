@@ -35,4 +35,9 @@ public class CompanyService implements Serializable {
     public Company saveCompany(Company company){
         return companyDAO.save(company);
     }
+
+    @Transactional
+    public Company findCompanyById(Long id){
+        return companyDAO.findOne(id);
+    }
 }

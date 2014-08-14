@@ -1,6 +1,5 @@
 package org.msh.pharmadex.mbean.applicant;
 
-import org.msh.pharmadex.auth.WebSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ApplicantService;

@@ -1,10 +1,10 @@
 package org.msh.pharmadex.mbean.pharmacysite;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.PharmacySite;
 import org.msh.pharmadex.domain.PharmacySiteChecklist;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.PharmacySiteService;
@@ -12,7 +12,6 @@ import org.msh.pharmadex.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.faces.application.FacesMessage;

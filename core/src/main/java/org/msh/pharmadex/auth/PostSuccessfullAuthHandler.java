@@ -1,7 +1,6 @@
 package org.msh.pharmadex.auth;
 
 import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -20,7 +19,7 @@ import java.io.IOException;
 @Component
 public class PostSuccessfullAuthHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-//    @Autowired
+    //    @Autowired
     private UserService userService;
 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

@@ -1,6 +1,5 @@
 package org.msh.pharmadex.dao;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
@@ -60,20 +59,14 @@ public class ApplicantDAO implements Serializable {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Applicant saveApplicant(Applicant applicant) throws Exception {
+    public Applicant saveApplicant(Applicant applicant) {
 //        for (User u : applicant.getUsers()) {
 //            u.setApplicant(applicant);
 //            entityManager.merge(u);
 //        }
 
-        try {
-            Applicant a = entityManager.merge(applicant);
-            return a;
-        } catch (ConstraintViolationException ex) {
-            ex.printStackTrace();
-            throw new Exception("duplicate");
-
-        }
+        Applicant a = entityManager.merge(applicant);
+        return a;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -88,6 +81,17 @@ public class ApplicantDAO implements Serializable {
         return (User) entityManager.createQuery("select u from User u where u.applicant.applcntId = :appID")
                 .setParameter("appID", applcntId)
                 .getSingleResult();
+    }
+
+    public boolean isUsernameDuplicated(String applicantName) {
+        applicantName = applicantName.trim();
+        Long i = (Long) entityManager.createQuery("select count(applcntId) from Applicant a where upper(a.appName) = upper(:applicantName)")
+                .setParameter("applicantName", applicantName)
+                .getSingleResult();
+        if (i > 0)
+            return true;
+        else
+            return false;
     }
 }
 

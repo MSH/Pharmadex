@@ -65,7 +65,7 @@
                     >
                 <f:facet name="header">
                     <p:commandLink value="#{msgs.global_add}" action="#{regHomeMbean.openAddInn}"
-                                   oncomplete="addInnDlg.show()" update=":addInnFrm" process="@form"/>
+                                   oncomplete="addInnDlg.show()" update=":addInnFrm" />
                 </f:facet>
                 <p:column headerText="#{msgs.active_substance}">
                     <h:outputText value="#{prodInn.inn.name}"/>
@@ -85,7 +85,7 @@
 
                 <p:column>
                     <p:commandButton action="#{regHomeMbean.removeInn(prodInn)}" value="#{msgs.global_delete}"
-                                     update=":reghome:atctable :reghome:inntable" ajax="false" immediate="true">
+                                     update=":reghome:atctable :reghome:inntable :reghome:growl" immediate="true">
                         <f:setPropertyActionListener value="#{prodInn}" target="#{regHomeMbean.deleteInn}"/>
                     </p:commandButton>
                 </p:column>
@@ -115,7 +115,7 @@
 
                 <p:column>
                     <p:commandButton action="#{regHomeMbean.removeAtc(atc)}" value="#{msgs.global_delete}"
-                                     update=":reghome:atctable :reghome:inntable" ajax="false" immediate="true">
+                                     update=":reghome:atctable :reghome:inntable :reghome:growl" immediate="true">
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
@@ -145,12 +145,12 @@
             <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
 
 
-            <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.product.companyList}"
+            <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.companies}"
                          style="width:100%;">
                 <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()" update="@form"
-                                   process="@form">
-                        <f:setPropertyActionListener value="true" target="#{regHomeMbean.showCompany}"/>
+                    <p:commandLink value="#{msgs.global_add}" oncomplete="addCompanyDlg.show()"
+                                   action="#{companyMBean.initAddCompany}" update=":addcompany"
+                                   process="@form :addcompany">
                     </p:commandLink>
                 </f:facet>
                 <p:column headerText="#{msgs.applicant_name}">
@@ -171,9 +171,8 @@
 
                 <p:column>
                     <p:commandButton action="#{regHomeMbean.removeCompany(company)}" value="#{msgs.global_delete}"
-                                     ajax="false"
-                                     update=":reghome:addCompanyDlg :reghome:companygrid :reghome:growl"
-                                     process="@form">
+                                     update=":addcompany :reghome:companyTable :reghome:growl" immediate="true"
+                                     >
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
@@ -188,28 +187,6 @@
             <p:commandButton value="#{msgs.next}" onclick="wizard.next();"/>
         </div>
     </p:panel>
-
-    <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanyDlg" resizable="true" modal="true"
-              rendered="#{regHomeMbean.showCompany}">
-        <p:messages showSummary="true"/>
-        <ui:decorate template="/templates/companydetailtmpl.xhtml">
-            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
-            <ui:param name="input" value="#{true}"/>
-        </ui:decorate>
-
-        <h:outputLabel/>
-
-        <h:panelGroup>
-            <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}" ajax="false"
-                             oncomplete="addCompanyDlg.hide()"
-                             update=":reghome:addCompanyDlg :reghome:manufdetail :reghome:companygrid" process="@form"/>
-            <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
-                             oncomplete="addCompanyDlg.hide()" ajax="false"
-                             update=":reghome:addCompanyDlg :reghome:companyTable"/>
-        </h:panelGroup>
-        <h:outputLabel/>
-    </p:dialog>
-
 
 </p:tab>
 
@@ -252,8 +229,8 @@
     <p:panel header="#{msgs.product_price_comparison}">
         <p:dataTable id="pricetable" var="price" value="#{regHomeMbean.drugPrices}" style="width:100%;">
             <f:facet name="header">
-                <p:commandLink value="#{msgs.global_add}" oncomplete="addPricingDlg.show()" update="@form"
-                               process="@form">
+                <p:commandLink value="#{msgs.global_add}" oncomplete="addPricingDlg.show()" update=":addpricing"
+                               >
                     <f:setPropertyActionListener value="true" target="#{regHomeMbean.showDrugPrice}"/>
                 </p:commandLink>
             </f:facet>
@@ -265,6 +242,11 @@
                 <h:outputText value="#{price.msrp}"/>
             </p:column>
 
+            <p:column>
+                <p:commandButton action="#{regHomeMbean.removeDrugPrice(price)}" value="#{msgs.global_delete}"
+                                 update=":addpricing :reghome:pricetable :reghome:growl" immediate="true">
+                </p:commandButton>
+            </p:column>
         </p:dataTable>
 
         <div align="right">
@@ -275,36 +257,6 @@
             <p:commandButton value="#{msgs.next}" onclick="wizard.next();"/>
         </div>
     </p:panel>
-
-    <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingDlg" resizable="true"
-              modal="true" rendered="#{regHomeMbean.showDrugPrice}">
-
-        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10" cellspacing="10">
-            <h:outputLabel value="#{msgs.drug_price_name}" for="dpname"/>
-            <p:inputText id="dpname" value="#{drugPriceMBean.selectedDrugPrice.drugName}"
-                         title="#{msgs.product_pricing_perdose}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="dpname" showSummary="true" showDetail="false"/>
-
-            <h:outputLabel value="#{msgs.drug_price_msrp}" for="dpmsrp"/>
-            <p:inputText id="dpmsrp" value="#{drugPriceMBean.selectedDrugPrice.msrp}"
-                         title="#{msgs.product_pricing_max}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="dpmsrp" showSummary="true" showDetail="false"/>
-        </h:panelGrid>
-
-
-        <h:panelGroup>
-            <p:commandButton action="#{drugPriceMBean.addDrugPrice}" value="#{msgs.global_add}"
-                             oncomplete="addPricingDlg.hide()" ajax="false"/>
-            <p:commandButton action="#{drugPriceMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
-                             oncomplete="addPricingDlg.hide()" ajax="false"
-                             update=":reghome:addPricingDlg :reghome:pricingTable"/>
-        </h:panelGroup>
-        <h:outputLabel/>
-    </p:dialog>
 
 </p:tab>
 
@@ -394,23 +346,25 @@
 
 </h:form>
 
-<p:dialog header="Add Active Substances" widgetVar="addInnDlg" resizable="true" modal="true">
+<p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true" modal="true">
     <h:form id="addInnFrm">
-        <p:messages/>
         <pe:ajaxErrorHandler/>
-        <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+        <h:panelGrid columns="3" cellspacing="5" columnClasses="label value errorMessage" styleClass="grid">
             <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
             <p:autoComplete id="innname" value="#{regHomeMbean.prodInn.inn}"
                             completeMethod="#{regHomeMbean.completeInnCodes}"
                             var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{innConverter}"
-                            forceSelection="true" required="true" requiredMessage="#{msgs.product_innname_valid}">
+                            forceSelection="false" required="true" requiredMessage="#{msgs.product_innname_valid}">
             </p:autoComplete>
+            <p:message for="innname" showSummary="true"/>
 
-            <h:outputLabel value="#{msgs.global_quantity}" for="innqty"/>
-            <p:inputText id="innqty" value="#{regHomeMbean.prodInn.quantity}"/>
+            <p:outputLabel value="#{msgs.global_quantity}" for="innqty"/>
+            <p:inputText id="innqty" value="#{regHomeMbean.prodInn.quantity}" required="true"/>
+            <p:message for="innqty" showSummary="true"/>
 
-            <h:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
-            <p:inputText id="innunit" value="#{regHomeMbean.prodInn.uom}"/>
+            <p:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
+            <p:inputText id="innunit" value="#{regHomeMbean.prodInn.uom}" required="true"/>
+            <p:message for="innunit" showSummary="true"/>
 
             <h:outputLabel value="#{msgs.inn_ref}" for="innref"/>
             <p:inputText id="innref" value="#{regHomeMbean.prodInn.refStd}"/>
@@ -418,10 +372,9 @@
             <h:outputLabel/>
 
             <h:panelGroup>
-                <p:commandButton action="#{regHomeMbean.addProdInn}" value="#{msgs.global_add}" ajax="false"
-                                 update=":reghome:atctable :reghome:inntable :addInnFrm"
+                <p:commandButton action="#{regHomeMbean.addProdInn}" value="#{msgs.global_add}"
                                  oncomplete="!if(args.validationFailed) addInnDlg.hide()"
-                                 process=":reghome:inntable :addInnFrm"/>
+                                 update=":reghome:atctable :reghome:inntable :addInnFrm :reghome:growl"/>
                 <p:commandButton action="#{regHomeMbean.cancelAddInn}" immediate="true" value="#{msgs.global_cancel}"
                                  ajax="false"
                                  oncomplete="addInnDlg.hide()" update=":addInnFrm"/>
@@ -460,7 +413,7 @@
         <h:panelGroup>
             <p:commandButton action="#{regHomeMbean.addAtc}" value="#{msgs.global_add}"
                              update=":reghome:atctable :atcdetail :atcdetail:treeMultiple"
-                             oncomplete="addAtcDlg.hide()" ajax="false"/>
+                             oncomplete="addAtcDlg.hide()" />
             <p:commandButton action="#{regHomeMbean.cancelAddInn}" value="#{msgs.global_cancel}"
                              oncomplete="addAtcDlg.hide()"/>
         </h:panelGroup>
@@ -493,6 +446,60 @@
         </h:panelGrid>
     </h:form>
 </p:dialog>
+
+<p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="true" modal="true">
+    <h:form id="addcompany">
+        <p:messages showSummary="true"/>
+        <ui:decorate template="/templates/companydetailtmpl.xhtml">
+            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
+            <ui:param name="input" value="#{true}"/>
+        </ui:decorate>
+
+        <h:outputLabel/>
+
+        <h:panelGroup>
+            <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}"
+                             oncomplete="if (!args.validationFailed) addCompanyDlg.hide()"
+                             update=":addcompany :reghome:companygrid :reghome:companyTable :reghome:growl"/>
+            <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                             oncomplete="addCompanyDlg.hide()" ajax="false" process="@form"
+                             update=":addcompany :reghome:companyTable"/>
+        </h:panelGroup>
+        <h:outputLabel/>
+    </h:form>
+</p:dialog>
+
+<p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg" resizable="true"
+          modal="true">
+    <h:form id="addpricing">
+        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10" cellspacing="10">
+            <h:outputLabel value="#{msgs.drug_price_name}" for="dpname"/>
+            <p:inputText id="dpname" value="#{drugPriceMBean.selectedDrugPrice.drugName}"
+                         title="#{msgs.product_pricing_perdose}"
+                         required="true" requiredMessage="#{msgs.valid_value_req}">
+            </p:inputText>
+            <p:message for="dpname" showSummary="true" showDetail="false"/>
+
+            <h:outputLabel value="#{msgs.drug_price_msrp}" for="dpmsrp"/>
+            <p:inputText id="dpmsrp" value="#{drugPriceMBean.selectedDrugPrice.msrp}"
+                         title="#{msgs.product_pricing_max}"
+                         required="true" requiredMessage="#{msgs.valid_value_req}">
+            </p:inputText>
+            <p:message for="dpmsrp" showSummary="true" showDetail="false"/>
+        </h:panelGrid>
+
+
+        <h:panelGroup>
+            <p:commandButton action="#{drugPriceMBean.addDrugPrice}" value="#{msgs.global_add}"
+                             oncomplete="if (!args.validationFailed) addPricingDlg.hide()" update=":reghome:pricetable :reghome:growl :addpricing"/>
+            <p:commandButton action="#{drugPriceMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                             oncomplete="addPricingDlg.hide()" ajax="false"
+                             update=":addpricing :reghome:pricingTable"/>
+        </h:panelGroup>
+        <h:outputLabel/>
+    </h:form>
+</p:dialog>
+
 
 </ui:define>
 </ui:composition>

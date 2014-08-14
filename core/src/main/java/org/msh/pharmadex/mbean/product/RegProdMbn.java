@@ -1,6 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.auth.WebSession;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
@@ -33,7 +33,7 @@ public class RegProdMbn {
     ProcessProdBn processProdBn;
 
     @Autowired
-    WebSession webSession;
+    UserSession userSession;
 
     FacesContext context = FacesContext.getCurrentInstance();
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
@@ -57,8 +57,8 @@ public class RegProdMbn {
         if (selectedProd == null)
             return null;
 
-        webSession.setProdApplications(selectedProd.getProdApplications());
-        webSession.setProduct(selectedProd);
+        userSession.setProdApplications(selectedProd.getProdApplications());
+        userSession.setProduct(selectedProd);
 
         ProdApplications pa = selectedProd.getProdApplications();
         if (pa != null) {

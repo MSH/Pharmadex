@@ -5,7 +5,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.apache.commons.io.IOUtils;
-import org.msh.pharmadex.auth.WebSession;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewChecklist;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
@@ -51,7 +51,7 @@ public class ReviewBn implements Serializable {
     private List<ReviewChecklist> reviewChecklists;
 
     @Autowired
-    private WebSession webSession;
+    private UserSession userSession;
 
     private UploadedFile file;
 
@@ -127,7 +127,7 @@ public class ReviewBn implements Serializable {
     }
 
     public String cancelReview() {
-        webSession.setReview(null);
+        userSession.setReview(null);
         return "/internal/processreg";
 
     }
@@ -138,7 +138,7 @@ public class ReviewBn implements Serializable {
 
     public Review getReview() {
         if (review == null) {
-            review = reviewService.findReview(webSession.getReview().getId(), processProdBn.getProdApplications());
+            review = reviewService.findReview(userSession.getReview().getId(), processProdBn.getProdApplications());
             reviewChecklists = review.getReviewChecklists();
         }
         return review;

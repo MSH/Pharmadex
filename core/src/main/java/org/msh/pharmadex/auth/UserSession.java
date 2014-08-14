@@ -1,13 +1,10 @@
-package org.msh.pharmadex.failure;
+package org.msh.pharmadex.auth;
 
-import org.msh.pharmadex.auth.OnlineUserBean;
-import org.msh.pharmadex.auth.WebSession;
-import org.msh.pharmadex.domain.Role;
-import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.domain.UserAccess;
-import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.UserAccessService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -23,13 +20,20 @@ import java.util.List;
 
 @Component("userSession")
 @Scope("session")
-public class UserSessionImpl implements UserSession, Serializable {
+public class UserSession implements Serializable {
 
     private static final long serialVersionUID = 2473412644164656187L;
     private UserAccess userAccess;
     private boolean displayMessagesKeys;
     private String loggedInUser;
     private User loggedInUserObj;
+    private Applicant applicant;
+    private Product product;
+    private UploadedFile file;
+    private ProdAppChecklist prodAppChecklist;
+    private ProdApplications prodApplications;
+    private Review review;
+
 
     private boolean admin = false;
     private boolean company = false;
@@ -41,6 +45,17 @@ public class UserSessionImpl implements UserSession, Serializable {
     private boolean head = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    private UserAccessService userAccessService;
+
+    @Autowired
+    private OnlineUserBean onlineUsersHome;
+
+
 
     public void login() {
         try {
@@ -66,14 +81,6 @@ public class UserSessionImpl implements UserSession, Serializable {
         this.loggedInUser = loggedInUser;
     }
 
-    @Autowired
-    private UserAccessService userAccessService;
-
-    @Autowired
-    private OnlineUserBean onlineUsersHome;
-
-    @Autowired
-    private WebSession webSession;
 
     /**
      * Register the logout when the user session is finished by time-out
@@ -95,6 +102,7 @@ public class UserSessionImpl implements UserSession, Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String ipAddr = request.getRemoteAddr();
         String app = request.getHeader("User-Agent");
+        user = userService.findUser(user.getUserId());
 
         // register new login        
         userAccess = new UserAccess();
@@ -104,8 +112,8 @@ public class UserSessionImpl implements UserSession, Serializable {
         userAccess.setIpAddress(ipAddr);
         onlineUsersHome.add(userAccess);
         userAccessService.saveUserAccess(userAccess);
-        webSession.setUser(user);
-        webSession.setApplicant(user.getApplicant());
+        setLoggedInUserObj(user);
+        setApplicant(user.getApplicant());
         setWorkspaceParam();
         loadUserRoles();
     }
@@ -114,9 +122,9 @@ public class UserSessionImpl implements UserSession, Serializable {
         try {
             Workspace w = userAccessService.getWorkspace();
             setDisplayPricing(w.isDisplatPricing());
-        }catch (NoResultException e){
+        } catch (NoResultException e) {
             setDisplayPricing(false);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             setDisplayPricing(false);
         }
@@ -342,5 +350,53 @@ public class UserSessionImpl implements UserSession, Serializable {
 
     public void setDisplayPricing(boolean displayPricing) {
         this.displayPricing = displayPricing;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public ProdApplications getProdApplications() {
+        return prodApplications;
+    }
+
+    public void setProdApplications(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public ProdAppChecklist getProdAppChecklist() {
+        return prodAppChecklist;
+    }
+
+    public void setProdAppChecklist(ProdAppChecklist prodAppChecklist) {
+        this.prodAppChecklist = prodAppChecklist;
+    }
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
     }
 }

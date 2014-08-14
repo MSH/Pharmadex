@@ -1,8 +1,8 @@
 package org.msh.pharmadex.mbean.pharmacysite;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.PharmacySiteService;
 import org.springframework.beans.factory.annotation.Autowired;

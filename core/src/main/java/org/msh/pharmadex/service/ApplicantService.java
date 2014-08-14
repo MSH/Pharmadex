@@ -75,12 +75,11 @@ public class ApplicantService implements Serializable {
     }
 
     @Transactional
-    public Applicant saveApp(Applicant applicant, User loggedInUserObj) {
-        try {
+    public Applicant saveApp(Applicant applicant, User userParam) {
             applicant.setState(ApplicantState.NEW_APPLICATION);
-            if (applicant.getUsers() == null) {
+            if (applicant.getUsers() == null ) {
                 applicant.setUsers(new ArrayList<User>());
-                applicant.getUsers().add(loggedInUserObj);
+                applicant.getUsers().add(userParam);
             }
 
             for (User user : applicant.getUsers()) {
@@ -103,10 +102,6 @@ public class ApplicantService implements Serializable {
             applicantConverter.setApplicantList(null);
             applicants = null;
             return a;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Transactional
@@ -145,5 +140,9 @@ public class ApplicantService implements Serializable {
     @Transactional
     public List<ApplicantType> findAllApplicantTypes() {
         return applicantTypeDAO.findAll();
+    }
+
+    public boolean isApplicantDuplicated(String applicantName) {
+        return applicantDAO.isUsernameDuplicated(applicantName);
     }
 }

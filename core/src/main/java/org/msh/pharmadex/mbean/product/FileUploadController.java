@@ -1,7 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.apache.commons.io.IOUtils;
-import org.msh.pharmadex.auth.WebSession;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.ProdAppChecklistDAO;
 import org.msh.pharmadex.domain.*;
@@ -34,7 +34,7 @@ public class FileUploadController {
     ProcessProdBn processProdBn;
 
     @Autowired
-    WebSession webSession;
+    UserSession userSession;
 
     @Autowired
     ProdAppChecklistDAO prodAppChecklistDAO;
@@ -52,7 +52,7 @@ public class FileUploadController {
 
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
-        webSession.setFile(file);
+        userSession.setFile(file);
     }
 
     public void prepareUpload() {
@@ -63,17 +63,17 @@ public class FileUploadController {
         facesContext = FacesContext.getCurrentInstance();
         try {
             ProdApplications prodApplications = processProdBn.getProdApplications();
-            file = webSession.getFile();
+            file = userSession.getFile();
             FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
             attach.setFile(IOUtils.toByteArray(file.getInputstream()));
             attach.setProdApplications(prodApplications);
             attach.setFileName(file.getFileName());
             attach.setContentType(file.getContentType());
-            attach.setUploadedBy(webSession.getUser());
+            attach.setUploadedBy(userSession.getLoggedInUserObj());
             attach.setRegState(prodApplications.getRegState());
             attachmentDAO.save(attach);
             setAttachments(null);
-            webSession.setFile(null);
+            userSession.setFile(null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (IOException e) {
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
@@ -102,17 +102,17 @@ public class FileUploadController {
     public void addModuleDoc() {
         facesContext = FacesContext.getCurrentInstance();
         try {
-            file = webSession.getFile();
-            prodAppChecklist = webSession.getProdAppChecklist();
+            file = userSession.getFile();
+            prodAppChecklist = userSession.getProdAppChecklist();
             prodAppChecklist.setFile(IOUtils.toByteArray(file.getInputstream()));
             prodAppChecklist.setFileName(file.getFileName());
             prodAppChecklist.setContentType(file.getContentType());
-            prodAppChecklist.setUploadedBy(webSession.getUser());
+            prodAppChecklist.setUploadedBy(userSession.getLoggedInUserObj());
             prodAppChecklist.setFileUploaded(true);
             prodAppChecklistDAO.save(prodAppChecklist);
             setChecklists(null);
-            webSession.setProdAppChecklist(null);
-            webSession.setFile(null);
+            userSession.setProdAppChecklist(null);
+            userSession.setFile(null);
         } catch (IOException e) {
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
             facesContext.addMessage(null, msg);
@@ -183,7 +183,7 @@ public class FileUploadController {
     }
 
     public void setProdAppChecklist(ProdAppChecklist prodAppChecklist) {
-        webSession.setProdAppChecklist(prodAppChecklist);
+        userSession.setProdAppChecklist(prodAppChecklist);
         this.prodAppChecklist = prodAppChecklist;
     }
 

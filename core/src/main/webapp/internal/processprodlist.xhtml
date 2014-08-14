@@ -39,7 +39,7 @@
                         <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}" action="processreg"
                                        ajax="false">
                             <f:param name="id" value="#{eachprod.prod.id}"/>
-                            <f:setPropertyActionListener value="#{eachprod}" target="#{webSession.prodApplications}"/>
+                            <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
                         </p:commandLink>
                     </p:column>
 

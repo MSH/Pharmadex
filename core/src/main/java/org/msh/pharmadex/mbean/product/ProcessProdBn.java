@@ -1,10 +1,9 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.auth.WebSession;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
@@ -69,9 +68,6 @@ public class ProcessProdBn implements Serializable {
     @Autowired
     private ReviewDAO reviewDAO;
 
-    @Autowired
-    WebSession webSession;
-
     private ProdApplications prodApplications;
     private Product product;
     private Applicant applicant;
@@ -119,7 +115,7 @@ public class ProcessProdBn implements Serializable {
 
     public String findReview() {
         review = reviewDAO.findByUser_UserIdAndProdApplications_Id(userSession.getLoggedInUserObj().getUserId(), prodApplications.getId());
-        webSession.setReview(review);
+        userSession.setReview(review);
         return "/internal/review";
     }
 
@@ -138,9 +134,9 @@ public class ProcessProdBn implements Serializable {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications getProdApplications() {
-        if (prodApplications == null || webSession.getProdApplications() != null) {
+        if (prodApplications == null || userSession.getProdApplications() != null) {
             initProdApps();
-            webSession.setProdApplications(null);
+            userSession.setProdApplications(null);
         }
         return prodApplications;
     }
@@ -151,8 +147,8 @@ public class ProcessProdBn implements Serializable {
         prodID = params.get("id");
 
         if (prodID == null || prodID.equals(""))
-            prodID = "" + webSession.getProduct().getId();
-        webSession.setProduct(null);
+            prodID = "" + userSession.getProduct().getId();
+        userSession.setProduct(null);
 
         product = productService.findProduct(Long.valueOf(prodID));
         setFieldValues();

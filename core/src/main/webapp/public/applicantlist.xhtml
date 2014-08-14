@@ -10,7 +10,7 @@
         </div>
 
         <h:form prependId="false">
-
+            <p:growl />
             <p:dataTable id="car" var="applicant" value="#{applicantMBean.allApplicant}" selectionMode="single"
                          selection="#{applicantMBean.selectedApplicant}" rowKey="#{applicant.applcntId}"
                          filteredValue="#{applicantMBean.filteredApplicant}"

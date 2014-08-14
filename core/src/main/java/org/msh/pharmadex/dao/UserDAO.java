@@ -1,6 +1,7 @@
 package org.msh.pharmadex.dao;
 
-import org.msh.pharmadex.domain.User;
+import org.hibernate.Hibernate;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.UserType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,9 +10,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,9 +31,13 @@ public class UserDAO implements Serializable {
 
     @Transactional
     public User findUser(int id) {
-        return (User) entityManager.createQuery("select u from User u join fetch u.roles r where u.userId = :userid")
+
+        User user = (User) entityManager.createQuery("select u from User u where u.userId = :userid")
                 .setParameter("userid", id)
                 .getSingleResult();
+        Hibernate.initialize(user.getRoles());
+        Hibernate.initialize(user.getAddress().getCountry());
+        return user;
     }
 
     @Transactional
@@ -122,4 +129,25 @@ public class UserDAO implements Serializable {
                 .getResultList();  //To change body of created methods use File | Settings | File Templates.
     }
 
+    public boolean isUsernameDuplicated(String username) {
+        username = username.trim();
+        Long i = (Long) entityManager.createQuery("select count(userId) from User u where upper(u.name) = upper(:username)")
+                .setParameter("username", username)
+                .getSingleResult();
+        if(i>0)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean isEmailDuplicated(String email) {
+        email = email.trim();
+        Long i = (Long) entityManager.createQuery("select count(userId) from User u where upper(u.email) = upper(:email)")
+                .setParameter("email", email)
+                .getSingleResult();
+        if(i>0)
+            return true;
+        else
+            return false;
+    }
 }

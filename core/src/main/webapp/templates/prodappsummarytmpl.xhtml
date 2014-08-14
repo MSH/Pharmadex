@@ -24,10 +24,13 @@
                 <h:outputLabel value="#{prodData.prodName}"/>
 
                 <h:outputLabel value="#{msgs.prod_type}:"/>
-                <h:outputLabel value="#{prodData.prodType}"/>
+                <h:outputLabel value="#{msgs[prodData.prodType.key]}"/>
 
                 <h:outputLabel value="#{msgs.prodgenname}:"/>
                 <h:outputLabel value="#{prodData.genName}"/>
+
+                <h:outputLabel value="#{msgs.prod_app_type}:"/>
+                <h:outputLabel value="#{msgs[prodData.prodApplications.prodAppType.key]}"/>
 
                 <h:outputLabel value="#{msgs.dos_form}"/>
                 <h:outputLabel value="#{prodData.dosForm.dosForm}"/>
@@ -38,16 +41,19 @@
                 <h:outputLabel value="#{msgs.dos_unit}"/>
                 <h:outputLabel value="#{prodData.dosUnit.uom}"/>
 
+                <h:outputLabel value="#{msgs.prod_cat}"/>
+                <h:outputLabel value="#{msgs[prodData.prodCategory.key]}"/>
+
                 <h:outputLabel value="#{msgs.admin_route}"/>
-                <h:outputLabel value="#{prodData.adminRoute.name}"/>
+                <h:outputLabel value="#{msgs[prodData.adminRoute.key]}"/>
 
                 <h:outputLabel value="#{msgs.age_group}"/>
-                <h:outputLabel value="#{prodData.ageGroup}"/>
+                <h:outputLabel value="#{msgs[prodData.ageGroup.key]}"/>
 
                 <h:outputLabel value="#{msgs.product_pharmclassif}"/>
                 <h:outputLabel value="#{prodData.pharmClassif.displayName}"/>
 
-                <h:outputLabel value="#{msgs.global_description}"/>
+                <h:outputLabel value="#{msgs.prod_desc}"/>
                 <h:outputLabel value="#{prodData.prodDesc}"/>
             </h:panelGrid>
         </p:tab>
@@ -94,8 +100,11 @@
 
         <p:tab title="#{msgs.application_detail}">
             <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                <h:outputLabel value="#{msgs.product_active}"/>
+                <h:outputLabel value="#{prodData.prodApplications.inactiveIngr}"/>
+
                 <h:outputLabel value="#{msgs.product_drug_type}"/>
-                <h:outputLabel value="#{prodData.prodApplications.drugType}"/>
+                <h:outputLabel value="#{msgs[prodData.prodApplications.drugType.key]}"/>
 
                 <h:outputLabel value="#{msgs.product_shelflife}:" style="font-weight: bold;"/>
                 <h:outputLabel value="#{prodData.prodApplications.shelfLife}"/>
@@ -110,15 +119,11 @@
                 <h:outputLabel value="#{prodData.prodApplications.storageCndtn}"/>
 
 
-                <h:outputLabel value="#{msgs.product_apperance}"/>
-                <h:outputLabel value="#{prodData.prodApplications.phyAppearance}"/>
-
                 <h:outputLabel value="#{msgs.product_regNoCntry}"/>
                 <h:outputLabel value="#{prodData.prodApplications.originCntryReg}"/>
 
-
-                <h:outputLabel value="#{msgs.product_active}"/>
-                <p:inputTextarea value="#{prodData.prodApplications.pharmacopeiaStds}" readonly="true"/>
+                <h:outputLabel value="#{msgs.statement_ingrd}"/>
+                <h:outputLabel value="#{prodData.prodApplications.ingrdStatment}"/>
 
             </h:panelGrid>
         </p:tab>
@@ -146,7 +151,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.product_pricing_comparison}" rendered="#{userSession.displayPricing}">
-            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2 col1 col2">
+            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2">
                 <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
                 <p:outputLabel id="msrp" value="#{prodData.prodApplications.pricing.msrp}"/>
 

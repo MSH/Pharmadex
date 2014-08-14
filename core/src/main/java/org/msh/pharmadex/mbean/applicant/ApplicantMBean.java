@@ -1,11 +1,11 @@
 package org.msh.pharmadex.mbean.applicant;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.UserType;
-import org.msh.pharmadex.failure.UserSession;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CountryService;
@@ -20,6 +20,7 @@ import org.springframework.web.util.WebUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.print.attribute.standard.Severity;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -95,21 +96,34 @@ public class ApplicantMBean implements Serializable {
     }
 
     public String saveApp() {
-        selectedApplicant.setSubmitDate(new Date());
-        selectedApplicant = applicantService.saveApp(selectedApplicant, user);
-        if (selectedApplicant != null) {
-            user.setApplicant(selectedApplicant);
-            if (userSession.isCompany()) {
-                userSession.getLoggedInUserObj().setApplicant(selectedApplicant);
-                userSession.setDisplayAppReg(false);
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            selectedApplicant.setSubmitDate(new Date());
+            if(selectedApplicant.getUsers()==null && user.getEmail() == null) {
+                FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
+                error.setSeverity(FacesMessage.SEVERITY_ERROR);
+                facesContext.addMessage(null, error);
+                return null;
             }
-            selectedApplicant = new Applicant();
-            setShowAdd(false);
-            facesContext = FacesContext.getCurrentInstance();
-            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-            WebUtils.setSessionAttribute(request, "applicantMBean", null);
-            return "/public/applicantlist.faces";
-        } else {
+            selectedApplicant = applicantService.saveApp(selectedApplicant, user);
+            if (selectedApplicant != null) {
+                user.setApplicant(selectedApplicant);
+                if (userSession.isCompany()) {
+                    userSession.getLoggedInUserObj().setApplicant(selectedApplicant);
+                    userSession.setDisplayAppReg(false);
+                }
+                selectedApplicant = new Applicant();
+                setShowAdd(false);
+                HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+                WebUtils.setSessionAttribute(request, "applicantMBean", null);
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_submit_success")));
+                return "/public/applicantlist.faces";
+            } else {
+                return null;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
             return null;
         }
     }

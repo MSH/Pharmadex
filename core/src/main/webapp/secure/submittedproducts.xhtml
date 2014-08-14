@@ -20,8 +20,8 @@
                                        action="/internal/processreg?faces-redirect=true"
                                        ajax="false">
                             <f:param name="id" value="#{eachprod.prod.id}"/>
-                            <f:setPropertyActionListener value="#{eachprod}" target="#{webSession.prodApplications}"/>
-                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{webSession.product}"/>
+                            <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
+                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{userSession.product}"/>
                         </p:commandLink>
                     </p:column>
 
@@ -63,8 +63,8 @@
                                        action="/internal/processreg?faces-redirect=true"
                                        ajax="false">
                             <f:param name="id" value="#{eachprod.prod.id}"/>
-                            <f:setPropertyActionListener value="#{eachprod}" target="#{webSession.prodApplications}"/>
-                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{webSession.product}"/>
+                            <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
+                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{userSession.product}"/>
                         </p:commandLink>
                     </p:column>
                 </p:column>
