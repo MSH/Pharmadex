@@ -7,7 +7,7 @@
 <ui:define name="content">
 
 <h:form id="reghome">
-<p:growl id="growl" showDetail="true" showSummary="true"/>
+<p:growl id="growl" showDetail="true" />
 
 <h:panelGrid columns="2" columnClasses="menu,content">
 <h:panelGrid columns="2" columnClasses="menu,content">
@@ -19,11 +19,11 @@
         <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document" onclick="stepDlg.show()"
                     rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
         <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
-                    rendered="#{userSession.reviewer and !processProdBn.module.complete}"
+                    rendered="#{userSession.reviewer}"
                     action="#{processProdBn.findReview}" ajax="false"/>
 
         <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" onclick="regDlg.show()"
-                    rendered="#{processProdBn.canRegister}"/>
+                    rendered="#{processProdBn.canRegister}"  />
         <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear" onclick="moderatordlg.show()"
                     rendered="#{userSession.admin||userSession.staff}"/>
         <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear" oncomplete="assignreviewdlg.show()"
@@ -102,7 +102,7 @@
 
 <p:messages id="messages" showDetail="true" showSummary="true"/>
 
-<p:tabView id="processtab" style="width: 830px;" cache="true">
+<p:tabView id="processtab" style="width: 830px;" cache="true" activeIndex="#{processProdBn.selectedTab}">
 <p:tab title="#{msgs.application_info}" id="infotab">
     <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
         <ui:param name="prodData" value="#{processProdBn.product}"/>
@@ -113,29 +113,30 @@
        rendered="#{userSession.admin||userSession.staff||userSession.head}">
 
     <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
-        <h:outputLabel value="#{msgs.fee_recieved}" styleClass="label"/>
-        <h:panelGroup>
-            <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.feeReceived}"/>
-            <h:outputLabel value=" Yes"/>
-        </h:panelGroup>
+        <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
+        <p:selectBooleanButton id="feerecieved" value="#{processProdBn.prodApplications.feeReceived}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+        </p:selectBooleanButton>
 
-        <h:outputLabel value="#{msgs.app_detail_complete}" styleClass="label"/>
-        <h:panelGroup>
-            <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.applicantVerified}"/>
-            <h:outputLabel value=" Yes"/>
-        </h:panelGroup>
 
-        <h:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"/>
-        <h:panelGroup>
-            <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.productVerified}"/>
-            <h:outputLabel value=" Yes"/>
-        </h:panelGroup>
+        <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label" for="appverify"/>
+        <p:selectBooleanButton id="appverify" value="#{processProdBn.prodApplications.applicantVerified}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+        </p:selectBooleanButton>
 
-        <h:outputLabel value="#{msgs.dossier_complete}" styleClass="label"/>
-        <h:panelGroup>
-            <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.dossierReceived}"/>
-            <h:outputLabel value=" Yes"/>
-        </h:panelGroup>
+        <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label" for="prodverify"/>
+        <p:selectBooleanButton id="prodverify" value="#{processProdBn.prodApplications.productVerified}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+        </p:selectBooleanButton>
+
+        <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label" for="dosscomplete"/>
+        <p:selectBooleanButton id="dosscomplete" value="#{processProdBn.prodApplications.dossierReceived}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+        </p:selectBooleanButton>
 
     </h:panelGrid>
 
@@ -151,7 +152,7 @@
 </p:tab>
 
 <p:tab title="#{msgs.prod_screening}"
-       rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head}" id="checklisttab">
+       rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}" id="checklisttab">
     <p:dataTable var="checkList" value="#{processProdBn.prodAppChecklists}" style="width:100%;">
         <p:column headerText="">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
@@ -464,25 +465,6 @@
 
 </p:dialog>
 
-<p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regDlg" modal="true"
-          rendered="#{processProdBn.canRegister}">
-
-    <h:panelGrid columns="2" style="margin-bottom:10px">
-        <h:outputLabel value="#{msgs.registration_date}"/>
-        <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
-                    required="true"/>
-        <h:outputLabel value="#{msgs.expiry_date}"/>
-        <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
-                    required="true"/>
-
-    </h:panelGrid>
-
-    <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBn.registerProduct}"
-                     oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"
-                     update=":reghome:growl :reghome:messages :reghome"/>
-
-</p:dialog>
-
 <p:dialog header="#{msgs.issue_invoice}" widgetVar="invoicedlg" resizable="true" id="invoicedlg" modal="true">
 
     <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10" cellspacing="10">
@@ -615,23 +597,6 @@
 </p:dialog>
 
 
-<p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" resizable="true" id="reviewDlg" modal="true">
-    <p:editor id="editor" value="#{processProdBn.reviewComment}" width="800" height="500"/>
-
-    <h:panelGrid columns="2" style="margin-top:10px">
-        <p:commandButton id="submitReview" value="#{msgs.global_submit}" oncomplete="reviewDlg.hide()"
-                         icon="ui-icon-disk" ajax="true" action="#{processProdBn.submitReview}"/>
-        <p:commandButton id="clearButton" type="button" value="Clear" onclick="reviewDlg.hide()"
-                         icon="ui-icon-close" ajax="false"/>
-    </h:panelGrid>
-</p:dialog>
-
-<!--
-<p:dialog header="Review Comment" widgetVar="dlgRevComment" showEffect="fade" hideEffect="fade" modal="true"
-          id="dlgRevComment" minHeight="500" minWidth="800">
-    <h:outputText id="editordisplay" value="#{processProdBn.reviewComment}" escape="false"/>
-</p:dialog>
--->
 <p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment" showEffect="fade" hideEffect="fade" modal="true"
           id="dlgAmdment" width="800px" height="500px">
     <ui:include src="amdmtCategoryDlg.xhtml"/>
@@ -662,6 +627,30 @@
 </h:panelGrid>
 </h:panelGrid>
 </h:form>
+
+<p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
+          >
+    <h:form id = "regdatedlg">
+        <h:panelGrid columns="2" style="margin-bottom:10px">
+            <p:outputLabel value="#{msgs.registration_date}"/>
+            <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
+                        required="true">
+                <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
+            </p:calendar>
+            <p:outputLabel value="#{msgs.expiry_date}"/>
+            <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
+                        required="true"/>
+
+        </h:panelGrid>
+
+        <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBn.registerProduct}"
+                         oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"
+                         update=":reghome:growl :reghome:messages :reghome :regdatedlg"/>
+    </h:form>
+
+</p:dialog>
+
+
 </ui:define>
 <script type="text/javascript">
     function start() {

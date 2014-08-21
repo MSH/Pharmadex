@@ -286,10 +286,11 @@ public class ProdApplicationsService implements Serializable {
 
     @Transactional
     public ProdApplications saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
-        String result;
-        prodApplications.getProd().setCreatedBy(loggedInUserObj);
-        prodApplications.setSubmitDate(new Date());
-        prodApplications.getProd().setLicNo("licno");
+        if(prodApplications.getProd().getId()==null) {
+            prodApplications.getProd().setCreatedBy(loggedInUserObj);
+            prodApplications.setSubmitDate(new Date());
+            prodApplications.getProd().setLicNo("licno");
+        }
 
 //        applicantDAO.updateApplicant(prodApplications.getProd().getApplicant());
 

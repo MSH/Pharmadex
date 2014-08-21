@@ -161,4 +161,8 @@ public class GlobalEntityLists implements Serializable {
             adminRoutes = adminRouteService.getAdminRoutes();
         return adminRoutes;
     }
+
+    public void setManufacturers(List<Company> manufacturers) {
+        this.manufacturers = manufacturers;
+    }
 }

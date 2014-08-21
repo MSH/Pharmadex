@@ -58,7 +58,7 @@ public class ApplicantDAO implements Serializable {
     }
 
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Applicant saveApplicant(Applicant applicant) {
 //        for (User u : applicant.getUsers()) {
 //            u.setApplicant(applicant);

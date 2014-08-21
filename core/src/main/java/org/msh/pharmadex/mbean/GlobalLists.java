@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.enums.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +28,10 @@ public class GlobalLists {
     }
 
     public List<ProdCategory> getProdCategories() {
-        return Arrays.asList(ProdCategory.values());
+        List<ProdCategory> prodCategories = new ArrayList<ProdCategory>();
+        prodCategories.add(ProdCategory.HUMAN);
+        prodCategories.add(ProdCategory.VETENIARY);
+        return prodCategories;
     }
 
     public List<ProdAppType> getProdAppType() {

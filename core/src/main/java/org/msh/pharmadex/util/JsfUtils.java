@@ -1,6 +1,8 @@
 package org.msh.pharmadex.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +40,13 @@ public class JsfUtils {
                 suggestions.add(each);
         }
         return suggestions;
+    }
+
+    public static Date addDate(Date dt, int year){
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.YEAR, 2);
+        return c.getTime();
     }
 
 

@@ -1,10 +1,13 @@
 package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.iface.TimelineDAO;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.faces.application.FacesMessage;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,6 +24,9 @@ public class TimelineService implements Serializable {
 
     List<TimeLine> timeLineList;
 
+    @Autowired
+    ProdApplicationsService prodApplicationsService;
+
     public List<TimeLine> findTimelineByApp(Long prodApplications_Id) {
         timeLineList = timelineDAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
         return timeLineList;
@@ -31,4 +37,32 @@ public class TimelineService implements Serializable {
         return timelineDAO.saveAndFlush(timeLine);
     }
 
+    public String validateStatusChange(TimeLine timeLine) {
+        ProdApplications prodApplications = timeLine.getProdApplications();
+        if (timeLine.getRegState().equals(RegState.FEE) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+            if (!prodApplications.isFeeReceived()) {
+                timeLine = new TimeLine();
+                return "fee_not_recieved";
+            }
+        } else if (timeLine.getRegState().equals(RegState.VERIFY) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+            if (!prodApplications.isApplicantVerified()) {
+                timeLine = new TimeLine();
+                return "app_not_verified";
+            } else if (!prodApplications.isProductVerified() || prodApplications.getRegState() == RegState.REGISTERED) {
+                timeLine = new TimeLine();
+                return "prod_not_verified";
+
+            }
+        } else if (timeLine.getRegState().equals(RegState.SCREENING) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+            ProdApplications prodApp = prodApplicationsService.findProdApplications(prodApplications.getId());
+            prodApplications.setModerator(prodApp.getModerator());
+            if(prodApplications.getModerator()==null)
+                return "valid_assign_moderator";
+        } else if (timeLine.getRegState().equals(RegState.REVIEW_BOARD) || timeLine.getRegState().equals(RegState.REGISTERED)) {
+            if(prodApplications.getReviews().size()==0)
+                return "valid_assign_reviewer";
+        }
+        return "success";
+
+    }
 }

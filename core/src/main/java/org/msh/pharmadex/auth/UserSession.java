@@ -46,6 +46,7 @@ public class UserSession implements Serializable {
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
 
+
     @Autowired
     UserService userService;
 

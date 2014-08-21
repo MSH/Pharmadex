@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
+import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
@@ -99,6 +100,7 @@ public class ProcessProdBn implements Serializable {
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+    private int selectedTab;
 
     @PostConstruct
     private void init() {
@@ -152,7 +154,7 @@ public class ProcessProdBn implements Serializable {
 
         product = productService.findProduct(Long.valueOf(prodID));
         setFieldValues();
-        initProcessor();
+//        initProcessor();
     }
 
     private void setFieldValues() {
@@ -166,6 +168,14 @@ public class ProcessProdBn implements Serializable {
         timeLineList = prodApplications.getTimeLines();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         reviews = prodApplications.getReviews();
+    }
+
+    @Autowired
+    WorkspaceDAO workspaceDAO;
+    public void dateChange() {
+        Workspace w = workspaceDAO.findOne((long) 1);
+        prodApplications.setRegExpiryDate(JsfUtils.addDate(prodApplications.getRegistrationDate(), w.getProdRegDuration()));
+
     }
 
     public void setProdApplications(ProdApplications prodApplications) {
@@ -188,19 +198,19 @@ public class ProcessProdBn implements Serializable {
     }
 
 
-    public void assignProcessor() {
-        facesContext = FacesContext.getCurrentInstance();
-        if (module == null) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-        }
-        module.setProdApplications(prodApplications);
-        module.setAssignDate(new Date());
-
-        if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-    }
+//    public void assignProcessor() {
+//        facesContext = FacesContext.getCurrentInstance();
+//        if (module == null) {
+//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+//        }
+//        module.setProdApplications(prodApplications);
+//        module.setAssignDate(new Date());
+//
+//        if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
+//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+//    }
 
     public void initProcessorAdd() {
         review = new Review();
@@ -230,7 +240,8 @@ public class ProcessProdBn implements Serializable {
         try {
             facesContext = FacesContext.getCurrentInstance();
             prodApplications.setUpdatedDate(new Date());
-            prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedInUserObj());
+            prodApplications = prodApplicationsService.updateProdApp(prodApplications);
+            product = prodApplications.getProd();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("moderator_add_success")));
         } catch (Exception e) {
             logger.error("Problems saving moderator {}", "processprodbn", e);
@@ -241,27 +252,27 @@ public class ProcessProdBn implements Serializable {
     }
 
 
-    public void initProcessor() {
-        if (prodApplications != null) {
-            module = prodApplicationsService.findStatusUser(prodApplications.getId());
-            if (module == null) {
-                module = new StatusUser(prodApplications);
-                module.setModule1(new User());
-                module.setModule2(new User());
-                module.setModule3(new User());
-                module.setModule4(new User());
-            } else {
-                if (module.getModule1() != null)
-                    module.setModule1(userService.findUser(module.getModule1().getUserId()));
-                if (module.getModule2() != null)
-                    module.setModule2(userService.findUser(module.getModule2().getUserId()));
-                if (module.getModule3() != null)
-                    module.setModule3(userService.findUser(module.getModule3().getUserId()));
-                if (module.getModule4() != null)
-                    module.setModule4(userService.findUser(module.getModule4().getUserId()));
-            }
-        }
-    }
+//    public void initProcessor() {
+//        if (prodApplications != null) {
+//            module = prodApplicationsService.findStatusUser(prodApplications.getId());
+//            if (module == null) {
+//                module = new StatusUser(prodApplications);
+//                module.setModule1(new User());
+//                module.setModule2(new User());
+//                module.setModule3(new User());
+//                module.setModule4(new User());
+//            } else {
+//                if (module.getModule1() != null)
+//                    module.setModule1(userService.findUser(module.getModule1().getUserId()));
+//                if (module.getModule2() != null)
+//                    module.setModule2(userService.findUser(module.getModule2().getUserId()));
+//                if (module.getModule3() != null)
+//                    module.setModule3(userService.findUser(module.getModule3().getUserId()));
+//                if (module.getModule4() != null)
+//                    module.setModule4(userService.findUser(module.getModule4().getUserId()));
+//            }
+//        }
+//    }
 
 
     public String sendMessage() {
@@ -274,10 +285,6 @@ public class ProcessProdBn implements Serializable {
         mail = new Mail();
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("send_success")));
         return "";
-    }
-
-    public String newComment() {
-        return "/home.faces";
     }
 
     public String deleteComment(Comment delComment) {
@@ -322,40 +329,51 @@ public class ProcessProdBn implements Serializable {
         this.timeLine = timeLine;
     }
 
+    public void changeStatusListener(){
+        logger.error("Inside changeStatusListener");
+        if(prodApplications.getRegState().equals(RegState.NEW_APPL)) {
+            timeLine.setRegState(RegState.FEE);
+            addTimeline();
+        }
+        if(prodApplications.getRegState().equals(RegState.FEE)){
+            if(prodApplications.isApplicantVerified()&&prodApplications.isProductVerified()&&prodApplications.isDossierReceived()){
+                timeLine.setRegState(RegState.VERIFY);
+                addTimeline();
+            }
+        }
+        setSelectedTab(1);
+    }
+
     public String addTimeline() {
         facesContext = FacesContext.getCurrentInstance();
-        product = productService.findProduct(Long.valueOf(prodID));
-        setFieldValues();
-        initProcessor();
 
         try {
-            if (timeLine.getRegState().equals(RegState.FEE) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-                if (!prodApplications.isFeeReceived()) {
-                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
-                    timeLine = new TimeLine();
-                    return "";
-                }
-            } else if (timeLine.getRegState().equals(RegState.VERIFY) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-                if (!prodApplications.isApplicantVerified()) {
-                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("app_not_verified")));
-                    timeLine = new TimeLine();
-                    return "";
-                } else if (!prodApplications.isProductVerified() || prodApplications.getRegState() == RegState.REGISTERED) {
-                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("app_not_verified")));
-                    timeLine = new TimeLine();
-                    return "";
-
-                }
-            }
 
             timeLine.setProdApplications(prodApplications);
             timeLine.setStatusDate(new Date());
             timeLine.setUser(userSession.getLoggedInUserObj());
-            timeLineList.add(timeLine);
-            prodApplications.setRegState(timeLine.getRegState());
-            product.setRegState(timeLine.getRegState());
-            prodApplications = prodApplicationsService.updateProdApp(prodApplications);
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+            String retValue = timelineService.validateStatusChange(timeLine);
+
+            if(retValue.equalsIgnoreCase("success")) {
+                timeLineList.add(timeLine);
+                prodApplications.setRegState(timeLine.getRegState());
+                product.setRegState(timeLine.getRegState());
+                prodApplications = prodApplicationsService.updateProdApp(prodApplications);
+                product = productService.findProduct(prodApplications.getProd().getId());
+                setFieldValues();
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
+            }else if(retValue.equalsIgnoreCase("fee_not_recieved")) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
+            }else if(retValue.equalsIgnoreCase("app_not_verified")) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
+            }else if(retValue.equalsIgnoreCase("prod_not_verified")) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), resourceBundle.getString("prod_not_verified")));
+            }else if(retValue.equalsIgnoreCase("valid_assign_moderator")) {
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_assign_moderator")));
+            }else if(retValue.equalsIgnoreCase("valid_assign_reviewer")) {
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_assign_reviewer")));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
@@ -370,6 +388,7 @@ public class ProcessProdBn implements Serializable {
 //        prodApplications.setReviews(reviews);
         try {
             product = productService.updateProduct(product);
+            product = productService.findProduct(product.getId());
             setFieldValues();
         } catch (Exception e) {
             e.printStackTrace();
@@ -402,37 +421,37 @@ public class ProcessProdBn implements Serializable {
         return "";
     }
 
-    public String submitReview() {
-        facesContext = FacesContext.getCurrentInstance();
-        if (reviewComment.isEmpty()) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    resourceBundle.getString("global_fail"), resourceBundle.getString("review_comment_empty_valid")));
-            return "";
-        }
-        initProcessor();
-        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-            module.setModule1SubmitDt(new Date());
-            module.setReview1(reviewComment);
-        }
-        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-            module.setModule2SubmitDt(new Date());
-            module.setReview2(reviewComment);
-        }
-        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-            module.setModule3SubmitDt(new Date());
-            module.setReview3(reviewComment);
-        }
-        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-            module.setModule4SubmitDt(new Date());
-            module.setReview4(reviewComment);
-        }
-
-        if (module.getModule1SubmitDt() != null && module.getModule2SubmitDt() != null && module.getModule3SubmitDt() != null && module.getModule4SubmitDt() != null)
-            module.setComplete(true);
-
-        prodApplicationsService.saveProcessors(module);
-        return "";
-    }
+//    public String submitReview() {
+//        facesContext = FacesContext.getCurrentInstance();
+//        if (reviewComment.isEmpty()) {
+//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+//                    resourceBundle.getString("global_fail"), resourceBundle.getString("review_comment_empty_valid")));
+//            return "";
+//        }
+//        initProcessor();
+//        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule1SubmitDt(new Date());
+//            module.setReview1(reviewComment);
+//        }
+//        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule2SubmitDt(new Date());
+//            module.setReview2(reviewComment);
+//        }
+//        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule3SubmitDt(new Date());
+//            module.setReview3(reviewComment);
+//        }
+//        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule4SubmitDt(new Date());
+//            module.setReview4(reviewComment);
+//        }
+//
+//        if (module.getModule1SubmitDt() != null && module.getModule2SubmitDt() != null && module.getModule3SubmitDt() != null && module.getModule4SubmitDt() != null)
+//            module.setComplete(true);
+//
+//        prodApplicationsService.saveProcessors(module);
+//        return "";
+//    }
 
     public List<Mail> getMails() {
         return mails;
@@ -498,11 +517,11 @@ public class ProcessProdBn implements Serializable {
         return JsfUtils.completeSuggestions(query, getModerators());
     }
 
-    public StatusUser getModule() {
-        if (module == null)
-            initProcessor();
-        return module;
-    }
+//    public StatusUser getModule() {
+//        if (module == null)
+//            initProcessor();
+//        return module;
+//    }
 
     public void setModule(StatusUser module) {
         this.module = module;
@@ -617,7 +636,7 @@ public class ProcessProdBn implements Serializable {
             if(product!=null) {
                 product = productService.findProduct(product.getId());
                 setFieldValues();
-                initProcessor();
+//                initProcessor();
             }
         }
         return reviews;
@@ -643,5 +662,11 @@ public class ProcessProdBn implements Serializable {
         this.prodInns = prodInns;
     }
 
+    public int getSelectedTab() {
+        return selectedTab;
+    }
 
+    public void setSelectedTab(int selectedTab) {
+        this.selectedTab = selectedTab;
+    }
 }

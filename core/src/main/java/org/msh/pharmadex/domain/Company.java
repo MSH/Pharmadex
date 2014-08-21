@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.enums.CompanyType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,14 +15,15 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "company")
+@Table(name = "company", uniqueConstraints = @UniqueConstraint(columnNames = {"companyName",
+        "siteNumber"}))
 public class Company extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -3707427898846181650L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 255, nullable = false, unique = true)
     private String companyName;
 
     @Embedded
@@ -36,17 +38,20 @@ public class Company extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String faxNo;
 
-    @Enumerated(EnumType.STRING)
-    private CompanyType companyType;
+    @Column(length = 255, unique = true)
+    private String siteNumber;
 
-    @Column(length = 500)
-    private String reference;
-
-    @ManyToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "prod_company", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "prod_id"))
-    private List<Product> products;
+    @OneToMany(mappedBy = "company", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    private List<ProdCompany> prodCompanies;
 
     private boolean gmpInsp;
+
+    @Column(name = "gmp_insp_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date gmpInspDate;
+
+    @Column(name ="gmp_cert_no", length = 500)
+    private String gmpCertNo;
 
     public Company() {
     }
@@ -95,28 +100,12 @@ public class Company extends CreationDetail implements Serializable {
         this.faxNo = faxNo;
     }
 
-    public CompanyType getCompanyType() {
-        return companyType;
-    }
-
-    public void setCompanyType(CompanyType companyType) {
-        this.companyType = companyType;
-    }
-
     public Address getAddress() {
         return address;
     }
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
     }
 
     public boolean isGmpInsp() {
@@ -127,12 +116,36 @@ public class Company extends CreationDetail implements Serializable {
         this.gmpInsp = gmpInsp;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<ProdCompany> getProdCompanies() {
+        return prodCompanies;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProdCompanies(List<ProdCompany> prodCompanies) {
+        this.prodCompanies = prodCompanies;
+    }
+
+    public String getSiteNumber() {
+        return siteNumber;
+    }
+
+    public void setSiteNumber(String siteNumber) {
+        this.siteNumber = siteNumber;
+    }
+
+    public Date getGmpInspDate() {
+        return gmpInspDate;
+    }
+
+    public void setGmpInspDate(Date gmpInspDate) {
+        this.gmpInspDate = gmpInspDate;
+    }
+
+    public String getGmpCertNo() {
+        return gmpCertNo;
+    }
+
+    public void setGmpCertNo(String gmpCertNo) {
+        this.gmpCertNo = gmpCertNo;
     }
 
     @Override

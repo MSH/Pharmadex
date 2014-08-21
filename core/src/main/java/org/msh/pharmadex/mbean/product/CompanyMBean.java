@@ -2,7 +2,9 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Country;
+import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.CountryService;
@@ -46,39 +48,35 @@ public class CompanyMBean implements Serializable {
     CompanyService companyService;
 
     private Company selectedCompany;
+    private List<String> companyTypes;
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+    private boolean showGMP = false;
 
     @Transactional
     public void addCompany() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            Country c = selectedCompany.getAddress().getCountry();
-            c = countryService.findCountryById(c.getId());
-            selectedCompany.getAddress().setCountry(c);
-
-            if(selectedCompany.getId()==null)
-                selectedCompany = companyService.saveCompany(selectedCompany);
-            else
-                selectedCompany = companyService.findCompanyById(selectedCompany.getId());
-
-            if(selectedCompany.getProducts()==null)
-                selectedCompany.setProducts(new ArrayList<Product>());
-            selectedCompany.getProducts().add(regHomeMbean.getProduct());
-
-            List<Company> companyList = regHomeMbean.getProduct().getCompanyList();
-            if(companyList==null) {
-                companyList = new ArrayList<Company>();
-                regHomeMbean.getProduct().setCompanyList(companyList);
+            List<ProdCompany> prodCompanies = companyService.addCompany(regHomeMbean.getProduct(), selectedCompany, companyTypes);
+            if(prodCompanies==null){
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_value_req")));
+            }else{
+                regHomeMbean.setCompanies(prodCompanies);
             }
-            companyList.add(selectedCompany);
             regHomeMbean.setShowCompany(false);
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("company_add_success")));
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), e.getMessage()));
         }
+    }
+
+    public void gmpChangeListener() {
+        if (selectedCompany.isGmpInsp())
+            showGMP = true;
+        else
+            showGMP = false;
     }
 
     public void companyChangeEventListener(SelectEvent event) {
@@ -125,6 +123,19 @@ public class CompanyMBean implements Serializable {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getManufacturers());
     }
 
+    public List<String> getCompanyTypes() {
+        return companyTypes;
+    }
 
+    public void setCompanyTypes(List<String> companyTypes) {
+        this.companyTypes = companyTypes;
+    }
 
+    public boolean isShowGMP() {
+        return showGMP;
+    }
+
+    public void setShowGMP(boolean showGMP) {
+        this.showGMP = showGMP;
+    }
 }

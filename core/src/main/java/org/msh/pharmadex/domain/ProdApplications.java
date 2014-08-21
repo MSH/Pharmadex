@@ -83,7 +83,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private String receiptNo;
 
     @Column(length = 500)
-    private String waybillNo;
+    private String bankName;
+
+    @Temporal(TemporalType.DATE)
+    private Date feeSubmittedDt;
 
     @Enumerated(EnumType.STRING)
     private RegState regState;
@@ -307,14 +310,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.receiptNo = receiptNo;
     }
 
-    public String getWaybillNo() {
-        return waybillNo;
-    }
-
-    public void setWaybillNo(String waybillNo) {
-        this.waybillNo = waybillNo;
-    }
-
     public RegState getRegState() {
         return regState;
     }
@@ -513,6 +508,22 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setShelfLife(String shelfLife) {
         this.shelfLife = shelfLife;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public Date getFeeSubmittedDt() {
+        return feeSubmittedDt;
+    }
+
+    public void setFeeSubmittedDt(Date feeSubmittedDt) {
+        this.feeSubmittedDt = feeSubmittedDt;
     }
 }
 

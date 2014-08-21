@@ -39,7 +39,7 @@ public class ReportService implements Serializable {
         param.put("address1", product.getApplicant().getAddress().getAddress1());
         param.put("address2", product.getApplicant().getAddress().getAddress2());
         param.put("country", product.getApplicant().getAddress().getCountry().getCountryName());
-        param.put("registrar", "Johannes");
+        param.put("registrar", "MAJ. GEN. MD. JAHANGIR HOSSAIN MOLLIK");
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 }

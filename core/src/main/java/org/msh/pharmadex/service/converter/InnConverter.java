@@ -54,7 +54,7 @@ public class InnConverter implements Converter, Serializable {
                         return p;
                 }
             } catch (NumberFormatException exception) {
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid INN Code"));
+                return findInnByName(submittedValue);
             }
         }
 

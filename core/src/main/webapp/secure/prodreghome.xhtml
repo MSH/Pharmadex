@@ -57,6 +57,7 @@
                            rendered="#{regHomeMbean.product.newChemicalEntity}"/>
             <p:inputText id="nceInput" value="#{regHomeMbean.product.newChemicalName}" style="width: 300px;"
                          rendered="#{regHomeMbean.product.newChemicalEntity}"/>
+
             <h:outputLabel value="#{msgs.inn_header}" style="width: 60px;" styleClass="label"/>
 
 
@@ -154,11 +155,11 @@
                     </p:commandLink>
                 </f:facet>
                 <p:column headerText="#{msgs.applicant_name}">
-                    <h:outputText value="#{company.companyName}"/>
+                    <h:outputText value="#{company.company.companyName}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_country}">
-                    <h:outputText value="#{msgs[company.address.country.key]    }"/>
+                    <h:outputText value="#{msgs[company.company.address.country.key]}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_type}">
@@ -166,7 +167,7 @@
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_phone}">
-                    <h:outputText value="#{company.phoneNo}"/>
+                    <h:outputText value="#{company.company.phoneNo}"/>
                 </p:column>
 
                 <p:column>
@@ -266,11 +267,15 @@
 
         <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
-            <h:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
+            <p:outputLabel value="#{msgs.bank_name}" for="bankname"/>
+            <p:inputText id="bankname" value="#{regHomeMbean.prodApplications.bankName}"/>
+
+            <p:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
             <p:inputText id="receiptno" value="#{regHomeMbean.prodApplications.receiptNo}"/>
 
-            <h:outputLabel value="#{msgs.waybillno}" for="waybillno"/>
-            <p:inputText id="waybillno" value="#{regHomeMbean.prodApplications.waybillNo}"/>
+            <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"/>
+            <p:calendar  value="#{regHomeMbean.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"/>
+
         </h:panelGrid>
 
         <div align="right">
@@ -349,7 +354,7 @@
 <p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true" modal="true">
     <h:form id="addInnFrm">
         <pe:ajaxErrorHandler/>
-        <h:panelGrid columns="3" cellspacing="5" columnClasses="label value errorMessage" styleClass="grid">
+        <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
             <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
             <p:autoComplete id="innname" value="#{regHomeMbean.prodInn.inn}"
                             completeMethod="#{regHomeMbean.completeInnCodes}"
@@ -459,8 +464,8 @@
 
         <h:panelGroup>
             <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}"
-                             oncomplete="if (!args.validationFailed) addCompanyDlg.hide()"
-                             update=":addcompany :reghome:companygrid :reghome:companyTable :reghome:growl"/>
+                             oncomplete="if (!args.validationFailed) addCompanyDlg.hide()" process=":addcompany :reghome"
+                             update=":addcompany :reghome:companygrid :reghome:companyTable :reghome:growl :reghome"/>
             <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
                              oncomplete="addCompanyDlg.hide()" ajax="false" process="@form"
                              update=":addcompany :reghome:companyTable"/>

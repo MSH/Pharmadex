@@ -75,11 +75,13 @@ public class RegHomeMbean implements Serializable {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private InnService innService;
 
     private List<ProdInn> selectedInns;
     private List<Atc> selectedAtcs;
     private List<ProdAppChecklist> prodAppChecklists;
-    private List<Company> companies;
+    private List<ProdCompany> companies;
     private List<DrugPrice> drugPrices;
 
     private ProdApplications prodApplications;
@@ -143,7 +145,7 @@ public class RegHomeMbean implements Serializable {
 
             //Initialize companies if null
             if (companies == null) {
-                companies = new ArrayList<Company>();
+                companies = new ArrayList<ProdCompany>();
 //                product.setCompanies(companies);
             }
 
@@ -232,7 +234,8 @@ public class RegHomeMbean implements Serializable {
         context = FacesContext.getCurrentInstance();
         prodApplications.setUser(applicantUser);
         product.setProdApplications(prodApplications);
-//        product.setApplicant(applicantUser.getApplicant());
+        if(userSession.isCompany())
+            product.setApplicant(applicantUser.getApplicant());
         if (product.getId() == null)
             product.setCreatedBy(getLoggedInUser());
         try {
@@ -268,9 +271,11 @@ public class RegHomeMbean implements Serializable {
         return null;
     }
 
-    public void removeCompany(Company selectedCompany) {
+    public void removeCompany(ProdCompany selectedCompany) {
         context = FacesContext.getCurrentInstance();
         companies.remove(selectedCompany);
+        companyService.removeProdCompany(selectedCompany);
+
         context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
     }
 
@@ -312,9 +317,14 @@ public class RegHomeMbean implements Serializable {
 
     public String addProdInn() {
         context = FacesContext.getCurrentInstance();
+        if(prodInn.getInn().getId()==null)
+            prodInn.setInn(innService.saveInn(prodInn.getInn()));
+
         prodInn.setProduct(product);
         selectedInns.add(prodInn);
         product.setInns(selectedInns);
+
+
 
         try {
             List<Atc> a = atcService.findAtcByName(prodInn.getInn().getName());
@@ -383,7 +393,7 @@ public class RegHomeMbean implements Serializable {
     private void setFieldValues() {
         selectedInns = product.getInns();
         selectedAtcs = product.getAtcs();
-        companies = product.getCompanyList();
+        companies = product.getProdCompanies();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = product.getApplicant();
         drugPrices = prodApplications.getPricing().getDrugPrices();
@@ -478,15 +488,6 @@ public class RegHomeMbean implements Serializable {
     public void setLoggedInUser(User loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
-
-    public List<Company> getCompanies() {
-        return companies;
-    }
-
-    public void setCompanies(List<Company> companies) {
-        this.companies = companies;
-    }
-
 
     public List<ProdAppChecklist> getProdAppChecklists() {
         return prodAppChecklists;
@@ -689,5 +690,13 @@ public class RegHomeMbean implements Serializable {
 
     public void setApplicantUser(User applicantUser) {
         this.applicantUser = applicantUser;
+    }
+
+    public List<ProdCompany> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<ProdCompany> companies) {
+        this.companies = companies;
     }
 }

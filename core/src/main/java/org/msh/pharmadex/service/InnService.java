@@ -33,6 +33,10 @@ public class InnService implements Serializable {
         return innList;
     }
 
+    public Inn saveInn (Inn inn){
+        return innDAO.save(inn);
+    }
+
     public Inn findInnById(long id) {
         return innDAO.findOne(id);
     }

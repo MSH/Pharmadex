@@ -99,9 +99,13 @@ public class Product extends CreationDetail implements Serializable {
 //    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
 //    private List<Company> companies;
 
-    @ManyToMany(targetEntity = Company.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "prod_company", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "company_id"))
-    private List<Company> companyList;
+//    @ManyToMany(targetEntity = Company.class, fetch = FetchType.LAZY)
+//    @JoinTable(name = "prod_company", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "company_id"))
+//    private List<Company> companyList;
+
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    private List<ProdCompany> prodCompanies;
+
 
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_APP_ID")
@@ -334,24 +338,25 @@ public class Product extends CreationDetail implements Serializable {
         this.newChemicalName = newChemicalName;
     }
 
-    public List<Company> getCompanyList() {
-        return companyList;
-    }
-
-    public void setCompanyList(List<Company> companyList) {
-        this.companyList = companyList;
-    }
-
     public String getManufName() {
-        for(Company c : getCompanyList()){
+        for(ProdCompany c : getProdCompanies()){
             if(c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
-                return c.getCompanyName();
+                return c.getCompany().getCompanyName();
             }
         }
         return manufName;
     }
 
+    public List<ProdCompany> getProdCompanies() {
+        return prodCompanies;
+    }
+
+    public void setProdCompanies(List<ProdCompany> prodCompanies) {
+        this.prodCompanies = prodCompanies;
+    }
+
     public void setManufName(String manufName) {
         this.manufName = manufName;
     }
+
 }
