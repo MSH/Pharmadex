@@ -126,19 +126,19 @@
         <p:tab title="#{msgs.manufacturer_detail}">
             <p:dataTable id="companyTable" var="company" value="#{prodData.companyList}" style="width:100%;">
                 <p:column headerText="#{msgs.applicant_name}">
-                    <h:outputText value="#{company.companyName}"/>
+                    <h:outputText value="#{company.company.companyName}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_country}">
-                    <h:outputText value="#{msgs[company.address.country.key]}"/>
+                    <h:outputText value="#{msgs[company.company.address.country.key]}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_type}">
-                    <h:outputText value="#{msgs[company.companyType.key]}"/>
+                    <h:outputText value="#{msgs[company.company.companyType.key]}"/>
                 </p:column>
 
                 <p:column headerText="Reference">
-                    <h:outputText value="#{company.reference}"/>
+                    <h:outputText value="#{company.company.siteNumber}"/>
                 </p:column>
 
             </p:dataTable>
