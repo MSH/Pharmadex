@@ -30,7 +30,7 @@ public class PharmacySite extends CreationDetail implements Serializable {
             @AttributeOverride(name = "address1", column = @Column(name = "site_address1")),
             @AttributeOverride(name = "address2", column = @Column(name = "site_address2")),
             @AttributeOverride(name = "zipcode", column = @Column(name = "site_zipcode")),
-            @AttributeOverride(name = "country", column = @Column(name = "site_country")),
+            @AttributeOverride(name = "country", column = @Column(name = "site_country"))
     })
     private Address siteAddress = new Address();
 
