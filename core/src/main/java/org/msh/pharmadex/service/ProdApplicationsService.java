@@ -116,7 +116,7 @@ public class ProdApplicationsService implements Serializable {
                 if (!userSession.isStaff()) {
                     options = new RegState[2];
                     options[1] = RegState.REVIEW_BOARD;
-                }else{
+                } else {
                     options = new RegState[1];
                 }
                 options[0] = RegState.FOLLOW_UP;
@@ -181,7 +181,7 @@ public class ProdApplicationsService implements Serializable {
     }
 
 
-    public List<ProdApplications> getSavedApplications(int userId) {
+    public List<ProdApplications> getSavedApplications(Long userId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         List<RegState> regState = new ArrayList<RegState>();
         regState.add(RegState.SAVED);
@@ -286,7 +286,7 @@ public class ProdApplicationsService implements Serializable {
 
     @Transactional
     public ProdApplications saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
-        if(prodApplications.getProd().getId()==null) {
+        if (prodApplications.getProd().getId() == null) {
             prodApplications.getProd().setCreatedBy(loggedInUserObj);
             prodApplications.setSubmitDate(new Date());
             prodApplications.getProd().setLicNo("licno");
@@ -377,7 +377,7 @@ public class ProdApplicationsService implements Serializable {
 
         String companyName = "";
         String fprcName = "";
-        String fprrName ="";
+        String fprrName = "";
 //        for (Company c : product.getCompanies()) {
 //            if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF))
 //                companyName = c.getCompanyName();
@@ -405,13 +405,12 @@ public class ProdApplicationsService implements Serializable {
 
         Calendar calendar = Calendar.getInstance();
         param.put("currDay", calendar.get(Calendar.DAY_OF_MONTH));
-        String currMnthYr ="";
-        currMnthYr = ""+calendar.get(Calendar.MONTH)+"/"+calendar.get(Calendar.YEAR);
-        param.put("currDay", ""+calendar.get(Calendar.DAY_OF_MONTH));
+        String currMnthYr = "";
+        currMnthYr = "" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
+        param.put("currDay", "" + calendar.get(Calendar.DAY_OF_MONTH));
 
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
-
 
 
     public String createRegCert(ProdApplications prodApp) {

@@ -17,18 +17,20 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-public class UserDetailsAdapter extends org.springframework.security.core.userdetails.User{
-    private int id = 0;
+public class UserDetailsAdapter extends org.springframework.security.core.userdetails.User {
+    //    private int id = 0;
+    private Long id;
+
     public UserDetailsAdapter(User userEntity) {
         super(userEntity.getUsername(), userEntity.getPassword(), userEntity.isEnabled(), true, true, true, toAuthorities(userEntity.getRoles()));
-        if(userEntity.getUserId()!=null)
+        if (userEntity.getUserId() != null)
             this.id = userEntity.getUserId();
     }
 
     private static Collection<GrantedAuthority> toAuthorities(List<Role> authorities) {
         Collection<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
-        if(authorities!=null){
-            for (Role authority: authorities) {
+        if (authorities != null) {
+            for (Role authority : authorities) {
                 authorityList.add(new SimpleGrantedAuthority(authority.getRolename()));
             }
         }
@@ -37,7 +39,7 @@ public class UserDetailsAdapter extends org.springframework.security.core.userde
         return authorityList;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

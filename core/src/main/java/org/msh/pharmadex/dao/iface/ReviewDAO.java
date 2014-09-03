@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewDAO extends JpaRepository<Review, Long> {
 
-    public Review findByUser_UserIdAndProdApplications_Id(Integer user_UserId, Long prodApplications_Id);
+    public Review findByUser_UserIdAndProdApplications_Id(Long user_UserId, Long prodApplications_Id);
 
 
 }

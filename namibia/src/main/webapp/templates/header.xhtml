@@ -66,7 +66,8 @@
             <p:submenu label="#{msgs.Registration}">
                 <p:menuitem value="#{msgs.Registration}" icon="ui-icon-home" url="/public/registrationhome.faces"
                             ajax="false"/>
-                <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-document" url="/public/applicantlist.faces"
+                <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-document"
+                            url="/public/applicantlist.faces"
                             ajax="false"/>
                 <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
                             ajax="false"/>
@@ -74,11 +75,11 @@
                                             ajax="false"/>
                 -->
 
-                <p:separator />
+                <p:separator/>
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.registration_form}"
-                               rendered="#{userSession.general||userSession.company||userSession.admin}">
-                        <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
+                               rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
+                    <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                     url="/secure/prodreghome.faces" ajax="false"/>
                         <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                     url="/secure/appregistration.faces" ajax="false"
@@ -90,7 +91,7 @@
                     </p:submenu>
 
 
-                    <p:separator />
+                    <p:separator/>
                     <p:submenu label="#{msgs.current_applications}"
                                rendered="#{userSession.company||userSession.admin}">
                         <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
@@ -103,7 +104,7 @@
                         -->
                     </p:submenu>
 
-                    <p:separator />
+                    <p:separator/>
                     <!--
                                     <p:submenu label="#{msgs.registration_search}"
                                                rendered="#{userSession.admin||userSession.company||userSession.staff}">
@@ -114,8 +115,9 @@
                                     </p:submenu>
                     -->
 
-                    <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff}">
-                        <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
+                    <p:submenu label="#{msgs.reg_processing}"
+                               rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
+                    <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                     url="/internal/processprodlist.faces"/>
                         <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
                                     url="/internal/processapplist.faces"/>
@@ -125,9 +127,10 @@
                         -->
                     </p:submenu>
 
-                    <p:separator />
-                    <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff}">
-                        <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
+                    <p:separator/>
+                    <p:submenu label="#{msgs.post_reg_proces}"
+                               rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
+                    <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
                                     url="/internal/amdmtlist.faces"/>
                         <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-document"
                                     url="/internal/regexpiring.faces"/>
@@ -176,34 +179,6 @@
                 </p:submenu>
             </sec:isAuthenticated>
 
-            <!--
-                            <p:submenu label="Edit" icon="ui-icon-pencil">
-                                <p:menuitem value="Undo" url="#" icon="ui-icon-arrowreturnthick-1-w" helpText="CTRL+Z"></p:menuitem>
-                                <p:menuitem value="Redo" url="#" icon="ui-icon-arrowreturnthick-1-e" helpText="CTRL+Y"></p:menuitem>
-                            </p:submenu>
-
-                            <p:submenu label="Help" icon="ui-icon-help">
-                                <p:menuitem value="Contents" url="#" />
-                                <p:submenu label="Search" icon="ui-icon-search">
-                                    <p:submenu label="Text">
-                                        <p:menuitem value="Workspace" url="#" />
-                                    </p:submenu>
-                                    <p:menuitem value="File" url="#" />
-                                </p:submenu>
-                            </p:submenu>
-
-                            <p:submenu label="Actions" icon="ui-icon-gear">
-                                <p:submenu label="Ajax" icon="ui-icon-refresh">
-                                    <p:menuitem value="Save" actionListener="#{buttonBean.save}" icon="ui-icon-disk" update="messages"/>
-                                    <p:menuitem value="Update" actionListener="#{buttonBean.update}" icon="ui-icon-arrowrefresh-1-w" update="messages"/>
-                                </p:submenu>
-                                <p:submenu label="Non-Ajax" icon="ui-icon-newwin">
-                                    <p:menuitem value="Delete" actionListener="#{buttonBean.delete}" icon="ui-icon-close" update="messages" ajax="false"/>
-                                </p:submenu>
-                            </p:submenu>
-
-                            <p:menuitem value="Quit" url="http://www.primefaces.org" icon="ui-icon-close" />
-            -->
         </p:menubar>
 
         <p:dialog id="dialog" header="Login" widgetVar="logindlg">

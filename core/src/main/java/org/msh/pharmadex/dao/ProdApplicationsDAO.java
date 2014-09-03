@@ -72,7 +72,7 @@ public class ProdApplicationsDAO implements Serializable {
 //            p = builder.equal(invoiceJoin.<PaymentStatus>get("paymentStatus"), params.get("paymentStatus"));
 //        }
         if (params.get("users") != null) {
-            List<Integer> userIdList = new ArrayList<Integer>();
+            List<Long> userIdList = new ArrayList<Long>();
             for (User u : (List<User>) params.get("users")) {
                 userIdList.add(u.getUserId());
             }
@@ -104,7 +104,7 @@ public class ProdApplicationsDAO implements Serializable {
                 p = builder.equal(invoiceJoin.<PaymentStatus>get("paymentStatus"), param.getValue());
             }
             if (param.getKey().equals("users") && param.getValue() != null) {
-                List<Integer> userIdList = new ArrayList<Integer>();
+                List<Long> userIdList = new ArrayList<Long>();
                 for (User u : (List<User>) params.get("users")) {
                     userIdList.add(u.getUserId());
                 }

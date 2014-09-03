@@ -46,7 +46,7 @@ public class UserConverter implements Converter, Serializable {
         } else {
             try {
                 System.out.println("submittedValue == " + submittedValue);
-                int number = Integer.parseInt(submittedValue);
+                Long number = Long.valueOf(submittedValue);
 //                for (User p : getUserList()) {
 //                    if (p.getUserId().equals(number)) {
 //                        System.out.println("user name = "+p.getUsername());

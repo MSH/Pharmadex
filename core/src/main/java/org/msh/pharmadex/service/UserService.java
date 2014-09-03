@@ -43,7 +43,7 @@ public class UserService implements Serializable {
     private ReflectionSaltSource saltSource;
 
     @Transactional
-    public User findUser(int id) {
+    public User findUser(Long id) {
         return userDAO.findUser(id);
     }
 
@@ -51,7 +51,7 @@ public class UserService implements Serializable {
         return userDAO.allUsers();
     }
 
-    public List<User> findUsersBySite(Long id){
+    public List<User> findUsersBySite(Long id) {
         return userDAO.findByRxSite(id);
     }
 
@@ -80,10 +80,9 @@ public class UserService implements Serializable {
         return userDAO.saveUser(passwordGenerator(user));
     }
 
-    public String createUser(User user){
+    public String createUser(User user) {
         return userDAO.saveUser(passwordGenerator(user));
     }
-
 
 
     public User passwordGenerator(User user) {

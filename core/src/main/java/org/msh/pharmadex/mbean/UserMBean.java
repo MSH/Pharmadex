@@ -20,7 +20,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,6 +99,8 @@ public class UserMBean implements Serializable {
     }
 
     public String saveUser() {
+        if (selectedUser.getUserId() == 0)
+            selectedUser.setUserId(null);
         selectedUser.setRoles(roles.getTarget());
         if (selectedUser != null && selectedUser.getApplicant() != null && selectedUser.getApplicant().getApplcntId() != null)
             selectedUser.setApplicant(applicantService.findApplicant(selectedUser.getApplicant().getApplcntId()));

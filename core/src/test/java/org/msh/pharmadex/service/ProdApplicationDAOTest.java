@@ -61,7 +61,7 @@ public class ProdApplicationDAOTest {
 
         params = new HashMap<String, Object>();
         List<User> users = new ArrayList<User>();
-        users.add(userDAO.findUser(20));
+        users.add(userDAO.findUser(new Long(20)));
         params.put("users", users);
 //        params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);
 
