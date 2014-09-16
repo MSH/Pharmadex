@@ -30,14 +30,18 @@
         <param-value>true</param-value>
     </context-param>
 
-
-
-<!--
     <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Development</param-value>
+        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+        <param-value>true</param-value>
     </context-param>
--->
+
+
+    <!--
+        <context-param>
+            <param-name>javax.faces.PROJECT_STAGE</param-name>
+            <param-value>Development</param-value>
+        </context-param>
+    -->
 
     <!-- Creates the Spring Container shared by all Servlets and Filters -->
     <listener>
@@ -115,12 +119,12 @@
         <filter-name>facesExceptionFilter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
-<!--
-    <context-param>
-        <param-name>facelets.DEVELOPMENT</param-name>
-        <param-value>true</param-value>
-    </context-param>
--->
+    <!--
+        <context-param>
+            <param-name>facelets.DEVELOPMENT</param-name>
+            <param-value>true</param-value>
+        </context-param>
+    -->
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
@@ -145,16 +149,16 @@
     </welcome-file-list>
 
     <error-page>
-            <exception-type>java.lang.RuntimeException</exception-type>
-            <location>/pages/bug.xhtml</location>
+        <exception-type>java.lang.RuntimeException</exception-type>
+        <location>/pages/bug.xhtml</location>
     </error-page>
     <error-page>
-            <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-            <location>/pages/viewexpired.xhtml</location>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/pages/viewexpired.xhtml</location>
     </error-page>
     <error-page>
-            <error-code>404</error-code>
-            <location>/pages/404.xhtml</location>
+        <error-code>404</error-code>
+        <location>/pages/404.xhtml</location>
     </error-page>
 
     <servlet-mapping>
