@@ -3,6 +3,7 @@ package org.msh.pharmadex.dao;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.UserType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,9 @@ public class UserDAO implements Serializable {
     private static final long serialVersionUID = -3030011694490082788L;
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     EntityManager entityManager;
+
+    @Autowired
+    CountryDAO countryDAO;
 
     @Transactional
     public User findUser(Long id) {
@@ -67,7 +71,7 @@ public class UserDAO implements Serializable {
     public User findByUsername(String username) throws NoResultException {
         try {
             User u = (User) entityManager.createQuery("select u from User u where u.username = :username")
-                        .setParameter("username", username)
+                    .setParameter("username", username)
                     .getSingleResult();
             return u;
 
@@ -96,16 +100,16 @@ public class UserDAO implements Serializable {
 //                    return "A user with the same username already exist in the database. If you have forgotten your password or email address please click on the forgot password link";
 //            }
 //        } catch (NoResultException no) {
-            entityManager.persist(user);
-            return "persisted";
+        entityManager.persist(user);
+        return "persisted";
 //        }
 //        return "";
     }
 
     @Transactional
     public User updateUser(User user) {
+        user.getAddress().setCountry(countryDAO.find(user.getAddress().getCountry().getId()));
         user = entityManager.merge(user);
-        entityManager.flush();
         return user;
     }
 
@@ -132,7 +136,7 @@ public class UserDAO implements Serializable {
         Long i = (Long) entityManager.createQuery("select count(userId) from User u where upper(u.name) = upper(:username)")
                 .setParameter("username", username)
                 .getSingleResult();
-        if(i>0)
+        if (i > 0)
             return true;
         else
             return false;
@@ -143,7 +147,7 @@ public class UserDAO implements Serializable {
         Long i = (Long) entityManager.createQuery("select count(userId) from User u where upper(u.email) = upper(:email)")
                 .setParameter("email", email)
                 .getSingleResult();
-        if(i>0)
+        if (i > 0)
             return true;
         else
             return false;

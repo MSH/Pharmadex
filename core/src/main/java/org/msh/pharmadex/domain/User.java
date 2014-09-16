@@ -56,7 +56,7 @@ public class User extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String comments;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne
     @JoinColumn(name = "applcntId")
     private Applicant applicant;
 
@@ -202,12 +202,12 @@ public class User extends CreationDetail implements Serializable {
         this.phoneNo = phoneNo;
     }
 
-    public void setFaxNo(String faxNo) {
-        this.faxNo = faxNo;
-    }
-
     public String getFaxNo() {
         return faxNo;
+    }
+
+    public void setFaxNo(String faxNo) {
+        this.faxNo = faxNo;
     }
 
     public Address getAddress() {

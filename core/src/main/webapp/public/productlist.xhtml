@@ -43,21 +43,22 @@
                     <h:outputText value="#{product.regNo}"/>
                 </p:column>
 
-                <p:column filterBy="#{product.dosForm.dosForm}"
-                          sortBy="#{product.dosForm.dosForm}">
-                    <f:facet name="header">
-                        <h:outputText value="#{msgs.dos_form}"/>
-                    </f:facet>
-                    <h:outputText value="#{product.dosForm.dosForm}"/>
-                </p:column>
+                <!--                <p:column filterBy="#{product.dosForm.dosForm}"
+                                          sortBy="#{product.dosForm.dosForm}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.dos_form}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{product.dosForm.dosForm}"/>
+                                </p:column>
 
-                <p:column filterBy="#{product.dosStrength}"
-                          sortBy="#{product.dosStrength}">
-                    <f:facet name="header">
-                        <h:outputText value="#{msgs.dos_strength}"/>
-                    </f:facet>
-                    <h:outputText value="#{product.dosStrength}"/>
-                </p:column>
+                                <p:column filterBy="#{product.dosStrength}"
+                                          sortBy="#{product.dosStrength}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.dos_strength}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{product.dosStrength}"/>
+                                </p:column>
+                -->
 
                 <p:column filterBy="#{product.prodCategory}"
                           sortBy="#{product.prodCategory}"  >

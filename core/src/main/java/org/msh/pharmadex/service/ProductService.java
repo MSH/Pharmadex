@@ -24,29 +24,27 @@ public class ProductService implements Serializable {
 
 
     private static final long serialVersionUID = -5511467617579154680L;
-
-    @Autowired
-    private ProductDAO productDAO;
-
-    @Autowired
-    private InnDAO innDAO;
-
-    @Autowired
-    private AtcDAO atcDAO;
-
-    @Autowired
-    private ProdApplicationsService prodApplicationsService;
-
     @Autowired
     ApplicantDAO applicantDAO;
+    @Autowired
+    UserService userService;
+    @Autowired
+    private ProductDAO productDAO;
+    @Autowired
+    private InnDAO innDAO;
+    @Autowired
+    private AtcDAO atcDAO;
+    @Autowired
+    private ProdApplicationsService prodApplicationsService;
 
     public List<Product> findAllRegisteredProduct() {
         return productDAO.findRegProducts();
     }
 
     @Transactional
-    public Product updateProduct(Product prod) throws Exception{
-
+    public Product updateProduct(Product prod) {
+        prod.setApplicant(applicantDAO.findApplicant(prod.getApplicant().getApplcntId()));
+        prod.getProdApplications().setUser(userService.findUser(prod.getProdApplications().getUser().getUserId()));
         return productDAO.updateProduct(prod);
     }
 

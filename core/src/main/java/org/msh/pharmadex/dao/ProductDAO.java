@@ -55,31 +55,37 @@ public class ProductDAO implements Serializable {
 
     @Transactional
     public Product updateProduct(Product product) {
-        Product prod = entityManager.merge(product);
-        Hibernate.initialize(prod.getInns());
-        Hibernate.initialize(prod.getAtcs());
+        try {
+
+            Product prod = entityManager.merge(product);
+            Hibernate.initialize(prod.getInns());
+            Hibernate.initialize(prod.getAtcs());
 //        Hibernate.initialize(prod.getCompanies());
-        Hibernate.initialize(prod.getProdApplications());
-        Hibernate.initialize(prod.getApplicant());
-        if (prod.getProdApplications() != null) {
-            Hibernate.initialize(prod.getProdApplications().getInvoices());
-            Hibernate.initialize(prod.getProdApplications().getComments());
-            Hibernate.initialize(prod.getProdApplications().getMails());
-            Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
-            Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
-            Hibernate.initialize(prod.getProdApplications().getTimeLines());
-            Hibernate.initialize(prod.getProdApplications().getPricing());
-            if (prod.getProdApplications().getReviews() != null)
-                Hibernate.initialize(prod.getProdApplications().getReviews());
-            if (prod.getProdApplications().getPricing() != null) {
-                Hibernate.initialize(prod.getProdApplications().getPricing().getDrugPrices());
+            Hibernate.initialize(prod.getProdApplications());
+            Hibernate.initialize(prod.getApplicant());
+            if (prod.getProdApplications() != null) {
+                Hibernate.initialize(prod.getProdApplications().getInvoices());
+                Hibernate.initialize(prod.getProdApplications().getComments());
+                Hibernate.initialize(prod.getProdApplications().getMails());
+                Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
+                Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
+                Hibernate.initialize(prod.getProdApplications().getTimeLines());
+                Hibernate.initialize(prod.getProdApplications().getPricing());
+                if (prod.getProdApplications().getReviews() != null)
+                    Hibernate.initialize(prod.getProdApplications().getReviews());
+                if (prod.getProdApplications().getPricing() != null) {
+                    Hibernate.initialize(prod.getProdApplications().getPricing().getDrugPrices());
+                }
+                if (prod.getProdCompanies() != null) {
+                    Hibernate.initialize(prod.getProdCompanies());
+                }
             }
-            if(prod.getProdCompanies() !=null){
-                Hibernate.initialize(prod.getProdCompanies());
-            }
+            return prod;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
         }
 
-        return prod;
     }
 
     public List<Product> findRegProducts() {

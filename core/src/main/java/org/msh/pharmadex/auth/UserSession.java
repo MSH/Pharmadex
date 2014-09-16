@@ -23,6 +23,8 @@ import java.util.List;
 public class UserSession implements Serializable {
 
     private static final long serialVersionUID = 2473412644164656187L;
+    @Autowired
+    UserService userService;
     private UserAccess userAccess;
     private boolean displayMessagesKeys;
     private String loggedInUser;
@@ -33,8 +35,7 @@ public class UserSession implements Serializable {
     private ProdAppChecklist prodAppChecklist;
     private ProdApplications prodApplications;
     private Review review;
-
-
+    private Long applcantID;
     private boolean admin = false;
     private boolean company = false;
     private boolean staff = false;
@@ -45,17 +46,11 @@ public class UserSession implements Serializable {
     private boolean head = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
-
-
-    @Autowired
-    UserService userService;
-
     @Autowired
     private UserAccessService userAccessService;
 
     @Autowired
     private OnlineUserBean onlineUsersHome;
-
 
 
     public void login() {
@@ -74,14 +69,13 @@ public class UserSession implements Serializable {
             return "";
     }
 
-    public String editUser() {
-        return "/secure/usersettings.faces";
-    }
-
     public void setLoggedInUser(String loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
 
+    public String editUser() {
+        return "/secure/usersettings.faces";
+    }
 
     /**
      * Register the logout when the user session is finished by time-out
@@ -241,16 +235,15 @@ public class UserSession implements Serializable {
 //    	}    	
 //    }
 
+    public UserAccess getUserAccess() {
+        return userAccess;
+    }
 
     /**
      * @param userAccess the userLogin to set
      */
     public void setUserAccess(UserAccess userAccess) {
         this.userAccess = userAccess;
-    }
-
-    public UserAccess getUserAccess() {
-        return userAccess;
     }
 
     public boolean isDisplayMessagesKeys() {
@@ -399,5 +392,13 @@ public class UserSession implements Serializable {
 
     public void setApplicant(Applicant applicant) {
         this.applicant = applicant;
+    }
+
+    public Long getApplcantID() {
+        return applcantID;
+    }
+
+    public void setApplcantID(Long applcantID) {
+        this.applcantID = applcantID;
     }
 }
