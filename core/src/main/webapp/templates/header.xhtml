@@ -14,30 +14,40 @@
         width: 220px !important;
     }
 </style>
+
 <div class="ui-widget ui-widget-header" style="height: 100px;">
     <h:form>
         <div id="logo">
-            <h1>PHARMADEX</h1>
-            <h:panelGroup styleClass="logoutWelcomeId">
-                <sec:isAuthenticated>
-                    <p:commandLink value="Logged in as #{userSession.loggedInUser} |"></p:commandLink>
-                    <p:commandLink action="#{userSession.editUser}" value="Settings |" immediate="true"
-                                   ajax="false">
-                        <f:setPropertyActionListener value="#{userSession.userAccess.user}"
-                                                     target="#{registerUserMbean.user}"/>
-                    </p:commandLink>
-                    <p:commandLink action="#{userAuthHandler.logout}" value="Logout" ajax="false"/>
-                    <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
-                    -->                            </sec:isAuthenticated>
-                <sec:isAnonymous>
-                    <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
-                    -->                                <h:outputLink id="loginLink" value="javascript:void(0)"
-                                                                     onclick="logindlg.show()"
-                                                                     title="login">
-                    <p:graphicImage value="/resources/images/log_in.png"/>
-                </h:outputLink>
-                </sec:isAnonymous>
-            </h:panelGroup>
+            <h:panelGrid columns="3" width="100%">
+                <h1>PHARMADEX</h1>
+                <h:panelGrid columns="1" cellspacing="5">
+                </h:panelGrid>
+
+                <h:panelGroup styleClass="logoutWelcomeId">
+                    <sec:isAuthenticated>
+                        <p:commandLink value="Logged in as #{userSession.loggedInUser} |"></p:commandLink>
+                        <p:commandLink action="#{userSession.editUser}" value="Settings |" immediate="true"
+                                       ajax="false">
+                            <f:setPropertyActionListener value="#{userSession.userAccess.user}"
+                                                         target="#{registerUserMbean.user}"/>
+                        </p:commandLink>
+                        <p:commandLink action="#{userAuthHandler.logout}" value="Logout" ajax="false"/>
+                        <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
+                        -->                            </sec:isAuthenticated>
+                    <sec:isAnonymous>
+                        <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
+                        -->
+                        <h:panelGrid columns="1">
+
+                            <h:outputLink id="loginLink" value="javascript:void(0)"
+                                          onclick="logindlg.show()"
+                                          title="login">
+                                <p:graphicImage value="/resources/images/log_in.png"/>
+                            </h:outputLink>
+                        </h:panelGrid>
+                    </sec:isAnonymous>
+                </h:panelGroup>
+            </h:panelGrid>
         </div>
     </h:form>
 </div>
@@ -194,7 +204,6 @@
         </p:menubar>
 
         <p:dialog id="dialog" header="Login" widgetVar="logindlg">
-
             <table align="center">
                 <tr>
                     <td>

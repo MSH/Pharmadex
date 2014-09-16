@@ -15,34 +15,42 @@
 </style>
 
 
-<div class="ui-widget ui-widget-header" style="height: 120px;">
+<div class="ui-widget ui-widget-header" style="height: 130px;">
     <h:form>
         <div id="logo">
-            <h:panelGroup style="align-content: center;">
+            <h:panelGrid columns="3" width="100%">
                 <a href="${request.contextPath}/home.faces">
                     <img src="${request.contextPath}/resources/images/header.png"/>
                 </a>
-            </h:panelGroup>
-            <h:panelGroup styleClass="logoutWelcomeId">
-                <sec:isAuthenticated>
-                    <p:commandLink value="Logged in as #{userSession.loggedInUser} |"></p:commandLink>
-                    <p:commandLink action="#{userSession.editUser}" value="Settings |" immediate="true"
-                                   ajax="false">
-                        <f:setPropertyActionListener value="#{userSession.userAccess.user}"
-                                                     target="#{registerUserMbean.user}"/>
-                    </p:commandLink>
-                    <p:commandLink action="#{userAuthHandler.logout}" value="Logout" ajax="false"/>
-                    <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
-                    -->                            </sec:isAuthenticated>
-                <sec:isAnonymous>
-                    <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
-                    -->                                <h:outputLink id="loginLink" value="javascript:void(0)"
-                                                                         onclick="logindlg.show()"
-                                                                         title="login">
-                    <p:graphicImage value="/resources/images/log_in.png"/>
-                </h:outputLink>
-                </sec:isAnonymous>
-            </h:panelGroup>
+                <h:panelGrid columns="1" cellspacing="5">
+                </h:panelGrid>
+
+                <h:panelGroup styleClass="logoutWelcomeId">
+                    <sec:isAuthenticated>
+                        <p:commandLink value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"></p:commandLink>
+                        <p:commandLink action="#{userSession.editUser}" value="#{msgs.admin_settings} |"
+                                       immediate="true"
+                                       ajax="false">
+                            <f:setPropertyActionListener value="#{userSession.userAccess.user}"
+                                                         target="#{registerUserMbean.user}"/>
+                        </p:commandLink>
+                        <p:commandLink action="#{userAuthHandler.logout}" value="#{msgs.admin_logout}" ajax="false"/>
+                        <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
+                        -->                            </sec:isAuthenticated>
+                    <sec:isAnonymous>
+                        <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
+                        -->
+
+                        <h:panelGrid columns="1">
+                            <h:outputLink id="loginLink" value="javascript:void(0)"
+                                          onclick="logindlg.show()"
+                                          title="login">
+                                <p:graphicImage value="/resources/images/log_in.png"/>
+                            </h:outputLink>
+                        </h:panelGrid>
+                    </sec:isAnonymous>
+                </h:panelGroup>
+            </h:panelGrid>
         </div>
     </h:form>
 </div>
@@ -79,7 +87,7 @@
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.registration_form}"
                                rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
-                    <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
+                        <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                     url="/secure/prodreghome.faces" ajax="false"/>
                         <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                     url="/secure/appregistration.faces" ajax="false"
@@ -117,7 +125,7 @@
 
                     <p:submenu label="#{msgs.reg_processing}"
                                rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
-                    <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
+                        <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                     url="/internal/processprodlist.faces"/>
                         <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
                                     url="/internal/processapplist.faces"/>
@@ -130,7 +138,7 @@
                     <p:separator/>
                     <p:submenu label="#{msgs.post_reg_proces}"
                                rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
-                    <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
+                        <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
                                     url="/internal/amdmtlist.faces"/>
                         <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-document"
                                     url="/internal/regexpiring.faces"/>

@@ -30,7 +30,7 @@ public class GlobalLists {
     public List<ProdCategory> getProdCategories() {
         List<ProdCategory> prodCategories = new ArrayList<ProdCategory>();
         prodCategories.add(ProdCategory.HUMAN);
-        prodCategories.add(ProdCategory.VETENIARY);
+        prodCategories.add(ProdCategory.VETERINARY);
         return prodCategories;
     }
 
