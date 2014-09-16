@@ -41,6 +41,7 @@ public class Applicant extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String faxNo;
 
+    @Column(length = 500)
     private String email;
 
     @Column(length = 500)
@@ -67,7 +68,7 @@ public class Applicant extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date regExpiryDate;
 
-    @OneToMany(mappedBy = "applicant", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "applicant", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private List<User> users;
 
     @OneToMany(mappedBy = "applicant", cascade = {CascadeType.ALL})

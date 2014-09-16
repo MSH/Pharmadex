@@ -13,10 +13,10 @@
                         var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}" forceSelection="false"
                         required="true" requiredMessage="#{msgs.valid_value_req}" rendered="#{input}"
                         converter="#{manufConverter}" minQueryLength="2" maxResults="10">
-            <p:ajax event="itemSelect" update=":addcompany:companydetail"
-                    listener="#{companyMBean.companyChangeEventListener}"/>
+            <p:ajax event="itemSelect" update="@form"
+                    listener="#{companyMBean.companyChangeEventListener}" partialSubmit="true"/>
             <p:ajax event="change" listener="#{companyMBean.companyChangeEventListener}"
-                    update=":addcompany:companydetail"/>
+                    update="@form" partialSubmit="true"/>
         </p:autoComplete>
         <h:outputLabel value="#{companydata.companyName}" rendered="#{!input}" style="font-weight: bold;"/>
 
@@ -55,23 +55,17 @@
             <f:selectItems value="#{globalLists.companyType}" var="type" itemLabel="#{msgs[type.key]}"
                            itemValue="#{type}"/>
         </p:selectManyCheckbox>
-    </h:panelGrid>
 
-    <h:panelGrid columns="2" cellpadding="10px" cellspacing="6px" id="gmpdetail" width="100%"
-                 columnClasses="col1, col2">
         <p:outputLabel value="#{msgs.gmpinsp_done}" for="gmpChkbox" styleClass="label"/>
         <p:selectBooleanCheckbox value="#{companydata.gmpInsp}" id="gmpChkbox">
-            <p:ajax update=":addcompany:gmpdetail" listener="#{companyMBean.gmpChangeListener}"
-                    process=":addcompany:gmpdetail"/>
         </p:selectBooleanCheckbox>
-        <p:outputLabel value="#{msgs.gmp_cert_no}" styleClass="label"
-                       rendered="#{companyMBean.showGMP}" for="gmpCertNo"/>
-        <p:inputText id="gmpCertNo" value="#{companydata.gmpCertNo}"
-                     rendered="#{companyMBean.showGMP}"/>
-        <p:outputLabel value="#{msgs.gmp_cert_date}" styleClass="label"
-                       rendered="#{companyMBean.showGMP}" for="gmpCertDt"/>
-        <p:inputText id="gmpCertDt" value="#{companydata.gmpInspDate}"
-                     rendered="#{companyMBean.showGMP}"/>
+
+        <p:outputLabel value="#{msgs.gmp_cert_no}" styleClass="label" for="gmpCertNo"/>
+        <p:inputText id="gmpCertNo" value="#{companydata.gmpCertNo}"/>
+
+        <p:outputLabel value="#{msgs.gmp_cert_date}" styleClass="label" for="gmpCertDt"/>
+        <p:calendar value="#{companydata.gmpInspDate}" id="gmpCertDt" showOn="button"/>
     </h:panelGrid>
+
 
 </ui:composition>

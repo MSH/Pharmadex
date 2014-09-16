@@ -76,48 +76,68 @@ public class ApplicantService implements Serializable {
 
     @Transactional
     public Applicant saveApp(Applicant applicant, User userParam) {
-            applicant.setState(ApplicantState.NEW_APPLICATION);
-            if (applicant.getUsers() == null ) {
-                applicant.setUsers(new ArrayList<User>());
-                applicant.getUsers().add(userParam);
-            }
+        applicant.setState(ApplicantState.NEW_APPLICATION);
+        if (applicant.getUsers() == null) {
+            applicant.setUsers(new ArrayList<User>());
+            applicant.getUsers().add(userParam);
+        }
 
-            for (User user : applicant.getUsers()) {
-                if (user.getType().equals(UserType.COMPANY)) {
-                    user.setApplicant(applicant);
-                    applicant.setContactName(user.getName());
-                }
-                if (user.getRoles() == null || user.getRoles().size() < 1) {
-                    List<Role> rList = new ArrayList<Role>();
-                    Role r = roleDAO.findOne(1);
-                    rList.add(r);
-                    r = roleDAO.findOne(4);
-                    rList.add(r);
-                    user.setRoles(rList);
-                }
+        for (User user : applicant.getUsers()) {
+            if (user.getType().equals(UserType.COMPANY)) {
+                user.setApplicant(applicant);
+                applicant.setContactName(user.getName());
             }
-            Applicant a = applicantDAO.saveApplicant(applicant);
-            System.out.println("applicant id = " + applicant.getApplcntId());
-            globalEntityLists.setRegApplicants(null);
-            applicantConverter.setApplicantList(null);
-            applicants = null;
-            return a;
+            if (user.getRoles() == null || user.getRoles().size() < 1) {
+                List<Role> rList = new ArrayList<Role>();
+                Role r = roleDAO.findOne(1);
+                rList.add(r);
+                r = roleDAO.findOne(4);
+                rList.add(r);
+                user.setRoles(rList);
+            }
+        }
+        Applicant a = applicantDAO.saveApplicant(applicant);
+        System.out.println("applicant id = " + applicant.getApplcntId());
+        globalEntityLists.setRegApplicants(null);
+        applicantConverter.setApplicantList(null);
+        applicants = null;
+        return a;
     }
 
     @Transactional
-    public boolean updateApp(Applicant applicant, User user) {
+    public Applicant updateApp(Applicant applicant, User user) {
         try {
-            applicantDAO.updateApplicant(applicant);
             System.out.println("applicant id = " + applicant.getApplcntId());
             if (user != null) {
+                user = userService.findUser(user.getUserId());
                 user.setApplicant(applicant);
-                userService.updateUser(user);
+                user = userService.updateUser(user);
             }
+
+            for (User eachuser : applicant.getUsers()) {
+                if (eachuser.getType().equals(UserType.COMPANY)) {
+                    eachuser.setApplicant(applicant);
+                    applicant.setContactName(eachuser.getName());
+                }
+                if (eachuser.getUserId() == null) {
+                    if (eachuser.getRoles() == null || eachuser.getRoles().size() < 1) {
+                        List<Role> rList = new ArrayList<Role>();
+                        Role r = roleDAO.findOne(1);
+                        rList.add(r);
+                        r = roleDAO.findOne(4);
+                        rList.add(r);
+                        eachuser.setRoles(rList);
+                    }
+                }
+            }
+
+            applicant = applicantDAO.updateApplicant(applicant);
+
             applicants = null;
-            return true;
+            return applicant;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

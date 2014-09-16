@@ -1,8 +1,10 @@
 package org.msh.pharmadex.dao;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +29,16 @@ public class ApplicantDAO implements Serializable {
     @PersistenceContext
     EntityManager entityManager;
 
+    @Autowired
+    CountryDAO countryDAO;
+
     @Transactional(readOnly = true)
     public Applicant findApplicant(long id) {
-        return entityManager.find(Applicant.class, id);
+        Applicant applicant = entityManager.find(Applicant.class, id);
+        if (applicant.getUsers() != null) {
+            Hibernate.initialize(applicant.getUsers());
+        }
+        return applicant;
     }
 
     @Transactional(readOnly = true)
@@ -70,10 +79,10 @@ public class ApplicantDAO implements Serializable {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public String updateApplicant(Applicant applicant) {
-        entityManager.merge(applicant);
-        entityManager.flush();
-        return "updated";
+    public Applicant updateApplicant(Applicant applicant) {
+        applicant.getAddress().setCountry(countryDAO.find(applicant.getAddress().getCountry().getId()));
+        applicant = entityManager.merge(applicant);
+        return applicant;
     }
 
 

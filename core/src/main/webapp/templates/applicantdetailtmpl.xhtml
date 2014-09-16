@@ -49,11 +49,14 @@
         <p:inputText value="#{applicantdata.website}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.website}" rendered="#{!input}" style="font-weight: bold;"/>
 
-<!--
-        <h:outputLabel value="#{msgs.global_comment}"/>
-        <p:inputText value="#{applicantdata.comment}" rendered="#{input}"/>
-        <h:outputLabel value="#{applicantdata.comment}" rendered="#{!input}" style="font-weight: bold;"/>
--->
+        <p:outputLabel value="#{msgs.applicant_email}"/>
+        <p:inputText value="#{applicantdata.email}" rendered="#{input}"/>
+        <h:outputLabel value="#{applicantdata.email}" rendered="#{!input}" style="font-weight: bold;"/>
+        <!--
+                <h:outputLabel value="#{msgs.global_comment}"/>
+                <p:inputText value="#{applicantdata.comment}" rendered="#{input}"/>
+                <h:outputLabel value="#{applicantdata.comment}" rendered="#{!input}" style="font-weight: bold;"/>
+        -->
 
     </h:panelGrid>
 

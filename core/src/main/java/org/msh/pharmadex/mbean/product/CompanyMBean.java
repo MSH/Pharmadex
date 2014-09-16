@@ -1,10 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Company;
-import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ProdCompany;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.CountryService;
@@ -17,12 +14,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -59,9 +54,9 @@ public class CompanyMBean implements Serializable {
         try {
             facesContext = FacesContext.getCurrentInstance();
             List<ProdCompany> prodCompanies = companyService.addCompany(regHomeMbean.getProduct(), selectedCompany, companyTypes);
-            if(prodCompanies==null){
+            if (prodCompanies == null) {
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_value_req")));
-            }else{
+            } else {
                 regHomeMbean.setCompanies(prodCompanies);
             }
             regHomeMbean.setShowCompany(false);
@@ -82,7 +77,8 @@ public class CompanyMBean implements Serializable {
     public void companyChangeEventListener(SelectEvent event) {
         logger.error("inside companyChangeEventListener");
         logger.error("Selected company is " + selectedCompany.getCompanyName());
-        logger.error("event "+event.getObject());
+        logger.error("event " + event.getObject());
+        gmpChangeListener();
 
 
     }
@@ -90,7 +86,8 @@ public class CompanyMBean implements Serializable {
     public void companyChangeEventListener(AjaxBehaviorEvent event) {
         logger.error("inside companyChangeEventListener");
         logger.error("Selected company is " + selectedCompany.getCompanyName());
-        logger.error("event "+event.getSource());
+        logger.error("event " + event.getSource());
+        gmpChangeListener();
 
 
     }

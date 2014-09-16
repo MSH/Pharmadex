@@ -20,7 +20,6 @@ import org.springframework.web.util.WebUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.print.attribute.standard.Severity;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,32 +37,24 @@ import java.util.ResourceBundle;
 @Component
 @Scope("session")
 public class ApplicantMBean implements Serializable {
+    @Autowired
+    ApplicantService applicantService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    CountryService countryService;
+    @Autowired
+    GlobalEntityLists globalEntityLists;
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private Applicant selectedApplicant;
     private List<Applicant> allApplicant;
     private List<Applicant> filteredApplicant;
     private boolean showAdd = false;
     private User user;
-
-    @Autowired
-    ApplicantService applicantService;
-
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    CountryService countryService;
-
     @Autowired
     private UserSession userSession;
-
-    @Autowired
-    GlobalEntityLists globalEntityLists;
-
     private ArrayList<User> userList;
-
-    FacesContext facesContext = FacesContext.getCurrentInstance();
-    ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     @PostConstruct
     private void init() {
@@ -99,7 +90,7 @@ public class ApplicantMBean implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         try {
             selectedApplicant.setSubmitDate(new Date());
-            if(selectedApplicant.getUsers()==null && user.getEmail() == null) {
+            if (selectedApplicant.getUsers() == null && user.getEmail() == null) {
                 FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
                 error.setSeverity(FacesMessage.SEVERITY_ERROR);
                 facesContext.addMessage(null, error);
@@ -121,7 +112,7 @@ public class ApplicantMBean implements Serializable {
             } else {
                 return null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
             return null;
@@ -189,16 +180,7 @@ public class ApplicantMBean implements Serializable {
     }
 
     public List<User> completeUserList(String query) {
-        List<User> suggestions = new ArrayList<User>();
-
-        if (query == null || query.equalsIgnoreCase(""))
-            return getAvailableUsers();
-
-        for (User eachInn : getAvailableUsers()) {
-            if (eachInn.getName().toLowerCase().startsWith(query.toLowerCase()))
-                suggestions.add(eachInn);
-        }
-        return suggestions;
+        return JsfUtils.completeSuggestions(query, getAvailableUsers());
     }
 
     public String cancelAddUser() {
@@ -217,16 +199,16 @@ public class ApplicantMBean implements Serializable {
         return selectedApplicant;
     }
 
+    public void setSelectedApplicant(Applicant selectedApplicant) {
+        this.selectedApplicant = selectedApplicant;
+    }
+
     public List<Applicant> getAllApplicant() {
         return globalEntityLists.getRegApplicants();
     }
 
     public void setAllApplicant(List<Applicant> allApplicant) {
         this.allApplicant = allApplicant;
-    }
-
-    public void setSelectedApplicant(Applicant selectedApplicant) {
-        this.selectedApplicant = selectedApplicant;
     }
 
     public boolean isShowAdd() {
