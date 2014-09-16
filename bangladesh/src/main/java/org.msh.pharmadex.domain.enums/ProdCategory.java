@@ -2,7 +2,7 @@ package org.msh.pharmadex.domain.enums;
 
 public enum ProdCategory {
     HUMAN,
-    VETENIARY,
+    VETERINARY,
     R,
     E;
 

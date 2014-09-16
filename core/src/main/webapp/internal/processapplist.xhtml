@@ -5,32 +5,52 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="../templates/registration_layout.xhtml">
     <ui:define name="regcontent">
-        <div class="post">
-            <h1 class="title ui-widget-header ui-corner-all">#{msgs.submitted_applications}</h1>
-        </div>
+        <p:messages id="messages"/>
 
         <h:form prependId="false">
-            <p:dataTable id="applicants" var="applicant" value="#{processAppBn.pendingApps}">
-                <p:column headerText="#{msgs.registration_applicant}">
-                    <p:commandLink value="#{applicant.appName}" action="/internal/processapp.faces" ajax="false">
-                        <f:setPropertyActionListener value="#{applicant}" target="#{processAppBn.applicant}"/>
-                    </p:commandLink>
-                </p:column>
+            <p:panel header="#{msgs.registration_applicant}">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <h:outputLabel value="#{msgs.search_applicant}: " for="basicPojo"/>
+                    <p:autoComplete value="#{processAppListBn.applicant}" id="basicPojo"
+                                    completeMethod="#{processAppListBn.completeApplicantList}"
+                                    var="p" itemLabel="#{p.appName}" itemValue="#{p.applcntId}"
+                                    converter="#{applicantConverter}" forceSelection="true"
+                            />
+                    <p:commandButton value="#{msgs.global_submit}" action="#{processAppListBn.searchApplicant}"
+                                     ajax="false">
+                    </p:commandButton>
+                </h:panelGrid>
 
-                <p:column headerText="#{msgs.applicant_submitdate}">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{applicant.submitDate}"/>
-                </p:column>
 
-                <p:column headerText="#{msgs.registration_status}">
-                    #{msgs[applicant.state.key]}
-                </p:column>
+            </p:panel>
 
-                <p:column headerText="#{msgs.applicant_country}">
-                    #{msgs[applicant.address.country.key]}
-                </p:column>
+            <p:panel header="#{msgs.recieved_applications}">
+                <p:dataTable id="applicants" var="applicant" value="#{processAppListBn.pendingApps}">
+                    <p:column headerText="#{msgs.registration_applicant}">
+                        <p:commandLink value="#{applicant.appName}" action="#{processAppListBn.goToAppDetail}"
+                                       ajax="false">
+                            <f:setPropertyActionListener value="#{applicant.applcntId}"
+                                                         target="#{userSession.applcantID}"/>
+                        </p:commandLink>
+                    </p:column>
 
-            </p:dataTable>
+                    <p:column headerText="#{msgs.applicant_submitdate}">
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{applicant.submitDate}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.registration_status}">
+                        #{msgs[applicant.state.key]}
+                    </p:column>
+
+                    <p:column headerText="#{msgs.applicant_country}">
+                        #{msgs[applicant.address.country.key]}
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
 
         </h:form>
+
+
     </ui:define>
 </ui:composition>

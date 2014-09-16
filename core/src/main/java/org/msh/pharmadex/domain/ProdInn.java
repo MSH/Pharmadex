@@ -14,21 +14,22 @@ public class ProdInn extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @Column(length = 255, nullable = true)
-    private String quantity;
+    @Column(name = "dosage_strength", length = 255)
+    private String dosStrength;
 
-    @Column(length = 255, nullable = true)
-    private String uom;
+    @OneToOne
+    @JoinColumn(name = "DOSUNIT_ID")
+    private DosUom dosUnit = new DosUom();
 
     @Column(length = 255, nullable = true)
     private String RefStd;
 
     @OneToOne
-    @JoinColumn(name="INN_ID")
+    @JoinColumn(name = "INN_ID")
     private Inn inn;
 
     @ManyToOne
-    @JoinColumn(name="prod_id", nullable = false)
+    @JoinColumn(name = "prod_id", nullable = false)
     private Product product;
 
     public Long getId() {
@@ -39,20 +40,20 @@ public class ProdInn extends CreationDetail implements Serializable {
         this.id = id;
     }
 
-    public String getQuantity() {
-        return quantity;
+    public String getDosStrength() {
+        return dosStrength;
     }
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
+    public void setDosStrength(String dosStrength) {
+        this.dosStrength = dosStrength;
     }
 
-    public String getUom() {
-        return uom;
+    public DosUom getDosUnit() {
+        return dosUnit;
     }
 
-    public void setUom(String uom) {
-        this.uom = uom;
+    public void setDosUnit(DosUom dosUnit) {
+        this.dosUnit = dosUnit;
     }
 
     public String getRefStd() {

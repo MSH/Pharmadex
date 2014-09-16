@@ -22,7 +22,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "PROD_ID")
     private Product prod;
 
