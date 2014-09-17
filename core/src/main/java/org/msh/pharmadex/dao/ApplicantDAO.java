@@ -32,7 +32,7 @@ public class ApplicantDAO implements Serializable {
     @Autowired
     CountryDAO countryDAO;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Applicant findApplicant(long id) {
         Applicant applicant = entityManager.find(Applicant.class, id);
         if (applicant.getUsers() != null) {
@@ -81,8 +81,8 @@ public class ApplicantDAO implements Serializable {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Applicant updateApplicant(Applicant applicant) {
         applicant.getAddress().setCountry(countryDAO.find(applicant.getAddress().getCountry().getId()));
-        applicant = entityManager.merge(applicant);
-        return applicant;
+        Applicant a = entityManager.merge(applicant);
+        return a;
     }
 
 

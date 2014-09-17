@@ -3,7 +3,6 @@ package org.msh.pharmadex.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,10 +29,6 @@ public class Role extends CreationDetail implements Serializable {
     private String description;
 
 
-    @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "userId"))
-    private List<User> users;
-
     public Integer getRoleId() {
         return roleId;
     }
@@ -48,14 +43,6 @@ public class Role extends CreationDetail implements Serializable {
 
     public void setRolename(String rolename) {
         this.rolename = rolename;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 
     public String getDisplayname() {

@@ -144,13 +144,12 @@
                 </h:panelGroup>
 
                 <h:panelGroup id="multipleuser1" rendered="#{appSelectMBean.showUserSelect}">
-                    <p:dataTable id="usertable" var="user" value="#{appSelectMBean.selectedApplicant.users}"
-                                 style="width:100%;" selection="#{appSelectMBean.applicantUser}"
+                    <p:dataTable id="usertable" var="user" value="#{appSelectMBean.users}"
+                                 style="width:100%;" selection="#{appSelectMBean.selectedUser}"
                                  rowKey="#{user.userId}">
-                        <f:facet name="header">
-                            <p:commandLink value="#{msgs.global_add}" oncomplete="addUserDlg.show()"
-                                           immediate="true"/>
-                        </f:facet>
+                        <p:ajax event="rowSelectRadio" listener="#{appSelectMBean.onRowSelect}"
+                                update=":reghome:messages"/>
+
                         <p:column selectionMode="single"/>
 
                         <p:column headerText="#{msgs.User_name}">

@@ -92,6 +92,7 @@ public class ProcessAppBn {
             HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
+            globalEntityLists.setRegApplicants(null);
             return "/public/applicantlist.faces";
         } catch (Exception e) {
             e.printStackTrace();

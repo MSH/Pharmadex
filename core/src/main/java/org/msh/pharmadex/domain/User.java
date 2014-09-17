@@ -63,7 +63,7 @@ public class User extends CreationDetail implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date registrationDate;
 
-    @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
     private List<Role> roles;
 

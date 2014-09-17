@@ -73,11 +73,13 @@
                             <h:outputLabel/>
 
                             <p:outputLabel value="#{msgs.applicant_type}*"/>
-                            <p:autoComplete id="mod" value="#{processAppBn.applicant.applicantType}"
-                                            completeMethod="#{applicantMBean.completeApplicantTypeList}" dropdown="true"
-                                            var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
-                                            converter="#{applicantTypeConverter}" required="true">
-                            </p:autoComplete>
+                            <p:selectOneMenu id="dosUnit" value="#{processAppBn.applicant.applicantType.id}"
+                                             required="true">
+                                <f:selectItem itemLabel="-" itemValue=""/>
+                                <f:selectItems value="#{globalEntityLists.applicantTypes}" var="appType"
+                                               itemLabel="#{appType.name}"
+                                               itemValue="#{appType.id}"/>
+                            </p:selectOneMenu>
 
                             <h:outputLabel/>
                             <h:outputLabel/>
@@ -111,10 +113,6 @@
                             </h:panelGrid>
 
                             <p:dataTable id="usertable" var="user" value="#{processAppBn.userList}" style="width:100%;">
-                                <f:facet name="header">
-                                    <p:commandLink value="#{msgs.global_add}" oncomplete="addUserDlg.show()"
-                                                   immediate="true"/>
-                                </f:facet>
                                 <p:column headerText="#{msgs.User_name}">
                                     <h:outputText value="#{user.name}"/>
                                 </p:column>

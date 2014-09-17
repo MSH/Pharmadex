@@ -56,9 +56,11 @@ public class UserDAO implements Serializable {
 
     @Transactional
     public List<User> findByApplicant(Long id) {
-        return entityManager.createQuery("select u from User u where u.applicant.applcntId = :applicantId ")
+        List<User> u = entityManager.createQuery("select u from User u where u.applicant.applcntId = :applicantId ")
                 .setParameter("applicantId", id)
                 .getResultList();
+        Hibernate.initialize(u);
+        return u;
     }
 
     @Transactional
