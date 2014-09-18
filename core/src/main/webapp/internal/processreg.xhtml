@@ -7,7 +7,7 @@
 <ui:define name="content">
 
 <h:form id="reghome">
-<p:growl id="growl" showDetail="true" />
+<p:growl id="growl" showDetail="true"/>
 
 <h:panelGrid columns="2" columnClasses="menu,content">
 <h:panelGrid columns="2" columnClasses="menu,content">
@@ -23,7 +23,7 @@
                     action="#{processProdBn.findReview}" ajax="false"/>
 
         <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" onclick="regDlg.show()"
-                    rendered="#{processProdBn.canRegister}"  />
+                    rendered="#{processProdBn.canRegister}"/>
         <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear" onclick="moderatordlg.show()"
                     rendered="#{userSession.admin||userSession.staff}"/>
         <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear" oncomplete="assignreviewdlg.show()"
@@ -115,27 +115,31 @@
     <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
         <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
         <p:selectBooleanButton id="feerecieved" value="#{processProdBn.prodApplications.feeReceived}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
 
         <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label" for="appverify"/>
         <p:selectBooleanButton id="appverify" value="#{processProdBn.prodApplications.applicantVerified}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label" for="prodverify"/>
         <p:selectBooleanButton id="prodverify" value="#{processProdBn.prodApplications.productVerified}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label" for="dosscomplete"/>
         <p:selectBooleanButton id="dosscomplete" value="#{processProdBn.prodApplications.dossierReceived}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}" />
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
     </h:panelGrid>
@@ -152,7 +156,8 @@
 </p:tab>
 
 <p:tab title="#{msgs.prod_screening}"
-       rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}" id="checklisttab">
+       rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}"
+       id="checklisttab">
     <p:dataTable var="checkList" value="#{processProdBn.prodAppChecklists}" style="width:100%;">
         <p:column headerText="">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
@@ -610,7 +615,7 @@
 <p:dialog header="#{msgs.send_mail}" widgetVar="maildlg" resizable="false" modal="true">
 
     <h:panelGrid columns="2" style="margin-bottom:10px">
-        <h:outputLabel for="tomail" value="#{msgs.mail_to}: "/>
+        <h:outputLabel for="tomail" value="#{msgs.mail_to}"/>
         <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
         <h:outputLabel for="subject" value="#{msgs.letter_subject}: "/>
         <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
@@ -629,8 +634,8 @@
 </h:form>
 
 <p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
-          >
-    <h:form id = "regdatedlg">
+        >
+    <h:form id="regdatedlg">
         <h:panelGrid columns="2" style="margin-bottom:10px">
             <p:outputLabel value="#{msgs.registration_date}"/>
             <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"

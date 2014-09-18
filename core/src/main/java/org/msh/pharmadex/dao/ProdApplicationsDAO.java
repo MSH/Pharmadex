@@ -133,6 +133,8 @@ public class ProdApplicationsDAO implements Serializable {
     @Transactional
     public ProdApplications updateApplication(ProdApplications prodApplications) {
         ProdApplications p = entityManager.merge(prodApplications);
+        Product prod = entityManager.merge(prodApplications.getProd());
+        p.setProd(prod);
         return p;
     }
 
