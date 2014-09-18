@@ -70,7 +70,7 @@
 
     </h:panelGroup>
 
-    <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantDlg" resizable="true" modal="true">
+    <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantDlg">
         <h:form id="appdetailfrm">
             <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                 <h:outputLabel value="#{msgs.applicant_name}" for="appname"/>
@@ -130,8 +130,8 @@
             <p:panel header="#{msgs.person_responsible}" id="contact">
 
                 <h:panelGroup id="nouser1"
-                              rendered="#{empty appSelectMBean.applicantUser and !appSelectMBean.showUserSelect and not empty appSelectMBean.selectedApplicant}">
-                    <h:panelGrid columns="1" columnClasses="label">
+                              rendered="#{empty appSelectMBean.selectedUser and !appSelectMBean.showUserSelect and not empty appSelectMBean.selectedApplicant}">
+                <h:panelGrid columns="1" columnClasses="label">
                         <h:outputLabel styleClass="label"
                                        value="No User present for the Applicant. Please update the applicant information by clicking on the link below"/>
                         <p:commandLink value="#{msgs.global_add}" action="/internal/processapp.faces"
@@ -171,7 +171,7 @@
                 <h:panelGroup id="userdetail1" rendered="#{appSelectMBean.showUser}">
 
                     <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                        <ui:param name="userdata" value="#{appSelectMBean.applicantUser}"/>
+                        <ui:param name="userdata" value="#{appSelectMBean.selectedUser}"/>
                         <ui:param name="input" value="#{false}"/>
                     </ui:decorate>
                 </h:panelGroup>

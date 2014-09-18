@@ -1,5 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.domain.Address;
+
 /**
  * Created by utkarsh on 9/16/14.
  */
@@ -15,6 +17,13 @@ public class UserDTO {
     private String email;
 
     private String phoneNo;
+
+    private String faxNo;
+
+    private String comments;
+
+    private Address address = new Address();
+
 
     public UserDTO(Long userId, String name, String username, String password, String email, String phoneNo) {
         this.userId = userId;
@@ -32,6 +41,8 @@ public class UserDTO {
         this.password = u.getPassword();
         this.email = u.getEmail();
         this.phoneNo = u.getPhoneNo();
+        this.address = u.getAddress();
+        this.faxNo = u.getFaxNo();
 
     }
 
@@ -83,4 +94,27 @@ public class UserDTO {
         this.phoneNo = phoneNo;
     }
 
+    public String getFaxNo() {
+        return faxNo;
+    }
+
+    public void setFaxNo(String faxNo) {
+        this.faxNo = faxNo;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 }

@@ -73,7 +73,7 @@ public class AppSelectMBean implements Serializable {
                 setShowUserSelect(true);
             } else {
                 if (users.size() == 1) {
-                    applicantUser = selectedApplicant.getUsers().get(0);
+                    selectedUser = users.get(0);
                     showUser = true;
                 }
             }
@@ -113,7 +113,7 @@ public class AppSelectMBean implements Serializable {
 
     public void appChangeListenener(AjaxBehaviorEvent event) {
         logger.error("inside appChangeListenener");
-        logger.error("Selected company is " + selectedApplicant.getAppName());
+//        logger.error("Selected company is " + selectedApplicant.getAppName());
         logger.error("event " + event.getSource());
         gmpChangeListener();
 
