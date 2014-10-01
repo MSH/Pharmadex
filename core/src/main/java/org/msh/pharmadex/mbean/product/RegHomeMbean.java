@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.GlobalEntityLists;
@@ -44,6 +45,8 @@ public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
     FacesContext context = FacesContext.getCurrentInstance();
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+    @Autowired
+    DosUomDAO dosUomDAO;
     private Logger logger = LoggerFactory.getLogger(RegHomeMbean.class);
     @Autowired
     private UserSession userSession;
@@ -301,6 +304,8 @@ public class RegHomeMbean implements Serializable {
         context = FacesContext.getCurrentInstance();
         if (prodInn.getInn().getId() == null)
             prodInn.setInn(innService.saveInn(prodInn.getInn()));
+        else
+            prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
 
         prodInn.setProduct(product);
         selectedInns.add(prodInn);

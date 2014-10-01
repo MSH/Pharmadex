@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Author: usrivastava
  */
-public interface DosUomDAO extends JpaRepository<DosUom, Long> {
+public interface DosUomDAO extends JpaRepository<DosUom, Integer> {
 
 
 }
