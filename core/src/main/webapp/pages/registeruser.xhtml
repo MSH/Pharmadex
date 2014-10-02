@@ -44,7 +44,7 @@
                     <p:outputLabel value="#{msgs.applicant_country}" for="country"/>
                     <p:selectOneMenu value="#{registerUserMbean.user.address.country.id}" id="country" required="true">
                         <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{msgs[cntry.key]}"
+                        <f:selectItems value="#{countryService.countries}" var="cntry" itemLabel="#{cntry.countryName}"
                                        itemValue="#{cntry.id}"/>
                     </p:selectOneMenu>
                     <p:message for="country"/>
