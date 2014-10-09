@@ -1,9 +1,7 @@
 package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
-import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Atc;
-import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.stereotype.Repository;
@@ -71,6 +69,8 @@ public class ProductDAO implements Serializable {
                 Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
                 Hibernate.initialize(prod.getProdApplications().getTimeLines());
                 Hibernate.initialize(prod.getProdApplications().getPricing());
+                Hibernate.initialize(prod.getProdApplications().getForeignAppStatus());
+
                 if (prod.getProdApplications().getReviews() != null)
                     Hibernate.initialize(prod.getProdApplications().getReviews());
                 if (prod.getProdApplications().getPricing() != null) {
@@ -93,11 +93,6 @@ public class ProductDAO implements Serializable {
                 .setParameter("regstate", RegState.REGISTERED).getResultList();
     }
 
-    public List<Company> findCompanies(Long prodId) {
-        return entityManager.createQuery("select c from Company c where c.product.id = :prodId")
-                .setParameter("prodId", prodId).getResultList();
-    }
-
     public List<Product> findProductByFilter(HashMap<String, Object> params) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
@@ -113,13 +108,6 @@ public class ProductDAO implements Serializable {
         else
             query.select(root);
         return entityManager.createQuery(query).getResultList();
-    }
-
-    public Applicant findApplicantByProd(Long id) {
-        return (Applicant) entityManager.createQuery("select a from Applicant a join a.products p where p.id = :prodId")
-                .setParameter("prodId", id)
-                .getSingleResult();
-
     }
 
     public List<Atc> findAtcsByProduct(Long id) {
@@ -164,6 +152,7 @@ public class ProductDAO implements Serializable {
             Hibernate.initialize(prod.getProdApplications().getTimeLines());
             Hibernate.initialize(prod.getProdApplications().getPricing());
             Hibernate.initialize(prod.getProdApplications().getModerator());
+            Hibernate.initialize(prod.getProdApplications().getForeignAppStatus());
             if (prod.getProdApplications().getReviews() != null)
                 Hibernate.initialize(prod.getProdApplications().getReviews());
             if (prod.getProdApplications().getPricing() != null) {

@@ -5,7 +5,6 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.AtcDAO;
 import org.msh.pharmadex.dao.iface.InnDAO;
 import org.msh.pharmadex.domain.Atc;
-import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,16 +47,6 @@ public class ProductService implements Serializable {
         return productDAO.updateProduct(prod);
     }
 
-
-//    @Transactional
-//    public Product findProductById(Long id) {
-//        Product prod = productDAO.findProduct(id);
-//        return prod;
-//    }
-
-    public List<Company> findCompaniesByProd(Long id) {
-        return productDAO.findCompanies(id);
-    }
 
     public List<Product> findProductByFilter(ProductFilter filter) {
         HashMap<String, Object> params = filter.getFilters();

@@ -37,38 +37,29 @@ import java.util.Map;
 public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
-    private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserSession userSession;
-
-    @Autowired
-    private CommentService commentService;
-
-    @Autowired
-    private TimelineService timelineService;
-
-    @Autowired
-    private ProdApplicationsService prodApplicationsService;
-
-    @Autowired
-    private MailService mailService;
-
     @Autowired
     GlobalEntityLists globalEntityLists;
-
     @Autowired
     AmdmtService amdmtService;
-
+    @Autowired
+    WorkspaceDAO workspaceDAO;
+    private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserSession userSession;
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private TimelineService timelineService;
+    @Autowired
+    private ProdApplicationsService prodApplicationsService;
+    @Autowired
+    private MailService mailService;
     @Autowired
     private ProductService productService;
-
     @Autowired
     private ReviewDAO reviewDAO;
-
     private ProdApplications prodApplications;
     private Product product;
     private Applicant applicant;
@@ -77,10 +68,9 @@ public class ProcessProdBn implements Serializable {
     private List<Mail> mails;
     private List<Company> companies;
     private List<ProdAppAmdmt> prodAppAmdmts;
+    private List<ForeignAppStatus> foreignAppStatuses;
     private TimelineModel model;
-
     private List<Timeline> timelinesChartData;
-
     private Comment selComment = new Comment();
     private org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
     private Mail mail = new Mail();
@@ -88,16 +78,13 @@ public class ProcessProdBn implements Serializable {
     private List<ProdAppChecklist> prodAppChecklists;
     private List<Review> reviews;
     private Review review = new Review();
-
     private StatusUser module;
     private boolean registered;
     private String reviewComment;
     private List<Invoice> invoices;
     private String prodID;
     private List<ProdInn> prodInns;
-
     private boolean checkReviewStatus = false;
-
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private int selectedTab;
@@ -143,6 +130,13 @@ public class ProcessProdBn implements Serializable {
         return prodApplications;
     }
 
+    public void setProdApplications(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
+//        prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
+//        this.prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
+
+    }
+
     private void initProdApps() {
         facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
@@ -168,20 +162,12 @@ public class ProcessProdBn implements Serializable {
         timeLineList = prodApplications.getTimeLines();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         reviews = prodApplications.getReviews();
+        foreignAppStatuses = prodApplications.getForeignAppStatus();
     }
 
-    @Autowired
-    WorkspaceDAO workspaceDAO;
     public void dateChange() {
         Workspace w = workspaceDAO.findOne((long) 1);
         prodApplications.setRegExpiryDate(JsfUtils.addDate(prodApplications.getRegistrationDate(), w.getProdRegDuration()));
-
-    }
-
-    public void setProdApplications(ProdApplications prodApplications) {
-        this.prodApplications = prodApplications;
-//        prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
-//        this.prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
 
     }
 
@@ -329,14 +315,14 @@ public class ProcessProdBn implements Serializable {
         this.timeLine = timeLine;
     }
 
-    public void changeStatusListener(){
+    public void changeStatusListener() {
         logger.error("Inside changeStatusListener");
-        if(prodApplications.getRegState().equals(RegState.NEW_APPL)) {
+        if (prodApplications.getRegState().equals(RegState.NEW_APPL)) {
             timeLine.setRegState(RegState.FEE);
             addTimeline();
         }
-        if(prodApplications.getRegState().equals(RegState.FEE)){
-            if(prodApplications.isApplicantVerified()&&prodApplications.isProductVerified()&&prodApplications.isDossierReceived()){
+        if (prodApplications.getRegState().equals(RegState.FEE)) {
+            if (prodApplications.isApplicantVerified() && prodApplications.isProductVerified() && prodApplications.isDossierReceived()) {
                 timeLine.setRegState(RegState.VERIFY);
                 addTimeline();
             }
@@ -354,7 +340,7 @@ public class ProcessProdBn implements Serializable {
             timeLine.setUser(userSession.getLoggedInUserObj());
             String retValue = timelineService.validateStatusChange(timeLine);
 
-            if(retValue.equalsIgnoreCase("success")) {
+            if (retValue.equalsIgnoreCase("success")) {
                 timeLineList.add(timeLine);
                 prodApplications.setRegState(timeLine.getRegState());
                 product.setRegState(timeLine.getRegState());
@@ -362,15 +348,15 @@ public class ProcessProdBn implements Serializable {
                 product = productService.findProduct(prodApplications.getProd().getId());
                 setFieldValues();
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
-            }else if(retValue.equalsIgnoreCase("fee_not_recieved")) {
+            } else if (retValue.equalsIgnoreCase("fee_not_recieved")) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
-            }else if(retValue.equalsIgnoreCase("app_not_verified")) {
+            } else if (retValue.equalsIgnoreCase("app_not_verified")) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
-            }else if(retValue.equalsIgnoreCase("prod_not_verified")) {
+            } else if (retValue.equalsIgnoreCase("prod_not_verified")) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), resourceBundle.getString("prod_not_verified")));
-            }else if(retValue.equalsIgnoreCase("valid_assign_moderator")) {
+            } else if (retValue.equalsIgnoreCase("valid_assign_moderator")) {
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_assign_moderator")));
-            }else if(retValue.equalsIgnoreCase("valid_assign_reviewer")) {
+            } else if (retValue.equalsIgnoreCase("valid_assign_reviewer")) {
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_assign_reviewer")));
             }
 
@@ -527,13 +513,9 @@ public class ProcessProdBn implements Serializable {
         this.module = module;
     }
 
-    public void setCheckReviewStatus(boolean checkReviewStatus) {
-        this.checkReviewStatus = checkReviewStatus;
-    }
-
     public boolean getCheckReviewStatus() {
 //        if (prodApplications.getId() == null)
-            getProdApplications();
+        getProdApplications();
         for (Review each : prodApplications.getReviews()) {
             if (!each.isSubmitted()) {
                 checkReviewStatus = false;
@@ -544,6 +526,10 @@ public class ProcessProdBn implements Serializable {
         }
         return checkReviewStatus;
 
+    }
+
+    public void setCheckReviewStatus(boolean checkReviewStatus) {
+        this.checkReviewStatus = checkReviewStatus;
     }
 
     public TimelineModel getModel() {
@@ -632,8 +618,8 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<Review> getReviews() {
-        if(reviews == null ) {
-            if(product!=null) {
+        if (reviews == null) {
+            if (product != null) {
                 product = productService.findProduct(product.getId());
                 setFieldValues();
 //                initProcessor();
@@ -668,5 +654,13 @@ public class ProcessProdBn implements Serializable {
 
     public void setSelectedTab(int selectedTab) {
         this.selectedTab = selectedTab;
+    }
+
+    public List<ForeignAppStatus> getForeignAppStatuses() {
+        return foreignAppStatuses;
+    }
+
+    public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
+        this.foreignAppStatuses = foreignAppStatuses;
     }
 }

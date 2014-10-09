@@ -29,10 +29,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     private Pricing pricing;
 
-    @OneToOne
-    @JoinColumn(name = "ORG_CNTRY_ID")
-    private Country originCntry;
-
     @Column(length = 255)
     private String prodAppNo;
 
@@ -56,16 +52,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private String packSize;
 
     @Column(length = 500)
-    private String originCntryReg;
-
-    @Column(length = 500)
     private String contType;
 
     @Column(length = 500)
     private String shelfLife;
-
-    @Column(length = 500)
-    private String phyAppearance;
 
     @Column(length = 500)
     private String pharmacopeiaStds;
@@ -113,6 +103,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @Column(length = 500)
     private String ackLetterNo;
+
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<ForeignAppStatus> foreignAppStatus;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<Mail> mails;
@@ -198,14 +191,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.prod = prod;
     }
 
-    public Country getOriginCntry() {
-        return originCntry;
-    }
-
-    public void setOriginCntry(Country originCntry) {
-        this.originCntry = originCntry;
-    }
-
     public boolean isPackageInsert() {
         return packageInsert;
     }
@@ -246,28 +231,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.packSize = packSize;
     }
 
-    public String getOriginCntryReg() {
-        return originCntryReg;
-    }
-
-    public void setOriginCntryReg(String originCntryReg) {
-        this.originCntryReg = originCntryReg;
-    }
-
     public String getContType() {
         return contType;
     }
 
     public void setContType(String contType) {
         this.contType = contType;
-    }
-
-    public String getPhyAppearance() {
-        return phyAppearance;
-    }
-
-    public void setPhyAppearance(String phyAppearance) {
-        this.phyAppearance = phyAppearance;
     }
 
     public String getPharmacopeiaStds() {
@@ -524,6 +493,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setFeeSubmittedDt(Date feeSubmittedDt) {
         this.feeSubmittedDt = feeSubmittedDt;
+    }
+
+    public List<ForeignAppStatus> getForeignAppStatus() {
+        return foreignAppStatus;
+    }
+
+    public void setForeignAppStatus(List<ForeignAppStatus> foreignAppStatus) {
+        this.foreignAppStatus = foreignAppStatus;
     }
 }
 

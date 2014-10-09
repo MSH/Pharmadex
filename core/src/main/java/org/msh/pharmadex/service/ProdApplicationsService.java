@@ -60,20 +60,17 @@ public class ProdApplicationsService implements Serializable {
 
     @Autowired
     ChecklistDAO checklistDAO;
-
-    private List<ProdApplications> prodApplications;
-
     @Autowired
-    private DosageFormService dosageFormService;
-
-    @Autowired
-    private StatusUserDAO statusUserDAO;
-
-    @Autowired
-    private ReviewDAO reviewDAO;
-
+    ForeignAppStatusDAO foreignAppStatusDAO;
     ProdApplications prodApp;
     Product product;
+    private List<ProdApplications> prodApplications;
+    @Autowired
+    private DosageFormService dosageFormService;
+    @Autowired
+    private StatusUserDAO statusUserDAO;
+    @Autowired
+    private ReviewDAO reviewDAO;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications findProdApplications(long id) {
@@ -324,10 +321,6 @@ public class ProdApplicationsService implements Serializable {
         return prodApplicationsDAO.findProdApplicationByProduct(id);
     }
 
-    public List<Company> findCompanies(Long prodId) {
-        return prodApplicationsDAO.findCompanies(prodId);
-    }
-
     public StatusUser findStatusUser(Long prodAppId) {
         return statusUserDAO.findByProdApplications_Id(prodAppId);
     }
@@ -443,4 +436,10 @@ public class ProdApplicationsService implements Serializable {
     public void setProdApp(ProdApplications prodApp) {
         this.prodApp = prodApp;
     }
+
+    public String removeForeignAppStatus(ForeignAppStatus foreignAppStatus) {
+        foreignAppStatusDAO.delete(foreignAppStatus);
+        return "removed";
+    }
+
 }

@@ -138,6 +138,72 @@
 
 </p:tab>
 
+<p:tab id="applicationStatus" title="#{msgs.appl_status_country}">
+    <p:panel header="#{msgs.appl_status_country}">
+        <p:messages/>
+        <h:panelGrid columns="1" cellspacing="10" id="foreignstatusgrid" width="100%">
+
+            <p:outputLabel value="#{msgs.foreign_country_status_txt}" styleClass="label"/>
+
+
+            <p:dataTable id="foreignStatusTable" var="appstatus" value="#{regHomeMbean.foreignAppStatuses}"
+                         style="width:100%;">
+                <f:facet name="header">
+                    <p:commandLink value="#{msgs.global_add}" oncomplete="addForeignStatusDlg.show()"
+                                   action="#{foreignAppStatusMBean.initAddCompany}" update=":addcompany"
+                                   process=":addcompany">
+                    </p:commandLink>
+                </f:facet>
+                <p:column headerText="#{msgs.applicant_country}">
+                    <h:outputText value="#{appstatus.country.countryName}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.foreign_country_status_type}">
+                    <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.prod_name}">
+                    <h:outputText value="#{appstatus.prodName}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.mkt_auth_holder}">
+                    <h:outputText value="#{appstatus.mktAuthHolder}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.mkt_auth_cert}">
+                    <h:outputText value="#{appstatus.mktAuthCert}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.mkt_auth_date}">
+                    <h:outputText value="#{appstatus.mktAuthDate}">
+                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column>
+                    <p:commandButton action="#{regHomeMbean.removeAppStatus(appstatus)}" value="#{msgs.global_delete}"
+                                     update=":addForeignStatus :reghome:foreignStatusTable :reghome:growl"
+                                     immediate="true"
+                            >
+                    </p:commandButton>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:panelGrid>
+
+        <div align="right">
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
+                             ajax="false"/>
+            <p:commandButton value="#{msgs.prev}" onclick="wizard.back();"/>
+            <p:commandButton value="#{msgs.next}" onclick="wizard.next();"/>
+        </div>
+    </p:panel>
+
+</p:tab>
+
+
 <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
     <p:panel header="#{msgs.manufacturer_detail}">
         <p:messages/>
@@ -479,6 +545,58 @@
         <h:outputLabel/>
     </h:form>
 </p:dialog>
+
+<p:dialog header="#{msgs.foreign_country_status_txt}" widgetVar="addForeignStatusDlg" id="addForeignStatusdlg"
+          resizable="true" modal="true">
+    <h:form id="addForeignStatus">
+        <p:messages showSummary="true"/>
+
+        <h:panelGrid id="foreignstatustable" columns="2" columnClasses="label value">
+            <p:outputLabel value="#{msgs.foreign_country_status_type}" for="forStatuscb"
+                           styleClass="fy-required-field"/>
+            <p:selectOneMenu id="forStatuscb" value="#{foreignAppStatusMBean.selForeignAppStatus.foreignAppStatusType}"
+                             required="true">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalLists.foreignAppStatusType}" var="prodcat"
+                               itemLabel="#{msgs[prodcat.key]}"/>
+            </p:selectOneMenu>
+
+            <p:outputLabel value="#{msgs.applicant_country}" for="statusCntry"/>
+            <p:selectOneMenu value="#{foreignAppStatusMBean.selForeignAppStatus.country.id}" required="true"
+                             id="statusCntry">
+                <f:selectItem itemLabel="-" itemValue=""/>
+                <f:selectItems value="#{globalEntityLists.countries}" var="cntry" itemLabel="#{cntry.countryName}"
+                               itemValue="#{cntry.id}"/>
+            </p:selectOneMenu>
+
+            <p:outputLabel for="otherprodname" value="#{msgs.prod_name}"/>
+            <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.prodName}" required="true"
+                         id="otherprodname"/>
+
+            <p:outputLabel for="mktauthholder" value="#{msgs.mkt_auth_holder}"/>
+            <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthHolder}" required="true"
+                         id="mktauthholder"/>
+
+            <p:outputLabel for="mktauthcert" value="#{msgs.mkt_auth_cert}"/>
+            <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
+
+            <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
+            <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate"
+                        showOn="button"/>
+        </h:panelGrid>
+
+        <h:panelGroup>
+            <p:commandButton action="#{foreignAppStatusMBean.addForStatus()}" value="#{msgs.global_add}"
+                             oncomplete="if (!args.validationFailed) addForeignStatusDlg.hide()"
+                             update=":reghome:foreignstatusgrid :addForeignStatus"/>
+            <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                             oncomplete="addCompanyDlg.hide()" ajax="false" process="@form"
+                             update=":addcompany :reghome:companyTable"/>
+        </h:panelGroup>
+        <h:outputLabel/>
+    </h:form>
+</p:dialog>
+
 
 <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg" resizable="true"
           modal="true">

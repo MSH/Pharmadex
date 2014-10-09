@@ -15,14 +15,14 @@
                          filteredValue="#{productMbean.filteredProducts}"
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="20,40,100" >
+                         rowsPerPageTemplate="20,40,100">
                 <p:column filterBy="#{product.prodName}" sortBy="#{product.prodName}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prod_name}"/>
                     </f:facet>
                     <p:commandLink id="viewLink" value="#{product.prodName}" action="productdetail"
                                    ajax="false">
-                        <f:param name = "id" value="#{product.id}"/>
+                        <f:param name="id" value="#{product.id}"/>
                     </p:commandLink>
 
                 </p:column>
@@ -61,12 +61,16 @@
                 -->
 
                 <p:column filterBy="#{product.prodCategory}"
-                          sortBy="#{product.prodCategory}"  >
-                    <f:facet name="header">
-                        <h:outputText value="#{msgs.prod_cat}"/>
+                          sortBy="#{product.prodCategory}">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('products').filter()">
+                            <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{globalLists.prodCategories}"/>
+                        </p:selectOneMenu>
                     </f:facet>
                     <h:outputText value="#{product.prodCategory}"/>
                 </p:column>
+
 
                 <p:column filterBy="#{product.applicant.appName}"
                           sortBy="#{product.applicant.appName}">

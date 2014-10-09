@@ -55,6 +55,8 @@ public class RegHomeMbean implements Serializable {
     @Autowired
     private ProductService productService;
     @Autowired
+    private ProdApplicationsService prodApplicationsService;
+    @Autowired
     private AtcService atcService;
     @Autowired
     private AppointmentService appointmentService;
@@ -74,6 +76,7 @@ public class RegHomeMbean implements Serializable {
     private List<Atc> selectedAtcs;
     private List<ProdAppChecklist> prodAppChecklists;
     private List<ProdCompany> companies;
+    private List<ForeignAppStatus> foreignAppStatuses;
     private List<DrugPrice> drugPrices;
     private ProdApplications prodApplications;
     private Product product;
@@ -221,6 +224,7 @@ public class RegHomeMbean implements Serializable {
         context = FacesContext.getCurrentInstance();
         product.setApplicant(applicant);
         prodApplications.setUser(applicantUser);
+        prodApplications.setForeignAppStatus(foreignAppStatuses);
         product.setProdApplications(prodApplications);
         if (product.getId() == null)
             product.setCreatedBy(getLoggedInUser());
@@ -262,6 +266,13 @@ public class RegHomeMbean implements Serializable {
         companies.remove(selectedCompany);
         companyService.removeProdCompany(selectedCompany);
 
+        context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
+    }
+
+    public void removeAppStatus(ForeignAppStatus foreignAppStatus) {
+        context = FacesContext.getCurrentInstance();
+        foreignAppStatuses.remove(foreignAppStatus);
+        prodApplicationsService.removeForeignAppStatus(foreignAppStatus);
         context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
     }
 
@@ -376,6 +387,7 @@ public class RegHomeMbean implements Serializable {
         prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = product.getApplicant();
         drugPrices = prodApplications.getPricing().getDrugPrices();
+        foreignAppStatuses = prodApplications.getForeignAppStatus();
     }
 
     public Applicant getApplicant() {
@@ -638,4 +650,11 @@ public class RegHomeMbean implements Serializable {
         this.companies = companies;
     }
 
+    public List<ForeignAppStatus> getForeignAppStatuses() {
+        return foreignAppStatuses;
+    }
+
+    public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
+        this.foreignAppStatuses = foreignAppStatuses;
+    }
 }

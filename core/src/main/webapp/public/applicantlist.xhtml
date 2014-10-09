@@ -10,7 +10,7 @@
         </div>
 
         <h:form prependId="false">
-            <p:growl />
+            <p:growl/>
             <p:dataTable id="car" var="applicant" value="#{applicantMBean.allApplicant}" selectionMode="single"
                          selection="#{applicantMBean.selectedApplicant}" rowKey="#{applicant.applcntId}"
                          filteredValue="#{applicantMBean.filteredApplicant}"
@@ -51,7 +51,7 @@
                     <h:outputText value="#{applicant.contactName}"/>
                 </p:column>
 
-                <p:column filterBy="#{applicant.email}"
+                <p:column filterBy="#{applicant.email}" rendered="#{userSession.staff}"
                           sortBy="#{applicant.email}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.User_email}"/>
@@ -59,7 +59,7 @@
                     <h:outputText value="#{applicant.email}"/>
                 </p:column>
 
-                <p:column filterBy="#{applicant.phoneNo}"
+                <p:column filterBy="#{applicant.phoneNo}" rendered="#{userSession.staff}"
                           sortBy="#{applicant.phoneNo}"
                         >
                     <f:facet name="header">

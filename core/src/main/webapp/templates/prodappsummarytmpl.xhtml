@@ -1,9 +1,9 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
-    <p:accordionPanel value="Product Information" activeIndex="0" multiple="true">
-        <p:tab title="#{msgs.applicant_detail}">
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+<p:accordionPanel value="Product Information" activeIndex="0" multiple="true">
+<p:tab title="#{msgs.applicant_detail}">
             <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
                 <ui:param name="applicantdata" value="#{prodData.applicant}"/>
                 <ui:param name="input" value="#{false}"/>
@@ -118,17 +118,42 @@
                 <h:outputLabel value="#{msgs.product_storcndtn}"/>
                 <h:outputLabel value="#{prodData.prodApplications.storageCndtn}"/>
 
-
-                <h:outputLabel value="#{msgs.product_regNoCntry}"/>
-                <h:outputLabel value="#{prodData.prodApplications.originCntryReg}"/>
-
                 <h:outputLabel value="#{msgs.statement_ingrd}"/>
                 <h:outputLabel value="#{prodData.prodApplications.ingrdStatment}"/>
 
             </h:panelGrid>
         </p:tab>
 
-        <p:tab title="#{msgs.manufacturer_detail}">
+<p:tab title="#{msgs.appl_status_country}">
+    <p:dataTable id="foreignStatusTable" var="appstatus" value="#{prodData.prodApplications.foreignAppStatus}"
+                 style="width:100%;">
+        <p:column headerText="#{msgs.applicant_country}">
+            <h:outputText value="#{appstatus.country.countryName}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.foreign_country_status_type}">
+            <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.prod_name}">
+            <h:outputText value="#{appstatus.prodName}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.mkt_auth_holder}">
+            <h:outputText value="#{appstatus.mktAuthHolder}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.mkt_auth_date}">
+            <h:outputText value="#{appstatus.mktAuthDate}">
+                <f:convertDateTime pattern="MMM dd, yyyy"/>
+            </h:outputText>
+        </p:column>
+
+    </p:dataTable>
+
+</p:tab>
+
+<p:tab title="#{msgs.manufacturer_detail}">
             <p:dataTable id="companyTable" var="company" value="#{prodData.prodCompanies}" style="width:100%;">
                 <p:column headerText="#{msgs.applicant_name}">
                     <h:outputText value="#{company.company.companyName}"/>
@@ -189,7 +214,11 @@
                 <h:outputLabel id="receiptno" value="#{prodData.prodApplications.receiptNo}"/>
 
                 <h:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"/>
-                <h:outputLabel id="feesubmitdt" value="#{prodData.prodApplications.feeSubmittedDt}"/>
+                <h:outputLabel id="feesubmitdt" value="#{prodData.prodApplications.feeSubmittedDt}">
+                    <f:convertDateTime pattern="MMM dd, yyyy"/>
+                </h:outputLabel>
+
+
             </h:panelGrid>
 
         </p:tab>
