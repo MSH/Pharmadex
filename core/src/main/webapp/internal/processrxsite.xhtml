@@ -128,7 +128,7 @@
                             <p:dataTable id="usertable" var="user" value="#{processRxSiteBn.userList}"
                                          style="width:100%;">
                                 <f:facet name="header">
-                                    <p:commandLink value="#{msgs.global_add}" oncomplete="addUserDlg.show()"
+                                    <p:commandLink value="#{msgs.global_add}" oncomplete="PF('addUserDlg').show()"
                                                    immediate="true" rendered="#{userSession.admin||userSession.staff}"/>
                                 </f:facet>
                                 <p:column headerText="#{msgs.User_name}">
