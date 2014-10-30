@@ -11,10 +11,11 @@
             <h:panelGrid columns="2" columnClasses="menu,content">
                 <h:panelGrid columns="2" columnClasses="menu,content">
                     <p:menu style="width:198px">
-                        <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered and !amendmentMbn.newAmdmt}">
+                        <p:submenu label="#{msgs.post_registration}"
+                                   rendered="#{processProdBn.registered and !amendmentMbn.newAmdmt}">
                             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
                                         action="#{renewalMbn.preparePayment()}"
-                                        oncomplete="renewdlg.show()"
+                                        oncomplete="PF('renewdlg').show()"
                                         rendered="#{userSession.head||userSession.admin}" ajax="true"/>
                             <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear" oncomplete="invoicedlg.show()"
                                         rendered="#{userSession.head||userSession.admin}"
@@ -70,24 +71,26 @@
                         </h1>
 
                         <p:panel>
-                            <p:outputLabel value="Please submit a new Application for the changes." rendered="#{amendmentMbn.newAmdmt}"/>
+                            <p:outputLabel value="Please submit a new Application for the changes."
+                                           rendered="#{amendmentMbn.newAmdmt}"/>
                         </p:panel>
 
                         <h:panelGrid columns="1" rendered="#{!amendmentMbn.newAmdmt}">
 
-                        <ui:repeat var="amdmt" value="#{amendmentMbn.prodAppAmdmts}" >
-                            <p:accordionPanel multiple="true">
-                                <p:tab title="#{amdmt.amdmtCategory.shortDesc}">
-                                    <h:panelGrid columns="1" columnClasses="label value">
-                                        <h:outputText value="#{amdmt.amdmtCategory.fullDesc}"/>
-                                        <h:outputLabel value="#{msgs.global_description}" for="amdmtDesc"/>
-                                        <p:inputTextarea value="#{amdmt.amdmtDesc}" id="amdmtDesc" cols="75" rows="5"
-                                                         required="true"/>
-                                    </h:panelGrid>
-                                </p:tab>
+                            <ui:repeat var="amdmt" value="#{amendmentMbn.prodAppAmdmts}">
+                                <p:accordionPanel multiple="true">
+                                    <p:tab title="#{amdmt.amdmtCategory.shortDesc}">
+                                        <h:panelGrid columns="1" columnClasses="label value">
+                                            <h:outputText value="#{amdmt.amdmtCategory.fullDesc}"/>
+                                            <h:outputLabel value="#{msgs.global_description}" for="amdmtDesc"/>
+                                            <p:inputTextarea value="#{amdmt.amdmtDesc}" id="amdmtDesc" cols="75"
+                                                             rows="5"
+                                                             required="true"/>
+                                        </h:panelGrid>
+                                    </p:tab>
 
-                            </p:accordionPanel>
-                        </ui:repeat>
+                                </p:accordionPanel>
+                            </ui:repeat>
                         </h:panelGrid>
                     </h:panelGroup>
                 </h:panelGrid>

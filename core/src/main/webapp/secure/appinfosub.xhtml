@@ -24,7 +24,7 @@
         <h:panelGroup rendered="#{userSession.staff and (empty regHomeMbean.applicant.applcntId)}">
             <h:outputLabel value="#{msgs.select_applicant_list}"/>
             <h:panelGrid columns="1" cellpadding="10px">
-                <p:commandLink value="#{msgs.applicant_lookup}" oncomplete="addapplicantDlg.show()"
+                <p:commandLink value="#{msgs.applicant_lookup}" oncomplete="PF('addapplicantDlg').show()"
                                immediate="true" style="font-weight: bolder; font-size: larger"/>
                 <p:outputLabel value="#{msgs.applicant_lookup_info}" styleClass="hint"/>
 
@@ -131,7 +131,7 @@
 
                 <h:panelGroup id="nouser1"
                               rendered="#{empty appSelectMBean.selectedUser and !appSelectMBean.showUserSelect and not empty appSelectMBean.selectedApplicant}">
-                <h:panelGrid columns="1" columnClasses="label">
+                    <h:panelGrid columns="1" columnClasses="label">
                         <h:outputLabel styleClass="label"
                                        value="No User present for the Applicant. Please update the applicant information by clicking on the link below"/>
                         <p:commandLink value="#{msgs.global_add}" action="/internal/processapp.faces"
