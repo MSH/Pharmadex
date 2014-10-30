@@ -6,7 +6,7 @@
 
     <p:panel header="#{msgs.person_responsible}">
         <h:panelGrid columns="1" cellpadding="10px">
-            <p:commandLink value="#{msgs.user_lookup}" oncomplete="addUserDlg.show()"
+            <p:commandLink value="#{msgs.user_lookup}" oncomplete="PF('addUserDlg').show()"
                            immediate="true" style="font-weight: bolder; font-size: larger"/>
             <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"/>
 

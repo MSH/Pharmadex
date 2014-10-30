@@ -17,7 +17,7 @@
 
     <p:dataTable id="invoicetable" value="#{processProdBn.invoices}" var="invoice">
         <p:column headerText="#{msgs.invoice_no}">
-            <p:commandLink value="#{invoice.invoiceNumber}" oncomplete="invoicedlg.show()">
+            <p:commandLink value="#{invoice.invoiceNumber}" oncomplete="PF('invoicedlg').show()">
                 <f:setPropertyActionListener value="#{invoice}" target="#{renewalMbn.invoice}"/>
             </p:commandLink>
         </p:column>
@@ -47,7 +47,7 @@
 
     <p:separator/>
 
-    <p:commandButton icon="ui-icon-document" value="Send Applicant Mail" onclick="maildlg.show()"/>
+    <p:commandButton icon="ui-icon-document" value="Send Applicant Mail" onclick="PF('maildlg').show()"/>
     <p:dataTable id="mailtable" value="#{processProdBn.mails}" var="mail" style="width: 830px;">
         <p:column style="width:120px;" headerText="Date">
             <div class="icon-user" style="float:left;"/>

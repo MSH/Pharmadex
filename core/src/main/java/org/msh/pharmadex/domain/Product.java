@@ -20,27 +20,27 @@ public class Product extends CreationDetail implements Serializable {
     private Long id;
 
     @Column(name = "prod_name", length = 500)
-    @Size(max=500, min = 3)
+    @Size(max = 500, min = 3)
     private String prodName;
 
     @Column(name = "apprvd_name", length = 500)
-    @Size(max=500, min = 3)
+    @Size(max = 500, min = 3)
     private String apprvdName;
 
     @Column(name = "prod_desc", length = 500)
-    @Size(max=500, min = 3)
+    @Size(max = 500, min = 3)
     private String prodDesc;
 
     @Column(name = "ingredient", length = 500)
-    @Size(max=500, min = 3)
+    @Size(max = 500, min = 3)
     private String ingredient;
 
     @Column(name = "gen_name", length = 500)
-    @Size(max=500, min = 3)
+    @Size(max = 500, min = 3)
     private String genName;
 
     @Column(name = "new_chem_name", length = 500)
-    @Size(max=500, min = 3)
+    @Size(max = 500, min = 3)
     private String newChemicalName;
 
     @OneToOne
@@ -50,7 +50,7 @@ public class Product extends CreationDetail implements Serializable {
     @Column(name = "dosage_strength")
     private String dosStrength;
 
-    @Column(name="new_chemical_entity")
+    @Column(name = "new_chemical_entity")
     private boolean newChemicalEntity;
 
     @OneToOne
@@ -77,6 +77,9 @@ public class Product extends CreationDetail implements Serializable {
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<ProdInn> inns;
+
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    private List<ProdExcipient> excipients;
 
     @ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY)
     @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "atc_id"))
@@ -339,12 +342,16 @@ public class Product extends CreationDetail implements Serializable {
     }
 
     public String getManufName() {
-        for(ProdCompany c : getProdCompanies()){
-            if(c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+        for (ProdCompany c : getProdCompanies()) {
+            if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
                 return c.getCompany().getCompanyName();
             }
         }
         return manufName;
+    }
+
+    public void setManufName(String manufName) {
+        this.manufName = manufName;
     }
 
     public List<ProdCompany> getProdCompanies() {
@@ -355,8 +362,11 @@ public class Product extends CreationDetail implements Serializable {
         this.prodCompanies = prodCompanies;
     }
 
-    public void setManufName(String manufName) {
-        this.manufName = manufName;
+    public List<ProdExcipient> getExcipients() {
+        return excipients;
     }
 
+    public void setExcipients(List<ProdExcipient> excipients) {
+        this.excipients = excipients;
+    }
 }

@@ -58,6 +58,7 @@ public class ProductDAO implements Serializable {
             Product prod = entityManager.merge(product);
             Hibernate.initialize(prod.getInns());
             Hibernate.initialize(prod.getAtcs());
+            Hibernate.initialize(prod.getExcipients());
 //        Hibernate.initialize(prod.getCompanies());
             Hibernate.initialize(prod.getProdApplications());
             Hibernate.initialize(prod.getApplicant());

@@ -73,6 +73,7 @@ public class RegHomeMbean implements Serializable {
     @Autowired
     private InnService innService;
     private List<ProdInn> selectedInns;
+    private List<ProdExcipient> selectedExipients;
     private List<Atc> selectedAtcs;
     private List<ProdAppChecklist> prodAppChecklists;
     private List<ProdCompany> companies;
@@ -83,6 +84,7 @@ public class RegHomeMbean implements Serializable {
     private Applicant applicant;
     private PharmClassif selectedPharmClassif;
     private ProdInn prodInn;
+    private ProdExcipient prodExcipient;
     private Atc atc;
     private User loggedInUser;
     private ProdInn deleteInn;
@@ -120,6 +122,11 @@ public class RegHomeMbean implements Serializable {
                 selectedInns = new ArrayList<ProdInn>();
                 product.setInns(selectedInns);
             }
+            if (selectedExipients == null) {
+                //Initialize Excipients
+                selectedExipients = new ArrayList<ProdExcipient>();
+                product.setExcipients(selectedExipients);
+            }
             if (selectedAtcs == null) {
                 //Initialize Atcs if null
                 selectedAtcs = new ArrayList<Atc>();
@@ -146,6 +153,9 @@ public class RegHomeMbean implements Serializable {
 
             prodInn = new ProdInn();
             prodInn.setDosUnit(new DosUom());
+
+            prodExcipient = new ProdExcipient();
+            prodExcipient.setDosUnit(new DosUom());
 //            eventModel = new DefaultScheduleModel();
 //            for (Appointment app : appointmentService.getAppointments()) {
 //                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
@@ -247,6 +257,13 @@ public class RegHomeMbean implements Serializable {
         return null;
     }
 
+    public String removeExcipient(ProdExcipient prodExcipient) {
+        context = FacesContext.getCurrentInstance();
+        selectedExipients.remove(prodExcipient);
+        context.addMessage(null, new FacesMessage(bundle.getString("expnt_removed")));
+        return null;
+    }
+
     public String removeAtc(Atc atc) {
         context = FacesContext.getCurrentInstance();
         selectedAtcs.remove(atc);
@@ -341,6 +358,24 @@ public class RegHomeMbean implements Serializable {
         return null;
     }
 
+    public String addProdExcipient() {
+        context = FacesContext.getCurrentInstance();
+        if (prodExcipient.getExcipient().getId() == null)
+            prodExcipient.setExcipient(innService.saveExcipient(prodExcipient.getExcipient()));
+        else
+            prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
+
+        prodExcipient.setProduct(product);
+        selectedExipients.add(prodExcipient);
+        product.setExcipients(selectedExipients);
+
+
+        prodExcipient = new ProdExcipient();
+        prodExcipient.setDosUnit(new DosUom());
+        return null;
+    }
+
+
     public void openAddATC() {
         regATCHelper = new RegATCHelper(atc, globalEntityLists);
     }
@@ -357,6 +392,12 @@ public class RegHomeMbean implements Serializable {
     public String cancelAddInn() {
         selectedInns.remove(prodInn);
         prodInn = null;
+        return null;
+    }
+
+    public String cancelAddExcipient() {
+        selectedExipients.remove(prodExcipient);
+        prodExcipient = null;
         return null;
     }
 
@@ -382,6 +423,7 @@ public class RegHomeMbean implements Serializable {
     //used to set all the field values after insert/update operation
     private void setFieldValues() {
         selectedInns = product.getInns();
+        selectedExipients = product.getExcipients();
         selectedAtcs = product.getAtcs();
         companies = product.getProdCompanies();
         prodAppChecklists = prodApplications.getProdAppChecklists();
@@ -426,6 +468,13 @@ public class RegHomeMbean implements Serializable {
         prodInn = new ProdInn();
         prodInn.setInn(new Inn());
         prodInn.setDosUnit(new DosUom());
+        return null;
+    }
+
+    public String openAddExp() {
+        prodExcipient = new ProdExcipient();
+        prodExcipient.setExcipient(new Excipient());
+        prodExcipient.setDosUnit(new DosUom());
         return null;
     }
 
@@ -630,6 +679,10 @@ public class RegHomeMbean implements Serializable {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getInns());
     }
 
+    public List<Excipient> completeExcipients(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getExcipients());
+    }
+
     public List<PharmClassif> completePharmClassif(String query) {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getPharmClassifs());
     }
@@ -657,4 +710,22 @@ public class RegHomeMbean implements Serializable {
     public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
         this.foreignAppStatuses = foreignAppStatuses;
     }
+
+    public List<ProdExcipient> getSelectedExipients() {
+        return selectedExipients;
+    }
+
+    public void setSelectedExipients(List<ProdExcipient> selectedExipients) {
+        this.selectedExipients = selectedExipients;
+    }
+
+    public ProdExcipient getProdExcipient() {
+        return prodExcipient;
+    }
+
+    public void setProdExcipient(ProdExcipient prodExcipient) {
+        this.prodExcipient = prodExcipient;
+    }
+
+
 }

@@ -26,7 +26,7 @@
 
 
                     <p:commandLink id="viewLink" value="#{eachprod.pharmacyName}" update=":viewDlg"
-                                   oncomplete="viewDialog.show()" title="Edit" ajax="true">
+                                   oncomplete="PF('viewDialog').show()" title="Edit" ajax="true">
                         <f:setPropertyActionListener value="#{eachprod}" target="#{rxSiteHome.site}"/>
                     </p:commandLink>
                 </p:column>

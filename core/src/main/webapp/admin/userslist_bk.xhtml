@@ -17,12 +17,12 @@
                 <p:dataTable id="users" var="user" value="#{userMBean.allUsers}">
                     <f:facet name="header">
                         <p:commandButton value="#{msgs.global_add}" action="#{userMBean.addUser}"
-                                         oncomplete="adduser.show();"
+                                         oncomplete="PF('adduser').show();"
                                          update=":adduserfrm"/>
                     </f:facet>
 
                     <p:column headerText="#{msgs.User_name}">
-                        <p:commandLink value=" #{user.name}" oncomplete="adduser.show();" update=":adduserfrm"
+                        <p:commandLink value=" #{user.name}" oncomplete="PF('adduser').show();" update=":adduserfrm"
                                        ajax="true">
                             <f:setPropertyActionListener value="#{user}" target="#{userMBean.selectedUser}"/>
                             <f:setPropertyActionListener value="#{true}" target="#{userMBean.edit}"/>
@@ -94,7 +94,8 @@
                 </p:panel>
 
 
-                <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" oncomplete="if (!args.validationFailed) adduser.hide()"
+                <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}"
+                                 oncomplete="if (!args.validationFailed) adduser.hide()"
                                  update=":userlist:users :userlist:messages :adduserfrm" rendered="#{!userMBean.edit}"/>
                 <p:commandButton action="#{userMBean.updateuser}" value="#{msgs.global_update}"
                                  oncomplete="if (!args.validationFailed) adduser.hide()"
