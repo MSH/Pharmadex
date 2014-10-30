@@ -18,7 +18,7 @@
                     <f:param value="letter"/>
                     <f:facet name="header">
                         <p:commandButton value="#{msgs.global_add}"
-                                         oncomplete="editletter.show();"
+                                         oncomplete="PF('editletter').show();"
                                          update=":editletterfrm"/>
                     </f:facet>
 
@@ -28,7 +28,7 @@
                     </p:column>
 
                     <p:column headerText="#{msgs.global_title}">
-                        <p:commandLink value=" #{template.title}" oncomplete="editletter.show();"
+                        <p:commandLink value=" #{template.title}" oncomplete="PF('editletter').show();"
                                        update=":editletterfrm">
                             <f:setPropertyActionListener value="#{template}" target="#{letterMbn.selLetter}"/>
                             <f:setPropertyActionListener value="#{template.id}" target="#{letterMbn.selLetterId}"/>

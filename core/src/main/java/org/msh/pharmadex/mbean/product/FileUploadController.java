@@ -18,7 +18,8 @@ import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Author: usrivastava
@@ -100,19 +101,25 @@ public class FileUploadController {
     }
 
     public void addModuleDoc() {
-        facesContext = FacesContext.getCurrentInstance();
         try {
+            facesContext = FacesContext.getCurrentInstance();
             file = userSession.getFile();
-            prodAppChecklist = userSession.getProdAppChecklist();
-            prodAppChecklist.setFile(IOUtils.toByteArray(file.getInputstream()));
-            prodAppChecklist.setFileName(file.getFileName());
-            prodAppChecklist.setContentType(file.getContentType());
-            prodAppChecklist.setUploadedBy(userSession.getLoggedInUserObj());
-            prodAppChecklist.setFileUploaded(true);
-            prodAppChecklistDAO.save(prodAppChecklist);
-            setChecklists(null);
-            userSession.setProdAppChecklist(null);
-            userSession.setFile(null);
+            if (file != null) {
+                prodAppChecklist = userSession.getProdAppChecklist();
+                prodAppChecklist.setFile(IOUtils.toByteArray(file.getInputstream()));
+                prodAppChecklist.setFileName(file.getFileName());
+                prodAppChecklist.setContentType(file.getContentType());
+                prodAppChecklist.setUploadedBy(userSession.getLoggedInUserObj());
+                prodAppChecklist.setFileUploaded(true);
+                prodAppChecklistDAO.save(prodAppChecklist);
+                setChecklists(null);
+                userSession.setProdAppChecklist(null);
+                userSession.setFile(null);
+            } else {
+                FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), resourceBundle.getString("upload_fail"));
+                facesContext.addMessage(null, msg);
+
+            }
         } catch (IOException e) {
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
             facesContext.addMessage(null, msg);

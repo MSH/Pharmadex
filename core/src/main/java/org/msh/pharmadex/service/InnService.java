@@ -1,8 +1,12 @@
 package org.msh.pharmadex.service;
 
+import org.msh.pharmadex.dao.iface.ExcipientDAO;
 import org.msh.pharmadex.dao.iface.InnDAO;
+import org.msh.pharmadex.dao.iface.ProdExcipientDAO;
 import org.msh.pharmadex.dao.iface.ProdInnDAO;
+import org.msh.pharmadex.domain.Excipient;
 import org.msh.pharmadex.domain.Inn;
+import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ProdInn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,7 +28,13 @@ public class InnService implements Serializable {
     private InnDAO innDAO;
 
     @Autowired
+    private ExcipientDAO excipientDAO;
+
+    @Autowired
     private ProdInnDAO prodInnDAO;
+
+    @Autowired
+    private ProdExcipientDAO prodExcipientDAO;
 
     private List<Inn> innList;
 
@@ -33,8 +43,16 @@ public class InnService implements Serializable {
         return innList;
     }
 
-    public Inn saveInn (Inn inn){
+    public List<Excipient> getExcipients() {
+        return excipientDAO.findAll();
+    }
+
+    public Inn saveInn(Inn inn) {
         return innDAO.save(inn);
+    }
+
+    public Excipient saveExcipient(Excipient excipient) {
+        return excipientDAO.save(excipient);
     }
 
     public Inn findInnById(long id) {
@@ -43,5 +61,9 @@ public class InnService implements Serializable {
 
     public List<ProdInn> findInnByProdApp(Long id) {
         return prodInnDAO.findByProduct_Id(id);
+    }
+
+    public List<ProdExcipient> findExcipientByProdApp(Long id) {
+        return prodExcipientDAO.findByProduct_Id(id);
     }
 }

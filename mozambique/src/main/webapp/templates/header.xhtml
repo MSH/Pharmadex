@@ -1,9 +1,9 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:sec="http://www.springframework.org/security/facelets/tags">
+                xmlns:sec="http://www.springframework.org/security/facelets/tags"
+                xmlns="http://www.w3.org/1999/xhtml">
 <title>#{msgs.header_title}</title>
 <h:outputStylesheet library="css" name="standard.css"/>
 <h:outputScript library="js" name="calendar.js"/>
@@ -70,7 +70,7 @@
                             </h:panelGroup>
 
                             <h:outputLink id="loginLink" value="javascript:void(0)"
-                                          onclick="logindlg.show()"
+                                          onclick="PF('logindlg').show()"
                                           title="login">
                                 <p:graphicImage value="/resources/images/log_in.png"/>
                             </h:outputLink>

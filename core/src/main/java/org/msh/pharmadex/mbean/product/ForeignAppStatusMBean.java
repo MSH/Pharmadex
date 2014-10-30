@@ -78,6 +78,7 @@ public class ForeignAppStatusMBean implements Serializable {
 
     public void initAddCompany() {
         selForeignAppStatus = new ForeignAppStatus();
+        selForeignAppStatus.setCountry(new Country());
     }
 
     public String cancelAdd() {

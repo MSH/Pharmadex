@@ -1,6 +1,5 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.dao.iface.ChecklistDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.service.*;
@@ -32,6 +31,7 @@ public class GlobalEntityLists implements Serializable {
     private List<Inn> inns;
     private List<Atc> atcs;
     private List<AdminRoute> adminRoutes;
+    private List<Excipient> excipients;
 
 
     @Autowired
@@ -89,6 +89,10 @@ public class GlobalEntityLists implements Serializable {
         return manufacturers;
     }
 
+    public void setManufacturers(List<Company> manufacturers) {
+        this.manufacturers = manufacturers;
+    }
+
     public List<AmdmtCategory> getAmdmtCategories() {
         if (amdmtCategories == null)
             amdmtCategories = amdmtService.findAllAmdmtCategory();
@@ -107,7 +111,6 @@ public class GlobalEntityLists implements Serializable {
         return countries;
     }
 
-
     public List<DosUom> getDosUoms() {
         if (dosUoms == null)
             dosUoms = dosageFormService.findAllDosUom();
@@ -120,10 +123,18 @@ public class GlobalEntityLists implements Serializable {
         return regProducts;
     }
 
+    public void setRegProducts(List<Product> regProducts) {
+        this.regProducts = regProducts;
+    }
+
     public List<Applicant> getRegApplicants() {
         if (regApplicants == null)
             regApplicants = applicantService.getRegApplicants();
         return regApplicants;
+    }
+
+    public void setRegApplicants(List<Applicant> regApplicants) {
+        this.regApplicants = regApplicants;
     }
 
     public List<PharmacySite> getPharmacySites() {
@@ -134,14 +145,6 @@ public class GlobalEntityLists implements Serializable {
 
     public void setPharmacySites(List<PharmacySite> pharmacySites) {
         this.pharmacySites = pharmacySites;
-    }
-
-    public void setRegProducts(List<Product> regProducts) {
-        this.regProducts = regProducts;
-    }
-
-    public void setRegApplicants(List<Applicant> regApplicants) {
-        this.regApplicants = regApplicants;
     }
 
     public List<ApplicantType> getApplicantTypes() {
@@ -162,7 +165,9 @@ public class GlobalEntityLists implements Serializable {
         return adminRoutes;
     }
 
-    public void setManufacturers(List<Company> manufacturers) {
-        this.manufacturers = manufacturers;
+    public List<Excipient> getExcipients() {
+        if (excipients == null)
+            excipients = innService.getExcipients();
+        return excipients;
     }
 }
