@@ -38,7 +38,7 @@
         <p:outputLabel/>
 
         <p:outputLabel value="#{msgs.applicant_filenumber}" for="ref"/>
-        <p:inputText value="#{companydata.siteNumber}" rendered="#{input}" id="ref"/>
+        <p:inputText value="#{companydata.siteNumber}" rendered="#{input}" id="ref" required="true"/>
         <h:outputLabel value="#{companydata.siteNumber}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right;" for="cphoneno"/>

@@ -184,6 +184,7 @@ public class ProdApplicationsService implements Serializable {
         regState.add(RegState.SAVED);
         params.put("regState", regState);
         params.put("userId", userId);
+        params.put("createdBy", userId);
         return prodApplicationsDAO.getProdAppByParams(params);
     }
 
@@ -441,5 +442,10 @@ public class ProdApplicationsService implements Serializable {
         foreignAppStatusDAO.delete(foreignAppStatus);
         return "removed";
     }
+
+    public List<ProdApplications> findSavedApps(User loggedInUserObj) {
+        return prodApplicationsDAO.findSavedProdApp(loggedInUserObj);
+    }
+
 
 }

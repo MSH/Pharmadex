@@ -1,7 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.service.InvoiceService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,12 @@ public class ProdAppMBean implements Serializable {
 
     @Autowired
     ProdApplicationsService prodApplicationsService;
-
+    @Autowired
+    ProcessProdBn processProdBn;
     @Autowired
     private UserSession userSession;
-
     @Autowired
     private InvoiceService invoiceService;
-
     private ProdApplications selectedApplication = new ProdApplications();
     private List<ProdApplications> prodApplicationsList;
     private List<ProdApplications> submmittedAppList;
@@ -41,10 +40,6 @@ public class ProdAppMBean implements Serializable {
     private List<ProdApplications> allApplicationForProcess;
     private List<ProdApplications> filteredApps;
     private List<ProdApplications> pendingRenewals;
-
-    @Autowired
-    ProcessProdBn processProdBn;
-
 
     public String onRowSelect() {
 //        setShowAdd(true);
@@ -89,10 +84,18 @@ public class ProdAppMBean implements Serializable {
         return prodApplicationsList;
     }
 
+    public void setProdApplicationsList(List<ProdApplications> prodApplicationsList) {
+        this.prodApplicationsList = prodApplicationsList;
+    }
+
     public List<ProdApplications> getSavedAppList() {
         if (savedAppList == null)
-            savedAppList = prodApplicationsService.getSavedApplications(userSession.getLoggedInUserObj().getUserId());
+            savedAppList = prodApplicationsService.findSavedApps(userSession.getLoggedInUserObj());
         return savedAppList;
+    }
+
+    public void setSavedAppList(List<ProdApplications> savedAppList) {
+        this.savedAppList = savedAppList;
     }
 
     public List<ProdApplications> getSubmmittedAppList() {
@@ -112,14 +115,6 @@ public class ProdAppMBean implements Serializable {
 
     public void setAllApplicationForProcess(List<ProdApplications> allApplicationForProcess) {
         this.allApplicationForProcess = allApplicationForProcess;
-    }
-
-    public void setSavedAppList(List<ProdApplications> savedAppList) {
-        this.savedAppList = savedAppList;
-    }
-
-    public void setProdApplicationsList(List<ProdApplications> prodApplicationsList) {
-        this.prodApplicationsList = prodApplicationsList;
     }
 
     public boolean isShowAdd() {

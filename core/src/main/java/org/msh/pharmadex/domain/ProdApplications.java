@@ -139,6 +139,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
+    @OneToOne
+    @JoinColumn(name = "createdBy")
+    private User createdBy;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Appointment appointment;
 
@@ -501,6 +505,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setForeignAppStatus(List<ForeignAppStatus> foreignAppStatus) {
         this.foreignAppStatus = foreignAppStatus;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 }
 

@@ -123,6 +123,17 @@ public class ProdApplicationsDAO implements Serializable {
         return prodApps;
     }
 
+    @Transactional
+    public List<ProdApplications> findSavedProdApp(User loggedInUser) {
+        List<ProdApplications> prodApplicationses = entityManager.createQuery("select p from ProdApplications p where p.prod.createdBy.userId = :userId " +
+                "or p.user.userId =:userId")
+                .setParameter("userId", loggedInUser.getUserId())
+                .getResultList();
+        return prodApplicationses;
+
+
+    }
+
 
     @Transactional
     public String saveApplication(ProdApplications prodApplications) {

@@ -32,8 +32,8 @@
                 </p:submenu>
 
 
-                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.admin}">
-                    <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
+                <p:submenu label="#{msgs.current_applications}">
+                <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
                                 url="/secure/submittedproducts.faces"/>
                     <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
                                 url="/secure/savedproducts.faces"/>

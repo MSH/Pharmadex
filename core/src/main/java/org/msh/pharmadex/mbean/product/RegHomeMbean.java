@@ -236,8 +236,9 @@ public class RegHomeMbean implements Serializable {
         prodApplications.setUser(applicantUser);
         prodApplications.setForeignAppStatus(foreignAppStatuses);
         product.setProdApplications(prodApplications);
-        if (product.getId() == null)
+        if (product.getId() == null) {
             product.setCreatedBy(getLoggedInUser());
+        }
 //        try {
         product = productService.updateProduct(product);
         prodApplications = product.getProdApplications();
