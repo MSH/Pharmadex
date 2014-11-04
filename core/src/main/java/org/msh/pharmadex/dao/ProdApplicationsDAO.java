@@ -125,9 +125,10 @@ public class ProdApplicationsDAO implements Serializable {
 
     @Transactional
     public List<ProdApplications> findSavedProdApp(User loggedInUser) {
-        List<ProdApplications> prodApplicationses = entityManager.createQuery("select p from ProdApplications p where p.prod.createdBy.userId = :userId " +
-                "or p.user.userId =:userId")
+        List<ProdApplications> prodApplicationses = entityManager.createQuery("select p from ProdApplications p where p.regState=:regState " +
+                "and (p.prod.createdBy.userId = :userId or p.user.userId =:userId)")
                 .setParameter("userId", loggedInUser.getUserId())
+                .setParameter("regState", RegState.SAVED)
                 .getResultList();
         return prodApplicationses;
 

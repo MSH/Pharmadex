@@ -429,6 +429,7 @@ public class RegHomeMbean implements Serializable {
         companies = product.getProdCompanies();
         prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = product.getApplicant();
+        applicantUser = prodApplications.getUser();
         drugPrices = prodApplications.getPricing().getDrugPrices();
         foreignAppStatuses = prodApplications.getForeignAppStatus();
     }
