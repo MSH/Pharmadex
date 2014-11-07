@@ -23,16 +23,10 @@
         <p:inputText id="instorecndtn" value="#{regHomeMbean.prodApplications.storageCndtn}"/>
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
-        <p:outputLabel value="#{msgs.product_active}" for="inpharmstd"/>
-        <p:inputTextarea id="inpharmstd" value="#{regHomeMbean.prodApplications.pharmacopeiaStds}"
-                         style="width: 300px"/>
-        <p:message for="inpharmstd" showSummary="true" showDetail="false"/>
-
-
         <p:outputLabel value="#{msgs.statement_ingrd}" for="statement"/>
         <p:inputTextarea id="statement" value="#{regHomeMbean.prodApplications.ingrdStatment}" rows="4" cols="50"
                          title="ProdDesc"/>
-        <p:message for="inpharmstd" showSummary="true" showDetail="false"/>
+        <p:message for="statement" showSummary="true" showDetail="false"/>
         <h:outputLabel value="#{msgs.statement_ingrd_hint}" for="statement"/>
 
     </h:panelGrid>
