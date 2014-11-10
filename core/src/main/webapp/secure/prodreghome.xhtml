@@ -47,7 +47,7 @@
 <p:tab id="appdetails" title="#{msgs.application_detail}">
     <p:panel header="#{msgs.application_detail}">
 
-        <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10">
+        <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10" columnClasses="label value">
             <p:outputLabel value="#{msgs.new_chemical_entity}" for="nceChkbox" styleClass="label"/>
             <p:selectBooleanCheckbox value="#{regHomeMbean.product.newChemicalEntity}" id="nceChkbox">
                 <p:ajax update=":reghome:adddetailgrid" listener="#{regHomeMbean.nceChangeListener}"
@@ -152,6 +152,12 @@
                 </p:column>
 
             </p:dataTable>
+
+            <p:outputLabel value="#{msgs.prod_indications}" for="indication" />
+            <p:inputTextarea id="indication" value="#{regHomeMbean.prodApplications.indications}" cols="100"/>
+
+            <p:outputLabel value="#{msgs.prod_posology}" for="posology"/>
+            <p:inputTextarea id="posology" value="#{regHomeMbean.prodApplications.posology}" cols="100"/>
 
         </h:panelGrid>
 

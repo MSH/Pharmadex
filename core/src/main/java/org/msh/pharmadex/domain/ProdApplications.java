@@ -75,6 +75,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String bankName;
 
+    @Column(length = 1500)
+    private String indications;
+
+    @Column(length = 500)
+    private String posology;
+
     @Temporal(TemporalType.DATE)
     private Date feeSubmittedDt;
 
@@ -513,6 +519,22 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getIndications() {
+        return indications;
+    }
+
+    public void setIndications(String indications) {
+        this.indications = indications;
+    }
+
+    public String getPosology() {
+        return posology;
+    }
+
+    public void setPosology(String posology) {
+        this.posology = posology;
     }
 }
 
