@@ -45,7 +45,7 @@ public class JsfUtils {
     public static Date addDate(Date dt, int year){
         Calendar c = Calendar.getInstance();
         c.setTime(dt);
-        c.add(Calendar.YEAR, 2);
+        c.add(Calendar.YEAR, year);
         return c.getTime();
     }
 
