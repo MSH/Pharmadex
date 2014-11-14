@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="201"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="subject" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -86,29 +86,29 @@
 	<title>
 		<band height="87" splitType="Stretch">
 			<image>
-				<reportElement x="0" y="0" width="123" height="86" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
+				<reportElement x="0" y="0" width="85" height="86" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
 				<imageExpression><![CDATA["images/na_namibia_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="123" y="1" width="449" height="37" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
+				<reportElement x="85" y="1" width="487" height="37" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
 				<textElement textAlignment="Center">
-					<font size="20" isBold="true"/>
+					<font size="15" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration (DGDA)]]></text>
+				<text><![CDATA[Food, Medicine and Health Care Administration and Control Authority]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="123" y="38" width="449" height="24" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
+				<reportElement x="85" y="38" width="487" height="24" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Ministry of Health and Family Welfare]]></text>
+				<text><![CDATA[Ministry of Health]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="123" y="62" width="449" height="24" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
+				<reportElement x="85" y="62" width="487" height="24" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Government of the People's Republic of Bangladesh]]></text>
+				<text><![CDATA[Federal Democratic Republic of Ethiopia]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -171,7 +171,7 @@
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration]]></text>
+				<text><![CDATA[Directorate, FMHACA]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="0" y="262" width="572" height="20" uuid="f862559b-8b50-4802-a550-1df8d5af8aee"/>

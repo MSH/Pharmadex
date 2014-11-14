@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="114"/>
 	<parameter name="currDay" class="java.lang.String"/>
 	<parameter name="currMnthYr" class="java.lang.String"/>
 	<parameter name="regName" class="java.lang.String"/>
@@ -26,7 +26,7 @@
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Ministry of Health and Family Welfare]]></text>
+				<text><![CDATA[Ministry of Health]]></text>
 			</staticText>
 			<image>
 				<reportElement x="222" y="78" width="137" height="125" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
@@ -37,7 +37,7 @@
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Government of the People's Republic of Bangladesh]]></text>
+				<text><![CDATA[Federal Democratic Republic of Ethiopia]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="203" width="572" height="26" uuid="ab25f915-c494-4bec-8838-e31fd0ac24fc"/>
@@ -51,7 +51,7 @@
 				<textElement textAlignment="Justified">
 					<font size="14"/>
 				</textElement>
-				<text><![CDATA[It is hereby certified that the Directorate general of Drug Administration (DGDA) has approved in terms section 19(4) of the Medicines and Related Substances Control Act, 2003 (Act No. 13 of 2003), the registration of the medicine described below subject to the conditions set out below:]]></text>
+				<text><![CDATA[It is hereby certified that the Directorate general of Food, Medicine and Health Care and Control Authority (FMHACA) has approved in terms section 19(4) of the Medicines and Related Substances Control Act, 2003 (Act No. 13 of 2003), the registration of the medicine described below subject to the conditions set out below:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="307" width="265" height="20" uuid="7a15fa2a-c444-48c9-a03e-6a6bf81bb77d"/>
@@ -150,7 +150,7 @@
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
+				<text><![CDATA[Director, FMHACA]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="265" y="307" width="307" height="20" uuid="41032866-b59f-43fd-8cc8-b52d25b4d776"/>
@@ -195,9 +195,9 @@
 			<staticText>
 				<reportElement x="0" y="0" width="572" height="26" forecolor="#006666" uuid="130d9b46-40e1-4492-8341-9328b9856ede"/>
 				<textElement textAlignment="Center">
-					<font size="20" isBold="true"/>
+					<font size="15" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration (DGDA)]]></text>
+				<text><![CDATA[Food, Medicine and Health Care Administration and Control Authority]]></text>
 			</staticText>
 		</band>
 	</title>
