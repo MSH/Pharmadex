@@ -25,7 +25,7 @@ public class GalleriaBean {
         images = new ArrayList<ImagePack>();
         imageDescArr = new String[]{"Confisticated Drugs", "HIV AIDS Medicine", "NMRC inaguration", "World Map", "tabs", "injections", "pharmacy", "tabs2"};
 
-        for(int i=1;i<=8;i++) {
+        for(int i=1;i<=6;i++) {
             String imageName = "galleria" + i + ".jpg";
             String imageDesc = imageDescArr[i-1];
             images.add(new ImagePack(imageName, imageDesc));
