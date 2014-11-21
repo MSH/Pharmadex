@@ -5,11 +5,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.msh.pharmadex.dao.AmdmtDAO;
 import org.msh.pharmadex.dao.iface.ChecklistDAO;
 import org.msh.pharmadex.domain.Checklist;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -68,9 +65,9 @@ public class ChecklistServiceTest {
         Assert.assertNotNull(newMedChecklists);
         Assert.assertEquals(newMedChecklists.size(), newMedCount);
 
-        List<Checklist> recognizedChecklists = checklistService.getChecklists(ProdAppType.RECOGNIZED, true);
-        Assert.assertNotNull(recognizedChecklists);
-        Assert.assertEquals(recognizedChecklists.size(), recognizedCount);
+//        List<Checklist> recognizedChecklists = checklistService.getChecklists(ProdAppType.RECOGNIZED, true);
+//        Assert.assertNotNull(recognizedChecklists);
+//        Assert.assertEquals(recognizedChecklists.size(), recognizedCount);
     }
 
 

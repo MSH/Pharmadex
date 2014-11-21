@@ -2,19 +2,19 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.ProdCompany;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.CountryService;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
@@ -24,22 +24,22 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class CompanyMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(CompanyMBean.class);
     private static final long serialVersionUID = 4226719621949851455L;
 
-    @Autowired
+    @ManagedProperty(value = "#{regHomeMbean}")
     RegHomeMbean regHomeMbean;
 
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
 
-    @Autowired
+    @ManagedProperty(value = "#{countryService}")
     CountryService countryService;
 
-    @Autowired
+    @ManagedProperty(value = "#{companyService}")
     CompanyService companyService;
 
     private Company selectedCompany;
@@ -134,5 +134,37 @@ public class CompanyMBean implements Serializable {
 
     public void setShowGMP(boolean showGMP) {
         this.showGMP = showGMP;
+    }
+
+    public RegHomeMbean getRegHomeMbean() {
+        return regHomeMbean;
+    }
+
+    public void setRegHomeMbean(RegHomeMbean regHomeMbean) {
+        this.regHomeMbean = regHomeMbean;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public CountryService getCountryService() {
+        return countryService;
+    }
+
+    public void setCountryService(CountryService countryService) {
+        this.countryService = countryService;
+    }
+
+    public CompanyService getCompanyService() {
+        return companyService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
     }
 }

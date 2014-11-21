@@ -9,11 +9,11 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,20 +24,20 @@ import java.util.Calendar;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class FileUploadController {
 
-    @Autowired
+    @ManagedProperty(value = "#{attachmentDAO}")
     AttachmentDAO attachmentDAO;
 
-    @Autowired
+    @ManagedProperty(value = "#{processProdBn}")
     ProcessProdBn processProdBn;
 
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
 
-    @Autowired
+    @ManagedProperty(value = "#{prodAppChecklistDAO}")
     ProdAppChecklistDAO prodAppChecklistDAO;
 
     private ArrayList<Attachment> attachments;
@@ -200,5 +200,37 @@ public class FileUploadController {
 
     public void setInvoiceFile(byte[] invoiceFile) {
         this.invoiceFile = invoiceFile;
+    }
+
+    public AttachmentDAO getAttachmentDAO() {
+        return attachmentDAO;
+    }
+
+    public void setAttachmentDAO(AttachmentDAO attachmentDAO) {
+        this.attachmentDAO = attachmentDAO;
+    }
+
+    public ProcessProdBn getProcessProdBn() {
+        return processProdBn;
+    }
+
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public ProdAppChecklistDAO getProdAppChecklistDAO() {
+        return prodAppChecklistDAO;
+    }
+
+    public void setProdAppChecklistDAO(ProdAppChecklistDAO prodAppChecklistDAO) {
+        this.prodAppChecklistDAO = prodAppChecklistDAO;
     }
 }

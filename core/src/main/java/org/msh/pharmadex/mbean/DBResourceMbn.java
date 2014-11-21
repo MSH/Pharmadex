@@ -1,7 +1,11 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.AdminRoute;
+import org.msh.pharmadex.domain.Country;
+import org.msh.pharmadex.domain.DosageForm;
+import org.msh.pharmadex.domain.ResourceMessage;
 import org.msh.pharmadex.service.DosageFormService;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ResourceBundleService;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.slf4j.Logger;
@@ -11,24 +15,23 @@ import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import java.io.Serializable;
 import java.util.*;
-import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
  */
 @Component
-public class DBResourceMbn {
-    private Logger logger = LoggerFactory.getLogger(DBResourceMbn.class);
-
-
+public class DBResourceMbn implements Serializable {
     @Autowired
     ResourceBundleService resourceBundleService;
-
     @Autowired
     DosageFormService dosageFormService;
+    @Autowired
+    GlobalEntityLists globalEntityLists;
+    private Logger logger = LoggerFactory.getLogger(DBResourceMbn.class);
 
-    public void startInsert(){
+    public void startInsert() {
         FacesContext context = FacesContext.getCurrentInstance();
         Locale currLocale = context.getViewRoot().getLocale();
         logger.error("" + currLocale);
@@ -53,21 +56,18 @@ public class DBResourceMbn {
             resourceMessages.add(rm);
 
 
-
-            System.out.println("Key == "+key);
-            System.out.println("Value == "+bundle.getString(key));
+            System.out.println("Key == " + key);
+            System.out.println("Value == " + bundle.getString(key));
 
         }
-        System.out.println("Count == "+resourceMessages.size());
+        System.out.println("Count == " + resourceMessages.size());
         resourceBundleService.save(rb);
 
         context.addMessage(null, new FacesMessage("Successfully Inserted the properties file"));
     }
 
-    @Autowired
-    GlobalEntityLists globalEntityLists;
 
-    public void insertLookup(){
+    public void insertLookup() {
         FacesContext context = FacesContext.getCurrentInstance();
         List<DosageForm> dosageForms = globalEntityLists.getDosageForms();
         List<Country> countries = globalEntityLists.getCountries();
@@ -80,29 +80,29 @@ public class DBResourceMbn {
 
         ResourceMessage rm;
 
-        String key="";
-        String value="";
+        String key = "";
+        String value = "";
         String delimiter = "_";
-        for(DosageForm df : dosageForms){
-            key = df.getClass().getSimpleName()+delimiter+ RegistrationUtil.formatString(df.getDosForm());
+        for (DosageForm df : dosageForms) {
+            key = df.getClass().getSimpleName() + delimiter + RegistrationUtil.formatString(df.getDosForm());
             value = df.getDosForm();
             setLookup(rb, resourceMessages, key, value);
         }
 
-        for(Country df : countries){
-            key = df.getClass().getSimpleName()+delimiter+RegistrationUtil.formatString(df.getCountryName());
+        for (Country df : countries) {
+            key = df.getClass().getSimpleName() + delimiter + RegistrationUtil.formatString(df.getCountryName());
             value = df.getCountryName();
             setLookup(rb, resourceMessages, key, value);
         }
 
-        for(AdminRoute df : adminRoutes){
-            key = df.getClass().getSimpleName()+delimiter+RegistrationUtil.formatString(df.getName());
+        for (AdminRoute df : adminRoutes) {
+            key = df.getClass().getSimpleName() + delimiter + RegistrationUtil.formatString(df.getName());
             value = df.getName();
             setLookup(rb, resourceMessages, key, value);
         }
 
 
-        System.out.println("ResourceMessages == "+resourceMessages.size());
+        System.out.println("ResourceMessages == " + resourceMessages.size());
         resourceBundleService.save(rb);
 
         context.addMessage(null, new FacesMessage("Successfully Inserted the resource file"));
@@ -119,4 +119,28 @@ public class DBResourceMbn {
         resourceMessages.add(rm);
     }
 
+
+    public ResourceBundleService getResourceBundleService() {
+        return resourceBundleService;
+    }
+
+    public void setResourceBundleService(ResourceBundleService resourceBundleService) {
+        this.resourceBundleService = resourceBundleService;
+    }
+
+    public DosageFormService getDosageFormService() {
+        return dosageFormService;
+    }
+
+    public void setDosageFormService(DosageFormService dosageFormService) {
+        this.dosageFormService = dosageFormService;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
 }

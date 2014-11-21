@@ -7,7 +7,6 @@ import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.CompanyType;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,14 +46,14 @@ public class CompanyService implements Serializable {
     }
 
     @Transactional
-    public List<ProdCompany> addCompany(Product prod, Company selectedCompany, List<String> companyTypes){
-        if(companyTypes.size()<1)
+    public List<ProdCompany> addCompany(Product prod, Company selectedCompany, List<String> companyTypes) {
+        if (companyTypes.size() < 1)
             return null;
 
-        if(prod==null)
+        if (prod == null)
             return null;
 
-        if(selectedCompany==null)
+        if (selectedCompany == null)
             return null;
 
         List<ProdCompany> prodCompanies;
@@ -63,43 +62,43 @@ public class CompanyService implements Serializable {
         c = countryService.findCountryById(c.getId());
         selectedCompany.getAddress().setCountry(c);
 
-        if(prod.getProdCompanies()==null){
+        if (prod.getProdCompanies() == null) {
             prod.setProdCompanies(new ArrayList<ProdCompany>());
         }
         prodCompanies = prod.getProdCompanies();
 
-        if(selectedCompany.getProdCompanies()==null) {
+        if (selectedCompany.getProdCompanies() == null) {
             selectedCompany.setProdCompanies(new ArrayList<ProdCompany>());
-        }else{
+        } else {
             selectedCompany = findCompanyById(selectedCompany.getId());
         }
 
         companyProds = selectedCompany.getProdCompanies();
 
 
-        for(String ct : companyTypes) {
+        for (String ct : companyTypes) {
             ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
             prodCompanies.add(prodCompany);
             companyProds.add(prodCompany);
         }
 
 
-        if(selectedCompany.getId()==null) {
+        if (selectedCompany.getId() == null) {
             selectedCompany = saveCompany(selectedCompany);
             globalEntityLists.setManufacturers(null);
-        }else {
+        } else {
             selectedCompany = findCompanyById(selectedCompany.getId());
         }
         return prodCompanies;
     }
 
     @Transactional
-    public Company saveCompany(Company company){
+    public Company saveCompany(Company company) {
         return companyDAO.save(company);
     }
 
     @Transactional
-    public Company findCompanyById(Long id){
+    public Company findCompanyById(Long id) {
         return companyDAO.findOne(id);
     }
 

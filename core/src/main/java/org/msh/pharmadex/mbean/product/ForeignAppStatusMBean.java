@@ -3,19 +3,19 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ForeignAppStatus;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.CountryService;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.util.JsfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,21 +25,21 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class ForeignAppStatusMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ForeignAppStatusMBean.class);
 
-    @Autowired
+    @ManagedProperty(value = "#{regHomeMbean}")
     RegHomeMbean regHomeMbean;
 
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
 
-    @Autowired
+    @ManagedProperty(value = "#{countryService}")
     CountryService countryService;
 
-    @Autowired
+    @ManagedProperty(value = "#{companyService}")
     CompanyService companyService;
 
     private ForeignAppStatus selForeignAppStatus;
@@ -99,5 +99,46 @@ public class ForeignAppStatusMBean implements Serializable {
     public List<Company> completeCompany(String query) {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getManufacturers());
     }
+
+    public RegHomeMbean getRegHomeMbean() {
+        return regHomeMbean;
+    }
+
+    public void setRegHomeMbean(RegHomeMbean regHomeMbean) {
+        this.regHomeMbean = regHomeMbean;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public CountryService getCountryService() {
+        return countryService;
+    }
+
+    public void setCountryService(CountryService countryService) {
+        this.countryService = countryService;
+    }
+
+    public CompanyService getCompanyService() {
+        return companyService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
+    }
+
+    public List<ForeignAppStatus> getForeignAppStatuses() {
+        return foreignAppStatuses;
+    }
+
+    public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
+        this.foreignAppStatuses = foreignAppStatuses;
+    }
+
 
 }

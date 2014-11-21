@@ -1,8 +1,7 @@
-package org.msh.pharmadex.mbean;
+package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,6 @@ public class GlobalEntityLists implements Serializable {
     private List<Atc> atcs;
     private List<AdminRoute> adminRoutes;
     private List<Excipient> excipients;
-
 
     @Autowired
     private DosageFormService dosageFormService;
@@ -170,4 +168,5 @@ public class GlobalEntityLists implements Serializable {
             excipients = innService.getExcipients();
         return excipients;
     }
+
 }

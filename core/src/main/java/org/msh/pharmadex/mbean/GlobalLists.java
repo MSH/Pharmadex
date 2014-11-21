@@ -1,9 +1,9 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.enums.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("singleton")
+@ManagedBean
+@ApplicationScoped
 public class GlobalLists {
 
     public List<UserType> getUserTypes() {

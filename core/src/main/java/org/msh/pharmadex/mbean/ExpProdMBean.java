@@ -3,10 +3,10 @@ package org.msh.pharmadex.mbean;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.mbean.product.ProcessProdBn;
 import org.msh.pharmadex.service.ProdApplicationsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +14,14 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class ExpProdMBean implements Serializable {
 
-    @Autowired
+    @ManagedProperty(value = "#{processProdBn}")
     ProcessProdBn processProdBn;
 
-    @Autowired
+    @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
 
     private List<ProdApplications> prodApplicationses;
@@ -42,11 +42,19 @@ public class ExpProdMBean implements Serializable {
         return prodApplicationses;
     }
 
+    public void setProdApplicationses(ArrayList<ProdApplications> prodApplicationses) {
+        this.prodApplicationses = prodApplicationses;
+    }
+
     public List<ProdApplications> getNotifiedPayProd() {
         if (notifiedPayProd == null) {
             notifiedPayProd = prodApplicationsService.findPayNotified();
         }
         return notifiedPayProd;
+    }
+
+    public void setNotifiedPayProd(List<ProdApplications> notifiedPayProd) {
+        this.notifiedPayProd = notifiedPayProd;
     }
 
     public List<ProdApplications> getExpiredProds() {
@@ -60,19 +68,27 @@ public class ExpProdMBean implements Serializable {
         this.expiredProds = expiredProds;
     }
 
-    public void setNotifiedPayProd(List<ProdApplications> notifiedPayProd) {
-        this.notifiedPayProd = notifiedPayProd;
-    }
-
-    public void setProdApplicationses(ArrayList<ProdApplications> prodApplicationses) {
-        this.prodApplicationses = prodApplicationses;
-    }
-
     public List<ProdApplications> getFilteredApps() {
         return filteredApps;
     }
 
     public void setFilteredApps(List<ProdApplications> filteredApps) {
         this.filteredApps = filteredApps;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public ProcessProdBn getProcessProdBn() {
+        return processProdBn;
+    }
+
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
     }
 }

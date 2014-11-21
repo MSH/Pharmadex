@@ -3,11 +3,11 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.domain.DrugPrice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -15,13 +15,13 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class DrugPriceMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(DrugPriceMBean.class);
     private static final long serialVersionUID = 5084991828668543L;
 
-    @Autowired
+    @ManagedProperty(value = "#{regHomeMbean}")
     RegHomeMbean regHomeMbean;
 
     private DrugPrice selectedDrugPrice;
@@ -56,4 +56,11 @@ public class DrugPriceMBean implements Serializable {
         this.selectedDrugPrice = drugPrice;
     }
 
+    public RegHomeMbean getRegHomeMbean() {
+        return regHomeMbean;
+    }
+
+    public void setRegHomeMbean(RegHomeMbean regHomeMbean) {
+        this.regHomeMbean = regHomeMbean;
+    }
 }
