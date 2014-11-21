@@ -1,7 +1,7 @@
 package org.msh.pharmadex.service.converter;
 
 import org.msh.pharmadex.domain.PharmClassif;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

@@ -138,9 +138,6 @@
         <h:outputLabel value="#{msgs.product_storcndtn}"/>
         <h:outputLabel value="#{prodData.prodApplications.storageCndtn}"/>
 
-        <h:outputLabel value="#{msgs.statement_ingrd}"/>
-        <h:outputLabel value="#{prodData.prodApplications.ingrdStatment}"/>
-
         <h:outputLabel value="#{msgs.prod_indications}"/>
         <h:outputLabel value="#{prodData.prodApplications.indications}"/>
 
@@ -251,6 +248,12 @@
 
 <p:tab title="#{msgs.checklist}">
     <p:dataTable var="checkList" value="#{prodData.prodApplications.prodAppChecklists}" style="width:100%;">
+        <p:column>
+            <h:outputLabel value="#{checkList.checklist.module}"/>
+        </p:column>
+        <p:column>
+            <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+        </p:column>
         <p:column>
             <h:outputLabel value="#{checkList.checklist.name}"/>
         </p:column>

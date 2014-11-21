@@ -5,7 +5,6 @@ import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.extensions.component.timeline.Timeline;
@@ -13,14 +12,14 @@ import org.primefaces.extensions.model.timeline.TimelineEvent;
 import org.primefaces.extensions.model.timeline.TimelineModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,33 +31,33 @@ import java.util.Map;
  * Backing bean to process the application made for registration
  * Author: usrivastava
  */
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
-    @Autowired
+    @ManagedProperty(value = "#{amdmtService}")
     AmdmtService amdmtService;
-    @Autowired
+    @ManagedProperty(value = "#{workspaceDAO}")
     WorkspaceDAO workspaceDAO;
     private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
-    @Autowired
+    @ManagedProperty(value = "#{userService}")
     private UserService userService;
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-    @Autowired
+    @ManagedProperty(value = "#{commentService}")
     private CommentService commentService;
-    @Autowired
+    @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
-    @Autowired
+    @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
-    @Autowired
+    @ManagedProperty(value = "#{mailService}")
     private MailService mailService;
-    @Autowired
+    @ManagedProperty(value = "#{productService}")
     private ProductService productService;
-    @Autowired
+    @ManagedProperty(value = "#{reviewDAO}")
     private ReviewDAO reviewDAO;
     private ProdApplications prodApplications;
     private Product product;
@@ -662,5 +661,94 @@ public class ProcessProdBn implements Serializable {
 
     public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
         this.foreignAppStatuses = foreignAppStatuses;
+    }
+
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public CommentService getCommentService() {
+        return commentService;
+    }
+
+    public void setCommentService(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
+    public TimelineService getTimelineService() {
+        return timelineService;
+    }
+
+    public void setTimelineService(TimelineService timelineService) {
+        this.timelineService = timelineService;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public MailService getMailService() {
+        return mailService;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public ReviewDAO getReviewDAO() {
+        return reviewDAO;
+    }
+
+    public void setReviewDAO(ReviewDAO reviewDAO) {
+        this.reviewDAO = reviewDAO;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public AmdmtService getAmdmtService() {
+        return amdmtService;
+    }
+
+    public void setAmdmtService(AmdmtService amdmtService) {
+        this.amdmtService = amdmtService;
+    }
+
+    public WorkspaceDAO getWorkspaceDAO() {
+        return workspaceDAO;
+    }
+
+    public void setWorkspaceDAO(WorkspaceDAO workspaceDAO) {
+        this.workspaceDAO = workspaceDAO;
     }
 }

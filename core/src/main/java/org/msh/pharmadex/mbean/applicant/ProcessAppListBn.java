@@ -2,14 +2,14 @@ package org.msh.pharmadex.mbean.applicant;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.util.JsfUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -18,19 +18,19 @@ import java.util.ResourceBundle;
  * Backing bean for the process applicant list page
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class ProcessAppListBn {
 
     FacesContext context = FacesContext.getCurrentInstance();
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
     private Applicant applicant;
     private List<Applicant> pendingApps;
-    @Autowired
+    @ManagedProperty(value = "#{applicantService}")
     private ApplicantService applicantService;
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
     public String goToAppDetail() {
@@ -70,4 +70,27 @@ public class ProcessAppListBn {
         this.applicant = applicant;
     }
 
+    public ApplicantService getApplicantService() {
+        return applicantService;
+    }
+
+    public void setApplicantService(ApplicantService applicantService) {
+        this.applicantService = applicantService;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
 }

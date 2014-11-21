@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.el.ELContext;
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,14 +24,21 @@ public class PostSuccessfullAuthHandler extends SavedRequestAwareAuthenticationS
     //    @Autowired
     private UserService userService;
 
+    private UserSession userSession;
+
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
         /*
          *  Add post authentication logic in the trackUseLogin method of userService;
         */
         WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
-        UserSession userSession = (UserSession) ctx.getBean("userSession");
         userService = (UserService) ctx.getBean("userService");
+
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        UserSession userSession
+                = (UserSession) FacesContext.getCurrentInstance().getApplication()
+                .getELResolver().getValue(elContext, null, "userSession");
+
         User user = userService.findUserByUsername(authentication.getName());
         userSession.registerLogin(user, request);
 
@@ -38,4 +47,11 @@ public class PostSuccessfullAuthHandler extends SavedRequestAwareAuthenticationS
     }
 
 
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
 }

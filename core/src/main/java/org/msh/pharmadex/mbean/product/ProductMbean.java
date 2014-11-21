@@ -2,22 +2,22 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class ProductMbean implements Serializable {
     private static final long serialVersionUID = -7982763544138941526L;
 
-    @Autowired
+    @ManagedProperty(value = "#{productService}")
     private ProductService productService;
     private List<Product> products;
     private List<Product> filteredProducts;
@@ -42,7 +42,15 @@ public class ProductMbean implements Serializable {
     }
 
     public String goToDetails(Product prod) {
-        System.out.println("Product == "+prod.getProdName()+" ID =="+prod.getId());
+        System.out.println("Product == " + prod.getProdName() + " ID ==" + prod.getId());
         return "productdetail";  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
     }
 }

@@ -4,11 +4,11 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.service.InvoiceService;
 import org.msh.pharmadex.service.ProdApplicationsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,18 +19,18 @@ import java.util.List;
  * Time: 12:05 AM
  * To change this template use File | Settings | File Templates.
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class ProdAppMBean implements Serializable {
     private static final long serialVersionUID = -900861644263726931L;
 
-    @Autowired
+    @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
-    @Autowired
+    @ManagedProperty(value = "#{processProdBn}")
     ProcessProdBn processProdBn;
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-    @Autowired
+    @ManagedProperty(value = "#{invoiceService}")
     private InvoiceService invoiceService;
     private ProdApplications selectedApplication = new ProdApplications();
     private List<ProdApplications> prodApplicationsList;
@@ -131,5 +131,37 @@ public class ProdAppMBean implements Serializable {
 
     public void setFilteredApps(List<ProdApplications> filteredApps) {
         this.filteredApps = filteredApps;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public ProcessProdBn getProcessProdBn() {
+        return processProdBn;
+    }
+
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public InvoiceService getInvoiceService() {
+        return invoiceService;
+    }
+
+    public void setInvoiceService(InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
     }
 }

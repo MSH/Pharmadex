@@ -1,15 +1,15 @@
 package org.msh.pharmadex.mbean;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class NavigationBean implements Serializable {
     private static final long serialVersionUID = -1798717174751773194L;
     private String selection;

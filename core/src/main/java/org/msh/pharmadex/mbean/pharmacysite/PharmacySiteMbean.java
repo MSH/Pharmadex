@@ -3,14 +3,14 @@ package org.msh.pharmadex.mbean.pharmacysite;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.PharmacySiteService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -21,18 +21,18 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class PharmacySiteMbean implements Serializable {
 
 
-    @Autowired
+    @ManagedProperty(value = "#{pharmacySiteService}")
     PharmacySiteService pharmacySiteService;
 
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
 
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
 
     private List<PharmacySiteChecklist> siteChecklists;
@@ -92,15 +92,13 @@ public class PharmacySiteMbean implements Serializable {
         return allSites;
     }
 
+    public void setAllSites(List<PharmacySite> allSites) {
+        this.allSites = allSites;
+    }
 
     public List<PharmacySite> getRegSites() {
         allSites = globalEntityLists.getPharmacySites();
         return allSites;
-    }
-
-
-    public void setAllSites(List<PharmacySite> allSites) {
-        this.allSites = allSites;
     }
 
     public PharmacySite getSelectedSite() {
@@ -146,5 +144,29 @@ public class PharmacySiteMbean implements Serializable {
 
     public void setSubmittedSites(List<PharmacySite> submittedSites) {
         this.submittedSites = submittedSites;
+    }
+
+    public PharmacySiteService getPharmacySiteService() {
+        return pharmacySiteService;
+    }
+
+    public void setPharmacySiteService(PharmacySiteService pharmacySiteService) {
+        this.pharmacySiteService = pharmacySiteService;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
     }
 }

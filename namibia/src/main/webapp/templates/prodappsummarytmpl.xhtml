@@ -218,6 +218,12 @@
 <p:tab title="#{msgs.checklist}">
     <p:dataTable var="checkList" value="#{prodData.prodApplications.prodAppChecklists}" style="width:100%;">
         <p:column>
+            <h:outputLabel value="#{checkList.checklist.module}"/>
+        </p:column>
+        <p:column>
+            <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+        </p:column>
+        <p:column>
             <h:outputLabel value="#{checkList.checklist.name}"/>
         </p:column>
         <p:column>

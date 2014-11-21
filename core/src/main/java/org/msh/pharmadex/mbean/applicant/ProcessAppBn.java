@@ -7,19 +7,19 @@ import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.UserType;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -33,22 +33,22 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
  * Backing bean to process the application made for registration
  * Author: usrivastava
  */
-@Component
-@Scope("view")
+@ManagedBean
+@ViewScoped
 public class ProcessAppBn {
 
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     FacesContext facesContext = FacesContext.getCurrentInstance();
     ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private Applicant applicant;
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-    @Autowired
+    @ManagedProperty(value = "#{applicantService}")
     private ApplicantService applicantService;
-    @Autowired
+    @ManagedProperty(value = "#{userService}")
     private UserService userService;
-    @Autowired
+    @ManagedProperty(value = "#{mailService}")
     private MailService mailService;
     private User user;
     private List<User> availableUsers;
@@ -200,5 +200,45 @@ public class ProcessAppBn {
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public ApplicantService getApplicantService() {
+        return applicantService;
+    }
+
+    public void setApplicantService(ApplicantService applicantService) {
+        this.applicantService = applicantService;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public MailService getMailService() {
+        return mailService;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 }

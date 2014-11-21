@@ -5,16 +5,16 @@ import org.msh.pharmadex.domain.PharmacySite;
 import org.msh.pharmadex.domain.PharmacySiteChecklist;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.PharmacySiteService;
 import org.msh.pharmadex.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -25,27 +25,21 @@ import java.util.ResourceBundle;
  * Backing bean to process the application made for registration
  * Author: usrivastava
  */
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class ProcessRxSiteBn {
 
-    private PharmacySite selectedSite;
-
-    private List<PharmacySite> pendingRxSite;
-
-    @Autowired
-    private UserSession userSession;
-
-    @Autowired
-    private PharmacySiteService pharmacySiteService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
-
-    @Autowired
+    private PharmacySite selectedSite;
+    private List<PharmacySite> pendingRxSite;
+    @ManagedProperty(value = "#{userSession}")
+    private UserSession userSession;
+    @ManagedProperty(value = "#{pharmacySiteService}")
+    private PharmacySiteService pharmacySiteService;
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+    @ManagedProperty(value = "#{mailService}")
     private MailService mailService;
 
     private User user;

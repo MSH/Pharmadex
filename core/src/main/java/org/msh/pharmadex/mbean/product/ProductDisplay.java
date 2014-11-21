@@ -4,10 +4,10 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.Map;
@@ -15,23 +15,23 @@ import java.util.Map;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class ProductDisplay implements Serializable {
 
-    @Autowired
+    @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
 
-    @Autowired
+    @ManagedProperty(value = "#{applicantService}")
     ApplicantService applicantService;
 
-    @Autowired
+    @ManagedProperty(value = "#{productService}")
     ProductService productService;
 
-    @Autowired
+    @ManagedProperty(value = "#{innService}")
     InnService innService;
 
-    @Autowired
+    @ManagedProperty(value = "#{atcService}")
     AtcService atcService;
 
     private Product product;
@@ -75,5 +75,45 @@ public class ProductDisplay implements Serializable {
 
     public void setApplicant(Applicant applicant) {
         this.applicant = applicant;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public ApplicantService getApplicantService() {
+        return applicantService;
+    }
+
+    public void setApplicantService(ApplicantService applicantService) {
+        this.applicantService = applicantService;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public InnService getInnService() {
+        return innService;
+    }
+
+    public void setInnService(InnService innService) {
+        this.innService = innService;
+    }
+
+    public AtcService getAtcService() {
+        return atcService;
+    }
+
+    public void setAtcService(AtcService atcService) {
+        this.atcService = atcService;
     }
 }
