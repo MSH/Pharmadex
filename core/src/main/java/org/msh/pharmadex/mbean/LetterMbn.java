@@ -2,30 +2,27 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.Letter;
 import org.msh.pharmadex.service.LetterService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class LetterMbn implements Serializable {
 
-    @Autowired
+    @ManagedProperty(value = "#{letterService}")
     LetterService letterService;
-
-    private List<Letter> letters;
-    private Letter selLetter = new Letter();
-
     FacesContext context = FacesContext.getCurrentInstance();
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
-
+    private List<Letter> letters;
+    private Letter selLetter = new Letter();
     private Long selLetterId;
 
 
@@ -71,5 +68,13 @@ public class LetterMbn implements Serializable {
 
     public void setSelLetterId(Long selLetterId) {
         this.selLetterId = selLetterId;
+    }
+
+    public LetterService getLetterService() {
+        return letterService;
+    }
+
+    public void setLetterService(LetterService letterService) {
+        this.letterService = letterService;
     }
 }

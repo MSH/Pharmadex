@@ -30,11 +30,16 @@
                     </p:column>
 
                     <p:column headerText="Login Date">
-                        <h:outputLabel converter="javax.faces.DateTime" value="#{access.userAccess.loginDate}"/>
+                        <h:outputText value="#{access.userAccess.loginDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm"/>
+                        </h:outputText>
                     </p:column>
 
-                    <p:column headerText="Logout Date">
-                        #{access.userAccess.logoutDate}
+
+                    <p:column headerText="Login Date">
+                        <h:outputText value="#{access.userAccess.logoutDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm"/>
+                        </h:outputText>
                     </p:column>
 
                     <p:column headerText="User Name">
