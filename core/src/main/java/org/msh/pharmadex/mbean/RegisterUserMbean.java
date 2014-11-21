@@ -13,13 +13,13 @@ import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -29,34 +29,27 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class RegisterUserMbean implements Serializable {
     private static final long serialVersionUID = -5045721468877947576L;
+    private static final Logger logger = LoggerFactory.getLogger(RegisterUserMbean.class);
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private User user;
     private String newpwd1;
     private String newpwd2;
     private String oldpwd;
-
-    private static final Logger logger = LoggerFactory.getLogger(RegisterUserMbean.class);
-
-    @Autowired
+    @ManagedProperty(value = "#{userService}")
     private UserService userService;
-
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-
-    @Autowired
+    @ManagedProperty(value = "#{mailService}")
     private MailService mailService;
-
-    @Autowired
+    @ManagedProperty(value = "#{userSettingBean}")
     private UserSettingBean userSettingBean;
-
-    @Autowired
+    @ManagedProperty(value = "#{letterService}")
     private LetterService letterService;
-
-    FacesContext facesContext = FacesContext.getCurrentInstance();
-    ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     @PostConstruct
     private void init() {
@@ -106,7 +99,7 @@ public class RegisterUserMbean implements Serializable {
                 mail.setUser(user);
                 mail.setDate(new Date());
 //                mail.setMessage(letter.getBody());
-                mail.setMessage(bundle.getString("email_user_reg1") +user.getUsername()+ bundle.getString("email_user_reg2") +password+ bundle.getString("email_user_reg3"));
+                mail.setMessage(bundle.getString("email_user_reg1") + user.getUsername() + bundle.getString("email_user_reg2") + password + bundle.getString("email_user_reg3"));
                 mailService.sendMail(mail, false);
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("user_email_success")));
                 return "/public/registrationhome.faces";
@@ -139,7 +132,7 @@ public class RegisterUserMbean implements Serializable {
             e.printStackTrace();
             return "/page/registeruser.faces";
         }
-        if (user==null) {
+        if (user == null) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("save_error")));
             return "/page/registeruser.faces";
         } else {
@@ -203,5 +196,45 @@ public class RegisterUserMbean implements Serializable {
 
     public void setOldpwd(String oldpwd) {
         this.oldpwd = oldpwd;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public MailService getMailService() {
+        return mailService;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
+    public UserSettingBean getUserSettingBean() {
+        return userSettingBean;
+    }
+
+    public void setUserSettingBean(UserSettingBean userSettingBean) {
+        this.userSettingBean = userSettingBean;
+    }
+
+    public LetterService getLetterService() {
+        return letterService;
+    }
+
+    public void setLetterService(LetterService letterService) {
+        this.letterService = letterService;
     }
 }

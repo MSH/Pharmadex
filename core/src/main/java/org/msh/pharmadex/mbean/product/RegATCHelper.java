@@ -1,14 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Atc;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
-import org.msh.pharmadex.util.JsfUtils;
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
-
-import javax.faces.event.ValueChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
+import org.msh.pharmadex.service.GlobalEntityLists;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +20,6 @@ public class RegATCHelper {
         this.atc = atc;
         this.globalEntityLists = globalEntityLists;
     }
-
 
 
 }

@@ -6,7 +6,6 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RegistrationUtil;
@@ -17,14 +16,14 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -39,38 +38,39 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
     FacesContext context = FacesContext.getCurrentInstance();
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
-    @Autowired
+
+    @ManagedProperty(value = "#{dosUomDAO}")
     DosUomDAO dosUomDAO;
     private Logger logger = LoggerFactory.getLogger(RegHomeMbean.class);
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-    @Autowired
+    @ManagedProperty(value = "#{applicantService}")
     private ApplicantService applicantService;
-    @Autowired
+    @ManagedProperty(value = "#{productService}")
     private ProductService productService;
-    @Autowired
+    @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
-    @Autowired
+    @ManagedProperty(value = "#{atcService}")
     private AtcService atcService;
-    @Autowired
+    @ManagedProperty(value = "#{appointmentService}")
     private AppointmentService appointmentService;
-    @Autowired
+    @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
-    @Autowired
+    @ManagedProperty(value = "#{companyService}")
     private CompanyService companyService;
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
-    @Autowired
+    @ManagedProperty(value = "#{checklistService}")
     private ChecklistService checklistService;
-    @Autowired
+    @ManagedProperty(value = "#{userService}")
     private UserService userService;
-    @Autowired
+    @ManagedProperty(value = "#{innService}")
     private InnService innService;
     private List<ProdInn> selectedInns;
     private List<ProdExcipient> selectedExipients;
@@ -729,5 +729,107 @@ public class RegHomeMbean implements Serializable {
         this.prodExcipient = prodExcipient;
     }
 
+    public UserSession getUserSession() {
+        return userSession;
+    }
 
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public ApplicantService getApplicantService() {
+        return applicantService;
+    }
+
+    public void setApplicantService(ApplicantService applicantService) {
+        this.applicantService = applicantService;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public AtcService getAtcService() {
+        return atcService;
+    }
+
+    public void setAtcService(AtcService atcService) {
+        this.atcService = atcService;
+    }
+
+    public AppointmentService getAppointmentService() {
+        return appointmentService;
+    }
+
+    public void setAppointmentService(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
+    }
+
+    public ReportService getReportService() {
+        return reportService;
+    }
+
+    public void setReportService(ReportService reportService) {
+        this.reportService = reportService;
+    }
+
+    public CompanyService getCompanyService() {
+        return companyService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public ChecklistService getChecklistService() {
+        return checklistService;
+    }
+
+    public void setChecklistService(ChecklistService checklistService) {
+        this.checklistService = checklistService;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public InnService getInnService() {
+        return innService;
+    }
+
+    public void setInnService(InnService innService) {
+        this.innService = innService;
+    }
+
+    public DosUomDAO getDosUomDAO() {
+        return dosUomDAO;
+    }
+
+    public void setDosUomDAO(DosUomDAO dosUomDAO) {
+        this.dosUomDAO = dosUomDAO;
+    }
 }
