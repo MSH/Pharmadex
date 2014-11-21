@@ -5,30 +5,26 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReportService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.persistence.PersistenceContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class ReportMBean implements Serializable {
 
-    @PersistenceContext
-    javax.persistence.EntityManager entityManager;
-
-    @Autowired
+    @ManagedProperty(value = "#{reportService}")
     ReportService reportService;
 
-    @Autowired
+    @ManagedProperty(value = "#{productService}")
     ProductService productService;
 
 
@@ -65,4 +61,20 @@ public class ReportMBean implements Serializable {
 
     }
 
+
+    public ReportService getReportService() {
+        return reportService;
+    }
+
+    public void setReportService(ReportService reportService) {
+        this.reportService = reportService;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
 }

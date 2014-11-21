@@ -5,11 +5,11 @@ import org.msh.pharmadex.service.UserAccessService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.model.UploadedFile;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +18,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-@Component("userSession")
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class UserSession implements Serializable {
 
     private static final long serialVersionUID = 2473412644164656187L;
-    @Autowired
+    @ManagedProperty(value = "#{userService}")
     UserService userService;
     private UserAccess userAccess;
     private boolean displayMessagesKeys;
@@ -46,11 +46,12 @@ public class UserSession implements Serializable {
     private boolean head = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
-    @Autowired
+
+    @ManagedProperty(value = "#{userAccessService}")
     private UserAccessService userAccessService;
 
-    @Autowired
-    private OnlineUserBean onlineUsersHome;
+    @ManagedProperty(value = "#{onlineUserBean}")
+    private OnlineUserBean onlineUserBean;
 
 
     public void login() {
@@ -94,7 +95,6 @@ public class UserSession implements Serializable {
     @Transactional
     public void registerLogin(User user, HttpServletRequest request) {
         // get client information
-        FacesContext facesContext = FacesContext.getCurrentInstance();
         String ipAddr = request.getRemoteAddr();
         String app = request.getHeader("User-Agent");
         user = userService.findUser(user.getUserId());
@@ -105,7 +105,7 @@ public class UserSession implements Serializable {
         userAccess.setLoginDate(new Date());
         userAccess.setApplication(JsfUtils.getBrowserName(app));
         userAccess.setIpAddress(ipAddr);
-        onlineUsersHome.add(userAccess);
+        onlineUserBean.add(userAccess);
         userAccessService.saveUserAccess(userAccess);
         setLoggedInUserObj(user);
         setApplicant(user.getApplicant());
@@ -177,7 +177,7 @@ public class UserSession implements Serializable {
         userAccess.setLogoutDate(new Date());
 
         userAccessService.update(userAccess);
-        onlineUsersHome.remove(userAccess);
+        onlineUserBean.remove(userAccess);
     }
 
 
@@ -400,5 +400,29 @@ public class UserSession implements Serializable {
 
     public void setApplcantID(Long applcantID) {
         this.applcantID = applcantID;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public UserAccessService getUserAccessService() {
+        return userAccessService;
+    }
+
+    public void setUserAccessService(UserAccessService userAccessService) {
+        this.userAccessService = userAccessService;
+    }
+
+    public OnlineUserBean getOnlineUserBean() {
+        return onlineUserBean;
+    }
+
+    public void setOnlineUserBean(OnlineUserBean onlineUserBean) {
+        this.onlineUserBean = onlineUserBean;
     }
 }

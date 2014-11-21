@@ -10,13 +10,13 @@ import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.model.DualListModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -31,9 +31,21 @@ import java.util.List;
  * Time: 12:05 AM
  * To change this template use File | Settings | File Templates.
  */
-@Component
-@Scope("session")
+@ManagedBean
+@RequestScoped
 public class UserMBean implements Serializable {
+    @ManagedProperty(value = "#{userService}")
+    UserService userService;
+    @ManagedProperty(value = "#{applicantService}")
+    ApplicantService applicantService;
+    @ManagedProperty(value = "#{mailService}")
+    MailService mailService;
+    @ManagedProperty(value = "#{roleDAO}")
+    RoleDAO roleDAO;
+    @ManagedProperty(value = "#{letterService}")
+    LetterService letterService;
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    java.util.ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private User selectedUser;
     private List<User> allUsers;
     private DualListModel<Role> roles;
@@ -43,25 +55,6 @@ public class UserMBean implements Serializable {
     private Long prevApplicantId;
     private Applicant userApp;
     private String email;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    ApplicantService applicantService;
-
-    @Autowired
-    MailService mailService;
-
-    @Autowired
-    RoleDAO roleDAO;
-
-    @Autowired
-    LetterService letterService;
-
-    FacesContext facesContext = FacesContext.getCurrentInstance();
-    java.util.ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-
 
     public String exception() throws Exception {
         throw new Exception();
@@ -120,7 +113,7 @@ public class UserMBean implements Serializable {
         mail.setMailto(selectedUser.getEmail());
         mail.setUser(selectedUser);
         mail.setDate(new Date());
-        mail.setMessage(bundle.getString("email_user_reg1")+selectedUser.getUsername()+bundle.getString("email_user_reg2")+password+bundle.getString("email_user_reg3"));
+        mail.setMessage(bundle.getString("email_user_reg1") + selectedUser.getUsername() + bundle.getString("email_user_reg2") + password + bundle.getString("email_user_reg3"));
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {
@@ -168,7 +161,7 @@ public class UserMBean implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
             e.printStackTrace();
         }
-        if (selectedUser!=null) {
+        if (selectedUser != null) {
             setEdit(false);
             selectedUser = new User();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), selectedUser.getName() + bundle.getString("global.success")));
@@ -207,7 +200,7 @@ public class UserMBean implements Serializable {
             e.printStackTrace();
             return "";
         }
-        if (selectedUser==null) {
+        if (selectedUser == null) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("save_error")));
             return "";
         } else {
@@ -289,5 +282,45 @@ public class UserMBean implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public ApplicantService getApplicantService() {
+        return applicantService;
+    }
+
+    public void setApplicantService(ApplicantService applicantService) {
+        this.applicantService = applicantService;
+    }
+
+    public MailService getMailService() {
+        return mailService;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
+    public RoleDAO getRoleDAO() {
+        return roleDAO;
+    }
+
+    public void setRoleDAO(RoleDAO roleDAO) {
+        this.roleDAO = roleDAO;
+    }
+
+    public LetterService getLetterService() {
+        return letterService;
+    }
+
+    public void setLetterService(LetterService letterService) {
+        this.letterService = letterService;
     }
 }

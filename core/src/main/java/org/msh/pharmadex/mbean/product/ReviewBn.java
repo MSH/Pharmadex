@@ -8,16 +8,16 @@ import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewChecklist;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ReviewService;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,26 +31,26 @@ import java.util.ResourceBundle;
  * Backing bean to capture review of products
  * Author: usrivastava
  */
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class ReviewBn implements Serializable {
 
     private static final long serialVersionUID = -1555668282210872889L;
 
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
-    @Autowired
+    @ManagedProperty(value = "#{processProdBn}")
     private ProcessProdBn processProdBn;
 
-    @Autowired
+    @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
 
     private Review review;
 
     private List<ReviewChecklist> reviewChecklists;
 
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
     private UploadedFile file;
@@ -109,6 +109,10 @@ public class ReviewBn implements Serializable {
         return reviewChecklists;
     }
 
+    public void setReviewChecklists(List<ReviewChecklist> reviewChecklists) {
+        this.reviewChecklists = reviewChecklists;
+    }
+
     public String saveReview() {
         reviewChecklists = review.getReviewChecklists();
         review = reviewService.saveReview(review);
@@ -132,10 +136,6 @@ public class ReviewBn implements Serializable {
 
     }
 
-    public void setReviewChecklists(List<ReviewChecklist> reviewChecklists) {
-        this.reviewChecklists = reviewChecklists;
-    }
-
     public Review getReview() {
         if (review == null) {
             review = reviewService.findReview(userSession.getReview().getId(), processProdBn.getProdApplications());
@@ -154,5 +154,37 @@ public class ReviewBn implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public ProcessProdBn getProcessProdBn() {
+        return processProdBn;
+    }
+
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
+    }
+
+    public ReviewService getReviewService() {
+        return reviewService;
+    }
+
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }

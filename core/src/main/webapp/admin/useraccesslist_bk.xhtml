@@ -32,11 +32,15 @@
                     </p:column>
 
                     <p:column headerText="Login Date">
-                        <h:outputLabel converter="javax.faces.DateTime" value="#{a.loginDate}"/>
+                        <h:outputText value="#{a.loginDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm"/>
+                        </h:outputText>
                     </p:column>
 
                     <p:column headerText="Logout Date">
-                        <h:outputLabel converter="javax.faces.DateTime" value="#{a.logoutDate}"/>
+                        <h:outputText value="#{a.logoutDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm"/>
+                        </h:outputText>
                     </p:column>
 
                 </p:dataTable>

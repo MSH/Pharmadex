@@ -1,28 +1,28 @@
 package org.msh.pharmadex.mbean;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 
-@Component
-@Scope("session")
+@ManagedBean
+@ViewScoped
 public class UserSettingBean implements Serializable {
     private static final long serialVersionUID = 3068896712735096922L;
 
     private String selection;
-    private boolean preference=true;
-    private boolean changePwd=false;
-    private boolean language=false;
+    private boolean preference = true;
+    private boolean changePwd = false;
+    private boolean language = false;
 
     // getters & setters
 
     public String active() {
-        try{
-       setPreference(selection.equals("preference"));
-       setChangePwd(selection.equals("changePwd"));
-       setLanguage(selection.equals("language"));
-        }catch (Exception e){
+        try {
+            setPreference(selection.equals("preference"));
+            setChangePwd(selection.equals("changePwd"));
+            setLanguage(selection.equals("language"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "/secure/usersettings.faces";

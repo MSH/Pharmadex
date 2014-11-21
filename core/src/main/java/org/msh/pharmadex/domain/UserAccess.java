@@ -21,10 +21,10 @@ public class UserAccess implements Serializable {
     @JoinColumn(name = "userId")
     private User user;
 
-    @Temporal(value = TemporalType.DATE)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date loginDate;
 
-    @Temporal(value = TemporalType.DATE)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date logoutDate;
 
     @Column(length = 200)

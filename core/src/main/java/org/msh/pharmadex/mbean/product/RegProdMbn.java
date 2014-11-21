@@ -3,15 +3,14 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -19,20 +18,20 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class RegProdMbn {
 
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
 
-    @Autowired
+    @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
 
-    @Autowired
+    @ManagedProperty(value = "#{processProdBn}")
     ProcessProdBn processProdBn;
 
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
 
     FacesContext context = FacesContext.getCurrentInstance();
@@ -76,5 +75,37 @@ public class RegProdMbn {
 
     public void setSelectedProd(Product selectedProd) {
         this.selectedProd = selectedProd;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public ProcessProdBn getProcessProdBn() {
+        return processProdBn;
+    }
+
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }

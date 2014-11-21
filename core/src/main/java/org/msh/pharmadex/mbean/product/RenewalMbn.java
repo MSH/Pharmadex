@@ -1,47 +1,46 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.InvoiceType;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
-import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.service.InvoiceService;
 import org.msh.pharmadex.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.MessagingException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class RenewalMbn implements Serializable {
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private InvoiceService invoiceService;
-
-    @Autowired
+    @ManagedProperty(value = "#{processProdBn}")
     ProcessProdBn processProdBn;
-
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
-
-    private ProdApplications selProApp;
-
-    private Product selProd;
-
     FacesContext context = FacesContext.getCurrentInstance();
     java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+    @ManagedProperty(value = "#{productService}")
+    private ProductService productService;
+    @ManagedProperty(value = "#{invoiceService}")
+    private InvoiceService invoiceService;
+    private ProdApplications selProApp;
+    private Product selProd;
+    private Invoice invoice;
+    private Payment payment;
+    private Reminder reminder;
 
     public Product getSelProd() {
         Product p = selProApp.getProd();
@@ -52,12 +51,6 @@ public class RenewalMbn implements Serializable {
     public void setSelProd(Product selProd) {
         this.selProd = selProd;
     }
-
-    private Invoice invoice;
-
-    private Payment payment;
-
-    private Reminder reminder;
 
     @PostConstruct
     public void init() {
@@ -175,5 +168,37 @@ public class RenewalMbn implements Serializable {
             setPayment(i.getPayment());
         }
         return "";
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public InvoiceService getInvoiceService() {
+        return invoiceService;
+    }
+
+    public void setInvoiceService(InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
+    }
+
+    public ProcessProdBn getProcessProdBn() {
+        return processProdBn;
+    }
+
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }

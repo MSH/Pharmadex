@@ -4,13 +4,11 @@
 
 package org.msh.pharmadex.service;
 
-import org.msh.pharmadex.dao.iface.ReviewChecklistDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewChecklist;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +26,7 @@ public class ReviewService implements Serializable {
     @Autowired
     private ReviewDAO reviewDAO;
 
-   @Autowired
+    @Autowired
     private GlobalEntityLists globalEntityLists;
 
     @Autowired

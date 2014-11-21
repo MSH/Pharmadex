@@ -6,6 +6,7 @@ import org.msh.pharmadex.domain.ErrorLog;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.el.ELContext;
 import javax.faces.FacesException;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ViewExpiredException;
@@ -25,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrapper {
-    private ExceptionHandler wrapped;
     private static final Logger log = Logger.getLogger(ViewExpiredExceptionExceptionHandler.class.getCanonicalName());
+    private ExceptionHandler wrapped;
 
     public ViewExpiredExceptionExceptionHandler(ExceptionHandler wrapped) {
         this.wrapped = wrapped;
@@ -39,8 +40,9 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
 
     @Override
     public void handle() throws FacesException {
+
         final Iterator<ExceptionQueuedEvent> b = getUnhandledExceptionQueuedEvents().iterator();
-        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
+        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext(); ) {
             ExceptionQueuedEvent event = i.next();
             ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
 
@@ -53,18 +55,21 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
 
             //email notifications
 
-            try{
+            try {
                 WebApplicationContext ctx = WebApplicationContextUtils
-                                  .getRequiredWebApplicationContext(request.getServletContext());  // (1) get ctx using the WebApplicationContextUtils class
+                        .getRequiredWebApplicationContext(request.getServletContext());  // (1) get ctx using the WebApplicationContextUtils class
 
-                UserSession userSession = (UserSession) ctx.getBean("userSession");
+                ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+                UserSession userSession
+                        = (UserSession) FacesContext.getCurrentInstance().getApplication()
+                        .getELResolver().getValue(elContext, null, "userSession");
                 ErrorLogDAO errorLogDAO = (ErrorLogDAO) ctx.getBean("errorLogDAO");
 
                 ErrorLog errorLog = new ErrorLog();
                 errorLog.setBrowserName(JsfUtils.getBrowserName(ec.getRequestHeaderMap().get("User-Agent")));
                 errorLog.setUserIP(request.getRemoteAddr());
                 errorLog.setRequestURI(request.getRequestURI());
-                errorLog.setAjaxRequest(""+facesContext.getPartialViewContext().isAjaxRequest());
+                errorLog.setAjaxRequest("" + facesContext.getPartialViewContext().isAjaxRequest());
                 errorLog.setErrorDate(new Date());
                 errorLog.setExceptionMessage(t.getMessage());
                 errorLog.setExceptionType(t.getClass().getCanonicalName());
@@ -74,7 +79,7 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 errorLog.setUser(userSession.getLoggedInUserObj());
                 errorLogDAO.save(errorLog);
 
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
@@ -89,8 +94,8 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 } finally {
                     i.remove();
                 }
-            }else{
-       //log error ?
+            } else {
+                //log error ?
                 log.log(Level.SEVERE, "Critical Exception!", t);
                 //redirect error page
                 requestMap.put("exceptionMessage", t.getMessage());

@@ -2,10 +2,10 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.Role;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,16 +16,23 @@ import java.util.List;
  * Time: 12:05 AM
  * To change this template use File | Settings | File Templates.
  */
-@Component
-@Scope("request")
-public class RoleMBean implements Serializable{
+@ManagedBean
+@RequestScoped
+public class RoleMBean implements Serializable {
     private static final long serialVersionUID = -8564371266339354819L;
 
-    @Autowired
+    @ManagedProperty(value = "#{roleDAO}")
     RoleDAO roleDAO;
 
-    public List<Role> findAllRoles(){
+    public List<Role> findAllRoles() {
         return (List<Role>) roleDAO.findAll();
     }
 
+    public RoleDAO getRoleDAO() {
+        return roleDAO;
+    }
+
+    public void setRoleDAO(RoleDAO roleDAO) {
+        this.roleDAO = roleDAO;
+    }
 }
