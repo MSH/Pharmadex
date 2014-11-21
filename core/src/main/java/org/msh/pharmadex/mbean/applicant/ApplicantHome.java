@@ -3,10 +3,10 @@ package org.msh.pharmadex.mbean.applicant;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ApplicantService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
@@ -15,11 +15,11 @@ import java.util.Map;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("request")
+@ManagedBean
+@RequestScoped
 public class ApplicantHome implements Serializable {
 
-    @Autowired
+    @ManagedProperty(value = "#{applicantService}")
     private ApplicantService applicantService;
 
     private Applicant applicant;
@@ -28,7 +28,7 @@ public class ApplicantHome implements Serializable {
 
     public List<Product> getProducts() {
         if (products == null)
-                products = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
+            products = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
         return products;
     }
 
@@ -48,5 +48,13 @@ public class ApplicantHome implements Serializable {
 
     public void setApplicant(Applicant applicant) {
         this.applicant = applicant;
+    }
+
+    public ApplicantService getApplicantService() {
+        return applicantService;
+    }
+
+    public void setApplicantService(ApplicantService applicantService) {
+        this.applicantService = applicantService;
     }
 }

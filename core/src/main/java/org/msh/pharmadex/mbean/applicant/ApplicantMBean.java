@@ -6,19 +6,19 @@ import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.UserType;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CountryService;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -34,16 +34,16 @@ import java.util.ResourceBundle;
  * Time: 12:05 AM
  * To change this template use File | Settings | File Templates.
  */
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class ApplicantMBean implements Serializable {
-    @Autowired
+    @ManagedProperty(value = "#{applicantService}")
     ApplicantService applicantService;
-    @Autowired
+    @ManagedProperty(value = "#{userService}")
     UserService userService;
-    @Autowired
+    @ManagedProperty(value = "#{countryService}")
     CountryService countryService;
-    @Autowired
+    @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     FacesContext facesContext = FacesContext.getCurrentInstance();
     ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -52,7 +52,7 @@ public class ApplicantMBean implements Serializable {
     private List<Applicant> filteredApplicant;
     private boolean showAdd = false;
     private User user;
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
     private ArrayList<User> userList;
 
@@ -245,5 +245,45 @@ public class ApplicantMBean implements Serializable {
 
     public void setUserList(ArrayList<User> userList) {
         this.userList = userList;
+    }
+
+    public ApplicantService getApplicantService() {
+        return applicantService;
+    }
+
+    public void setApplicantService(ApplicantService applicantService) {
+        this.applicantService = applicantService;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public CountryService getCountryService() {
+        return countryService;
+    }
+
+    public void setCountryService(CountryService countryService) {
+        this.countryService = countryService;
+    }
+
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
+
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }

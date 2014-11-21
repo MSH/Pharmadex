@@ -7,7 +7,6 @@ import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.UserType;
-import org.msh.pharmadex.mbean.GlobalEntityLists;
 import org.msh.pharmadex.service.converter.ApplicantConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

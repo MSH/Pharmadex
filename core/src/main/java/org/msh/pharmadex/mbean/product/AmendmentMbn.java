@@ -1,17 +1,17 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.AmdmtCategory;
 import org.msh.pharmadex.domain.ProdAppAmdmt;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.AmdmtType;
-import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.service.AmdmtService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,17 +20,17 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("session")
+@ManagedBean
+@SessionScoped
 public class AmendmentMbn implements Serializable {
 
-    @Autowired
+    @ManagedProperty(value = "#{processProdBn}")
     ProcessProdBn processProdBn;
 
-    @Autowired
+    @ManagedProperty(value = "#{amdmtService}")
     AmdmtService amdmtService;
 
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
 
     private ProdApplications selProApp;
@@ -149,5 +149,29 @@ public class AmendmentMbn implements Serializable {
 
     public void setNewAmdmt(boolean newAmdmt) {
         this.newAmdmt = newAmdmt;
+    }
+
+    public ProcessProdBn getProcessProdBn() {
+        return processProdBn;
+    }
+
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
+    }
+
+    public AmdmtService getAmdmtService() {
+        return amdmtService;
+    }
+
+    public void setAmdmtService(AmdmtService amdmtService) {
+        this.amdmtService = amdmtService;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }
