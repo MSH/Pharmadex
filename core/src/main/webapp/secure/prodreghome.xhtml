@@ -14,15 +14,17 @@
 <p:growl id="growl" showSummary="true"/>
 <pe:ajaxErrorHandler/>
 
-<p:wizard widgetVar="wizard" showNavBar="false" flowListener="#{regHomeMbean.onFlowProcess}">
+<p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="false" flowListener="#{regHomeMbean.onFlowProcess}">
+    <pe:ajaxErrorHandler/>
+
 <p:tab id="prodreg" title="#{msgs.applicant_detail}">
 
     <ui:include src="appinfosub.xhtml"/>
 
     <div align="right">
         <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
-                         ajax="false"/>
-        <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+                         ajax="false" />
+        <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="prodregSaveBtn"/>
     </div>
 
 </p:tab>
@@ -34,18 +36,18 @@
 
         <div align="right">
             <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"
-                             update=":reghome :reghome:growl" ajax="false"/>
+                             update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn" />
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="proddetailBackBtn"/>
+            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="proddetailNxtBtn"/>
         </div>
     </p:panel>
 </p:tab>
 
 
 <p:tab id="appdetails" title="#{msgs.application_detail}">
-    <p:panel header="#{msgs.application_detail}">
+    <p:panel header="#{msgs.application_detail}" id="appDetailPnl">
 
         <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10" columnClasses="label value">
             <p:outputLabel value="#{msgs.new_chemical_entity}" for="nceChkbox" styleClass="label"/>
@@ -65,8 +67,9 @@
                          emptyMessage="No Inns selected"
                     >
                 <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" action="#{regHomeMbean.openAddInn}"
+                    <p:commandLink value="#{msgs.global_add}" action="#{regHomeMbean.openAddInn}" id="addInnBtn"
                                    oncomplete="PF('addInnDlg').show()" update=":addInnFrm"/>
+
                 </f:facet>
                 <p:column headerText="#{msgs.active_substance}">
                     <h:outputText value="#{prodInn.inn.name}"/>
@@ -100,7 +103,7 @@
                 <h:outputLabel value="#{msgs.atc_noatc}: " for="noatc"/>
                 <p:selectBooleanCheckbox id="noatc"
                                          value="#{regHomeMbean.product.noAtc}"> </p:selectBooleanCheckbox>
-                <p:commandLink value="#{msgs.atc_lookup}" oncomplete="PF('addAtcDlg').show()"
+                <p:commandLink id="atcLookUpBtn" value="#{msgs.atc_lookup}" oncomplete="PF('addAtcDlg').show()"
                                action="#{regHomeMbean.openAddATC()}"/>
             </h:panelGrid>
             <h:outputLabel/>
@@ -126,7 +129,7 @@
                          emptyMessage="#{msgs.prod_expnt_not_selected}"
                     >
                 <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" action="#{regHomeMbean.openAddExp}"
+                    <p:commandLink value="#{msgs.global_add}" action="#{regHomeMbean.openAddExp}" id="addExpBtn"
                                    oncomplete="PF('addExpntDlg').show()" update=":addExpFrm"/>
                 </f:facet>
                 <p:column headerText="#{msgs.active_substance}">
@@ -163,14 +166,17 @@
 
         <ui:include src="prodadddetails.xhtml"/>
 
+        <p:blockUI block="appDetailPnl" trigger=":reghome:inntable:addInnBtn :reghome:atcLookUpBtn :reghome:expnttable:addExpBtn">
+            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+        </p:blockUI>
 
         <div align="right">
             <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"
-                             update=":reghome :reghome:growl" ajax="false"/>
+                             update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="adddetailBackBtn"/>
+            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="adddetailNxtBtn"/>
         </div>
     </p:panel>
 
@@ -178,7 +184,7 @@
 </p:tab>
 
 <p:tab id="applicationStatus" title="#{msgs.appl_status_country}">
-    <p:panel header="#{msgs.appl_status_country}">
+    <p:panel header="#{msgs.appl_status_country}" id="statusPnl">
         <p:messages/>
         <h:panelGrid columns="1" cellspacing="10" id="foreignstatusgrid" width="100%">
 
@@ -188,7 +194,7 @@
             <p:dataTable id="foreignStatusTable" var="appstatus" value="#{regHomeMbean.foreignAppStatuses}"
                          style="width:100%;">
                 <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" oncomplete="PF('addForeignStatusDlg').show()"
+                    <p:commandLink id="addStatusBtn" value="#{msgs.global_add}" oncomplete="PF('addForeignStatusDlg').show()"
                                    action="#{foreignAppStatusMBean.initAddCompany}" update=":addForeignStatus"
                                    process="@form :addForeignStatus">
                     </p:commandLink>
@@ -231,12 +237,17 @@
 
         </h:panelGrid>
 
+        <p:blockUI block="statusPnl" trigger=":reghome:foreignStatusTable:addStatusBtn">
+            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+        </p:blockUI>
+
+
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="true" update=":reghome" id="appStatusSaveBtn" />
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="appStatusBackBtn"/>
+            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="appStatusNxtBtn"/>
         </div>
     </p:panel>
 
@@ -244,7 +255,7 @@
 
 
 <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
-    <p:panel header="#{msgs.manufacturer_detail}">
+    <p:panel header="#{msgs.manufacturer_detail}" id="manufPnl">
         <p:messages/>
         <h:panelGrid columns="1" cellspacing="10" id="companygrid" width="100%">
 
@@ -254,7 +265,7 @@
             <p:dataTable id="companyTable" var="company" value="#{regHomeMbean.companies}"
                          style="width:100%;">
                 <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" oncomplete="PF('addCompanyDlg').show()"
+                    <p:commandLink id="addManufBtn" value="#{msgs.global_add}" oncomplete="PF('addCompanyDlg').show()"
                                    action="#{companyMBean.initAddCompany}" update=":addcompany"
                                    process="@form :addcompany">
                     </p:commandLink>
@@ -285,19 +296,24 @@
 
         </h:panelGrid>
 
+        <p:blockUI block="manufPnl" trigger=":reghome:companyTable:addManufBtn">
+            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+        </p:blockUI>
+
+
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="true" update=":reghome" id="manufSaveBtn"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="manufBackBtn"/>
+            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="manufNextBtn"/>
         </div>
     </p:panel>
 
 </p:tab>
 
 <p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.displayPricing}">
-    <p:panel header="#{msgs.product_pricing_general}">
+    <p:panel header="#{msgs.product_pricing_general}" id="pricingPnl">
         <p:messages/>
 
         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
@@ -332,10 +348,10 @@
         </h:panelGrid>
     </p:panel>
 
-    <p:panel header="#{msgs.product_price_comparison}">
+    <p:panel header="#{msgs.product_price_comparison}" id="priceCompPnl">
         <p:dataTable id="pricetable" var="price" value="#{regHomeMbean.drugPrices}" style="width:100%;">
             <f:facet name="header">
-                <p:commandLink value="#{msgs.global_add}" oncomplete="PF('addPricingDlg').show()" update=":addpricing"
+                <p:commandLink id="priceCompBtn" value="#{msgs.global_add}" oncomplete="PF('addPricingDlg').show()" update=":addpricing"
                                >
                     <f:setPropertyActionListener value="true" target="#{regHomeMbean.showDrugPrice}"/>
                 </p:commandLink>
@@ -355,12 +371,16 @@
             </p:column>
         </p:dataTable>
 
+        <p:blockUI block="priceCompPnl" trigger=":reghome:pricetable:priceCompBtn">
+            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+        </p:blockUI>
+
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" id="priceSaveBtn" update=":reghome"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="priceBackBtn"/>
+            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="priceNxtBtn"/>
         </div>
     </p:panel>
 
@@ -384,11 +404,11 @@
         </h:panelGrid>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="true" update=":reghome" id="paySaveBtn"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="payBackBtn"/>
+            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="payNxtBtn"/>
         </div>
 
     </p:panel>
@@ -400,11 +420,11 @@
 
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="false"/>
+            <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="true" update=":reghome" id="chkSaveBtn"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="chkBackBtn"/>
+            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="chkNxtBtn"/>
         </div>
 
     </p:panel>
@@ -441,10 +461,10 @@
         </ui:decorate>
 
         <div align="right">
-            <p:commandButton value="#{msgs.global_save}" ajax="false" action="#{regHomeMbean.saveApp}"/>
+            <p:commandButton value="#{msgs.global_save}" ajax="true" update=":reghome" action="#{regHomeMbean.saveApp}" id="sumSaveBtn"/>
             <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{regHomeMbean.cancel}"
                              ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
+            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="sumBackBtn"/>
             <p:commandButton value="#{msgs.global_submit}" action="#{regHomeMbean.submitApp}" ajax="false"/>
         </div>
 
@@ -452,7 +472,18 @@
 </p:tab>
 
 
+
+
 </p:wizard>
+
+    <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
+                :reghome:adddetailSaveBtn :reghome:adddetailBackBtn :reghome:adddetailNxtBtn :reghome:appStatusSaveBtn :reghome:appStatusBackBtn
+                :reghome:appStatusNxtBtn :reghome:manufSaveBtn :reghome:manufBackBtn :reghome:manufNextBtn :reghome:priceSaveBtn :reghome:priceBackBtn
+                :reghome:priceNxtBtn :reghome:sumSaveBtn
+                :reghome:sumBackBtn :reghome:paySaveBtn :reghome:payBackBtn :reghome:payNxtBtn :reghome:chkSaveBtn :reghome:chkBackBtn :reghome:chkNxtBtn">
+        <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+    </p:blockUI>
+
 
 </h:form>
 
@@ -462,7 +493,7 @@
         <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
             <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
             <p:autoComplete id="innname" value="#{regHomeMbean.prodInn.inn}"
-                            completeMethod="#{regHomeMbean.completeInnCodes}"
+                            completeMethod="#{globalEntityLists.completeInnCodes}"
                             var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{innConverter}"
                             forceSelection="false" required="true" requiredMessage="#{msgs.product_innname_valid}">
             </p:autoComplete>
@@ -473,11 +504,12 @@
             <p:message for="innqty" showSummary="true"/>
 
             <p:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
-            <p:selectOneMenu id="innunit" value="#{regHomeMbean.prodInn.dosUnit.id}"
+            <p:selectOneMenu id="innunit" value="#{regHomeMbean.prodInn.dosUnit}" converter="omnifaces.SelectItemsConverter"
                              requiredMessage="#{msgs.valid_dos_form}" required="true">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
-                               itemValue="#{dosUom.id}"/>
+                               itemValue="#{dosUom}"/>
+                <f:ajax render="select_item"/>
             </p:selectOneMenu>
 
             <p:message for="innunit" showSummary="true"/>
@@ -492,8 +524,8 @@
                                  oncomplete="!if(args.validationFailed) addInnDlg.hide()"
                                  update=":reghome:atctable :reghome:inntable :addInnFrm :reghome:growl"/>
                 <p:commandButton action="#{regHomeMbean.cancelAddInn}" immediate="true" value="#{msgs.global_cancel}"
-                                 ajax="false"
-                                 oncomplete="addInnDlg.hide()" update=":addInnFrm"/>
+                                 ajax="true"
+                                 oncomplete="PF('addInnDlg').hide()" update=":addInnFrm"/>
             </h:panelGroup>
             <h:outputLabel/>
 
@@ -507,7 +539,7 @@
         <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
             <p:outputLabel value="#{msgs.product_active}" for="expname"/>
             <p:autoComplete id="expname" value="#{regHomeMbean.prodExcipient.excipient}"
-                            completeMethod="#{regHomeMbean.completeExcipients}"
+                            completeMethod="#{globalEntityLists.completeExcipients}"
                             var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{excipientConverter}"
                             forceSelection="false" required="true" requiredMessage="#{msgs.product_innname_valid}">
             </p:autoComplete>
@@ -538,7 +570,7 @@
                                  update=":reghome:expnttable :addExpFrm :reghome:growl"/>
                 <p:commandButton action="#{regHomeMbean.cancelAddExcipient}" immediate="true"
                                  value="#{msgs.global_cancel}"
-                                 ajax="false"
+                                 ajax="true"
                                  oncomplete="PF('addExpntDlg').hide()" update=":addExpFrm"/>
             </h:panelGroup>
             <h:outputLabel/>
@@ -552,7 +584,7 @@
         <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid" id="atclookupgrid">
             <h:outputLabel value="#{msgs.atc_name}" for="atcname"/>
             <p:autoComplete id="atcname" value="#{regHomeMbean.atc}"
-                            completeMethod="#{regHomeMbean.completeAtcNames}"
+                            completeMethod="#{globalEntityLists.completeAtcNames}"
                             var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
                             forceSelection="true">
                 <p:ajax event="itemSelect" listener="#{regHomeMbean.updateAtc}" update=":atcdetail"/>
@@ -716,5 +748,18 @@
 </p:dialog>
 
 
+    <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+        <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
+    </p:dialog>
+
 </ui:define>
+    <script type="text/javascript">
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+    </script>
 </ui:composition>

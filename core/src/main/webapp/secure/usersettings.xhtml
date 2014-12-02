@@ -9,24 +9,22 @@
         <h:form id="usersettingsform">
 
             <h:panelGrid columns="2" columnClasses="menu,content">
-                <p:panel styleClass="menu">
                     <p:menu style="width:198px">
                         <p:submenu label="#{msgs.usersettings_preferences}">
                             <p:menuitem value="#{msgs.userspreference}" action="#{userSettingBean.active}"
-                                        update="usersettingsform:contents" ajax="false">
+                                        update="usersettingsform:contents" ajax="true" immediate="true">
                                 <f:setPropertyActionListener value="preference" target="#{userSettingBean.selection}"/>
                             </p:menuitem>
                             <p:menuitem value="#{msgs.User_changepwd}" action="#{userSettingBean.active}"
-                                        update="usersettingsform:contents" ajax="false">
+                                        update="usersettingsform:contents" ajax="true" immediate="true">
                                 <f:setPropertyActionListener value="changePwd" target="#{userSettingBean.selection}"/>
                             </p:menuitem>
                             <p:menuitem value="#{msgs.User_changelanguage}" action="#{userSettingBean.active}"
-                                        update="usersettingsform:contents" ajax="false">
+                                        update="usersettingsform:contents" ajax="true" immediate="true">
                                 <f:setPropertyActionListener value="language" target="#{userSettingBean.selection}"/>
                             </p:menuitem>
                         </p:submenu>
                     </p:menu>
-                </p:panel>
 
                 <h:panelGroup styleClass="ui-widget" id="contents">
 

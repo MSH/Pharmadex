@@ -4,663 +4,751 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/process_reg_layout.xhtml">
-<ui:define name="content">
+    <ui:define name="content">
 
-<h:form id="reghome">
-<p:growl id="growl" showDetail="true"/>
+        <h:form id="reghome">
+            <p:growl id="growl" showDetail="true"/>
 
-<h:panelGrid columns="2" columnClasses="menu,content">
-<h:panelGrid columns="2" columnClasses="menu,content">
-<p:menu style="width:198px">
-    <p:submenu label="#{msgs.Registration}">
-        <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
-                    update="@form" process="@form" ajax="false"/>
-        <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" onclick="PF('dlg').show()"/>
-        <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document" onclick="PF('stepDlg').show()"
-                    rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
-        <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
-                    rendered="#{userSession.reviewer}"
-                    action="#{processProdBn.findReview}" ajax="false"/>
+            <h:panelGrid columns="2" columnClasses="menu,content">
+                <h:panelGrid columns="2" columnClasses="menu,content">
+                    <p:menu style="width:198px">
+                        <p:submenu label="#{msgs.Registration}">
+                            <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
+                                        id="saveMenuItem"
+                                        ajax="true" update=":reghome"/>
+                            <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document"
+                                        onclick="PF('dlg').show()" id="addCommentMI"/>
+                            <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
+                                        onclick="PF('stepDlg').show()" id="nextStepMI"
+                                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
+                            <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
+                                        rendered="#{userSession.reviewer}"
+                                        action="#{processProdBn.findReview}" ajax="false"/>
 
-        <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear" onclick="PF('regDlg').show()"
-                    rendered="#{processProdBn.canRegister}"/>
-        <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear" onclick="PF('moderatordlg').show()"
-                    rendered="#{userSession.admin||userSession.staff}"/>
-        <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear" oncomplete="PF('assignreviewdlg').show()"
-                    action="#{processProdBn.initProcessorAdd}"
-                    rendered="#{userSession.moderator||userSession.admin}"/>
+                            <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
+                                        onclick="PF('regDlg').show()" id="registerMI"
+                                        rendered="#{processProdBn.canRegister}"/>
+                            <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
+                                        onclick="PF('moderatordlg').show()"
+                                        rendered="#{userSession.admin||userSession.staff}" id="assignModMI"/>
+                            <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+                                        oncomplete="PF('assignreviewdlg').show()"
+                                        action="#{processProdBn.initProcessorAdd}" id="assignProMI"
+                                        rendered="#{userSession.moderator||userSession.admin}"/>
 
-    </p:submenu>
-    <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
-        <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear" action="#{renewalMbn.preparePayment()}"
-                    oncomplete="PF('renewdlg').show()"
-                    rendered="#{userSession.head||userSession.admin}" ajax="true"/>
-        <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear" oncomplete="PF('invoicedlg').show()"
-                    rendered="#{userSession.head||userSession.admin}" action="#{renewalMbn.initInvoice()}">
-        </p:menuitem>
-        <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear" action="#{renewalMbn.sendReminder}"
-                    rendered="#{userSession.head||userSession.admin}" update=":reghome:growl"/>
-        <p:menuitem value="#{msgs.report_payment}" icon="ui-icon-gear" action="#{renewalMbn.preparePayment()}"
-                    oncomplete="PF('reportpaymentdlg').show()"
-                    rendered="#{userSession.company}" update=":reghome:growl" ajax="true"/>
-        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" oncomplete="PF('dlgAmdment').show()"
-                    rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>
-        <!--        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" ajax="false" action="amdmtCategory.faces"
-                            rendered="#{userSession.company||userSession.admin}" />
-         -->
-    </p:submenu>
-</p:menu>
-
-
-<h:panelGroup styleClass="ui-widget">
-<h1 class="title ui-widget-header ui-corner-all">
-    <table class="banner">
-        <tr>
-            <td>
-                <h:outputLabel value="#{processProdBn.product.prodName}" styleClass="title"
-                               style="font-weight: bold; font-size: 1.5em"/>
-            </td>
-            <td align="right">
-                <h:outputLabel value="#{msgs.registration_status}: " style="font-weight: bold;color: #a52a2a;"/>
-                <h:outputLabel value="#{msgs[processProdBn.prodApplications.regState.key]}"
-                               style="font-weight: bold;color: #a52a2a;"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h:outputLabel value="#{msgs.application_no}" styleClass="title"/>
-                <h:outputFormat value="#{processProdBn.prodApplications.prodAppNo}" styleClass="title"/>
-            </td>
-            <td align="right">
-                <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                <h:outputFormat value="#{processProdBn.prodApplications.submitDate}">
-                    <f:convertDateTime pattern="MMM dd, yyyy"/>
-                </h:outputFormat>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
-                <h:outputFormat value="#{processProdBn.applicant.appName}"/>
-            </td>
-            <td align="right">
-                <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title" rendered="#{processProdBn.registered}"/>
-                <h:outputFormat value="#{processProdBn.prodApplications.regExpiryDate}">
-                    <f:convertDateTime pattern="MMM dd, yyyy"/>
-                </h:outputFormat>
-            </td>
-        </tr>
-    </table>
-</h1>
-
-<pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
-             axisPosition="top"
-             showNavigation="true"
-             eventStyle="box"
-             height="130px" width="830px">
-</pe:timeline>
-
-<p:messages id="messages" showDetail="true" showSummary="true"/>
-
-<p:tabView id="processtab" style="width: 830px;" cache="true" activeIndex="#{processProdBn.selectedTab}">
-<p:tab title="#{msgs.application_info}" id="infotab">
-    <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-        <ui:param name="prodData" value="#{processProdBn.product}"/>
-    </ui:decorate>
-</p:tab>
-
-<p:tab title="#{msgs.prod_verification}" id="verficationtab"
-       rendered="#{userSession.admin||userSession.staff||userSession.head}">
-
-    <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
-        <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
-        <p:selectBooleanButton id="feerecieved" value="#{processProdBn.prodApplications.feeReceived}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
-        </p:selectBooleanButton>
+                        </p:submenu>
+                        <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
+                            <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
+                                        action="#{renewalMbn.preparePayment()}"
+                                        oncomplete="PF('renewdlg').show()"
+                                        rendered="#{userSession.head||userSession.admin}" ajax="true"/>
+                            <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear"
+                                        oncomplete="PF('invoicedlg').show()"
+                                        rendered="#{userSession.head||userSession.admin}"
+                                        action="#{renewalMbn.initInvoice()}">
+                            </p:menuitem>
+                            <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear"
+                                        action="#{renewalMbn.sendReminder}"
+                                        rendered="#{userSession.head||userSession.admin}" update=":reghome:growl"/>
+                            <p:menuitem value="#{msgs.report_payment}" icon="ui-icon-gear"
+                                        action="#{renewalMbn.preparePayment()}"
+                                        oncomplete="PF('reportpaymentdlg').show()"
+                                        rendered="#{userSession.company}" update=":reghome:growl" ajax="true"/>
+                            <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
+                                        oncomplete="PF('dlgAmdment').show()"
+                                        rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>
+                            <!--        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" ajax="false" action="amdmtCategory.faces"
+                                                rendered="#{userSession.company||userSession.admin}" />
+                             -->
+                        </p:submenu>
+                    </p:menu>
 
 
-        <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label" for="appverify"/>
-        <p:selectBooleanButton id="appverify" value="#{processProdBn.prodApplications.applicantVerified}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
-        </p:selectBooleanButton>
+                    <h:panelGroup styleClass="ui-widget">
+                        <h1 class="title ui-widget-header ui-corner-all">
+                            <table class="banner">
+                                <tr>
+                                    <td>
+                                        <h:outputLabel value="#{processProdBn.product.prodName}" styleClass="title"
+                                                       style="font-weight: bold; font-size: 1.5em"/>
+                                    </td>
+                                    <td align="right">
+                                        <h:outputLabel value="#{msgs.registration_status}: "
+                                                       style="font-weight: bold;color: #a52a2a;"/>
+                                        <h:outputLabel value="#{msgs[processProdBn.prodApplications.regState.key]}"
+                                                       style="font-weight: bold;color: #a52a2a;"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h:outputLabel value="#{msgs.application_no}" styleClass="title"/>
+                                        <h:outputFormat value="#{processProdBn.prodApplications.prodAppNo}"
+                                                        styleClass="title"/>
+                                    </td>
+                                    <td align="right">
+                                        <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
+                                        <h:outputFormat value="#{processProdBn.prodApplications.submitDate}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                        </h:outputFormat>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
+                                        <h:outputFormat value="#{processProdBn.applicant.appName}"/>
+                                    </td>
+                                    <td align="right">
+                                        <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
+                                                       rendered="#{processProdBn.registered}"/>
+                                        <h:outputFormat value="#{processProdBn.prodApplications.regExpiryDate}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                        </h:outputFormat>
+                                    </td>
+                                </tr>
+                            </table>
+                        </h1>
 
-        <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label" for="prodverify"/>
-        <p:selectBooleanButton id="prodverify" value="#{processProdBn.prodApplications.productVerified}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
-        </p:selectBooleanButton>
+                        <pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
+                                     axisPosition="top"
+                                     showNavigation="true"
+                                     eventStyle="box"
+                                     height="130px" width="830px">
+                        </pe:timeline>
 
-        <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label" for="dosscomplete"/>
-        <p:selectBooleanButton id="dosscomplete" value="#{processProdBn.prodApplications.dossierReceived}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome" listener="#{processProdBn.changeStatusListener}"/>
-        </p:selectBooleanButton>
+                        <p:messages id="messages" showDetail="true" showSummary="true"/>
 
-    </h:panelGrid>
+                        <p:tabView id="processtab" style="width: 830px;" cache="true"
+                                   activeIndex="#{processProdBn.selectedTab}" dynamic="true">
+                            <p:tab title="#{msgs.application_info}" id="infotab">
+                                <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                                    <ui:param name="prodData" value="#{processProdBn.product}"/>
+                                </ui:decorate>
+                            </p:tab>
 
-    <!--
-        <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
-        <h:outputLabel/>
-        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
-            <h:outputLabel value="Acknowledgement letter details"/>
-            <p:inputText/>
-        </h:panelGrid>
-    -->
+                            <p:tab title="#{msgs.prod_verification}" id="verficationtab"
+                                   rendered="#{userSession.admin||userSession.staff||userSession.head}">
 
-</p:tab>
-
-<p:tab title="#{msgs.prod_screening}"
-       rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}"
-       id="checklisttab">
-    <p:dataTable var="checkList" value="#{processProdBn.prodAppChecklists}" style="width:100%;">
-        <p:column headerText="">
-            <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
-        </p:column>
-        <p:column>
-            <h:outputLabel value="#{checkList.checklist.name}"/>
-        </p:column>
-        <p:column>
-            <h:outputLabel value="#{checkList.checklist.module}"/>
-        </p:column>
-        <p:column headerText="#{msgs.applicant}">
-            <p:selectBooleanCheckbox value="#{checkList.value}"/>
-        </p:column>
-        <p:column headerText="#{msgs.UserType_STAFF}">
-            <p:selectBooleanCheckbox value="#{checkList.staffValue}"/>
-        </p:column>
-        <p:column>
-            <p:inputText value="#{checkList.staffComment}"/>
-        </p:column>
-        <p:column>
-            <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
-                             action="#{fileUploadController.setProdAppChecklist(checkList)}"
-                             rendered="#{!checkList.fileUploaded}"/>
-
-        </p:column>
-        <p:column>
-            <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
-                             onclick="PrimeFaces.monitorDownload(start, stop)"
-                             icon="ui-icon-arrowstop-1-s" rendered="#{checkList.fileUploaded}"
-                    >
-                <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
-            </p:commandButton>
-        </p:column>
-    </p:dataTable>
-</p:tab>
+                                <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+                                    <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
+                                    <p:selectBooleanButton id="feerecieved"
+                                                           value="#{processProdBn.prodApplications.feeReceived}"
+                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                                           onIcon="ui-icon-check"
+                                                           offIcon="ui-icon-close" style="width:60px">
+                                        <p:ajax update=":reghome:growl :reghome"
+                                                listener="#{processProdBn.changeStatusListener}"/>
+                                    </p:selectBooleanButton>
 
 
-<p:tab title="#{msgs.prod_comments}">
-    <p:commandButton icon="ui-icon-document" value="#{msgs.add_comment}" onclick="PF('dlg').show()"/>
+                                    <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label"
+                                                   for="appverify"/>
+                                    <p:selectBooleanButton id="appverify"
+                                                           value="#{processProdBn.prodApplications.applicantVerified}"
+                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                                           onIcon="ui-icon-check"
+                                                           offIcon="ui-icon-close" style="width:60px">
+                                        <p:ajax update=":reghome:growl :reghome"
+                                                listener="#{processProdBn.changeStatusListener}"/>
+                                    </p:selectBooleanButton>
 
-    <p:dataTable id="commenttable" value="#{processProdBn.comments}" var="it">
-        <p:column style="width:120px;">
-            <p:outputLabel styleClass="ui-icon ui-icon-comment" style="display:inline-block;"/>
-            <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+                                    <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"
+                                                   for="prodverify"/>
+                                    <p:selectBooleanButton id="prodverify"
+                                                           value="#{processProdBn.prodApplications.productVerified}"
+                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                                           onIcon="ui-icon-check"
+                                                           offIcon="ui-icon-close" style="width:60px">
+                                        <p:ajax update=":reghome:growl :reghome"
+                                                listener="#{processProdBn.changeStatusListener}"/>
+                                    </p:selectBooleanButton>
 
-            <div style="font-size: smaller;">
-                <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
-            </div>
-        </p:column>
+                                    <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label"
+                                                   for="dosscomplete"/>
+                                    <p:selectBooleanButton id="dosscomplete"
+                                                           value="#{processProdBn.prodApplications.dossierReceived}"
+                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                                           onIcon="ui-icon-check"
+                                                           offIcon="ui-icon-close" style="width:60px">
+                                        <p:ajax update=":reghome:growl :reghome"
+                                                listener="#{processProdBn.changeStatusListener}"/>
+                                    </p:selectBooleanButton>
 
-        <p:column>
-            <div style="padding-left:10px;padding-top:10px;">
-                <h:outputText value="#{it.comment}"
+                                </h:panelGrid>
+
+                                <!--
+                                    <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
+                                    <h:outputLabel/>
+                                    <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
+                                        <h:outputLabel value="Acknowledgement letter details"/>
+                                        <p:inputText/>
+                                    </h:panelGrid>
+                                -->
+
+                            </p:tab>
+
+                            <p:tab title="#{msgs.prod_screening}"
+                                   rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}"
+                                   id="checklisttab">
+
+                                <p:outputLabel value="#{msgs.moderator_name}:"/>
+                                <p:outputLabel value="#{processProdBn.moderator.username}"/>
+
+                                <p:dataTable var="checkList" value="#{processProdBn.prodAppChecklists}"
+                                             style="width:100%;" id="checkListTbl">
+                                    <p:column headerText="">
+                                        <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="#{checkList.checklist.name}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="#{checkList.checklist.module}"/>
+                                    </p:column>
+                                    <p:column headerText="#{msgs.applicant}">
+                                        <p:selectBooleanCheckbox value="#{checkList.value}"/>
+                                    </p:column>
+                                    <p:column headerText="#{msgs.UserType_STAFF}">
+                                        <p:selectBooleanCheckbox value="#{checkList.staffValue}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText value="#{checkList.staffComment}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
+                                                         action="#{fileUploadController.setProdAppChecklist(checkList)}"
+                                                         rendered="#{!checkList.fileUploaded}"/>
+
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
+                                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                         icon="ui-icon-arrowstop-1-s"
+                                                         rendered="#{checkList.fileUploaded}"
+                                                >
+                                            <p:fileDownload
+                                                    value="#{fileUploadController.moduleDocDownload(checkList)}"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+
+
+                            <p:tab title="#{msgs.prod_comments}">
+                                <p:commandButton icon="ui-icon-document" value="#{msgs.add_comment}"
+                                                 onclick="PF('dlg').show()"/>
+
+                                <p:dataTable id="commenttable" value="#{processProdBn.comments}" var="it">
+                                    <p:column style="width:120px;">
+                                        <p:outputLabel styleClass="ui-icon ui-icon-comment"
+                                                       style="display:inline-block;"/>
+                                        <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+                                        <div style="font-size: smaller;">
+                                            <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                                        </div>
+                                    </p:column>
+
+                                    <p:column>
+                                        <div style="padding-left:10px;padding-top:10px;">
+                                            <h:outputText value="#{it.comment}"
+                                                          escape="false"
+                                                          styleClass="text"/>
+                                        </div>
+                                    </p:column>
+                                </p:dataTable>
+
+
+                            </p:tab>
+
+                            <p:tab title="#{msgs.timeline}"
+                                   rendered="#{userSession.admin||userSession.head||userSession.moderator||userSession.reviewer}"
+                                   id="timelinetab">
+
+                                <p:dataTable id="timelinetbl" var="timeline" value="#{processProdBn.timeLineList}">
+                                    <f:facet name="header">
+                                        #{msgs.timeline_table_header}
+                                    </f:facet>
+
+                                    <p:column headerText="#{msgs.application_status}">
+                                        <h:outputText value="#{msgs[timeline.regState.key]}"
+                                                      style="font-weight: bolder; font-size: large;"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.timeline_change_date}">
+                                        <h:outputLabel converter="javax.faces.DateTime" value="#{timeline.statusDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.updated_by}">
+                                        #{timeline.user.name}
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.global_comment}">
+                                        #{timeline.comment}
+                                    </p:column>
+                                </p:dataTable>
+
+
+                            </p:tab>
+
+                            <p:tab title="#{msgs.attachments}" id="attachtab"
+                                   rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">
+
+                                <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                                 oncomplete="PF('attachdlg').show()"
+                                                 action="#{fileUploadController.prepareUpload}"
+                                                 update=":attachdlg" id="addDocBtn"/>
+
+                                <p:dataTable id="attachtable" value="#{fileUploadController.attachments}" var="doc">
+
+                                    <p:column headerText="#{msgs.title}">
+                                        <h:outputText value="#{doc.title}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.filename}">
+                                        <h:outputText value="#{doc.fileName}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploaddate}">
+                                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploadedby}">
+                                        <h:outputText value="#{doc.uploadedBy.name}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.registration_status}">
+                                        <h:outputText value="#{msgs[doc.regState.key]}"/>
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                         icon="ui-icon-arrowthichk-s">
+                                            <p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandButton id="deleteattach"
+                                                         action="#{fileUploadController.deleteDoc(doc)}" ajax="false"
+                                                         icon="ui-icon-trash"
+                                                         update=":reghome:attachtab:attachtable"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+
+                            <p:tab title="#{msgs.add_info}" id="addinfotab"
+                                   rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">
+
+                                <ui:include src="prodprocessaddinfo.xhtml"/>
+
+                            </p:tab>
+
+                            <p:tab title="#{msgs.amdmt_history}" rendered="#{processProdBn.registered}">
+
+                                <p:dataTable id="amdmtHist" value="#{processProdBn.prodAppAmdmts}" var="amdmt">
+                                    <p:column headerText="#{msgs.amdmt_type}">
+                                        <h:outputText value="#{amdmt.amdmtCategory.amdmtType}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.amdmt_code}">
+                                        <h:outputText value="#{amdmt.amdmtCategory.categoryCD}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.submitted_date}">
+                                        <p:commandLink action="/internal/amdmtdetailsDlg.faces" ajax="false">
+                                            <h:outputText converter="javax.faces.DateTime"
+                                                          value="#{amdmt.createdDate}"/>
+                                            <f:setPropertyActionListener value="#{amdmt}"
+                                                                         target="#{amdmtProcessMBean.prodAppAmdmt}"/>
+                                        </p:commandLink>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.amdmt_state}">
+                                        <h:outputText value="#{amdmt.amdmtState}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.submitted_by}">
+                                        <h:outputText value="#{amdmt.submittedBy.username}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+
+                            <p:tab title="#{msgs.reg_cert}" id="regcerttab" rendered="#{processProdBn.registered}">
+
+                                <p:commandButton id="invoicedownload" value="#{msgs.reg_cert}"
+                                                 onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                 icon="ui-icon-arrowthichk-n">
+                                    <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
+                                </p:commandButton>
+                            </p:tab>
+
+                            <p:tab title="#{msgs.processor}" id="process"
+                                   rendered="#{userSession.moderator||userSession.head}">
+                                <ui:include src="reviewertable.xhtml"/>
+                            </p:tab>
+
+
+                        </p:tabView>
+
+                        <p:blockUI block="processtab" trigger=":reghome:processtab :reghome:saveMenuItem :reghome:addCommentMI :reghome:nextStepMI :reghome:registerMI :reghome:assignModMI
+            :reghome:assignProMI :reghome:processtab:feerecieved :reghome:processtab:appverify :reghome:processtab:prodverify :reghome:processtab:dosscomplete
+            :reghome:processtab:addDocBtn :addCommentFrm:submitButton">
+                            <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+
+
+
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:panelGrid>
+        </h:form>
+
+        <p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false"
+                  id="moderatordlg" modal="true"
+                  rendered="#{userSession.head||userSession.admin||userSession.staff}">
+            <h:form>
+
+            <p:panelGrid columns="2" columnClasses="label value">
+                <h:outputText value="#{msgs.moderator_name}: "
                               escape="false"
                               styleClass="text"/>
-            </div>
-        </p:column>
-    </p:dataTable>
 
+                <p:autoComplete id="mod" value="#{processProdBn.moderator}"
+                                completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+            </p:panelGrid>
+
+
+            <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
+                             action="#{processProdBn.assignModerator}"
+                             oncomplete="moderatordlg.hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" resizable="false"
+                  id="assignreviewDlg"
+                  modal="true"
+                  rendered="#{userSession.moderator}">
+
+            <h:form>
+            <p:panel>
+                <h:panelGrid columns="2" columnClasses="label value">
+
+                    <h:outputText value="#{msgs.processor}"
+                                  escape="false"
+                                  styleClass="text"/>
+
+                    <p:autoComplete id="module3" value="#{processProdBn.review.user}"
+                                    completeMethod="#{globalEntityLists.completeProcessorList}"
+                                    dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
+
+                </h:panelGrid>
+
+
+                <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+                                 action="#{processProdBn.assignReviewer}"
+                                 oncomplete="PF('assignreviewdlg').hide()"
+                                 update="@form :reghome:processtab:reviwertbl :reghome:messages"/>
+            </p:panel>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
+                  modal="true">
+            <h:form prependId="false">
+            <h:panelGrid columns="2" style="margin-bottom:10px">
+                <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                <p:inputText id="attachtitle" value="#{fileUploadController.attach.title}"/>
+                <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                <p:inputTextarea id="attachcomment" value="#{fileUploadController.attach.comment}"
+                                 rows="5" cols="50"/>
+            </h:panelGrid>
+
+            <p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}"
+                          mode="advanced"
+                          update=":reghome:growl :reghome:messages"
+                          multiple="false"
+                          sizeLimit="10000000">
+
+            </p:fileUpload>
+
+            <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                             action="#{fileUploadController.addDocument}"
+                             oncomplete="PF('attachdlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true"
+                  rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head||userSession.staff||userSession.moderator}">
+        <h:form>
+            <h:panelGrid columns="2" style="margin-bottom:10px">
+                <h:outputLabel for="statuscb" value="#{msgs.registration_status}: "/>
+                <p:selectOneMenu id="statuscb" value="#{processProdBn.timeLine.regState}">
+                    <f:selectItems value="#{processProdBn.regSate}" var="type"
+                                   itemLabel="#{msgs[type.key]}"/>
+                </p:selectOneMenu>
+                <h:outputLabel for="steptext" value="#{msgs.global_comment}:"/>
+                <p:inputTextarea id="steptext" value="#{processProdBn.timeLine.comment}" rows="5"
+                                 cols="50"/>
+            </h:panelGrid>
+
+            <p:commandButton id="submittimeline" value="#{msgs.global_submit}"
+                             action="#{processProdBn.addTimeline}"
+                             oncomplete="stepDlg.hide()" ajax="false"/>
+        </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.issue_invoice}" widgetVar="invoicedlg" resizable="true" id="invoicedlg"
+                  modal="true">
+            <h:form>
+            <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
+                         cellspacing="10">
+                <p:outputLabel value="#{msgs.reg_number}"/>
+                <h:outputText value="#{renewalMbn.selProd.regNo}"/>
+
+                <p:outputLabel value="#{msgs.prodName}"/>
+                <h:outputText value="#{renewalMbn.selProd.prodName}"/>
+
+                <p:outputLabel value="#{msgs.prodgenname}"/>
+                <h:outputText value="#{renewalMbn.selProd.genName}"/>
+
+                <p:outputLabel value="#{msgs.applicant_name}"/>
+                <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
 
-</p:tab>
+                <p:outputLabel value="#{msgs.expiry_date}"/>
+                <h:outputText value="#{renewalMbn.selProd.prodApplications.regExpiryDate}"/>
 
-<p:tab title="#{msgs.timeline}"
-       rendered="#{userSession.admin||userSession.head||userSession.moderator||userSession.reviewer}" id="timelinetab">
+                <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
+                <p:calendar value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"
+                            showOn="button"/>
 
-    <p:dataTable id="timelinetbl" var="timeline" value="#{processProdBn.timeLineList}">
-        <f:facet name="header">
-            #{msgs.timeline_table_header}
-        </f:facet>
+                <p:outputLabel value="#{msgs.invoice_amt}" for="invamt"/>
+                <p:inputText value="#{renewalMbn.invoice.invoiceAmt}" id="invamt"/>
 
-        <p:column headerText="#{msgs.application_status}">
-            <h:outputText value="#{msgs[timeline.regState.key]}"
-                          style="font-weight: bolder; font-size: large;"/>
-        </p:column>
+                <p:outputLabel value="#{msgs.invoice_no}" for="invno"/>
+                <p:inputText value="#{renewalMbn.invoice.invoiceNumber}" id="invno"/>
 
-        <p:column headerText="#{msgs.timeline_change_date}">
-            <h:outputLabel converter="javax.faces.DateTime" value="#{timeline.statusDate}"/>
-        </p:column>
+            </h:panelGrid>
 
-        <p:column headerText="#{msgs.updated_by}">
-            #{timeline.user.name}
-        </p:column>
+            <h:panelGrid columns="2" style="margin-top:10px">
+                <p:commandButton id="createinvoice" value="#{msgs.global_submit}"
+                                 oncomplete="invoicedlg.hide()"
+                                 icon="ui-icon-disk" ajax="true" action="#{renewalMbn.createInvoice}"/>
+                <p:commandButton id="cnclinvoice" type="button" value="Clear"
+                                 onclick="invoicedlg.hide()"
+                                 icon="ui-icon-close" ajax="false"/>
+            </h:panelGrid>
+            </h:form>
+        </p:dialog>
 
-        <p:column headerText="#{msgs.global_comment}">
-            #{timeline.comment}
-        </p:column>
-    </p:dataTable>
+        <p:dialog header="#{msgs.report_payment}" widgetVar="reportpaymentdlg" resizable="true"
+                  id="reportpaymentdlg"
+                  modal="true">
+        <h:form>
+            <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
+                         cellspacing="10">
+                <p:outputLabel value="#{msgs.reg_number}"/>
+                <h:outputText value="#{renewalMbn.selProd.regNo}"/>
 
+                <p:outputLabel value="#{msgs.prodName}"/>
+                <h:outputText value="#{renewalMbn.selProd.prodName}"/>
 
-</p:tab>
+                <p:outputLabel value="#{msgs.prodgenname}"/>
+                <h:outputText value="#{renewalMbn.selProd.genName}"/>
 
-<p:tab title="#{msgs.attachments}" id="attachtab"
-       rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">
+                <p:outputLabel value="#{msgs.applicant_name}"/>
+                <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
 
-    <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}" oncomplete="PF('attachdlg').show()"
-                     action="#{fileUploadController.prepareUpload}"
-                     update=":reghome:attachdlg"/>
+                <p:outputLabel value="#{msgs.expiry_date}"/>
+                <h:outputText value="#{renewalMbn.selProd.prodApplications.regExpiryDate}"/>
+
+                <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
+                <h:outputText value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"/>
+
+                <p:outputLabel value="#{msgs.invoice_amt}" for="payinvamt"/>
+                <h:outputText value="#{renewalMbn.invoice.invoiceAmt}" id="payinvamt"/>
+
+                <p:outputLabel value="#{msgs.invoice_no}" for="payinvno"/>
+                <h:outputText value="#{renewalMbn.invoice.invoiceNumber}" id="payinvno"/>
+
+                <p:outputLabel value="#{msgs.payment_amt}" for="payamt"/>
+                <p:inputText value="#{renewalMbn.payment.paymentAmt}" id="payamt"/>
 
-    <p:dataTable id="attachtable" value="#{fileUploadController.attachments}" var="doc">
+                <p:outputLabel value="#{msgs.reciept_no}" for="receiptNo"/>
+                <p:inputText value="#{renewalMbn.payment.receiptNo}" id="receiptNo"/>
 
-        <p:column headerText="#{msgs.title}">
-            <h:outputText value="#{doc.title}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.filename}">
-            <h:outputText value="#{doc.fileName}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.uploaddate}">
-            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.uploadedby}">
-            <h:outputText value="#{doc.uploadedBy.name}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.registration_status}">
-            <h:outputText value="#{msgs[doc.regState.key]}"/>
-        </p:column>
-
-        <p:column>
-            <p:commandButton id="downloadLink" value="Download" ajax="false"
-                             onclick="PrimeFaces.monitorDownload(start, stop)"
-                             icon="ui-icon-arrowthichk-s">
-                <p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
-            </p:commandButton>
-        </p:column>
-
-        <p:column>
-            <p:commandButton id="deleteattach" action="#{fileUploadController.deleteDoc(doc)}" ajax="false"
-                             icon="ui-icon-trash"
-                             update=":reghome:attachtab:attachtable"/>
-        </p:column>
-    </p:dataTable>
-</p:tab>
-
-<p:tab title="#{msgs.add_info}" id="addinfotab"
-       rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">
-
-    <ui:include src="prodprocessaddinfo.xhtml"/>
-
-</p:tab>
-
-<p:tab title="#{msgs.amdmt_history}" rendered="#{processProdBn.registered}">
-
-    <p:dataTable id="amdmtHist" value="#{processProdBn.prodAppAmdmts}" var="amdmt">
-        <p:column headerText="#{msgs.amdmt_type}">
-            <h:outputText value="#{amdmt.amdmtCategory.amdmtType}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.amdmt_code}">
-            <h:outputText value="#{amdmt.amdmtCategory.categoryCD}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.submitted_date}">
-            <p:commandLink action="/internal/amdmtdetailsDlg.faces" ajax="false">
-                <h:outputText converter="javax.faces.DateTime" value="#{amdmt.createdDate}"/>
-                <f:setPropertyActionListener value="#{amdmt}" target="#{amdmtProcessMBean.prodAppAmdmt}"/>
-            </p:commandLink>
-        </p:column>
-
-        <p:column headerText="#{msgs.amdmt_state}">
-            <h:outputText value="#{amdmt.amdmtState}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.submitted_by}">
-            <h:outputText value="#{amdmt.submittedBy.username}"/>
-        </p:column>
-    </p:dataTable>
-</p:tab>
-
-<p:tab title="#{msgs.reg_cert}" id="regcerttab" rendered="#{processProdBn.registered}">
-
-    <p:commandButton id="invoicedownload" value="#{msgs.reg_cert}"
-                     onclick="PrimeFaces.monitorDownload(start, stop)"
-                     icon="ui-icon-arrowthichk-n">
-        <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
-    </p:commandButton>
-</p:tab>
-
-<p:tab title="#{msgs.processor}" id="process" rendered="#{userSession.moderator||userSession.head}">
-    <ui:include src="reviewertable.xhtml"/>
-</p:tab>
-
-
-</p:tabView>
-
-<p:dialog header="#{msgs.add_comment}" widgetVar="dlg" resizable="false" id="commentdlg" modal="true">
-
-    <h:panelGrid columns="2" style="margin-bottom:10px">
-        <h:outputLabel for="commenttext" value="Enter Comment:"/>
-        <p:inputTextarea id="commenttext" value="#{processProdBn.selComment.comment}" rows="5" cols="50"/>
-        <h:outputLabel value="Internal Comment"/>
-        <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
-    </h:panelGrid>
-
-    <p:commandButton id="submitButton" value="#{msgs.global_submit}" action="#{processProdBn.addComment}"
-                     oncomplete="dlg.hide()"
-                     update=":reghome:processtab:commenttable :reghome:commentdlg :reghome:growl :reghome:messages"/>
-
-</p:dialog>
-
-
-<p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false" id="moderatordlg" modal="true"
-          rendered="#{userSession.head||userSession.admin||userSession.staff}">
-
-    <p:panelGrid columns="2" columnClasses="label value">
-        <h:outputText value="#{msgs.moderator_name}: "
-                      escape="false"
-                      styleClass="text"/>
-
-        <p:autoComplete id="mod" value="#{processProdBn.prodApplications.moderator}"
-                        completeMethod="#{processProdBn.completeModeratorList}" dropdown="true"
-                        var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                        converter="#{userConverter}">
-        </p:autoComplete>
-
-    </p:panelGrid>
-
-
-    <p:commandButton id="submitmoderator" value="#{msgs.global_submit}" action="#{processProdBn.assignModerator}"
-                     oncomplete="moderatordlg.hide()" ajax="false" process="@all"/>
-
-</p:dialog>
-
-<p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" resizable="false" id="assignreviewDlg"
-          modal="true"
-          rendered="#{userSession.moderator}">
-
-    <p:panel>
-        <h:panelGrid columns="2" columnClasses="label value">
-
-            <h:outputText value="#{msgs.processor}"
-                          escape="false"
-                          styleClass="text"/>
-
-            <p:autoComplete id="module3" value="#{processProdBn.review.user}"
-                            completeMethod="#{processProdBn.completeProcessorList}" dropdown="true"
-                            var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                            converter="#{userConverter}">
-            </p:autoComplete>
-
-        </h:panelGrid>
-
-
-        <p:commandButton id="submitButton1" value="#{msgs.global_submit}" action="#{processProdBn.assignReviewer}"
-                         oncomplete="assignreviewdlg.hide()"
-                         update=":reghome:processtab:reviwertbl :reghome:assignreviewDlg :reghome:messages"/>
-    </p:panel>
-
-</p:dialog>
-
-
-<p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg" modal="true">
-
-    <h:panelGrid columns="2" style="margin-bottom:10px">
-        <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
-        <p:inputText id="attachtitle" value="#{fileUploadController.attach.title}"/>
-        <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
-        <p:inputTextarea id="attachcomment" value="#{fileUploadController.attach.comment}" rows="5" cols="50"/>
-    </h:panelGrid>
-
-    <p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}"
-                  mode="advanced"
-                  update=":reghome:growl :reghome:messages"
-                  multiple="false"
-                  sizeLimit="10000000">
-
-    </p:fileUpload>
-
-    <p:commandButton id="adddoc" value="#{msgs.global_submit}" action="#{fileUploadController.addDocument}"
-                     oncomplete="PF('attachdlg').hide()" ajax="false"/>
-
-</p:dialog>
-
-
-<p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true"
-          rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head||userSession.staff||userSession.moderator}">
-
-    <h:panelGrid columns="2" style="margin-bottom:10px">
-        <h:outputLabel for="statuscb" value="#{msgs.registration_status}: "/>
-        <p:selectOneMenu id="statuscb" value="#{processProdBn.timeLine.regState}">
-            <f:selectItems value="#{processProdBn.regSate}" var="type" itemLabel="#{msgs[type.key]}"/>
-        </p:selectOneMenu>
-        <h:outputLabel for="steptext" value="#{msgs.global_comment}:"/>
-        <p:inputTextarea id="steptext" value="#{processProdBn.timeLine.comment}" rows="5" cols="50"/>
-    </h:panelGrid>
-
-    <p:commandButton id="submittimeline" value="#{msgs.global_submit}" action="#{processProdBn.addTimeline}"
-                     oncomplete="stepDlg.hide()" ajax="false"/>
-
-</p:dialog>
-
-<p:dialog header="#{msgs.issue_invoice}" widgetVar="invoicedlg" resizable="true" id="invoicedlg" modal="true">
-
-    <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10" cellspacing="10">
-        <p:outputLabel value="#{msgs.reg_number}"/>
-        <h:outputText value="#{renewalMbn.selProd.regNo}"/>
-
-        <p:outputLabel value="#{msgs.prodName}"/>
-        <h:outputText value="#{renewalMbn.selProd.prodName}"/>
-
-        <p:outputLabel value="#{msgs.prodgenname}"/>
-        <h:outputText value="#{renewalMbn.selProd.genName}"/>
-
-        <p:outputLabel value="#{msgs.applicant_name}"/>
-        <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
-
-        <p:outputLabel value="#{msgs.expiry_date}"/>
-        <h:outputText value="#{renewalMbn.selProd.prodApplications.regExpiryDate}"/>
-
-        <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
-        <p:calendar value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate" showOn="button"/>
-
-        <p:outputLabel value="#{msgs.invoice_amt}" for="invamt"/>
-        <p:inputText value="#{renewalMbn.invoice.invoiceAmt}" id="invamt"/>
-
-        <p:outputLabel value="#{msgs.invoice_no}" for="invno"/>
-        <p:inputText value="#{renewalMbn.invoice.invoiceNumber}" id="invno"/>
-
-    </h:panelGrid>
-
-    <h:panelGrid columns="2" style="margin-top:10px">
-        <p:commandButton id="createinvoice" value="#{msgs.global_submit}" oncomplete="invoicedlg.hide()"
-                         icon="ui-icon-disk" ajax="true" action="#{renewalMbn.createInvoice}"/>
-        <p:commandButton id="cnclinvoice" type="button" value="Clear" onclick="invoicedlg.hide()"
-                         icon="ui-icon-close" ajax="false"/>
-    </h:panelGrid>
-</p:dialog>
-
-<p:dialog header="#{msgs.report_payment}" widgetVar="reportpaymentdlg" resizable="true" id="reportpaymentdlg"
-          modal="true">
-
-    <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10" cellspacing="10">
-        <p:outputLabel value="#{msgs.reg_number}"/>
-        <h:outputText value="#{renewalMbn.selProd.regNo}"/>
-
-        <p:outputLabel value="#{msgs.prodName}"/>
-        <h:outputText value="#{renewalMbn.selProd.prodName}"/>
-
-        <p:outputLabel value="#{msgs.prodgenname}"/>
-        <h:outputText value="#{renewalMbn.selProd.genName}"/>
-
-        <p:outputLabel value="#{msgs.applicant_name}"/>
-        <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
-
-        <p:outputLabel value="#{msgs.expiry_date}"/>
-        <h:outputText value="#{renewalMbn.selProd.prodApplications.regExpiryDate}"/>
-
-        <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
-        <h:outputText value="#{renewalMbn.invoice.newExpDate}"/>
-
-        <p:outputLabel value="#{msgs.invoice_amt}" for="payinvamt"/>
-        <h:outputText value="#{renewalMbn.invoice.invoiceAmt}" id="payinvamt"/>
-
-        <p:outputLabel value="#{msgs.invoice_no}" for="payinvno"/>
-        <h:outputText value="#{renewalMbn.invoice.invoiceNumber}" id="payinvno"/>
-
-        <p:outputLabel value="#{msgs.payment_amt}" for="payamt"/>
-        <p:inputText value="#{renewalMbn.payment.paymentAmt}" id="payamt"/>
-
-        <p:outputLabel value="#{msgs.reciept_no}" for="receiptNo"/>
-        <p:inputText value="#{renewalMbn.payment.receiptNo}" id="receiptNo"/>
-
-        <p:outputLabel value="#{msgs.tracking_no}" for="trackingNo"/>
-        <p:inputText value="#{renewalMbn.payment.trackingNo}" id="trackingNo"/>
-
-    </h:panelGrid>
-
-    <h:panelGrid columns="2" style="margin-top:10px">
-        <p:commandButton id="reportpayment" value="#{msgs.global_submit}" oncomplete="reportpaymentdlg.hide()"
-                         icon="ui-icon-disk" ajax="true" action="#{renewalMbn.reportPayment}"/>
-        <p:commandButton id="cnclpayment" type="button" value="Clear" onclick="reportpaymentdlg.hide()"
-                         icon="ui-icon-close" ajax="false"/>
-    </h:panelGrid>
-</p:dialog>
-
-<p:dialog header="#{msgs.renew}" widgetVar="renewdlg" resizable="true" id="renewdlg"
-          modal="true">
-
-    <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10" cellspacing="10">
-        <p:outputLabel value="#{msgs.reg_number}"/>
-        <h:outputText value="#{renewalMbn.selProd.regNo}"/>
-
-        <p:outputLabel value="#{msgs.prodName}"/>
-        <h:outputText value="#{renewalMbn.selProd.prodName}"/>
-
-        <p:outputLabel value="#{msgs.prodgenname}"/>
-        <h:outputText value="#{renewalMbn.selProd.genName}"/>
-
-        <p:outputLabel value="#{msgs.applicant_name}"/>
-        <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
-
-        <p:outputLabel value="#{msgs.expiry_date}"/>
-        <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
-
-        <p:outputLabel value="#{msgs.new_ecpiry_date}"/>
-        <h:outputText value="#{renewalMbn.invoice.newExpDate}"/>
-
-        <p:outputLabel value="#{msgs.invoice_amt}"/>
-        <h:outputText value="#{renewalMbn.invoice.invoiceAmt}"/>
-
-        <p:outputLabel value="#{msgs.invoice_no}"/>
-        <h:outputText value="#{renewalMbn.invoice.invoiceNumber}"/>
-
-        <p:outputLabel value="#{msgs.payment_amt}"/>
-        <h:outputText value="#{renewalMbn.payment.paymentAmt}"/>
-
-        <p:outputLabel value="#{msgs.reciept_no}"/>
-        <h:outputText value="#{renewalMbn.payment.receiptNo}"/>
-
-        <p:outputLabel value="#{msgs.tracking_no}"/>
-        <h:outputText value="#{renewalMbn.payment.trackingNo}"/>
-
-    </h:panelGrid>
-
-    <h:panelGrid columns="2" style="margin-top:10px">
-        <p:commandButton value="#{msgs.global_submit}" oncomplete="renewdlg.hide()"
-                         icon="ui-icon-disk" ajax="false" action="#{renewalMbn.renew}"/>
-        <p:commandButton type="button" value="Clear" onclick="renewdlg.hide()"
-                         icon="ui-icon-close" ajax="false"/>
-    </h:panelGrid>
-</p:dialog>
-
-
-<p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment" showEffect="fade" hideEffect="fade" modal="true"
-          id="dlgAmdment" width="800px" height="500px">
-    <ui:include src="amdmtCategoryDlg.xhtml"/>
-
-</p:dialog>
-
-
-<p:dialog header="#{msgs.send_mail}" widgetVar="maildlg" resizable="false" modal="true">
-
-    <h:panelGrid columns="2" style="margin-bottom:10px">
-        <h:outputLabel for="tomail" value="#{msgs.mail_to}"/>
-        <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
-        <h:outputLabel for="subject" value="#{msgs.letter_subject}: "/>
-        <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
-        <h:outputLabel for="message" value="#{msgs.message}:"/>
-        <p:inputTextarea id="message" value="#{processProdBn.mail.message}" rows="10" cols="50"/>
-    </h:panelGrid>
-
-    <p:commandButton id="sendmessage" value="#{msgs.global_submit}" action="#{processProdBn.sendMessage}"
-                     oncomplete="mailDlg.hide()" update="@form"/>
-
-</p:dialog>
-
-</h:panelGroup>
-</h:panelGrid>
-</h:panelGrid>
-</h:form>
-
-<p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true">
-    <h:form enctype="multipart/form-data">
-
-        <p:fileUpload value="#{userSession.file}" mode="simple"
-                />
-        <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
-                         actionListener="#{fileUploadController.addModuleDoc}"
-                         oncomplete="PF('moduledlg').hide()" ajax="false"
-                         update="reghome:processtab:attachtable :reghome:growl :reghome:messages"/>
-    </h:form>
-
-</p:dialog>
-
-
-<p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
-        >
-    <h:form id="regdatedlg">
-        <h:panelGrid columns="2" style="margin-bottom:10px">
-            <p:outputLabel value="#{msgs.registration_date}"/>
-            <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
-                        required="true">
-                <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
-            </p:calendar>
-            <p:outputLabel value="#{msgs.expiry_date}"/>
-            <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
-                        required="true"/>
-
-        </h:panelGrid>
-
-        <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBn.registerProduct}"
-                         oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"
-                         update=":reghome:growl :reghome:messages :reghome :regdatedlg"/>
-    </h:form>
-
-</p:dialog>
-
-<p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
-    <p:graphicImage value="/design/ajaxloadingbar.gif"/>
-</p:dialog>
-
-</ui:define>
-<script type="text/javascript">
-    function start() {
-        PF('statusDialog').show();
-    }
-
-    function stop() {
-        PF('statusDialog').hide();
-    }
-</script>
+                <p:outputLabel value="#{msgs.tracking_no}" for="trackingNo"/>
+                <p:inputText value="#{renewalMbn.payment.trackingNo}" id="trackingNo"/>
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" style="margin-top:10px">
+                <p:commandButton id="reportpayment" value="#{msgs.global_submit}"
+                                 oncomplete="reportpaymentdlg.hide()"
+                                 icon="ui-icon-disk" ajax="true" action="#{renewalMbn.reportPayment}"/>
+                <p:commandButton id="cnclpayment" type="button" value="Clear"
+                                 onclick="reportpaymentdlg.hide()"
+                                 icon="ui-icon-close" ajax="false"/>
+            </h:panelGrid>
+        </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.renew}" widgetVar="renewdlg" resizable="true" id="renewdlg"
+                  modal="true">
+        <h:form>
+            <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
+                         cellspacing="10">
+                <p:outputLabel value="#{msgs.reg_number}"/>
+                <h:outputText value="#{renewalMbn.selProd.regNo}"/>
+
+                <p:outputLabel value="#{msgs.prodName}"/>
+                <h:outputText value="#{renewalMbn.selProd.prodName}"/>
+
+                <p:outputLabel value="#{msgs.prodgenname}"/>
+                <h:outputText value="#{renewalMbn.selProd.genName}"/>
+
+                <p:outputLabel value="#{msgs.applicant_name}"/>
+                <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
+
+                <p:outputLabel value="#{msgs.expiry_date}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
+
+                <p:outputLabel value="#{msgs.new_ecpiry_date}"/>
+                <h:outputText value="#{renewalMbn.invoice.newExpDate}"/>
+
+                <p:outputLabel value="#{msgs.invoice_amt}"/>
+                <h:outputText value="#{renewalMbn.invoice.invoiceAmt}"/>
+
+                <p:outputLabel value="#{msgs.invoice_no}"/>
+                <h:outputText value="#{renewalMbn.invoice.invoiceNumber}"/>
+
+                <p:outputLabel value="#{msgs.payment_amt}"/>
+                <h:outputText value="#{renewalMbn.payment.paymentAmt}"/>
+
+                <p:outputLabel value="#{msgs.reciept_no}"/>
+                <h:outputText value="#{renewalMbn.payment.receiptNo}"/>
+
+                <p:outputLabel value="#{msgs.tracking_no}"/>
+                <h:outputText value="#{renewalMbn.payment.trackingNo}"/>
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" style="margin-top:10px">
+                <p:commandButton value="#{msgs.global_submit}" oncomplete="renewdlg.hide()"
+                                 icon="ui-icon-disk" ajax="false" action="#{renewalMbn.renew}"/>
+                <p:commandButton type="button" value="Clear" onclick="renewdlg.hide()"
+                                 icon="ui-icon-close" ajax="false"/>
+            </h:panelGrid>
+        </h:form>
+        </p:dialog>
+
+
+        <p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment" showEffect="fade" hideEffect="fade"
+                  modal="true"
+                  id="dlgAmdment" width="800px" height="500px">
+        <h:form id="amdmtCatFrm">
+            <ui:include src="amdmtCategoryDlg.xhtml"/>
+        </h:form>
+        </p:dialog>
+
+
+        <p:dialog header="#{msgs.send_mail}" widgetVar="maildlg" resizable="false" modal="true">
+        <h:form>
+            <h:panelGrid columns="2" style="margin-bottom:10px">
+                <h:outputLabel for="tomail" value="#{msgs.mail_to}"/>
+                <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
+                <h:outputLabel for="subject" value="#{msgs.letter_subject}: "/>
+                <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
+                <h:outputLabel for="message" value="#{msgs.message}:"/>
+                <p:inputTextarea id="message" value="#{processProdBn.mail.message}" rows="10"
+                                 cols="50"/>
+            </h:panelGrid>
+
+            <p:commandButton id="sendmessage" value="#{msgs.global_submit}"
+                             action="#{processProdBn.sendMessage}"
+                             oncomplete="mailDlg.hide()" update="@form"/>
+
+        </h:form>
+        </p:dialog>
+
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true">
+            <h:form enctype="multipart/form-data">
+
+                <p:fileUpload value="#{userSession.file}" mode="simple"/>
+                <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
+                                 actionListener="#{fileUploadController.addModuleDoc}"
+                                 oncomplete="PF('moduledlg').hide()" ajax="false"
+                        />
+            </h:form>
+
+        </p:dialog>
+
+
+        <p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
+                >
+            <h:form id="regdatedlg">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.registration_date}"/>
+                    <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
+                                required="true">
+                        <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
+                    </p:calendar>
+                    <p:outputLabel value="#{msgs.expiry_date}"/>
+                    <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
+                                required="true"/>
+
+                </h:panelGrid>
+
+                <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBn.registerProduct}"
+                                 oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"
+                                 update=":reghome:growl :reghome:messages :reghome :regdatedlg"/>
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="#{msgs.add_comment}" widgetVar="dlg" resizable="false" id="commentdlg" modal="true">
+            <h:form id="addCommentFrm">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <h:outputLabel for="commenttext" value="Enter Comment:"/>
+                    <p:inputTextarea id="commenttext" value="#{processProdBn.selComment.comment}" rows="5" cols="50"/>
+                    <h:outputLabel value="Internal Comment"/>
+                    <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
+                </h:panelGrid>
+
+                <p:commandButton id="submitButton" value="#{msgs.global_submit}" action="#{processProdBn.addComment}"
+                                 oncomplete="PF('dlg').hide()"
+                                 update=":reghome:processtab:commenttable :addCommentFrm :reghome:growl :reghome:messages"/>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
+                  resizable="false">
+            <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+        </p:dialog>
+
+    </ui:define>
+    <script type="text/javascript">
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+    </script>
 </ui:composition>
 
 

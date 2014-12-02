@@ -45,4 +45,8 @@ public class DosUom implements Serializable {
         this.discontinued = discontinued;
     }
 
+    @Override
+    public String toString() {
+        return uom;
+    }
 }

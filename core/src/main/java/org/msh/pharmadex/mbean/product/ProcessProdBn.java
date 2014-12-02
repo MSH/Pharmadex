@@ -20,6 +20,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.Map;
  * Author: usrivastava
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
@@ -87,6 +88,7 @@ public class ProcessProdBn implements Serializable {
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private int selectedTab;
+    private User moderator;
 
     @PostConstruct
     private void init() {
@@ -141,13 +143,15 @@ public class ProcessProdBn implements Serializable {
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
         prodID = params.get("id");
 
-        if (prodID == null || prodID.equals(""))
-            prodID = "" + userSession.getProduct().getId();
-        userSession.setProduct(null);
+        if (prodID == null || prodID.equals("")) {
+            prodID = "" +((userSession.getProduct()!=null)?userSession.getProduct().getId():"");
+            userSession.setProduct(null);
+        }
 
-        product = productService.findProduct(Long.valueOf(prodID));
-        setFieldValues();
-//        initProcessor();
+        if(prodID!=null&&!prodID.equalsIgnoreCase("")) {
+            product = productService.findProduct(Long.valueOf(prodID));
+            setFieldValues();
+        }
     }
 
     private void setFieldValues() {
@@ -162,6 +166,7 @@ public class ProcessProdBn implements Serializable {
         prodAppChecklists = prodApplications.getProdAppChecklists();
         reviews = prodApplications.getReviews();
         foreignAppStatuses = prodApplications.getForeignAppStatus();
+        moderator = prodApplications.getModerator();
     }
 
     public void dateChange() {
@@ -224,9 +229,12 @@ public class ProcessProdBn implements Serializable {
     public void assignModerator() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            prodApplications.setUpdatedDate(new Date());
-            prodApplications = prodApplicationsService.updateProdApp(prodApplications);
-            product = prodApplications.getProd();
+            product.getProdApplications().setUpdatedDate(new Date());
+            product.getProdApplications().setModerator(moderator);
+            product = productService.updateProduct(product);
+//            prodApplications = prodApplicationsService.updateProdApp(prodApplications);
+//            product = prodApplications.getProd();
+            setFieldValues();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("moderator_add_success")));
         } catch (Exception e) {
             logger.error("Problems saving moderator {}", "processprodbn", e);
@@ -486,21 +494,7 @@ public class ProcessProdBn implements Serializable {
         this.prodAppChecklists = prodAppChecklists;
     }
 
-    public List<User> getProcessors() {
-        return userService.findProcessors();
-    }
 
-    public List<User> getModerators() {
-        return userService.findModerators();
-    }
-
-    public List<User> completeProcessorList(String query) {
-        return JsfUtils.completeSuggestions(query, getProcessors());
-    }
-
-    public List<User> completeModeratorList(String query) {
-        return JsfUtils.completeSuggestions(query, getModerators());
-    }
 
 //    public StatusUser getModule() {
 //        if (module == null)
@@ -515,12 +509,14 @@ public class ProcessProdBn implements Serializable {
     public boolean getCheckReviewStatus() {
 //        if (prodApplications.getId() == null)
         getProdApplications();
-        for (Review each : prodApplications.getReviews()) {
-            if (!each.isSubmitted()) {
-                checkReviewStatus = false;
-                break;
-            } else {
-                checkReviewStatus = true;
+        if(prodApplications!=null) {
+            for (Review each : prodApplications.getReviews()) {
+                if (!each.isSubmitted()) {
+                    checkReviewStatus = false;
+                    break;
+                } else {
+                    checkReviewStatus = true;
+                }
             }
         }
         return checkReviewStatus;
@@ -609,6 +605,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<Comment> getComments() {
+        comments = commentService.findAllCommentsByApp(prodApplications.getId(), userSession.isCompany());
         return comments;
     }
 
@@ -750,5 +747,13 @@ public class ProcessProdBn implements Serializable {
 
     public void setWorkspaceDAO(WorkspaceDAO workspaceDAO) {
         this.workspaceDAO = workspaceDAO;
+    }
+
+    public User getModerator() {
+        return moderator;
+    }
+
+    public void setModerator(User moderator) {
+        this.moderator = moderator;
     }
 }

@@ -57,25 +57,17 @@ public class Country extends CreationDetail implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Country country = (Country) o;
-
-        if (!countryCD.equals(country.countryCD)) return false;
-        if (!countryName.equals(country.countryName)) return false;
-        if (!id.equals(country.id)) return false;
-
-        return true;
+    public boolean equals(Object other) {
+        return (other instanceof Country) && (id != null)
+                ? id.equals(((Country) other).id)
+                : (other == this);
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + countryName.hashCode();
-        result = 31 * result + countryCD.hashCode();
-        return result;
+        return (id != null)
+                ? (this.getClass().hashCode() + id.hashCode())
+                : super.hashCode();
     }
 
     @Override

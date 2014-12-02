@@ -2,6 +2,7 @@ package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -67,6 +68,9 @@ public class GlobalEntityLists implements Serializable {
 
     @Autowired
     private AdminRouteService adminRouteService;
+
+    @Autowired
+    private UserService userService;
 
 
     public List<Atc> getAtcs() {
@@ -157,6 +161,11 @@ public class GlobalEntityLists implements Serializable {
         return pharmClassifs;
     }
 
+    public List<PharmClassif> completePharmClassif(String query) {
+        return JsfUtils.completeSuggestions(query, getPharmClassifs());
+    }
+
+
     public List<AdminRoute> getAdminRoutes() {
         if (adminRoutes == null)
             adminRoutes = adminRouteService.getAdminRoutes();
@@ -168,5 +177,27 @@ public class GlobalEntityLists implements Serializable {
             excipients = innService.getExcipients();
         return excipients;
     }
+
+    public List<Atc> completeAtcNames(String query) {
+        return JsfUtils.completeSuggestions(query, getAtcs());
+    }
+
+    public List<Inn> completeInnCodes(String query) {
+        return JsfUtils.completeSuggestions(query, getInns());
+    }
+
+    public List<Excipient> completeExcipients(String query) {
+        return JsfUtils.completeSuggestions(query, getExcipients());
+    }
+
+    public List<User> completeProcessorList(String query) {
+        return JsfUtils.completeSuggestions(query, userService.findProcessors());
+    }
+
+    public List<User> completeModeratorList(String query) {
+        return JsfUtils.completeSuggestions(query, userService.findModerators());
+    }
+
+
 
 }

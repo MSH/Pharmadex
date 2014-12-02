@@ -14,6 +14,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.util.Calendar;
  * Author: usrivastava
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class FileUploadController {
 
     @ManagedProperty(value = "#{attachmentDAO}")
@@ -53,6 +54,19 @@ public class FileUploadController {
 
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
+        ProdApplications prodApplications = processProdBn.getProdApplications();
+        try {
+            attach.setFile(IOUtils.toByteArray(file.getInputstream()));
+        } catch (IOException e) {
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+            facesContext.addMessage(null, msg);
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        attach.setProdApplications(prodApplications);
+        attach.setFileName(file.getFileName());
+        attach.setContentType(file.getContentType());
+        attach.setUploadedBy(userSession.getLoggedInUserObj());
+        attach.setRegState(prodApplications.getRegState());
         userSession.setFile(file);
     }
 
@@ -62,25 +76,13 @@ public class FileUploadController {
 
     public void addDocument() {
         facesContext = FacesContext.getCurrentInstance();
-        try {
-            ProdApplications prodApplications = processProdBn.getProdApplications();
-            file = userSession.getFile();
-            FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-            attach.setFile(IOUtils.toByteArray(file.getInputstream()));
-            attach.setProdApplications(prodApplications);
-            attach.setFileName(file.getFileName());
-            attach.setContentType(file.getContentType());
-            attach.setUploadedBy(userSession.getLoggedInUserObj());
-            attach.setRegState(prodApplications.getRegState());
-            attachmentDAO.save(attach);
-            setAttachments(null);
-            userSession.setFile(null);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (IOException e) {
-            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
-            facesContext.addMessage(null, msg);
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        ProdApplications prodApplications = processProdBn.getProdApplications();
+        file = userSession.getFile();
+        FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+        attachmentDAO.save(attach);
+        setAttachments(null);
+        userSession.setFile(null);
+        FacesContext.getCurrentInstance().addMessage(null, msg);
 
     }
 

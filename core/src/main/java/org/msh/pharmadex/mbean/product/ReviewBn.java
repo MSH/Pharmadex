@@ -18,6 +18,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class ReviewBn implements Serializable {
 
     private static final long serialVersionUID = -1555668282210872889L;
@@ -126,19 +127,22 @@ public class ReviewBn implements Serializable {
 
         review.setSubmitDate(new Date());
         saveReview();
-        processProdBn.setReviews(null);
+        userSession.setProdApplications(review.getProdApplications());
+        userSession.setProduct(review.getProdApplications().getProd());
         return "/internal/processreg";
     }
 
     public String cancelReview() {
         userSession.setReview(null);
+        userSession.setProdApplications(review.getProdApplications());
+        userSession.setProduct(review.getProdApplications().getProd());
         return "/internal/processreg";
 
     }
 
     public Review getReview() {
         if (review == null) {
-            review = reviewService.findReview(userSession.getReview().getId(), processProdBn.getProdApplications());
+            review = reviewService.findReview(userSession.getReview());
             reviewChecklists = review.getReviewChecklists();
         }
         return review;

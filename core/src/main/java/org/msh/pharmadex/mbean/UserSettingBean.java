@@ -2,11 +2,12 @@ package org.msh.pharmadex.mbean;
 
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class UserSettingBean implements Serializable {
     private static final long serialVersionUID = 3068896712735096922L;
 

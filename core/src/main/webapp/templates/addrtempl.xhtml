@@ -2,7 +2,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
 
     <p:outputLabel value="#{msgs.applicant_addr1}*"/>
     <p:inputText value="#{addressdata.address1}" required="true" rendered="#{input}"/>
@@ -20,11 +20,17 @@
     <p:inputText value="#{addressdata.zipcode}" rendered="#{input}"/>
     <h:outputLabel value="#{addressdata.zipcode}" rendered="#{!input}" style="font-weight: bold;"/>
 
-    <p:outputLabel value="#{msgs.applicant_country}*"/>
-    <p:selectOneMenu value="#{addressdata.country.id}" rendered="#{input}" required="true">
-        <f:selectItem itemLabel="-" itemValue=""/>
-        <f:selectItems value="#{globalEntityLists.countries}" var="cntry" itemLabel="#{cntry.countryName}"
-                       itemValue="#{cntry.id}"/>
-    </p:selectOneMenu>
+    <o:outputLabel value="#{msgs.applicant_country}*"/>
+    <p:autoComplete value="#{addressdata.country}" rendered="#{input}"
+                    completeMethod="#{applicantMBean.completeCountryList}" dropdown="true"
+                    var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
+                    required="true" >
+        <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+    </p:autoComplete>
+
+
+
+
+
     <h:outputLabel value="#{addressdata.country.countryName}" rendered="#{!input}" style="font-weight: bold;"/>
 </ui:composition>

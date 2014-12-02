@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ProdAppMBean implements Serializable {
     private static final long serialVersionUID = -900861644263726931L;
 

@@ -4,6 +4,7 @@ import org.msh.pharmadex.dao.iface.CommentDAO;
 import org.msh.pharmadex.domain.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,14 +21,9 @@ public class CommentService implements Serializable {
 
     List<Comment> comments;
 
+    @Transactional
     public List<Comment> findAllCommentsByApp(Long prodApplications_Id, boolean company) {
-        comments = commentDAO.findByProdApplications_IdOrderByDateDesc(prodApplications_Id);
-        if (company) {
-            for (Comment comment : comments) {
-                if (comment.isInternal())
-                    comments.remove(comment);
-            }
-        }
+        comments = commentDAO.findByProdApplications_IdAndInternalOrderByDateDesc(prodApplications_Id, company);
         return comments;
     }
 

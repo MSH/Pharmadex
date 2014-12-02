@@ -12,6 +12,7 @@ import org.msh.pharmadex.service.AmdmtService;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +22,7 @@ import java.util.List;
  * Author: usrivastava
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class AmendmentMbn implements Serializable {
 
     @ManagedProperty(value = "#{processProdBn}")

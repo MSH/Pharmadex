@@ -47,7 +47,7 @@
         <p:column>
             <p:commandButton id="deletereview" action="#{processProdBn.deleteReview(each)}"
                              icon="ui-icon-trash"
-                             update=":reghome:processtab:reviwertbl :reghome:assignreviewDlg :reghome:messages"
+                             update=":reghome:processtab:reviwertbl :assignreviewDlg :reghome:messages"
                              rendered="#{empty each.recomendType}"/>
         </p:column>
     </p:dataTable>

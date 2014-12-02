@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,15 +22,16 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
-@Component
-@Scope("session")
+@ManagedBean
+@ViewScoped
 public class AmdmtProcessMBean implements Serializable {
 
     private static final long serialVersionUID = 175811820572316932L;
-    @Autowired
+
+    @ManagedProperty(value = "#{amdmtService}")
     AmdmtService amdmtService;
 
-    @Autowired
+    @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
 
     private List<ProdApplications> prodApplicationses;
@@ -94,4 +98,19 @@ public class AmdmtProcessMBean implements Serializable {
         this.prodAppAmdmt = prodAppAmdmt;
     }
 
+    public AmdmtService getAmdmtService() {
+        return amdmtService;
+    }
+
+    public void setAmdmtService(AmdmtService amdmtService) {
+        this.amdmtService = amdmtService;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
 }

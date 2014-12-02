@@ -7,7 +7,6 @@ import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.service.ApplicantService;
-import org.msh.pharmadex.service.CountryService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
@@ -41,8 +40,6 @@ public class ApplicantMBean implements Serializable {
     ApplicantService applicantService;
     @ManagedProperty(value = "#{userService}")
     UserService userService;
-    @ManagedProperty(value = "#{countryService}")
-    CountryService countryService;
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -61,16 +58,9 @@ public class ApplicantMBean implements Serializable {
         selectedApplicant = new Applicant();
         if (userSession.isCompany()) {
             user = userSession.getLoggedInUserObj();
-            selectedApplicant.getAddress().setCountry(countryService.findCountryById(user.getAddress().getCountry().getId()));
+            selectedApplicant.getAddress().setCountry(user.getAddress().getCountry());
             selectedApplicant.setContactName(user != null ? user.getName() : null);
             selectedApplicant.setEmail(user != null ? user.getEmail() : null);
-        } else {
-            if (selectedApplicant.getAddress() != null)
-                selectedApplicant.getAddress().setCountry(new Country());
-            if (user == null) {
-                user = new User();
-                user.getAddress().setCountry(new Country());
-            }
         }
     }
 
@@ -121,6 +111,10 @@ public class ApplicantMBean implements Serializable {
 
     public List<ApplicantType> completeApplicantTypeList(String query) {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getApplicantTypes());
+    }
+
+    public List<Country> completeCountryList(String query) {
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getCountries());
     }
 
 
@@ -261,14 +255,6 @@ public class ApplicantMBean implements Serializable {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    public CountryService getCountryService() {
-        return countryService;
-    }
-
-    public void setCountryService(CountryService countryService) {
-        this.countryService = countryService;
     }
 
     public GlobalEntityLists getGlobalEntityLists() {

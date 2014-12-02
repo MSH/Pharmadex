@@ -19,9 +19,9 @@
 
                 <p:column headerText="Product Name">
                     <p:commandLink value="#{eachprod.prod.prodName}"
-                                   action="/secure/prodreghome.faces?faces-redirect=true" ajax="false">
+                                   action="/secure/prodreghome.faces" ajax="false">
                         <f:setPropertyActionListener value="#{eachprod}"
-                                                     target="#{regHomeMbean.prodApplications}"/>
+                                                     target="#{userSession.prodApplications}"/>
                     </p:commandLink>
                 </p:column>
 

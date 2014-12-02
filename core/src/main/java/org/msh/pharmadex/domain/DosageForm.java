@@ -55,4 +55,9 @@ public class DosageForm implements Serializable {
     public void setInactive(boolean inactive) {
         this.inactive = inactive;
     }
+
+    @Override
+    public String toString() {
+        return ""+getUid();
+    }
 }

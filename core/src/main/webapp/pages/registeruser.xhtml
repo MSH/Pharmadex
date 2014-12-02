@@ -12,9 +12,9 @@
             <h1 class="title ui-widget-header ui-corner-all"> User Settings</h1>
         </div>
 
-        <h:form>
-            <p:growl showSummary="true"/>
-            <p:panel header="#{msgs.user_details}">
+        <h:form id="regUsrForm">
+            <p:growl id="growl" showSummary="true"/>
+            <p:panel header="#{msgs.user_details}" id="pnl" style="margin-bottom:10px;">
                 <h:panelGrid cellspacing="10px" cellpadding="2px" columns="3" id="user"
                              width="100%" columnClasses="col1, col2">
                     <p:outputLabel value="#{msgs.User_username}" for="username" styleClass="label"/>
@@ -74,8 +74,13 @@
 
                 </h:panelGrid>
 
-                <p:commandButton value="#{msgs.global_submit}" action="#{registerUserMbean.save}" update=":growl"
-                                 ajax="false"/>
+                <p:commandButton id="saveBtn" value="#{msgs.global_submit}" icon="ui-icon-check" action="#{registerUserMbean.save}" update=":regUsrForm:growl :regUsrForm:pnl"
+                                 ajax="true"/>
+
+                <p:blockUI block="pnl" trigger="saveBtn" >
+                        <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+                </p:blockUI>
+
                 <p:commandButton value="#{msgs.global_cancel}" actionListener="#{registerUserMbean.cancel}"
                                  immediate="true"/>
             </p:panel>

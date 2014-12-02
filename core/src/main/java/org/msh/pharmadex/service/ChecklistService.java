@@ -28,6 +28,8 @@ public class ChecklistService implements Serializable {
      * @return list of Checklist object.
      */
     public List<Checklist> getChecklists(ProdAppType prodAppType, boolean header) {
+        if(prodAppType==null)
+            return null;
         if (prodAppType.equals(ProdAppType.GENERIC))
             checklists = checklistDAO.findByGenMedAndHeader(true, true);
         else if (prodAppType.equals(ProdAppType.NEW_CHEMICAL_ENTITY))

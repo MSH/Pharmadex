@@ -32,13 +32,13 @@ public class ReviewService implements Serializable {
     @Autowired
     private ChecklistService checklistService;
 
-    public Review findReview(Long id, ProdApplications prodApplications) {
-        Review review = reviewDAO.findOne(id);
+    public Review findReview(Review review) {
+        review = reviewDAO.findOne(review.getId());
         List<ReviewChecklist> reviewChecklists = review.getReviewChecklists();
         if (reviewChecklists.size() < 1) {
             reviewChecklists = new ArrayList<ReviewChecklist>();
             review.setReviewChecklists(reviewChecklists);
-            List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
+            List<Checklist> allChecklist = checklistService.getChecklists(review.getProdApplications().getProdAppType(), true);
             ReviewChecklist eachReviewChecklist;
             for (int i = 0; allChecklist.size() > i; i++) {
                 eachReviewChecklist = new ReviewChecklist();

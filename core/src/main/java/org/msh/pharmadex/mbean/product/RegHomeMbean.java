@@ -7,7 +7,6 @@ import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.ScheduleEntryMoveEvent;
@@ -23,7 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
     FacesContext context = FacesContext.getCurrentInstance();
@@ -111,7 +110,6 @@ public class RegHomeMbean implements Serializable {
             //Initialize associated product entities
             product.setDosForm(new DosageForm());
             product.setDosUnit(new DosUom());
-            product.setPharmClassif(new PharmClassif());
             product.setAdminRoute(new AdminRoute());
 
             //being a new application. set regstate as saved
@@ -152,14 +150,17 @@ public class RegHomeMbean implements Serializable {
             }
 
             prodInn = new ProdInn();
-            prodInn.setDosUnit(new DosUom());
+//            prodInn.setDosUnit(new DosUom());
 
             prodExcipient = new ProdExcipient();
-            prodExcipient.setDosUnit(new DosUom());
+//            prodExcipient.setDosUnit(new DosUom());
 //            eventModel = new DefaultScheduleModel();
 //            for (Appointment app : appointmentService.getAppointments()) {
 //                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
 //            }
+            if (userSession.getProdApplications() != null) {
+                initProdApps();
+            }
         }
     }
 
@@ -206,11 +207,13 @@ public class RegHomeMbean implements Serializable {
                 prodApplications.setProdAppChecklists(prodAppChecklists);
                 List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
                 ProdAppChecklist eachProdAppCheck;
-                for (int i = 0; allChecklist.size() > i; i++) {
-                    eachProdAppCheck = new ProdAppChecklist();
-                    eachProdAppCheck.setChecklist(allChecklist.get(i));
-                    eachProdAppCheck.setProdApplications(prodApplications);
-                    prodAppChecklists.add(eachProdAppCheck);
+                if (allChecklist != null && allChecklist.size() > 0) {
+                    for (int i = 0; allChecklist.size() > i; i++) {
+                        eachProdAppCheck = new ProdAppChecklist();
+                        eachProdAppCheck.setChecklist(allChecklist.get(i));
+                        eachProdAppCheck.setProdApplications(prodApplications);
+                        prodAppChecklists.add(eachProdAppCheck);
+                    }
                 }
                 prodApplications.setProdAppChecklists(prodAppChecklists);
 
@@ -392,13 +395,15 @@ public class RegHomeMbean implements Serializable {
 
     public String cancelAddInn() {
         selectedInns.remove(prodInn);
-        prodInn = null;
+        prodInn = new ProdInn();
+        prodInn.setDosUnit(new DosUom());
         return null;
     }
 
     public String cancelAddExcipient() {
         selectedExipients.remove(prodExcipient);
-        prodExcipient = null;
+        prodExcipient = new ProdExcipient();
+        prodExcipient.setDosUnit(new DosUom());
         return null;
     }
 
@@ -410,6 +415,10 @@ public class RegHomeMbean implements Serializable {
     }
 
     public ProdApplications getProdApplications() {
+        if (prodApplications == null || userSession.getProdApplications() != null) {
+            initProdApps();
+            userSession.setProdApplications(null);
+        }
         return prodApplications;
     }
 
@@ -421,8 +430,17 @@ public class RegHomeMbean implements Serializable {
         setFieldValues();
     }
 
+    private void initProdApps() {
+        String prodID = "" + userSession.getProdApplications().getProd().getId();
+        userSession.setProduct(null);
+        userSession.setProdApplications(null);
+        product = productService.findProduct(Long.valueOf(prodID));
+        setFieldValues();
+    }
+
     //used to set all the field values after insert/update operation
     private void setFieldValues() {
+        prodApplications = product.getProdApplications();
         selectedInns = product.getInns();
         selectedExipients = product.getExcipients();
         selectedAtcs = product.getAtcs();
@@ -671,22 +689,6 @@ public class RegHomeMbean implements Serializable {
 
     public void updateAtc() {
         populateSelAtcTree();
-    }
-
-    public List<Atc> completeAtcNames(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getAtcs());
-    }
-
-    public List<Inn> completeInnCodes(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getInns());
-    }
-
-    public List<Excipient> completeExcipients(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getExcipients());
-    }
-
-    public List<PharmClassif> completePharmClassif(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getPharmClassifs());
     }
 
     public User getApplicantUser() {

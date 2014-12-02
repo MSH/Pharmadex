@@ -15,7 +15,7 @@
         <p:selectOneMenu value="#{amendmentMbn.amdmtType}" id="amdmtypecb">
             <f:selectItem itemLabel="-" itemValue=""/>
             <f:selectItems value="#{globalLists.amdmtType}" var="type" itemLabel="#{msgs[type.key]}"/>
-            <p:ajax update=":reghome:amdmtcatpg" listener="#{amendmentMbn.handleAmdmtChange()}"/>
+            <p:ajax update=":amdmtCatFrm:amdmtcatpg" listener="#{amendmentMbn.handleAmdmtChange()}"/>
         </p:selectOneMenu>
         <h:outputText/>
         <p:commandButton id="submitAmdmtCat" value="#{msgs.global_nextstep}" oncomplete="dlgAmdment.hide()"

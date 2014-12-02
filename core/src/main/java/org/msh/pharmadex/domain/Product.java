@@ -369,4 +369,7 @@ public class Product extends CreationDetail implements Serializable {
     public void setExcipients(List<ProdExcipient> excipients) {
         this.excipients = excipients;
     }
+
+
 }
+

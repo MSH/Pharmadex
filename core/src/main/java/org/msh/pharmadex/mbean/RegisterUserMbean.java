@@ -20,6 +20,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -30,7 +31,7 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class RegisterUserMbean implements Serializable {
     private static final long serialVersionUID = -5045721468877947576L;
     private static final Logger logger = LoggerFactory.getLogger(RegisterUserMbean.class);
@@ -68,7 +69,7 @@ public class RegisterUserMbean implements Serializable {
         return "/public/registrationhome.faces";
     }
 
-    public String save() {
+    public void save() {
         facesContext = FacesContext.getCurrentInstance();
         user.setType(org.msh.pharmadex.domain.enums.UserType.COMPANY);
         String password = PassPhrase.getNext();
@@ -76,20 +77,17 @@ public class RegisterUserMbean implements Serializable {
         logger.info("\"password ============== \"+password");
         logger.info("======================================== ");
         user.setPassword(password);
-        String retvalue;
+        String retvalue = "";
         try {
             retvalue = userService.createPublicUser(user);
         } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(bundle.getString("user_exists_valid")));
-            return "";
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(bundle.getString("user_register_error")));
             e.printStackTrace();
-            return "";
         }
         if (!retvalue.equalsIgnoreCase("persisted")) {
             facesContext.addMessage(null, new FacesMessage(retvalue));
-            return "";
         } else {
             try {
                 Letter letter = letterService.findByLetterType(LetterType.NEW_USER_REGISTRATION);
@@ -102,11 +100,11 @@ public class RegisterUserMbean implements Serializable {
                 mail.setMessage(bundle.getString("email_user_reg1") + user.getUsername() + bundle.getString("email_user_reg2") + password + bundle.getString("email_user_reg3"));
                 mailService.sendMail(mail, false);
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("user_email_success")));
-                return "/public/registrationhome.faces";
+                user = new User();
+                user.getAddress().setCountry(new Country());
             } catch (Exception e) {
                 e.printStackTrace();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
-                return null;
             }
         }
     }
