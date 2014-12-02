@@ -3,7 +3,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
 
         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
             <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
@@ -41,20 +41,23 @@
             <p:message for="prodGenName" showSummary="true" showDetail="false"/>
 
             <p:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
-            <p:selectOneMenu id="dosForm" value="#{regHomeMbean.product.dosForm.uid}"
-                             requiredMessage="#{msgs.valid_dos_form}" required="true">
+            <p:selectOneMenu id="dosForm" value="#{regHomeMbean.product.dosForm}"
+                             requiredMessage="#{msgs.valid_dos_form}" required="true" converter="omnifaces.SelectItemsConverter">
                 <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
-                               itemValue="#{dosForm.uid}"/>
+                <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{msgs[dosForm.key]}"
+                               itemValue="#{dosForm}"/>
+                <f:ajax render="selected_item"/>
+
             </p:selectOneMenu>
             <p:message for="dosForm" showSummary="true" showDetail="false"/>
 
             <p:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
-            <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.product.dosUnit.id}"
+            <p:selectOneMenu id="dosUnit" value="#{regHomeMbean.product.dosUnit}" converter="omnifaces.SelectItemsConverter"
                              requiredMessage="#{msgs.valid_dos_form}" required="true">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
-                               itemValue="#{dosUom.id}"/>
+                               itemValue="#{dosUom}"/>
+                <f:ajax render="selected_item"/>
             </p:selectOneMenu>
             <p:message for="dosUnit" showSummary="true" showDetail="false"/>
 
@@ -65,11 +68,12 @@
             <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
 
             <p:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
-            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.product.adminRoute.id}" required="true"
+            <p:selectOneMenu id="adminroutecb" value="#{regHomeMbean.product.adminRoute}" converter="omnifaces.SelectItemsConverter" required="true"
                              requiredMessage="#{msgs.valid_value_req}">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalEntityLists.adminRoutes}" var="type" itemLabel="#{type.name}"
-                               itemValue="#{type.id}"/>
+                               itemValue="#{type}"/>
+                <f:ajax render="selected_item"/>
             </p:selectOneMenu>
             <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
 
@@ -83,11 +87,12 @@
 
             <p:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
             <p:autoComplete id="pharmClassifcb" value="#{regHomeMbean.product.pharmClassif}"
-                            completeMethod="#{regHomeMbean.completePharmClassif}" dropdown="true"
+                            completeMethod="#{globalEntityLists.completePharmClassif}" dropdown="true"
                             var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
-                            converter="#{pharmClassifConverter}" required="true"
+                            required="true"
                             requiredMessage="#{msgs.valid_value_req}"
                     >
+                <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.pharmClassifs}"/>
             </p:autoComplete>
             <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
 
