@@ -11,7 +11,7 @@
 
 
 
-    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}">
+    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}" rendered="#{!userAccessMBean.detailReview}">
 
         <p:column>
             <f:facet name="header">
@@ -52,6 +52,54 @@
         </p:column>
     </p:dataTable>
 
+    <p:dataTable id="reviwerinfotbl" var="reviewInfo" value="#{processProdBn.reviewInfos}" rendered="#{userAccessMBean.detailReview}">
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.processor}"/>
+            </f:facet>
+            <p:commandLink id="viewLink1" value="#{reviewInfo.reviewer.name}" action="/internal/reviewInfo.faces"
+                           ajax="false" immediate="true">
+                <f:setPropertyActionListener value="#{reviewInfo.id}" target="#{userSession.reviewInfoID}"/>
+                <f:setPropertyActionListener value="#{reviewInfo.prodApplications.prod}" target="#{userSession.product}"/>
+            </p:commandLink>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.assigndate}"/>
+            </f:facet>
+            <h:outputLabel converter="javax.faces.DateTime" value="#{reviewInfo.assignDate}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.completeddate}"/>
+            </f:facet>
+            <h:outputLabel converter="javax.faces.DateTime" value="#{reviewInfo.submitDate}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.review_status}"/>
+            </f:facet>
+            <h:outputText value="#{msgs[reviewInfo.reviewStatus.key]}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.recommendation}"/>
+            </f:facet>
+            <h:outputText value="#{msgs[reviewInfo.recomendType.key]}"/>
+        </p:column>
+
+        <p:column>
+            <p:commandButton id="deletereviewinfo" action="#{processProdBn.deleteReview(each)}"
+                             icon="ui-icon-trash"
+                             update=":reghome:processtab:reviwerinfotbl :assignreviewDlg :reghome:messages"
+                             rendered="#{empty reviewInfo.recomendType}"/>
+        </p:column>
+    </p:dataTable>
 
 
 

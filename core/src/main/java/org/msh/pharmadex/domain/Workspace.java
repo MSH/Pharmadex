@@ -31,6 +31,9 @@ public class Workspace extends CreationDetail implements Serializable {
     @Column
     private boolean displatPricing;
 
+    @Column
+    private boolean detailReview;
+
     public String getName() {
         return name;
     }
@@ -69,5 +72,13 @@ public class Workspace extends CreationDetail implements Serializable {
 
     public void setProdRegDuration(int prodRegDuration) {
         this.prodRegDuration = prodRegDuration;
+    }
+
+    public boolean isDetailReview() {
+        return detailReview;
+    }
+
+    public void setDetailReview(boolean detailReview) {
+        this.detailReview = detailReview;
     }
 }

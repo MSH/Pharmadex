@@ -1,6 +1,7 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.UserAccess;
+import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.service.UserAccessService;
 
 import javax.faces.bean.ManagedBean;
@@ -25,6 +26,10 @@ public class UserAccessMBean implements Serializable {
     UserAccessService userAccessService;
     private List<UserAccess> allUserAccess;
 
+    private Workspace workspace;
+
+    private boolean detailReview;
+
 
 //    public void onRowSelect(){
 //        setShowAdd(true);
@@ -48,5 +53,25 @@ public class UserAccessMBean implements Serializable {
 
     public void setUserAccessService(UserAccessService userAccessService) {
         this.userAccessService = userAccessService;
+    }
+
+    public Workspace getWorkspace() {
+        if(workspace==null){
+            workspace = userAccessService.getWorkspace();
+        }
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    public boolean isDetailReview() {
+        detailReview = getWorkspace().isDetailReview();
+        return detailReview;
+    }
+
+    public void setDetailReview(boolean detailReview) {
+        this.detailReview = detailReview;
     }
 }

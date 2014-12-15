@@ -1,10 +1,11 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.extensions.component.timeline.Timeline;
@@ -19,7 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
@@ -58,8 +58,11 @@ public class ProcessProdBn implements Serializable {
     private MailService mailService;
     @ManagedProperty(value = "#{productService}")
     private ProductService productService;
-    @ManagedProperty(value = "#{reviewDAO}")
-    private ReviewDAO reviewDAO;
+    @ManagedProperty(value = "#{reviewService}")
+    private ReviewService reviewService;
+    @ManagedProperty(value = "#{userAccessMBean}")
+    private UserAccessMBean userAccessMBean;
+
     private ProdApplications prodApplications;
     private Product product;
     private Applicant applicant;
@@ -89,6 +92,7 @@ public class ProcessProdBn implements Serializable {
     private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private int selectedTab;
     private User moderator;
+    private List<ReviewInfo> reviewInfos;
 
     @PostConstruct
     private void init() {
@@ -104,9 +108,16 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String findReview() {
-        review = reviewDAO.findByUser_UserIdAndProdApplications_Id(userSession.getLoggedInUserObj().getUserId(), prodApplications.getId());
+        review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedInUserObj().getUserId(), prodApplications.getId());
         userSession.setReview(review);
         return "/internal/review";
+    }
+
+    public String findReviewInfo() {
+        ReviewInfo reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedInUserObj().getUserId(), prodApplications.getId());
+        userSession.setProduct(product);
+        userSession.setReviewInfoID(reviewInfo.getId());
+        return "/internal/reviewInfo";
     }
 
     public TimelineModel getTimelinesChartData() {
@@ -202,11 +213,27 @@ public class ProcessProdBn implements Serializable {
 //                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
 //    }
 
+    private ReviewInfo reviewInfo;
+
+    public ReviewInfo getReviewInfo() {
+        return reviewInfo;
+    }
+
+    public void setReviewInfo(ReviewInfo reviewInfo) {
+        this.reviewInfo = reviewInfo;
+    }
+
     public void initProcessorAdd() {
         review = new Review();
         review.setUser(new User());
         review.setProdApplications(prodApplications);
         review.setAssignDate(new Date());
+
+        reviewInfo = new ReviewInfo();
+        reviewInfo.setProdApplications(prodApplications);
+        review.setAssignDate(new Date());
+
+
     }
 
     public void assignReviewer() {
@@ -222,7 +249,14 @@ public class ProcessProdBn implements Serializable {
         else
             reviews.add(review);
 
+        reviewInfo.setReviewer(review.getUser());
+        reviewInfo.setAssignDate(new Date());
+        reviewInfo.setProdApplications(prodApplications);
+        reviewInfo.setReviewStatus(ReviewStatus.ASSIGNED);
+        reviewService.saveReviewInfo(reviewInfo);
+
         review = new Review();
+        reviewInfo = new ReviewInfo();
     }
 
 
@@ -295,7 +329,7 @@ public class ProcessProdBn implements Serializable {
         reviews.remove(review);
         facesContext = FacesContext.getCurrentInstance();
         try {
-            reviewDAO.delete(review);
+            reviewService.delete(review);
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                     resourceBundle.getString("global.success"), resourceBundle.getString("comment_del_success")));
         } catch (Exception e) {
@@ -305,6 +339,19 @@ public class ProcessProdBn implements Serializable {
         return "";
     }
 
+    public String deleteReviewInfo(ReviewInfo reviewInfo) {
+        reviewInfos.remove(reviewInfo);
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            reviewService.deleteReviewInfo(reviewInfo);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    resourceBundle.getString("global.success"), resourceBundle.getString("comment_del_success")));
+        } catch (Exception e) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("comment_del_fail")));
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     public List<TimeLine> getTimeLineList() {
         return timeLineList;
@@ -510,12 +557,22 @@ public class ProcessProdBn implements Serializable {
 //        if (prodApplications.getId() == null)
         getProdApplications();
         if(prodApplications!=null) {
-            for (Review each : prodApplications.getReviews()) {
-                if (!each.isSubmitted()) {
-                    checkReviewStatus = false;
-                    break;
-                } else {
-                    checkReviewStatus = true;
+            if(userAccessMBean.isDetailReview()){
+                for(ReviewInfo ri:getReviewInfos()){
+                    if(ri.getReviewStatus().equals(ReviewStatus.SUBMITTED))
+                        checkReviewStatus = true;
+                    else
+                        checkReviewStatus = false;
+
+                }
+            }else {
+                for (Review each : prodApplications.getReviews()) {
+                    if (!each.isSubmitted()) {
+                        checkReviewStatus = false;
+                        break;
+                    } else {
+                        checkReviewStatus = true;
+                    }
                 }
             }
         }
@@ -717,14 +774,6 @@ public class ProcessProdBn implements Serializable {
         this.productService = productService;
     }
 
-    public ReviewDAO getReviewDAO() {
-        return reviewDAO;
-    }
-
-    public void setReviewDAO(ReviewDAO reviewDAO) {
-        this.reviewDAO = reviewDAO;
-    }
-
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;
     }
@@ -755,5 +804,32 @@ public class ProcessProdBn implements Serializable {
 
     public void setModerator(User moderator) {
         this.moderator = moderator;
+    }
+
+    public ReviewService getReviewService() {
+        return reviewService;
+    }
+
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
+    public List<ReviewInfo> getReviewInfos() {
+        if(reviewInfos == null){
+            reviewInfos = reviewService.findReviewInfos(prodApplications.getId());
+        }
+        return reviewInfos;
+    }
+
+    public void setReviewInfos(List<ReviewInfo> reviewInfos) {
+        this.reviewInfos = reviewInfos;
+    }
+
+    public UserAccessMBean getUserAccessMBean() {
+        return userAccessMBean;
+    }
+
+    public void setUserAccessMBean(UserAccessMBean userAccessMBean) {
+        this.userAccessMBean = userAccessMBean;
     }
 }

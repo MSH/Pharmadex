@@ -1,6 +1,7 @@
 package org.msh.pharmadex.auth;
 
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.UserAccessService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
@@ -35,6 +36,7 @@ public class UserSession implements Serializable {
     private ProdAppChecklist prodAppChecklist;
     private ProdApplications prodApplications;
     private Review review;
+    private Long reviewInfoID;
     private Long applcantID;
     private boolean admin = false;
     private boolean company = false;
@@ -46,6 +48,7 @@ public class UserSession implements Serializable {
     private boolean head = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
+    private DisplayReviewInfo displayReviewInfo;
 
     @ManagedProperty(value = "#{userAccessService}")
     private UserAccessService userAccessService;
@@ -424,5 +427,21 @@ public class UserSession implements Serializable {
 
     public void setOnlineUserBean(OnlineUserBean onlineUserBean) {
         this.onlineUserBean = onlineUserBean;
+    }
+
+    public Long getReviewInfoID() {
+        return reviewInfoID;
+    }
+
+    public void setReviewInfoID(Long reviewInfoID) {
+        this.reviewInfoID = reviewInfoID;
+    }
+
+    public DisplayReviewInfo getDisplayReviewInfo() {
+        return displayReviewInfo;
+    }
+
+    public void setDisplayReviewInfo(DisplayReviewInfo displayReviewInfo) {
+        this.displayReviewInfo = displayReviewInfo;
     }
 }

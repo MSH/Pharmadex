@@ -8,7 +8,9 @@
 
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.CTDModule;
 import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,10 +22,9 @@ import java.util.List;
  * Author: usrivastava
  */
 @Entity
-@Table(name = "review")
+@Table(name = "review_info")
 public class ReviewInfo implements Serializable {
 
-    private static final long serialVersionUID = 4403558274641428489L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,8 +36,11 @@ public class ReviewInfo implements Serializable {
     private ProdApplications prodApplications;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "reviewer_id", nullable = false)
+    private User reviewer;
+
+    @OneToMany(mappedBy = "reviewInfo", cascade = {CascadeType.ALL})
+    private List<ReviewDetail> reviewDetails;
 
     @Enumerated(EnumType.STRING)
     private RecomendType recomendType;
@@ -51,11 +55,19 @@ public class ReviewInfo implements Serializable {
     @Column(nullable = true)
     private byte[] file;
 
-    @OneToMany(mappedBy = "review", cascade = {CascadeType.ALL})
-    private List<ReviewChecklist> reviewChecklists;
+    @Lob
+    @Column(name = "comment")
+    private String comment;
 
-    @Transient
-    private boolean submitted;
+    @Lob
+    @Column(name = "exec_summary")
+    private String execSummary;
+
+    @Enumerated(EnumType.STRING)
+    private CTDModule ctdModule;
+
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus;
 
 
     public Long getId() {
@@ -74,12 +86,12 @@ public class ReviewInfo implements Serializable {
         this.prodApplications = prodApplications;
     }
 
-    public User getUser() {
-        return user;
+    public User getReviewer() {
+        return reviewer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setReviewer(User reviewer) {
+        this.reviewer = reviewer;
     }
 
     public RecomendType getRecomendType() {
@@ -106,14 +118,6 @@ public class ReviewInfo implements Serializable {
         this.submitDate = submitDate;
     }
 
-    public List<ReviewChecklist> getReviewChecklists() {
-        return reviewChecklists;
-    }
-
-    public void setReviewChecklists(List<ReviewChecklist> reviewChecklists) {
-        this.reviewChecklists = reviewChecklists;
-    }
-
     public byte[] getFile() {
         return file;
     }
@@ -122,14 +126,43 @@ public class ReviewInfo implements Serializable {
         this.file = file;
     }
 
-    public boolean isSubmitted() {
-        if (submitDate != null)
-            submitted = true;
-        return submitted;
+    public String getComment() {
+        return comment;
     }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-    public void setSubmitted(boolean submitted) {
-        this.submitted = submitted;
+    public String getExecSummary() {
+        return execSummary;
+    }
+
+    public void setExecSummary(String execSummary) {
+        this.execSummary = execSummary;
+    }
+
+    public CTDModule getCtdModule() {
+        return ctdModule;
+    }
+
+    public void setCtdModule(CTDModule ctdModule) {
+        this.ctdModule = ctdModule;
+    }
+
+    public ReviewStatus getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(ReviewStatus reviewStatus) {
+        this.reviewStatus = reviewStatus;
+    }
+
+    public List<ReviewDetail> getReviewDetails() {
+        return reviewDetails;
+    }
+
+    public void setReviewDetails(List<ReviewDetail> reviewDetails) {
+        this.reviewDetails = reviewDetails;
     }
 }

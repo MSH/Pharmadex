@@ -1,0 +1,88 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reviewHome" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showDetail="true" showSummary="true"/>
+
+            <div style="width:1054px">
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="product" value="#{reviewInfoBn.product}"/>
+                </ui:decorate>
+            </div>
+
+            <div>
+                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitReview}" style="alignment: right;"
+                                 ajax="false" rendered="#{!reviewInfoBn.readOnly}"></p:commandButton>
+                <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewInfoBn.cancelReview}"
+                                 ajax="false" />
+
+            </div>
+
+            <p:accordionPanel >
+                <p:tab title="Overall Summary">
+                    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+                        <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
+
+                        <p:selectOneMenu id="recomcb" value="#{reviewInfoBn.reviewInfo.recomendType}"
+                                         requiredMessage="#{msgs.recommendation_valid}" >
+                            <f:selectItem itemLabel="-"/>
+                            <f:selectItems value="#{globalLists.recomendType}" var="type" itemLabel="#{msgs[type.key]}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Summary" />
+                        <p:editor value="#{reviewInfoBn.reviewInfo.execSummary}" rendered="#{!reviewInfoBn.readOnly}"/>
+                        <h:outputText value="#{reviewInfoBn.reviewInfo.execSummary}" escape="false" rendered="#{reviewInfoBn.readOnly}"/>
+                    </h:panelGrid>
+
+                </p:tab>
+            </p:accordionPanel>
+            <p:accordionPanel value="#{reviewInfoBn.displayReviewQs}" var="header1" id="displayReviewQsacp">
+                <p:tab title="#{header1.header1}">
+                    <p:tabView orientation="left" value="#{header1.header2s}" var="header2">
+                        <p:tab title="#{header2.header2}">
+                            <p:dataTable value="#{header2.displayReviewInfos}" var="quest" styleClass="borderless" >
+                                <p:column headerText="#{msgs.complete_review}">
+
+                                    <p:commandButton value="#{quest.save?msgs.global_update:msgs.global_add}"
+                                                     action="#{reviewInfoBn.updateReview(quest)}"
+                                                     ajax="false" rendered="#{!reviewInfoBn.readOnly}">
+                                    </p:commandButton>
+                                    <p:commandButton value="#{msgs.view_response}"
+                                                     action="#{reviewInfoBn.updateReview(quest)}"
+                                                     ajax="false" rendered="#{reviewInfoBn.readOnly}">
+                                    </p:commandButton>
+                                    <p:commandButton value="#{msgs.global_na}"
+                                                     action="#{reviewInfoBn.reviewNA(quest)}"
+                                                     ajax="true" update=":reviewHome:displayReviewQsacp" rendered="#{!reviewInfoBn.readOnly}">
+                                    </p:commandButton>
+
+
+                                    <h:panelGroup layout="block" styleClass="#{quest.save?'review_question_inactive':'review_question_active'}">
+                                        <h:outputText value="#{quest.question}" escape="false"/>
+                                    </h:panelGroup>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                    </p:tabView>
+                    <div style="height: 10px;"/>
+                </p:tab>
+            </p:accordionPanel>
+
+
+        </h:form>
+
+        <div style="height: 10px;"/>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+
+    <h1 class="title ui-widget-header ui-corner-all">
+        <table class="banner">
+            <tr>
+                <td>
+                    <h:outputLabel value="#{product.prodName}"
+                                   styleClass="title"
+                                   style="font-weight: bold; font-size: 1.5em"/>
+                </td>
+                <td align="right">
+                    <h:outputLabel value="#{msgs.registration_status}: "
+                                   style="font-weight: bold;color: #a52a2a;"/>
+                    <h:outputLabel value="#{product.regState}"
+                                   style="font-weight: bold;color: #a52a2a;"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
+                    <h:outputFormat value="#{product.prodApplications.prodAppNo}" styleClass="title"/>
+                </td>
+                <td align="right">
+                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
+                    <h:outputFormat value="#{product.prodApplications.submitDate}">
+                    <f:convertDateTime pattern="MMM dd, yyyy"/>
+                    </h:outputFormat>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
+                    <p:commandLink id="viewLink" value="#{product.applicant.appName}"
+                                   action="/public/applicantdetail.faces"
+                                   ajax="false" style="color: darkblue;">
+                        <f:param name="applicantID" value="#{product.applicant.applcntId}"/>
+                        <f:param name="id" value="#{product.id}"/>
+                    </p:commandLink>
+
+
+                    <!--                                    <h:outputFormat value="#{productDisplay.product.applicant.appName}"/> -->
+                </td>
+                <td align="right">
+                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
+                                   rendered="#{not empty product.prodApplications.regExpiryDate}"/>
+                    <h:outputFormat value="#{product.prodApplications.regExpiryDate}"
+                                    rendered="#{not empty product.prodApplications.regExpiryDate}"/>
+                </td>
+            </tr>
+        </table>
+    </h1>
+
+
+</ui:composition>
