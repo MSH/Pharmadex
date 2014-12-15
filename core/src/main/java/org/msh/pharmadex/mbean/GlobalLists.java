@@ -42,8 +42,8 @@ public class GlobalLists {
         return Arrays.asList(ProdDrugType.values());
     }
 
-    public List<Modules> getModules() {
-        return Arrays.asList(Modules.values());
+    public List<CTDModule> getModules() {
+        return Arrays.asList(CTDModule.values());
     }
 
     public List<LetterType> getLetterTypes() {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: usrivastava
@@ -32,6 +33,7 @@ public class GlobalEntityLists implements Serializable {
     private List<Atc> atcs;
     private List<AdminRoute> adminRoutes;
     private List<Excipient> excipients;
+    private List<DisplayReviewQ> displayReviewQ;
 
     @Autowired
     private DosageFormService dosageFormService;
@@ -71,7 +73,6 @@ public class GlobalEntityLists implements Serializable {
 
     @Autowired
     private UserService userService;
-
 
     public List<Atc> getAtcs() {
         if (atcs == null)
@@ -197,7 +198,5 @@ public class GlobalEntityLists implements Serializable {
     public List<User> completeModeratorList(String query) {
         return JsfUtils.completeSuggestions(query, userService.findModerators());
     }
-
-
 
 }

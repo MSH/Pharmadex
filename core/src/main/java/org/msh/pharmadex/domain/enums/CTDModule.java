@@ -3,7 +3,7 @@ package org.msh.pharmadex.domain.enums;
 /**
  * Author: usrivastava
  */
-public enum Modules {
+public enum CTDModule {
 
     MODULE_1,
     MODULE_2,
