@@ -93,15 +93,20 @@
 
                 </p:panel>
 
+                <p:blockUI block="adduserfrm" trigger=":adduserfrm:saveuserbtn :adduserfrm:updateuserbtn">
+                    <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+                </p:blockUI>
 
-                <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}"
-                                 oncomplete="if (!args.validationFailed) adduser.hide()"
+
+
+                <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" id="saveuserbtn"
+                                 oncomplete="if (!args.validationFailed) PF('adduser').hide()"
                                  update=":userlist:users :userlist:messages :adduserfrm" rendered="#{!userMBean.edit}"/>
-                <p:commandButton action="#{userMBean.updateuser}" value="#{msgs.global_update}"
-                                 oncomplete="if (!args.validationFailed) adduser.hide()"
+                <p:commandButton action="#{userMBean.updateuser}" value="#{msgs.global_update}" id="updateuserbtn"
+                                 oncomplete="if (!args.validationFailed) PF('adduser').hide()"
                                  update=":userlist:users :userlist:messages :adduserfrm" rendered="#{userMBean.edit}"/>
                 <p:commandButton action="#{userMBean.cancelUser}" immediate="true" value="#{msgs.global_cancel}"
-                                 oncomplete="adduser.hide()" ajax="false"/>
+                                 oncomplete="PF('adduser').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 

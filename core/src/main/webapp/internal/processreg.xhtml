@@ -22,11 +22,11 @@
                                         onclick="PF('stepDlg').show()" id="nextStepMI"
                                         rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
                             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
-                                        rendered="#{userSession.reviewer}"
+                                        rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
                                         action="#{processProdBn.findReview}" ajax="false"/>
 
                             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
-                                        rendered="#{userSession.reviewer}"
+                                        rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
                                         action="#{processProdBn.findReviewInfo}" ajax="false"/>
 
 
@@ -397,9 +397,7 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" resizable="false"
-                  id="assignreviewDlg"
-                  modal="true"
-                  rendered="#{userSession.moderator}">
+                  id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}">
 
             <h:form>
             <p:panel>
@@ -423,7 +421,7 @@
                 <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
                                  action="#{processProdBn.assignReviewer}"
                                  oncomplete="PF('assignreviewdlg').hide()"
-                                 update="@form :reghome:processtab:reviwertbl :reghome:messages"/>
+                                 update="@form :reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl :reghome:messages"/>
             </p:panel>
             </h:form>
         </p:dialog>
