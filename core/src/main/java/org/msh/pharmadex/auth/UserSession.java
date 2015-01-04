@@ -55,6 +55,7 @@ public class UserSession implements Serializable {
 
     @ManagedProperty(value = "#{onlineUserBean}")
     private OnlineUserBean onlineUserBean;
+    private String licHolderID;
 
 
     public void login() {
@@ -443,5 +444,13 @@ public class UserSession implements Serializable {
 
     public void setDisplayReviewInfo(DisplayReviewInfo displayReviewInfo) {
         this.displayReviewInfo = displayReviewInfo;
+    }
+
+    public void setLicHolderID(String licHolderID) {
+        this.licHolderID = licHolderID;
+    }
+
+    public String getLicHolderID() {
+        return licHolderID;
     }
 }

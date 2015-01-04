@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <p:messages id="messages"/>
+
+        <h:form prependId="false">
+
+            <div class="post">
+                <h1 class="title ui-widget-header ui-corner-all"> #{msgs.license_holder}</h1>
+            </div>
+
+            <p:dataTable id="applicants" var="licHolder" value="#{licHolderListBn.licenseHolders}">
+                <p:column headerText="#{msgs.license_holder}">
+                    <p:commandLink value="#{licHolder.name}" action="licholderdetail"
+                                   ajax="false">
+                        <f:setPropertyActionListener value="#{licHolder.id}"
+                                                     target="#{userSession.licHolderID}"/>
+                    </p:commandLink>
+                </p:column>
+
+                <p:column headerText="#{msgs.applicant_addr1}">
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{licHolder.address.address1}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.applicant_country}">
+                    #{licHolder.address.country.countryName}
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>

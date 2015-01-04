@@ -25,25 +25,25 @@
             </p:panel>
 
             <p:panel header="#{msgs.recieved_applications}">
-                <p:dataTable id="applicants" var="applicant" value="#{processAppListBn.pendingApps}">
+                <p:dataTable id="applicants" var="licHolder" value="#{processAppListBn.pendingApps}">
                     <p:column headerText="#{msgs.registration_applicant}">
-                        <p:commandLink value="#{applicant.appName}" action="#{processAppListBn.goToAppDetail}"
+                        <p:commandLink value="#{licHolder.appName}" action="#{processAppListBn.goToAppDetail}"
                                        ajax="false">
-                            <f:setPropertyActionListener value="#{applicant.applcntId}"
+                            <f:setPropertyActionListener value="#{licHolder.applcntId}"
                                                          target="#{userSession.applcantID}"/>
                         </p:commandLink>
                     </p:column>
 
                     <p:column headerText="#{msgs.applicant_submitdate}">
-                        <h:outputLabel converter="javax.faces.DateTime" value="#{applicant.submitDate}"/>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{licHolder.submitDate}"/>
                     </p:column>
 
                     <p:column headerText="#{msgs.registration_status}">
-                        #{msgs[applicant.state.key]}
+                        #{msgs[licHolder.state.key]}
                     </p:column>
 
                     <p:column headerText="#{msgs.applicant_country}">
-                        #{msgs[applicant.address.country.countryName]}
+                        #{msgs[licHolder.address.country.countryName]}
                     </p:column>
 
                 </p:dataTable>

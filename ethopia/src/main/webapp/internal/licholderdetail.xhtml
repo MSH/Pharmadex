@@ -1,0 +1,148 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reghome">
+
+            <h:panelGrid columns="1" cellpadding="10px">
+
+                <h:panelGroup styleClass="ui-widget">
+                    <h1 class="title ui-widget-header ui-corner-all">
+                        <table class="banner">
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{licHolderBn.licenseHolder.name}" styleClass="title"
+                                                   style="font-weight: bold; font-size: 1.5em"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.applicant_country}: " style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{licHolderBn.licenseHolder.address.country}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
+                                    <h:outputFormat value="#{licHolderBn.licenseHolder.id}" styleClass="title"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
+                                    <h:outputFormat value="#{licHolderBn.licenseHolder.createdDate}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </h1>
+                    <p:messages id="messages" showDetail="true" showSummary="true"/>
+
+                    <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+                    <p:panel header="#{msgs.lic_holder_detail}">
+                        <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
+                                     columnClasses="col1, col2, col1, col2">
+                            <p:outputLabel value="#{msgs.applicant_name}" />
+                            <p:inputText required="true" value="#{licHolderBn.licenseHolder.name}" rendered="#{input}">
+                            </p:inputText>
+                            <h:outputLabel value="#{licHolderBn.licenseHolder.name}" rendered="#{!input}" style="font-weight: bold;"/>
+
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+
+                            <ui:decorate template="/templates/addrtempl.xhtml">
+                                <ui:param name="addressdata" value="#{licHolderBn.licenseHolder.address}"/>
+                                <ui:param name="input" value="#{input}"/>
+                            </ui:decorate>
+
+                            <h:outputLabel/>
+                            <h:outputLabel/>
+
+                            <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right"/>
+                            <p:inputText value="#{licHolderBn.licenseHolder.phoneNo}" required="true" rendered="#{input}"/>
+                            <h:outputLabel value="#{licHolderBn.licenseHolder.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
+
+                            <p:outputLabel value="#{msgs.applicant_faxno}"/>
+                            <p:inputText value="#{licHolderBn.licenseHolder.faxNo}" rendered="#{input}"/>
+                            <h:outputLabel value="#{licHolderBn.licenseHolder.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
+
+                            <p:outputLabel value="#{msgs.applicant_website}"/>
+                            <p:inputText value="#{licHolderBn.licenseHolder.website}" rendered="#{input}"/>
+                            <h:outputLabel value="#{licHolderBn.licenseHolder.website}" rendered="#{!input}" style="font-weight: bold;"/>
+
+                            <p:outputLabel value="#{msgs.applicant_email}"/>
+                            <p:inputText value="#{licHolderBn.licenseHolder.email}" rendered="#{input}"/>
+                            <h:outputLabel value="#{licHolderBn.licenseHolder.email}" rendered="#{!input}" style="font-weight: bold;"/>
+                            <!--
+                                    <h:outputLabel value="#{msgs.global_comment}"/>
+                                    <p:inputText value="#{licHolderBn.licenseHolder.comment}" rendered="#{input}"/>
+                                    <h:outputLabel value="#{licHolderBn.licenseHolder.comment}" rendered="#{!input}" style="font-weight: bold;"/>
+                            -->
+
+                        </h:panelGrid>
+
+                    </p:panel>
+
+                    <!--
+                    <p:panel header="#{msgs.agentList}">
+                        <p:dataTable id="products" var="product" value="#{licHolderBn.applicants}">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.applicant_name}"/>
+                                </f:facet>
+                                <p:commandLink id="viewLink" value="#{product.prodName}" action="productdetail"
+                                               ajax="false">
+                                    <f:param name = "id" value="#{product.id}"/>
+                                    <f:param name="applicantID" value="#{applicantHome.applicant.applcntId}"/>
+                                </p:commandLink>
+                            </p:column>
+
+                            <p:column sortBy="#{product.genName}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodgenname}"/>
+                                </f:facet>
+                                <h:outputText value="#{product.genName}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.dosForm.dosForm}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.dos_form}"/>
+                                </f:facet>
+                                <h:outputText value="#{product.dosForm.dosForm}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.dosStrength}">
+                                <f:facet name="header">
+                                    <h:outputText value="Dosage Strength"/>
+                                </f:facet>
+                                <h:outputText value="#{product.dosStrength}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.applicant.appName}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.registration_applicant}"/>
+                                </f:facet>
+                                <h:outputText value="#{product.applicant.appName}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{product.prodApplications.registrationDate}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.registration_date}"/>
+                                </f:facet>
+                                <h:outputLabel converter="javax.faces.DateTime"
+                                               value="#{product.prodApplications.registrationDate}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+-->
+
+                </h:panelGroup>
+            </h:panelGrid>
+
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>

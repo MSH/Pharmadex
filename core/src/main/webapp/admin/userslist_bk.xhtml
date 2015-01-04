@@ -69,8 +69,8 @@
                     <h:outputLabel value="#{msgs.user_assigncompany}"/>
                     <p:selectOneMenu value="#{userMBean.userApp.applcntId}">
                         <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{applicantService.findAllApplicants()}" var="applicant"
-                                       itemLabel="#{applicant.appName}" itemValue="#{applicant.applcntId}"/>
+                        <f:selectItems value="#{applicantService.findAllApplicants()}" var="licHolder"
+                                       itemLabel="#{licHolder.appName}" itemValue="#{licHolder.applcntId}"/>
                     </p:selectOneMenu>
 
 

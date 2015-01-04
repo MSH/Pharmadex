@@ -10,24 +10,24 @@
         </div>
 
         <h:form prependId="false">
-            <p:dataTable id="applicants" var="applicant" value="#{processRxSiteBn.pendingRxSite}">
+            <p:dataTable id="applicants" var="licHolder" value="#{processRxSiteBn.pendingRxSite}">
                 <p:column headerText="#{msgs.registration_applicant}">
-                    <p:commandLink value="#{applicant.pharmacyName}" action="/internal/processrxsite.faces"
+                    <p:commandLink value="#{licHolder.pharmacyName}" action="/internal/processrxsite.faces"
                                    ajax="false">
-                        <f:setPropertyActionListener value="#{applicant}" target="#{processRxSiteBn.selectedRxSite}"/>
+                        <f:setPropertyActionListener value="#{licHolder}" target="#{processRxSiteBn.selectedRxSite}"/>
                     </p:commandLink>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_name}">
-                    #{applicant.applicantName}
+                    #{licHolder.applicantName}
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_submitdate}">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{applicant.submitDate}"/>
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{licHolder.submitDate}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.registration_status}">
-                    #{msgs[applicant.state.key]}
+                    #{msgs[licHolder.state.key]}
                 </p:column>
 
 
