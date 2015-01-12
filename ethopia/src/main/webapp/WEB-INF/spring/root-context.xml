@@ -23,7 +23,7 @@
         </property>
     </bean>
 
-    <jpa:repositories base-package="org.msh.pharmadex.dao"/>
+    <jpa:repositories base-package="org.msh.pharmadex"/>
 
 
     <import resource="db.xml"/>

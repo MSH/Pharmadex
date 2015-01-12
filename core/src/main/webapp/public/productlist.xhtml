@@ -10,7 +10,7 @@
         </div>
 
         <h:form prependId="false">
-
+            <p:growl/>
             <p:dataTable id="products" var="product" value="#{productMbean.products}" tableStyle="width: auto"
                          filteredValue="#{productMbean.filteredProducts}" widgetVar="prodTable"
                          paginator="true" rows="20" paginatorPosition="bottom"
