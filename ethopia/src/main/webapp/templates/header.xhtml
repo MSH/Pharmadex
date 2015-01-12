@@ -42,11 +42,9 @@
                         -->
 
                         <h:panelGrid columns="1">
-                            <h:outputLink id="loginLink" value="javascript:void(0)"
-                                          onclick="PF('logindlg').show()"
-                                          title="login">
+                            <p:commandLink id="loginLink" onclick="PF('logindlg').show()" ajax="true">
                                 <p:graphicImage value="/resources/images/log_in.png"/>
-                            </h:outputLink>
+                            </p:commandLink>
                         </h:panelGrid>
                     </sec:isAnonymous>
                 </h:panelGroup>

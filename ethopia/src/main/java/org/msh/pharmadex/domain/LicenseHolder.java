@@ -44,9 +44,11 @@ public class LicenseHolder extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String website;
 
-
     @Column(length = 500)
     private String comment;
+
+    @OneToMany(mappedBy = "licenseHolder", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
+    private List<AgentInfo> agentInfos;
 
     public Long getId() {
         return id;
@@ -118,5 +120,13 @@ public class LicenseHolder extends CreationDetail implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public List<AgentInfo> getAgentInfos() {
+        return agentInfos;
+    }
+
+    public void setAgentInfos(List<AgentInfo> agentInfos) {
+        this.agentInfos = agentInfos;
     }
 }
