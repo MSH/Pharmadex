@@ -5,7 +5,6 @@ import org.msh.pharmadex.domain.LicenseHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.RepositoryDefinition;
-import sun.management.Agent;
 
 import java.util.List;
 
