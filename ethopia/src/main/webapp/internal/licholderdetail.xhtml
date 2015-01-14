@@ -8,6 +8,7 @@
 
         <h:form id="reghome">
 
+
             <h:panelGrid columns="1" cellpadding="10px">
 
                 <h:panelGroup styleClass="ui-widget">
@@ -42,52 +43,10 @@
                     <p:growl id="growl" showDetail="true" showSummary="true"/>
 
                     <p:panel header="#{msgs.lic_holder_detail}">
-                        <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
-                                     columnClasses="col1, col2, col1, col2">
-                            <p:outputLabel value="#{msgs.applicant_name}"/>
-                            <p:inputText required="true" value="#{licHolderBn.licenseHolder.name}" rendered="#{input}">
-                            </p:inputText>
-                            <h:outputLabel value="#{licHolderBn.licenseHolder.name}" rendered="#{!input}"
-                                           style="font-weight: bold;"/>
-
-                            <h:outputLabel/>
-                            <h:outputLabel/>
-
-                            <ui:decorate template="/templates/addrtempl.xhtml">
-                                <ui:param name="addressdata" value="#{licHolderBn.licenseHolder.address}"/>
-                                <ui:param name="input" value="#{input}"/>
-                            </ui:decorate>
-
-                            <h:outputLabel/>
-                            <h:outputLabel/>
-
-                            <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right"/>
-                            <p:inputText value="#{licHolderBn.licenseHolder.phoneNo}" required="true"
-                                         rendered="#{input}"/>
-                            <h:outputLabel value="#{licHolderBn.licenseHolder.phoneNo}" rendered="#{!input}"
-                                           style="font-weight: bold;"/>
-
-                            <p:outputLabel value="#{msgs.applicant_faxno}"/>
-                            <p:inputText value="#{licHolderBn.licenseHolder.faxNo}" rendered="#{input}"/>
-                            <h:outputLabel value="#{licHolderBn.licenseHolder.faxNo}" rendered="#{!input}"
-                                           style="font-weight: bold;"/>
-
-                            <p:outputLabel value="#{msgs.applicant_website}"/>
-                            <p:inputText value="#{licHolderBn.licenseHolder.website}" rendered="#{input}"/>
-                            <h:outputLabel value="#{licHolderBn.licenseHolder.website}" rendered="#{!input}"
-                                           style="font-weight: bold;"/>
-
-                            <p:outputLabel value="#{msgs.applicant_email}"/>
-                            <p:inputText value="#{licHolderBn.licenseHolder.email}" rendered="#{input}"/>
-                            <h:outputLabel value="#{licHolderBn.licenseHolder.email}" rendered="#{!input}"
-                                           style="font-weight: bold;"/>
-                            <!--
-                                    <h:outputLabel value="#{msgs.global_comment}"/>
-                                    <p:inputText value="#{licHolderBn.licenseHolder.comment}" rendered="#{input}"/>
-                                    <h:outputLabel value="#{licHolderBn.licenseHolder.comment}" rendered="#{!input}" style="font-weight: bold;"/>
-                            -->
-
-                        </h:panelGrid>
+                        <ui:decorate template="/templates/licholderdetailtmpl.xhtml">
+                            <ui:param name="licholderdata" value="#{licHolderBn.licenseHolder}"/>
+                            <ui:param name="input" value="false"/>
+                        </ui:decorate>
 
                     </p:panel>
 
@@ -95,7 +54,7 @@
 
                         <h:panelGrid columns="2" cellpadding="10px">
                             <p:commandLink value="#{msgs.global_add}" oncomplete="PF('addAgentDlg').show()"
-                                           immediate="true" style="font-weight: bolder; font-size: larger" update=":addAgentFrm"/>
+                                           style="font-weight: bolder; font-size: larger" update=":addAgentFrm :message"/>
 
                         </h:panelGrid>
 
@@ -155,7 +114,8 @@
 
         </h:form>
 
-        <p:dialog header="#{msgs.global_add}" widgetVar="addAgentDlg" id="addAgentdlg" resizable="true" modal="true">
+        <p:dialog header="#{msgs.global_add}" widgetVar="addAgentDlg" id="addAgentdlg" resizable="true" closable="false" modal="true">
+            <p:messages id="message"/>
             <h:form id="addAgentFrm">
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                     <h:outputLabel value="#{msgs.applicant_name}" for="applicant"/>
@@ -183,9 +143,8 @@
                                 required="true"/>
 
                     <h:panelGroup>
-                        <p:commandButton actionListener="#{licHolderBn.addAgent}" value="#{msgs.global_add}"
-                                         oncomplete="if (!args.validationFailed) PF('addAgentDlg').hide()"
-                                         update=":reghome:agents :addAgentdlg" process="@form"/>
+                        <p:commandButton actionListener="#{licHolderBn.addAgent}" value="#{msgs.global_add}" ajax="true"
+                                         update=":reghome:agents :addAgentdlg :message :reghome:growl" />
                         <p:commandButton action="#{licHolderBn.cancelAddAgent}" immediate="true"
                                          value="#{msgs.global_cancel}" oncomplete="PF('addAgentDlg').hide()"/>
                     </h:panelGroup>

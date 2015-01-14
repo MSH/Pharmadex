@@ -3,6 +3,7 @@ package org.msh.pharmadex.dao;
 import org.msh.pharmadex.domain.AgentInfo;
 import org.msh.pharmadex.domain.Applicant;
 import org.springframework.stereotype.Repository;
+import sun.management.Agent;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,15 +26,18 @@ public class CustomLicHolderDAO {
     }
 
     public boolean validDate(AgentInfo agentInfo) {
-        entityManager.createQuery("select ai from AgentInfo ai where ai.licHolder.id = :licHolder " +
+        List<AgentInfo> agentInfos = entityManager.createQuery("select ai from AgentInfo ai where ai.licenseHolder.id = :licHolder " +
                 "and ai.agentType = :agentType " +
-                "and ai.startDate between :startdate and :enddate " +
-                "and ai.enddate between :startdate and :enddate ")
+                "and ((ai.startDate between :startdate and :enddate) or (ai.endDate between :startdate and enddate))")
                 .setParameter("licHolder", agentInfo.getLicenseHolder().getId())
                 .setParameter("agentType", agentInfo.getAgentType())
                 .setParameter("startdate", agentInfo.getStartDate())
                 .setParameter("enddate", agentInfo.getEndDate())
                 .getResultList();
-        return false;
+
+        if(agentInfos.size()>0)
+            return false;
+        else
+            return true;
     }
 }

@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+    <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
+                 columnClasses="col1, col2, col1, col2">
+        <p:outputLabel value="#{msgs.applicant_name}*"/>
+        <p:inputText required="true" value="#{licholderdata.name}" rendered="#{input}">
+        </p:inputText>
+        <h:outputLabel value="#{licholderdata.name}" rendered="#{!input}"
+                       style="font-weight: bold;"/>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+        <ui:decorate template="/templates/addrtempl.xhtml">
+            <ui:param name="addressdata" value="#{licholderdata.address}"/>
+            <ui:param name="input" value="#{input}"/>
+        </ui:decorate>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+        <p:outputLabel value="#{msgs.applicant_phone}*" style="text-align: right"/>
+        <p:inputText value="#{licholderdata.phoneNo}" required="true"
+                     rendered="#{input}"/>
+        <h:outputLabel value="#{licholderdata.phoneNo}" rendered="#{!input}"
+                       style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_faxno}"/>
+        <p:inputText value="#{licholderdata.faxNo}" rendered="#{input}"/>
+        <h:outputLabel value="#{licholderdata.faxNo}" rendered="#{!input}"
+                       style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_website}"/>
+        <p:inputText value="#{licholderdata.website}" rendered="#{input}"/>
+        <h:outputLabel value="#{licholderdata.website}" rendered="#{!input}"
+                       style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_email}"/>
+        <p:inputText value="#{licholderdata.email}" rendered="#{input}"/>
+        <h:outputLabel value="#{licholderdata.email}" rendered="#{!input}"
+                       style="font-weight: bold;"/>
+        <!--
+                <h:outputLabel value="#{msgs.global_comment}"/>
+                <p:inputText value="#{licholderdata.comment}" rendered="#{input}"/>
+                <h:outputLabel value="#{licholderdata.comment}" rendered="#{!input}" style="font-weight: bold;"/>
+        -->
+
+    </h:panelGrid>
+
+
+</ui:composition>

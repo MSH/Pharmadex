@@ -9,9 +9,9 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.LicenseHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.management.Agent;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,9 +63,29 @@ public class LicenseHolderService implements Serializable {
         if(agentInfo.getEndDate().before(agentInfo.getStartDate()))
             return "date_end_before_start";
 
-        customLicHolderDAO.validDate(agentInfo);
+        if(!customLicHolderDAO.validDate(agentInfo))
+            return "licholder_present";
 
+        agentInfo.setCreatedDate(new Date());
+        agentInfo = agentInfoDAO.save(agentInfo);
         return "persist";
 
+    }
+
+    public String saveLicHolder(LicenseHolder licenseHolder) {
+        try {
+            if (licenseHolder == null)
+                return "empty";
+
+            List<LicenseHolder> licenseHolders = licenseHolderDAO.findByName(licenseHolder.getName().trim());
+
+            if (licenseHolders.size() > 0)
+                return "duplicate";
+
+            licenseHolderDAO.save(licenseHolder);
+            return "persist";
+        }catch (Exception ex){
+            return "error";
+        }
     }
 }

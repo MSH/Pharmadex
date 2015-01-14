@@ -47,6 +47,9 @@ public class LicenseHolder extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String comment;
 
+    @OneToOne
+    private User createdBy;
+
     @OneToMany(mappedBy = "licenseHolder", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private List<AgentInfo> agentInfos;
 
@@ -128,5 +131,13 @@ public class LicenseHolder extends CreationDetail implements Serializable {
 
     public void setAgentInfos(List<AgentInfo> agentInfos) {
         this.agentInfos = agentInfos;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 }
