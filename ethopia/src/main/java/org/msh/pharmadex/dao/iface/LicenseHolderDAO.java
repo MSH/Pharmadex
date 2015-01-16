@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface LicenseHolderDAO extends JpaRepository<LicenseHolder, Long> {
     public List<LicenseHolder> findByName(String name);
+
 }
