@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -38,7 +39,7 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class RegHomeMbean implements Serializable {
     private static final long serialVersionUID = 8349519957756249083L;
     FacesContext context = FacesContext.getCurrentInstance();

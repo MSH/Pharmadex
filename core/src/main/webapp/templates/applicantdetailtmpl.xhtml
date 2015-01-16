@@ -7,8 +7,9 @@
                  columnClasses="col1, col2, col1, col2">
         <p:outputLabel value="#{msgs.applicant_name}" />
         <p:inputText required="true" value="#{applicantdata.appName}" rendered="#{input}">
-            <f:validator binding="#{applicantNameValidator}"/>
+<!--            <f:validator binding="#{applicantNameValidator}"/> -->
                 </p:inputText>
+
         <h:outputLabel value="#{applicantdata.appName}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <h:outputLabel/>
