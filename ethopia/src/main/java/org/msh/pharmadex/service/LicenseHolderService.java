@@ -7,6 +7,7 @@ import org.msh.pharmadex.dao.iface.LicenseHolderDAO;
 import org.msh.pharmadex.domain.AgentInfo;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.enums.AgentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,5 +88,18 @@ public class LicenseHolderService implements Serializable {
         }catch (Exception ex){
             return "error";
         }
+    }
+
+    public LicenseHolder findLicHolderByApplicant(Long applcntId) {
+        LicenseHolder licenseHolder = null;
+        if(applcntId==null){
+            return null;
+        }
+
+        AgentInfo agentInfo = agentInfoDAO.findByApplicant_applcntIdAndAgentType(applcntId, AgentType.FIRST);
+        if(agentInfo!=null)
+            licenseHolder = agentInfo.getLicenseHolder();
+
+        return licenseHolder;
     }
 }
