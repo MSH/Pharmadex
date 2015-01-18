@@ -21,27 +21,8 @@ public class PIPOrder extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 255, nullable = false)
-    private String productNo;
-
-    @Column(length = 255, nullable = false)
-    private String productName;
-
-    @Column(length = 255, nullable = true)
-    private String productDesc;
-
-
-    @Column(length = 255, nullable = false)
-    private String unit;
-
-    @Column(length = 255, nullable = false)
-    private String quantity;
-
-    @Column(length = 255, nullable = false)
-    private String unitPrice;
-
-    @Column(length = 255)
-    private String totalPrice;
+    @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PIPProd> pipProds;
 
     @Column(length = 255)
     private String shippingInstruction;
@@ -83,52 +64,12 @@ public class PIPOrder extends CreationDetail implements Serializable {
         this.id = id;
     }
 
-    public String getProductName() {
-        return productName;
+    public List<PIPProd> getPipProds() {
+        return pipProds;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getProductDesc() {
-        return productDesc;
-    }
-
-    public void setProductDesc(String productDesc) {
-        this.productDesc = productDesc;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public String getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(String unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public String getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(String totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setPipProds(List<PIPProd> pipProds) {
+        this.pipProds = pipProds;
     }
 
     public String getShippingInstruction() {
@@ -217,13 +158,5 @@ public class PIPOrder extends CreationDetail implements Serializable {
 
     public void setState(AmdmtState state) {
         this.state = state;
-    }
-
-    public String getProductNo() {
-        return productNo;
-    }
-
-    public void setProductNo(String productNo) {
-        this.productNo = productNo;
     }
 }

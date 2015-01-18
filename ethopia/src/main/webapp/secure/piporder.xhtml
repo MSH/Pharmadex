@@ -31,7 +31,7 @@
                             <p:commandLink value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
                                            immediate="true" style="font-weight: bolder; font-size: larger"/>
 
-                        <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipOrders}" style="width:100%;">
+                        <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;">
                             <p:column headerText="#{msgs.prod_number}">
                                 <h:outputText value="#{order.productNo}"/>
                             </p:column>
@@ -98,41 +98,37 @@
 
                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
                     <p:outputLabel value="#{msgs.prod_number}" for="prodnum"/>
-                    <p:inputText id="prodnum" required="true" value="#{pIPOrderBn.pipOrder.productNo}" />
+                    <p:inputText id="prodnum" required="true" value="#{pIPOrderBn.pipProd.productNo}" />
 
                     <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
-                    <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipOrder.productName}" />
+                    <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipProd.productName}" />
 
                     <p:outputLabel value="#{msgs.prod_desc}" for="proddesc"/>
-                    <p:inputText id="proddesc" required="true" value="#{pIPOrderBn.pipOrder.productDesc}" />
+                    <p:inputText id="proddesc" required="true" value="#{pIPOrderBn.pipProd.productDesc}" />
 
                     <p:outputLabel value="#{msgs.inn_unit}" for="unit"/>
-                    <p:inputText id="unit" required="true" value="#{pIPOrderBn.pipOrder.unit}" />
+                    <p:inputText id="unit" required="true" value="#{pIPOrderBn.pipProd.unit}" />
 
                     <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
-                    <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipOrder.quantity}" />
+                    <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipProd.quantity}" />
 
                     <p:outputLabel value="#{msgs.product_pricing}" for="price"/>
-                    <p:inputText id="price" required="true" value="#{pIPOrderBn.pipOrder.unitPrice}" />
+                    <p:inputText id="price" required="true" value="#{pIPOrderBn.pipProd.unitPrice}" />
 
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
-                    <p:inputText id="total" required="true" value="#{pIPOrderBn.pipOrder.totalPrice}" />
+                    <p:inputText id="total" required="true" value="#{pIPOrderBn.pipProd.totalPrice}" />
 
                     <h:panelGroup>
-                        <p:commandButton action="#{applicantMBean.newUser}"
+                        <p:commandButton action="#{pIPOrderBn.addProd}"
                                          value="#{msgs.global_add}"
-                                         oncomplete="if (!args.validationFailed) newUserDlg.hide()"
-                                         update=":appreg:usertable :newuser"/>
-                        <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
-                                         value="#{msgs.global_cancel}" oncomplete="newUserDlg.hide()"/>
+                                         oncomplete="if (!args.validationFailed) orderdetailDlg.hide()"
+                                         update=":orderdetail :piporderform:ordertable"/>
+                        <p:commandButton action="#{pIPOrderBn.cancelAddProd}" immediate="true" ajax="true"
+                                         value="#{msgs.global_cancel}" oncomplete="orderdetailDlg.hide()"/>
                     </h:panelGroup>
 
 
                 </h:panelGrid>
-
-
-
-
         </h:form>
         </p:dialog>
 

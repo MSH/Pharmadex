@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,13 +29,12 @@ public class PIPOrderBn implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
-    private List<PIPOrder> pipOrders;
-
     private PIPOrder pipOrder;
-
+    private PIPProd pipProd;
+    private List<PIPProd> pipProds;
+    private List<PIPOrderChecklist> pipOrderChecklists;
     private User user;
 
-    private List<PIPOrderChecklist> pipOrderChecklists;
 
     @PostConstruct
     private void init() {
@@ -45,6 +45,18 @@ public class PIPOrderBn implements Serializable {
         }
     }
 
+    public void addProd(){
+        pipProds = pipOrder.getPipProds();
+        if(pipProds==null)
+            pipProds = new ArrayList<PIPProd>();
+
+        pipProds.add(pipProd);
+    }
+
+    public void cancelAddProd(){
+        pipProd = new PIPProd();
+    }
+
     public String saveOrder(){
         return "";
     }
@@ -53,6 +65,8 @@ public class PIPOrderBn implements Serializable {
         pipOrder = new PIPOrder();
         return "/secure/piporderlist";
     }
+
+
 
     public PIPOrderService getPiporderService() {
         return piporderService;
@@ -68,14 +82,6 @@ public class PIPOrderBn implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
-    }
-
-    public List<PIPOrder> getPipOrders() {
-        return pipOrders;
-    }
-
-    public void setPipOrders(List<PIPOrder> pipOrders) {
-        this.pipOrders = pipOrders;
     }
 
     public PIPOrder getPipOrder() {
@@ -94,11 +100,29 @@ public class PIPOrderBn implements Serializable {
         this.pipOrderChecklists = pipOrderChecklists;
     }
 
+    public List<PIPProd> getPipProds() {
+        if(pipProds==null)
+            pipProds = pipOrder.getPipProds();
+        return pipProds;
+    }
+
+    public void setPipProds(List<PIPProd> pipProds) {
+        this.pipProds = pipProds;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public PIPProd getPipProd() {
+        return pipProd;
+    }
+
+    public void setPipProd(PIPProd pipProd) {
+        this.pipProd = pipProd;
     }
 }
