@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post" style="width: 1024px">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.piporder}</h1>
+        </div>
+
+        <h:form id="piporderform">
+            <p:messages/>
+            <p:panel header="#{msgs.person_responsible}">
+                <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                    <ui:param name="userdata" value="#{pIPOrderBn.user}"/>
+                    <ui:param name="input" value="#{false}"/>
+                </ui:decorate>
+
+            </p:panel>
+
+            <div style="height:10px"/>
+
+
+            <p:panel header="#{msgs.general_info}">
+                <h:panelGrid columns="1" cellspacing="10px">
+                    <p:outputLabel
+                            value="Please specify all the products that will imported as part of this order by clicking the add button"
+                            styleClass="hint"/>
+
+                    <p:outputLabel value="Product List" styleClass="label"/>
+                            <p:commandLink value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
+                                           immediate="true" style="font-weight: bolder; font-size: larger"/>
+
+                        <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipOrders}" style="width:100%;">
+                            <p:column headerText="#{msgs.prod_number}">
+                                <h:outputText value="#{order.productNo}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.prod_name}">
+                                <h:outputText value="#{order.productName}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.prod_desc}">
+                                <h:outputText value="#{order.productDesc}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.inn_unit}">
+                                <h:outputText value="#{order.unit}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.global_quantity}">
+                                <h:outputText value="#{order.quantity}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.product_pricing}">
+                                <h:outputText value="#{order.unitPrice}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.total_price}">
+                                <h:outputText value="#{order.totalPrice}"/>
+                            </p:column>
+                        </p:dataTable>
+                </h:panelGrid>
+
+
+
+            </p:panel>
+
+            <div style="height:10px"/>
+
+            <p:panel header="#{msgs.premises_attrib}">
+                <p:dataTable var="checkList" value="#{pIPOrderBn.pipOrderChecklists}" style="width:100%;">
+                    <p:column headerText="">
+                        <h:outputLabel value="#{checkList.pipOrderLookUp.id}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
+                    </p:column>
+                    <p:column>
+                        <p:selectBooleanCheckbox value="#{checkList.value}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+
+            <div align="center" style="height: 60px">
+                <p:commandButton action="#{pIPOrderBn.saveOrder}" value="#{msgs.global_submit}" ajax="false"/>
+                <p:commandButton action="#{pIPOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
+                                 immediate="true"/>
+            </div>
+
+        </h:form>
+
+        <p:dialog header="#{msgs.order_detail}" widgetVar="orderdetailDlg" id="orderdetaildlg" resizable="true" modal="true">
+            <h:form id="orderdetail">
+                <p:growl showSummary="true"/>
+                <p:messages/>
+
+                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                    <p:outputLabel value="#{msgs.prod_number}" for="prodnum"/>
+                    <p:inputText id="prodnum" required="true" value="#{pIPOrderBn.pipOrder.productNo}" />
+
+                    <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
+                    <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipOrder.productName}" />
+
+                    <p:outputLabel value="#{msgs.prod_desc}" for="proddesc"/>
+                    <p:inputText id="proddesc" required="true" value="#{pIPOrderBn.pipOrder.productDesc}" />
+
+                    <p:outputLabel value="#{msgs.inn_unit}" for="unit"/>
+                    <p:inputText id="unit" required="true" value="#{pIPOrderBn.pipOrder.unit}" />
+
+                    <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
+                    <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipOrder.quantity}" />
+
+                    <p:outputLabel value="#{msgs.product_pricing}" for="price"/>
+                    <p:inputText id="price" required="true" value="#{pIPOrderBn.pipOrder.unitPrice}" />
+
+                    <p:outputLabel value="#{msgs.total_price}" for="total"/>
+                    <p:inputText id="total" required="true" value="#{pIPOrderBn.pipOrder.totalPrice}" />
+
+                    <h:panelGroup>
+                        <p:commandButton action="#{applicantMBean.newUser}"
+                                         value="#{msgs.global_add}"
+                                         oncomplete="if (!args.validationFailed) newUserDlg.hide()"
+                                         update=":appreg:usertable :newuser"/>
+                        <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
+                                         value="#{msgs.global_cancel}" oncomplete="newUserDlg.hide()"/>
+                    </h:panelGroup>
+
+
+                </h:panelGrid>
+
+
+
+
+        </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>
