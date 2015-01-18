@@ -158,7 +158,7 @@
 
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.licensing}">
-                        <p:menuitem value="#{msgs.pip}" url="/public/piporder.faces"
+                        <p:menuitem value="#{msgs.pip}" url="/secure/piporder.faces"
                                     icon="ui-icon-folder-collapsed"
                                     rendered="#{userSession.admin||userSession.company||userSession.staff}"/>
                     </p:submenu>
