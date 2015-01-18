@@ -20,8 +20,30 @@
 
             <div style="height:10px"/>
 
-
             <p:panel header="#{msgs.general_info}">
+                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                    <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
+                    <p:inputText id="shipinst" value="#{pIPOrderBn.pipOrder.shippingInstruction}" />
+
+                    <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
+                    <p:inputText id="delivery" required="true" value="#{pIPOrderBn.pipOrder.delivery}" />
+
+                    <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
+                    <p:inputText id="payinfo" required="true" value="#{pIPOrderBn.pipOrder.paymentMethod}" />
+
+                    <p:outputLabel value="#{msgs.file_number}" for="filno"/>
+                    <p:inputText id="filno" value="#{pIPOrderBn.pipOrder.fileNumber}" />
+
+                    <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
+                    <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}" />
+
+                </h:panelGrid>
+
+            </p:panel>
+
+            <div style="height:10px"/>
+
+            <p:panel header="#{msgs.product_details}">
                 <h:panelGrid columns="1" cellspacing="10px">
                     <p:outputLabel
                             value="Please specify all the products that will imported as part of this order by clicking the add button"
@@ -29,7 +51,7 @@
 
                     <p:outputLabel value="Product List" styleClass="label"/>
                             <p:commandLink value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
-                                           immediate="true" style="font-weight: bolder; font-size: larger"/>
+                                           immediate="true" style="font-weight: bolder; font-size: larger" actionListener="#{pIPOrderBn.initAddProd}"/>
 
                         <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;">
                             <p:column headerText="#{msgs.prod_number}">
@@ -59,6 +81,13 @@
                             <p:column headerText="#{msgs.total_price}">
                                 <h:outputText value="#{order.totalPrice}"/>
                             </p:column>
+
+                            <p:column>
+                                <p:commandButton action="#{pIPOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
+                                                 update=":piporderform:ordertable :reghome:growl" immediate="true">
+                                </p:commandButton>
+                            </p:column>
+
                         </p:dataTable>
                 </h:panelGrid>
 
@@ -118,18 +147,18 @@
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
                     <p:inputText id="total" required="true" value="#{pIPOrderBn.pipProd.totalPrice}" />
 
-                    <h:panelGroup>
-                        <p:commandButton action="#{pIPOrderBn.addProd}"
-                                         value="#{msgs.global_add}"
-                                         oncomplete="if (!args.validationFailed) orderdetailDlg.hide()"
-                                         update=":orderdetail :piporderform:ordertable"/>
-                        <p:commandButton action="#{pIPOrderBn.cancelAddProd}" immediate="true" ajax="true"
-                                         value="#{msgs.global_cancel}" oncomplete="orderdetailDlg.hide()"/>
-                    </h:panelGroup>
-
-
                 </h:panelGrid>
-        </h:form>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{pIPOrderBn.addProd}" ajax="true"
+                                     value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('orderdetailDlg').hide()"
+                                     update=":orderdetail :piporderform:ordertable"/>
+                    <p:commandButton action="#{pIPOrderBn.cancelAddProd}" immediate="true" ajax="true"
+                                     value="#{msgs.global_cancel}" oncomplete="PF('orderdetailDlg').hide()"/>
+                </h:panelGroup>
+
+            </h:form>
         </p:dialog>
 
     </ui:define>

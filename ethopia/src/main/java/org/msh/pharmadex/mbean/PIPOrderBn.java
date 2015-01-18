@@ -5,12 +5,13 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.PIPOrderService;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,8 +24,8 @@ import java.util.List;
 @ViewScoped
 public class PIPOrderBn implements Serializable {
 
-    @ManagedProperty(value = "#{pIPOrderService}")
-    private PIPOrderService piporderService;
+    @ManagedProperty(value = "#{pipOrderService}")
+    private PIPOrderService pipOrderService;
 
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
@@ -35,6 +36,9 @@ public class PIPOrderBn implements Serializable {
     private List<PIPOrderChecklist> pipOrderChecklists;
     private User user;
 
+    FacesContext context = FacesContext.getCurrentInstance();
+    java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+
 
     @PostConstruct
     private void init() {
@@ -43,15 +47,41 @@ public class PIPOrderBn implements Serializable {
             user = userSession.getLoggedInUserObj();
             pipOrder.setCreatedBy(user);
         }
+
+        pipOrderChecklists = new ArrayList<PIPOrderChecklist>();
+        List<PIPOrderLookUp> allChecklist = pipOrderService.findAllCheckList();
+        PIPOrderChecklist eachCheckList;
+        for (int i = 0; allChecklist.size() > i; i++) {
+            eachCheckList = new PIPOrderChecklist();
+            eachCheckList.setPipOrderLookUp(allChecklist.get(i));
+            eachCheckList.setPipOrder(pipOrder);
+            pipOrderChecklists.add(eachCheckList);
+        }
+    }
+
+    public void initAddProd(){
+        pipProd = new PIPProd();
     }
 
     public void addProd(){
-        pipProds = pipOrder.getPipProds();
-        if(pipProds==null)
-            pipProds = new ArrayList<PIPProd>();
+        if(pipProds==null) {
+            pipProds = pipOrder.getPipProds();
+            if(pipProds==null)
+                pipProds = new ArrayList<PIPProd>();
+        }
 
         pipProds.add(pipProd);
+
+        pipProd = new PIPProd();
     }
+
+    public String removeProd(PIPProd pipProd) {
+        context = FacesContext.getCurrentInstance();
+        pipProds.remove(pipProd);
+        context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
+        return null;
+    }
+
 
     public void cancelAddProd(){
         pipProd = new PIPProd();
@@ -67,13 +97,12 @@ public class PIPOrderBn implements Serializable {
     }
 
 
-
-    public PIPOrderService getPiporderService() {
-        return piporderService;
+    public PIPOrderService getPipOrderService() {
+        return pipOrderService;
     }
 
-    public void setPiporderService(PIPOrderService piporderService) {
-        this.piporderService = piporderService;
+    public void setPipOrderService(PIPOrderService pipOrderService) {
+        this.pipOrderService = pipOrderService;
     }
 
     public UserSession getUserSession() {
@@ -93,6 +122,9 @@ public class PIPOrderBn implements Serializable {
     }
 
     public List<PIPOrderChecklist> getPipOrderChecklists() {
+        if(pipOrderChecklists==null){
+            pipOrderChecklists = pipOrder.getPipOrderChecklists();
+        }
         return pipOrderChecklists;
     }
 
