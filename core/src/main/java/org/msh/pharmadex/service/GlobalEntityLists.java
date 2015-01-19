@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Author: usrivastava
@@ -113,6 +112,11 @@ public class GlobalEntityLists implements Serializable {
             countries = countryService.getCountries();
         return countries;
     }
+
+    public List<Country> completeCountryList(String query) {
+        return JsfUtils.completeSuggestions(query, getCountries());
+    }
+
 
     public List<DosUom> getDosUoms() {
         if (dosUoms == null)

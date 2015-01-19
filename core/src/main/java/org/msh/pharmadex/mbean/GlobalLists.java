@@ -34,6 +34,10 @@ public class GlobalLists {
         return prodCategories;
     }
 
+    public List<AmdmtState> getAmdmtState() {
+        return Arrays.asList(AmdmtState.values());
+    }
+
     public List<ProdAppType> getProdAppType() {
         return Arrays.asList(ProdAppType.values());
     }

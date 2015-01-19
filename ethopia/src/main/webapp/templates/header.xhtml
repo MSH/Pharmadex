@@ -157,10 +157,18 @@
 
 
                 <sec:isAuthenticated>
-                    <p:submenu label="#{msgs.licensing}">
+                    <p:submenu label="#{msgs.licensing}"
+                               rendered="#{userSession.admin||userSession.company||userSession.staff}">
                         <p:menuitem value="#{msgs.pip}" url="/secure/piporder.faces"
+                                    icon="ui-icon-document"
+                                    rendered="#{userSession.admin||userSession.company||userSession.staff}"/>
+                        <p:menuitem value="#{msgs.submitted_pip}" url="/secure/piporderlist.faces"
                                     icon="ui-icon-folder-collapsed"
                                     rendered="#{userSession.admin||userSession.company||userSession.staff}"/>
+                        <p:separator rendered="#{userSession.admin||userSession.staff}"/>
+                        <p:menuitem value="#{msgs.process_piporder}" url="/internal/processpiporderlist.faces"
+                                    icon="ui-icon-gear"
+                                    rendered="#{userSession.admin||userSession.staff}"/>
                     </p:submenu>
                 </sec:isAuthenticated>
 
