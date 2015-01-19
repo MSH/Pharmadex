@@ -66,6 +66,7 @@
                     <p:message for="email"/>
 
 
+
                     <!--
                                         <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
                                         <p:inputText value="#{registerUserMbean.user.comments}" id="comment"/>
@@ -74,15 +75,18 @@
 
                 </h:panelGrid>
 
-                <p:commandButton id="saveBtn" value="#{msgs.global_submit}" icon="ui-icon-check" action="#{registerUserMbean.save}" update=":regUsrForm:growl :regUsrForm:pnl"
-                                 ajax="true"/>
+                <h:panelGroup>
+                    <p:commandButton id="saveBtn" value="#{msgs.global_submit}" icon="ui-icon-check"
+                                     action="#{registerUserMbean.save}" update=":regUsrForm:growl :regUsrForm:pnl"
+                                     ajax="true"/>
+                    <p:commandButton value="#{msgs.global_cancel}" action="#{registerUserMbean.cancel}" ajax="false"
+                                     immediate="true"/>
+                </h:panelGroup>
 
-                <p:blockUI block="pnl" trigger="saveBtn" >
-                        <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+                <p:blockUI block="pnl" trigger="saveBtn">
+                    <p:graphicImage value="/resources/images/ajax-loader.gif"/>
                 </p:blockUI>
 
-                <p:commandButton value="#{msgs.global_cancel}" actionListener="#{registerUserMbean.cancel}"
-                                 immediate="true"/>
             </p:panel>
 
         </h:form>

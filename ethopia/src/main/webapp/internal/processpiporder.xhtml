@@ -1,0 +1,173 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reghome">
+
+            <h:panelGrid columns="2" columnClasses="menu,content" cellpadding="10px">
+                <p:menu style="width:198px">
+                    <p:submenu label="#{msgs.Registration}">
+                        <p:menuitem value="#{msgs.global_save}" icon="ui-icon-gear"
+                                    action="#{processPIPOrderBn.saveApp}" ajax="false"
+                                    rendered="#{!userSession.company}"/>
+                        <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
+                                    action="#{processPIPOrderBn.approveOrder}" ajax="false"
+                                    rendered="#{!userSession.company}"/>
+                        <p:menuitem value="#{msgs.global_cancel}" immediate="true"
+                                    icon="ui-icon ui-icon-circle-triangle-w"
+                                    action="#{processPIPOrderBn.cancel}" ajax="false"/>
+                    </p:submenu>
+                </p:menu>
+
+
+                <h:panelGroup styleClass="ui-widget">
+                    <h1 class="title ui-widget-header ui-corner-all">
+                        <table class="banner">
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{processPIPOrderBn.pipOrder.applicant.appName}"
+                                                   styleClass="title"
+                                                   style="font-weight: bold; font-size: 1.5em"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.application_status}: "
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{processPIPOrderBn.pipOrder.state}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
+                                    <h:outputFormat value="#{processPIPOrderBn.pipOrder.id}" styleClass="title"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
+                                    <h:outputFormat value="#{processPIPOrderBn.pipOrder.submitDate}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </h1>
+                    <p:messages id="messages" showDetail="true" showSummary="true"/>
+
+                    <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+                    <p:panel header="#{msgs.product_details}">
+                        <h:panelGrid columns="1" cellspacing="10px">
+                            <p:dataTable id="ordertable" var="order" value="#{processPIPOrderBn.pipOrder.pipProds}"
+                                         style="width:100%;">
+                                <f:facet name="header"> #{msgs.product_list}</f:facet>
+
+                                <p:column headerText="#{msgs.prod_number}">
+                                    <h:outputText value="#{order.productNo}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.prod_name}">
+                                    <h:outputText value="#{order.productName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.prod_desc}">
+                                    <h:outputText value="#{order.productDesc}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.inn_unit}">
+                                    <h:outputText value="#{order.unit}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.global_quantity}">
+                                    <h:outputText value="#{order.quantity}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.product_pricing}">
+                                    <h:outputText value="#{order.unitPrice}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.total_price}">
+                                    <h:outputText value="#{order.totalPrice}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+
+
+                    </p:panel>
+
+                    <div style="height:10px"/>
+
+                    <p:panel header="#{msgs.general_info}">
+                        <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                            <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
+                            <p:outputLabel id="shipinst" required="true"
+                                           value="#{processPIPOrderBn.pipOrder.shippingInstruction}"/>
+
+                            <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
+                            <p:outputLabel id="delivery" required="true"
+                                           value="#{processPIPOrderBn.pipOrder.delivery}"/>
+
+                            <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
+                            <p:outputLabel id="payinfo" required="true"
+                                           value="#{processPIPOrderBn.pipOrder.paymentMethod}"/>
+
+                            <p:outputLabel value="#{msgs.file_number}" for="filno"/>
+                            <p:outputLabel id="filno" value="#{processPIPOrderBn.pipOrder.fileNumber}"/>
+
+                            <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
+                            <p:outputLabel id="comment" value="#{processPIPOrderBn.pipOrder.comment}"/>
+
+                        </h:panelGrid>
+
+                    </p:panel>
+
+                    <div style="height:10px"/>
+
+
+                    <p:panel header="#{msgs.checklist}">
+                        <p:dataTable var="checkList" value="#{processPIPOrderBn.pipOrder.pipOrderChecklists}"
+                                     style="width:100%;">
+                            <p:column headerText="">
+                                <h:outputLabel value="#{checkList.pipOrderLookUp.id}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
+                            </p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox value="#{checkList.value}"/>
+                            </p:column>
+                            <p:column>
+                                <p:selectBooleanCheckbox value="#{checkList.staffValue}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                    <div style="height:10px"/>
+
+                    <p:panel header="#{msgs.applicant_detail}">
+                        <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                            <ui:param name="applicantdata" value="#{processPIPOrderBn.pipOrder.applicant}"/>
+                            <ui:param name="input" value="#{false}"/>
+                        </ui:decorate>
+
+                    </p:panel>
+
+                    <div style="height:10px"/>
+
+                    <p:panel header="#{msgs.person_responsible}">
+                        <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                            <ui:param name="userdata" value="#{processPIPOrderBn.pipOrder.createdBy}"/>
+                            <ui:param name="input" value="#{false}"/>
+                        </ui:decorate>
+
+                    </p:panel>
+
+                    <div style="height:10px"/>
+
+
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

@@ -56,6 +56,7 @@ public class UserSession implements Serializable {
     @ManagedProperty(value = "#{onlineUserBean}")
     private OnlineUserBean onlineUserBean;
     private String licHolderID;
+    private String pipOrderID;
 
 
     public void login() {
@@ -152,12 +153,14 @@ public class UserSession implements Serializable {
                     else
                         displayAppReg = true;
                 }
-                if (role.getRolename().equalsIgnoreCase("ROLE_PUBLIC"))
+                if (role.getRolename().equalsIgnoreCase("ROLE_EXT")) {
                     setGeneral(true);
+                    setDisplayAppReg(true);
+                }
                 if (role.getRolename().equalsIgnoreCase("ROLE_MODERATOR")) {
                     setModerator(true);
 //                    setStaff(true);
-                    setDisplayAppReg(true);
+//                    setDisplayAppReg(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_REVIEWER")) {
                     setReviewer(true);
@@ -452,5 +455,13 @@ public class UserSession implements Serializable {
 
     public String getLicHolderID() {
         return licHolderID;
+    }
+
+    public String getPipOrderID() {
+        return pipOrderID;
+    }
+
+    public void setPipOrderID(String pipOrderID) {
+        this.pipOrderID = pipOrderID;
     }
 }

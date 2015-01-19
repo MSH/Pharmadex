@@ -8,21 +8,19 @@ import org.msh.pharmadex.domain.Letter;
 import org.msh.pharmadex.domain.Mail;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -63,15 +61,13 @@ public class RegisterUserMbean implements Serializable {
     }
 
     public String cancel() {
-        facesContext = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "registerUserMbean", null);
-        return "/public/registrationhome.faces";
+        user = new User();
+        return "/home.faces";
     }
 
     public void save() {
         facesContext = FacesContext.getCurrentInstance();
-        user.setType(org.msh.pharmadex.domain.enums.UserType.COMPANY);
+        user.setType(UserType.EXTERNAL);
         String password = PassPhrase.getNext();
         logger.info("======================================== ");
         logger.info("\"password ============== \"+password");

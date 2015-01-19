@@ -49,11 +49,15 @@ public class PIPOrder extends CreationDetail implements Serializable {
     private List<PIPOrderChecklist> pipOrderChecklists;
 
     @OneToOne
+    private Applicant applicant;
+
+    @OneToOne
     private User createdBy;
 
     @OneToOne
     private User updatedBy;
 
+    @Enumerated(EnumType.STRING)
     private AmdmtState state;
 
     public Long getId() {
@@ -158,5 +162,13 @@ public class PIPOrder extends CreationDetail implements Serializable {
 
     public void setState(AmdmtState state) {
         this.state = state;
+    }
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
     }
 }

@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post" style="width: 1024px">
@@ -9,7 +9,8 @@
         </div>
 
         <h:form id="piporderform">
-            <p:messages/>
+            <p:growl id="growl"/>
+            <p:messages id="messages" showDetail="true"/>
             <p:panel header="#{msgs.person_responsible}">
                 <ui:decorate template="/templates/userdetailtmpl.xhtml">
                     <ui:param name="userdata" value="#{pIPOrderBn.user}"/>
@@ -23,7 +24,7 @@
             <p:panel header="#{msgs.general_info}">
                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
-                    <p:inputText id="shipinst" value="#{pIPOrderBn.pipOrder.shippingInstruction}" />
+                    <p:inputText id="shipinst" required="true" value="#{pIPOrderBn.pipOrder.shippingInstruction}"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
                     <p:inputText id="delivery" required="true" value="#{pIPOrderBn.pipOrder.delivery}" />
@@ -49,11 +50,12 @@
                             value="Please specify all the products that will imported as part of this order by clicking the add button"
                             styleClass="hint"/>
 
-                    <p:outputLabel value="Product List" styleClass="label"/>
                             <p:commandLink value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
                                            immediate="true" style="font-weight: bolder; font-size: larger" actionListener="#{pIPOrderBn.initAddProd}"/>
 
                         <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;">
+                            <f:facet name="header"> #{msgs.product_list}</f:facet>
+
                             <p:column headerText="#{msgs.prod_number}">
                                 <h:outputText value="#{order.productNo}"/>
                             </p:column>
@@ -84,7 +86,7 @@
 
                             <p:column>
                                 <p:commandButton action="#{pIPOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
-                                                 update=":piporderform:ordertable :reghome:growl" immediate="true">
+                                                 update=":piporderform:ordertable :piporderform:growl" immediate="true">
                                 </p:commandButton>
                             </p:column>
 
@@ -97,7 +99,7 @@
 
             <div style="height:10px"/>
 
-            <p:panel header="#{msgs.premises_attrib}">
+            <p:panel header="#{msgs.checklist}">
                 <p:dataTable var="checkList" value="#{pIPOrderBn.pipOrderChecklists}" style="width:100%;">
                     <p:column headerText="">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.id}"/>
@@ -113,12 +115,58 @@
 
 
             <div align="center" style="height: 60px">
-                <p:commandButton action="#{pIPOrderBn.saveOrder}" value="#{msgs.global_submit}" ajax="false"/>
+                <p:commandButton value="#{msgs.global_submit}"
+                                 oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
+                                 update=":piporderform:messages :piporderform:growl"/>
                 <p:commandButton action="#{pIPOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
                                  immediate="true"/>
             </div>
 
         </h:form>
+
+        <p:dialog header="#{msgs.global_agreement}" widgetVar="confirmDlg" id="confirmdlg" resizable="true"
+                  modal="true">
+            <h:form>
+                <div>
+                    <p>
+                        <ol>
+                            <li>Products should have minimum 75% of its shelf life on arrival at Addis Ababa/port of entry.</li>
+                            <li>Language used for writing label, leaflet and other documents shall be in English</li>
+                            <li>All packing should be suitable for road, air and sea transport under tropical conditions</li>
+                            <li>
+                                The label of immediate container:-
+                                <ul>
+                                    <li>The name of the product, brand and generic/INN</li>
+                                    <li>Pharmaceutical dosage form and route of administration</li>
+                                    <li>Qualitative and quantitative composition of active ingredient(s)</li>
+                                    <li>Quantity in container, technical directions for use</li>
+                                    <li>Handling and storage requirements</li>
+                                    <li>Batch number, manufacturing and expiry date</li>
+                                    <li>Name and address of the company</li>
+                                </ul>
+                            </li>
+                            <li>Accompanying invoices should be as per the purchase order including Batch number, manufacturing and expiry date of each item</li>
+                            <li>Every product should be accompanied by a leaflet in its immediate container. A leaflet must bear adequate information for use and it should at least include:
+                                <ul>
+                                    <li>The name of the product: brand and generic/INN</li>
+                                    <li>Description appearance, pharmaceutical dosage form and route of administration</li>
+                                    <li>Qualitative and quantitative composition of active ingredients</li>
+                                    <li>Clinical pharmacology, indication(s), warning, precautions, contraindications, adverse reactions/side effects</li>
+                                    <li>Dosage and administration (direction for use)</li>
+                                    <li>Over dosage, storage instruction, package quantity, name and address of manufacturer.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </p>
+                </div>
+                <p:commandButton value="#{msgs.global_yes}" styleClass="ui-confirmdialog-yes"
+                                 icon="ui-icon-check"
+                                 action="#{pIPOrderBn.saveOrder}" ajax="false" oncomplete="PF('confirmDlg').hide()"/>
+                <p:commandButton value="#{msgs.global_no}" styleClass="ui-confirmdialog-no"
+                                 action="#{pIPOrderBn.cancelOrder}"
+                                 icon="ui-icon-close" immediate="true" oncomplete="PF('confirmDlg').hide()"/>
+            </h:form>
+        </p:dialog>
 
         <p:dialog header="#{msgs.order_detail}" widgetVar="orderdetailDlg" id="orderdetaildlg" resizable="true" modal="true">
             <h:form id="orderdetail">

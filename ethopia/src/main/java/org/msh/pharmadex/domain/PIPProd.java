@@ -1,11 +1,7 @@
 package org.msh.pharmadex.domain;
 
-import org.msh.pharmadex.domain.enums.AmdmtState;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +11,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "pip_order")
+@Table(name = "pip_prod")
 public class PIPProd extends CreationDetail implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

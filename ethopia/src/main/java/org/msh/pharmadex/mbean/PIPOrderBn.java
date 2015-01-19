@@ -2,7 +2,9 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.service.PIPOrderService;
+import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -11,7 +13,9 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,7 +28,7 @@ import java.util.*;
 @ViewScoped
 public class PIPOrderBn implements Serializable {
 
-    @ManagedProperty(value = "#{pipOrderService}")
+    @ManagedProperty(value = "#{PIPOrderService}")
     private PIPOrderService pipOrderService;
 
     @ManagedProperty(value = "#{userSession}")
@@ -70,6 +74,8 @@ public class PIPOrderBn implements Serializable {
                 pipProds = new ArrayList<PIPProd>();
         }
 
+        pipProd.setPipOrder(pipOrder);
+        pipProd.setCreatedDate(new Date());
         pipProds.add(pipProd);
 
         pipProd = new PIPProd();
@@ -88,12 +94,32 @@ public class PIPOrderBn implements Serializable {
     }
 
     public String saveOrder(){
-        return "";
+        System.out.println("Inside saveorder");
+
+        context = FacesContext.getCurrentInstance();
+        pipOrder.setSubmitDate(new Date());
+        pipOrder.setCreatedBy(userSession.getLoggedInUserObj());
+        pipOrder.setState(AmdmtState.NEW_APPLICATION);
+        pipOrder.setPipOrderChecklists(pipOrderChecklists);
+        pipOrder.setPipProds(pipProds);
+
+        if (userSession.isCompany())
+            pipOrder.setApplicant(userSession.getApplicant());
+
+        RetObject retValue = pipOrderService.saveOrder(pipOrder);
+        if (retValue.getMsg().equals("persist")) {
+            pipOrder = (PIPOrder) retValue.getObj();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+            return "piporderlist";
+        } else {
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+            return "";
+        }
     }
 
     public String cancelOrder(){
         pipOrder = new PIPOrder();
-        return "/secure/piporderlist";
+        return "/home.faces";
     }
 
 

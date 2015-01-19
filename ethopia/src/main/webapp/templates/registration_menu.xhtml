@@ -21,9 +21,10 @@
                 <p:submenu label="#{msgs.registration_form}"
                            rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
-                                action="#{navigationBeanET.regProductAction}" ajax="false"/>
+                                action="#{navigationBean.regProductAction}" ajax="false"
+                                rendered="#{userSession.company||userSession.admin||userSession.staff}"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
-                                action="#{navigationBeanET.regApplicantAction}"
+                                action="#{navigationBean.regApplicantAction}"
                                 ajax="false" rendered="#{userSession.displayAppReg}"/>
                     <!--
                                         <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"

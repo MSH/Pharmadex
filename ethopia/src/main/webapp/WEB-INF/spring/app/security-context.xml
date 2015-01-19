@@ -8,7 +8,7 @@
         <intercept-url pattern="/index.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <!--<intercept-url access="IS_AUTHENTICATED_REMEMBERED" pattern="/*"/>-->
         <intercept-url pattern="/secure/**"
-                       access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD"/>
+                       access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD, ROLE_EXT"/>
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
         <intercept-url pattern="/internal/**"
                        access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD, ROLE_COMPANY"/>
