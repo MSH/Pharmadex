@@ -3,7 +3,6 @@ package org.msh.pharmadex.mbean.applicant;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ApplicantType;
-import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.service.ApplicantService;
@@ -17,7 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -34,7 +33,7 @@ import java.util.ResourceBundle;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class ApplicantMBean implements Serializable {
     @ManagedProperty(value = "#{applicantService}")
     ApplicantService applicantService;
@@ -56,7 +55,7 @@ public class ApplicantMBean implements Serializable {
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
-        if (userSession.isCompany()) {
+        if (userSession.isGeneral()) {
             user = userSession.getLoggedInUserObj();
             selectedApplicant.getAddress().setCountry(user.getAddress().getCountry());
             selectedApplicant.setContactName(user != null ? user.getName() : null);
@@ -113,11 +112,6 @@ public class ApplicantMBean implements Serializable {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getApplicantTypes());
     }
 
-    public List<Country> completeCountryList(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getCountries());
-    }
-
-
 //    @PostConstruct
 //    private void init(){
 //        if(userSession!=null&&userSession.getLoggedInUserObj()!=null&&selectedApplicant==null){
@@ -143,7 +137,7 @@ public class ApplicantMBean implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "applicantMBean", null);
-        return "/public/registrationhome.faces";
+        return "/home.faces";
     }
 
     @Transactional

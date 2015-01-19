@@ -76,6 +76,7 @@ public class ApplicantService implements Serializable {
     @Transactional
     public Applicant saveApp(Applicant applicant, User userParam) {
         applicant.setState(ApplicantState.NEW_APPLICATION);
+        userParam.setType(UserType.COMPANY);
         if (applicant.getUsers() == null) {
             applicant.setUsers(new ArrayList<User>());
             applicant.getUsers().add(userParam);
@@ -86,14 +87,16 @@ public class ApplicantService implements Serializable {
                 user.setApplicant(applicant);
                 applicant.setContactName(user.getName());
             }
-            if (user.getRoles() == null || user.getRoles().size() < 1) {
-                List<Role> rList = new ArrayList<Role>();
-                Role r = roleDAO.findOne(1);
+            List<Role> rList = user.getRoles();
+            Role r;
+            if (rList == null || user.getRoles().size() < 1) {
+                rList = new ArrayList<Role>();
+                r = roleDAO.findOne(1);
                 rList.add(r);
+            }
                 r = roleDAO.findOne(4);
                 rList.add(r);
                 user.setRoles(rList);
-            }
         }
         Applicant a = applicantDAO.updateApplicant(applicant);
         System.out.println("applicant id = " + applicant.getApplcntId());
