@@ -22,6 +22,9 @@ public class ProdInn extends CreationDetail implements Serializable {
     private DosUom dosUnit = new DosUom();
 
     @Column(length = 255, nullable = true)
+    private String function;
+
+    @Column(length = 255, nullable = true)
     private String RefStd;
 
     @OneToOne
@@ -78,5 +81,13 @@ public class ProdInn extends CreationDetail implements Serializable {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getFunction() {
+        return function;
+    }
+
+    public void setFunction(String function) {
+        this.function = function;
     }
 }

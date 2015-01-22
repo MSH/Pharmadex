@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
+        </div>
+
+        <h:form id="reghome">
+            <p:messages id="messages" showDetail="true"/>
+            <p:growl id="growl" showSummary="true"/>
+
+            <h:panelGrid columns="1" cellpadding="10" cellspacing="10">
+                <p:outputLabel styleClass="hint" value="Please select the option below to find the total fees required for your application.
+            If you have all the information about the product then you can click next to start the Product Registratrion Process"/>
+            </h:panelGrid>
+
+            <p:panel header="Application Detail">
+                <h:panelGrid id="feepanel" columns="3" columnClasses="label value" cellspacing="10" cellpadding="10">
+                    <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
+                    <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}" required="true"
+                                     requiredMessage="#{msgs.valid_prod_type}">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalLists.prodAppType}" var="prodcat"
+                                       itemLabel="#{msgs[prodcat.key]}"/>
+                        <p:ajax event="change" listener="#{prodRegInit.calculate}" update=":reghome:feepanel"/>
+                    </p:selectOneMenu>
+                    <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
+
+                    <p:outputLabel
+                            value="Is the product been registered in a String Regulatory authority mentioned below?"/>
+                    <h:panelGroup>
+                        <p:selectManyCheckbox id="regauth" value="#{prodRegInit.selSRA}" layout="grid" columns="3">
+                            <f:selectItems value="#{globalListsET.sras}" var="cntry" itemValue="#{cntry}"
+                                           itemLabel="#{cntry.country   }"/>
+                        </p:selectManyCheckbox>
+                    </h:panelGroup>
+                    <p:message for="regauth"/>
+
+                    <p:outputLabel value="(Only check the countries where the product is registered
+                    and the registration certificate will be included in the Application)"
+                                   styleClass="hint"/>
+                    <p:outputLabel/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="Is the product part of the essential drug list for Ethiopia?"/>
+                    <p:selectBooleanButton onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}" id="emlbb"
+                                           onIcon="ui-icon-check" offIcon="ui-icon-close" value="#{prodRegInit.eml}"/>
+                    <p:message for="emlbb"/>
+
+                    <p:outputLabel value="#{msgs.total_fee}" styleClass="label"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel value="#{prodRegInit.totalfee}" styleClass="label"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+
+
+                </h:panelGrid>
+
+                <div style="height:10px"/>
+
+                <p:commandButton action="#{prodRegInit.regApp}" ajax="false"
+                                 value="Product Registration Application"/>
+            </p:panel>
+
+            <div style="height:10px"/>
+
+        </h:form>
+
+
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
+                  resizable="false">
+            <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
+        </p:dialog>
+
+    </ui:define>
+    <script type="text/javascript">
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+    </script>
+</ui:composition>

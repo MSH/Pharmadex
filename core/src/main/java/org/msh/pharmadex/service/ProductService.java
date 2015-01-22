@@ -5,12 +5,15 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.AtcDAO;
 import org.msh.pharmadex.dao.iface.InnDAO;
 import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -69,4 +72,63 @@ public class ProductService implements Serializable {
         return prod;
     }
 
+    public RetObject validateProduct(Product product) {
+        RetObject retObject = new RetObject();
+        List<String> issues = new ArrayList<String>();
+        try {
+            boolean issue = false;
+            if (product.getApplicant() == null) {
+                issues.add("no_applicant");
+                issue = true;
+            }
+            if (product.getExcipients() == null || product.getExcipients().size() < 1) {
+                issues.add("no_excipient");
+                issue = true;
+            }
+            if (product.getInns() == null || product.getInns().size() < 1) {
+                issues.add("no_inns");
+                issue = true;
+            }
+            if (product.getProdCompanies() == null || product.getProdCompanies().size() < 1) {
+                issues.add("no_manufacturer");
+                issue = true;
+            }
+            if (product.getProdApplications().getBankName().equalsIgnoreCase("") || product.getProdApplications().getFeeSubmittedDt().equals(null)) {
+                issues.add("no_fee");
+                issue = true;
+            }
+            List<ProdAppChecklist> prodAppChkLst = product.getProdApplications().getProdAppChecklists();
+            if (prodAppChkLst != null) {
+                for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {
+                    if (!prodAppChecklist.isValue()) {
+                        issues.add("checklist_incomplete");
+                        issue = true;
+                        break;
+                    }
+                }
+            } else {
+                issues.add("checklist_incomplete");
+                issue = true;
+            }
+
+            if (issue) {
+                retObject.setObj(issues);
+                retObject.setMsg("error");
+            } else {
+                retObject.setMsg("persist");
+                retObject.setObj(null);
+            }
+
+            return retObject;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            retObject.setMsg("error");
+            issues.add(ex.getMessage());
+            retObject.setObj(issues);
+            return retObject;
+
+        }
+
+
+    }
 }

@@ -8,6 +8,7 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RegistrationUtil;
+import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
@@ -23,7 +24,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -99,6 +99,7 @@ public class RegHomeMbean implements Serializable {
     private User applicantUser;
     private Appointment app = new Appointment();
     private TreeNode selAtcTree;
+    private String password;
 
     @PostConstruct
     private void init() {
@@ -233,6 +234,7 @@ public class RegHomeMbean implements Serializable {
 
     }
 
+
     @Transactional
     public void saveApp() {
         context = FacesContext.getCurrentInstance();
@@ -305,8 +307,38 @@ public class RegHomeMbean implements Serializable {
             showNCE = false;
     }
 
+    public String validateApp() {
+        context = FacesContext.getCurrentInstance();
+        product.setApplicant(applicant);
+        prodApplications.setUser(applicantUser);
+        prodApplications.setForeignAppStatus(foreignAppStatuses);
+        product.setProdApplications(prodApplications);
+        if (product.getId() == null) {
+            product.setCreatedBy(getLoggedInUser());
+        }
+
+        RetObject retObject = productService.validateProduct(product);
+
+        if (retObject.getMsg().equals("persist")) {
+            return "/secure/consentform.faces";
+        } else {
+            ArrayList<String> erroMsgs = (ArrayList<String>) retObject.getObj();
+            for (String msg : erroMsgs) {
+                context.addMessage(null, new FacesMessage(bundle.getString(msg)));
+            }
+            return "";
+        }
+
+    }
+
     @Transactional
     public String submitApp() {
+
+        if (!userService.verifyUser(userSession.getLoggedInUserObj(), password)) {
+            context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
+
+        }
+
         context = FacesContext.getCurrentInstance();
         RegistrationUtil registrationUtil = new RegistrationUtil();
         prodApplications.setProdAppNo(registrationUtil.generateAppNo(prodApplications.getId()));
@@ -835,4 +867,13 @@ public class RegHomeMbean implements Serializable {
     public void setDosUomDAO(DosUomDAO dosUomDAO) {
         this.dosUomDAO = dosUomDAO;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
 }

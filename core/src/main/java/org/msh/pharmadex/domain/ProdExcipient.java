@@ -21,6 +21,9 @@ public class ProdExcipient extends CreationDetail implements Serializable {
     private DosUom dosUnit = new DosUom();
 
     @Column(length = 255, nullable = true)
+    private String function;
+
+    @Column(length = 255, nullable = true)
     private String RefStd;
 
     @OneToOne
@@ -77,5 +80,13 @@ public class ProdExcipient extends CreationDetail implements Serializable {
 
     public void setExcipient(Excipient excipient) {
         this.excipient = excipient;
+    }
+
+    public String getFunction() {
+        return function;
+    }
+
+    public void setFunction(String function) {
+        this.function = function;
     }
 }

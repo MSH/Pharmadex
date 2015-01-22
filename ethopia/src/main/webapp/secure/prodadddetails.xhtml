@@ -1,0 +1,44 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
+        <p:outputLabel value="#{msgs.product_shelflife}" for="shelflife"/>
+        <p:inputText id="shelflife" value="#{regHomeMbean.prodApplications.shelfLife}"/>
+        <p:message for="shelflife" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
+        <p:selectOneMenu id="cbdrugtype" value="#{regHomeMbean.prodApplications.drugType}">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalLists.drugTypes}" var="dt" itemLabel="#{msgs[dt.key]}"/>
+        </p:selectOneMenu>
+        <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
+        <p:inputText id="inpacksize" value="#{regHomeMbean.prodApplications.packSize}" style="width: 300px"/>
+        <p:message for="inpacksize" showSummary="true" showDetail="false"/>
+
+
+        <p:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
+        <p:inputTextarea id="inconttype" value="#{regHomeMbean.prodApplications.contType}" style="width: 300px"/>
+        <p:message for="inconttype" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
+        <p:inputText id="instorecndtn" value="#{regHomeMbean.prodApplications.storageCndtn}" style="width: 300px"/>
+        <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.use_category}" for="grid"/>
+        <p:selectManyCheckbox id="grid" value="#{regHomeMbean.prodApplications.useCategories}" layout="grid" columns="1"
+                              required="true">
+            <f:selectItems value="#{globalLists.useCategory}" var="type" itemLabel="#{msgs[type.key]}"
+                           itemValue="#{type}"/>
+        </p:selectManyCheckbox>
+        <p:message for="grid" showSummary="true" showDetail="false"/>
+
+
+    </h:panelGrid>
+
+</ui:composition>

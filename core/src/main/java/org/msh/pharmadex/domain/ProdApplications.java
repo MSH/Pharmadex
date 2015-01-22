@@ -4,6 +4,7 @@ import org.hibernate.envers.Audited;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.UseCategory;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -48,6 +49,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProdAppType prodAppType;
 
+    @ElementCollection(targetClass = UseCategory.class)
+    @JoinTable(name = "tblusecategories", joinColumns = @JoinColumn(name = "prodAppID"))
+    @Column(name = "useCategory")
+    @Enumerated(EnumType.STRING)
+    private List<UseCategory> useCategories;
+
     @Column(length = 500)
     private String packSize;
 
@@ -81,6 +88,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String posology;
 
+    @Column(length = 255)
+    private String feeAmt;
+
     @Temporal(TemporalType.DATE)
     private Date feeSubmittedDt;
 
@@ -106,6 +116,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private boolean applicantVerified;
 
     private boolean productVerified;
+
+    private boolean sra;
+
+    private boolean fastrack;
 
     @Column(length = 500)
     private String ackLetterNo;
@@ -160,6 +174,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Lob
     @Column(nullable = true)
     private byte[] regCert;
+
+    @Column(length = 255)
+    private String username;
+
+    @Column(length = 255)
+    private String position;
 
     public Date getRegExpiryDate() {
         return regExpiryDate;
@@ -535,6 +555,54 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setPosology(String posology) {
         this.posology = posology;
+    }
+
+    public List<UseCategory> getUseCategories() {
+        return useCategories;
+    }
+
+    public void setUseCategories(List<UseCategory> useCategories) {
+        this.useCategories = useCategories;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public boolean isSra() {
+        return sra;
+    }
+
+    public void setSra(boolean sra) {
+        this.sra = sra;
+    }
+
+    public boolean isFastrack() {
+        return fastrack;
+    }
+
+    public void setFastrack(boolean fastrack) {
+        this.fastrack = fastrack;
+    }
+
+    public String getFeeAmt() {
+        return feeAmt;
+    }
+
+    public void setFeeAmt(String feeAmt) {
+        this.feeAmt = feeAmt;
     }
 }
 

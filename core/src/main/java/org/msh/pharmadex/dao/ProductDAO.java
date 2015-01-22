@@ -3,6 +3,7 @@ package org.msh.pharmadex.dao;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,6 +154,9 @@ public class ProductDAO implements Serializable {
             Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
             Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
             Hibernate.initialize(prod.getProdApplications().getTimeLines());
+            for (TimeLine timeLine : prod.getProdApplications().getTimeLines()) {
+                Hibernate.initialize(timeLine.getUser());
+            }
             Hibernate.initialize(prod.getProdApplications().getPricing());
             Hibernate.initialize(prod.getProdApplications().getModerator());
             Hibernate.initialize(prod.getProdApplications().getForeignAppStatus());
