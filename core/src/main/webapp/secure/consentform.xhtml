@@ -1,0 +1,103 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.global_agreement}</h1>
+        </div>
+
+        <h:form id="reghome">
+            <p:growl id="growl"/>
+
+            <h:panelGrid columns="1" cellpadding="10" cellspacing="10">
+                <p:panel>
+                    <div>
+                        <p>I the undersigned certify that all the information in the accompanying documentation concerning an application for a marketing authorization for:</p>
+
+                        <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+
+                            <h:outputLabel value="#{msgs.prodName}:"/>
+                            <h:outputLabel value="#{regHomeMbean.product.prodName}"/>
+
+                            <h:outputLabel value="#{msgs.prodgenname}:"/>
+                            <h:outputLabel value="#{regHomeMbean.product.genName}"/>
+
+                            <h:outputLabel value="#{msgs.dos_form}"/>
+                            <h:outputLabel value="#{regHomeMbean.product.dosForm.dosForm}"/>
+
+                            <h:outputLabel value="Dosage Strength:" style="font-weight: bold;"/>
+                            <h:outputLabel value="#{regHomeMbean.product.dosStrength}"/>
+
+                            <h:outputLabel value="#{msgs.dos_unit}"/>
+                            <h:outputLabel value="#{regHomeMbean.product.dosUnit.uom}"/>
+
+                            <h:outputLabel value="#{msgs.prod_desc}"/>
+                            <h:outputLabel value="#{regHomeMbean.product.prodDesc}"/>
+
+                            <h:outputLabel value="#{msgs.applicant}"/>
+                            <h:outputLabel value="#{regHomeMbean.product.applicant.appName}"/>
+
+                            <h:outputLabel value="#{msgs.manuf_name}"/>
+                            <h:outputLabel value="#{regHomeMbean.product.manufName}"/>
+                        </h:panelGrid>
+
+                        <p>is correct and true, and reflects the total information available. I further certify that I have examined the following statements and I attest to their accuracy.</p>
+
+                        <p>
+                            <ol>
+                                <li>The current edition of the WHO guideline on “Good manufacturing practices for pharmaceutical products” Guideline, is applied in full in all premises involved in the manufacture of this product.</li>
+                                <li>The formulation per dosage form correlates with the master formula and with the batch manufacturing record forms.</li>
+                                <li>The manufacturing procedure is exactly as specified in the master formula and batch manufacturing record forms.</li>
+                                <li>Each batch of all starting materials is either tested or certified against the full specifications in the accompanying documentation and comply fully with those specifications before it is released for manufacturing purposes.</li>
+                                <li>All batches of active pharmaceutical ingredient(s) are obtained from the source(s) specified in the accompanying documentation.</li>
+                                <li>No batch of active pharmaceutical ingredient will be used unless a copy of the batch certificate established by the active ingredient manufacturer is available.</li>
+                                <li>Each batch of the container/closure system is tested or certified against the full specifications in the accompanying documentation and complies fully with those specifications before it is released for manufacturing purposes.</li>
+                                <li>Each batch of the finished product is either tested, or certified, against the full specifications in the accompanying documentation and complies fully with the release specifications before it is released for sale.</li>
+                                <li>The person releasing the product for sale is an authorized person as defined by the WHO guideline “Good manufacturing practices: Authorized person - the role, functions and training”.</li>
+                                <li>The procedures for control of the finished product have been validated for this formulation.</li>
+                                <li>The market authorization holder has a standard operating procedure for handling adverse reaction reports on its products.</li>
+                                <li>The market authorization holder has a standard operating procedure for handling batch recalls of its products.</li>
+                                <li>All the documentation referred to in this certificate is available for review during a GMP inspection.</li>
+                                <li>Any clinical trials including BE study were conducted according to WHO’s “Guidelines for good clinical practice (GCP) for trials on pharmaceutical products</li>
+                            </ol>
+                        </p>
+
+                        <p:panel header="Verification">
+
+                            <h:panelGrid cellspacing="10" cellpadding="10" columns="3"
+                                         columnClasses="label value label">
+                                <p:outputLabel value="#{msgs.User_name}" for="username"/>
+                                <p:inputText value="#{regHomeMbean.product.prodApplications.username}" id="username"
+                                             required="true"/>
+                                <p:message for="username"/>
+
+                                <p:outputLabel value="#{msgs.user_position}:" for="position"/>
+                                <p:inputText value="#{regHomeMbean.product.prodApplications.position}" id="position"
+                                             required="true"/>
+                                <p:message for="position"/>
+
+                                <p:outputLabel value="#{msgs.changepwd_passinuse}:" for="pass"/>
+                                <p:password id="pass" value="#{regHomeMbean.password}" required="true"/>
+                                <p:message for="pass"/>
+                            </h:panelGrid>
+                        </p:panel>
+
+                    </div>
+                </p:panel>
+
+            </h:panelGrid>
+
+            <h:panelGroup>
+                <p:commandButton action="#{regHomeMbean.submitApp}" value="#{msgs.global_yes}" ajax="false"/>
+                <p:commandButton action="#{regHomeMbean.cancel}" ajax="false" immediate="true"
+                                 value="#{msgs.global_no}"/>
+            </h:panelGroup>
+
+
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>
