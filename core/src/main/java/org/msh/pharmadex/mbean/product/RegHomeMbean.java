@@ -6,6 +6,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -100,26 +101,25 @@ public class RegHomeMbean implements Serializable {
     private Appointment app = new Appointment();
     private TreeNode selAtcTree;
     private String password;
+    private List<UseCategory> useCategories;
 
     @PostConstruct
     private void init() {
         if (prodApplications == null) {
-            if (userSession.getProdApplications() != null) {
-                initProdApps();
-            } else {
-                prodApplications = new ProdApplications();
-                product = new Product(prodApplications);
-                prodApplications.setProd(product);
-                product.setProdApplications(prodApplications);
 
-                //Initialize associated product entities
-                product.setDosForm(new DosageForm());
-                product.setDosUnit(new DosUom());
-                product.setAdminRoute(new AdminRoute());
+            prodApplications = new ProdApplications();
+            product = new Product(prodApplications);
+            prodApplications.setProd(product);
+            product.setProdApplications(prodApplications);
 
-                //being a new application. set regstate as saved
-                prodApplications.setRegState(RegState.SAVED);
-            }
+            //Initialize associated product entities
+            product.setDosForm(new DosageForm());
+            product.setDosUnit(new DosUom());
+            product.setAdminRoute(new AdminRoute());
+
+            //being a new application. set regstate as saved
+            prodApplications.setRegState(RegState.SAVED);
+
 
             if (selectedInns == null) {
                 //Initialize Inns
@@ -180,7 +180,14 @@ public class RegHomeMbean implements Serializable {
 //            for (Appointment app : appointmentService.getAppointments()) {
 //                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
 //            }
+
+
+            if (userSession.getProdApplications() != null) {
+                initProdApps();
             }
+
+        }
+
     }
 
     public void PDF() throws JRException, IOException {
@@ -258,6 +265,7 @@ public class RegHomeMbean implements Serializable {
         product.setApplicant(applicant);
         prodApplications.setUser(applicantUser);
         prodApplications.setForeignAppStatus(foreignAppStatuses);
+        prodApplications.setUseCategories(useCategories);
         product.setProdApplications(prodApplications);
         if (product.getId() == null) {
             product.setCreatedBy(getLoggedInUser());
@@ -500,6 +508,7 @@ public class RegHomeMbean implements Serializable {
         applicantUser = prodApplications.getUser();
         drugPrices = prodApplications.getPricing().getDrugPrices();
         foreignAppStatuses = prodApplications.getForeignAppStatus();
+        useCategories = prodApplications.getUseCategories();
     }
 
     public Applicant getApplicant() {
@@ -893,4 +902,11 @@ public class RegHomeMbean implements Serializable {
         return password;
     }
 
+    public List<UseCategory> getUseCategories() {
+        return useCategories;
+    }
+
+    public void setUseCategories(List<UseCategory> useCategories) {
+        this.useCategories = useCategories;
+    }
 }

@@ -31,10 +31,11 @@
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.use_category}" for="grid"/>
-        <p:selectManyCheckbox id="grid" value="#{regHomeMbean.prodApplications.useCategories}" layout="grid" columns="1"
-                              required="true" converter="omnifaces.GenericEnumConverter">
+        <p:selectManyCheckbox id="grid" value="#{regHomeMbean.useCategories}" layout="grid" columns="1"
+                              converter="omnifaces.GenericEnumConverter">
             <f:selectItems value="#{globalLists.useCategory}" var="type" itemLabel="#{msgs[type.key]}"
                            itemValue="#{type}"/>
+            <f:attribute name="collectionType" value="java.util.ArrayList"/>
         </p:selectManyCheckbox>
         <p:message for="grid" showSummary="true" showDetail="false"/>
 

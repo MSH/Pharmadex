@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.LicenseHolderService;
 
 import javax.annotation.PostConstruct;
@@ -9,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by usrivastava on 01/14/2015.
@@ -28,6 +30,8 @@ public class RegHomeMbeanET implements Serializable{
 
     private LicenseHolder licenseHolder;
 
+    private List<UseCategory> useCategoryList;
+
     @PostConstruct
     private void init() {
         ProdApp prodApp = userSession.getProdApp();
@@ -37,6 +41,7 @@ public class RegHomeMbeanET implements Serializable{
             regHomeMbean.getProdApplications().setFastrack(prodApp.isEml());
             regHomeMbean.getProdApplications().setFeeAmt(prodApp.getTotalfee());
         }
+        useCategoryList = regHomeMbean.getProdApplications().getUseCategories();
     }
 
     public LicenseHolder getLicenseHolder() {
@@ -72,5 +77,13 @@ public class RegHomeMbeanET implements Serializable{
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
+    }
+
+    public List<UseCategory> getUseCategoryList() {
+        return useCategoryList;
+    }
+
+    public void setUseCategoryList(List<UseCategory> useCategoryList) {
+        this.useCategoryList = useCategoryList;
     }
 }
