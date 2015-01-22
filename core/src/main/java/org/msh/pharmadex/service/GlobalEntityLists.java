@@ -1,5 +1,6 @@
 package org.msh.pharmadex.service;
 
+import org.msh.pharmadex.dao.CustomFeeSchDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.util.JsfUtils;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +35,10 @@ public class GlobalEntityLists implements Serializable {
     private List<AdminRoute> adminRoutes;
     private List<Excipient> excipients;
     private List<DisplayReviewQ> displayReviewQ;
+    private List<FeeSchedule> feeSchedules;
+
+    @Autowired
+    private CustomFeeSchDAO customFeeSchDAO;
 
     @Autowired
     private DosageFormService dosageFormService;
@@ -181,6 +187,13 @@ public class GlobalEntityLists implements Serializable {
         if (excipients == null)
             excipients = innService.getExcipients();
         return excipients;
+    }
+
+    public List<FeeSchedule> getFeeSchedules() {
+        if (feeSchedules == null) {
+            feeSchedules = customFeeSchDAO.findByStartAndEndDate(new Date());
+        }
+        return feeSchedules;
     }
 
     public List<Atc> completeAtcNames(String query) {

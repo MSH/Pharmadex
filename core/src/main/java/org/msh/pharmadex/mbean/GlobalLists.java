@@ -23,6 +23,10 @@ public class GlobalLists {
         return Arrays.asList(CompanyType.values());
     }
 
+    public List<UseCategory> getUseCategory() {
+        return Arrays.asList(UseCategory.values());
+    }
+
     public List<ProdType> getProdTypes() {
         return Arrays.asList(ProdType.values());
     }
@@ -70,4 +74,11 @@ public class GlobalLists {
         return Arrays.asList(AgeGroup.values());  //To change body of created methods use File | Settings | File Templates.
     }
 
+    public List<String> getRegAuthority() {
+        List<String> regAuth = new ArrayList<String>();
+        regAuth.add("USA");
+        regAuth.add("Japan");
+        regAuth.add("UK");
+        return regAuth;
+    }
 }
