@@ -32,7 +32,7 @@
 
         <p:outputLabel value="#{msgs.use_category}" for="grid"/>
         <p:selectManyCheckbox id="grid" value="#{regHomeMbean.prodApplications.useCategories}" layout="grid" columns="1"
-                              required="true">
+                              required="true" converter="omnifaces.GenericEnumConverter">
             <f:selectItems value="#{globalLists.useCategory}" var="type" itemLabel="#{msgs[type.key]}"
                            itemValue="#{type}"/>
         </p:selectManyCheckbox>

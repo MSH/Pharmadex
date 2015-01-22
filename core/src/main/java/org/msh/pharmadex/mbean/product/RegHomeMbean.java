@@ -104,18 +104,22 @@ public class RegHomeMbean implements Serializable {
     @PostConstruct
     private void init() {
         if (prodApplications == null) {
-            prodApplications = new ProdApplications();
-            product = new Product(prodApplications);
-            prodApplications.setProd(product);
-            product.setProdApplications(prodApplications);
+            if (userSession.getProdApplications() != null) {
+                initProdApps();
+            } else {
+                prodApplications = new ProdApplications();
+                product = new Product(prodApplications);
+                prodApplications.setProd(product);
+                product.setProdApplications(prodApplications);
 
-            //Initialize associated product entities
-            product.setDosForm(new DosageForm());
-            product.setDosUnit(new DosUom());
-            product.setAdminRoute(new AdminRoute());
+                //Initialize associated product entities
+                product.setDosForm(new DosageForm());
+                product.setDosUnit(new DosUom());
+                product.setAdminRoute(new AdminRoute());
 
-            //being a new application. set regstate as saved
-            prodApplications.setRegState(RegState.SAVED);
+                //being a new application. set regstate as saved
+                prodApplications.setRegState(RegState.SAVED);
+            }
 
             if (selectedInns == null) {
                 //Initialize Inns
@@ -151,6 +155,22 @@ public class RegHomeMbean implements Serializable {
                 prodApplications.setUser(applicantUser);
             }
 
+            if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
+                prodAppChecklists = new ArrayList<ProdAppChecklist>();
+                prodApplications.setProdAppChecklists(prodAppChecklists);
+                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
+                ProdAppChecklist eachProdAppCheck;
+                if (allChecklist != null && allChecklist.size() > 0) {
+                    for (int i = 0; allChecklist.size() > i; i++) {
+                        eachProdAppCheck = new ProdAppChecklist();
+                        eachProdAppCheck.setChecklist(allChecklist.get(i));
+                        eachProdAppCheck.setProdApplications(prodApplications);
+                        prodAppChecklists.add(eachProdAppCheck);
+                    }
+                }
+                prodApplications.setProdAppChecklists(prodAppChecklists);
+            }
+
             prodInn = new ProdInn();
 //            prodInn.setDosUnit(new DosUom());
 
@@ -160,10 +180,7 @@ public class RegHomeMbean implements Serializable {
 //            for (Appointment app : appointmentService.getAppointments()) {
 //                eventModel.addEvent(new DefaultScheduleEvent(app.getTile(), app.getStart(), app.getEnd(), true));
 //            }
-            if (userSession.getProdApplications() != null) {
-                initProdApps();
             }
-        }
     }
 
     public void PDF() throws JRException, IOException {
@@ -204,22 +221,22 @@ public class RegHomeMbean implements Serializable {
         if (currentWizardStep.equals("prodreg") && product.getId() == null) {
         } else if (currentWizardStep.equals("proddetails")) {
             //Only initialize once for new product applications. For saved application it is initialized in the setprodapplication method
-            if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
-                prodAppChecklists = new ArrayList<ProdAppChecklist>();
-                prodApplications.setProdAppChecklists(prodAppChecklists);
-                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
-                ProdAppChecklist eachProdAppCheck;
-                if (allChecklist != null && allChecklist.size() > 0) {
-                    for (int i = 0; allChecklist.size() > i; i++) {
-                        eachProdAppCheck = new ProdAppChecklist();
-                        eachProdAppCheck.setChecklist(allChecklist.get(i));
-                        eachProdAppCheck.setProdApplications(prodApplications);
-                        prodAppChecklists.add(eachProdAppCheck);
-                    }
-                }
-                prodApplications.setProdAppChecklists(prodAppChecklists);
+//            if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
+//                prodAppChecklists = new ArrayList<ProdAppChecklist>();
+//                prodApplications.setProdAppChecklists(prodAppChecklists);
+//                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
+//                ProdAppChecklist eachProdAppCheck;
+//                if (allChecklist != null && allChecklist.size() > 0) {
+//                    for (int i = 0; allChecklist.size() > i; i++) {
+//                        eachProdAppCheck = new ProdAppChecklist();
+//                        eachProdAppCheck.setChecklist(allChecklist.get(i));
+//                        eachProdAppCheck.setProdApplications(prodApplications);
+//                        prodAppChecklists.add(eachProdAppCheck);
+//                    }
+//                }
+//                prodApplications.setProdAppChecklists(prodAppChecklists);
 
-            }
+//            }
         } else if (currentWizardStep.equals("appdetails")) {
         } else if (currentWizardStep.equals("manufdetail")) {
         } else if (currentWizardStep.equals("pricing")) {
@@ -333,13 +350,13 @@ public class RegHomeMbean implements Serializable {
 
     @Transactional
     public String submitApp() {
+        context = FacesContext.getCurrentInstance();
 
         if (!userService.verifyUser(userSession.getLoggedInUserObj(), password)) {
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
 
         }
 
-        context = FacesContext.getCurrentInstance();
         RegistrationUtil registrationUtil = new RegistrationUtil();
         prodApplications.setProdAppNo(registrationUtil.generateAppNo(prodApplications.getId()));
 
