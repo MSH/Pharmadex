@@ -1,6 +1,7 @@
 package org.msh.pharmadex.auth;
 
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.mbean.product.ProdApp;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.UserAccessService;
 import org.msh.pharmadex.service.UserService;
@@ -49,6 +50,7 @@ public class UserSession implements Serializable {
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
     private DisplayReviewInfo displayReviewInfo;
+    private ProdApp prodApp;
 
     @ManagedProperty(value = "#{userAccessService}")
     private UserAccessService userAccessService;
@@ -463,5 +465,13 @@ public class UserSession implements Serializable {
 
     public void setPipOrderID(String pipOrderID) {
         this.pipOrderID = pipOrderID;
+    }
+
+    public ProdApp getProdApp() {
+        return prodApp;
+    }
+
+    public void setProdApp(ProdApp prodApp) {
+        this.prodApp = prodApp;
     }
 }
