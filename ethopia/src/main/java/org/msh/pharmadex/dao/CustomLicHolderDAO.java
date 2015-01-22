@@ -3,7 +3,6 @@ package org.msh.pharmadex.dao;
 import org.msh.pharmadex.domain.AgentInfo;
 import org.msh.pharmadex.domain.Applicant;
 import org.springframework.stereotype.Repository;
-import sun.management.Agent;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
