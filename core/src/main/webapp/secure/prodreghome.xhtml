@@ -165,15 +165,6 @@
                 </p:column>
             </p:dataTable>
 
-            <p:outputLabel value="#{msgs.statement_ingrd}" for="ingrdStatment"/>
-            <p:inputTextarea id="ingrdStatment" value="#{regHomeMbean.prodApplications.ingrdStatment}" cols="100"/>
-
-            <p:outputLabel value="#{msgs.prod_indications}" for="indication" />
-            <p:inputTextarea id="indication" value="#{regHomeMbean.prodApplications.indications}" cols="100"/>
-
-            <p:outputLabel value="#{msgs.prod_posology}" for="posology"/>
-            <p:inputTextarea id="posology" value="#{regHomeMbean.prodApplications.posology}" cols="100"/>
-
         </h:panelGrid>
 
         <ui:include src="prodadddetails.xhtml"/>
@@ -404,13 +395,16 @@
 
         <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
-            <p:outputLabel value="#{msgs.bank_name}" for="bankname"/>
+            <p:outputLabel value="#{msgs.total_fee}" styleClass="label"/>
+            <p:outputLabel value="#{regHomeMbean.prodApplications.feeAmt}"/>
+
+            <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
             <p:inputText id="bankname" value="#{regHomeMbean.prodApplications.bankName}"/>
 
-            <p:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
+            <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
             <p:inputText id="receiptno" value="#{regHomeMbean.prodApplications.receiptNo}"/>
 
-            <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"/>
+            <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
             <p:calendar  value="#{regHomeMbean.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"/>
 
         </h:panelGrid>

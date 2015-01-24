@@ -8,16 +8,20 @@
 
         <p:dataTable var="checkList" value="#{regHomeMbean.prodAppChecklists}" style="width:100%;"
                      sortBy="#{checkList.checklist.id}">
-            <p:column headerText="">
-                <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+            <p:column headerText="#{msgs.checklist_moduleno}" colspan="4" rendered="#{!checkList.checklist.header}" style="background-color: bisque;font-weight: bolder;">
+                <h:outputLabel value="#{checkList.checklist.name}" />
             </p:column>
-            <p:column>
+
+            <p:column headerText="#{msgs.checklist_moduleno}" rendered="#{checkList.checklist.header}">
+                <h:outputLabel value="#{checkList.checklist.moduleNo}" />
+            </p:column>
+            <p:column headerText="#{msgs.checklist_name}" rendered="#{checkList.checklist.header}">
                 <h:outputLabel value="#{checkList.checklist.name}"/>
             </p:column>
-            <p:column>
+            <p:column headerText="#{msgs.checklist_module}" rendered="#{checkList.checklist.header}">
                 <h:outputLabel value="#{checkList.checklist.module}"/>
             </p:column>
-            <p:column>
+            <p:column rendered = "#{checkList.checklist.header}">
                 <p:selectBooleanCheckbox value="#{checkList.value}"/>
             </p:column>
         </p:dataTable>

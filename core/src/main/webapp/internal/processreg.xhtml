@@ -92,7 +92,7 @@
                             </p:tab>
 
                             <p:tab title="#{msgs.prod_verification}" id="verficationtab"
-                                   rendered="#{userSession.admin||userSession.staff||userSession.head}">
+                                   rendered="#{processProdBn.displayVerify}">
 
                                 <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
                                     <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
@@ -156,6 +156,8 @@
                                    rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}"
                                    id="checklisttab">
 
+                                <ui:include src="prescreenpnl.xhtml"/>
+
                                 <p:outputLabel value="#{msgs.moderator_name}:"/>
                                 <p:outputLabel value="#{processProdBn.moderator.username}"/>
 
@@ -167,16 +169,13 @@
                                     <p:column>
                                         <h:outputLabel value="#{checkList.checklist.name}"/>
                                     </p:column>
-                                    <p:column>
-                                        <h:outputLabel value="#{checkList.checklist.module}"/>
-                                    </p:column>
                                     <p:column headerText="#{msgs.applicant}">
                                         <p:selectBooleanCheckbox value="#{checkList.value}"/>
                                     </p:column>
                                     <p:column headerText="#{msgs.UserType_STAFF}">
                                         <p:selectBooleanCheckbox value="#{checkList.staffValue}"/>
                                     </p:column>
-                                    <p:column>
+                                    <p:column headerText="#{msgs.global_remark}">
                                         <p:inputText value="#{checkList.staffComment}"/>
                                     </p:column>
                                     <p:column>
@@ -184,8 +183,6 @@
                                                          action="#{fileUploadController.setProdAppChecklist(checkList)}"
                                                          rendered="#{!checkList.fileUploaded}"/>
 
-                                    </p:column>
-                                    <p:column>
                                         <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
                                                          onclick="PrimeFaces.monitorDownload(start, stop)"
                                                          icon="ui-icon-arrowstop-1-s"
@@ -194,6 +191,7 @@
                                             <p:fileDownload
                                                     value="#{fileUploadController.moduleDocDownload(checkList)}"/>
                                         </p:commandButton>
+
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
