@@ -6,7 +6,9 @@ import org.msh.pharmadex.dao.iface.AtcDAO;
 import org.msh.pharmadex.dao.iface.InnDAO;
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,6 +94,20 @@ public class ProductService implements Serializable {
             if (product.getProdCompanies() == null || product.getProdCompanies().size() < 1) {
                 issues.add("no_manufacturer");
                 issue = true;
+            }else{
+                List<ProdCompany> prodCompanies = product.getProdCompanies();
+                boolean finProdManuf = false;
+                for(ProdCompany pc : prodCompanies){
+                    if(pc.getCompanyType().equals(CompanyType.FIN_PROD_MANUF))
+                        finProdManuf = true;
+                    else
+                        finProdManuf = false;
+                    if(!finProdManuf) {
+                        issues.add("no_fin_prod_manuf");
+                        issue = true;
+                    }
+
+                }
             }
             if (product.getProdApplications().getBankName().equalsIgnoreCase("") || product.getProdApplications().getFeeSubmittedDt().equals(null)) {
                 issues.add("no_fee");
@@ -100,7 +116,7 @@ public class ProductService implements Serializable {
             List<ProdAppChecklist> prodAppChkLst = product.getProdApplications().getProdAppChecklists();
             if (prodAppChkLst != null) {
                 for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {
-                    if (!prodAppChecklist.isValue()) {
+                    if (prodAppChecklist.getChecklist().isHeader()&&!prodAppChecklist.isValue()) {
                         issues.add("checklist_incomplete");
                         issue = true;
                         break;
