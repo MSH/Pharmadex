@@ -1,0 +1,18 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <h:panelGrid cellspacing="10" cellpadding="10" columns="3">
+
+        <p:commandButton id="complete" value = "#{msgs.global_complete}" action="#{processProdBnET.completeScreen}"/>
+
+        <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{processProdBnET.sendToApplicant}"/>
+
+        <p:commandButton id="feedback" value="#{msgs.global_archive}" action="#{processProdBnET.archiveApp}"/>
+    </h:panelGrid>
+
+</ui:composition>
