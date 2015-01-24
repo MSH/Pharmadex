@@ -1,8 +1,12 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.UseCategory;
+import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.LicenseHolderService;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +14,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,20 +33,41 @@ public class RegHomeMbeanET implements Serializable{
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
-    private LicenseHolder licenseHolder;
+    @ManagedProperty(value = "#{checklistService}")
+    private ChecklistService checklistService;
 
-    private List<UseCategory> useCategoryList;
+    private LicenseHolder licenseHolder;
 
     @PostConstruct
     private void init() {
         ProdApp prodApp = userSession.getProdApp();
         if (prodApp != null) {
-            regHomeMbean.getProdApplications().setProdAppType(prodApp.getProdAppType());
-            regHomeMbean.getProdApplications().setSra(prodApp.isSRA());
-            regHomeMbean.getProdApplications().setFastrack(prodApp.isEml());
-            regHomeMbean.getProdApplications().setFeeAmt(prodApp.getTotalfee());
+            ProdApplications prodApplications = regHomeMbean.getProdApplications();
+            prodApplications.setProdAppType(prodApp.getProdAppType());
+            prodApplications.setSra(prodApp.isSRA());
+            prodApplications.setFastrack(prodApp.isEml());
+            prodApplications.setFeeAmt(prodApp.getTotalfee());
+
+            if(prodApplications.getId()==null) {
+                List<ProdAppChecklist> prodAppChecklists = prodApplications.getProdAppChecklists();
+                if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
+                    prodAppChecklists = new ArrayList<ProdAppChecklist>();
+                    prodApplications.setProdAppChecklists(prodAppChecklists);
+                    List<Checklist> allChecklist = checklistService.getETChecklists(prodApplications.getProdAppType(), prodApplications.isSra());
+                    ProdAppChecklist eachProdAppCheck;
+                    if (allChecklist != null && allChecklist.size() > 0) {
+                        for (int i = 0; allChecklist.size() > i; i++) {
+                            eachProdAppCheck = new ProdAppChecklist();
+                            eachProdAppCheck.setChecklist(allChecklist.get(i));
+                            eachProdAppCheck.setProdApplications(prodApplications);
+                            prodAppChecklists.add(eachProdAppCheck);
+                        }
+                    }
+                    prodApplications.setProdAppChecklists(prodAppChecklists);
+                }
+            }
+
         }
-        useCategoryList = regHomeMbean.getProdApplications().getUseCategories();
     }
 
     public LicenseHolder getLicenseHolder() {
@@ -79,11 +105,12 @@ public class RegHomeMbeanET implements Serializable{
         this.userSession = userSession;
     }
 
-    public List<UseCategory> getUseCategoryList() {
-        return useCategoryList;
+
+    public ChecklistService getChecklistService() {
+        return checklistService;
     }
 
-    public void setUseCategoryList(List<UseCategory> useCategoryList) {
-        this.useCategoryList = useCategoryList;
+    public void setChecklistService(ChecklistService checklistService) {
+        this.checklistService = checklistService;
     }
 }
