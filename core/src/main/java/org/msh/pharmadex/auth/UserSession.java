@@ -51,6 +51,7 @@ public class UserSession implements Serializable {
     private boolean displayPricing = false;
     private DisplayReviewInfo displayReviewInfo;
     private ProdApp prodApp;
+    private String workspaceName;
 
     @ManagedProperty(value = "#{userAccessService}")
     private UserAccessService userAccessService;
@@ -124,6 +125,7 @@ public class UserSession implements Serializable {
         try {
             Workspace w = userAccessService.getWorkspace();
             setDisplayPricing(w.isDisplatPricing());
+            setWorkspaceName(w.getName());
         } catch (NoResultException e) {
             setDisplayPricing(false);
         } catch (Exception e) {
@@ -473,5 +475,13 @@ public class UserSession implements Serializable {
 
     public void setProdApp(ProdApp prodApp) {
         this.prodApp = prodApp;
+    }
+
+    public String getWorkspaceName() {
+        return workspaceName;
+    }
+
+    public void setWorkspaceName(String workspaceName) {
+        this.workspaceName = workspaceName;
     }
 }
