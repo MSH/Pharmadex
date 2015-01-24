@@ -17,6 +17,12 @@ public interface ChecklistDAO extends JpaRepository<Checklist, Long> {
 
     public List<Checklist> findByHeader(boolean header);
 
+    //Used in Ethiopia
+    public List<Checklist> findByGenMedAndRecognizedMed(boolean genMed, boolean sra);
+
+    //Used in Ethiopia
+    public List<Checklist> findByNewMed(boolean newMed);
+
     public List<Checklist> findByGenMedAndHeader(boolean genMed, boolean header);
 
     public List<Checklist> findByNewMedAndHeader(boolean newMed, boolean header);

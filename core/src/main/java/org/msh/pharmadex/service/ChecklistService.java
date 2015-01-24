@@ -38,4 +38,18 @@ public class ChecklistService implements Serializable {
 //            checklists = checklistDAO.findByHeaderAndRecognizedMed(true,true);
         return checklists;
     }
+
+    //SRA is recognized medicine
+    public List<Checklist> getETChecklists(ProdAppType prodAppType, boolean sra) {
+        if(prodAppType==null)
+            return null;
+
+        if (prodAppType.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
+            checklists = checklistDAO.findByGenMedAndRecognizedMed(true,sra);
+        else {
+            checklists = checklistDAO.findByGenMedAndRecognizedMed(true, sra);
+        }
+        return checklists;
+    }
+
 }
