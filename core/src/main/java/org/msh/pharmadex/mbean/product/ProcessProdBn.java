@@ -47,7 +47,7 @@ public class ProcessProdBn implements Serializable {
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
     @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
+    protected UserSession userSession;
     @ManagedProperty(value = "#{commentService}")
     private CommentService commentService;
     @ManagedProperty(value = "#{timelineService}")
@@ -75,7 +75,7 @@ public class ProcessProdBn implements Serializable {
     private TimelineModel model;
     private List<Timeline> timelinesChartData;
     private Comment selComment = new Comment();
-    private org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
+    protected org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
     private Mail mail = new Mail();
     private boolean readyReg;
     private List<ProdAppChecklist> prodAppChecklists;
@@ -88,11 +88,13 @@ public class ProcessProdBn implements Serializable {
     private String prodID;
     private List<ProdInn> prodInns;
     private boolean checkReviewStatus = false;
-    private FacesContext facesContext = FacesContext.getCurrentInstance();
+    protected FacesContext facesContext = FacesContext.getCurrentInstance();
     private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private int selectedTab;
     private User moderator;
     private List<ReviewInfo> reviewInfos;
+
+    private boolean displayVerify = false;
 
     @PostConstruct
     private void init() {
@@ -831,5 +833,19 @@ public class ProcessProdBn implements Serializable {
 
     public void setUserAccessMBean(UserAccessMBean userAccessMBean) {
         this.userAccessMBean = userAccessMBean;
+    }
+
+    public boolean isDisplayVerify() {
+        if((userSession.isAdmin()||userSession.isStaff()||userSession.isHead())) {
+            if(userSession.getWorkspaceName().equals("Ethiopia"))
+                displayVerify = false;
+            else
+                displayVerify = true;
+        }
+        return displayVerify;
+    }
+
+    public void setDisplayVerify(boolean displayVerify) {
+        this.displayVerify = displayVerify;
     }
 }

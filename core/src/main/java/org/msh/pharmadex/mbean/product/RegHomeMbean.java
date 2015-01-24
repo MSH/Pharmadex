@@ -155,20 +155,22 @@ public class RegHomeMbean implements Serializable {
                 prodApplications.setUser(applicantUser);
             }
 
-            if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
-                prodAppChecklists = new ArrayList<ProdAppChecklist>();
-                prodApplications.setProdAppChecklists(prodAppChecklists);
-                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
-                ProdAppChecklist eachProdAppCheck;
-                if (allChecklist != null && allChecklist.size() > 0) {
-                    for (int i = 0; allChecklist.size() > i; i++) {
-                        eachProdAppCheck = new ProdAppChecklist();
-                        eachProdAppCheck.setChecklist(allChecklist.get(i));
-                        eachProdAppCheck.setProdApplications(prodApplications);
-                        prodAppChecklists.add(eachProdAppCheck);
+            if(prodApplications.getId()==null) {
+                if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
+                    prodAppChecklists = new ArrayList<ProdAppChecklist>();
+                    prodApplications.setProdAppChecklists(prodAppChecklists);
+                    List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
+                    ProdAppChecklist eachProdAppCheck;
+                    if (allChecklist != null && allChecklist.size() > 0) {
+                        for (int i = 0; allChecklist.size() > i; i++) {
+                            eachProdAppCheck = new ProdAppChecklist();
+                            eachProdAppCheck.setChecklist(allChecklist.get(i));
+                            eachProdAppCheck.setProdApplications(prodApplications);
+                            prodAppChecklists.add(eachProdAppCheck);
+                        }
                     }
+                    prodApplications.setProdAppChecklists(prodAppChecklists);
                 }
-                prodApplications.setProdAppChecklists(prodAppChecklists);
             }
 
             prodInn = new ProdInn();
@@ -379,6 +381,7 @@ public class RegHomeMbean implements Serializable {
 
         prodApplications.setTimeLines(timeLines);
         prodApplications.setRegState(RegState.NEW_APPL);
+        product.setRegState(RegState.NEW_APPL);
         prodApplications.setSubmitDate(new Date());
 
         saveApp();
