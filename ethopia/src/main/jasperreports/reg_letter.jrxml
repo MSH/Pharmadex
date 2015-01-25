@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" isSummaryNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
+	<property name="ireport.zoom" value="1.1"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="804"/>
+	<parameter name="currDay" class="java.lang.String"/>
+	<parameter name="currMnthYr" class="java.lang.String"/>
+	<parameter name="regName" class="java.lang.String"/>
+	<parameter name="regNumber" class="java.lang.String"/>
+	<parameter name="activeIngredient" class="java.lang.String"/>
+	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="manufName" class="java.lang.String"/>
+	<parameter name="regDate" class="java.lang.String"/>
+	<parameter name="issueDate" class="java.lang.String"/>
+	<parameter name="dosform" class="java.lang.String"/>
+	<parameter name="fprcName" class="java.lang.String"/>
+	<parameter name="frrName" class="java.lang.String"/>
+	<parameter name="conditions" class="java.lang.String"/>
+	<parameter name="genName" class="java.lang.String"/>
+	<parameter name="adminRoute" class="java.lang.String"/>
+	<parameter name="inactiveIngredient" class="java.lang.String"/>
+	<parameter name="regType" class="java.lang.String"/>
+	<parameter name="shelfLife" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="749" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="152" width="572" height="26" uuid="82138211-28f7-4623-8738-759b7065c68f"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FOOD, MEDICINE AND HEALTHCARE]]></text>
+			</staticText>
+			<image>
+				<reportElement x="223" y="0" width="137" height="125" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
+				<imageExpression><![CDATA["images/na_namibia_header.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="178" width="572" height="26" uuid="72df8617-6275-409e-acfc-328219996595"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ADMINISTRATION AND CONTROL AUTHORITY OF ETHIOPIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="204" width="572" height="26" uuid="ab25f915-c494-4bec-8838-e31fd0ac24fc"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MEDICINE REGISTRATION CERTIFICATE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="240" width="572" height="87" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
+				<textElement textAlignment="Justified">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[It is hereby certified that the Food, Medicine and Health Care Administration and Control Authority, being the authority responsible by law, for the control of Pharmaceutical and Medical Supplies in the country, has officially appraised, analyzed and granted registration certificate in Ethiopia for]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="126" width="572" height="26" forecolor="#006666" uuid="130d9b46-40e1-4492-8341-9328b9856ede"/>
+				<textElement textAlignment="Center">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FEDERAL DEMOCRATIC REPUBLIC OF ETHIOPIA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="327" width="571" height="20" uuid="4eb565f9-1b7c-4c59-8568-77af213161a4"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{regName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="347" width="571" height="68" uuid="c2ce390a-3795-40fa-a274-6256c094bb04"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[on the condition described in the schedule which forms part of this certificate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="612" width="571" height="20" uuid="1ce66392-b024-497d-b50b-9ff48400ce16"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Signature of Authority]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<columnFooter>
+		<band height="752" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="45" width="265" height="20" uuid="7a15fa2a-c444-48c9-a03e-6a6bf81bb77d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[1.	Name of the Product:            ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="65" width="265" height="20" uuid="c973897a-d359-4b40-a158-4314d697c547"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[2.        Generic name:        ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="85" width="265" height="20" uuid="bbf50eef-cea9-46d7-9c68-970b1277e2a3"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[3.	Date of registration:         ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="247" width="572" height="31" uuid="86f046c0-3c1c-4a5a-a964-f4d517b08ed5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[	Active Ingredient(s):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="105" width="265" height="20" uuid="b0c0d8fb-650c-4111-8880-f85b0f07e6d7"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[4.        Dosage form:  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="145" width="265" height="20" uuid="d3e74a10-4216-4411-ae26-3ce61fdea898"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[6.	Registered in the name of the applicant:	]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="165" width="265" height="20" uuid="6aaebab1-ae2a-4fe9-bf27-785b3156ba5d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[7.	Name of manufacturer:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="265" y="45" width="307" height="20" uuid="41032866-b59f-43fd-8cc8-b52d25b4d776"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{regName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="65" width="307" height="20" uuid="7ad2e76a-ed36-40a9-8fd9-8320a4cc0e7e"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{genName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="85" width="307" height="20" uuid="9181d3fd-2141-48e4-8453-3493a39a2057"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{regDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="278" width="572" height="22" uuid="412e9bda-b199-441a-a0b1-6f6adfa74519"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{activeIngredient}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="105" width="307" height="20" uuid="890cd6b5-3d38-4fcf-9a0b-d040da403182"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dosform}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="145" width="307" height="20" uuid="f0723acd-4c0b-4fe9-a43c-08940d870b31"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="185" width="572" height="25" uuid="b91bd911-7cb0-4fc3-b2ac-02f22ae717e5"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="13" width="571" height="20" uuid="6845f739-c204-48eb-84d3-9e143f153e66"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SCHEDULE FOR PHARMACEUTICAL PRODUCT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="125" width="265" height="20" uuid="352db59d-a72e-4c43-842c-1cdc78b7f67e"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[5.        Route of Administration:  ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="265" y="125" width="307" height="20" uuid="62e66674-b4f5-4552-afb4-ae0c16d52c6a"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{adminRoute}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="227" width="570" height="20" uuid="e7e28bf0-8b89-45d9-a5ac-7fc2ab37ec18"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPOSITION AND STRENGTH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="300" width="572" height="31" uuid="0fb2c0c7-d0d4-46dc-85a2-3f636d2548ec"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[	Inactive Ingredient(s):]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="331" width="572" height="22" uuid="241d4d47-b382-418d-a65f-e30fe6981698"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{activeIngredient}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="383" width="264" height="20" uuid="cd335c71-d89c-4f47-8111-b6d51813cc95"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Type of Registration:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="403" width="264" height="20" uuid="07b2c74f-c5dd-4921-8ffe-a5748d67cd65"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Shelf life (months): ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="425" width="264" height="20" uuid="56457977-cf1f-4553-9c21-ed1ec885b927"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Approval date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="445" width="264" height="20" uuid="7a3d9089-0b55-4f0c-b26e-e21354d34bae"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Agent in Ethiopia: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="265" y="383" width="306" height="20" uuid="a10e4efc-676e-4423-9534-b57c58aec9f5"/>
+				<textFieldExpression><![CDATA[$P{regType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="403" width="306" height="20" uuid="a63f5170-4ba8-4214-9aed-08b57bc7be08"/>
+				<textFieldExpression><![CDATA[$P{shelfLife}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="425" width="306" height="20" uuid="ee293f04-57bb-4753-9d80-d068d3e2ffe3"/>
+				<textFieldExpression><![CDATA[$P{regDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="445" width="307" height="20" uuid="af801715-0feb-4887-a5c0-d431338eaa74"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="539" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="19" width="570" height="96" uuid="b61b633b-209e-42ee-9383-aaec4fffd9c9"/>
+				<textElement>
+					<font size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Note: This Certificate, unless previously suspended, revoked or varied as to the period of its validity, will continue in force until the end of a period of four years from the date of issue.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="115" width="570" height="201" uuid="c15d9fa1-7ca1-42df-a5d4-86b396acc933"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[The following in formations might not need to appear on the hard copy certificate but is required as information so the new database should also include them
+1.	Therapeutic group
+2.	Analytical information(FPP specification)
+3.	API manufacturer(NAME AND ADDRESS)
+4.	Price
+5.	Status in other countries
+6.	Distributors (other than the prime agent)
+7.	Name of individual who prepared the certificate
+]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
