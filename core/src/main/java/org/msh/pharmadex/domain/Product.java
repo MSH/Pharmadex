@@ -342,9 +342,11 @@ public class Product extends CreationDetail implements Serializable {
     }
 
     public String getManufName() {
-        for (ProdCompany c : getProdCompanies()) {
-            if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
-                return c.getCompany().getCompanyName();
+        if (prodCompanies != null) {
+            for (ProdCompany c : getProdCompanies()) {
+                if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
+                    return c.getCompany().getCompanyName();
+                }
             }
         }
         return manufName;

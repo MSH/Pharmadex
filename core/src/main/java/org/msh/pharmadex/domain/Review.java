@@ -1,14 +1,7 @@
-/*
- * Copyright (c) 2014. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,6 +46,16 @@ public class Review implements Serializable {
 
     @OneToMany(mappedBy = "review", cascade = {CascadeType.ALL})
     private List<ReviewChecklist> reviewChecklists;
+
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus;
+
+    @Column(length = 1000)
+    private String reviewerSummary;
+
+    @Column(length = 1000)
+    private String moderatorSummary;
+
 
     @Transient
     private boolean submitted;
@@ -131,5 +134,29 @@ public class Review implements Serializable {
 
     public void setSubmitted(boolean submitted) {
         this.submitted = submitted;
+    }
+
+    public ReviewStatus getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(ReviewStatus reviewStatus) {
+        this.reviewStatus = reviewStatus;
+    }
+
+    public String getReviewerSummary() {
+        return reviewerSummary;
+    }
+
+    public void setReviewerSummary(String reviewerSummary) {
+        this.reviewerSummary = reviewerSummary;
+    }
+
+    public String getModeratorSummary() {
+        return moderatorSummary;
+    }
+
+    public void setModeratorSummary(String moderatorSummary) {
+        this.moderatorSummary = moderatorSummary;
     }
 }

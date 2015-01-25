@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
@@ -33,7 +34,7 @@ import java.util.Map;
  * Author: usrivastava
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
@@ -53,21 +54,21 @@ public class ProcessProdBn implements Serializable {
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
     @ManagedProperty(value = "#{prodApplicationsService}")
-    private ProdApplicationsService prodApplicationsService;
+    protected ProdApplicationsService prodApplicationsService;
     @ManagedProperty(value = "#{mailService}")
     private MailService mailService;
     @ManagedProperty(value = "#{productService}")
-    private ProductService productService;
+    protected ProductService productService;
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
     @ManagedProperty(value = "#{userAccessMBean}")
     private UserAccessMBean userAccessMBean;
 
-    private ProdApplications prodApplications;
-    private Product product;
+    protected ProdApplications prodApplications;
+    protected Product product;
     private Applicant applicant;
     private List<Comment> comments;
-    private List<TimeLine> timeLineList;
+    protected List<TimeLine> timeLineList;
     private List<Mail> mails;
     private List<Company> companies;
     private List<ProdAppAmdmt> prodAppAmdmts;
@@ -89,7 +90,7 @@ public class ProcessProdBn implements Serializable {
     private List<ProdInn> prodInns;
     private boolean checkReviewStatus = false;
     protected FacesContext facesContext = FacesContext.getCurrentInstance();
-    private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+    protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private int selectedTab;
     private User moderator;
     private List<ReviewInfo> reviewInfos;
@@ -167,7 +168,7 @@ public class ProcessProdBn implements Serializable {
         }
     }
 
-    private void setFieldValues() {
+    public void setFieldValues() {
         prodApplications = product.getProdApplications();
         prodInns = product.getInns();
         applicant = product.getApplicant();
@@ -837,7 +838,7 @@ public class ProcessProdBn implements Serializable {
 
     public boolean isDisplayVerify() {
         if((userSession.isAdmin()||userSession.isStaff()||userSession.isHead())) {
-            if(userSession.getWorkspaceName().equals("Ethiopia"))
+            if(prodApplications.getRegState().equals(RegState.NEW_APPL))
                 displayVerify = false;
             else
                 displayVerify = true;
