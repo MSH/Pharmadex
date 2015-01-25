@@ -91,67 +91,6 @@
                                 </ui:decorate>
                             </p:tab>
 
-                            <p:tab title="#{msgs.prod_verification}" id="verficationtab"
-                                   rendered="#{processProdBn.displayVerify}">
-
-                                <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
-                                    <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
-                                    <p:selectBooleanButton id="feerecieved"
-                                                           value="#{processProdBn.prodApplications.feeReceived}"
-                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                                                           onIcon="ui-icon-check"
-                                                           offIcon="ui-icon-close" style="width:60px">
-                                        <p:ajax update=":reghome:growl :reghome"
-                                                listener="#{processProdBn.changeStatusListener}"/>
-                                    </p:selectBooleanButton>
-
-
-                                    <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label"
-                                                   for="appverify"/>
-                                    <p:selectBooleanButton id="appverify"
-                                                           value="#{processProdBn.prodApplications.applicantVerified}"
-                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                                                           onIcon="ui-icon-check"
-                                                           offIcon="ui-icon-close" style="width:60px">
-                                        <p:ajax update=":reghome:growl :reghome"
-                                                listener="#{processProdBn.changeStatusListener}"/>
-                                    </p:selectBooleanButton>
-
-                                    <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"
-                                                   for="prodverify"/>
-                                    <p:selectBooleanButton id="prodverify"
-                                                           value="#{processProdBn.prodApplications.productVerified}"
-                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                                                           onIcon="ui-icon-check"
-                                                           offIcon="ui-icon-close" style="width:60px">
-                                        <p:ajax update=":reghome:growl :reghome"
-                                                listener="#{processProdBn.changeStatusListener}"/>
-                                    </p:selectBooleanButton>
-
-                                    <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label"
-                                                   for="dosscomplete"/>
-                                    <p:selectBooleanButton id="dosscomplete"
-                                                           value="#{processProdBn.prodApplications.dossierReceived}"
-                                                           onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                                                           onIcon="ui-icon-check"
-                                                           offIcon="ui-icon-close" style="width:60px">
-                                        <p:ajax update=":reghome:growl :reghome"
-                                                listener="#{processProdBn.changeStatusListener}"/>
-                                    </p:selectBooleanButton>
-
-                                </h:panelGrid>
-
-                                <!--
-                                    <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
-                                    <h:outputLabel/>
-                                    <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
-                                        <h:outputLabel value="Acknowledgement letter details"/>
-                                        <p:inputText/>
-                                    </h:panelGrid>
-                                -->
-
-                            </p:tab>
-
                             <p:tab title="#{msgs.prod_screening}"
                                    rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}"
                                    id="checklisttab">
@@ -170,10 +109,10 @@
                                         <h:outputLabel value="#{checkList.checklist.name}"/>
                                     </p:column>
                                     <p:column headerText="#{msgs.applicant}">
-                                        <p:selectBooleanCheckbox value="#{checkList.value}"/>
+                                        <p:selectBooleanCheckbox value="#{checkList.value}" rendered="#{checkList.checklist.header}"/>
                                     </p:column>
                                     <p:column headerText="#{msgs.UserType_STAFF}">
-                                        <p:selectBooleanCheckbox value="#{checkList.staffValue}"/>
+                                        <p:selectBooleanCheckbox value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}"/>
                                     </p:column>
                                     <p:column headerText="#{msgs.global_remark}">
                                         <p:inputText value="#{checkList.staffComment}"/>
@@ -195,6 +134,15 @@
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
+
+
+                            <p:tab title="#{msgs.prod_verification}" id="verficationtab"
+                                   rendered="#{processProdBn.displayVerify}">
+
+                                <ui:include src="verificationpnl.xhtml"/>
+
+                            </p:tab>
+
 
 
                             <p:tab title="#{msgs.prod_comments}">
