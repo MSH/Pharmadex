@@ -8,11 +8,76 @@
 
     <h:panelGrid cellspacing="10" cellpadding="10" columns="3">
 
-        <p:commandButton id="complete" value = "#{msgs.global_complete}" action="#{processProdBnET.completeScreen}"/>
+        <p:commandButton id="complete" value = "#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
+                         rendered="#{processProdBnET.displayScreenAction}"/>
 
-        <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{processProdBnET.sendToApplicant}"/>
+        <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{processProdBnET.initTimeLine}" update=":reghome:processtab:sendtoapplicant"
+                         rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('sendtoappdlg').show()"/>
 
-        <p:commandButton id="feedback" value="#{msgs.global_archive}" action="#{processProdBnET.archiveApp}"/>
+        <p:commandButton id="feedback" value="#{msgs.global_archive}" action="#{processProdBnET.initTimeLine}" update=":reghome:processtab:archiveapp"
+                         rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
     </h:panelGrid>
+
+
+    <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
+              id="completescreen" modal="true"
+              rendered="#{userSession.head||userSession.admin||userSession.staff}">
+
+            <p:panelGrid columns="2" columnClasses="label value">
+                <h:outputText value="#{msgs.moderator_name}: "
+                              escape="false"
+                              styleClass="text"/>
+
+                <p:autoComplete id="mod" value="#{processProdBnET.moderator}"
+                                completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+                <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"/>
+                <p:inputText value ="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"/>
+
+            </p:panelGrid>
+
+
+            <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
+                             action="#{processProdBnET.completeScreen}"
+                             oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@this" ajax="false"/>
+    </p:dialog>
+
+    <p:dialog header="#{msgs.complete_screen}" widgetVar="sendtoappdlg" resizable="false"
+              id="sendtoapplicant" modal="true"
+              rendered="#{userSession.head||userSession.admin||userSession.staff}">
+
+        <p:panelGrid columns="2" columnClasses="label value">
+
+            <p:outputLabel value="#{msgs.global_remark}" for="remarksendtoapp"/>
+            <p:inputText value ="#{processProdBnET.timeLine.comment}" id="remarksendtoapp"/>
+
+        </p:panelGrid>
+
+
+        <p:commandButton id="sendtoappbtn" value="#{msgs.global_submit}"
+                         action="#{processProdBnET.sendToApplicant}"
+                         oncomplete="PF('sendtoappdlg').hide()" update=":reghome" process="@this" ajax="false"/>
+    </p:dialog>
+
+    <p:dialog header="#{msgs.complete_screen}" widgetVar="archiveappdlg" resizable="false"
+              id="archiveapp" modal="true"
+              rendered="#{userSession.head||userSession.admin||userSession.staff}">
+
+        <p:panelGrid columns="2" columnClasses="label value">
+
+            <p:outputLabel value="#{msgs.global_remark}" for="remarkarchive"/>
+            <p:inputText value ="#{processProdBnET.timeLine.comment}" id="remarkarchive"/>
+
+        </p:panelGrid>
+
+
+        <p:commandButton id="archiveappbtn" value="#{msgs.global_submit}"
+                         action="#{processProdBnET.archiveApp}"
+                         oncomplete="PF('archiveappdlg').hide()" update=":reghome" process="@this" ajax="false"/>
+    </p:dialog>
 
 </ui:composition>
