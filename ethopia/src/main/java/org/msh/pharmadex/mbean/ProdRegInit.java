@@ -7,9 +7,11 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.FeeSchedule;
+import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.mbean.product.ProdApp;
 import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.LicenseHolderService;
 import org.springframework.web.util.WebUtils;
 
 import javax.faces.application.FacesMessage;
@@ -35,12 +37,16 @@ public class ProdRegInit implements Serializable {
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
+    @ManagedProperty(value = "#{licenseHolderService}")
+    private LicenseHolderService licenseHolderService;
+
     private String[] selSRA;
     private boolean eml = false;
     private boolean displayfeepanel;
     private String totalfee;
     private ProdAppType prodAppType;
     private FacesContext context;
+    private boolean eligible;
 
     public void calculate(AjaxBehaviorEvent event) {
         context = FacesContext.getCurrentInstance();
@@ -130,4 +136,36 @@ public class ProdRegInit implements Serializable {
     public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
         this.globalEntityLists = globalEntityLists;
     }
+
+    public boolean isEligible() {
+        if(userSession.isAdmin()||userSession.isHead()||userSession.isStaff())
+            eligible = true;
+
+        if(userSession.isCompany()){
+            if(userSession.getApplicant()==null)
+                eligible = false;
+            else{
+                LicenseHolder licenseHolder = licenseHolderService.findLicHolderByApplicant(userSession.getApplicant().getApplcntId());
+                if(licenseHolder!=null)
+                    eligible = true;
+                else
+                    eligible = false;
+            }
+        }
+        return eligible;
+    }
+
+    public void setEligible(boolean eligible) {
+        this.eligible = eligible;
+    }
+
+    public LicenseHolderService getLicenseHolderService() {
+        return licenseHolderService;
+    }
+
+    public void setLicenseHolderService(LicenseHolderService licenseHolderService) {
+        this.licenseHolderService = licenseHolderService;
+    }
+
+
 }

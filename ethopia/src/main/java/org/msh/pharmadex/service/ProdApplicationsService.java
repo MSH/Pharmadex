@@ -156,6 +156,10 @@ public class ProdApplicationsService implements Serializable {
                 options = new RegState[1];
                 options[0] = RegState.REJECTED;
                 break;
+            case DEFAULTED:
+                options = new RegState[1];
+                options[0] = RegState.FOLLOW_UP;
+                break;
         }
         return Arrays.asList(options);
 
@@ -228,7 +232,8 @@ public class ProdApplicationsService implements Serializable {
         } else if (userSession.isModerator()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.FOLLOW_UP);
-            regState.add(RegState.SCREENING);
+            regState.add(RegState.FEE);
+            regState.add(RegState.VERIFY);
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
             params.put("moderatorId", userSession.getLoggedInUserObj().getUserId());
