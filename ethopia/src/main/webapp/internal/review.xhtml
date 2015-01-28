@@ -46,6 +46,10 @@
                 <div style="height: 10px;"/>
 
                 <div align="right">
+                    <p:commandButton value="#{msgs.approve_review}" action="#{reviewBn.approveReview}" update=":reviewHome"
+                                     ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}"/>
+                    <p:commandButton value="#{msgs.send_to_review}" action="#{reviewBn.reviewerFeedback}" update=":reviewHome"
+                                     ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}"/>
                     <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
                                      update=":reviewHome" process=":reviewHome:reviewgrid @this"
                                      rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
@@ -90,7 +94,14 @@
 
                 <h:panelGrid id="reviewgrid" columns="2" cellpadding="10" cellspacing="10" width="100%">
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary"/>
-                    <p:inputTextarea value="#{reviewBn.review.reviewerSummary}" id="revsummary" required="true"/>
+                    <p:editor value="#{reviewBn.review.reviewerSummary}" id="revsummary" required="true"
+                           width="700" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
+                    <h:outputText value="#{reviewBn.review.reviewerSummary}" escape="false" rendered="#{userSession.moderator||userSession.head}"/>
+
+                    <p:outputLabel value="#{msgs.mod_comment}" for="modcomment"/>
+                    <p:editor value="#{reviewBn.review.modComment}" id="modcomment"
+                              width="700" rendered="#{userSession.moderator}"/>
+                    <h:outputText value="#{reviewBn.review.modComment}" escape="false" rendered="#{userSession.reviewer||userSession.head}"/>
                 </h:panelGrid>
             </h:form>
         </div>

@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -32,7 +32,8 @@
                                                    style="font-weight: bold; font-size: 1.5em"/>
                                 </td>
                                 <td align="right">
-                                    <h:outputLabel value="#{msgs.application_status}: " style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{msgs.application_status}: "
+                                                   style="font-weight: bold;color: #a52a2a;"/>
                                     <h:outputLabel value="#{processAppBn.applicant.state}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
@@ -44,7 +45,9 @@
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}"/>
+                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputFormat>
                                 </td>
                             </tr>
                         </table>
@@ -65,7 +68,8 @@
                         <p:panel header="#{msgs.person_responsible}">
                             <h:panelGrid columns="1" cellpadding="10px">
                                 <p:commandLink value="#{msgs.user_lookup}" oncomplete="PF('addUserDlg').show()"
-                                               immediate="true" style="font-weight: bolder; font-size: larger" update=":addUserFrm"/>
+                                               immediate="true" style="font-weight: bolder; font-size: larger"
+                                               update=":addUserFrm"/>
                                 <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"/>
                                 <p:commandLink value="#{msgs.user_add}" oncomplete="PF('newUserDlg').show()"
                                                immediate="true" update=":newuser"
