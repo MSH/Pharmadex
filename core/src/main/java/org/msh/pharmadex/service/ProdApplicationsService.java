@@ -233,6 +233,7 @@ public class ProdApplicationsService implements Serializable {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.FOLLOW_UP);
             regState.add(RegState.SCREENING);
+            regState.add(RegState.VERIFY);
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
             params.put("moderatorId", userSession.getLoggedInUserObj().getUserId());
@@ -357,6 +358,10 @@ public class ProdApplicationsService implements Serializable {
         HashMap param = new HashMap();
         param.put("regName", product.getProdName());
         param.put("regNumber", product.getRegNo());
+        param.put("genName",product.getGenName());
+        param.put("adminRoute", product.getAdminRoute().getName());
+        param.put("regType", product.getProdType().name());
+        param.put("shelfLife", product.getProdApplications().getShelfLife());
 
         String inns = "";
         if (product.getInns().size() > 0) {

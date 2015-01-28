@@ -46,20 +46,20 @@ public class ReviewService implements Serializable {
 
     public Review findReview(Review review) {
         review = reviewDAO.findOne(review.getId());
-        List<ReviewChecklist> reviewChecklists = review.getReviewChecklists();
-        if (reviewChecklists.size() < 1) {
-            reviewChecklists = new ArrayList<ReviewChecklist>();
-            review.setReviewChecklists(reviewChecklists);
-            List<Checklist> allChecklist = checklistService.getChecklists(review.getProdApplications().getProdAppType(), true);
-            ReviewChecklist eachReviewChecklist;
-            for (int i = 0; allChecklist.size() > i; i++) {
-                eachReviewChecklist = new ReviewChecklist();
-                eachReviewChecklist.setChecklist(allChecklist.get(i));
-                eachReviewChecklist.setReview(review);
-                reviewChecklists.add(eachReviewChecklist);
-            }
-            review.setReviewChecklists(reviewChecklists);
-        }
+//        List<ReviewChecklist> reviewChecklists = review.getReviewChecklists();
+//        if (reviewChecklists.size() < 1) {
+//            reviewChecklists = new ArrayList<ReviewChecklist>();
+//            review.setReviewChecklists(reviewChecklists);
+//            List<Checklist> allChecklist = checklistService.getChecklists(review.getProdApplications().getProdAppType(), true);
+//            ReviewChecklist eachReviewChecklist;
+//            for (int i = 0; allChecklist.size() > i; i++) {
+//                eachReviewChecklist = new ReviewChecklist();
+//                eachReviewChecklist.setChecklist(allChecklist.get(i));
+//                eachReviewChecklist.setReview(review);
+//                reviewChecklists.add(eachReviewChecklist);
+//            }
+//            review.setReviewChecklists(reviewChecklists);
+//        }
         return review;
     }
 
