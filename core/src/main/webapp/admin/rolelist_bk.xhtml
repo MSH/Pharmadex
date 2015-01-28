@@ -13,7 +13,7 @@
                 <p:dataTable id="roletable" var="a" value="#{roleMBean.findAllRoles()}"
                              emptyMessage="#{msgs.label_no_records_found}">
                     <p:column headerText="Role Name">
-                        #{a.rolename}
+                        #{a.displayname}
                     </p:column>
 
                 </p:dataTable>

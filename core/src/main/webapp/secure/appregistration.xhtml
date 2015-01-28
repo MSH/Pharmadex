@@ -76,9 +76,9 @@
                     <h:panelGroup>
                         <p:commandButton actionListener="#{applicantMBean.addUserToApplicant}"
                                          value="#{msgs.global_add}"
-                                         oncomplete="addUserDlg.hide()" update=":appreg:usertable"/>
+                                         oncomplete="PF('addUserDlg').hide()" update=":appreg:usertable"/>
                         <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
-                                         value="#{msgs.global_cancel}" oncomplete="addUserDlg.hide()"/>
+                                         value="#{msgs.global_cancel}" oncomplete="PF('addUserDlg').hide()"/>
                     </h:panelGroup>
                     <h:outputLabel/>
 
@@ -100,10 +100,10 @@
                 <h:panelGroup>
                     <p:commandButton action="#{applicantMBean.newUser}"
                                      value="#{msgs.global_add}"
-                                     oncomplete="if (!args.validationFailed) newUserDlg.hide()"
+                                     oncomplete="if (!args.validationFailed) PF('newUserDlg').hide()"
                                      update=":appreg:usertable :newuser"/>
                     <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
-                                     value="#{msgs.global_cancel}" oncomplete="newUserDlg.hide()"/>
+                                     value="#{msgs.global_cancel}" oncomplete="PF('newUserDlg').hide()"/>
                 </h:panelGroup>
 
 

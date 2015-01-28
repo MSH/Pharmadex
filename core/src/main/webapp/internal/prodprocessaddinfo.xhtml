@@ -9,6 +9,12 @@
     <h:panelGrid columns="2" cellspacing="10" cellpadding="10" width="100%">
         <p:outputLabel value="#{msgs.doss_loc}" for="dossloc" styleClass="label"/>
         <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="dossloc"/>
+
+        <p:outputLabel value="#{msgs.sampletest_notified}" for="dossloc" styleClass="label"/>
+        <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.sampleRequestSend}" />
+
+        <p:outputLabel value="#{msgs.sampletest_recieved}" for="dossloc" styleClass="label"/>
+        <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.sampleRecieved}" />
     </h:panelGrid>
 
     <p:dataTable id="invoicetable" value="#{processProdBn.invoices}" var="invoice">

@@ -32,7 +32,9 @@
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{productDisplay.prodApplications.submitDate}"/>
+                                    <h:outputFormat value="#{productDisplay.prodApplications.submitDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputFormat>
                                 </td>
                             </tr>
                             <tr>
@@ -52,7 +54,9 @@
                                     <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
                                                    rendered="#{not empty productDisplay.prodApplications.regExpiryDate}"/>
                                     <h:outputFormat value="#{productDisplay.prodApplications.regExpiryDate}"
-                                                    rendered="#{not empty productDisplay.prodApplications.regExpiryDate}"/>
+                                                    rendered="#{not empty productDisplay.prodApplications.regExpiryDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputFormat>
                                 </td>
                             </tr>
                         </table>

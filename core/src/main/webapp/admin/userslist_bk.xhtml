@@ -88,7 +88,7 @@
                 <p:panel header="#{msgs.role}">
                     <p:pickList id="rolepicklist" value="#{userMBean.roles}" effect="bounce"
                                 var="rolevar" style="align:center;" converter="#{roleConverter}"
-                                itemValue="#{rolevar}" itemLabel="#{rolevar.rolename}">
+                                itemValue="#{rolevar}" itemLabel="#{rolevar.displayname}">
                     </p:pickList>
 
                 </p:panel>

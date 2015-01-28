@@ -9,10 +9,13 @@
     <p:panel header="List of Roles in the system">
         <p:dataTable id="roletable" var="a" value="#{roleMBean.findAllRoles()}"
                      emptyMessage="#{msgs.label_no_records_found}">
-            <p:column headerText="Role Name">
+            <p:column headerText="Role Code">
                 #{a.rolename}
             </p:column>
 
+            <p:column headerText="Role Name">
+                #{a.displayname}
+            </p:column>
         </p:dataTable>
     </p:panel>
 </h:panelGroup>

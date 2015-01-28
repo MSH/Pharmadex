@@ -9,14 +9,14 @@
         <table class="banner">
             <tr>
                 <td>
-                    <h:outputLabel value="#{product.prodName}"
+                    <p:outputLabel value="#{product.prodName}"
                                    styleClass="title"
-                                   style="font-weight: bold; font-size: 1.5em"/>
+                                   style="font-weight: bold;  font-size: 1.5em; #{product.prodApplications.fastrack?'color: #a52a2a;':''}" />
                 </td>
                 <td align="right">
-                    <h:outputLabel value="#{msgs.registration_status}: "
+                    <p:outputLabel value="#{msgs.registration_status}: "
                                    style="font-weight: bold;color: #a52a2a;"/>
-                    <h:outputLabel value="#{product.prodApplications.regState}"
+                    <p:outputLabel value="#{msgs[product.prodApplications.regState.key]}"
                                    style="font-weight: bold;color: #a52a2a;"/>
                 </td>
             </tr>
@@ -50,7 +50,9 @@
                     <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
                                    rendered="#{not empty product.prodApplications.regExpiryDate}"/>
                     <h:outputFormat value="#{product.prodApplications.regExpiryDate}"
-                                    rendered="#{not empty product.prodApplications.regExpiryDate}"/>
+                                    rendered="#{not empty product.prodApplications.regExpiryDate}">
+                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                    </h:outputFormat>
                 </td>
             </tr>
             <tr>

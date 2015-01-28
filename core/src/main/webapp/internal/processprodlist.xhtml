@@ -32,13 +32,13 @@
 
 
                     <p:column filterBy="#{eachprod.prod.prodName}"
-                              sortBy="#{eachprod.prod.prodName}">
+                              sortBy="#{eachprod.prod.prodName}" >
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
                         <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}" action="processreg"
-                                       ajax="false">
-                            <f:param name="id" value="#{eachprod.prod.id}"/>
+                                       ajax="false" style="#{eachprod.fastrack?'color: #a52a2a;':''}">
+                             <f:param name="id" value="#{eachprod.prod.id}"/>
                             <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
                         </p:commandLink>
                     </p:column>

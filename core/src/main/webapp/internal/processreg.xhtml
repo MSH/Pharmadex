@@ -385,7 +385,7 @@
             </h:panelGrid>
 
             <p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}"
-                          mode="advanced"
+                          mode="advanced" auto="true"
                           update=":reghome:growl :reghome:messages"
                           multiple="false"
                           sizeLimit="10000000">
@@ -394,7 +394,7 @@
 
             <p:commandButton id="adddoc" value="#{msgs.global_submit}"
                              action="#{fileUploadController.addDocument}"
-                             oncomplete="PF('attachdlg').hide()" ajax="false"/>
+                             oncomplete="PF('attachdlg').hide()" update=":reghome:growl :reghome:messages :reghome"/>
             </h:form>
         </p:dialog>
 
@@ -456,7 +456,7 @@
                                  oncomplete="invoicedlg.hide()"
                                  icon="ui-icon-disk" ajax="true" action="#{renewalMbn.createInvoice}"/>
                 <p:commandButton id="cnclinvoice" type="button" value="Clear"
-                                 onclick="invoicedlg.hide()"
+                                 onclick="PF('invoicedlg').hide()"
                                  icon="ui-icon-close" ajax="false"/>
             </h:panelGrid>
             </h:form>
@@ -508,7 +508,7 @@
                                  oncomplete="reportpaymentdlg.hide()"
                                  icon="ui-icon-disk" ajax="true" action="#{renewalMbn.reportPayment}"/>
                 <p:commandButton id="cnclpayment" type="button" value="Clear"
-                                 onclick="reportpaymentdlg.hide()"
+                                 onclick="PF('reportpaymentdlg').hide()"
                                  icon="ui-icon-close" ajax="false"/>
             </h:panelGrid>
         </h:form>
@@ -557,7 +557,7 @@
             <h:panelGrid columns="2" style="margin-top:10px">
                 <p:commandButton value="#{msgs.global_submit}" oncomplete="renewdlg.hide()"
                                  icon="ui-icon-disk" ajax="false" action="#{renewalMbn.renew}"/>
-                <p:commandButton type="button" value="Clear" onclick="renewdlg.hide()"
+                <p:commandButton type="button" value="Clear" onclick="('renewdlg').hide()"
                                  icon="ui-icon-close" ajax="false"/>
             </h:panelGrid>
         </h:form>

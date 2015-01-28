@@ -45,7 +45,9 @@
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}"/>
+                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputFormat>
                                 </td>
                             </tr>
                         </table>
