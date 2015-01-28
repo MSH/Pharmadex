@@ -59,6 +59,7 @@ public class Review implements Serializable {
 
     @Transient
     private boolean submitted;
+    private String modComment;
 
 
     public Long getId() {
@@ -126,7 +127,7 @@ public class Review implements Serializable {
     }
 
     public boolean isSubmitted() {
-        if (submitDate != null)
+        if (reviewStatus.equals(ReviewStatus.SUBMITTED))
             submitted = true;
         return submitted;
     }
@@ -158,5 +159,13 @@ public class Review implements Serializable {
 
     public void setModeratorSummary(String moderatorSummary) {
         this.moderatorSummary = moderatorSummary;
+    }
+
+    public void setModComment(String modComment) {
+        this.modComment = modComment;
+    }
+
+    public String getModComment() {
+        return modComment;
     }
 }

@@ -121,6 +121,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean fastrack;
 
+    private boolean sampleRecieved;
+
+    private boolean sampleRequestSend;
+
     @Column(length = 500)
     private String ackLetterNo;
 
@@ -603,6 +607,22 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setFeeAmt(String feeAmt) {
         this.feeAmt = feeAmt;
+    }
+
+    public boolean isSampleRecieved() {
+        return sampleRecieved;
+    }
+
+    public void setSampleRecieved(boolean sampleRecieved) {
+        this.sampleRecieved = sampleRecieved;
+    }
+
+    public boolean isSampleRequestSend() {
+        return sampleRequestSend;
+    }
+
+    public void setSampleRequestSend(boolean sampleRequestSend) {
+        this.sampleRequestSend = sampleRequestSend;
     }
 }
 
