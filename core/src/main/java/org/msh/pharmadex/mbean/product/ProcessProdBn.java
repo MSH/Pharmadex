@@ -245,6 +245,7 @@ public class ProcessProdBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
         }
         review.setProdApplications(prodApplications);
+        review.setReviewStatus(ReviewStatus.ASSIGNED);
         review.setAssignDate(new Date());
 
         if (!prodApplicationsService.saveReviewers(review).equalsIgnoreCase("success"))
@@ -570,7 +571,7 @@ public class ProcessProdBn implements Serializable {
                 }
             }else {
                 for (Review each : prodApplications.getReviews()) {
-                    if (!each.isSubmitted()) {
+                    if (!each.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
                         checkReviewStatus = false;
                         break;
                     } else {

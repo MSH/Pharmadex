@@ -55,11 +55,13 @@ public class ApplicantMBean implements Serializable {
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
-        if (userSession.isGeneral()) {
+        if (userSession.isGeneral()||userSession.isCompany()) {
             user = userSession.getLoggedInUserObj();
             selectedApplicant.getAddress().setCountry(user.getAddress().getCountry());
             selectedApplicant.setContactName(user != null ? user.getName() : null);
             selectedApplicant.setEmail(user != null ? user.getEmail() : null);
+            user = userSession.getLoggedInUserObj();
+
         }
     }
 

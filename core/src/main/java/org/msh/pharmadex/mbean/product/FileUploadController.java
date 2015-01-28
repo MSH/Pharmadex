@@ -11,10 +11,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,7 +23,7 @@ import java.util.Calendar;
  * Author: usrivastava
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class FileUploadController {
 
     @ManagedProperty(value = "#{attachmentDAO}")

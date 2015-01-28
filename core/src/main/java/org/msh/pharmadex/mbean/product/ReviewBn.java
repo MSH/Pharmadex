@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewChecklist;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ReviewService;
 import org.primefaces.model.DefaultStreamedContent;
@@ -17,7 +18,6 @@ import org.primefaces.model.UploadedFile;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
@@ -120,12 +120,35 @@ public class ReviewBn implements Serializable {
         return "";
     }
 
+    public String reviewerFeedback() {
+        review.setReviewStatus(ReviewStatus.FEEDBACK);
+        saveReview();
+        return "/internal/processreg";
+    }
+
+    public String approveReview() {
+        if (review.getRecomendType() == null) {
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
+        }
+
+        if(!review.getReviewStatus().equals(ReviewStatus.SUBMITTED)){
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
+        }
+
+        review.setReviewStatus(ReviewStatus.ACCEPTED);
+        saveReview();
+        userSession.setProdApplications(review.getProdApplications());
+        userSession.setProduct(review.getProdApplications().getProd());
+        return "/internal/processreg";
+    }
+
     public String submitReview() {
         if (review.getRecomendType() == null) {
             facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
         }
 
         review.setSubmitDate(new Date());
+        review.setReviewStatus(ReviewStatus.SUBMITTED);
         saveReview();
         userSession.setProdApplications(review.getProdApplications());
         userSession.setProduct(review.getProdApplications().getProd());
