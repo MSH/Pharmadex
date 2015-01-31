@@ -3,11 +3,11 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
-    <h:panelGrid cellspacing="8px" cellpadding="10px" columns="4" id="user" style="text-justify:auto;" width="100%"
+    <h:panelGrid cellspacing="8px" cellpadding="10px" columns="4" style="text-justify:auto;" width="100%"
                  columnClasses="col1, col2, col1, col2">
-        <p:outputLabel value="#{msgs.User_name}" for="name"/>
+        <p:outputLabel value="#{msgs.User_name}*" />
         <h:outputText value="#{userdata.name}"  style="font-weight: bold;" rendered="#{!input}"/>
-        <p:inputText value="#{userdata.name}" rendered="#{input}" id="name" required="true" requiredMessage="#{msgs.valid_namereq}">
+        <p:inputText value="#{userdata.name}" rendered="#{input}"  required="true" requiredMessage="#{msgs.valid_namereq}">
             <f:validator binding="#{userNameValidator}"/>
                 </p:inputText>
 
@@ -19,17 +19,17 @@
             <ui:param name="input" value="#{input}"/>
         </ui:decorate>
 
-        <p:outputLabel value="#{msgs.applicant_phone}" for="phoneno"/>
+        <p:outputLabel value="#{msgs.applicant_phone}" />
         <h:outputText value="#{userdata.phoneNo}"  style="font-weight: bold;" rendered="#{!input}"/>
-        <p:inputText value="#{userdata.phoneNo}" rendered="#{input}" id="phoneno"/>
+        <p:inputText value="#{userdata.phoneNo}" rendered="#{input}" />
 
-        <p:outputLabel value="#{msgs.applicant_faxno}" for="faxno"/>
+        <p:outputLabel value="#{msgs.applicant_faxno}" />
         <h:outputText value="#{userdata.faxNo}" style="font-weight: bold;" rendered="#{!input}"/>
-        <p:inputText value="#{userdata.faxNo}" rendered="#{input}"  id="faxno" />
+        <p:inputText value="#{userdata.faxNo}" rendered="#{input}"   />
 
-        <h:outputLabel value="#{msgs.User_email}" for="email"/>
+        <h:outputLabel value="#{msgs.User_email}*" />
         <h:outputText value="#{userdata.email}"  style="font-weight: bold;" rendered="#{!input}"/>
-        <p:inputText value="#{userdata.email}" rendered="#{input}" id="email" validatorMessage="#{msgs.valid_email}">
+        <p:inputText value="#{userdata.email}" rendered="#{input}"  validatorMessage="#{msgs.valid_email}">
             <f:validateRegex
                     pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
                     />
