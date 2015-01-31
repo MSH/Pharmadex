@@ -234,4 +234,9 @@ public class ProdApplicationsDAO implements Serializable {
             query.where(predicates);
         return entityManager.createQuery(query).getResultList();
     }
+
+    public Long findApplicationCount() {
+        return (Long) entityManager.createQuery("select count(*) from ProdApplications pa ")
+                .getSingleResult();
+    }
 }

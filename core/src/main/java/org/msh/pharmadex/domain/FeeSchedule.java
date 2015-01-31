@@ -24,6 +24,12 @@ public class FeeSchedule extends CreationDetail implements Serializable {
     @Column(length = 255, nullable = false)
     private String fee;
 
+    @Column(length = 255, nullable = false)
+    private String preScreenFee;
+
+    @Column(length = 255, nullable = false)
+    private String totalFee;
+
     @Temporal(TemporalType.DATE)
     private Date startDate;
 
@@ -69,5 +75,21 @@ public class FeeSchedule extends CreationDetail implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getPreScreenFee() {
+        return preScreenFee;
+    }
+
+    public void setPreScreenFee(String preScreenFee) {
+        this.preScreenFee = preScreenFee;
+    }
+
+    public String getTotalFee() {
+        return totalFee;
+    }
+
+    public void setTotalFee(String totalFee) {
+        this.totalFee = totalFee;
     }
 }

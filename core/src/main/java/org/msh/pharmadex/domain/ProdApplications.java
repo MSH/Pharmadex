@@ -80,7 +80,13 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private String receiptNo;
 
     @Column(length = 500)
+    private String prescreenReceiptNo;
+
+    @Column(length = 500)
     private String bankName;
+
+    @Column(length = 500)
+    private String prescreenBankName;
 
     @Column(length = 1500)
     private String indications;
@@ -90,6 +96,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @Column(length = 255)
     private String feeAmt;
+
+    @Column(length = 255)
+    private String prescreenfeeAmt;
+
+    @Temporal(TemporalType.DATE)
+    private Date prescreenfeeSubmittedDt;
 
     @Temporal(TemporalType.DATE)
     private Date feeSubmittedDt;
@@ -110,6 +122,8 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private Date regExpiryDate;
 
     private boolean feeReceived;
+
+    private boolean prescreenfeeReceived;
 
     private boolean dossierReceived;
 
@@ -623,6 +637,46 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setSampleRequestSend(boolean sampleRequestSend) {
         this.sampleRequestSend = sampleRequestSend;
+    }
+
+    public boolean isPrescreenfeeReceived() {
+        return prescreenfeeReceived;
+    }
+
+    public void setPrescreenfeeReceived(boolean prescreenfeeReceived) {
+        this.prescreenfeeReceived = prescreenfeeReceived;
+    }
+
+    public String getPrescreenfeeAmt() {
+        return prescreenfeeAmt;
+    }
+
+    public void setPrescreenfeeAmt(String prescreenfeeAmt) {
+        this.prescreenfeeAmt = prescreenfeeAmt;
+    }
+
+    public Date getPrescreenfeeSubmittedDt() {
+        return prescreenfeeSubmittedDt;
+    }
+
+    public void setPrescreenfeeSubmittedDt(Date prescreenfeeSubmittedDt) {
+        this.prescreenfeeSubmittedDt = prescreenfeeSubmittedDt;
+    }
+
+    public String getPrescreenReceiptNo() {
+        return prescreenReceiptNo;
+    }
+
+    public void setPrescreenReceiptNo(String prescreenReceiptNo) {
+        this.prescreenReceiptNo = prescreenReceiptNo;
+    }
+
+    public String getPrescreenBankName() {
+        return prescreenBankName;
+    }
+
+    public void setPrescreenBankName(String prescreenBankName) {
+        this.prescreenBankName = prescreenBankName;
     }
 }
 

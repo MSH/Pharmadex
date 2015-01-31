@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,5 +174,16 @@ public class ProductDAO implements Serializable {
 
     }
 
+    public int findCountRegProduct() {
+        List<RegState> regStates = new ArrayList<RegState>();
+        regStates.add(RegState.REGISTERED);
+        regStates.add(RegState.DISCONTINUED);
+        regStates.add(RegState.XFER_APPLICANCY);
+
+        Long count = (Long) entityManager.createQuery("select count(*) from Product p where p.regState in :regStates")
+                .setParameter("regStates", regStates).getSingleResult();
+
+        return count.intValue();
+    }
 }
 

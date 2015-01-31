@@ -6,6 +6,8 @@ package org.msh.pharmadex.domain.enums;
 public enum AmdmtState {
     NEW_APPLICATION,
     REVIEW,
+    RECOMMENDED,
+    NOT_RECOMMENDED,
     REJECTED,
     APPROVED;
 
