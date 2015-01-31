@@ -47,11 +47,13 @@ public class UserSession implements Serializable {
     private boolean moderator = false;
     private boolean reviewer = false;
     private boolean head = false;
+    private boolean csd = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
     private DisplayReviewInfo displayReviewInfo;
     private ProdApp prodApp;
     private String workspaceName;
+    private boolean ethiopia;
 
     @ManagedProperty(value = "#{userAccessService}")
     private UserAccessService userAccessService;
@@ -60,6 +62,7 @@ public class UserSession implements Serializable {
     private OnlineUserBean onlineUserBean;
     private String licHolderID;
     private String pipOrderID;
+    private String purOrderID;
 
 
     public void login() {
@@ -126,6 +129,10 @@ public class UserSession implements Serializable {
             Workspace w = userAccessService.getWorkspace();
             setDisplayPricing(w.isDisplatPricing());
             setWorkspaceName(w.getName());
+            if(workspaceName.equalsIgnoreCase("Ethiopia"))
+                setEthiopia(true);
+            else
+                setEthiopia(false);
         } catch (NoResultException e) {
             setDisplayPricing(false);
         } catch (Exception e) {
@@ -149,6 +156,11 @@ public class UserSession implements Serializable {
                 if (role.getRolename().equalsIgnoreCase("ROLE_STAFF")) {
                     setStaff(true);
                     setDisplayAppReg(true);
+                }
+                if (role.getRolename().equalsIgnoreCase("ROLE_CSD")) {
+                    setStaff(true);
+                    setDisplayAppReg(true);
+                    setCsd(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_COMPANY")) {
                     setCompany(true);
@@ -483,5 +495,29 @@ public class UserSession implements Serializable {
 
     public void setWorkspaceName(String workspaceName) {
         this.workspaceName = workspaceName;
+    }
+
+    public boolean isCsd() {
+        return csd;
+    }
+
+    public void setCsd(boolean csd) {
+        this.csd = csd;
+    }
+
+    public boolean isEthiopia() {
+        return ethiopia;
+    }
+
+    public void setEthiopia(boolean ethiopia) {
+        this.ethiopia = ethiopia;
+    }
+
+    public String getPurOrderID() {
+        return purOrderID;
+    }
+
+    public void setPurOrderID(String purOrderID) {
+        this.purOrderID = purOrderID;
     }
 }
