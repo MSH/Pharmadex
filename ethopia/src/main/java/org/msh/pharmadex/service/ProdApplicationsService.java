@@ -12,6 +12,7 @@ import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -411,10 +412,35 @@ public class ProdApplicationsService implements Serializable {
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
+    public String generateRegNo(){
+        int count = productDAO.findCountRegProduct();
+        String regNO = String.format("%04d", count);
+        String appNo = prodApp.getProdAppNo();
+        appNo = appNo.substring(0,4);
+        String appType = "NMR";
+        int dt = Calendar.getInstance().get(Calendar.YEAR);
+        String year = ""+dt;
+        regNO = regNO+appNo+appType+year;
+        return regNO;
+
+    }
+
+    public String generateAppNo(){
+        RegistrationUtil registrationUtil = new RegistrationUtil();
+        return registrationUtil.generateAppNo(findApplicationCount(), "NMR");
+
+    }
+
+    public Long findApplicationCount() {
+        return prodApplicationsDAO.findApplicationCount();
+
+    }
+
 
     public String createRegCert(ProdApplications prodApp) {
         this.prodApp = prodApp;
         this.product = prodApp.getProd();
+        product.setRegNo(generateRegNo());
 
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
