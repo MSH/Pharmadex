@@ -32,7 +32,6 @@
                         <f:selectItem itemLabel="-" itemValue=""/>
                         <f:selectItems value="#{globalLists.prodAppType}" var="prodcat"
                                        itemLabel="#{msgs[prodcat.key]}"/>
-                        <p:ajax event="change" listener="#{prodRegInit.calculate}" update=":reghome:feepanel"/>
                     </p:selectOneMenu>
                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
 
@@ -46,8 +45,9 @@
                     </h:panelGroup>
                     <p:message for="regauth"/>
 
-                    <p:outputLabel value="(Only check the countries where the product is registered and the copies of registration certificates should be included in the Application Dossier)"
-                                   styleClass="hint"/>
+                    <p:outputLabel
+                            value="(Only check the countries where the product is registered and the copies of registration certificates should be included in the Application Dossier)"
+                            styleClass="hint"/>
                     <p:outputLabel/>
                     <p:outputLabel/>
 
@@ -56,21 +56,51 @@
                                            onIcon="ui-icon-check" offIcon="ui-icon-close" value="#{prodRegInit.eml}"/>
                     <p:message for="emlbb"/>
 
+                    <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel value="#{prodRegInit.prescreenfee}" styleClass="value"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel value="#{prodRegInit.fee}" styleClass="value"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel/>
+
                     <p:outputLabel value="#{msgs.total_fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
                     <p:outputLabel value="#{prodRegInit.totalfee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel/>
 
 
                 </h:panelGrid>
 
                 <div style="height:10px"/>
 
+                <p:commandButton value="#{msgs.calculate_fee}" action="#{prodRegInit.calculate}"
+                                 update=":reghome" />
                 <p:commandButton action="#{prodRegInit.regApp}" ajax="false"
                                  value="Product Registration Application" rendered="#{prodRegInit.eligible}"/>
             </p:panel>
 
             <div style="height:10px"/>
+
+
+            <p:dataTable var="each" value="#{prodRegInit.checklists}" id="checklisttable"
+                         rendered="#{prodRegInit.displayfeepanel}">
+                <f:facet name="header">
+                    Required Documents
+                </f:facet>
+
+                <p:column headerText="#{msgs.checklist_moduleno}" width="100">
+                    <h:outputLabel value="#{each.moduleNo}"/>
+                </p:column>
+                <p:column headerText="#{msgs.checklist_name}">
+                    <h:outputLabel value="#{each.name}"/>
+                </p:column>
+            </p:dataTable>
 
         </h:form>
 

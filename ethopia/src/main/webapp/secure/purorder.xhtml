@@ -5,7 +5,7 @@
                 template="../templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post" style="width: 1024px">
-            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.piporder}</h1>
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.purorder}</h1>
         </div>
 
         <h:form prependId="false" id="reghome">
@@ -13,8 +13,8 @@
             <p:messages id="messages" showDetail="true"/>
 
             <ui:decorate template="appinfosub.xhtml">
-                <ui:param name="regHomeData" value="#{pIPOrderBn}"/>
-                <ui:param name="appSelectData" value="#{pIPAppSelectBn}"/>
+                <ui:param name="regHomeData" value="#{purOrderBn}"/>
+                <ui:param name="appSelectData" value="#{pOAppSelectBn}"/>
                 <ui:param name="displayLH" value="false"/>
             </ui:decorate>
 
@@ -23,19 +23,19 @@
             <p:panel header="#{msgs.general_info}">
                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
-                    <p:inputText id="shipinst" required="true" value="#{pIPOrderBn.pipOrder.shippingInstruction}"/>
+                    <p:inputText id="shipinst" required="true" value="#{purOrderBn.purOrder.shippingInstruction}"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
-                    <p:inputText id="delivery" required="true" value="#{pIPOrderBn.pipOrder.delivery}" />
+                    <p:inputText id="delivery" required="true" value="#{purOrderBn.purOrder.delivery}" />
 
                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
-                    <p:inputText id="payinfo" required="true" value="#{pIPOrderBn.pipOrder.paymentMethod}" />
+                    <p:inputText id="payinfo" required="true" value="#{purOrderBn.purOrder.paymentMethod}" />
 
                     <p:outputLabel value="#{msgs.file_number}" for="filno"/>
-                    <p:inputText id="filno" value="#{pIPOrderBn.pipOrder.fileNumber}" />
+                    <p:inputText id="filno" value="#{purOrderBn.purOrder.fileNumber}" />
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
-                    <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}" />
+                    <p:inputText id="comment" value="#{purOrderBn.purOrder.comment}" />
 
                 </h:panelGrid>
 
@@ -50,10 +50,10 @@
                             styleClass="hint"/>
 
 
-                        <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;">
+                        <p:dataTable id="ordertable" var="order" value="#{purOrderBn.purProds}" style="width:100%;">
                             <f:facet name="header">
                                 <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
-                                                 action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
+                                                 action="#{purOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                             </f:facet>
 
                             <p:column headerText="#{msgs.prod_number}">
@@ -85,7 +85,7 @@
                             </p:column>
 
                             <p:column>
-                                <p:commandButton action="#{pIPOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
+                                <p:commandButton action="#{purOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
                                                  update=":reghome:ordertable :reghome:growl" immediate="true">
                                 </p:commandButton>
                             </p:column>
@@ -100,7 +100,7 @@
             <div style="height:10px"/>
 
             <p:panel header="#{msgs.checklist}">
-                <p:dataTable var="checkList" value="#{pIPOrderBn.pipOrderChecklists}" style="width:100%;">
+                <p:dataTable var="checkList" value="#{purOrderBn.purOrderChecklists}" style="width:100%;">
                     <p:column headerText="">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.id}"/>
                     </p:column>
@@ -118,7 +118,7 @@
                 <p:commandButton value="#{msgs.global_submit}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
                                  update="messages growl"/>
-                <p:commandButton action="#{pIPOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
+                <p:commandButton action="#{purOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
                                  immediate="true"/>
             </div>
 
@@ -161,9 +161,9 @@
                 </div>
                 <p:commandButton value="#{msgs.global_yes}" styleClass="ui-confirmdialog-yes"
                                  icon="ui-icon-check"
-                                 action="#{pIPOrderBn.saveOrder}" ajax="false" oncomplete="PF('confirmDlg').hide()"/>
+                                 action="#{purOrderBn.saveOrder}" ajax="false" oncomplete="PF('confirmDlg').hide()"/>
                 <p:commandButton value="#{msgs.global_no}" styleClass="ui-confirmdialog-no"
-                                 action="#{pIPOrderBn.cancelOrder}"
+                                 action="#{purOrderBn.cancelOrder}"
                                  icon="ui-icon-close" immediate="true" oncomplete="PF('confirmDlg').hide()"/>
             </h:form>
         </p:dialog>
@@ -172,37 +172,57 @@
             <h:form id="orderdetailfrm">
                 <p:growl showSummary="true"/>
                 <p:messages/>
+                <h:panelGrid columns="3" cellpadding="5">
+                </h:panelGrid>
 
                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2" id="order_detail">
+                    <h:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
+                    <p:autoComplete value="#{purOrderBn.product}" id="basicPojo"
+                                    completeMethod="#{purOrderBn.completeProduct}"
+                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                    converter="#{productConverter}" forceSelection="true"
+                            >
+                        <p:ajax event="itemSelect"
+                                update="orderdetailfrm"
+                                listener="#{purOrderBn.appChangeListenener}" partialSubmit="true" process="@this" />
+                        <p:ajax event="change" listener="#{purOrderBn.appChangeListenener}"
+                                update="orderdetailfrm"
+                                partialSubmit="true" process="@this"/>
+
+                    </p:autoComplete>
+
+                    <p:outputLabel/>
+                    <p:outputLabel/>
+
                     <p:outputLabel value="#{msgs.prod_number}" for="prodnum"/>
-                    <p:inputText id="prodnum" required="true" value="#{pIPOrderBn.pipProd.productNo}" />
+                    <p:outputLabel id="prodnum" required="true" value="#{purOrderBn.product.regNo}" />
 
                     <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
-                    <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipProd.productName}" />
+                    <p:outputLabel id="prodname" required="true" value="#{purOrderBn.product.prodName}" />
 
                     <p:outputLabel value="#{msgs.prod_desc}" for="proddesc"/>
-                    <p:inputText id="proddesc" required="true" value="#{pIPOrderBn.pipProd.productDesc}" />
+                    <p:outputLabel id="proddesc" required="true" value="#{purOrderBn.product.prodDesc}" />
 
                     <p:outputLabel value="#{msgs.inn_unit}" for="unit"/>
-                    <p:inputText id="unit" required="true" value="#{pIPOrderBn.pipProd.unit}" />
+                    <p:inputText id="unit" required="true" value="#{purOrderBn.purProd.unit}" />
 
                     <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
-                    <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipProd.quantity}" />
+                    <p:inputText id="quant" required="true" value="#{purOrderBn.purProd.quantity}" />
 
                     <p:outputLabel value="#{msgs.product_pricing}" for="price"/>
-                    <p:inputText id="price" required="true" value="#{pIPOrderBn.pipProd.unitPrice}" />
+                    <p:inputText id="price" required="true" value="#{purOrderBn.purProd.unitPrice}" />
 
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
-                    <p:inputText id="total" required="true" value="#{pIPOrderBn.pipProd.totalPrice}" />
+                    <p:inputText id="total" required="true" value="#{purOrderBn.purProd.totalPrice}" />
 
                 </h:panelGrid>
 
                 <h:panelGroup>
-                    <p:commandButton action="#{pIPOrderBn.addProd}" ajax="true"
+                    <p:commandButton action="#{purOrderBn.addProd}"
                                      value="#{msgs.global_add}"
                                      oncomplete="if (!args.validationFailed) PF('orderdetailDlg').hide()"
                                      process="@form" update=":reghome:ordertable"/>
-                    <p:commandButton action="#{pIPOrderBn.cancelAddProd}" immediate="true" ajax="true"
+                    <p:commandButton action="#{purOrderBn.cancelAddProd}" immediate="true" ajax="true"
                                      value="#{msgs.global_cancel}" oncomplete="PF('orderdetailDlg').hide()"/>
                 </h:panelGroup>
 
