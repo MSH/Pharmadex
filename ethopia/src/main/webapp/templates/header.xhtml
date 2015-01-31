@@ -32,8 +32,8 @@
                             <p:commandLink action="#{userSession.editUser}" value="#{msgs.admin_settings} |"
                                            immediate="true"
                                            ajax="false">
-                                <f:setPropertyActionListener value="#{userSession.userAccess.user}"
-                                                             target="#{registerUserMbean.user}"/>
+                                <f:setPropertyActionListener value="#{userSession.userAccess.applicantUser}"
+                                                             target="#{registerUserMbean.applicantUser}"/>
                             </p:commandLink>
                             <p:commandLink action="#{userAuthHandler.logout}" value="#{msgs.admin_logout}"
                                            ajax="false"/>
@@ -102,7 +102,7 @@
 
                         <p:separator/>
                         <p:submenu label="#{msgs.current_applications}"
-                                   rendered="#{userSession.company||userSession.admin}">
+                                   rendered="#{userSession.company||userSession.staff}">
                             <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
                                         url="/secure/submittedproducts.faces"/>
                             <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
@@ -174,9 +174,19 @@
                                     rendered="#{userSession.admin||userSession.company||userSession.staff}"/>
                         <p:menuitem value="#{msgs.submitted_pip}" url="/secure/piporderlist.faces"
                                     icon="ui-icon-folder-collapsed"
+                                    rendered="#{userSession.company}"/>
+                        <p:separator rendered="#{userSession.admin||userSession.staff}"/>
+                        <p:menuitem value="#{msgs.pur_order}" url="/secure/purorder.faces"
+                                    icon="ui-icon-document"
                                     rendered="#{userSession.admin||userSession.company||userSession.staff}"/>
+                        <p:menuitem value="#{msgs.submitted_po}" url="/secure/purorderlist.faces"
+                                    icon="ui-icon-folder-collapsed"
+                                    rendered="#{userSession.company}"/>
                         <p:separator rendered="#{userSession.admin||userSession.staff}"/>
                         <p:menuitem value="#{msgs.process_piporder}" url="/internal/processpiporderlist.faces"
+                                    icon="ui-icon-gear"
+                                    rendered="#{userSession.admin||userSession.staff}"/>
+                        <p:menuitem value="#{msgs.process_purorder}" url="/internal/processpurorderlist.faces"
                                     icon="ui-icon-gear"
                                     rendered="#{userSession.admin||userSession.staff}"/>
                     </p:submenu>

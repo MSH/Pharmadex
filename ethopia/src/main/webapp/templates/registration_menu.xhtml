@@ -33,7 +33,7 @@
                 </p:submenu>
 
 
-                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.admin}">
+                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff}">
                     <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
                                 url="/secure/submittedproducts.faces"/>
                     <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
