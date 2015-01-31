@@ -16,6 +16,9 @@
                             <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
                                         id="saveMenuItem"
                                         ajax="true" update=":reghome"/>
+                            <p:menuitem value="generate" icon="ui-icon-gear"
+
+                                        action="#{prodApplicationsService.generateRegNo}" ajax="false"/>
                             <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document"
                                         onclick="PF('dlg').show()" id="addCommentMI"/>
                             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
@@ -153,7 +156,7 @@
                                     <p:column style="width:120px;">
                                         <p:outputLabel styleClass="ui-icon ui-icon-comment"
                                                        style="display:inline-block;"/>
-                                        <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+                                        <p:outputLabel value="#{it.applicantUser.name}" styleClass="label"/>
 
                                         <div style="font-size: smaller;">
                                             <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
@@ -191,7 +194,7 @@
                                     </p:column>
 
                                     <p:column headerText="#{msgs.updated_by}">
-                                        #{timeline.user.name}
+                                        #{timeline.applicantUser.name}
                                     </p:column>
 
                                     <p:column headerText="#{msgs.global_comment}">
@@ -353,7 +356,7 @@
                                   escape="false"
                                   styleClass="text"/>
 
-                    <p:autoComplete id="module3" value="#{processProdBn.review.user}"
+                    <p:autoComplete id="module3" value="#{processProdBn.review.applicantUser}"
                                     completeMethod="#{globalEntityLists.completeProcessorList}"
                                     dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
