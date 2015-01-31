@@ -20,6 +20,18 @@ public class RegistrationUtil {
         return prodAppNo;
     }
 
+    public String generateAppNo(Long count, String appType) {
+        Calendar calendar = Calendar.getInstance();
+        String year = "" + calendar.get(Calendar.YEAR);
+        String no = String.format("%04d", count);
+
+
+        String prodAppNo = no + appType + year;
+        return prodAppNo;
+    }
+
+
+
     public static String formatString(String dosForm) {
         String value = dosForm.trim();
         value = value.toUpperCase();
