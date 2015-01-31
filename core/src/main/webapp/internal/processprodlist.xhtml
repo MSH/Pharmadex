@@ -52,6 +52,14 @@
                         <h:outputText value="#{eachprod.prod.genName}"/>
                     </p:column>
 
+                    <p:column filterBy="#{eachprod.prodAppNo}"
+                              sortBy="#{eachprod.prodAppNo}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.application_no}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.prodAppNo}"/>
+                    </p:column>
+
                     <p:column filterBy="#{msgs[eachprod.regState.key]}"
                               sortBy="#{msgs[eachprod.regState.key]}">
                         <f:facet name="header">
@@ -70,11 +78,18 @@
                     <p:column sortBy="#{eachprod.prod.applicant.appName}"
                               filterBy="#{eachprod.prod.applicant.appName}">
                         <f:facet name="header">
-                            <h:outputText value="#{msgs.manuf_name}"/>
+                            <h:outputText value="#{msgs.applicant_name}"/>
                         </f:facet>
                         <h:outputLabel value="#{eachprod.prod.applicant.appName}"/>
                     </p:column>
 
+                    <p:column sortBy="#{eachprod.prod.manufName}"
+                              filterBy="#{eachprod.prod.manufName}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.manuf_name}"/>
+                        </f:facet>
+                        <h:outputLabel value="#{eachprod.prod.manufName}"/>
+                    </p:column>
                 </p:dataTable>
             </p:panel>
 
