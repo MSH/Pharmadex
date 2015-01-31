@@ -38,7 +38,8 @@ public class PIPOrderBn implements Serializable {
     private PIPProd pipProd;
     private List<PIPProd> pipProds;
     private List<PIPOrderChecklist> pipOrderChecklists;
-    private User user;
+    private User applicantUser;
+    private Applicant applicant;
 
     FacesContext context = FacesContext.getCurrentInstance();
     java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
@@ -48,8 +49,10 @@ public class PIPOrderBn implements Serializable {
     private void init() {
         pipOrder = new PIPOrder();
         if (userSession.isCompany()) {
-            user = userSession.getLoggedInUserObj();
-            pipOrder.setCreatedBy(user);
+            applicantUser = userSession.getLoggedInUserObj();
+            applicant = applicantUser.getApplicant();
+            pipOrder.setCreatedBy(applicantUser);
+            pipOrder.setApplicantUser(applicantUser);
         }
 
         pipOrderChecklists = new ArrayList<PIPOrderChecklist>();
@@ -102,6 +105,9 @@ public class PIPOrderBn implements Serializable {
         pipOrder.setState(AmdmtState.NEW_APPLICATION);
         pipOrder.setPipOrderChecklists(pipOrderChecklists);
         pipOrder.setPipProds(pipProds);
+        pipOrder.setApplicant(applicant);
+        pipOrder.setApplicantUser(applicantUser);
+
 
         if (userSession.isCompany())
             pipOrder.setApplicant(userSession.getApplicant());
@@ -168,12 +174,12 @@ public class PIPOrderBn implements Serializable {
         this.pipProds = pipProds;
     }
 
-    public User getUser() {
-        return user;
+    public User getApplicantUser() {
+        return applicantUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setApplicantUser(User applicantUser) {
+        this.applicantUser = applicantUser;
     }
 
     public PIPProd getPipProd() {
@@ -182,5 +188,13 @@ public class PIPOrderBn implements Serializable {
 
     public void setPipProd(PIPProd pipProd) {
         this.pipProd = pipProd;
+    }
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
     }
 }

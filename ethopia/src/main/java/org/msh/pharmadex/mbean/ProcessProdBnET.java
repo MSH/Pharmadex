@@ -62,6 +62,10 @@ public class ProcessProdBnET implements Serializable {
         prodApplications = processProdBn.getProdApplications();
         processProdBn.setModerator(moderator);
         processProdBn.assignModerator();
+        if(!prodApplications.isPrescreenfeeReceived()){
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pre-screen fee not received","Pre-screen fee not received"));
+            return "";
+        }
         if (prodApplications.getRegState().equals(RegState.NEW_APPL)||prodApplications.getRegState().equals(RegState.FOLLOW_UP)) {
             timeLine = new TimeLine();
             timeLine.setRegState(RegState.SCREENING);

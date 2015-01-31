@@ -46,7 +46,8 @@ public class RegHomeMbeanET implements Serializable{
             prodApplications.setProdAppType(prodApp.getProdAppType());
             prodApplications.setSra(prodApp.isSRA());
             prodApplications.setFastrack(prodApp.isEml());
-            prodApplications.setFeeAmt(prodApp.getTotalfee());
+            prodApplications.setFeeAmt(prodApp.getFee());
+            prodApplications.setPrescreenfeeAmt(prodApp.getPrescreenfee());
 
             if(prodApplications.getId()==null) {
                 List<ProdAppChecklist> prodAppChecklists = prodApplications.getProdAppChecklists();

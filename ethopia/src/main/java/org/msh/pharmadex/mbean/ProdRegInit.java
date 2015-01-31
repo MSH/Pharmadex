@@ -6,10 +6,12 @@ package org.msh.pharmadex.mbean;
 
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.FeeSchedule;
 import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.mbean.product.ProdApp;
+import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.springframework.web.util.WebUtils;
@@ -22,6 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Backing bean to capture review of products
@@ -40,29 +43,45 @@ public class ProdRegInit implements Serializable {
     @ManagedProperty(value = "#{licenseHolderService}")
     private LicenseHolderService licenseHolderService;
 
+    @ManagedProperty(value = "#{checklistService}")
+    private ChecklistService checklistService;
+
     private String[] selSRA;
     private boolean eml = false;
     private boolean displayfeepanel;
+    private String fee;
+    private String prescreenfee;
     private String totalfee;
     private ProdAppType prodAppType;
     private FacesContext context;
     private boolean eligible;
+    private List<Checklist> checklists;
 
-    public void calculate(AjaxBehaviorEvent event) {
+    public void calculate() {
         context = FacesContext.getCurrentInstance();
-        if (prodAppType.equals(null)) {
+        if (prodAppType==null) {
             context.addMessage(null, new FacesMessage("prodapptype_null"));
             displayfeepanel = false;
         } else {
             for (FeeSchedule feeSchedule : globalEntityLists.getFeeSchedules()) {
                 if (feeSchedule.getAppType().equals(prodAppType.name())) {
-                    totalfee = feeSchedule.getFee();
+                    totalfee = feeSchedule.getTotalFee();
+                    fee = feeSchedule.getFee();
+                    prescreenfee = feeSchedule.getPreScreenFee();
                     break;
                 }
             }
+            populateChecklist();
             displayfeepanel = true;
         }
 
+    }
+
+    public void populateChecklist() {
+        boolean sra = false;
+        if(selSRA!=null)
+            sra = selSRA.length > 0;
+        checklists = checklistService.getETChecklists(prodAppType, sra);
     }
 
     public String regApp() {
@@ -74,12 +93,15 @@ public class ProdRegInit implements Serializable {
         prodApp.setEml(eml);
         prodApp.setProdAppType(prodAppType);
         prodApp.setSelSRA(selSRA);
+        prodApp.setFee(fee);
+        prodApp.setPrescreenfee(prescreenfee);
         prodApp.setTotalfee(totalfee);
         prodApp.setSRA(selSRA.length > 0);
 
         userSession.setProdApp(prodApp);
         return "/secure/prodreghome";
     }
+
 
     public UserSession getUserSession() {
         return userSession;
@@ -138,15 +160,15 @@ public class ProdRegInit implements Serializable {
     }
 
     public boolean isEligible() {
-        if(userSession.isAdmin()||userSession.isHead()||userSession.isStaff())
+        if (userSession.isAdmin() || userSession.isHead() || userSession.isStaff())
             eligible = true;
 
-        if(userSession.isCompany()){
-            if(userSession.getApplicant()==null)
+        if (userSession.isCompany()) {
+            if (userSession.getApplicant() == null)
                 eligible = false;
-            else{
+            else {
                 LicenseHolder licenseHolder = licenseHolderService.findLicHolderByApplicant(userSession.getApplicant().getApplcntId());
-                if(licenseHolder!=null)
+                if (licenseHolder != null)
                     eligible = true;
                 else
                     eligible = false;
@@ -167,5 +189,35 @@ public class ProdRegInit implements Serializable {
         this.licenseHolderService = licenseHolderService;
     }
 
+    public String getFee() {
+        return fee;
+    }
 
+    public void setFee(String fee) {
+        this.fee = fee;
+    }
+
+    public String getPrescreenfee() {
+        return prescreenfee;
+    }
+
+    public void setPrescreenfee(String prescreenfee) {
+        this.prescreenfee = prescreenfee;
+    }
+
+    public List<Checklist> getChecklists() {
+        return checklists;
+    }
+
+    public void setChecklists(List<Checklist> checklists) {
+        this.checklists = checklists;
+    }
+
+    public ChecklistService getChecklistService() {
+        return checklistService;
+    }
+
+    public void setChecklistService(ChecklistService checklistService) {
+        this.checklistService = checklistService;
+    }
 }

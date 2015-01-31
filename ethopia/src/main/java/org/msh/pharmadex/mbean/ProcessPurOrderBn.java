@@ -1,11 +1,10 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.PIPOrder;
+import org.msh.pharmadex.domain.PurOrder;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.PIPOrderService;
-import org.omnifaces.util.Faces;
+import org.msh.pharmadex.service.PurOrderService;
 import org.springframework.web.util.WebUtils;
 
 import javax.faces.application.FacesMessage;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import static javax.faces.application.FacesMessage.FACES_MESSAGES;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
@@ -26,38 +24,38 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
  */
 @ManagedBean
 @ViewScoped
-public class ProcessPIPOrderBn {
+public class ProcessPurOrderBn {
 
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     FacesContext facesContext = FacesContext.getCurrentInstance();
     ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-    private PIPOrder pipOrder;
+    private PurOrder purOrder;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-    @ManagedProperty(value = "#{PIPOrderService}")
-    private PIPOrderService pipOrderService;
+    @ManagedProperty(value = "#{purOrderService}")
+    private PurOrderService purOrderService;
     private boolean displayRecommend;
 
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
-            pipOrder.setUpdatedDate(new Date());
-            if (pipOrder.getPipProds() == null || pipOrder.getPipProds().size() == 0) {
+            purOrder.setUpdatedDate(new Date());
+            if (purOrder.getPurProds() == null || purOrder.getPurProds().size() == 0) {
                 FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
                 error.setSeverity(SEVERITY_ERROR);
                 facesContext.addMessage(null, error);
                 return null;
             }
-            pipOrder = pipOrderService.updatePIPOrder(pipOrder);
+            purOrder = purOrderService.updatePurOrder(purOrder);
 
-            if (pipOrder == null) {
+            if (purOrder == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
                 return null;
             }
 
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
-            return "/public/processpiporderlist.faces";
+            return "/public/processpurorderlist.faces";
         } catch (Exception e) {
             e.printStackTrace();
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
@@ -68,9 +66,9 @@ public class ProcessPIPOrderBn {
     public String approveOrder() {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext,"msgs");
-        if(pipOrder.getState().equals(AmdmtState.RECOMMENDED)) {
-            pipOrder.setState(AmdmtState.APPROVED);
-            pipOrder.setApprovalDate(new Date());
+        if(purOrder.getState().equals(AmdmtState.RECOMMENDED)) {
+            purOrder.setState(AmdmtState.APPROVED);
+            purOrder.setApprovalDate(new Date());
             return saveApp();
         }else{
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"),"Invalid Operation!!!" ));
@@ -81,9 +79,9 @@ public class ProcessPIPOrderBn {
     public String rejectOrder() {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext,"msgs");
-        if(pipOrder.getState().equals(AmdmtState.NOT_RECOMMENDED)) {
-            pipOrder.setState(AmdmtState.REJECTED);
-            pipOrder.setApprovalDate(new Date());
+        if(purOrder.getState().equals(AmdmtState.NOT_RECOMMENDED)) {
+            purOrder.setState(AmdmtState.REJECTED);
+            purOrder.setApprovalDate(new Date());
             return saveApp();
         }else{
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Invalid Operation!!!"));
@@ -93,8 +91,8 @@ public class ProcessPIPOrderBn {
     }
 
     public String recommendOrder() {
-        if(pipOrder.getState().equals(AmdmtState.NEW_APPLICATION)||pipOrder.getState().equals(AmdmtState.NOT_RECOMMENDED)){
-            pipOrder.setState(AmdmtState.RECOMMENDED);
+        if(purOrder.getState().equals(AmdmtState.NEW_APPLICATION)||purOrder.getState().equals(AmdmtState.NOT_RECOMMENDED)){
+            purOrder.setState(AmdmtState.RECOMMENDED);
             return saveApp();
         }else{
             return "";
@@ -102,7 +100,7 @@ public class ProcessPIPOrderBn {
     }
 
     public String notRecommendedOrder() {
-        pipOrder.setState(AmdmtState.NOT_RECOMMENDED);
+        purOrder.setState(AmdmtState.NOT_RECOMMENDED);
 
         return saveApp();
     }
@@ -113,16 +111,16 @@ public class ProcessPIPOrderBn {
 //        FacesContext context = FacesContext.getCurrentInstance();
 //        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 //        WebUtils.setSessionAttribute(request, "processAppBn", null);
-//        return "/internal/processpiporderlist.faces";
+//        return "/internal/processpurorderlist.faces";
 //
 //    }
 
     public String cancel() {
-        pipOrder = new PIPOrder();
+        purOrder = new PurOrder();
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processAppBn", null);
-        return "/internal/processpiporderlist.faces";
+        return "/internal/processpurorderlist.faces";
     }
 
     //    public Applicant getApplicant() {
@@ -140,24 +138,23 @@ public class ProcessPIPOrderBn {
 //        }
 //        return applicant;
 //    }
-    public PIPOrder getPipOrder() {
-        if (pipOrder == null) {
-            if (userSession.getPipOrderID() != null) {
-                pipOrder = pipOrderService.findPIPOrderEager(Long.valueOf(userSession.getPipOrderID()));
+    public PurOrder getPurOrder() {
+        if (purOrder == null) {
+            if (userSession.getPurOrderID() != null) {
+                purOrder = purOrderService.findPurOrderEager(Long.valueOf(userSession.getPurOrderID()));
 
             } else {
-                pipOrder = null;
+                purOrder = null;
             }
         }
-        if(pipOrder!=null) {
-            if (pipOrder.getState().equals(AmdmtState.NEW_APPLICATION))
+        if(purOrder!=null) {
+            if (purOrder.getState().equals(AmdmtState.NEW_APPLICATION))
                 displayRecommend = true;
             else
                 displayRecommend = false;
         }
-        return pipOrder;
+        return purOrder;
     }
-
 
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;
@@ -167,25 +164,9 @@ public class ProcessPIPOrderBn {
         this.globalEntityLists = globalEntityLists;
     }
 
-    public FacesContext getFacesContext() {
-        return facesContext;
-    }
+    public void setPurOrder(PurOrder purOrder) {
 
-    public void setFacesContext(FacesContext facesContext) {
-        this.facesContext = facesContext;
-    }
-
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle;
-    }
-
-    public void setResourceBundle(ResourceBundle resourceBundle) {
-        this.resourceBundle = resourceBundle;
-    }
-
-
-    public void setPipOrder(PIPOrder pipOrder) {
-        this.pipOrder = pipOrder;
+        this.purOrder = purOrder;
     }
 
     public UserSession getUserSession() {
@@ -196,16 +177,16 @@ public class ProcessPIPOrderBn {
         this.userSession = userSession;
     }
 
-    public PIPOrderService getPipOrderService() {
-        return pipOrderService;
+    public PurOrderService getPurOrderService() {
+        return purOrderService;
     }
 
-    public void setPipOrderService(PIPOrderService pipOrderService) {
-        this.pipOrderService = pipOrderService;
+    public void setPurOrderService(PurOrderService purOrderService) {
+        this.purOrderService = purOrderService;
     }
 
     public boolean isDisplayRecommend() {
-        getPipOrder();
+        getPurOrder();
         return displayRecommend;
     }
 
