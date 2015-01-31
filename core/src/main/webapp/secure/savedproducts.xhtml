@@ -37,12 +37,12 @@
                     #{msgs[eachprod.prod.prodCategory.key]}
                 </p:column>
 
-                <p:column headerText="Date Submitted">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
+                <p:column headerText="#{msgs.applicant_name}">
+                    #{eachprod.prod.applicant.appName}
                 </p:column>
 
                 <p:column headerText="Manufacturer Name">
-                    #{eachprod.prod.applicant.appName}
+                    #{eachprod.prod.manufName}
                 </p:column>
             </p:dataTable>
 

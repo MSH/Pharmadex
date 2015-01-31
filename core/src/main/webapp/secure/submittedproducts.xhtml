@@ -25,9 +25,12 @@
                         </p:commandLink>
                     </p:column>
 
-
-                    <p:column headerText="Generic Name">
+                    <p:column headerText="#{msgs.prodgenname}">
                         #{eachprod.prod.genName}
+                    </p:column>
+
+                    <p:column headerText="#{msgs.application_no}">
+                        #{eachprod.prodAppNo}
                     </p:column>
 
                     <p:column headerText="Registration Status">
@@ -42,9 +45,10 @@
                         <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
                     </p:column>
 
-                    <p:column headerText="#{msgs.applicant_name}">
-                        #{eachprod.prod.applicant.appName}
+                    <p:column headerText="Manufacturer Name">
+                        #{eachprod.prod.manufName}
                     </p:column>
+
                 </p:dataTable>
                 <p:separator/>
             </h:panelGroup>
@@ -74,6 +78,10 @@
                     #{eachprod.prod.genName}
                 </p:column>
 
+                <p:column headerText="#{msgs.application_no}">
+                    #{eachprod.prodAppNo}
+                </p:column>
+
                 <p:column headerText="Registration Status">
                     #{msgs[eachprod.regState.key]}
                 </p:column>
@@ -86,9 +94,10 @@
                     <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
                 </p:column>
 
-                <p:column headerText="#{msgs.applicant_name}">
-                    #{eachprod.prod.applicant.appName}
+                <p:column headerText="Manufacturer Name">
+                    #{eachprod.prod.manufName}
                 </p:column>
+
             </p:dataTable>
 
         </h:form>
