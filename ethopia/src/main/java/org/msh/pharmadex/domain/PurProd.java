@@ -11,8 +11,8 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "pip_prod")
-public class PIPProd extends CreationDetail implements Serializable {
+@Table(name = "pur_prod")
+public class PurProd extends CreationDetail implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,6 +26,8 @@ public class PIPProd extends CreationDetail implements Serializable {
     @Column(length = 255, nullable = true)
     private String productDesc;
 
+    @OneToOne
+    private Product product;
 
     @Column(length = 255, nullable = false)
     private String unit;
@@ -40,8 +42,8 @@ public class PIPProd extends CreationDetail implements Serializable {
     private String totalPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "piporder_id")
-    private PIPOrder pipOrder;
+    @JoinColumn(name = "purorder_id", nullable = false)
+    private PurOrder purOrder;
 
     public Long getId() {
         return id;
@@ -49,30 +51,6 @@ public class PIPProd extends CreationDetail implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getProductNo() {
-        return productNo;
-    }
-
-    public void setProductNo(String productNo) {
-        this.productNo = productNo;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getProductDesc() {
-        return productDesc;
-    }
-
-    public void setProductDesc(String productDesc) {
-        this.productDesc = productDesc;
     }
 
     public String getUnit() {
@@ -107,11 +85,43 @@ public class PIPProd extends CreationDetail implements Serializable {
         this.totalPrice = totalPrice;
     }
 
-    public PIPOrder getPipOrder() {
-        return pipOrder;
+    public PurOrder getPurOrder() {
+        return purOrder;
     }
 
-    public void setPipOrder(PIPOrder pipOrder) {
-        this.pipOrder = pipOrder;
+    public void setPurOrder(PurOrder purOrder) {
+        this.purOrder = purOrder;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public String getProductNo() {
+        return productNo;
+    }
+
+    public void setProductNo(String productNo) {
+        this.productNo = productNo;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductDesc() {
+        return productDesc;
+    }
+
+    public void setProductDesc(String productDesc) {
+        this.productDesc = productDesc;
     }
 }

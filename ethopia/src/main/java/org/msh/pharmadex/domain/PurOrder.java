@@ -15,14 +15,14 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "pip_order")
-public class PIPOrder extends CreationDetail implements Serializable {
+@Table(name = "pur_order")
+public class PurOrder extends CreationDetail implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<PIPProd> pipProds;
+    @OneToMany(mappedBy = "purOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PurProd> purProds;
 
     @Column(length = 255)
     private String shippingInstruction;
@@ -45,8 +45,8 @@ public class PIPOrder extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date approvalDate;
 
-    @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<PIPOrderChecklist> pipOrderChecklists;
+    @OneToMany(mappedBy = "purOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PurOrderChecklist> purOrderChecklists;
 
     @OneToOne
     private Applicant applicant;
@@ -69,14 +69,6 @@ public class PIPOrder extends CreationDetail implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<PIPProd> getPipProds() {
-        return pipProds;
-    }
-
-    public void setPipProds(List<PIPProd> pipProds) {
-        this.pipProds = pipProds;
     }
 
     public String getShippingInstruction() {
@@ -135,14 +127,6 @@ public class PIPOrder extends CreationDetail implements Serializable {
         this.approvalDate = approvalDate;
     }
 
-    public List<PIPOrderChecklist> getPipOrderChecklists() {
-        return pipOrderChecklists;
-    }
-
-    public void setPipOrderChecklists(List<PIPOrderChecklist> pipOrderChecklists) {
-        this.pipOrderChecklists = pipOrderChecklists;
-    }
-
     public User getCreatedBy() {
         return createdBy;
     }
@@ -181,5 +165,21 @@ public class PIPOrder extends CreationDetail implements Serializable {
 
     public void setApplicantUser(User applicantUser) {
         this.applicantUser = applicantUser;
+    }
+
+    public List<PurProd> getPurProds() {
+        return purProds;
+    }
+
+    public void setPurProds(List<PurProd> purProds) {
+        this.purProds = purProds;
+    }
+
+    public List<PurOrderChecklist> getPurOrderChecklists() {
+        return purOrderChecklists;
+    }
+
+    public void setPurOrderChecklists(List<PurOrderChecklist> purOrderChecklists) {
+        this.purOrderChecklists = purOrderChecklists;
     }
 }
