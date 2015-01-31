@@ -27,12 +27,26 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                                    <h:outputFormat value="#{productDisplay.prodApplications.id}" styleClass="title"/>
+                                    <h:outputLabel value="#{msgs.reg_number}: " styleClass="title"/>
+                                    <h:outputFormat value="#{productDisplay.product.regNo}" styleClass="title"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
                                     <h:outputFormat value="#{productDisplay.prodApplications.submitDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputFormat>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
+                                    <h:outputFormat value="#{productDisplay.prodApplications.prodAppNo}" styleClass="title"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
+                                                   rendered="#{not empty productDisplay.prodApplications.regExpiryDate}"/>
+                                    <h:outputFormat value="#{productDisplay.prodApplications.regExpiryDate}"
+                                                    rendered="#{not empty productDisplay.prodApplications.regExpiryDate}">
                                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                                     </h:outputFormat>
                                 </td>
@@ -50,14 +64,7 @@
 
                                     <!--                                    <h:outputFormat value="#{productDisplay.product.applicant.appName}"/> -->
                                 </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
-                                                   rendered="#{not empty productDisplay.prodApplications.regExpiryDate}"/>
-                                    <h:outputFormat value="#{productDisplay.prodApplications.regExpiryDate}"
-                                                    rendered="#{not empty productDisplay.prodApplications.regExpiryDate}">
-                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                                    </h:outputFormat>
-                                </td>
+
                             </tr>
                         </table>
                     </h1>
