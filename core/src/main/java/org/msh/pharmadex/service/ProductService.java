@@ -109,7 +109,7 @@ public class ProductService implements Serializable {
 
                 }
             }
-            if (product.getProdApplications().getBankName().equalsIgnoreCase("") || product.getProdApplications().getFeeSubmittedDt().equals(null)) {
+            if (product.getProdApplications().getPrescreenBankName().equalsIgnoreCase("") || product.getProdApplications().getPrescreenfeeSubmittedDt().equals(null)) {
                 issues.add("no_fee");
                 issue = true;
             }

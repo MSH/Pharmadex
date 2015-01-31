@@ -12,6 +12,7 @@ import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -435,6 +436,13 @@ public class ProdApplicationsService implements Serializable {
         return "created";
     }
 
+    public String generateAppNo(){
+        RegistrationUtil registrationUtil = new RegistrationUtil();
+        return registrationUtil.generateAppNo(findApplicationCount());
+
+    }
+
+
     public ProdApplications getProdApp() {
         return prodApp;
     }
@@ -452,5 +460,8 @@ public class ProdApplicationsService implements Serializable {
         return prodApplicationsDAO.findSavedProdApp(loggedInUserObj);
     }
 
+    public Long findApplicationCount() {
+        return prodApplicationsDAO.findApplicationCount();
 
+    }
 }
