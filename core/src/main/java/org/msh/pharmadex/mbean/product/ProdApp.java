@@ -10,6 +10,8 @@ public class ProdApp {
     private ProdAppType prodAppType;
     private String[] selSRA;
     private boolean eml = false;
+    private String fee;
+    private String prescreenfee;
     private String totalfee;
     private boolean SRA;
 
@@ -51,5 +53,21 @@ public class ProdApp {
 
     public boolean isSRA() {
         return SRA;
+    }
+
+    public String getFee() {
+        return fee;
+    }
+
+    public void setFee(String fee) {
+        this.fee = fee;
+    }
+
+    public String getPrescreenfee() {
+        return prescreenfee;
+    }
+
+    public void setPrescreenfee(String prescreenfee) {
+        this.prescreenfee = prescreenfee;
     }
 }

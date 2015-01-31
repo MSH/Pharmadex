@@ -116,6 +116,7 @@ public class ProcessProdBn implements Serializable {
         return "/internal/review";
     }
 
+
     public String findReviewInfo() {
         ReviewInfo reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedInUserObj().getUserId(), prodApplications.getId());
         userSession.setProduct(product);

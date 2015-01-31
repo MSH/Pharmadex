@@ -367,8 +367,7 @@ public class RegHomeMbean implements Serializable {
 
         }
 
-        RegistrationUtil registrationUtil = new RegistrationUtil();
-        prodApplications.setProdAppNo(registrationUtil.generateAppNo(prodApplications.getId()));
+        prodApplications.setProdAppNo(prodApplicationsService.generateAppNo());
 
         List<TimeLine> timeLines = new ArrayList<TimeLine>();
         TimeLine timeLine = new TimeLine();
