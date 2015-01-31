@@ -18,6 +18,16 @@
                          rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
     </h:panelGrid>
 
+    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+        <p:outputLabel value="#{msgs.prescreenfee_recieved}" styleClass="label" for="prescreenfeerecieved"/>
+        <p:selectBooleanButton id="prescreenfeerecieved"
+                               value="#{processProdBn.prodApplications.prescreenfeeReceived}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                               onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+
+        </p:selectBooleanButton>
+    </h:panelGrid>
 
     <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
               id="completescreen" modal="true"

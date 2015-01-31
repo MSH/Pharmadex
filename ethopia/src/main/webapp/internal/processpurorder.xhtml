@@ -12,23 +12,23 @@
                 <p:menu style="width:198px">
                     <p:submenu label="#{msgs.Registration}">
                         <p:menuitem value="#{msgs.global_save}" icon="ui-icon-gear"
-                                    action="#{processPIPOrderBn.saveApp}" ajax="false"
+                                    action="#{processPurOrderBn.saveApp}" ajax="false"
                                     rendered="#{!userSession.company}"/>
                         <p:menuitem value="#{msgs.register_applicant}" icon="ui-icon-gear"
-                                    action="#{processPIPOrderBn.approveOrder}" ajax="false"
+                                    action="#{processPurOrderBn.approveOrder}" ajax="false"
                                     rendered="#{userSession.csd}"/>
                         <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-gear"
-                                    action="#{processPIPOrderBn.rejectOrder}" ajax="false"
+                                    action="#{processPurOrderBn.rejectOrder}" ajax="false"
                                     rendered="#{userSession.csd}"/>
                         <p:menuitem value="#{msgs.recommended}" icon="ui-icon-gear"
-                                    action="#{processPIPOrderBn.recommendOrder}" ajax="false"
-                                    rendered="#{processPIPOrderBn.displayRecommend}"/>
+                                    action="#{processPurOrderBn.recommendOrder}" ajax="false"
+                                    rendered="#{processPurOrderBn.displayRecommend}"/>
                         <p:menuitem value="#{msgs.not_recommended}" icon="ui-icon-gear"
-                                    action="#{processPIPOrderBn.notRecommendedOrder}" ajax="false"
-                                    rendered="#{processPIPOrderBn.displayRecommend}"/>
+                                    action="#{processPurOrderBn.notRecommendedOrder}" ajax="false"
+                                    rendered="#{processPurOrderBn.displayRecommend}"/>
                         <p:menuitem value="#{msgs.global_cancel}" immediate="true"
                                     icon="ui-icon ui-icon-circle-triangle-w"
-                                    action="#{processPIPOrderBn.cancel}" ajax="false"/>
+                                    action="#{processPurOrderBn.cancel}" ajax="false"/>
                     </p:submenu>
                 </p:menu>
 
@@ -38,25 +38,25 @@
                         <table class="banner">
                             <tr>
                                 <td>
-                                    <h:outputLabel value="#{processPIPOrderBn.pipOrder.applicant.appName}"
+                                    <h:outputLabel value="#{processPurOrderBn.purOrder.applicant.appName}"
                                                    styleClass="title"
                                                    style="font-weight: bold; font-size: 1.5em"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.application_status}: "
                                                    style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{processPIPOrderBn.pipOrder.state}"
+                                    <h:outputLabel value="#{processPurOrderBn.purOrder.state}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processPIPOrderBn.pipOrder.id}" styleClass="title"/>
+                                    <h:outputFormat value="#{processPurOrderBn.purOrder.id}" styleClass="title"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processPIPOrderBn.pipOrder.submitDate}"/>
+                                    <h:outputFormat value="#{processPurOrderBn.purOrder.submitDate}"/>
                                 </td>
                             </tr>
                         </table>
@@ -67,7 +67,7 @@
 
                     <p:panel header="#{msgs.product_details}">
                         <h:panelGrid columns="1" cellspacing="10px">
-                            <p:dataTable id="ordertable" var="order" value="#{processPIPOrderBn.pipOrder.pipProds}"
+                            <p:dataTable id="ordertable" var="order" value="#{processPurOrderBn.purOrder.purProds}"
                                          style="width:100%;">
                                 <f:facet name="header"> #{msgs.product_list}</f:facet>
 
@@ -110,21 +110,21 @@
                         <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
                             <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
                             <p:outputLabel id="shipinst" required="true"
-                                           value="#{processPIPOrderBn.pipOrder.shippingInstruction}"/>
+                                           value="#{processPurOrderBn.purOrder.shippingInstruction}"/>
 
                             <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
                             <p:outputLabel id="delivery" required="true"
-                                           value="#{processPIPOrderBn.pipOrder.delivery}"/>
+                                           value="#{processPurOrderBn.purOrder.delivery}"/>
 
                             <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
                             <p:outputLabel id="payinfo" required="true"
-                                           value="#{processPIPOrderBn.pipOrder.paymentMethod}"/>
+                                           value="#{processPurOrderBn.purOrder.paymentMethod}"/>
 
                             <p:outputLabel value="#{msgs.file_number}" for="filno"/>
-                            <p:outputLabel id="filno" value="#{processPIPOrderBn.pipOrder.fileNumber}"/>
+                            <p:outputLabel id="filno" value="#{processPurOrderBn.purOrder.fileNumber}"/>
 
                             <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
-                            <p:outputLabel id="comment" value="#{processPIPOrderBn.pipOrder.comment}"/>
+                            <p:outputLabel id="comment" value="#{processPurOrderBn.purOrder.comment}"/>
 
                         </h:panelGrid>
 
@@ -134,7 +134,7 @@
 
 
                     <p:panel header="#{msgs.checklist}">
-                        <p:dataTable var="checkList" value="#{processPIPOrderBn.pipOrder.pipOrderChecklists}"
+                        <p:dataTable var="checkList" value="#{processPurOrderBn.purOrder.purOrderChecklists}"
                                      style="width:100%;">
                             <p:column headerText="">
                                 <h:outputLabel value="#{checkList.pipOrderLookUp.id}"/>
@@ -155,7 +155,7 @@
 
                     <p:panel header="#{msgs.applicant_detail}">
                         <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                            <ui:param name="applicantdata" value="#{processPIPOrderBn.pipOrder.applicant}"/>
+                            <ui:param name="applicantdata" value="#{processPurOrderBn.purOrder.applicant}"/>
                             <ui:param name="input" value="#{false}"/>
                         </ui:decorate>
 
@@ -165,7 +165,7 @@
 
                     <p:panel header="#{msgs.person_responsible}">
                         <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                            <ui:param name="userdata" value="#{processPIPOrderBn.pipOrder.createdBy}"/>
+                            <ui:param name="userdata" value="#{processPurOrderBn.purOrder.createdBy}"/>
                             <ui:param name="input" value="#{false}"/>
                         </ui:decorate>
 
