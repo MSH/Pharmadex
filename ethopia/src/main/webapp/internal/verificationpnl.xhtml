@@ -23,10 +23,10 @@
         <p:inputText id="bankname" value="#{regHomeMbean.prodApplications.bankName}"/>
 
         <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
-        <p:inputText id="receiptno" value="#{regHomeMbean.prodApplications.receiptNo}"/>
+        <p:inputText id="receiptno" value="#{processProdBn.prodApplications.receiptNo}"/>
 
         <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
-        <p:calendar  value="#{regHomeMbean.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"/>
+        <p:calendar  value="#{processProdBn.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"/>
 
         <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label"
                        for="appverify"/>
@@ -60,6 +60,8 @@
             <p:ajax update=":reghome:growl :reghome"
                     listener="#{processProdBnET.changeStatusListener}"/>
         </p:selectBooleanButton>
+
+        <p:commandButton value="Generate Sample Request Letter" actionListener="#{processProdBnET.generateSampleRequestLetter}" ajax="false"/>
 
     </h:panelGrid>
 

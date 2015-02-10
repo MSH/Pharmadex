@@ -32,8 +32,8 @@
                             <p:commandLink action="#{userSession.editUser}" value="#{msgs.admin_settings} |"
                                            immediate="true"
                                            ajax="false">
-                                <f:setPropertyActionListener value="#{userSession.userAccess.applicantUser}"
-                                                             target="#{registerUserMbean.applicantUser}"/>
+                                <f:setPropertyActionListener value="#{userSession.userAccess.user}"
+                                                             target="#{registerUserMbean.user}"/>
                             </p:commandLink>
                             <p:commandLink action="#{userAuthHandler.logout}" value="#{msgs.admin_logout}"
                                            ajax="false"/>
@@ -91,7 +91,7 @@
                             <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                         url="/secure/prodreginit.faces" ajax="false"/>
                             <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
-                                        action="#{navigationBean.regApplicantAction}"
+                                        action="/secure/appregistration.faces"
                                         ajax="false" rendered="#{userSession.displayAppReg}"/>
                             <!--
                                                 <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"
@@ -135,7 +135,7 @@
                         <p:separator/>
 
                         <p:submenu label="#{msgs.reg_processing}"
-                                   rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
+                                   rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator||userSession.lab}">
                             <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                         url="/internal/processprodlist.faces"/>
                             <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"

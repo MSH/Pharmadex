@@ -56,10 +56,6 @@
                                                  action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                             </f:facet>
 
-                            <p:column headerText="#{msgs.prod_number}">
-                                <h:outputText value="#{order.productNo}"/>
-                            </p:column>
-
                             <p:column headerText="#{msgs.prod_name}">
                                 <h:outputText value="#{order.productName}"/>
                             </p:column>
@@ -101,13 +97,16 @@
 
             <p:panel header="#{msgs.checklist}">
                 <p:dataTable var="checkList" value="#{pIPOrderBn.pipOrderChecklists}" style="width:100%;">
-                    <p:column headerText="">
-                        <h:outputLabel value="#{checkList.pipOrderLookUp.id}"/>
-                    </p:column>
-                    <p:column>
+                    <p:column headerText="" colspan="3" rendered="#{checkList.pipOrderLookUp.header}" style="background-color: bisque;font-weight: bolder;">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
-                    <p:column>
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header}">
+                        <h:outputLabel value="#{checkList.pipOrderLookUp.no}"/>
+                    </p:column>
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header}">
+                        <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
+                    </p:column>
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header}">
                         <p:selectBooleanCheckbox value="#{checkList.value}"/>
                     </p:column>
                 </p:dataTable>
@@ -174,8 +173,6 @@
                 <p:messages/>
 
                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2" id="order_detail">
-                    <p:outputLabel value="#{msgs.prod_number}" for="prodnum"/>
-                    <p:inputText id="prodnum" required="true" value="#{pIPOrderBn.pipProd.productNo}" />
 
                     <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
                     <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipProd.productName}" />

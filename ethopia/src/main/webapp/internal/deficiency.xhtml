@@ -1,0 +1,61 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <div style="width: 1054px;">
+            <h:form id="reviewHome" enctype="multipart/form-data">
+                <p:growl id="growl" showSummary="true"/>
+
+
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="product" value="#{processProdBn.product}"/>
+                </ui:decorate>
+
+                <div align="left">
+
+                    <p:commandButton value="#{msgs.generate_report}"
+                                     ajax="false" actionListener="#{prodDeficiencyBn.PDF}" />
+                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                                     ajax="false"/>
+                </div>
+
+                <div style="height: 10px;"/>
+                <h:panelGrid columns="2" cellspacing="10" cellpadding="10">
+                    <p:outputLabel value="#{msgs.global_summary}" styleClass="label" style="width:200px;"/>
+                    <p:inputTextarea value="#{prodDeficiencyBn.summary}" rows="6" cols="120"/>
+                </h:panelGrid>
+
+                <div style="height: 10px;"/>
+                <h:panelGrid id="reviewgrid" columns="1" width="100%" cellpadding="10" cellspacing="10">
+                    <p:dataTable var="checkList" value="#{prodDeficiencyBn.prodAppChecklists}"
+                                 style="width:100%;" id="checkListTbl">
+                        <p:column headerText="#{msgs.UserType_STAFF}" style="width:40px;">
+                            <p:selectBooleanCheckbox value="#{checkList.sendToApp}" rendered="#{checkList.checklist.header}"/>
+                        </p:column>
+                        <p:column headerText="" style="width:60px;">
+                            <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+                        </p:column>
+                        <p:column>
+                            <h:outputLabel value="#{checkList.checklist.name}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs.global_remark}">
+                            <p:inputText value="#{checkList.appRemark}" style="width: 100%;"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </h:form>
+        </div>
+
+        <div style="height: 10px;"/>
+
+    </ui:define>
+</ui:composition>

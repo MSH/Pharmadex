@@ -62,7 +62,7 @@
                                 </p:submenu>
                 -->
 
-                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
+                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator||userSession.lab}">
                     <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document"
                                 url="/internal/processprodlist.faces"/>
                     <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"

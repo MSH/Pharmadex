@@ -9,10 +9,12 @@
     <h:panelGrid cellspacing="10" cellpadding="10" columns="3">
 
         <p:commandButton id="complete" value = "#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{processProdBnET.displayScreenAction}"/>
-
+                         rendered="#{processProdBnET.displayScreenAction}" />
+<!--
         <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{processProdBnET.initTimeLine}" update=":reghome:processtab:sendtoapplicant"
                          rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('sendtoappdlg').show()"/>
+-->
+        <p:commandButton id="sendtoapp2" value="#{msgs.send_to_app}" action="deficiency" ajax="false" rendered="#{processProdBnET.displayScreenAction}"/>
 
         <p:commandButton id="feedback" value="#{msgs.global_archive}" action="#{processProdBnET.initTimeLine}" update=":reghome:processtab:archiveapp"
                          rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
@@ -25,6 +27,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
+            <!--<p:ajax update="@form" listener="#{processProdBnET.prescreenfeerecvd}" />-->
 
         </p:selectBooleanButton>
     </h:panelGrid>
@@ -45,15 +48,16 @@
                                 converter="#{userConverter}">
                 </p:autoComplete>
 
-                <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"/>
+                <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"
+                        />
                 <p:inputText value ="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"/>
 
             </p:panelGrid>
 
 
             <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
-                             action="#{processProdBnET.completeScreen}"
-                             oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@this" ajax="false"/>
+                             action="#{processProdBnET.completeScreen}" ajax="false"
+                             oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form" />
     </p:dialog>
 
     <p:dialog header="#{msgs.complete_screen}" widgetVar="sendtoappdlg" resizable="false"
@@ -70,7 +74,7 @@
 
         <p:commandButton id="sendtoappbtn" value="#{msgs.global_submit}"
                          action="#{processProdBnET.sendToApplicant}"
-                         oncomplete="PF('sendtoappdlg').hide()" update=":reghome" process="@this" ajax="false"/>
+                         oncomplete="PF('sendtoappdlg').hide()" update=":reghome" process="@this"/>
     </p:dialog>
 
     <p:dialog header="#{msgs.complete_screen}" widgetVar="archiveappdlg" resizable="false"
@@ -87,7 +91,7 @@
 
         <p:commandButton id="archiveappbtn" value="#{msgs.global_submit}"
                          action="#{processProdBnET.archiveApp}"
-                         oncomplete="PF('archiveappdlg').hide()" update=":reghome" process="@this" ajax="false"/>
+                         oncomplete="PF('archiveappdlg').hide()" update=":reghome" process="@this"/>
     </p:dialog>
 
 </ui:composition>

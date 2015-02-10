@@ -1,0 +1,71 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:menu style="width:198px">
+        <p:submenu label="#{msgs.Registration}">
+            <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
+                        id="saveMenuItem"
+                        ajax="true" update=":reghome"/>
+            <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document"
+                        onclick="PF('dlg').show()" id="addCommentMI"/>
+            <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
+                        onclick="PF('stepDlg').show()" id="nextStepMI"
+                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
+            <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
+                        action="/internal/reject.faces" ajax="false"
+                        rendered="#{processProdBn.canReject}"/>
+            <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
+                        rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
+                        action="#{processProdBn.findReview}" ajax="false"/>
+
+            <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
+                        rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
+                        action="#{processProdBn.findReviewInfo}" ajax="false"/>
+
+            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" ajax="false" icon="ui-icon-extlink"/>
+
+
+            <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
+                        onclick="PF('regDlg').show()" id="registerMI"
+                        rendered="#{processProdBn.canRegister}"/>
+            <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
+                        onclick="PF('moderatordlg').show()"
+                        rendered="#{userSession.admin||userSession.staff}" id="assignModMI"/>
+            <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+                        oncomplete="PF('assignreviewdlg').show()"
+                        action="#{processProdBn.initProcessorAdd}" id="assignProMI"
+                        rendered="#{userSession.moderator||userSession.admin}"/>
+
+        </p:submenu>
+        <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
+            <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
+                        action="#{renewalMbn.preparePayment()}"
+                        oncomplete="PF('renewdlg').show()"
+                        rendered="#{userSession.head||userSession.admin}" ajax="true"/>
+            <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear"
+                        oncomplete="PF('invoicedlg').show()"
+                        rendered="#{userSession.head||userSession.admin}"
+                        action="#{renewalMbn.initInvoice()}">
+            </p:menuitem>
+            <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear"
+                        action="#{renewalMbn.sendReminder}"
+                        rendered="#{userSession.head||userSession.admin}" update=":reghome:growl"/>
+            <p:menuitem value="#{msgs.report_payment}" icon="ui-icon-gear"
+                        action="#{renewalMbn.preparePayment()}"
+                        oncomplete="PF('reportpaymentdlg').show()"
+                        rendered="#{userSession.company}" update=":reghome:growl" ajax="true"/>
+            <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
+                        oncomplete="PF('dlgAmdment').show()"
+                        rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>
+            <!--        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" ajax="false" action="amdmtCategory.faces"
+                                rendered="#{userSession.company||userSession.admin}" />
+             -->
+        </p:submenu>
+    </p:menu>
+
+
+</ui:composition>

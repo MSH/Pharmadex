@@ -104,7 +104,7 @@
             <h:form id="addUserFrm">
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                     <h:outputLabel value="#{msgs.User_name}" for="username"/>
-                    <p:autoComplete id="username" value="#{processAppBn.applicantUser}"
+                    <p:autoComplete id="username" value="#{processAppBn.user}"
                                     completeMethod="#{processAppBn.completeUserList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
                                     converter="#{userConverter}">
@@ -129,7 +129,7 @@
                 <p:messages/>
 
                 <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                    <ui:param name="userdata" value="#{processAppBn.applicantUser}"/>
+                    <ui:param name="userdata" value="#{processAppBn.user}"/>
                     <ui:param name="input" value="#{true}"/>
                 </ui:decorate>
 

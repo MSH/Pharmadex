@@ -6,6 +6,22 @@
 
 <h:panelGroup id = "app_lh_user">
 
+    <p:panel header="#{msgs.license_holder}" rendered="#{not empty regHomeData.applicant.applcntId and displayLH}" id="lic_holder_detail">
+        <h:panelGroup rendered="#{not empty regHomeMbeanET.licenseHolder.id}">
+            <ui:decorate template="/templates/licholderdetailtmpl.xhtml">
+                <ui:param name="licholderdata" value="#{regHomeMbeanET.licenseHolder}"/>
+                <ui:param name="input" value="false"/>
+            </ui:decorate>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{empty regHomeMbeanET.licenseHolder.id}">
+            <p:outputLabel
+                    value="You are not an agent for License holder. Please complete the agency agreement before you register product"
+                    styleClass="ui-message-warn"/>
+        </h:panelGroup>
+    </p:panel>
+
+
     <p:panel header="#{msgs.applicant_detail}" id="app_detail">
 
         <!-- Display the panel for company users -->
@@ -40,20 +56,6 @@
     </p:panel>
 
 
-    <p:panel header="#{msgs.license_holder}" rendered="#{not empty regHomeData.applicant.applcntId and displayLH}" id="lic_holder_detail">
-        <h:panelGroup rendered="#{not empty regHomeMbeanET.licenseHolder.id}">
-            <ui:decorate template="/templates/licholderdetailtmpl.xhtml">
-                <ui:param name="licholderdata" value="#{regHomeMbeanET.licenseHolder}"/>
-                <ui:param name="input" value="false"/>
-            </ui:decorate>
-        </h:panelGroup>
-
-        <h:panelGroup rendered="#{empty regHomeMbeanET.licenseHolder.id}">
-            <p:outputLabel
-                    value="You are not an agent for License holder. Please complete the agency agreement before you register product"
-                    styleClass="ui-message-warn"/>
-        </h:panelGroup>
-    </p:panel>
 
 
     <h:panelGroup rendered="#{not empty regHomeData.applicant.applcntId}" id="user_detail_id">
