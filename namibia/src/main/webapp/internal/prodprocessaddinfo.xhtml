@@ -50,8 +50,8 @@
     <p:commandButton icon="ui-icon-document" value="Send Applicant Mail" onclick="PF('maildlg').show()"/>
     <p:dataTable id="mailtable" value="#{processProdBn.mails}" var="mail" style="width: 830px;">
         <p:column style="width:120px;" headerText="Date">
-            <div class="icon-user" style="float:left;"/>
-            <b>#{it.user.name}</b>
+            <div class="icon-applicantUser" style="float:left;"/>
+            <b>#{it.applicantUser.name}</b>
 
             <div style="font-size: smaller;">
                 <h:outputLabel converter="javax.faces.DateTime" value="#{mail.date}"/>
@@ -76,7 +76,7 @@
 
         <p:column headerText="Sent By">
             <div style="padding-left:10px;padding-top:10px;">
-                <h:outputText value="#{mail.user.name}"
+                <h:outputText value="#{mail.applicantUser.name}"
                               escape="false"
                               styleClass="text"/>
             </div>
