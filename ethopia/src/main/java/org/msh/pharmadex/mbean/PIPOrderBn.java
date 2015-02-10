@@ -56,7 +56,7 @@ public class PIPOrderBn implements Serializable {
         }
 
         pipOrderChecklists = new ArrayList<PIPOrderChecklist>();
-        List<PIPOrderLookUp> allChecklist = pipOrderService.findAllCheckList();
+        List<PIPOrderLookUp> allChecklist = pipOrderService.findPIPCheckList();
         PIPOrderChecklist eachCheckList;
         for (int i = 0; allChecklist.size() > i; i++) {
             eachCheckList = new PIPOrderChecklist();

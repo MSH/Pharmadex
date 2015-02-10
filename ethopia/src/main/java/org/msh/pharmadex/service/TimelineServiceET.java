@@ -48,10 +48,12 @@ public class TimelineServiceET extends TimelineService implements Serializable {
     public RetObject validatescreening(List<ProdAppChecklist> prodAppChecklists) {
         RetObject retObject = new RetObject();
         for(ProdAppChecklist prodAppChecklist : prodAppChecklists){
-            if(prodAppChecklist.isValue()){
-                if(!prodAppChecklist.isStaffValue()){
-                    retObject.setMsg("error");
-                    return retObject;
+            if(prodAppChecklist.getChecklist().isHeader()) {
+                if (prodAppChecklist.isValue()) {
+                    if (!prodAppChecklist.isStaffValue()) {
+                        retObject.setMsg("error");
+                        return retObject;
+                    }
                 }
             }
         }

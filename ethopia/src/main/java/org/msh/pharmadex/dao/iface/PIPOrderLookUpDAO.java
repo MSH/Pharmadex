@@ -6,6 +6,7 @@ import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: usrivastava
@@ -13,5 +14,5 @@ import java.util.ArrayList;
 public interface PIPOrderLookUpDAO extends JpaRepository<PIPOrderLookUp, Long> {
 
 
-
+    List<PIPOrderLookUp> findBy();
 }

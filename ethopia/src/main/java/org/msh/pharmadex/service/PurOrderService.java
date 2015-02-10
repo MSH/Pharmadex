@@ -33,8 +33,8 @@ public class PurOrderService implements Serializable{
     @Autowired
     private CustomPurOrderDAO customPurOrderDAO;
 
-    public List<PIPOrderLookUp> findAllCheckList() {
-        return pipOrderLookUpDAO.findAll();
+    public List<PIPOrderLookUp> findPurOrderCheckList() {
+        return customPurOrderDAO.findAllPurOrderLookUp();
     }
 
     public RetObject saveOrder(PurOrder pipOrder) {

@@ -30,8 +30,8 @@ public class PIPOrderService implements Serializable{
     @Autowired
     private CustomPIPOrderDAO customPIPOrderDAO;
 
-    public List<PIPOrderLookUp> findAllCheckList() {
-        return pipOrderLookUpDAO.findAll();
+    public List<PIPOrderLookUp> findPIPCheckList() {
+        return customPIPOrderDAO.findAllPIPOrderLookUp();
     }
 
     public RetObject saveOrder(PIPOrder pipOrder) {

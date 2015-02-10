@@ -89,6 +89,8 @@ public class ProdRegInit implements Serializable {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "regHomeMbean", null);
 
+        calculate();
+
         ProdApp prodApp = new ProdApp();
         prodApp.setEml(eml);
         prodApp.setProdAppType(prodAppType);

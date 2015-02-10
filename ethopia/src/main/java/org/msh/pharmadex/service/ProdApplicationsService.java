@@ -161,6 +161,10 @@ public class ProdApplicationsService implements Serializable {
                 options = new RegState[1];
                 options[0] = RegState.FOLLOW_UP;
                 break;
+            case REJECTED:
+                options = new RegState[1];
+                options[0] = RegState.FOLLOW_UP;
+                break;
         }
         return Arrays.asList(options);
 
@@ -255,11 +259,14 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.REVIEW_BOARD);
             regState.add(RegState.RECOMMENDED);
             regState.add(RegState.NOT_RECOMMENDED);
+            regState.add(RegState.REJECTED);
+
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isStaff()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.NEW_APPL);
+            regState.add(RegState.SCREENING);
             regState.add(RegState.FEE);
             regState.add(RegState.VERIFY);
             regState.add(RegState.FOLLOW_UP);
@@ -279,6 +286,15 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.REGISTERED);
             params.put("regState", regState);
             params.put("userId", userSession.getLoggedInUserObj().getUserId());
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        } else if (userSession.isLab()){
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.VERIFY);
+            regState.add(RegState.REVIEW_BOARD);
+            regState.add(RegState.FOLLOW_UP);
+            regState.add(RegState.RECOMMENDED);
+            regState.add(RegState.NOT_RECOMMENDED);
+            params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         }
         return prodApplicationses;
@@ -334,8 +350,13 @@ public class ProdApplicationsService implements Serializable {
     }
 
     public String saveReviewers(Review review) {
-        reviewDAO.saveAndFlush(review);
-        return "success";
+        Review returnvalue = reviewDAO.findByUser_UserIdAndProdApplications_Id(review.getUser().getUserId(), review.getProdApplications().getId());
+        if(returnvalue==null) {
+            reviewDAO.saveAndFlush(review);
+            return "success";
+        }else{
+            return"exist";
+        }
     }
 
 
@@ -425,9 +446,9 @@ public class ProdApplicationsService implements Serializable {
 
     }
 
-    public String generateAppNo(){
+    public String generateAppNo(ProdApplications prodApp){
         RegistrationUtil registrationUtil = new RegistrationUtil();
-        return registrationUtil.generateAppNo(findApplicationCount(), "NMR");
+        return registrationUtil.generateAppNo(prodApp.getId(), "NMR");
 
     }
 
@@ -460,6 +481,51 @@ public class ProdApplicationsService implements Serializable {
 
         return "created";
     }
+
+    public String createRejectCert(ProdApplications prodApp) {
+        this.prodApp = prodApp;
+        this.product = prodApp.getProd();
+
+        try {
+//            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
+            File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
+            JasperPrint jasperPrint = initRejCert();
+            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+            prodApp.setRejCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
+            prodApplicationsDAO.updateApplication(prodApp);
+
+        } catch (JRException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return "error";
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return "error";
+        }
+
+        return "created";
+    }
+
+    public JasperPrint initRejCert() throws JRException {
+
+        URL resource = getClass().getResource("/reports/rejection_letter.jasper");
+        HashMap param = new HashMap();
+        param.put("appName", product.getApplicant().getAppName());
+        param.put("prodName", product.getProdName());
+        param.put("prodStrength", product.getDosStrength()+product.getDosUnit());
+        param.put("dosForm", product.getDosForm().getDosForm());
+        param.put("manufName", product.getManufName());
+        param.put("appType", "New Medicine Registration");
+        param.put("subject", "Sample request letter for  " + product.getProdName());
+        param.put("address1", product.getApplicant().getAddress().getAddress1());
+        param.put("address2", product.getApplicant().getAddress().getAddress2());
+        param.put("country", product.getApplicant().getAddress().getCountry().getCountryName());
+//        param.put("cso",userS.getName());
+        param.put("date", new Date());
+        param.put("appNumber", product.getProdApplications().getProdAppNo());
+
+        return JasperFillManager.fillReport(resource.getFile(), param);
+    }
+
 
     public ProdApplications getProdApp() {
         return prodApp;

@@ -64,7 +64,7 @@ public class PurOrderBn implements Serializable {
         }
 
         purOrderChecklists = new ArrayList<PurOrderChecklist>();
-        List<PIPOrderLookUp> allChecklist = purOrderService.findAllCheckList();
+        List<PIPOrderLookUp> allChecklist = purOrderService.findPurOrderCheckList();
         PurOrderChecklist eachCheckList;
         for (int i = 0; allChecklist.size() > i; i++) {
             eachCheckList = new PurOrderChecklist();
@@ -149,7 +149,7 @@ public class PurOrderBn implements Serializable {
         if (retValue.getMsg().equals("persist")) {
             purOrder = (PurOrder) retValue.getObj();
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
-            return "piporderlist";
+            return "purorderlist";
         } else {
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
             return "";

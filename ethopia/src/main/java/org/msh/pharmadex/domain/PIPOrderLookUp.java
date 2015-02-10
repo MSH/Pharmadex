@@ -16,7 +16,13 @@ public class PIPOrderLookUp extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
+    private String no;
+
     private String name;
+
+    private boolean pip;
+
+    private boolean header;
 
 
     public Long getId() {
@@ -35,6 +41,27 @@ public class PIPOrderLookUp extends CreationDetail implements Serializable {
         this.name = name;
     }
 
+    public boolean isPip() {
+        return pip;
+    }
 
+    public void setPip(boolean pip) {
+        this.pip = pip;
+    }
 
+    public boolean isHeader() {
+        return header;
+    }
+
+    public void setHeader(boolean header) {
+        this.header = header;
+    }
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
+    }
 }
