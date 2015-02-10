@@ -255,6 +255,7 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.REVIEW_BOARD);
             regState.add(RegState.RECOMMENDED);
             regState.add(RegState.NOT_RECOMMENDED);
+            regState.add(RegState.REJECTED);
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isStaff()) {
@@ -280,6 +281,16 @@ public class ProdApplicationsService implements Serializable {
             params.put("regState", regState);
             params.put("userId", userSession.getLoggedInUserObj().getUserId());
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        } else if (userSession.isLab()){
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.VERIFY);
+            regState.add(RegState.REVIEW_BOARD);
+            regState.add(RegState.FOLLOW_UP);
+            regState.add(RegState.RECOMMENDED);
+            regState.add(RegState.NOT_RECOMMENDED);
+            params.put("regState", regState);
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+
         }
         return prodApplicationses;
     }
@@ -334,8 +345,13 @@ public class ProdApplicationsService implements Serializable {
     }
 
     public String saveReviewers(Review review) {
-        reviewDAO.saveAndFlush(review);
-        return "success";
+        Review returnvalue = reviewDAO.findByUser_UserIdAndProdApplications_Id(review.getUser().getUserId(), review.getProdApplications().getId());
+        if(returnvalue==null) {
+            reviewDAO.saveAndFlush(review);
+            return "success";
+        }else{
+            return"exist";
+        }
     }
 
 
@@ -436,9 +452,9 @@ public class ProdApplicationsService implements Serializable {
         return "created";
     }
 
-    public String generateAppNo(){
+    public String generateAppNo(ProdApplications prodApplications){
         RegistrationUtil registrationUtil = new RegistrationUtil();
-        return registrationUtil.generateAppNo(findApplicationCount());
+        return registrationUtil.generateAppNo(prodApplications.getId());
 
     }
 

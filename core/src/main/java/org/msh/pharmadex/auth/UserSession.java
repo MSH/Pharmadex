@@ -48,6 +48,7 @@ public class UserSession implements Serializable {
     private boolean reviewer = false;
     private boolean head = false;
     private boolean csd = false;
+    private boolean lab = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
     private DisplayReviewInfo displayReviewInfo;
@@ -156,6 +157,12 @@ public class UserSession implements Serializable {
                 if (role.getRolename().equalsIgnoreCase("ROLE_STAFF")) {
                     setStaff(true);
                     setDisplayAppReg(true);
+                }
+                if (role.getRolename().equalsIgnoreCase("ROLE_LAB")) {
+                    setStaff(false);
+                    setDisplayAppReg(false);
+                    setCsd(false);
+                    setLab(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_CSD")) {
                     setStaff(true);
@@ -519,5 +526,13 @@ public class UserSession implements Serializable {
 
     public void setPurOrderID(String purOrderID) {
         this.purOrderID = purOrderID;
+    }
+
+    public boolean isLab() {
+        return lab;
+    }
+
+    public void setLab(boolean lab) {
+        this.lab = lab;
     }
 }

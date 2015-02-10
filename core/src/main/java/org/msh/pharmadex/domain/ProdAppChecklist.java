@@ -29,6 +29,11 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String staffComment;
 
+    private boolean sendToApp;
+
+    @Column(length = 500)
+    private String appRemark;
+
     @Lob
     @Column(nullable = true)
     private byte[] file;
@@ -131,5 +136,22 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getAppRemark() {
+        return appRemark;
+    }
+
+    public void setAppRemark(String appRemark) {
+        this.appRemark = appRemark;
+    }
+
+    public boolean isSendToApp() {
+
+        return sendToApp;
+    }
+
+    public void setSendToApp(boolean sendToApp) {
+        this.sendToApp = sendToApp;
     }
 }

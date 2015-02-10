@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -23,11 +24,14 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static org.msh.pharmadex.domain.enums.RegState.FEE;
 
 /**
  * Backing bean to process the application made for registration
@@ -96,6 +100,8 @@ public class ProcessProdBn implements Serializable {
     private List<ReviewInfo> reviewInfos;
 
     private boolean displayVerify = false;
+    private boolean displaySample = false;
+
 
     @PostConstruct
     private void init() {
@@ -125,17 +131,36 @@ public class ProcessProdBn implements Serializable {
     }
 
     public TimelineModel getTimelinesChartData() {
+        facesContext = FacesContext.getCurrentInstance();
+        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         getProdApplications();
         timelinesChartData = new ArrayList<Timeline>();
         Timeline timeline;
         TimelineModel model = new TimelineModel();
         for (org.msh.pharmadex.domain.TimeLine tm : getTimeLineList()) {
             timeline = new Timeline();
-            model.add(new TimelineEvent(tm.getRegState().name(), tm.getStatusDate()));
+            model.add(new TimelineEvent(resourceBundle.getString(tm.getRegState().getKey()), tm.getStatusDate()));
             timelinesChartData.add(timeline);
         }
         return model;
     }
+
+    public boolean showCert;
+
+    public boolean isShowCert() {
+        if(prodApplications!=null&&prodApplications.getRegState()!=null) {
+            if (prodApplications.getRegState().equals(RegState.REGISTERED) || prodApplications.getRegState().equals(RegState.REJECTED))
+                showCert = true;
+            else
+                showCert = false;
+        }
+        return showCert;
+    }
+
+    public void setShowCert(boolean showCert) {
+        this.showCert = showCert;
+    }
+
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications getProdApplications() {
@@ -249,9 +274,14 @@ public class ProcessProdBn implements Serializable {
         review.setReviewStatus(ReviewStatus.ASSIGNED);
         review.setAssignDate(new Date());
 
-        if (!prodApplicationsService.saveReviewers(review).equalsIgnoreCase("success"))
+        String retValue = prodApplicationsService.saveReviewers(review);
+        if (!retValue.equalsIgnoreCase("success")) {
+            if(retValue.equals("exist")){
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Reviewer has already been assigned"));
+
+            }else
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-        else
+        }else
             reviews.add(review);
 
         reviewInfo.setReviewer(review.getUser());
@@ -377,10 +407,10 @@ public class ProcessProdBn implements Serializable {
     public void changeStatusListener() {
         logger.error("Inside changeStatusListener");
         if (prodApplications.getRegState().equals(RegState.NEW_APPL)) {
-            timeLine.setRegState(RegState.FEE);
+            timeLine.setRegState(FEE);
             addTimeline();
         }
-        if (prodApplications.getRegState().equals(RegState.FEE)) {
+        if (prodApplications.getRegState().equals(FEE)) {
             if (prodApplications.isApplicantVerified() && prodApplications.isProductVerified() && prodApplications.isDossierReceived()) {
                 timeLine.setRegState(RegState.VERIFY);
                 addTimeline();
@@ -429,8 +459,8 @@ public class ProcessProdBn implements Serializable {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void save() {
-//        prodApplications.setProdAppChecklists(prodAppChecklists);
-//        prodApplications.setReviews(reviews);
+        prodApplications.setProdAppChecklists(prodAppChecklists);
+        prodApplications.setReviews(reviews);
         try {
             product = productService.updateProduct(product);
             product = productService.findProduct(product.getId());
@@ -611,6 +641,14 @@ public class ProcessProdBn implements Serializable {
     public boolean getCanRegister() {
         if (userSession.isHead() || userSession.isAdmin()) {
             if (getProdApplications().getRegState().equals(RegState.RECOMMENDED))
+                return true;
+        }
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public boolean getCanReject() {
+        if (userSession.isHead() || userSession.isAdmin()) {
+            if (getProdApplications().getRegState().equals(RegState.NOT_RECOMMENDED))
                 return true;
         }
         return false;  //To change body of created methods use File | Settings | File Templates.
@@ -848,7 +886,28 @@ public class ProcessProdBn implements Serializable {
         return displayVerify;
     }
 
+    public String cancel() {
+        facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "processProdBn", null);
+        return "/public/registrationhome.faces";
+    }
+
     public void setDisplayVerify(boolean displayVerify) {
         this.displayVerify = displayVerify;
+    }
+
+    public boolean isDisplaySample() {
+        if((userSession.isStaff()||userSession.isModerator()||userSession.isLab())&&(product.getRegState().ordinal()>3)){
+            displaySample = true;
+        }else{
+            displaySample = false;
+        }
+
+        return displaySample;
+    }
+
+    public void setDisplaySample(boolean displaySample) {
+        this.displaySample = displaySample;
     }
 }

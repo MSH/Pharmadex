@@ -65,7 +65,7 @@ public class RegisterUserMbean implements Serializable {
         return "/home.faces";
     }
 
-    public void save() {
+    public String save() {
         facesContext = FacesContext.getCurrentInstance();
         user.setType(UserType.EXTERNAL);
         String password = PassPhrase.getNext();
@@ -98,11 +98,13 @@ public class RegisterUserMbean implements Serializable {
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("user_email_success")));
                 user = new User();
                 user.getAddress().setCountry(new Country());
+                return "/home.faces";
             } catch (Exception e) {
                 e.printStackTrace();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
             }
         }
+        return null;
     }
 
     public String update() {

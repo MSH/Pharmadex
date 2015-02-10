@@ -98,16 +98,18 @@ public class ProductService implements Serializable {
                 List<ProdCompany> prodCompanies = product.getProdCompanies();
                 boolean finProdManuf = false;
                 for(ProdCompany pc : prodCompanies){
-                    if(pc.getCompanyType().equals(CompanyType.FIN_PROD_MANUF))
+                    if(pc.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
                         finProdManuf = true;
-                    else
+                        break;
+                    }else {
                         finProdManuf = false;
-                    if(!finProdManuf) {
-                        issues.add("no_fin_prod_manuf");
-                        issue = true;
                     }
-
                 }
+                if(!finProdManuf) {
+                    issues.add("no_fin_prod_manuf");
+                    issue = true;
+                }
+
             }
             if (product.getProdApplications().getPrescreenBankName().equalsIgnoreCase("") || product.getProdApplications().getPrescreenfeeSubmittedDt().equals(null)) {
                 issues.add("no_fee");

@@ -135,10 +135,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean fastrack;
 
-    private boolean sampleRecieved;
-
-    private boolean sampleRequestSend;
-
     @Column(length = 500)
     private String ackLetterNo;
 
@@ -192,6 +188,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Lob
     @Column(nullable = true)
     private byte[] regCert;
+
+    @Lob
+    @Column(nullable = true)
+    private byte[] rejCert;
 
     @Column(length = 255)
     private String username;
@@ -623,22 +623,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.feeAmt = feeAmt;
     }
 
-    public boolean isSampleRecieved() {
-        return sampleRecieved;
-    }
-
-    public void setSampleRecieved(boolean sampleRecieved) {
-        this.sampleRecieved = sampleRecieved;
-    }
-
-    public boolean isSampleRequestSend() {
-        return sampleRequestSend;
-    }
-
-    public void setSampleRequestSend(boolean sampleRequestSend) {
-        this.sampleRequestSend = sampleRequestSend;
-    }
-
     public boolean isPrescreenfeeReceived() {
         return prescreenfeeReceived;
     }
@@ -677,6 +661,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setPrescreenBankName(String prescreenBankName) {
         this.prescreenBankName = prescreenBankName;
+    }
+
+    public byte[] getRejCert() {
+        return rejCert;
+    }
+
+    public void setRejCert(byte[] rejCert) {
+        this.rejCert = rejCert;
     }
 }
 
