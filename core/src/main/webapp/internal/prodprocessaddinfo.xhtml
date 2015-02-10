@@ -10,13 +10,8 @@
         <p:outputLabel value="#{msgs.doss_loc}" for="dossloc" styleClass="label"/>
         <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="dossloc"/>
 
-        <p:outputLabel value="#{msgs.sampletest_notified}" for="dossloc" styleClass="label"/>
-        <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.sampleRequestSend}" />
-
-        <p:outputLabel value="#{msgs.sampletest_recieved}" for="dossloc" styleClass="label"/>
-        <p:selectBooleanCheckbox value="#{processProdBn.prodApplications.sampleRecieved}" />
     </h:panelGrid>
-
+<!--
     <p:dataTable id="invoicetable" value="#{processProdBn.invoices}" var="invoice">
         <p:column headerText="#{msgs.invoice_no}">
             <p:commandLink value="#{invoice.invoiceNumber}" oncomplete="PF('invoicedlg').show()">
@@ -48,7 +43,7 @@
     </p:dataTable>
 
     <p:separator/>
-
+-->
     <p:commandButton icon="ui-icon-document" value="#{msgs.send_mail}" onclick="PF('maildlg').show()"/>
     <p:dataTable id="mailtable" value="#{processProdBn.mails}" var="mail" style="width: 830px;">
         <p:column style="width:120px;" headerText="#{msgs.global_date}">

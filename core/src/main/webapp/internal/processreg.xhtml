@@ -6,71 +6,13 @@
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
-        <h:form id="reghome">
+        <h:form id="reghome" enctype="multipart/form-data">
             <p:growl id="growl" showDetail="true"/>
 
             <h:panelGrid columns="2" columnClasses="menu,content">
                 <h:panelGrid columns="2" columnClasses="menu,content">
-                    <p:menu style="width:198px">
-                        <p:submenu label="#{msgs.Registration}">
-                            <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
-                                        id="saveMenuItem"
-                                        ajax="true" update=":reghome"/>
-                            <p:menuitem value="generate" icon="ui-icon-gear"
 
-                                        action="#{prodApplicationsService.generateRegNo}" ajax="false"/>
-                            <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document"
-                                        onclick="PF('dlg').show()" id="addCommentMI"/>
-                            <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
-                                        onclick="PF('stepDlg').show()" id="nextStepMI"
-                                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
-                            <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
-                                        rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
-                                        action="#{processProdBn.findReview}" ajax="false"/>
-
-                            <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
-                                        rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
-                                        action="#{processProdBn.findReviewInfo}" ajax="false"/>
-
-
-                            <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
-                                        onclick="PF('regDlg').show()" id="registerMI"
-                                        rendered="#{processProdBn.canRegister}"/>
-                            <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
-                                        onclick="PF('moderatordlg').show()"
-                                        rendered="#{userSession.admin||userSession.staff}" id="assignModMI"/>
-                            <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
-                                        oncomplete="PF('assignreviewdlg').show()"
-                                        action="#{processProdBn.initProcessorAdd}" id="assignProMI"
-                                        rendered="#{userSession.moderator||userSession.admin}"/>
-
-                        </p:submenu>
-                        <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
-                            <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
-                                        action="#{renewalMbn.preparePayment()}"
-                                        oncomplete="PF('renewdlg').show()"
-                                        rendered="#{userSession.head||userSession.admin}" ajax="true"/>
-                            <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear"
-                                        oncomplete="PF('invoicedlg').show()"
-                                        rendered="#{userSession.head||userSession.admin}"
-                                        action="#{renewalMbn.initInvoice()}">
-                            </p:menuitem>
-                            <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear"
-                                        action="#{renewalMbn.sendReminder}"
-                                        rendered="#{userSession.head||userSession.admin}" update=":reghome:growl"/>
-                            <p:menuitem value="#{msgs.report_payment}" icon="ui-icon-gear"
-                                        action="#{renewalMbn.preparePayment()}"
-                                        oncomplete="PF('reportpaymentdlg').show()"
-                                        rendered="#{userSession.company}" update=":reghome:growl" ajax="true"/>
-                            <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
-                                        oncomplete="PF('dlgAmdment').show()"
-                                        rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>
-                            <!--        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" ajax="false" action="amdmtCategory.faces"
-                                                rendered="#{userSession.company||userSession.admin}" />
-                             -->
-                        </p:submenu>
-                    </p:menu>
-
+                    <ui:include src="processprodmenu.xhtml"/>
 
                     <h:panelGroup styleClass="ui-widget">
                         <ui:decorate template="/templates/prodbannertempl.xhtml">
@@ -146,6 +88,12 @@
 
                             </p:tab>
 
+                            <p:tab title="Sample Request" id="sampletab"
+                                   rendered="#{processProdBn.displaySample}">
+
+                                <ui:include src="samplerequestpnl.xhtml"/>
+
+                            </p:tab>
 
 
                             <p:tab title="#{msgs.prod_comments}">
@@ -156,7 +104,7 @@
                                     <p:column style="width:120px;">
                                         <p:outputLabel styleClass="ui-icon ui-icon-comment"
                                                        style="display:inline-block;"/>
-                                        <p:outputLabel value="#{it.applicantUser.name}" styleClass="label"/>
+                                        <p:outputLabel value="#{it.user.name}" styleClass="label"/>
 
                                         <div style="font-size: smaller;">
                                             <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
@@ -194,7 +142,7 @@
                                     </p:column>
 
                                     <p:column headerText="#{msgs.updated_by}">
-                                        #{timeline.applicantUser.name}
+                                        #{timeline.user.name}
                                     </p:column>
 
                                     <p:column headerText="#{msgs.global_comment}">
@@ -252,6 +200,7 @@
                                 </p:dataTable>
                             </p:tab>
 
+
                             <p:tab title="#{msgs.add_info}" id="addinfotab"
                                    rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">
 
@@ -289,12 +238,18 @@
                                 </p:dataTable>
                             </p:tab>
 
-                            <p:tab title="#{msgs.reg_cert}" id="regcerttab" rendered="#{processProdBn.registered}">
+                            <p:tab title="#{msgs.reg_cert}" id="regcerttab" rendered="#{processProdBn.showCert}">
 
-                                <p:commandButton id="invoicedownload" value="#{msgs.reg_cert}"
+                                <p:commandButton id="regdownload" value="#{msgs.reg_cert}" rendered="#{processProdBn.registered}"
                                                  onclick="PrimeFaces.monitorDownload(start, stop)"
                                                  icon="ui-icon-arrowthichk-n">
                                     <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
+                                </p:commandButton>
+
+                                <p:commandButton id="rejectdownload" value="#{msgs.reg_cert}" rendered="#{!processProdBn.registered}"
+                                                 onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                 icon="ui-icon-arrowthichk-n">
+                                    <p:fileDownload value="#{fileUploadController.rejCertDownload()}"/>
                                 </p:commandButton>
                             </p:tab>
 
@@ -356,7 +311,7 @@
                                   escape="false"
                                   styleClass="text"/>
 
-                    <p:autoComplete id="module3" value="#{processProdBn.review.applicantUser}"
+                    <p:autoComplete id="module3" value="#{processProdBn.review.user}"
                                     completeMethod="#{globalEntityLists.completeProcessorList}"
                                     dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
@@ -404,7 +359,7 @@
 
         <p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true"
                   rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head||userSession.staff||userSession.moderator}">
-        <h:form>
+        <h:form enctype="multipart/form-data">
             <h:panelGrid columns="2" style="margin-bottom:10px">
                 <h:outputLabel for="statuscb" value="#{msgs.registration_status}: "/>
                 <p:selectOneMenu id="statuscb" value="#{processProdBn.timeLine.regState}">
@@ -636,8 +591,9 @@
                 <h:panelGrid columns="2" style="margin-bottom:10px">
                     <h:outputLabel for="commenttext" value="Enter Comment:"/>
                     <p:inputTextarea id="commenttext" value="#{processProdBn.selComment.comment}" rows="5" cols="50"/>
-                    <h:outputLabel value="Internal Comment"/>
+<!--                    <h:outputLabel value="Internal Comment"/>
                     <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
+                    -->
                 </h:panelGrid>
 
                 <p:commandButton id="submitButton" value="#{msgs.global_submit}" action="#{processProdBn.addComment}"

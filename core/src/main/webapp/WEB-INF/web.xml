@@ -166,7 +166,7 @@
         <location>/pages/404.xhtml</location>
     </error-page>
 
-    <servlet-mapping>
+        <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
         <url-pattern>*.xhtml</url-pattern>

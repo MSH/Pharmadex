@@ -149,7 +149,7 @@
                 <p:selectBooleanCheckbox id="noatc"
                                          value="#{regHomeMbean.product.noAtc}"> </p:selectBooleanCheckbox>
                 <p:commandLink id="atcLookUpBtn" value="#{msgs.atc_lookup}" oncomplete="PF('addAtcDlg').show()"
-                               action="#{regHomeMbean.openAddATC()}"/>
+                               action="#{regHomeMbean.openAddATC}"/>
             </h:panelGrid>
             <h:outputLabel/>
 
@@ -625,9 +625,9 @@
         <h:panelGroup>
             <p:commandButton action="#{regHomeMbean.addAtc}" value="#{msgs.global_add}"
                              update=":reghome:atctable :atcdetail :atcdetail:treeMultiple"
-                             oncomplete="addAtcDlg.hide()" />
+                             oncomplete="PF('addAtcDlg').hide()" />
             <p:commandButton action="#{regHomeMbean.cancelAddInn}" value="#{msgs.global_cancel}"
-                             oncomplete="addAtcDlg.hide()"/>
+                             oncomplete="PF('addAtcDlg').hide()"/>
         </h:panelGroup>
         <h:outputLabel/>
 

@@ -19,7 +19,6 @@
         <session-management>
             <concurrency-control max-sessions="5" error-if-maximum-exceeded="true" expired-url="/home.faces"/>
         </session-management>
-        <!--<remember-me key="springdemoRMKey" user-service-ref="userDetailService"/>-->
     </http>
 
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
