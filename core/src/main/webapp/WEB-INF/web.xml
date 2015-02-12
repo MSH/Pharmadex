@@ -147,7 +147,7 @@
     </servlet>
 
     <session-config>
-        <session-timeout>30</session-timeout>
+        <session-timeout>1</session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
@@ -155,15 +155,19 @@
 
     <error-page>
         <exception-type>java.lang.RuntimeException</exception-type>
-        <location>/pages/bug.xhtml</location>
+        <location>/pages/bug.faces</location>
     </error-page>
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/pages/viewexpired.xhtml</location>
+        <location>/home.xhtml</location>
     </error-page>
     <error-page>
         <error-code>404</error-code>
         <location>/pages/404.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/pages/errorpage.xhtml</location>
     </error-page>
 
         <servlet-mapping>
