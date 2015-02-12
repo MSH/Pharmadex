@@ -31,7 +31,7 @@
                             <f:setPropertyActionListener value="#{userSession.userAccess.user}"
                                                          target="#{registerUserMbean.user}"/>
                         </p:commandLink>
-                        <p:commandLink action="#{userAuthHandler.logout}" value="Logout" ajax="false"/>
+                        <p:commandLink action="#{userSession.registerLogout}" value="Logout" ajax="false"/>
                         <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
                         -->                            </sec:isAuthenticated>
                     <sec:isAnonymous>
