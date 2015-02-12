@@ -19,7 +19,6 @@ import java.util.List;
  * Author: usrivastava
  */
 @Service
-@Scope("singleton")
 public class InnService implements Serializable {
 
     private static final long serialVersionUID = -1166922531912144288L;

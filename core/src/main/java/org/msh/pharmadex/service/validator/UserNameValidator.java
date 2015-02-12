@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @Component
-@Scope("request")
 public class UserNameValidator implements Validator, Serializable {
 
     @Autowired

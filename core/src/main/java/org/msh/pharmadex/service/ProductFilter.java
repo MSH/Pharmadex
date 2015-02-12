@@ -10,7 +10,6 @@ import java.util.HashMap;
  * Author: usrivastava
  */
 @Component
-@Scope("request")
 public class ProductFilter {
     String prodName;
     String manufName;

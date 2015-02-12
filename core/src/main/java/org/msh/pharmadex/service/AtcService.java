@@ -14,7 +14,6 @@ import java.util.List;
  * Author: usrivastava
  */
 @Service
-@Scope("singleton")
 public class AtcService implements Serializable {
 
 

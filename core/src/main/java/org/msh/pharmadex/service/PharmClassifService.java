@@ -14,7 +14,6 @@ import java.util.List;
  * Author: usrivastava
  */
 @Service
-@Scope("singleton")
 public class PharmClassifService implements Serializable {
 
     private static final long serialVersionUID = -806760452220291483L;

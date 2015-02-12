@@ -13,7 +13,6 @@ import java.util.List;
  * Author: usrivastava
  */
 @Service
-@Scope("singleton")
 public class CountryService implements Serializable {
 
     private static final long serialVersionUID = 4520038222129025384L;

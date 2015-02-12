@@ -16,7 +16,6 @@ import java.util.List;
  * Author: usrivastava
  */
 @Service
-@Scope("singleton")
 public class DosageFormService implements Serializable {
 
     private static final long serialVersionUID = -4657880430145288749L;

@@ -17,7 +17,6 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @Component
-@Scope("request")
 public class EmailValidator implements Validator, Serializable {
 
     @Autowired
