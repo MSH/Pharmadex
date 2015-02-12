@@ -55,14 +55,14 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
 
             //email notifications
 
-            try {
-                WebApplicationContext ctx = WebApplicationContextUtils
-                        .getRequiredWebApplicationContext(request.getServletContext());  // (1) get ctx using the WebApplicationContextUtils class
+            WebApplicationContext ctx = WebApplicationContextUtils
+                    .getRequiredWebApplicationContext(request.getServletContext());  // (1) get ctx using the WebApplicationContextUtils class
 
-                ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-                UserSession userSession
-                        = (UserSession) FacesContext.getCurrentInstance().getApplication()
-                        .getELResolver().getValue(elContext, null, "userSession");
+            ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+            UserSession userSession
+                    = (UserSession) FacesContext.getCurrentInstance().getApplication()
+                    .getELResolver().getValue(elContext, null, "userSession");
+            try {
                 ErrorLogDAO errorLogDAO = (ErrorLogDAO) ctx.getBean("errorLogDAO");
 
                 ErrorLog errorLog = new ErrorLog();
@@ -78,6 +78,7 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 errorLog.setStackTrace(errors.toString().substring(0, 255));
                 errorLog.setUser(userSession.getLoggedInUserObj());
                 errorLogDAO.save(errorLog);
+
 
             } catch (Exception ex) {
                 ex.printStackTrace();
