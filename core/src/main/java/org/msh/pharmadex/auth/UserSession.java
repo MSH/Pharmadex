@@ -7,14 +7,24 @@ import org.msh.pharmadex.service.UserAccessService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.model.UploadedFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,7 +32,8 @@ import java.util.List;
 
 @ManagedBean
 @SessionScoped
-public class UserSession implements Serializable {
+public class UserSession implements Serializable, HttpSessionBindingListener {
+    private Logger log = LoggerFactory.getLogger(DBControl.class);
 
     private static final long serialVersionUID = 2473412644164656187L;
     @ManagedProperty(value = "#{userService}")
@@ -94,11 +105,26 @@ public class UserSession implements Serializable {
      * Register the logout when the user session is finished by time-out
      */
     @Transactional
-    public void logout() {
+    public String logout() throws ServletException, IOException {
         if (userAccess == null) {
-            return;
+            return null;
         }
+
         registerLogout();
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+
+        RequestDispatcher dispatcher = ((ServletRequest) context.getRequest())
+                .getRequestDispatcher("/j_spring_security_logout");
+
+        dispatcher.forward((ServletRequest) context.getRequest(),
+                (ServletResponse) context.getResponse());
+
+        FacesContext.getCurrentInstance().responseComplete();
+        // It's OK to return null here because Faces is just going to exit.
+
+        return "/home.faces";
+
+
     }
 
     /**
@@ -106,6 +132,7 @@ public class UserSession implements Serializable {
      */
     @Transactional
     public void registerLogin(User user, HttpServletRequest request) {
+
         // get client information
         String ipAddr = request.getRemoteAddr();
         String app = request.getHeader("User-Agent");
@@ -535,4 +562,29 @@ public class UserSession implements Serializable {
     public void setLab(boolean lab) {
         this.lab = lab;
     }
+
+    @Override
+    public void valueBound(HttpSessionBindingEvent event) {
+        System.out.println("Inside valueBound");
+        log.info("valueBound:" + event.getName() + " session:" + event.getSession().getId() );
+        sessionID = event.getSession().getId();
+    }
+
+    @Override
+    public void valueUnbound(HttpSessionBindingEvent event) {
+       log.info("valueUnBound:" + event.getName() + " session:" + event.getSession().getId() );
+       System.out.println("Inside valueUnbound");
+       if(!getLoggedInUser().equals("")&& sessionID.equals(event.getSession().getId())){
+           try {
+               logout();
+           } catch (ServletException e) {
+               e.printStackTrace();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
+    }
+
+    private String sessionID;
+
 }
