@@ -12,7 +12,6 @@
         <module>namibia</module>
         <module>ethopia</module>
         <module>mozambique</module>
-        <module>core-web</module>
     </modules>
     <name>pharmadex</name>
 
@@ -23,6 +22,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <java.version>1.6</java.version>
         <junit.version>4.8.2</junit.version>
+        <jasperreports.version>4.8.0</jasperreports.version>
         <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
 

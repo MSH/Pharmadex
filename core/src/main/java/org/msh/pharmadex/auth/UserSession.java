@@ -9,7 +9,6 @@ import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.faces.bean.ManagedBean;
@@ -33,11 +32,10 @@ import java.util.List;
 @ManagedBean
 @SessionScoped
 public class UserSession implements Serializable, HttpSessionBindingListener {
-    private Logger log = LoggerFactory.getLogger(DBControl.class);
-
     private static final long serialVersionUID = 2473412644164656187L;
     @ManagedProperty(value = "#{userService}")
     UserService userService;
+    private Logger log = LoggerFactory.getLogger(DBControl.class);
     private UserAccess userAccess;
     private boolean displayMessagesKeys;
     private String loggedInUser;
@@ -75,7 +73,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private String licHolderID;
     private String pipOrderID;
     private String purOrderID;
-
+    private String sessionID;
 
     public void login() {
         try {
@@ -138,7 +136,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         String app = request.getHeader("User-Agent");
         user = userService.findUser(user.getUserId());
 
-        // register new login        
+        // register new login
         userAccess = new UserAccess();
         userAccess.setUser(user);
         userAccess.setLoginDate(new Date());
@@ -157,7 +155,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
             Workspace w = userAccessService.getWorkspace();
             setDisplayPricing(w.isDisplatPricing());
             setWorkspaceName(w.getName());
-            if(workspaceName.equalsIgnoreCase("Ethiopia"))
+            if (workspaceName.equalsIgnoreCase("Ethiopia"))
                 setEthiopia(true);
             else
                 setEthiopia(false);
@@ -227,17 +225,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     }
 
 
-    /**
-     * Register the logout of the current user
-     */
-    public void registerLogout() {
-        userAccess.setLogoutDate(new Date());
-
-        userAccessService.update(userAccess);
-        onlineUserBean.remove(userAccess);
-    }
-
-
 //    /**
 //     * Monta a lista de permiss�es do usu�rio
 //     * @param usu
@@ -292,6 +279,16 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 //    	}    	
 //    }
 
+    /**
+     * Register the logout of the current user
+     */
+    public void registerLogout() {
+        userAccess.setLogoutDate(new Date());
+
+        userAccessService.update(userAccess);
+        onlineUserBean.remove(userAccess);
+    }
+
     public UserAccess getUserAccess() {
         return userAccess;
     }
@@ -306,7 +303,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     public boolean isDisplayMessagesKeys() {
         return displayMessagesKeys;
     }
-
 
     public void setDisplayMessagesKeys(boolean displayMessagesKeys) {
         this.displayMessagesKeys = displayMessagesKeys;
@@ -499,12 +495,12 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.displayReviewInfo = displayReviewInfo;
     }
 
-    public void setLicHolderID(String licHolderID) {
-        this.licHolderID = licHolderID;
-    }
-
     public String getLicHolderID() {
         return licHolderID;
+    }
+
+    public void setLicHolderID(String licHolderID) {
+        this.licHolderID = licHolderID;
     }
 
     public String getPipOrderID() {
@@ -566,25 +562,17 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     @Override
     public void valueBound(HttpSessionBindingEvent event) {
         System.out.println("Inside valueBound");
-        log.info("valueBound:" + event.getName() + " session:" + event.getSession().getId() );
+        log.info("valueBound:" + event.getName() + " session:" + event.getSession().getId());
         sessionID = event.getSession().getId();
     }
 
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {
-       log.info("valueUnBound:" + event.getName() + " session:" + event.getSession().getId() );
-       System.out.println("Inside valueUnbound");
-       if(!getLoggedInUser().equals("")&& sessionID.equals(event.getSession().getId())){
-           try {
-               logout();
-           } catch (ServletException e) {
-               e.printStackTrace();
-           } catch (IOException e) {
-               e.printStackTrace();
-           }
-       }
+        log.info("valueUnBound:" + event.getName() + " session:" + event.getSession().getId());
+        System.out.println("Inside valueUnbound");
+        if (!getLoggedInUser().equals("") && sessionID.equals(event.getSession().getId())) {
+            registerLogout();
+        }
     }
-
-    private String sessionID;
 
 }

@@ -20,6 +20,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.msh.pharmadex</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
@@ -86,6 +93,14 @@
 
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>core</id>
+            <name>Core Maven Webapp</name>
+            <url>file:/Users/utkarsh/.m2/repository/</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
@@ -134,6 +149,7 @@
             </plugin>
 
         </plugins>
+
         <finalName>ethopia</finalName>
     </build>
 </project>

@@ -22,6 +22,7 @@ public class LogoutListener implements ApplicationListener<SessionDestroyedEvent
     public void onApplicationEvent(SessionDestroyedEvent sessionDestroyedEvent) {
         {
 //            ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+
             List<SecurityContext> lstSecurityContext = sessionDestroyedEvent.getSecurityContexts();
             UserDetails ud = null;
             for (SecurityContext securityContext : lstSecurityContext) {

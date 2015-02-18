@@ -442,6 +442,43 @@
                 </dependencies>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-a-jar</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <artifactId>core</artifactId>
+                            <groupId>org.msh.pharmadex</groupId>
+                            <version>1.0</version>
+                            <file>
+                                ${project.build.directory}/${project.artifactId}.jar
+                            </file>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
 
         </plugins>
     </build>
