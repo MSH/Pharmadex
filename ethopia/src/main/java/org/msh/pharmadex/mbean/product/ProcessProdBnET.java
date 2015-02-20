@@ -1,4 +1,4 @@
-package org.msh.pharmadex.mbean;
+package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;

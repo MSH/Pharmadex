@@ -15,9 +15,9 @@
             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
                         onclick="PF('stepDlg').show()" id="nextStepMI"
                         rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
-            <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
-                        action="#{prod}" ajax="false"
-                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
+            <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
+                        action="/internal/reject.faces" ajax="false"
+                        rendered="#{processProdBn.canReject}"/>
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
                         action="#{processProdBn.findReview}" ajax="false"/>

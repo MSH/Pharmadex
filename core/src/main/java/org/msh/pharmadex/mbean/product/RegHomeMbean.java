@@ -155,24 +155,6 @@ public class RegHomeMbean implements Serializable {
                 prodApplications.setUser(applicantUser);
             }
 
-            if(prodApplications.getId()==null) {
-                if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
-                    prodAppChecklists = new ArrayList<ProdAppChecklist>();
-                    prodApplications.setProdAppChecklists(prodAppChecklists);
-                    List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
-                    ProdAppChecklist eachProdAppCheck;
-                    if (allChecklist != null && allChecklist.size() > 0) {
-                        for (int i = 0; allChecklist.size() > i; i++) {
-                            eachProdAppCheck = new ProdAppChecklist();
-                            eachProdAppCheck.setChecklist(allChecklist.get(i));
-                            eachProdAppCheck.setProdApplications(prodApplications);
-                            prodAppChecklists.add(eachProdAppCheck);
-                        }
-                    }
-                    prodApplications.setProdAppChecklists(prodAppChecklists);
-                }
-            }
-
             prodInn = new ProdInn();
 //            prodInn.setDosUnit(new DosUom());
 
@@ -188,6 +170,33 @@ public class RegHomeMbean implements Serializable {
                 initProdApps();
             }
 
+            ProdApp prodApp = userSession.getProdApp();
+            if (prodApp != null) {
+                prodApplications.setProdAppType(prodApp.getProdAppType());
+                prodApplications.setSra(prodApp.isSRA());
+                prodApplications.setFastrack(prodApp.isEml());
+                prodApplications.setFeeAmt(prodApp.getFee());
+                prodApplications.setPrescreenfeeAmt(prodApp.getPrescreenfee());
+
+                if (prodApplications.getId() == null) {
+                    if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
+                        prodAppChecklists = new ArrayList<ProdAppChecklist>();
+                        prodApplications.setProdAppChecklists(prodAppChecklists);
+                        List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
+                        ProdAppChecklist eachProdAppCheck;
+                        if (allChecklist != null && allChecklist.size() > 0) {
+                            for (int i = 0; allChecklist.size() > i; i++) {
+                                eachProdAppCheck = new ProdAppChecklist();
+                                eachProdAppCheck.setChecklist(allChecklist.get(i));
+                                eachProdAppCheck.setProdApplications(prodApplications);
+                                prodAppChecklists.add(eachProdAppCheck);
+                            }
+                        }
+                        prodApplications.setProdAppChecklists(prodAppChecklists);
+                    }
+                }
+
+            }
         }
 
     }

@@ -61,6 +61,11 @@ public class ReviewDetailBn implements Serializable {
         facesContext.addMessage(null, msg);
     }
 
+    public String back(){
+        userSession.setReviewInfoID(reviewDetail.getReviewInfo().getId());
+        return "reviewInfo";
+    }
+
     public String submitReview(){
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();

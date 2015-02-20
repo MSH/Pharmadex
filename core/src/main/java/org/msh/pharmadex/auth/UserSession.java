@@ -22,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import java.io.IOException;
@@ -117,10 +118,14 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         dispatcher.forward((ServletRequest) context.getRequest(),
                 (ServletResponse) context.getResponse());
 
-        FacesContext.getCurrentInstance().responseComplete();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpSession httpSession = (HttpSession) facesContext.getExternalContext().getSession(false);
+        httpSession.invalidate();
+
+        facesContext.responseComplete();
         // It's OK to return null here because Faces is just going to exit.
 
-        return "/home.faces";
+        return "/home.faces?faces-redirect=true";
 
 
     }

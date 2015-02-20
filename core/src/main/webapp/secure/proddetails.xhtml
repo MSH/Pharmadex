@@ -6,13 +6,9 @@
                 xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
 
         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
-            <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
-            <p:selectOneMenu id="apptypeCb" value="#{regHomeMbean.prodApplications.prodAppType}" required="true"
-                             requiredMessage="#{msgs.valid_prod_type}">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalLists.prodAppType}" var="prodcat" itemLabel="#{msgs[prodcat.key]}"/>
-            </p:selectOneMenu>
-            <p:message for="prodCatcb" showSummary="true" showDetail="false"/>
+            <p:outputLabel value="#{msgs.prod_app_type}" styleClass="fy-required-field"/>
+            <p:outputLabel value="#{msgs[regHomeMbean.prodApplications.prodAppType.key]}" styleClass="label"/>
+            <p:outputLabel/>
 
             <p:outputLabel value="#{msgs.prod_cat}" for="prodCatcb" styleClass="fy-required-field"/>
             <p:selectOneMenu id="prodCatcb" value="#{regHomeMbean.product.prodCategory}" required="true"

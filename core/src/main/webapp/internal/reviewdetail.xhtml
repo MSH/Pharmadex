@@ -20,7 +20,7 @@
             </div>
 
             <p:panel header="#{msgs.complete_review}">
-                <p:commandButton value="#{msgs.global_back}" action="reviewInfo" ajax="false" immediate="true"/>
+                <p:commandButton value="#{msgs.global_back}" action="#{reviewDetailBn.back}" ajax="false" immediate="true"/>
                 <p:commandButton value="#{msgs.global_save}" action="#{reviewDetailBn.saveReview}"
                                  update=":reviewHome:growl reviewHome:reviewChkPnl" ajax="true">
                 </p:commandButton>

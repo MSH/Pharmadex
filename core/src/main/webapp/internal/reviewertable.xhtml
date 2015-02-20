@@ -11,7 +11,7 @@
 
 
 
-    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}" rendered="#{!userAccessMBean.detailReview}">
+    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}" >
 
         <p:column>
             <f:facet name="header">
@@ -60,7 +60,7 @@
         </p:column>
     </p:dataTable>
 
-    <p:dataTable id="reviwerinfotbl" var="reviewInfo" value="#{processProdBn.reviewInfos}" rendered="#{userAccessMBean.detailReview}">
+    <p:dataTable id="reviwerinfotbl" var="reviewInfo" value="#{processProdBn.reviewInfos}" >
 
         <p:column>
             <f:facet name="header">

@@ -877,7 +877,9 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplayVerify() {
-        if((userSession.isAdmin()||userSession.isStaff()||userSession.isHead())) {
+        if(userSession.isAdmin()||userSession.isHead())
+            return true;
+        if((userSession.isStaff())) {
             if(prodApplications.getRegState().equals(RegState.NEW_APPL))
                 displayVerify = false;
             else

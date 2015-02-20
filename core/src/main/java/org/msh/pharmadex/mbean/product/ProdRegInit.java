@@ -2,18 +2,15 @@
  * Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
  */
 
-package org.msh.pharmadex.mbean;
+package org.msh.pharmadex.mbean.product;
 
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.FeeSchedule;
-import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.enums.ProdAppType;
-import org.msh.pharmadex.mbean.product.ProdApp;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.LicenseHolderService;
 import org.springframework.web.util.WebUtils;
 
 import javax.faces.application.FacesMessage;
@@ -21,7 +18,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
@@ -40,9 +36,6 @@ public class ProdRegInit implements Serializable {
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
-    @ManagedProperty(value = "#{licenseHolderService}")
-    private LicenseHolderService licenseHolderService;
-
     @ManagedProperty(value = "#{checklistService}")
     private ChecklistService checklistService;
 
@@ -59,7 +52,7 @@ public class ProdRegInit implements Serializable {
 
     public void calculate() {
         context = FacesContext.getCurrentInstance();
-        if (prodAppType==null) {
+        if (prodAppType == null) {
             context.addMessage(null, new FacesMessage("prodapptype_null"));
             displayfeepanel = false;
         } else {
@@ -78,10 +71,7 @@ public class ProdRegInit implements Serializable {
     }
 
     public void populateChecklist() {
-        boolean sra = false;
-        if(selSRA!=null)
-            sra = selSRA.length > 0;
-        checklists = checklistService.getETChecklists(prodAppType, sra);
+        checklists = checklistService.getChecklists(prodAppType, true);
     }
 
     public String regApp() {
@@ -168,27 +158,14 @@ public class ProdRegInit implements Serializable {
         if (userSession.isCompany()) {
             if (userSession.getApplicant() == null)
                 eligible = false;
-            else {
-                LicenseHolder licenseHolder = licenseHolderService.findLicHolderByApplicant(userSession.getApplicant().getApplcntId());
-                if (licenseHolder != null)
-                    eligible = true;
-                else
-                    eligible = false;
-            }
+            else
+                eligible = true;
         }
         return eligible;
     }
 
     public void setEligible(boolean eligible) {
         this.eligible = eligible;
-    }
-
-    public LicenseHolderService getLicenseHolderService() {
-        return licenseHolderService;
-    }
-
-    public void setLicenseHolderService(LicenseHolderService licenseHolderService) {
-        this.licenseHolderService = licenseHolderService;
     }
 
     public String getFee() {
