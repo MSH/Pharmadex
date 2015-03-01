@@ -28,7 +28,7 @@
 
                         <p:messages id="messages" showDetail="true" showSummary="true"/>
 
-                        <p:tabView id="processtab" style="width: 830px;" cache="true"
+                        <p:tabView id="processtab" style="width: 830px;"
                                    activeIndex="#{processProdBn.selectedTab}" dynamic="true">
                             <p:tab title="#{msgs.application_info}" id="infotab">
                                 <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
@@ -49,42 +49,6 @@
 
                                 <ui:include src="prescreenpnl.xhtml"/>
 
-                                <p:outputLabel value="#{msgs.moderator_name}:"/>
-                                <p:outputLabel value="#{processProdBn.moderator.username}"/>
-
-                                <p:dataTable var="checkList" value="#{processProdBn.prodAppChecklists}"
-                                             style="width:100%;" id="checkListTbl">
-                                    <p:column headerText="">
-                                        <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
-                                    </p:column>
-                                    <p:column>
-                                        <h:outputLabel value="#{checkList.checklist.name}"/>
-                                    </p:column>
-                                    <p:column headerText="#{msgs.applicant}">
-                                        <p:selectBooleanCheckbox value="#{checkList.value}" rendered="#{checkList.checklist.header}"/>
-                                    </p:column>
-                                    <p:column headerText="#{msgs.UserType_STAFF}">
-                                        <p:selectBooleanCheckbox value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}"/>
-                                    </p:column>
-                                    <p:column headerText="#{msgs.global_remark}">
-                                        <p:inputText value="#{checkList.staffComment}"/>
-                                    </p:column>
-                                    <p:column>
-                                        <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
-                                                         action="#{fileUploadController.setProdAppChecklist(checkList)}"
-                                                         rendered="#{!checkList.fileUploaded}"/>
-
-                                        <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
-                                                         onclick="PrimeFaces.monitorDownload(start, stop)"
-                                                         icon="ui-icon-arrowstop-1-s"
-                                                         rendered="#{checkList.fileUploaded}"
-                                                >
-                                            <p:fileDownload
-                                                    value="#{fileUploadController.moduleDocDownload(checkList)}"/>
-                                        </p:commandButton>
-
-                                    </p:column>
-                                </p:dataTable>
                             </p:tab>
 
 
@@ -549,19 +513,6 @@
                              oncomplete="mailDlg.hide()" update="@form"/>
 
         </h:form>
-        </p:dialog>
-
-
-        <p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true">
-            <h:form enctype="multipart/form-data">
-
-                <p:fileUpload value="#{userSession.file}" mode="simple"/>
-                <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
-                                 actionListener="#{fileUploadController.addModuleDoc}"
-                                 oncomplete="PF('moduledlg').hide()" ajax="false"
-                        />
-            </h:form>
-
         </p:dialog>
 
 

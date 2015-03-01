@@ -22,7 +22,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -42,6 +41,19 @@ import static org.msh.pharmadex.domain.enums.RegState.FEE;
 public class ProcessProdBn implements Serializable {
 
     private static final long serialVersionUID = -6299219761842430835L;
+    public boolean showCert;
+    @ManagedProperty(value = "#{userSession}")
+    protected UserSession userSession;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    protected ProdApplicationsService prodApplicationsService;
+    @ManagedProperty(value = "#{productService}")
+    protected ProductService productService;
+    protected ProdApplications prodApplications;
+    protected Product product;
+    protected List<TimeLine> timeLineList;
+    protected org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
+    protected FacesContext facesContext = FacesContext.getCurrentInstance();
+    protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     @ManagedProperty(value = "#{amdmtService}")
@@ -51,28 +63,18 @@ public class ProcessProdBn implements Serializable {
     private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
-    @ManagedProperty(value = "#{userSession}")
-    protected UserSession userSession;
     @ManagedProperty(value = "#{commentService}")
     private CommentService commentService;
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
-    @ManagedProperty(value = "#{prodApplicationsService}")
-    protected ProdApplicationsService prodApplicationsService;
     @ManagedProperty(value = "#{mailService}")
     private MailService mailService;
-    @ManagedProperty(value = "#{productService}")
-    protected ProductService productService;
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
     @ManagedProperty(value = "#{userAccessMBean}")
     private UserAccessMBean userAccessMBean;
-
-    protected ProdApplications prodApplications;
-    protected Product product;
     private Applicant applicant;
     private List<Comment> comments;
-    protected List<TimeLine> timeLineList;
     private List<Mail> mails;
     private List<Company> companies;
     private List<ProdAppAmdmt> prodAppAmdmts;
@@ -80,10 +82,8 @@ public class ProcessProdBn implements Serializable {
     private TimelineModel model;
     private List<Timeline> timelinesChartData;
     private Comment selComment = new Comment();
-    protected org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
     private Mail mail = new Mail();
     private boolean readyReg;
-    private List<ProdAppChecklist> prodAppChecklists;
     private List<Review> reviews;
     private Review review = new Review();
     private StatusUser module;
@@ -93,15 +93,12 @@ public class ProcessProdBn implements Serializable {
     private String prodID;
     private List<ProdInn> prodInns;
     private boolean checkReviewStatus = false;
-    protected FacesContext facesContext = FacesContext.getCurrentInstance();
-    protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private int selectedTab;
     private User moderator;
     private List<ReviewInfo> reviewInfos;
-
     private boolean displayVerify = false;
     private boolean displaySample = false;
-
+    private ReviewInfo reviewInfo;
 
     @PostConstruct
     private void init() {
@@ -122,7 +119,6 @@ public class ProcessProdBn implements Serializable {
         return "/internal/review";
     }
 
-
     public String findReviewInfo() {
         ReviewInfo reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedInUserObj().getUserId(), prodApplications.getId());
         userSession.setProduct(product);
@@ -137,18 +133,18 @@ public class ProcessProdBn implements Serializable {
         timelinesChartData = new ArrayList<Timeline>();
         Timeline timeline;
         TimelineModel model = new TimelineModel();
-        for (org.msh.pharmadex.domain.TimeLine tm : getTimeLineList()) {
-            timeline = new Timeline();
-            model.add(new TimelineEvent(resourceBundle.getString(tm.getRegState().getKey()), tm.getStatusDate()));
-            timelinesChartData.add(timeline);
+        if (timeLineList != null) {
+            for (org.msh.pharmadex.domain.TimeLine tm : getTimeLineList()) {
+                timeline = new Timeline();
+                model.add(new TimelineEvent(resourceBundle.getString(tm.getRegState().getKey()), tm.getStatusDate()));
+                timelinesChartData.add(timeline);
+            }
         }
         return model;
     }
 
-    public boolean showCert;
-
     public boolean isShowCert() {
-        if(prodApplications!=null&&prodApplications.getRegState()!=null) {
+        if (prodApplications != null && prodApplications.getRegState() != null) {
             if (prodApplications.getRegState().equals(RegState.REGISTERED) || prodApplications.getRegState().equals(RegState.REJECTED))
                 showCert = true;
             else
@@ -160,7 +156,6 @@ public class ProcessProdBn implements Serializable {
     public void setShowCert(boolean showCert) {
         this.showCert = showCert;
     }
-
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications getProdApplications() {
@@ -184,11 +179,11 @@ public class ProcessProdBn implements Serializable {
         prodID = params.get("id");
 
         if (prodID == null || prodID.equals("")) {
-            prodID = "" +((userSession.getProduct()!=null)?userSession.getProduct().getId():"");
+            prodID = "" + ((userSession.getProduct() != null) ? userSession.getProduct().getId() : "");
             userSession.setProduct(null);
         }
 
-        if(prodID!=null&&!prodID.equalsIgnoreCase("")) {
+        if (prodID != null && !prodID.equalsIgnoreCase("")) {
             product = productService.findProduct(Long.valueOf(prodID));
             setFieldValues();
         }
@@ -203,7 +198,6 @@ public class ProcessProdBn implements Serializable {
         invoices = prodApplications.getInvoices();
         mails = prodApplications.getMails();
         timeLineList = prodApplications.getTimeLines();
-        prodAppChecklists = prodApplications.getProdAppChecklists();
         reviews = prodApplications.getReviews();
         foreignAppStatuses = prodApplications.getForeignAppStatus();
         moderator = prodApplications.getModerator();
@@ -213,18 +207,6 @@ public class ProcessProdBn implements Serializable {
         Workspace w = workspaceDAO.findOne((long) 1);
         prodApplications.setRegExpiryDate(JsfUtils.addDate(prodApplications.getRegistrationDate(), w.getProdRegDuration()));
 
-    }
-
-    public String addComment() {
-        facesContext = FacesContext.getCurrentInstance();
-        selComment.setDate(new Date());
-        selComment.setProdApplications(prodApplications);
-        selComment.setUser(userSession.getLoggedInUserObj());
-        selComment = commentService.saveComment(selComment);
-        comments.add(selComment);
-        selComment = new Comment();
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("comment_success")));
-        return "";
     }
 
 
@@ -242,7 +224,17 @@ public class ProcessProdBn implements Serializable {
 //                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
 //    }
 
-    private ReviewInfo reviewInfo;
+    public String addComment() {
+        facesContext = FacesContext.getCurrentInstance();
+        selComment.setDate(new Date());
+        selComment.setProdApplications(prodApplications);
+        selComment.setUser(userSession.getLoggedInUserObj());
+        selComment = commentService.saveComment(selComment);
+        comments.add(selComment);
+        selComment = new Comment();
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("comment_success")));
+        return "";
+    }
 
     public ReviewInfo getReviewInfo() {
         return reviewInfo;
@@ -276,12 +268,12 @@ public class ProcessProdBn implements Serializable {
 
         String retValue = prodApplicationsService.saveReviewers(review);
         if (!retValue.equalsIgnoreCase("success")) {
-            if(retValue.equals("exist")){
+            if (retValue.equals("exist")) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Reviewer has already been assigned"));
 
-            }else
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-        }else
+            } else
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+        } else
             reviews.add(review);
 
         reviewInfo.setReviewer(review.getUser());
@@ -459,7 +451,6 @@ public class ProcessProdBn implements Serializable {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void save() {
-        prodApplications.setProdAppChecklists(prodAppChecklists);
         prodApplications.setReviews(reviews);
         try {
             product = productService.updateProduct(product);
@@ -568,22 +559,6 @@ public class ProcessProdBn implements Serializable {
         this.readyReg = readyReg;
     }
 
-    public List<ProdAppChecklist> getProdAppChecklists() {
-        return prodAppChecklists;
-    }
-
-    public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
-        this.prodAppChecklists = prodAppChecklists;
-    }
-
-
-
-//    public StatusUser getModule() {
-//        if (module == null)
-//            initProcessor();
-//        return module;
-//    }
-
     public void setModule(StatusUser module) {
         this.module = module;
     }
@@ -591,16 +566,16 @@ public class ProcessProdBn implements Serializable {
     public boolean getCheckReviewStatus() {
 //        if (prodApplications.getId() == null)
         getProdApplications();
-        if(prodApplications!=null) {
-            if(userAccessMBean.isDetailReview()){
-                for(ReviewInfo ri:getReviewInfos()){
-                    if(ri.getReviewStatus().equals(ReviewStatus.SUBMITTED))
+        if (prodApplications != null) {
+            if (userAccessMBean.isDetailReview()) {
+                for (ReviewInfo ri : getReviewInfos()) {
+                    if (ri.getReviewStatus().equals(ReviewStatus.SUBMITTED))
                         checkReviewStatus = true;
                     else
                         checkReviewStatus = false;
 
                 }
-            }else {
+            } else {
                 for (Review each : prodApplications.getReviews()) {
                     if (!each.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
                         checkReviewStatus = false;
@@ -628,10 +603,11 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isRegistered() {
-        if (prodApplications.getRegState().equals(RegState.REGISTERED))
-            return true;
-        else
-            return false;
+        if (prodApplications != null) {
+            if (prodApplications.getRegState().equals(RegState.REGISTERED))
+                return true;
+        }
+        return false;
     }
 
     public void setRegistered(boolean registered) {
@@ -640,16 +616,20 @@ public class ProcessProdBn implements Serializable {
 
     public boolean getCanRegister() {
         if (userSession.isHead() || userSession.isAdmin()) {
-            if (getProdApplications().getRegState().equals(RegState.RECOMMENDED))
-                return true;
+            if (getProdApplications() != null) {
+                if (getProdApplications().getRegState().equals(RegState.RECOMMENDED))
+                    return true;
+            }
         }
         return false;  //To change body of created methods use File | Settings | File Templates.
     }
 
     public boolean getCanReject() {
         if (userSession.isHead() || userSession.isAdmin()) {
-            if (getProdApplications().getRegState().equals(RegState.NOT_RECOMMENDED))
-                return true;
+            if (getProdApplications() != null) {
+                if (getProdApplications().getRegState().equals(RegState.NOT_RECOMMENDED))
+                    return true;
+            }
         }
         return false;  //To change body of created methods use File | Settings | File Templates.
     }
@@ -858,7 +838,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<ReviewInfo> getReviewInfos() {
-        if(reviewInfos == null){
+        if (reviewInfos == null) {
             reviewInfos = reviewService.findReviewInfos(prodApplications.getId());
         }
         return reviewInfos;
@@ -877,15 +857,19 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplayVerify() {
-        if(userSession.isAdmin()||userSession.isHead())
+        if (userSession.isAdmin() || userSession.isHead())
             return true;
-        if((userSession.isStaff())) {
-            if(prodApplications.getRegState().equals(RegState.NEW_APPL))
+        if ((userSession.isStaff())) {
+            if (prodApplications.getRegState().equals(RegState.NEW_APPL))
                 displayVerify = false;
             else
                 displayVerify = true;
         }
         return displayVerify;
+    }
+
+    public void setDisplayVerify(boolean displayVerify) {
+        this.displayVerify = displayVerify;
     }
 
     public String cancel() {
@@ -895,14 +879,10 @@ public class ProcessProdBn implements Serializable {
         return "/public/registrationhome.faces";
     }
 
-    public void setDisplayVerify(boolean displayVerify) {
-        this.displayVerify = displayVerify;
-    }
-
     public boolean isDisplaySample() {
-        if((userSession.isStaff()||userSession.isModerator()||userSession.isLab())&&(product.getRegState().ordinal()>3)){
+        if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab()) && (product.getRegState().ordinal() > 3)) {
             displaySample = true;
-        }else{
+        } else {
             displaySample = false;
         }
 
@@ -912,4 +892,5 @@ public class ProcessProdBn implements Serializable {
     public void setDisplaySample(boolean displaySample) {
         this.displaySample = displaySample;
     }
+
 }

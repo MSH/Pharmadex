@@ -6,7 +6,6 @@ import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.mbean.product.ProcessProdBn;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.model.DefaultStreamedContent;
@@ -19,7 +18,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -37,8 +35,8 @@ import java.util.ResourceBundle;
 @SessionScoped
 public class ProcessProdBnET implements Serializable {
 
-    @ManagedProperty(value = "#{timelineServiceET}")
-    private TimelineServiceET timelineServiceET;
+    @ManagedProperty(value = "#{timelineService}")
+    private TimelineService timelineService;
 
     @ManagedProperty(value = "#{processProdBn}")
     private ProcessProdBn processProdBn;
@@ -77,7 +75,7 @@ public class ProcessProdBnET implements Serializable {
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         processProdBn.save();
         ProdApplications prodApplications = processProdBn.getProdApplications();
-        prodApplications.setProdAppChecklists(processProdBn.getProdAppChecklists());
+//        prodApplications.setProdAppChecklists(processProdBn.getProdAppChecklists());
         processProdBn.setModerator(moderator);
         processProdBn.assignModerator();
 
@@ -92,7 +90,7 @@ public class ProcessProdBnET implements Serializable {
             timeLine.setUser(userSession.getLoggedInUserObj());
             timeLine.setComment("Pre-Screening completed successfully");
             processProdBn.setTimeLine(timeLine);
-            RetObject retObject = timelineServiceET.validatescreening(prodApplications.getProdAppChecklists());
+            RetObject retObject = timelineService.validatescreening(prodApplications.getProdAppChecklists());
             if (retObject.getMsg().equals("persist")) {
                 addTimeline();
             } else {
@@ -114,7 +112,7 @@ public class ProcessProdBnET implements Serializable {
             timeLine.setProdApplications(prodApplications);
             timeLine.setStatusDate(new Date());
             timeLine.setUser(userSession.getLoggedInUserObj());
-            String retValue = timelineServiceET.validateStatusChange(timeLine);
+            String retValue = timelineService.validateStatusChange(timeLine);
 
             if (retValue.equalsIgnoreCase("success")) {
                 processProdBn.getTimeLineList().add(timeLine);
@@ -269,12 +267,12 @@ public class ProcessProdBnET implements Serializable {
 
     }
 
-    public TimelineServiceET getTimelineServiceET() {
-        return timelineServiceET;
+    public TimelineService getTimelineService() {
+        return timelineService;
     }
 
-    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
-        this.timelineServiceET = timelineServiceET;
+    public void setTimelineService(TimelineService timelineService) {
+        this.timelineService = timelineService;
     }
 
     public ProcessProdBn getProcessProdBn() {
