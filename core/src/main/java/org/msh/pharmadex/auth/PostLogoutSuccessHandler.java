@@ -24,5 +24,6 @@ public class PostLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
         SecurityContextHolder.clearContext();
         response.sendRedirect(request.getContextPath() + "/home.faces?faces-redirect=true");
         super.onLogoutSuccess(request, response, authentication);    //To change body of overridden methods use File | Settings | File Templates.
+
     }
 }
