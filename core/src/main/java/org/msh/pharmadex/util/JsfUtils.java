@@ -1,5 +1,7 @@
 package org.msh.pharmadex.util;
 
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,6 +49,10 @@ public class JsfUtils {
         c.setTime(dt);
         c.add(Calendar.YEAR, year);
         return c.getTime();
+    }
+
+    public static Flash flashScope() {
+        return (FacesContext.getCurrentInstance().getExternalContext().getFlash());
     }
 
 

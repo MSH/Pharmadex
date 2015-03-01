@@ -3,15 +3,19 @@ package org.msh.pharmadex.mbean.product;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
-import org.msh.pharmadex.dao.iface.ProdAppChecklistDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Attachment;
+import org.msh.pharmadex.domain.Invoice;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.*;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,16 +39,10 @@ public class FileUploadController {
     @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
 
-    @ManagedProperty(value = "#{prodAppChecklistDAO}")
-    ProdAppChecklistDAO prodAppChecklistDAO;
-
     private ArrayList<Attachment> attachments;
     private UploadedFile file;
     private Attachment attach = new Attachment();
     private byte[] invoiceFile;
-
-    private ArrayList<Checklist> checklists;
-    private ProdAppChecklist prodAppChecklist = new ProdAppChecklist();
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -96,34 +94,6 @@ public class FileUploadController {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-
-    }
-
-    public void addModuleDoc() {
-        try {
-            facesContext = FacesContext.getCurrentInstance();
-            file = userSession.getFile();
-            if (file != null) {
-                prodAppChecklist = userSession.getProdAppChecklist();
-                prodAppChecklist.setFile(IOUtils.toByteArray(file.getInputstream()));
-                prodAppChecklist.setFileName(file.getFileName());
-                prodAppChecklist.setContentType(file.getContentType());
-                prodAppChecklist.setUploadedBy(userSession.getLoggedInUserObj());
-                prodAppChecklist.setFileUploaded(true);
-                prodAppChecklistDAO.save(prodAppChecklist);
-                setChecklists(null);
-                userSession.setProdAppChecklist(null);
-                userSession.setFile(null);
-            } else {
-                FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), resourceBundle.getString("upload_fail"));
-                facesContext.addMessage(null, msg);
-
-            }
-        } catch (IOException e) {
-            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
-            facesContext.addMessage(null, msg);
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
 
     }
 
@@ -185,23 +155,6 @@ public class FileUploadController {
         this.attach = attach;
     }
 
-    public ArrayList<Checklist> getChecklists() {
-        return checklists;
-    }
-
-    public void setChecklists(ArrayList<Checklist> checklists) {
-        this.checklists = checklists;
-    }
-
-    public ProdAppChecklist getProdAppChecklist() {
-        return prodAppChecklist;
-    }
-
-    public void setProdAppChecklist(ProdAppChecklist prodAppChecklist) {
-        userSession.setProdAppChecklist(prodAppChecklist);
-        this.prodAppChecklist = prodAppChecklist;
-    }
-
     public byte[] getInvoiceFile() {
         return invoiceFile;
     }
@@ -234,11 +187,4 @@ public class FileUploadController {
         this.userSession = userSession;
     }
 
-    public ProdAppChecklistDAO getProdAppChecklistDAO() {
-        return prodAppChecklistDAO;
-    }
-
-    public void setProdAppChecklistDAO(ProdAppChecklistDAO prodAppChecklistDAO) {
-        this.prodAppChecklistDAO = prodAppChecklistDAO;
-    }
 }
