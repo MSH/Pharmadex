@@ -2,7 +2,7 @@
  * Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
  */
 
-package org.msh.pharmadex.mbean;
+package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -10,7 +10,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.mbean.product.ProcessProdBn;
+import org.msh.pharmadex.service.ProdAppChecklistService;
 import org.msh.pharmadex.service.ReportService;
 
 import javax.faces.bean.ManagedBean;
@@ -32,15 +32,14 @@ import java.util.ResourceBundle;
 @RequestScoped
 public class ProdDeficiencyBn implements Serializable {
 
+    @ManagedProperty(value = "#{prodAppChecklistService}")
+    ProdAppChecklistService prodAppChecklistService;
     @ManagedProperty(value = "#{processProdBn}")
     private ProcessProdBn processProdBn;
-
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
-
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
@@ -61,11 +60,11 @@ public class ProdDeficiencyBn implements Serializable {
     public void PDF() throws JRException, IOException {
         context = FacesContext.getCurrentInstance();
         jasperPrint = reportService.generateDeficiency(prodAppChecklists, summary, userSession.getLoggedInUserObj());
-        javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
         javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
-        javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+        FacesContext.getCurrentInstance().responseComplete();
 //        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 //        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
 
@@ -87,9 +86,9 @@ public class ProdDeficiencyBn implements Serializable {
     }
 
     public List<ProdAppChecklist> getProdAppChecklists() {
-        if(prodAppChecklists==null){
-//            prodAppChecklists = processProdBn.getProdAppChecklists();
-            for(ProdAppChecklist pacs:prodAppChecklists){
+        if (prodAppChecklists == null) {
+            prodAppChecklists = prodAppChecklistService.findProdAppChecklistByProdApp(processProdBn.getProdApplications().getId());
+            for (ProdAppChecklist pacs : prodAppChecklists) {
                 pacs.setSendToApp(!pacs.isStaffValue());
             }
         }
@@ -114,5 +113,13 @@ public class ProdDeficiencyBn implements Serializable {
 
     public void setReportService(ReportService reportService) {
         this.reportService = reportService;
+    }
+
+    public ProdAppChecklistService getProdAppChecklistService() {
+        return prodAppChecklistService;
+    }
+
+    public void setProdAppChecklistService(ProdAppChecklistService prodAppChecklistService) {
+        this.prodAppChecklistService = prodAppChecklistService;
     }
 }

@@ -4,26 +4,19 @@
 
 package org.msh.pharmadex.mbean.product;
 
-import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewDetail;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.service.*;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
+import org.msh.pharmadex.service.DisplayReviewInfo;
+import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.ReviewService;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -70,7 +63,7 @@ public class ReviewDetailBn implements Serializable {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
         saveReview();
-        userSession.setProduct(reviewDetail.getReviewInfo().getProdApplications().getProd());
+        userSession.setReviewInfoID(reviewDetail.getReviewInfo().getId());
         msg = new FacesMessage(bundle.getString("app_submit_success"));
         facesContext.addMessage(null, msg);
         return "reviewInfo";

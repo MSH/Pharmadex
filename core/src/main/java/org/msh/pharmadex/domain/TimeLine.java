@@ -29,7 +29,7 @@ public class TimeLine implements Serializable {
     @Column(length = 500)
     private String comment;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_APP_ID", nullable = false)
     private ProdApplications prodApplications;
 

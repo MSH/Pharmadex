@@ -1,13 +1,14 @@
 package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.iface.TimelineDAO;
+import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.faces.application.FacesMessage;
 import java.io.Serializable;
 import java.util.List;
 
@@ -32,9 +33,20 @@ public class TimelineService implements Serializable {
         return timeLineList;
     }
 
-    public TimeLine saveTimeLine(TimeLine timeLine) {
-        timeLineList = null;
-        return timelineDAO.saveAndFlush(timeLine);
+    public RetObject saveTimeLine(TimeLine timeLine) {
+        RetObject retObject = new RetObject();
+        String msg = validateStatusChange(timeLine);
+        TimeLine timeline;
+        if (msg.equals("success")) {
+            timeline = timelineDAO.saveAndFlush(timeLine);
+            timeline.setProdApplications(prodApplicationsService.updateProdApp(timeline.getProdApplications()));
+            retObject.setObj(timeline);
+            retObject.setMsg("persist");
+        } else {
+            retObject.setMsg(msg);
+            retObject.setObj(null);
+        }
+        return retObject;
     }
 
     public String validateStatusChange(TimeLine timeLine) {
@@ -65,4 +77,21 @@ public class TimelineService implements Serializable {
         return "success";
 
     }
+
+    public RetObject validatescreening(List<ProdAppChecklist> prodAppChecklists) {
+        RetObject retObject = new RetObject();
+        for (ProdAppChecklist prodAppChecklist : prodAppChecklists) {
+            if (prodAppChecklist.getChecklist().isHeader()) {
+                if (prodAppChecklist.isValue()) {
+                    if (!prodAppChecklist.isStaffValue()) {
+                        retObject.setMsg("error");
+                        return retObject;
+                    }
+                }
+            }
+        }
+        retObject.setMsg("persist");
+        return retObject;
+    }
+
 }
