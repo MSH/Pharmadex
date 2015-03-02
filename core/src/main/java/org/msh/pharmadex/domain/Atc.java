@@ -32,7 +32,6 @@ public class Atc extends CreationDetail implements Serializable
 
     @ManyToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
     @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "atc_id"), inverseJoinColumns = @JoinColumn(name = "prod_id"))
-
     private List<Product> products;
 
 
@@ -42,13 +41,44 @@ public class Atc extends CreationDetail implements Serializable
 //   	private int unitsCount;
 
    	/**
-   	 * Return the parent list including the own object
+     * Static method that return the parent code of a given code
+     * @param code
+     * @return
+     */
+    public static String getParentCode(String code) {
+        if ((code == null) || (code.length() <= 3))
+            return null;
+
+        if (code.length() <= 6)
+            return code.substring(0, 3);
+        if (code.length() <= 9)
+            return code.substring(0, 6);
+        if (code.length() <= 12)
+            return code.substring(0, 9);
+        return code.substring(0, 12);
+    }
+
+    /**
+     * Static method to check if a code is equals of a child of the code given by the parentCode param
+     *
+     * @param parentCode
+     * @param code
+     * @return
+     */
+    public static boolean isSameOrChildCode(String parentCode, String code) {
+        int len = parentCode.length();
+        if (len > code.length())
+            return false;
+        return (parentCode.equals(code.substring(0, parentCode.length())));
+    }
+
+    /**
+     * Return the parent list including the own object
    	 * @return List of {@link Atc} instance
    	 */
    	public List<Atc> getParents() {
    		return getParentsTreeList(true);
    	}
-
 
    	/**
    	 * Return the display name of the Atc concatenated with its parent
@@ -64,7 +94,21 @@ public class Atc extends CreationDetail implements Serializable
    		return s;
    	}
 
-   	/**
+    /**
+     * Check if an atc code (passed as the code parameter) is a child of the current atc
+     * @param code of the unit
+     * @return true if code is of a child unit, otherwise return false
+     */
+//   	public boolean isSameOrChildCode(String code) {
+//   		return isSameOrChildCode(this.level, code);
+   /*		int len = this.code.length();
+           if (len > code.length())
+   			return false;
+   		return (this.code.equals(code.substring(0, this.code.length())));
+    	}
+   */
+
+    /**
    	 * Return a list with parents atc, where the first is the upper level ATC and
    	 * the last the lowest level
    	 * @return {@link List} of {@link Atc} instances
@@ -83,54 +127,6 @@ public class Atc extends CreationDetail implements Serializable
    		}
    		return lst;
    	}
-
-
-   	/**
-   	 * Static method that return the parent code of a given code
-   	 * @param code
-   	 * @return
-   	 */
-   	public static String getParentCode(String code) {
-   		if ((code == null) || (code.length() <= 3))
-   			return null;
-
-   		if (code.length() <= 6)
-   			return code.substring(0, 3);
-   		if (code.length() <= 9)
-   			return code.substring(0, 6);
-   		if (code.length() <= 12)
-   			return code.substring(0, 9);
-   		return code.substring(0, 12);
-   	}
-
-   	/**
-   	 * Check if an atc code (passed as the code parameter) is a child of the current atc
-   	 * @param code of the unit
-   	 * @return true if code is of a child unit, otherwise return false
-   	 */
-//   	public boolean isSameOrChildCode(String code) {
-//   		return isSameOrChildCode(this.level, code);
-   /*		int len = this.code.length();
-   		if (len > code.length())
-   			return false;
-   		return (this.code.equals(code.substring(0, this.code.length())));
-    	}
-   */
-
-
-   	/**
-   	 * Static method to check if a code is equals of a child of the code given by the parentCode param
-   	 * @param parentCode
-   	 * @param code
-   	 * @return
-   	 */
-   	public static boolean isSameOrChildCode(String parentCode, String code) {
-   		int len = parentCode.length();
-   		if (len > code.length())
-   			return false;
-   		return (parentCode.equals(code.substring(0, parentCode.length())));
-   	}
-
 
    	/**
    	 * Return the parent atc based on its level. If level is the same of this unit, it returns itself.
