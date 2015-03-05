@@ -106,6 +106,33 @@ public class ReviewInfoBn implements Serializable {
 
     }
 
+    public String saveReview() {
+        reviewInfo = reviewService.saveReviewInfo(reviewInfo);
+        return "";
+    }
+
+    public String reviewerFeedback() {
+        reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
+        reviewService.saveReviewInfo(reviewInfo);
+        return "/internal/processreg";
+    }
+
+    public String approveReview() {
+        if (reviewInfo.getRecomendType() == null) {
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
+        }
+
+        if (!reviewInfo.getReviewStatus().equals(ReviewStatus.SUBMITTED)) {
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
+        }
+
+        reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
+        saveReview();
+        userSession.setProdApplications(reviewInfo.getProdApplications());
+        userSession.setProduct(reviewInfo.getProdApplications().getProd());
+        return "/internal/processreg";
+    }
+
     public String updateReview(DisplayReviewInfo displayReviewInfo) {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();

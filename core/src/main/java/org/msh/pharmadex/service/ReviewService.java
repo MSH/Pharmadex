@@ -8,7 +8,10 @@ import org.msh.pharmadex.dao.ReviewQDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Review;
+import org.msh.pharmadex.domain.ReviewDetail;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.ReviewQuestion;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -248,8 +251,8 @@ public class ReviewService implements Serializable {
 //    }
 
 
-    public void saveReviewInfo(ReviewInfo reviewInfo) {
-        reviewInfoDAO.saveAndFlush(reviewInfo);
+    public ReviewInfo saveReviewInfo(ReviewInfo reviewInfo) {
+        return reviewInfoDAO.saveAndFlush(reviewInfo);
 
     }
 

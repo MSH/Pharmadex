@@ -10,8 +10,8 @@
                 xmlns:p="http://primefaces.org/ui">
 
 
-
-    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}" >
+    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}"
+                 rendered="#{!userAccessMBean.detailReview}">
 
         <p:column>
             <f:facet name="header">
@@ -60,11 +60,12 @@
         </p:column>
     </p:dataTable>
 
-    <p:dataTable id="reviwerinfotbl" var="reviewInfo" value="#{processProdBn.reviewInfos}" >
+    <p:dataTable id="reviwerinfotbl" var="reviewInfo" value="#{processProdBn.reviewInfos}"
+                 rendered="#{userAccessMBean.detailReview}">
 
         <p:column>
             <f:facet name="header">
-                <h:outputText value="#{msgs.processor}"/>
+                <h:outputText value="#{msgs.processor}-Review Detail"/>
             </f:facet>
             <p:commandLink id="viewLink1" value="#{reviewInfo.reviewer.name}" action="/internal/reviewInfo.faces"
                            ajax="false" immediate="true">

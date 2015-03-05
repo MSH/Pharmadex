@@ -8,7 +8,7 @@ import org.msh.pharmadex.service.ReportService;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.ServletOutputStream;
@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.net.URL;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class ReportMBean implements Serializable {
 
     @ManagedProperty(value = "#{reportService}")

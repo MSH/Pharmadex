@@ -63,11 +63,17 @@ public class ReviewInfo implements Serializable {
     @Column(name = "exec_summary")
     private String execSummary;
 
+    @Lob
+    @Column(name = "modcomment")
+    private String modcomment;
+
     @Enumerated(EnumType.STRING)
     private CTDModule ctdModule;
 
     @Enumerated(EnumType.STRING)
     private ReviewStatus reviewStatus;
+
+    private boolean submitted;
 
 
     public Long getId() {
@@ -164,5 +170,25 @@ public class ReviewInfo implements Serializable {
 
     public void setReviewDetails(List<ReviewDetail> reviewDetails) {
         this.reviewDetails = reviewDetails;
+    }
+
+    public String getModcomment() {
+        return modcomment;
+    }
+
+    public void setModcomment(String modcomment) {
+        this.modcomment = modcomment;
+    }
+
+    public boolean isSubmitted() {
+        if (reviewStatus.equals(ReviewStatus.SUBMITTED))
+            submitted = true;
+        else
+            submitted = false;
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 }

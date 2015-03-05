@@ -8,11 +8,15 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdAppChecklistService;
 import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.util.RetObject;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -40,6 +44,9 @@ public class ProdDeficiencyBn implements Serializable {
     private UserSession userSession;
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
+    @ManagedProperty(value = "#{timelineService}")
+    private TimelineService timelineService;
+
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
@@ -64,17 +71,33 @@ public class ProdDeficiencyBn implements Serializable {
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
         javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
-        FacesContext.getCurrentInstance().responseComplete();
+        context.responseComplete();
 //        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 //        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
 
+        ProdApplications prodApplications;
+        prodApplications = processProdBn.getProdApplications();
+        prodApplications.setProdAppChecklists(prodAppChecklists);
         TimeLine timeLine = new TimeLine();
         timeLine.setRegState(RegState.FOLLOW_UP);
         timeLine.setStatusDate(new Date());
         timeLine.setUser(userSession.getLoggedInUserObj());
         timeLine.setComment(summary);
-        processProdBn.setTimeLine(timeLine);
-        processProdBn.addTimeline();
+        timeLine.setProdApplications(prodApplications);
+        prodApplications.setRegState(timeLine.getRegState());
+        prodApplications.getProd().setRegState(timeLine.getRegState());
+        RetObject retObject = timelineService.saveTimeLine(timeLine);
+        if (retObject.getMsg().equals("persist")) {
+            timeLine = (TimeLine) retObject.getObj();
+            processProdBn.setTimeLine(timeLine);
+            processProdBn.getTimeLineList().add(timeLine);
+            processProdBn.setProdApplications(timeLine.getProdApplications());
+            processProdBn.setProduct(timeLine.getProdApplications().getProd());
+//            processProdBn.save();
+            facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
+        } else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+        }
     }
 
     public UserSession getUserSession() {
@@ -121,5 +144,13 @@ public class ProdDeficiencyBn implements Serializable {
 
     public void setProdAppChecklistService(ProdAppChecklistService prodAppChecklistService) {
         this.prodAppChecklistService = prodAppChecklistService;
+    }
+
+    public TimelineService getTimelineService() {
+        return timelineService;
+    }
+
+    public void setTimelineService(TimelineService timelineService) {
+        this.timelineService = timelineService;
     }
 }

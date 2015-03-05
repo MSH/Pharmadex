@@ -67,7 +67,7 @@ public class RegisterUserMbean implements Serializable {
 
     public String save() {
         facesContext = FacesContext.getCurrentInstance();
-        user.setType(UserType.EXTERNAL);
+        user.setType(UserType.COMPANY);
         String password = PassPhrase.getNext();
         logger.info("======================================== ");
         logger.info("\"password ============== \"+password");

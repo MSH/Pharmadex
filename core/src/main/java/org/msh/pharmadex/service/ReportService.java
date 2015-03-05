@@ -3,8 +3,10 @@ package org.msh.pharmadex.service;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,21 +34,30 @@ public class ReportService implements Serializable {
 //        Object[] args = {product.getProdName(), product.getApplicant().getAppName(), product.getProdApplications().getId()};
 //        body = mf.format(args);
 
+        Product prod = productService.findProduct(product.getId());
 
         URL resource = getClass().getResource("/reports/letter.jasper");
         HashMap param = new HashMap();
-        param.put("appName", product.getApplicant().getAppName());
-        param.put("prodName", product.getProdName());
-        param.put("subject", "Product Registration for  " + product.getProdName() + " recieved");
+        param.put("appName", prod.getApplicant().getAppName());
+        param.put("prodName", prod.getProdName());
+        param.put("subject", "Product Registration for  " + prod.getProdName() + " recieved");
 //                + letter.getSubject() + " " + product.getProdName() + " ");
 //        param.put("body", body);
-        param.put("body", "Thank you for applying to register " + product.getProdName() + " manufactured by " + product.getApplicant().getAppName()
-                + ". Your application is successfully submitted and the application number is " + product.getProdApplications().getProdAppNo() + ". "
+        param.put("body", "Thank you for applying to register " + prod.getProdName() + " manufactured by " + prod.getApplicant().getAppName()
+                + ". The application number is " + prod.getProdApplications().getProdAppNo() + ". "
                 + "Please use this application number for any future correspondence.");
-        param.put("address1", product.getApplicant().getAddress().getAddress1());
-        param.put("address2", product.getApplicant().getAddress().getAddress2());
-        param.put("country", product.getApplicant().getAddress().getCountry().getCountryName());
+        param.put("address1", prod.getApplicant().getAddress().getAddress1());
+        param.put("address2", prod.getApplicant().getAddress().getAddress2());
+        param.put("country", prod.getApplicant().getAddress().getCountry().getCountryName());
         param.put("registrar", "Major General Md Jahangir Hossain Mollik");
+        param.put("prodStrength", prod.getDosStrength() + product.getDosUnit());
+        param.put("dosForm", prod.getDosForm().getDosForm());
+        param.put("manufName", prod.getManufName());
+        param.put("appType", "New Medicine Registration");
+        param.put("subject", "Product application deficiency letter for  " + prod.getProdName());
+        param.put("date", new Date());
+        param.put("appNumber", prod.getProdApplications().getProdAppNo());
+
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
@@ -75,6 +86,7 @@ public class ReportService implements Serializable {
         param.put("date", new Date());
         param.put("summary", comment);
         param.put("appNumber", prodApplications.getProdAppNo());
+        param.put("registrar", "Major General Md Jahangir Hossain Mollik");
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 

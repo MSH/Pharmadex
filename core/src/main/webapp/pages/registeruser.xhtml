@@ -77,8 +77,7 @@
 
                 <h:panelGroup>
                     <p:commandButton id="saveBtn" value="#{msgs.global_submit}" icon="ui-icon-check"
-                                     action="#{registerUserMbean.save}" update=":regUsrForm:growl :regUsrForm:pnl"
-                                     ajax="true"/>
+                                     action="#{registerUserMbean.save}" ajax="false"/>
                     <p:commandButton value="#{msgs.global_cancel}" action="#{registerUserMbean.cancel}" ajax="false"
                                      immediate="true"/>
                 </h:panelGroup>

@@ -21,17 +21,33 @@
                 </ui:decorate>
             </div>
 
-            <div>
-                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitReview}" style="alignment: right;"
-                                 ajax="false" rendered="#{!reviewInfoBn.readOnly}"></p:commandButton>
-                <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewInfoBn.cancelReview}"
-                                 ajax="false" />
+            <div style="height: 10px;"/>
 
+            <div align="right">
+                <p:commandButton value="#{msgs.approve_review}" action="#{reviewInfoBn.approveReview}"
+                                 update=":reviewHome"
+                                 ajax="false"
+                                 rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}"/>
+                <p:commandButton value="#{msgs.send_to_review}" action="#{reviewInfoBn.reviewerFeedback}"
+                                 update=":reviewHome"
+                                 ajax="false"
+                                 rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}"/>
+                <p:commandButton value="#{msgs.global_save}" action="#{reviewInfoBn.saveReview}" ajax="true"
+                                 update=":reviewHome" process="@this"
+                                 rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted}"/>
+                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitReview}"
+                                 update=":reviewHome"
+                                 ajax="false"
+                                 rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted}"/>
+                <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewInfoBn.cancelReview}"
+                                 ajax="false"/>
             </div>
+
+            <div style="height: 10px;"/>
 
             <p:accordionPanel >
                 <p:tab title="Overall Summary">
-                    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+                    <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid">
                         <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
 
                         <p:selectOneMenu id="recomcb" value="#{reviewInfoBn.reviewInfo.recomendType}"
@@ -43,6 +59,13 @@
                         <p:outputLabel value="Summary" />
                         <p:editor value="#{reviewInfoBn.reviewInfo.execSummary}" rendered="#{!reviewInfoBn.readOnly}"/>
                         <h:outputText value="#{reviewInfoBn.reviewInfo.execSummary}" escape="false" rendered="#{reviewInfoBn.readOnly}"/>
+
+                        <p:outputLabel value="#{msgs.mod_comment}" for="modcomment"/>
+                        <p:editor value="#{reviewInfoBn.reviewInfo.modcomment}" id="modcomment"
+                                  width="700" rendered="#{userSession.moderator}"/>
+                        <h:outputText value="#{reviewInfoBn.reviewInfo.modcomment}" escape="false"
+                                      rendered="#{userSession.reviewer||userSession.head}"/>
+
                     </h:panelGrid>
 
                 </p:tab>

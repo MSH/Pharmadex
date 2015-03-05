@@ -76,7 +76,7 @@
                                    oncomplete="PF('addInnDlg').show()" update=":addInnFrm"/>
 
                 </f:facet>
-                <p:column headerText="#{msgs.active_substance}">
+                <p:column headerText="#{msgs.product_innname}">
                     <h:outputText value="#{prodInn.inn.name}"/>
                 </p:column>
 
@@ -395,23 +395,7 @@
 
 <p:tab id="payment" title="#{msgs.payment_info}">
     <p:panel header="#{msgs.payment_info}">
-        <h:outputLabel value="#{msgs.confirm_payment}" styleClass="label"/>
-
-        <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
-
-            <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"/>
-            <p:outputLabel value="#{regHomeMbean.prodApplications.prescreenfeeAmt}"/>
-
-            <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
-            <p:inputText id="bankname" value="#{regHomeMbean.prodApplications.prescreenBankName}"/>
-
-            <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
-            <p:inputText id="receiptno" value="#{regHomeMbean.prodApplications.prescreenReceiptNo}"/>
-
-            <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
-            <p:calendar  value="#{regHomeMbean.prodApplications.prescreenfeeSubmittedDt}" id="feesubmitdt" showOn="button"/>
-
-        </h:panelGrid>
+        <ui:include src="payment.xhtml"/>
 
         <div align="right">
             <p:commandButton value="#{msgs.global_save}" action="#{regHomeMbean.saveApp}" ajax="true" update=":reghome" id="paySaveBtn"/>
@@ -521,12 +505,7 @@
                                itemValue="#{dosUom}"/>
                 <f:ajax render="select_item"/>
             </p:selectOneMenu>
-
             <p:message for="innunit" showSummary="true"/>
-
-            <h:outputLabel value="#{msgs.inn_funct}" for="innfunct"/>
-            <p:inputText id="innfunct" value="#{regHomeMbean.prodInn.function}"/>
-            <p:message for="innfunct" showSummary="true"/>
 
             <h:outputLabel value="#{msgs.inn_ref}" for="innref"/>
             <p:inputText id="innref" value="#{regHomeMbean.prodInn.refStd}"/>
