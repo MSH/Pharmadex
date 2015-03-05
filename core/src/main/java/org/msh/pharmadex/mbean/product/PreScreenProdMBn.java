@@ -51,14 +51,12 @@ public class PreScreenProdMBn {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
-        RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
-        if (!retObject.getMsg().equals("persist")) {
-            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString(retObject.getMsg())));
-            return null;
-        }
+//        RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
+//        if (!retObject.getMsg().equals("persist")) {
+//            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString(retObject.getMsg())));
+//            return null;
+//        }
 
-        processProdBn.setModerator(moderator);
-        processProdBn.assignModerator();
         ProdApplications prodApplications = processProdBn.getProdApplications();
         if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)) {
             timeLine = new TimeLine();
@@ -67,16 +65,19 @@ public class PreScreenProdMBn {
             timeLine.setStatusDate(new Date());
             timeLine.setUser(userSession.getLoggedInUserObj());
             timeLine.setComment("Pre-Screening completed successfully");
-            processProdBn.setTimeLine(timeLine);
-            processProdBn.getProdApplications().setRegState(timeLine.getRegState());
-            processProdBn.getProduct().setRegState(timeLine.getRegState());
+
+            prodApplications.setRegState(timeLine.getRegState());
+            prodApplications.getProd().setRegState(timeLine.getRegState());
+            prodApplications.setModerator(moderator);
+            prodApplications.setProdAppChecklists(prodAppChecklists);
             RetObject retObject2 = timelineService.saveTimeLine(timeLine);
             if (retObject2.getMsg().equals("persist")) {
                 timeLine = (TimeLine) retObject2.getObj();
+                processProdBn.setModerator(moderator);
                 processProdBn.setTimeLine(timeLine);
                 processProdBn.getTimeLineList().add(timeLine);
                 processProdBn.setProdApplications(timeLine.getProdApplications());
-                processProdBn.save();
+                processProdBn.setProduct(timeLine.getProdApplications().getProd());
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
             } else {
                 facesContext.addMessage(null, new FacesMessage("Please verify the dossier and update the checklist"));
@@ -171,7 +172,7 @@ public class PreScreenProdMBn {
 
 
     public List<ProdAppChecklist> getProdAppChecklists() {
-        if (prodAppChecklists == null) {
+        if (prodAppChecklists == null && processProdBn.getProdApplications() != null) {
             prodAppChecklists = prodAppChecklistService.findProdAppChecklistByProdApp(processProdBn.getProdApplications().getId());
         }
         return prodAppChecklists;
@@ -195,7 +196,7 @@ public class PreScreenProdMBn {
 
     public boolean isDisplayScreenAction() {
         if (processProdBn != null && processProdBn.getProdApplications() != null) {
-            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP))
+            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP) || processProdBn.getProdApplications().getRegState().equals(RegState.VERIFY))
                 displayScreenAction = true;
             else
                 displayScreenAction = false;

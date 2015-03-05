@@ -1,5 +1,8 @@
 package org.msh.pharmadex.mbean.product;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
@@ -8,9 +11,13 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.RetObject;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.primefaces.extensions.model.timeline.TimelineEvent;
 import org.primefaces.extensions.model.timeline.TimelineModel;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +31,10 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,6 +84,10 @@ public class ProcessProdBn implements Serializable {
     private ReviewService reviewService;
     @ManagedProperty(value = "#{userAccessMBean}")
     private UserAccessMBean userAccessMBean;
+
+    @ManagedProperty(value = "#{sampleTestService}")
+    private SampleTestService sampleTestService;
+
     private Applicant applicant;
     private List<Comment> comments;
     private List<Mail> mails;
@@ -99,6 +114,12 @@ public class ProcessProdBn implements Serializable {
     private boolean displayVerify = false;
     private boolean displaySample = false;
     private ReviewInfo reviewInfo;
+    private SampleTest sampleTest;
+    @ManagedProperty(value = "#{reportService}")
+    private ReportService reportService;
+    private UploadedFile file;
+    private boolean attach;
+    private JasperPrint jasperPrint;
 
     @PostConstruct
     private void init() {
@@ -166,6 +187,21 @@ public class ProcessProdBn implements Serializable {
         return prodApplications;
     }
 
+
+//    public void assignProcessor() {
+//        facesContext = FacesContext.getCurrentInstance();
+//        if (module == null) {
+//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+//        }
+//        module.setProdApplications(prodApplications);
+//        module.setAssignDate(new Date());
+//
+//        if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
+//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+//    }
+
     public void setProdApplications(ProdApplications prodApplications) {
         this.prodApplications = prodApplications;
 //        prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
@@ -209,21 +245,6 @@ public class ProcessProdBn implements Serializable {
 
     }
 
-
-//    public void assignProcessor() {
-//        facesContext = FacesContext.getCurrentInstance();
-//        if (module == null) {
-//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-//        }
-//        module.setProdApplications(prodApplications);
-//        module.setAssignDate(new Date());
-//
-//        if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
-//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-//    }
-
     public String addComment() {
         facesContext = FacesContext.getCurrentInstance();
         selComment.setDate(new Date());
@@ -239,6 +260,29 @@ public class ProcessProdBn implements Serializable {
     public ReviewInfo getReviewInfo() {
         return reviewInfo;
     }
+
+
+//    public void initProcessor() {
+//        if (prodApplications != null) {
+//            module = prodApplicationsService.findStatusUser(prodApplications.getId());
+//            if (module == null) {
+//                module = new StatusUser(prodApplications);
+//                module.setModule1(new User());
+//                module.setModule2(new User());
+//                module.setModule3(new User());
+//                module.setModule4(new User());
+//            } else {
+//                if (module.getModule1() != null)
+//                    module.setModule1(userService.findUser(module.getModule1().getUserId()));
+//                if (module.getModule2() != null)
+//                    module.setModule2(userService.findUser(module.getModule2().getUserId()));
+//                if (module.getModule3() != null)
+//                    module.setModule3(userService.findUser(module.getModule3().getUserId()));
+//                if (module.getModule4() != null)
+//                    module.setModule4(userService.findUser(module.getModule4().getUserId()));
+//            }
+//        }
+//    }
 
     public void setReviewInfo(ReviewInfo reviewInfo) {
         this.reviewInfo = reviewInfo;
@@ -286,7 +330,6 @@ public class ProcessProdBn implements Serializable {
         reviewInfo = new ReviewInfo();
     }
 
-
     public void assignModerator() {
         try {
             facesContext = FacesContext.getCurrentInstance();
@@ -304,30 +347,6 @@ public class ProcessProdBn implements Serializable {
 
 
     }
-
-
-//    public void initProcessor() {
-//        if (prodApplications != null) {
-//            module = prodApplicationsService.findStatusUser(prodApplications.getId());
-//            if (module == null) {
-//                module = new StatusUser(prodApplications);
-//                module.setModule1(new User());
-//                module.setModule2(new User());
-//                module.setModule3(new User());
-//                module.setModule4(new User());
-//            } else {
-//                if (module.getModule1() != null)
-//                    module.setModule1(userService.findUser(module.getModule1().getUserId()));
-//                if (module.getModule2() != null)
-//                    module.setModule2(userService.findUser(module.getModule2().getUserId()));
-//                if (module.getModule3() != null)
-//                    module.setModule3(userService.findUser(module.getModule3().getUserId()));
-//                if (module.getModule4() != null)
-//                    module.setModule4(userService.findUser(module.getModule4().getUserId()));
-//            }
-//        }
-//    }
-
 
     public String sendMessage() {
         facesContext = FacesContext.getCurrentInstance();
@@ -396,11 +415,45 @@ public class ProcessProdBn implements Serializable {
         this.timeLine = timeLine;
     }
 
+//    public String submitReview() {
+//        facesContext = FacesContext.getCurrentInstance();
+//        if (reviewComment.isEmpty()) {
+//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+//                    resourceBundle.getString("global_fail"), resourceBundle.getString("review_comment_empty_valid")));
+//            return "";
+//        }
+//        initProcessor();
+//        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule1SubmitDt(new Date());
+//            module.setReview1(reviewComment);
+//        }
+//        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule2SubmitDt(new Date());
+//            module.setReview2(reviewComment);
+//        }
+//        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule3SubmitDt(new Date());
+//            module.setReview3(reviewComment);
+//        }
+//        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
+//            module.setModule4SubmitDt(new Date());
+//            module.setReview4(reviewComment);
+//        }
+//
+//        if (module.getModule1SubmitDt() != null && module.getModule2SubmitDt() != null && module.getModule3SubmitDt() != null && module.getModule4SubmitDt() != null)
+//            module.setComplete(true);
+//
+//        prodApplicationsService.saveProcessors(module);
+//        return "";
+//    }
+
     public void changeStatusListener() {
         logger.error("Inside changeStatusListener");
         if (prodApplications.getRegState().equals(RegState.NEW_APPL)) {
-            timeLine.setRegState(FEE);
-            addTimeline();
+            if (prodApplications.isFeeReceived()) {
+                timeLine.setRegState(FEE);
+                addTimeline();
+            }
         }
         if (prodApplications.getRegState().equals(FEE)) {
             if (prodApplications.isApplicantVerified() && prodApplications.isProductVerified() && prodApplications.isDossierReceived()) {
@@ -487,38 +540,6 @@ public class ProcessProdBn implements Serializable {
         return "";
     }
 
-//    public String submitReview() {
-//        facesContext = FacesContext.getCurrentInstance();
-//        if (reviewComment.isEmpty()) {
-//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//                    resourceBundle.getString("global_fail"), resourceBundle.getString("review_comment_empty_valid")));
-//            return "";
-//        }
-//        initProcessor();
-//        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-//            module.setModule1SubmitDt(new Date());
-//            module.setReview1(reviewComment);
-//        }
-//        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-//            module.setModule2SubmitDt(new Date());
-//            module.setReview2(reviewComment);
-//        }
-//        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-//            module.setModule3SubmitDt(new Date());
-//            module.setReview3(reviewComment);
-//        }
-//        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-//            module.setModule4SubmitDt(new Date());
-//            module.setReview4(reviewComment);
-//        }
-//
-//        if (module.getModule1SubmitDt() != null && module.getModule2SubmitDt() != null && module.getModule3SubmitDt() != null && module.getModule4SubmitDt() != null)
-//            module.setComplete(true);
-//
-//        prodApplicationsService.saveProcessors(module);
-//        return "";
-//    }
-
     public List<Mail> getMails() {
         return mails;
     }
@@ -569,7 +590,7 @@ public class ProcessProdBn implements Serializable {
         if (prodApplications != null) {
             if (userAccessMBean.isDetailReview()) {
                 for (ReviewInfo ri : getReviewInfos()) {
-                    if (ri.getReviewStatus().equals(ReviewStatus.SUBMITTED))
+                    if (ri.getReviewStatus().equals(ReviewStatus.ACCEPTED))
                         checkReviewStatus = true;
                     else
                         checkReviewStatus = false;
@@ -740,7 +761,6 @@ public class ProcessProdBn implements Serializable {
         this.foreignAppStatuses = foreignAppStatuses;
     }
 
-
     public UserService getUserService() {
         return userService;
     }
@@ -893,4 +913,116 @@ public class ProcessProdBn implements Serializable {
         this.displaySample = displaySample;
     }
 
+    public SampleTestService getSampleTestService() {
+        return sampleTestService;
+    }
+
+    public void setSampleTestService(SampleTestService sampleTestService) {
+        this.sampleTestService = sampleTestService;
+    }
+
+    public StreamedContent fileDownload() {
+        byte[] file1 = sampleTest.getFile();
+        InputStream ist = new ByteArrayInputStream(file1);
+        StreamedContent download = new DefaultStreamedContent(ist);
+//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+        return download;
+    }
+
+    public void handleFileUpload() {
+        FacesMessage msg;
+        facesContext = FacesContext.getCurrentInstance();
+        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+        if (file != null) {
+            msg = new FacesMessage(resourceBundle.getString("global.success"), file.getFileName() + resourceBundle.getString("upload_success"));
+            facesContext.addMessage(null, msg);
+            try {
+                sampleTest.setFile(IOUtils.toByteArray(file.getInputstream()));
+                saveSample();
+            } catch (IOException e) {
+                msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        } else {
+            msg = new FacesMessage(resourceBundle.getString("upload_fail"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+    }
+
+    public void generateSampleRequestLetter() throws JRException, IOException {
+        facesContext = FacesContext.getCurrentInstance();
+        if (!getProdApplications().getRegState().equals(RegState.VERIFY)) {
+            facesContext.addMessage(null, new FacesMessage("You can only issue a Sample Request letter after you have received the fee and verified the dossier for completeness"));
+        }
+        Product product = productService.findProduct(getProduct().getId());
+        jasperPrint = reportService.generateSampleRequest(product, userSession.getLoggedInUserObj());
+        javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        httpServletResponse.addHeader("Content-disposition", "attachment; filename=sample_req_letter.pdf");
+        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+        javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+//        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+//        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
+
+        saveSample();
+    }
+
+    public void saveSample() {
+        save();
+        sampleTest.setLetterGenerated(true);
+        sampleTest.setProdApplications(prodApplications);
+        sampleTest.setUser(userSession.getLoggedInUserObj());
+        RetObject retObject = sampleTestService.saveSample(sampleTest);
+        if (retObject.getMsg().equals("persist")) {
+            sampleTest = (SampleTest) retObject.getObj();
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error saving sample"));
+        }
+    }
+
+    public SampleTest getSampleTest() {
+        if (sampleTest == null) {
+            sampleTest = sampleTestService.findSampleForProd(getProdApplications().getId());
+            if (sampleTest == null)
+                sampleTest = new SampleTest();
+        }
+        return sampleTest;
+    }
+
+    public void setSampleTest(SampleTest sampleTest) {
+        this.sampleTest = sampleTest;
+    }
+
+    public boolean isAttach() {
+        if (getSampleTest() != null) {
+            if (getSampleTest().getFile() != null && getSampleTest().getFile().length > 0)
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+
+    public void setAttach(boolean attach) {
+        this.attach = attach;
+    }
+
+    public ReportService getReportService() {
+        return reportService;
+    }
+
+    public void setReportService(ReportService reportService) {
+        this.reportService = reportService;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
 }

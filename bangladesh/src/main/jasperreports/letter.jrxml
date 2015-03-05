@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="201"/>
+	<property name="ireport.y" value="1"/>
 	<parameter name="subject" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -17,6 +17,11 @@
 		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
 	</parameter>
 	<parameter name="registrar" class="java.lang.String"/>
+	<parameter name="prodName" class="java.lang.String"/>
+	<parameter name="prodStrength" class="java.lang.String"/>
+	<parameter name="dosForm" class="java.lang.String"/>
+	<parameter name="manufName" class="java.lang.String"/>
+	<parameter name="appType" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from product where id = $P{id}]]>
 	</queryString>
@@ -87,7 +92,7 @@
 		<band height="87" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="123" height="86" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
-				<imageExpression><![CDATA["images/na_namibia_header.png"]]></imageExpression>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="123" y="1" width="449" height="37" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
@@ -116,7 +121,7 @@
 		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="320" splitType="Stretch">
+		<band height="531" splitType="Stretch">
 			<textField>
 				<reportElement x="22" y="27" width="236" height="20" uuid="6b43134a-46d0-4c5e-a185-c3d7204ca5af"/>
 				<textElement>
@@ -148,16 +153,9 @@
 			<textField>
 				<reportElement x="0" y="117" width="572" height="20" uuid="90df44ba-fda0-408e-a417-cbe38290996e"/>
 				<textElement>
-					<font size="12"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{subject}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="148" width="572" height="72" uuid="2cad77db-1ed1-44d7-ae91-b6c05a09bc7b"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{body}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="6" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
@@ -166,19 +164,124 @@
 				</textElement>
 				<text><![CDATA[To,]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="282" width="572" height="31" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="0" y="262" width="572" height="20" uuid="f862559b-8b50-4802-a550-1df8d5af8aee"/>
+				<reportElement x="0" y="498" width="572" height="20" uuid="f862559b-8b50-4802-a550-1df8d5af8aee"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{registrar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="328" width="572" height="48" uuid="c6eeee1e-839c-47b8-95b5-4dc77706bf46"/>
+				<textElement textAlignment="Justified">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Your application has been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 1 year from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="391" width="572" height="28" uuid="052043bf-8725-43ca-9434-d6f32858c914"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[If you have any queries as to the meaning of this letter, you should contact the undersigned immediately. ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="144" y="180" width="361" height="20" uuid="3dffe538-8a6a-4263-9acd-22ffa32254b9"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="233" width="134" height="20" uuid="71a1dee4-7b66-4dbf-9b90-b3dbbdca611f"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product Strength:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="273" width="134" height="20" uuid="6fbb130a-4068-4004-9ef4-bfa715ba8857"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Manufacturer:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="180" width="134" height="20" uuid="ef17e21d-66c9-4b40-a20b-1bb5f3abacd9"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Application Number:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="146" y="273" width="361" height="20" uuid="910dfb07-0c12-4e7a-86fd-10e35960ebe4"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="146" y="253" width="361" height="20" uuid="e6bd1a90-023e-4137-af21-93ed77ca0a12"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dosForm}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="213" width="134" height="20" uuid="ebc5e88d-9157-4a43-84b2-42da14283684"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product Name:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="146" y="213" width="361" height="20" uuid="14142920-e280-424f-89dd-5f397c3f3d6e"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prodName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="293" width="134" height="20" uuid="50aa41bb-27b9-4962-9ab9-aaf84a72234a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Type of Application:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="253" width="134" height="20" uuid="623760f8-b21c-419c-a676-13ad02f5d760"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dosage Form:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="146" y="233" width="361" height="20" uuid="8dacdac9-7fc0-4f24-9e87-d052721d4e1c"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prodStrength}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="146" y="293" width="361" height="20" uuid="bd447156-325e-4a06-9afa-3c8d35d9f7ea"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appType}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="448" width="572" height="20" uuid="b65d652b-1337-4431-b97e-36bce3a44d57"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Yours faithfully,]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="144" width="572" height="32" uuid="cef12664-8d1e-4df7-b695-31c018d6a23d"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{body}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>

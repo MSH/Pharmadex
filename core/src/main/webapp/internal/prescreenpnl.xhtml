@@ -19,19 +19,7 @@
                          rendered="#{preScreenProdMBn.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
     </h:panelGrid>
 
-    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
-        <p:outputLabel value="#{msgs.prescreenfee_recieved}" styleClass="label" for="prescreenfeerecieved"/>
-        <p:selectBooleanButton id="prescreenfeerecieved"
-                               value="#{processProdBn.prodApplications.prescreenfeeReceived}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <!--<p:ajax update="@form" listener="#{processProdBnET.prescreenfeerecvd}" />-->
-
-        </p:selectBooleanButton>
-    </h:panelGrid>
-
-    <p:outputLabel value="#{msgs.moderator_name}:"/>
+    <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
     <p:outputLabel value="#{processProdBn.moderator.username}"/>
 
     <p:dataTable var="checkList" value="#{preScreenProdMBn.prodAppChecklists}"
