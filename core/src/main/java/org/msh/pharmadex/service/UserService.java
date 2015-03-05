@@ -73,7 +73,9 @@ public class UserService implements Serializable {
         user.setEnabled(true);
         List<Role> rList = new ArrayList<Role>();
         Role r = roleDAO.findOne(1);
+        Role r2 = roleDAO.findOne(4);
         rList.add(r);
+        rList.add(r2);
         user.setRoles(rList);
         return userDAO.saveUser(passwordGenerator(user));
     }

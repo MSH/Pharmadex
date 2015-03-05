@@ -16,7 +16,7 @@
                                 <f:setPropertyActionListener value="preference" target="#{userSettingBean.selection}"/>
                             </p:menuitem>
                             <p:menuitem value="#{msgs.User_changepwd}" action="#{userSettingBean.active}"
-                                        update="usersettingsform:contents" ajax="true" immediate="true">
+                                        update="@form" process="@this">
                                 <f:setPropertyActionListener value="changePwd" target="#{userSettingBean.selection}"/>
                             </p:menuitem>
                             <p:menuitem value="#{msgs.User_changelanguage}" action="#{userSettingBean.active}"
@@ -26,7 +26,7 @@
                         </p:submenu>
                     </p:menu>
 
-                <h:panelGroup styleClass="ui-widget" id="contents">
+                <h:panelGrid styleClass="ui-widget" id="contents" columns="1">
 
                     <h:panelGroup layout="block" styleClass="content" rendered="#{userSettingBean.preference}">
                         <div class="post" style="width: 1024px">
@@ -142,7 +142,8 @@
 
                     </h:panelGroup>
 
-                </h:panelGroup>
+                </h:panelGrid>
+
 
             </h:panelGrid>
 
