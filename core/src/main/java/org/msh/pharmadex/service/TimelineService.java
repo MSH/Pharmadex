@@ -1,8 +1,10 @@
 package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.iface.TimelineDAO;
+import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.util.RetObject;
@@ -22,6 +24,12 @@ public class TimelineService implements Serializable {
 
     @Autowired
     TimelineDAO timelineDAO;
+
+    @Autowired
+    WorkspaceDAO workspaceDAO;
+
+    @Autowired
+    ReviewService reviewService;
 
     List<TimeLine> timeLineList;
 
@@ -66,13 +74,17 @@ public class TimelineService implements Serializable {
 
             }
         } else if (timeLine.getRegState().equals(RegState.SCREENING) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-            ProdApplications prodApp = prodApplicationsService.findProdApplications(prodApplications.getId());
-            prodApplications.setModerator(prodApp.getModerator());
             if(prodApplications.getModerator()==null)
                 return "valid_assign_moderator";
         } else if (timeLine.getRegState().equals(RegState.REVIEW_BOARD) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-            if(prodApplications.getReviews().size()==0)
-                return "valid_assign_reviewer";
+            if (workspaceDAO.findAll().get(0).isDetailReview()) {
+                List<ReviewInfo> reviewInfos = reviewService.findReviewInfos(prodApplications.getId());
+                if (reviewInfos == null || reviewInfos.size() == 0)
+                    return "valid_assign_reviewer";
+            } else {
+                if (prodApplications.getReviews().size() == 0)
+                    return "valid_assign_reviewer";
+            }
         }
         return "success";
 

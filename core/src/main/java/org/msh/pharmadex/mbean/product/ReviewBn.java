@@ -11,6 +11,7 @@ import org.msh.pharmadex.domain.ReviewChecklist;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.util.RetObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -116,7 +117,8 @@ public class ReviewBn implements Serializable {
 
     public String saveReview() {
         reviewChecklists = review.getReviewChecklists();
-        review = reviewService.saveReview(review);
+        RetObject retObject = reviewService.saveReviewers(review);
+        review = (Review) retObject.getObj();
         return "";
     }
 

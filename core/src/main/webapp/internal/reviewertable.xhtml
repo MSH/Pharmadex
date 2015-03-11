@@ -10,7 +10,13 @@
                 xmlns:p="http://primefaces.org/ui">
 
 
-    <p:dataTable id="reviwertbl" var="each" value="#{processProdBn.reviews}"
+    <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+                     oncomplete="PF('assignreviewdlg').show()"
+                     action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
+                     rendered="#{userSession.moderator||userSession.admin}"/>
+
+
+    <p:dataTable id="reviwertbl" var="each" value="#{prodReviewBn.reviews}"
                  rendered="#{!userAccessMBean.detailReview}">
 
         <p:column>
@@ -53,19 +59,19 @@
         </p:column>
 
         <p:column>
-            <p:commandButton id="deletereview" action="#{processProdBn.deleteReview(each)}"
+            <p:commandButton id="deletereview" action="#{prodReviewBn.deleteReview(each)}"
                              icon="ui-icon-trash" ajax="true" immediate="true"
-                             update=":reghome:processtab:reviwertbl :assignreviewDlg :reghome:messages"
+                             update=":reghome:processtab:reviwertbl :reghome:processtab:assignreviewDlg :reghome:messages"
                              rendered="#{empty each.recomendType}"/>
         </p:column>
     </p:dataTable>
 
-    <p:dataTable id="reviwerinfotbl" var="reviewInfo" value="#{processProdBn.reviewInfos}"
+    <p:dataTable id="reviwerinfotbl" var="reviewInfo" value="#{prodReviewBn.reviewInfos}"
                  rendered="#{userAccessMBean.detailReview}">
 
         <p:column>
             <f:facet name="header">
-                <h:outputText value="#{msgs.processor}-Review Detail"/>
+                <h:outputText value="#{msgs.processor}"/>
             </f:facet>
             <p:commandLink id="viewLink1" value="#{reviewInfo.reviewer.name}" action="/internal/reviewInfo.faces"
                            ajax="false" immediate="true">
@@ -103,13 +109,40 @@
         </p:column>
 
         <p:column>
-            <p:commandButton id="deletereviewinfo" action="#{processProdBn.deleteReview(each)}"
+            <p:commandButton id="deletereviewinfo" action="#{prodReviewBn.deleteReviewInfo(reviewInfo)}"
                              icon="ui-icon-trash"
-                             update=":reghome:processtab:reviwerinfotbl :assignreviewDlg :reghome:messages"
+                             update=":reghome:processtab:reviwerinfotbl :reghome:processtab:assignreviewDlg :reghome:messages"
                              rendered="#{empty reviewInfo.recomendType}"/>
         </p:column>
     </p:dataTable>
 
+    <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" resizable="false"
+              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}">
+
+        <p:panel>
+            <h:panelGrid columns="2" columnClasses="label value">
+
+                <h:outputText value="#{msgs.processor}"
+                              escape="false"
+                              styleClass="text"/>
+
+                <p:autoComplete id="module3" value="#{prodReviewBn.reviewer}"
+                                completeMethod="#{globalEntityLists.completeProcessorList}"
+                                dropdown="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+            </h:panelGrid>
+
+
+            <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+                             action="#{prodReviewBn.assignReviewer}"
+                             oncomplete="PF('assignreviewdlg').hide()"
+                             update=":reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl"/>
+        </p:panel>
+    </p:dialog>
 
 
 </ui:composition>

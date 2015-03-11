@@ -265,37 +265,6 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" resizable="false"
-                  id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}">
-
-            <h:form>
-            <p:panel>
-                <h:panelGrid columns="2" columnClasses="label value">
-
-                    <h:outputText value="#{msgs.processor}"
-                                  escape="false"
-                                  styleClass="text"/>
-
-                    <p:autoComplete id="module3" value="#{processProdBn.review.user}"
-                                    completeMethod="#{globalEntityLists.completeProcessorList}"
-                                    dropdown="true"
-                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                    forceSelection="true"
-                                    converter="#{userConverter}">
-                    </p:autoComplete>
-
-                </h:panelGrid>
-
-
-                <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
-                                 action="#{processProdBn.assignReviewer}"
-                                 oncomplete="PF('assignreviewdlg').hide()"
-                                 update="@form :reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl :reghome:messages"/>
-            </p:panel>
-            </h:form>
-        </p:dialog>
-
-
         <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
                   modal="true">
             <h:form prependId="false">

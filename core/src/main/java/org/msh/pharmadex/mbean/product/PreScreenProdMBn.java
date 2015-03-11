@@ -8,6 +8,7 @@ import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdAppChecklistService;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.model.UploadedFile;
@@ -37,6 +38,10 @@ public class PreScreenProdMBn {
     private ProcessProdBn processProdBn;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    private ProdApplicationsService prodApplicationsService;
+
+
     private FacesContext facesContext;
     private ResourceBundle resourceBundle;
     private TimeLine timeLine = new TimeLine();
@@ -57,7 +62,17 @@ public class PreScreenProdMBn {
 //            return null;
 //        }
 
-        ProdApplications prodApplications = processProdBn.getProdApplications();
+
+        RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
+        prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
+        if (!retObject.getMsg().equals("persist")) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, retObject.getMsg(), retObject.getMsg()));
+            return "";
+        }
+
+        ProdApplications prodApplications = prodApplicationsService.findProdApplicationByProduct(processProdBn.getProduct().getId());
+        prodApplications.setModerator(moderator);
+        prodApplications.setProdAppChecklists(prodAppChecklists);
         if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)) {
             timeLine = new TimeLine();
             timeLine.setProdApplications(prodApplications);
@@ -65,22 +80,26 @@ public class PreScreenProdMBn {
             timeLine.setStatusDate(new Date());
             timeLine.setUser(userSession.getLoggedInUserObj());
             timeLine.setComment("Pre-Screening completed successfully");
+            String ret = timelineService.validateStatusChange(timeLine);
 
-            prodApplications.setRegState(timeLine.getRegState());
-            prodApplications.getProd().setRegState(timeLine.getRegState());
-            prodApplications.setModerator(moderator);
-            prodApplications.setProdAppChecklists(prodAppChecklists);
-            RetObject retObject2 = timelineService.saveTimeLine(timeLine);
-            if (retObject2.getMsg().equals("persist")) {
-                timeLine = (TimeLine) retObject2.getObj();
-                processProdBn.setModerator(moderator);
-                processProdBn.setTimeLine(timeLine);
-                processProdBn.getTimeLineList().add(timeLine);
-                processProdBn.setProdApplications(timeLine.getProdApplications());
-                processProdBn.setProduct(timeLine.getProdApplications().getProd());
-                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
+            if (ret.equals("success")) {
+                prodApplications.setRegState(timeLine.getRegState());
+                prodApplications.getProd().setRegState(timeLine.getRegState());
+                RetObject retObject2 = timelineService.saveTimeLine(timeLine);
+                if (retObject2.getMsg().equals("persist")) {
+                    timeLine = (TimeLine) retObject2.getObj();
+                    processProdBn.setModerator(moderator);
+                    processProdBn.setTimeLine(timeLine);
+                    processProdBn.getTimeLineList().add(timeLine);
+                    processProdBn.setProdApplications(timeLine.getProdApplications());
+                    processProdBn.setProduct(timeLine.getProdApplications().getProd());
+                    facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
+                } else {
+                    facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail")));
+                }
             } else {
                 facesContext.addMessage(null, new FacesMessage("Please verify the dossier and update the checklist"));
+
             }
 
         }
@@ -262,5 +281,13 @@ public class PreScreenProdMBn {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
     }
 }

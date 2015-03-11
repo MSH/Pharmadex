@@ -221,6 +221,10 @@ public class ProdApplicationsDAO implements Serializable {
                 Join<Review, ProdApplications> user = prodApp.join("reviews", JoinType.LEFT).join("user");
                 Expression reviewId = user.get("userId");
                 p = cb.equal(reviewId, param.getValue());
+            } else if (param.getKey().equals("reviewerInfoId") && param.getValue() != null) {
+                Join<ReviewInfo, ProdApplications> user = prodApp.join("reviewInfos", JoinType.LEFT).join("reviewer");
+                Expression reviewId = user.get("userId");
+                p = cb.equal(reviewId, param.getValue());
             } else if (param.getKey().equals("regExpDate") && param.getValue() != null) {
                 p = cb.lessThan(prodApp.<Date>get("regExpiryDate"), (Date) param.getValue());
             }

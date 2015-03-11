@@ -10,6 +10,7 @@ import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.util.RetObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -107,13 +108,15 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String saveReview() {
-        reviewInfo = reviewService.saveReviewInfo(reviewInfo);
+        RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
+        reviewInfo = (ReviewInfo) retObject.getObj();
         return "";
     }
 
     public String reviewerFeedback() {
         reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
-        reviewService.saveReviewInfo(reviewInfo);
+        RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
+        reviewInfo = (ReviewInfo) retObject.getObj();
         return "/internal/processreg";
     }
 

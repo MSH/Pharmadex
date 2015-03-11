@@ -1,7 +1,5 @@
 <!-- Creates the table with passed in values of product -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
@@ -20,11 +18,11 @@
                         rendered="#{processProdBn.canReject}"/>
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
-                        action="#{processProdBn.findReview}" ajax="false"/>
+                        action="#{prodReviewBn.findReview}" ajax="false"/>
 
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
-                        action="#{processProdBn.findReviewInfo}" ajax="false"/>
+                        action="#{prodReviewBn.findReviewInfo}" ajax="false"/>
 
             <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" ajax="false" icon="ui-icon-extlink"/>
 
@@ -37,7 +35,7 @@
                         rendered="#{userSession.admin||userSession.staff}" id="assignModMI"/>
             <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
                         oncomplete="PF('assignreviewdlg').show()"
-                        action="#{processProdBn.initProcessorAdd}" id="assignProMI"
+                        action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
                         rendered="#{userSession.moderator||userSession.admin}"/>
 
         </p:submenu>

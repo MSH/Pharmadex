@@ -160,6 +160,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<ReviewInfo> reviewInfos;
+
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<Invoice> invoices;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
@@ -583,20 +586,20 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.useCategories = useCategories;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getUsername() {
         return username;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPosition() {
         return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public boolean isSra() {
@@ -669,6 +672,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setRejCert(byte[] rejCert) {
         this.rejCert = rejCert;
+    }
+
+    public List<ReviewInfo> getReviewInfos() {
+        return reviewInfos;
+    }
+
+    public void setReviewInfos(List<ReviewInfo> reviewInfos) {
+        this.reviewInfos = reviewInfos;
     }
 }
 

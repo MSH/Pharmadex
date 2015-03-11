@@ -13,6 +13,7 @@ import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.ReviewQuestion;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,8 +67,16 @@ public class ReviewService implements Serializable {
         return review;
     }
 
-    public Review saveReview(Review review) {
-        return reviewDAO.saveAndFlush(review);
+    public RetObject saveReviewers(Review review) {
+        RetObject retObject = new RetObject();
+        Review returnvalue = reviewDAO.findByUser_UserIdAndProdApplications_Id(review.getUser().getUserId(), review.getProdApplications().getId());
+        if (returnvalue == null) {
+            retObject.setObj(reviewDAO.saveAndFlush(review));
+            retObject.setMsg("success");
+        } else {
+            retObject.setMsg("exist");
+        }
+        return retObject;
     }
 
     public Review findReviewByUserAndProdApp(Long userId, Long prodAppID) {
@@ -251,9 +260,23 @@ public class ReviewService implements Serializable {
 //    }
 
 
-    public ReviewInfo saveReviewInfo(ReviewInfo reviewInfo) {
-        return reviewInfoDAO.saveAndFlush(reviewInfo);
+    public RetObject saveReviewInfo(ReviewInfo reviewInfo) {
+        RetObject retObject = new RetObject();
+        retObject.setObj(reviewInfoDAO.saveAndFlush(reviewInfo));
+        retObject.setMsg("success");
+        return retObject;
+    }
 
+    public RetObject addReviewInfo(ReviewInfo reviewInfo) {
+        RetObject retObject = new RetObject();
+        ReviewInfo returnvalue = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(reviewInfo.getReviewer().getUserId(), reviewInfo.getProdApplications().getId());
+        if (returnvalue == null) {
+            retObject.setObj(reviewInfoDAO.saveAndFlush(reviewInfo));
+            retObject.setMsg("success");
+        } else {
+            retObject.setMsg("exist");
+        }
+        return retObject;
     }
 
     public ReviewDetail findReviewDetails(DisplayReviewInfo displayReview) {
@@ -282,12 +305,12 @@ public class ReviewService implements Serializable {
         reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
         reviewInfo.setSubmitDate(new Date());
 
-        List<ReviewDetail> reviewDetails = findReviewDetails(reviewInfo.getReviewer().getUserId(), reviewInfo.getId());
-        for(ReviewDetail reviewDetail : reviewDetails){
-            if(!reviewDetail.isAnswered()){
-                return "NOT_ANSWERED";
-            }
-        }
+//        List<ReviewDetail> reviewDetails = findReviewDetails(reviewInfo.getReviewer().getUserId(), reviewInfo.getId());
+//        for(ReviewDetail reviewDetail : reviewDetails){
+//            if(!reviewDetail.isAnswered()){
+//                return "NOT_ANSWERED";
+//            }
+//        }
 
         if(reviewInfo.getRecomendType()==null)
             return "NO_RECOMMEND_TYPE";
@@ -298,6 +321,10 @@ public class ReviewService implements Serializable {
 
     public List<ReviewInfo> findReviewInfos(Long id) {
         return reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(id);
+    }
+
+    public List<Review> findReviews(Long prodAppId) {
+        return reviewDAO.findByProdApplications_Id(prodAppId);
     }
 
     public void deleteReviewInfo(ReviewInfo reviewInfo) {

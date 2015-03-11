@@ -57,6 +57,9 @@ public class ProdApplicationsService implements Serializable {
     AppointmentDAO appointmentDAO;
 
     @Autowired
+    WorkspaceDAO workspaceDAO;
+
+    @Autowired
     ProdAppChecklistDAO prodAppChecklistDAO;
 
     @Autowired
@@ -243,7 +246,10 @@ public class ProdApplicationsService implements Serializable {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
-            params.put("reviewerId", userSession.getLoggedInUserObj().getUserId());
+            if (workspaceDAO.findAll().get(0).isDetailReview())
+                params.put("reviewerInfoId", userSession.getLoggedInUserObj().getUserId());
+            else
+                params.put("reviewerId", userSession.getLoggedInUserObj().getUserId());
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isHead()) {
             List<RegState> regState = new ArrayList<RegState>();
@@ -343,17 +349,6 @@ public class ProdApplicationsService implements Serializable {
         statusUserDAO.saveAndFlush(module);
         return "success";
     }
-
-    public String saveReviewers(Review review) {
-        Review returnvalue = reviewDAO.findByUser_UserIdAndProdApplications_Id(review.getUser().getUserId(), review.getProdApplications().getId());
-        if(returnvalue==null) {
-            reviewDAO.saveAndFlush(review);
-            return "success";
-        }else{
-            return"exist";
-        }
-    }
-
 
     public List<ProdApplications> findPayNotified() {
         HashMap<String, Object> params = new HashMap<String, Object>();
