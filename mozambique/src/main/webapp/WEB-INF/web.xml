@@ -5,8 +5,8 @@
 	http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"> -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0" metadata-complete="true">
 
     <!-- The definition of the Root Spring Container shared by all Servlets
         and Filters -->
@@ -31,9 +31,22 @@
     </context-param>
 
     <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Development</param-value>
+        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+        <param-value>true</param-value>
     </context-param>
+
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+
+    <!--
+        <context-param>
+            <param-name>javax.faces.PROJECT_STAGE</param-name>
+            <param-value>Development</param-value>
+        </context-param>
+    -->
 
     <!-- Creates the Spring Container shared by all Servlets and Filters -->
     <listener>
@@ -47,6 +60,8 @@
     <listener>
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
     </listener>
+
+
     <!-- Processes application requests -->
     <!--	<servlet>
             <servlet-name>appServlet</servlet-name>
@@ -65,6 +80,15 @@
     -->
 
     <filter>
+        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
@@ -81,15 +105,6 @@
         <url-pattern>/j_spring_security_logout</url-pattern>
     </filter-mapping>
 
-    <filter>
-        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
-        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
     <filter>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
@@ -99,7 +114,6 @@
     <filter-mapping>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
-        <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
     <filter>
@@ -133,23 +147,27 @@
     </servlet>
 
     <session-config>
-        <session-timeout>15</session-timeout>
+        <session-timeout>19</session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
     <error-page>
-            <exception-type>java.lang.RuntimeException</exception-type>
-            <location>/pages/bug.xhtml</location>
+        <exception-type>java.lang.RuntimeException</exception-type>
+        <location>/pages/bug.faces</location>
     </error-page>
     <error-page>
-            <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-            <location>/pages/viewexpired.xhtml</location>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/home.xhtml</location>
     </error-page>
     <error-page>
-            <error-code>404</error-code>
-            <location>/pages/404.xhtml</location>
+        <error-code>404</error-code>
+        <location>/pages/404.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/pages/errorpage.xhtml</location>
     </error-page>
 
     <servlet-mapping>

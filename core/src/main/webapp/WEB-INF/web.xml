@@ -124,12 +124,12 @@
         <filter-name>facesExceptionFilter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
-    <!--
-        <context-param>
-            <param-name>facelets.DEVELOPMENT</param-name>
-            <param-value>true</param-value>
-        </context-param>
-    -->
+
+    <context-param>
+        <param-name>facelets.DEVELOPMENT</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
@@ -170,7 +170,7 @@
         <location>/pages/errorpage.xhtml</location>
     </error-page>
 
-        <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
         <url-pattern>*.xhtml</url-pattern>

@@ -445,6 +445,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.5</version>
                 <executions>
                     <execution>
                         <id>make-a-jar</id>
@@ -459,6 +460,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+                <version>2.3.1</version>
                 <executions>
                     <execution>
                         <phase>install</phase>
