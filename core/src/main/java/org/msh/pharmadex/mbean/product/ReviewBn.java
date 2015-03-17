@@ -117,7 +117,7 @@ public class ReviewBn implements Serializable {
 
     public String saveReview() {
         reviewChecklists = review.getReviewChecklists();
-        RetObject retObject = reviewService.saveReviewers(review);
+        RetObject retObject = reviewService.saveReview(review);
         review = (Review) retObject.getObj();
         return "";
     }

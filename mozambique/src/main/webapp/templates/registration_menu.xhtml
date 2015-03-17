@@ -21,7 +21,7 @@
                 <p:submenu label="#{msgs.registration_form}"
                            rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
-                                action="#{navigationBean.regProductAction}" ajax="false"
+                                action="/secure/prodreginit.faces" ajax="false"
                                 rendered="#{userSession.company||userSession.admin||userSession.staff}"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                 action="#{navigationBean.regApplicantAction}"
@@ -33,7 +33,7 @@
                 </p:submenu>
 
 
-                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.admin}">
+                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff}">
                     <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
                                 url="/secure/submittedproducts.faces"/>
                     <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
