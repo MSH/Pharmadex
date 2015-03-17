@@ -372,7 +372,7 @@ public class ProdApplicationsService implements Serializable {
         param.put("regNumber", product.getRegNo());
         param.put("genName",product.getGenName());
         param.put("adminRoute", product.getAdminRoute().getName());
-        param.put("regType", product.getProdType().name());
+//        param.put("regType", product.getProdType());
         param.put("shelfLife", product.getProdApplications().getShelfLife());
 
         String inns = "";

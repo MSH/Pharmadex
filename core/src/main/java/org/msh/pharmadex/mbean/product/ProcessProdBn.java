@@ -756,8 +756,11 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplaySample() {
-        if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab()) && (product.getRegState().ordinal() > 3)) {
-            displaySample = true;
+        if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
+            if((product.getRegState()!=null && product.getRegState().ordinal() > 3))
+                displaySample = true;
+            else
+                displaySample = false;
         } else {
             displaySample = false;
         }

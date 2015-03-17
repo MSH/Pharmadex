@@ -162,7 +162,7 @@ public class ProdReviewBn implements Serializable {
 
     public List<Review> getReviews() {
         if (reviews == null) {
-            reviewService.findReviews(processProdBn.getProdApplications().getId());
+            reviews = reviewService.findReviews(processProdBn.getProdApplications().getId());
         }
         return reviews;
     }

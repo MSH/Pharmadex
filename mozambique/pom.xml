@@ -35,6 +35,12 @@
             <artifactId>jasperreports</artifactId>
             <version>${jasperreports.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.omnifaces</groupId>
+            <artifactId>omnifaces</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+
 
     </dependencies>
     <repositories>
