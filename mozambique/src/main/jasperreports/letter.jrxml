@@ -87,7 +87,7 @@
 		<band height="87" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="123" height="86" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
-				<imageExpression><![CDATA["images/na_logo_header.png"]]></imageExpression>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="123" y="1" width="449" height="37" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
