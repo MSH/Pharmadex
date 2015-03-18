@@ -23,7 +23,7 @@
 	<parameter name="manufName" class="java.lang.String"/>
 	<parameter name="appType" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from product where id = $P{id}]]>
+		<![CDATA[]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
