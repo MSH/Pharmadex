@@ -95,7 +95,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinColumn(name = "PHARM_CLASSIF_ID")
     private PharmClassif pharmClassif;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "APP_ID", nullable = false)
     private Applicant applicant;
 

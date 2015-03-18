@@ -202,6 +202,17 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaQuery<ProdApplications> query = cb.createQuery(ProdApplications.class);
         Root<ProdApplications> prodApp = query.from(ProdApplications.class);
 //        Join statusUser = prodApp.join("statusUser", JoinType.LEFT);
+        Fetch<ProdApplications, Product> prod =  prodApp.fetch("prod", JoinType.LEFT);
+        prodApp.fetch("statusUser", JoinType.LEFT);
+        prod.fetch("applicant", JoinType.LEFT);
+        prod.fetch("dosForm", JoinType.LEFT);
+        prod.fetch("dosUnit", JoinType.LEFT);
+        prod.fetch("pharmClassif", JoinType.LEFT);
+        prodApp.fetch("appointment", JoinType.LEFT);
+        prodApp.fetch("moderator", JoinType.LEFT);
+        prodApp.fetch("reviews", JoinType.LEFT);
+        prod.fetch("adminRoute", JoinType.LEFT);
+        prodApp.fetch("pricing", JoinType.LEFT);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
         Predicate p = null;
@@ -240,7 +251,7 @@ public class ProdApplicationsDAO implements Serializable {
     }
 
     public Long findApplicationCount() {
-        return (Long) entityManager.createQuery("select count(*) from ProdApplications pa ")
+        return (Long) entityManager.createQuery("select count(pa.id) from ProdApplications pa ")
                 .getSingleResult();
     }
 }
