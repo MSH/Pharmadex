@@ -34,35 +34,35 @@ public class ApplicantDAO implements Serializable {
 
     @Transactional
     public Applicant findApplicant(long id) {
-        Applicant applicant = entityManager.find(Applicant.class, id);
-        if (applicant.getUsers() != null) {
-            Hibernate.initialize(applicant.getUsers());
-        }
+        Applicant applicant = (Applicant) entityManager.createQuery("select a from Applicant a left join fetch a.applicantType apptype left join fetch a.address.country c left join fetch a.users u where a.applcntId = :id ")
+                .setParameter("id", id)
+                .getSingleResult();
+
         return applicant;
     }
 
     @Transactional(readOnly = true)
     public List<Applicant> findAllApplicants() {
-        return entityManager.createQuery(" select a from Applicant a ").getResultList();
+        return entityManager.createQuery(" select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype").getResultList();
     }
 
     @Transactional(readOnly = true)
     public List<Applicant> findRegApplicants() {
-        return (List<Applicant>) entityManager.createQuery("from Applicant a where a.state = :state ")
+        return (List<Applicant>) entityManager.createQuery("from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype where a.state = :state ")
                 .setParameter("state", ApplicantState.REGISTERED)
                 .getResultList();
     }
 
     @Transactional(readOnly = true)
     public Applicant findApplicantByProduct(Long id) {
-        return (Applicant) entityManager.createQuery("select a from Applicant a join a.products p " +
+        return (Applicant) entityManager.createQuery("select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype left join a.products p " +
                 "where p.id = :prodId")
                 .setParameter("prodId", id).getSingleResult();
     }
 
     @Transactional(readOnly = true)
     public List<Applicant> findPendingApplicant() {
-        return (List<Applicant>) entityManager.createQuery("select a from Applicant a where a.state = :state ")
+        return (List<Applicant>) entityManager.createQuery("select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype where a.state = :state ")
                 .setParameter("state", ApplicantState.NEW_APPLICATION).getResultList();
     }
 

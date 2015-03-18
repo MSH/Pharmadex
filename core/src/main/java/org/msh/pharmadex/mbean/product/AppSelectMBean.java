@@ -64,7 +64,6 @@ public class AppSelectMBean implements Serializable {
 //            showGMP = true;
 //        else
 //            showGMP = false;
-        logger.error("inside gmpChangeListener");
         if (selectedApplicant != null && selectedApplicant.getApplcntId() != null) {
             selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
             showApp = true;
