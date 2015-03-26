@@ -25,7 +25,7 @@
             </f:facet>
             <p:commandLink id="viewLink" value="#{each.user.name}" action="/internal/review.faces"
                            ajax="false" immediate="true">
-            <f:setPropertyActionListener value="#{each}" target="#{userSession.review}"/>
+                <f:setPropertyActionListener value="#{each}" target="#{userSession.review}"/>
             </p:commandLink>
         </p:column>
 
@@ -76,7 +76,6 @@
             <p:commandLink id="viewLink1" value="#{reviewInfo.reviewer.name}" action="/internal/reviewInfo.faces"
                            ajax="false" immediate="true">
                 <f:setPropertyActionListener value="#{reviewInfo.id}" target="#{userSession.reviewInfoID}"/>
-                <f:setPropertyActionListener value="#{reviewInfo.prodApplications.prod}" target="#{userSession.product}"/>
             </p:commandLink>
         </p:column>
 
@@ -116,32 +115,34 @@
         </p:column>
     </p:dataTable>
 
-    <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" resizable="false"
-              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}">
+    <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg"
+              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" appendTo=":reghome">
+        <h:form>
+            <p:panel>
+                <h:panelGrid columns="2" columnClasses="label value">
 
-        <p:panel>
-            <h:panelGrid columns="2" columnClasses="label value">
+                    <h:outputText value="#{msgs.processor}"
+                                  escape="false"
+                                  styleClass="text"/>
 
-                <h:outputText value="#{msgs.processor}"
-                              escape="false"
-                              styleClass="text"/>
+                    <p:autoComplete id="module3" value="#{prodReviewBn.reviewer}"
+                                    completeMethod="#{globalEntityLists.completeProcessorList}"
+                                    dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
 
-                <p:autoComplete id="module3" value="#{prodReviewBn.reviewer}"
-                                completeMethod="#{globalEntityLists.completeProcessorList}"
-                                dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
-
-            </h:panelGrid>
+                </h:panelGrid>
 
 
-            <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
-                             action="#{prodReviewBn.assignReviewer}"
-                             oncomplete="PF('assignreviewdlg').hide()"
-                             update=":reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl"/>
-        </p:panel>
+                <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+                                 action="#{prodReviewBn.assignReviewer}"
+                                 oncomplete="PF('assignreviewdlg').hide()" ajax="true" process="@form"
+                                 update=":reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl"/>
+            </p:panel>
+
+        </h:form>
     </p:dialog>
 
 

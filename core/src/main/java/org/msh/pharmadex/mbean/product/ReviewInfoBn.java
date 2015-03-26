@@ -227,11 +227,22 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public Product getProduct() {
-        if (product == null) {
-            product = productService.findProduct(userSession.getProduct().getId());
-
+        if (product != null && product.getId() != null) {
+            System.out.println("product id == " + product.getId());
+            return product;
+        } else {
+            reviewInfo = getReviewInfo();
+            if (reviewInfo == null) {
+                Long reviewInfoId = null;
+                reviewInfoId = userSession.getReviewInfoID();
+                if (reviewInfoId == null) {
+                    reviewInfoId = userSession.getDisplayReviewInfo() != null ? userSession.getDisplayReviewInfo().getReviewInfoID() : null;
+                    reviewInfo = reviewService.findReviewInfo(reviewInfoId);
+                }
+            }
+            product = productService.findProduct(reviewInfo.getProdApplications().getProd().getId());
+            return product;
         }
-        return product;
     }
 
     public void setProduct(Product product) {
@@ -258,7 +269,7 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public boolean isReadOnly() {
-        if(reviewInfo==null)
+        if (reviewInfo == null)
             getReviewInfo();
         return readOnly;
     }

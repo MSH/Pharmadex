@@ -8,7 +8,6 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.ScheduleEntryMoveEvent;
@@ -206,6 +205,7 @@ public class RegHomeMbean implements Serializable {
         jasperPrint = reportService.reportinit(product);
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
+        httpServletResponse.setContentType("application/pdf");
         javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
@@ -905,12 +905,12 @@ public class RegHomeMbean implements Serializable {
         this.dosUomDAO = dosUomDAO;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<UseCategory> getUseCategories() {

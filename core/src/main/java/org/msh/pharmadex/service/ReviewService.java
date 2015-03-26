@@ -92,6 +92,8 @@ public class ReviewService implements Serializable {
     }
 
     public ReviewInfo findReviewInfo(Long reviewInfoID) {
+        if (reviewInfoID == null)
+            return null;
         ReviewInfo reviewInfo = reviewInfoDAO.findOne(reviewInfoID);
         if (reviewInfo.getReviewDetails().size() < 1)
             initReviewDetail(reviewInfo);

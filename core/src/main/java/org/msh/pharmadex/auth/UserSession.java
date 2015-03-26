@@ -47,6 +47,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private Review review;
     private Long reviewInfoID;
     private Long applcantID;
+    private Long prodID;
     private boolean admin = false;
     private boolean company = false;
     private boolean staff = false;
@@ -565,4 +566,11 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         }
     }
 
+    public Long getProdID() {
+        return prodID;
+    }
+
+    public void setProdID(Long prodID) {
+        this.prodID = prodID;
+    }
 }

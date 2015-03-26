@@ -54,6 +54,7 @@ public class ReportMBean implements Serializable {
 //        init();
         HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
+        httpServletResponse.setContentType("application/pdf");
         ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         FacesContext.getCurrentInstance().responseComplete();
