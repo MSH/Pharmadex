@@ -43,7 +43,7 @@ public class Product extends CreationDetail implements Serializable {
     @Size(max = 500, min = 3)
     private String newChemicalName;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOSFORM_ID")
     private DosageForm dosForm;
 
@@ -53,7 +53,7 @@ public class Product extends CreationDetail implements Serializable {
     @Column(name = "new_chemical_entity")
     private boolean newChemicalEntity;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOSUNIT_ID")
     private DosUom dosUnit;
 
@@ -87,15 +87,15 @@ public class Product extends CreationDetail implements Serializable {
 
     private boolean noAtc = false;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ADMIN_ROUTE_ID")
     private AdminRoute adminRoute;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PHARM_CLASSIF_ID")
     private PharmClassif pharmClassif;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "APP_ID", nullable = false)
     private Applicant applicant;
 
@@ -115,7 +115,7 @@ public class Product extends CreationDetail implements Serializable {
     @NotNull
     private ProdApplications prodApplications;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdBy")
     private User createdBy;
 

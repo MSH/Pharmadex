@@ -93,7 +93,7 @@ public class ProductDAO implements Serializable {
     }
 
     public List<Product> findRegProducts() {
-        return entityManager.createQuery("select p from Product p where p.regState = :regstate")
+        return entityManager.createQuery("select p from Product p left  join fetch p.applicant a left join fetch p.prodApplications pa where p.regState = :regstate ")
                 .setParameter("regstate", RegState.REGISTERED).getResultList();
     }
 

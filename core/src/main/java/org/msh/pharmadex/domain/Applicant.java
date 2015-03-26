@@ -29,7 +29,7 @@ public class Applicant extends CreationDetail implements Serializable {
     @Embedded
     private Address address = new Address();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private ApplicantType applicantType;
 
     @Column(length = 500)

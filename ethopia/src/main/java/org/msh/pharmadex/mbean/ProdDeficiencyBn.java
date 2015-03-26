@@ -63,6 +63,7 @@ public class ProdDeficiencyBn implements Serializable {
         jasperPrint = reportService.generateDeficiency(prodAppChecklists, summary, userSession.getLoggedInUserObj());
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
+        httpServletResponse.setContentType("application/pdf");
         javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
         javax.faces.context.FacesContext.getCurrentInstance().responseComplete();

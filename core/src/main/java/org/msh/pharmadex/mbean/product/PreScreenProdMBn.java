@@ -73,7 +73,8 @@ public class PreScreenProdMBn {
         ProdApplications prodApplications = prodApplicationsService.findProdApplicationByProduct(processProdBn.getProduct().getId());
         prodApplications.setModerator(moderator);
         prodApplications.setProdAppChecklists(prodAppChecklists);
-        if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)) {
+        if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)
+                || prodApplications.getRegState().equals(RegState.VERIFY)) {
             timeLine = new TimeLine();
             timeLine.setProdApplications(prodApplications);
             timeLine.setRegState(RegState.SCREENING);

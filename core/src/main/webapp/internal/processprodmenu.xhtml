@@ -33,11 +33,11 @@
             <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                         onclick="PF('moderatordlg').show()"
                         rendered="#{userSession.admin||userSession.staff}" id="assignModMI"/>
-            <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
-                        oncomplete="PF('assignreviewdlg').show()"
-                        action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
-                        rendered="#{userSession.moderator||userSession.admin}"/>
-
+            <!--            <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+                                    oncomplete="PF('assignreviewdlg').show()"
+                                    action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
+                                    rendered="#{userSession.moderator||userSession.admin}"/>
+            -->
         </p:submenu>
         <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"

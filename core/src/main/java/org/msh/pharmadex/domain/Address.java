@@ -1,10 +1,7 @@
 package org.msh.pharmadex.domain;
 
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -22,7 +19,7 @@ public class Address implements Serializable{
    	@Column(length = 500)
    	private String zipcode;
 
-   @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
    @JoinColumn(name="CNTRY_ID")
    	private Country country = new Country();
 

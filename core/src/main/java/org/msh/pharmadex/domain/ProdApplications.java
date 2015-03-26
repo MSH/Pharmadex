@@ -23,7 +23,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_ID")
     private Product prod;
 
@@ -153,7 +153,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<ProdAppChecklist> prodAppChecklists;
 
-    @OneToOne(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "prodApplications", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private StatusUser statusUser;
 
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
@@ -168,7 +168,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<ProdAppAmdmt> prodAppAmdmts;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MODERATOR_ID", nullable = true)
     private User moderator;
 
@@ -176,7 +176,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdBy")
     private User createdBy;
 

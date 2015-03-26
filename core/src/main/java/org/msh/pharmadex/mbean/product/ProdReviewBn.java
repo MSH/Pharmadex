@@ -128,7 +128,7 @@ public class ProdReviewBn implements Serializable {
 
         reviewInfo = new ReviewInfo();
         reviewInfo.setProdApplications(processProdBn.getProdApplications());
-        review.setAssignDate(new Date());
+        reviewInfo.setAssignDate(new Date());
 
 
     }
@@ -200,7 +200,7 @@ public class ProdReviewBn implements Serializable {
     }
 
     public List<ReviewInfo> getReviewInfos() {
-        if (reviewInfos == null) {
+        if (reviewInfos == null && processProdBn.getProdApplications() != null) {
             reviewInfos = reviewService.findReviewInfos(processProdBn.getProdApplications().getId());
         }
         return reviewInfos;
