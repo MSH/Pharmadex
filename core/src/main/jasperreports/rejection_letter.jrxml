@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="426"/>
+	<parameter name="subject" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="appNumber" class="java.lang.String"/>
+	<parameter name="address1" class="java.lang.String"/>
+	<parameter name="address2" class="java.lang.String"/>
+	<parameter name="country" class="java.lang.String"/>
+	<parameter name="body" class="java.lang.String"/>
+	<parameter name="footer" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
+	</parameter>
+	<parameter name="registrar" class="java.lang.String"/>
+	<parameter name="prodName" class="java.lang.String"/>
+	<parameter name="prodStrength" class="java.lang.String"/>
+	<parameter name="dosForm" class="java.lang.String"/>
+	<parameter name="manufName" class="java.lang.String"/>
+	<parameter name="appType" class="java.lang.String"/>
+	<parameter name="summary" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="createdDate" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="updatedDate" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="adminRoute" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="apprvd_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dosage_strength" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="gen_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="lic_no" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="noAtc" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_cat" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_desc" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_type" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="reg_no" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="regState" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="APP_ID" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="createdBy" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DOSFORM_ID" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DOSUNIT_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PHARM_CLASSIF_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROD_APP_ID" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ADMIN_ROUTE_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="age_group" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ingredient" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="new_chemical_entity" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="new_chem_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="142" splitType="Stretch">
+			<image>
+				<reportElement x="247" y="0" width="75" height="70" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
+				<imageExpression><![CDATA["images/na_namibia_header.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="70" width="572" height="24" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FOOD, MEDICINE AND HEALTH CARE ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="94" width="572" height="24" forecolor="#006666" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ADMINISTRATION AND CONTROL AUTHORITY OF ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="118" width="572" height="24" forecolor="#006666" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ETHIOPIA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="49" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="572" height="25" uuid="f972c7fc-b921-4fe6-96f0-6865908e5a67"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product Registration and Licensing Directorate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="25" width="572" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Notification of Rejection]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="487" splitType="Stretch">
+			<textField>
+				<reportElement x="75" y="20" width="236" height="20" uuid="6b43134a-46d0-4c5e-a185-c3d7204ca5af"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="75" y="40" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="75" y="60" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="75" y="80" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{country}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="75" y="100" width="497" height="20" uuid="90df44ba-fda0-408e-a417-cbe38290996e"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subject}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[	To,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="132" width="497" height="46" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[The document/dossier of the below product was substantively evaluated for the           time and found to be not acceptable, hence your product is not suitable. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="195" width="134" height="20" uuid="070c98c8-0c88-49c4-b39c-41bfc80ee466"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product Name:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="215" width="134" height="20" uuid="e1d1590c-6b1a-49ff-9443-630b5837bca0"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product Strength:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="235" width="134" height="20" uuid="e6ca3b46-e938-4e8b-a022-34de222fcb7c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dosage Form:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="255" width="134" height="20" uuid="468a35c4-b6ee-4261-a0de-5473c22604e9"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Manufacturer:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="275" width="134" height="20" uuid="4dda40db-70a0-4d69-85c5-5ecf3dbcd4a1"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Type of Application:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="211" y="295" width="361" height="20" uuid="d2c372cf-e218-4694-b6a9-4215b7b28f24"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="75" y="295" width="134" height="20" uuid="3239a902-8d87-4e9f-8efa-49f87e45f4be"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Application Number:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="211" y="195" width="361" height="20" uuid="3c90ab7b-a777-4414-b313-7c335fad21f2"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prodName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="215" width="361" height="20" uuid="3ddc6fe7-41ad-4629-9403-1429c3cfe271"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prodStrength}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="255" width="361" height="20" uuid="3d7a6c50-00a5-4022-8f11-095ec9739ef1"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="275" width="361" height="20" uuid="e759ea4b-a872-47e0-a39d-07a6f5a5fa9b"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="235" width="361" height="20" uuid="f868b32e-993b-4543-bd0d-aef18d9524a6"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dosForm}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="75" y="446" width="497" height="33" uuid="807a43ff-1828-4a11-a131-39f04dcbd67f"/>
+				<text><![CDATA[Therefore due to the above reasons the product is not suitable and application for this specific product is rejected by the authority. ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="75" y="326" width="497" height="106" uuid="d8d2f10b-1182-4834-9bcf-da0768ded45f"/>
+				<textFieldExpression><![CDATA[$P{body}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="5" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="1" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="44" splitType="Stretch">
+			<staticText>
+				<reportElement x="75" y="1" width="497" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Thank You,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="24" width="497" height="20" uuid="4ed05e4e-b872-45fe-a77a-f56c3f468cb8"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Food Medicine and Health Care Administration and Control Authority ]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="10" splitType="Stretch"/>
+	</summary>
+</jasperReport>
