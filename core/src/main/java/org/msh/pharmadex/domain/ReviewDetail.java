@@ -18,7 +18,7 @@ public class ReviewDetail extends CreationDetail {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reviewquest_id", nullable = false)
     private ReviewQuestion reviewQuestions;
 

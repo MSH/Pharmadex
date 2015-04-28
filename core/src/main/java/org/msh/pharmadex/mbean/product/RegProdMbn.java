@@ -40,12 +40,12 @@ public class RegProdMbn {
     private Product selectedProd;
 
 
-    public List<Product> completeProduct(String query) {
-        List<Product> suggestions = new ArrayList<Product>();
-        for (Product p : globalEntityLists.getRegProducts()) {
+    public List<ProdTable> completeProduct(String query) {
+        List<ProdTable> suggestions = new ArrayList<ProdTable>();
+        for (ProdTable p : globalEntityLists.getRegProducts()) {
             if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
-                    || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query))
-                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
+                    || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
+//                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
                 suggestions.add(p);
         }
         return suggestions;
@@ -56,10 +56,10 @@ public class RegProdMbn {
         if (selectedProd == null)
             return null;
 
-        userSession.setProdApplications(selectedProd.getProdApplications());
-        userSession.setProduct(selectedProd);
+//        userSession.setProdApplications(selectedProd.getProdApplications());
+        userSession.setProdID(selectedProd.getId());
 
-        ProdApplications pa = selectedProd.getProdApplications();
+        ProdApplications pa = prodApplicationsService.findProdApplicationByProduct(selectedProd.getId());
         if (pa != null) {
             processProdBn.setProdApplications(pa);
             return "/internal/processreg.faces";

@@ -53,21 +53,17 @@ public class PurOrderService implements Serializable{
 
     }
 
-    public RetObject findAllSubmittedPo(User loggedInUserObj, boolean companyUser) {
+    public RetObject findAllSubmittedPo(Long userID, Long applcntId, boolean companyUser) {
         RetObject retObject = new RetObject();
         List<PurOrder> pipOrders = null;
-        Long applcntId;
-        Long userId;
 
-        if (loggedInUserObj == null) {
+        if (userID == null) {
             retObject.setMsg("error");
         }
 
         try {
             if (companyUser) {
-                applcntId = (loggedInUserObj.getApplicant() != null ? loggedInUserObj.getApplicant().getApplcntId() : null);
-                userId = loggedInUserObj.getUserId();
-                pipOrders = customPurOrderDAO.findPurOrderByUser(userId, applcntId);
+                pipOrders = customPurOrderDAO.findPurOrderByUser(userID, applcntId);
             } else {
                 pipOrders = customPurOrderDAO.findAllPIPOrder();
             }

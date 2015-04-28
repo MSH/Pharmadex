@@ -9,6 +9,14 @@ public class RetObject {
 
     private Object obj;
 
+    public RetObject() {
+    }
+
+    public RetObject(String msg, Object obj) {
+        this.msg = msg;
+        this.obj = obj;
+    }
+
     public String getMsg() {
         return msg;
     }

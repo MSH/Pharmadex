@@ -139,8 +139,8 @@ public class ReviewBn implements Serializable {
 
         review.setReviewStatus(ReviewStatus.ACCEPTED);
         saveReview();
-        userSession.setProdApplications(review.getProdApplications());
-        userSession.setProduct(review.getProdApplications().getProd());
+        userSession.setProdAppID(review.getProdApplications().getId());
+        userSession.setProdID(review.getProdApplications().getProduct().getId());
         return "/internal/processreg";
     }
 
@@ -152,22 +152,22 @@ public class ReviewBn implements Serializable {
         review.setSubmitDate(new Date());
         review.setReviewStatus(ReviewStatus.SUBMITTED);
         saveReview();
-        userSession.setProdApplications(review.getProdApplications());
-        userSession.setProduct(review.getProdApplications().getProd());
+        userSession.setProdAppID(review.getProdApplications().getId());
+        userSession.setProdID(review.getProdApplications().getProduct().getId());
         return "/internal/processreg";
     }
 
     public String cancelReview() {
-        userSession.setReview(null);
-        userSession.setProdApplications(review.getProdApplications());
-        userSession.setProduct(review.getProdApplications().getProd());
+        userSession.setReviewID(null);
+        userSession.setProdAppID(review.getProdApplications().getId());
+        userSession.setProdID(review.getProdApplications().getProduct().getId());
         return "/internal/processreg";
 
     }
 
     public Review getReview() {
         if (review == null) {
-            review = reviewService.findReview(userSession.getReview());
+            review = reviewService.findReview(userSession.getReviewID());
             reviewChecklists = review.getReviewChecklists();
         }
         return review;

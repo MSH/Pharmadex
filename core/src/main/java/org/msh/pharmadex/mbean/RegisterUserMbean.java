@@ -52,8 +52,8 @@ public class RegisterUserMbean implements Serializable {
 
     @PostConstruct
     private void init() {
-        if (userSession.getLoggedInUserObj() != null)
-            user = userSession.getLoggedInUserObj();
+        if (userSession.getLoggedINUserID() != null)
+            user = userService.findUser(userSession.getLoggedINUserID());
         else {
             user = new User();
             user.getAddress().setCountry(new Country());

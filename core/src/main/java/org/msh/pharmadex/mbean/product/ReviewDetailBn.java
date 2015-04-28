@@ -89,7 +89,7 @@ public class ReviewDetailBn implements Serializable {
 
     public Product getProduct() {
         if(product==null){
-            product = productService.findProduct(userSession.getProduct().getId());
+            product = productService.findProduct(userSession.getProdID());
 
         }
         return product;

@@ -6,11 +6,13 @@ package org.msh.pharmadex.mbean.product;
 
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
+import org.omnifaces.util.Faces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -51,6 +53,7 @@ public class ReviewInfoBn implements Serializable {
     private UploadedFile file;
     private ReviewInfo reviewInfo;
     private Product product;
+    private ProdApplications prodApplications;
     private List<DisplayReviewQ> displayReviewQs;
     private String selID;
     private boolean readOnly = false;
@@ -117,6 +120,7 @@ public class ReviewInfoBn implements Serializable {
         reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
         RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
         reviewInfo = (ReviewInfo) retObject.getObj();
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", reviewInfo.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -131,8 +135,9 @@ public class ReviewInfoBn implements Serializable {
 
         reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
         saveReview();
-        userSession.setProdApplications(reviewInfo.getProdApplications());
-        userSession.setProduct(reviewInfo.getProdApplications().getProd());
+        userSession.setProdAppID(reviewInfo.getProdApplications().getId());
+        userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", reviewInfo.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -162,15 +167,16 @@ public class ReviewInfoBn implements Serializable {
         } else if (retValue.equals("SAVE")) {
             msg = new FacesMessage(bundle.getString("global.success"));
             facesContext.addMessage(null, msg);
+            facesContext.getExternalContext().getFlash().put("prodAppID", reviewInfo.getProdApplications().getId());
             return "processreg";
         }
         return "";
     }
 
     public String cancelReview() {
-        userSession.setReview(null);
-        userSession.setProdApplications(reviewInfo.getProdApplications());
-        userSession.setProduct(reviewInfo.getProdApplications().getProd());
+//        userSession.setReview(null);
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", reviewInfo.getProdApplications().getId());
+        userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
         return "/internal/processreg";
 
     }
@@ -240,7 +246,8 @@ public class ReviewInfoBn implements Serializable {
                     reviewInfo = reviewService.findReviewInfo(reviewInfoId);
                 }
             }
-            product = productService.findProduct(reviewInfo.getProdApplications().getProd().getId());
+            prodApplications = reviewInfo.getProdApplications();
+            product = productService.findProduct(reviewInfo.getProdApplications().getProduct().getId());
             return product;
         }
     }
@@ -276,5 +283,15 @@ public class ReviewInfoBn implements Serializable {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    public ProdApplications getProdApplications() {
+        if(prodApplications==null)
+            getProduct();
+        return prodApplications;
+    }
+
+    public void setProdApplications(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
     }
 }

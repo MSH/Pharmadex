@@ -61,7 +61,7 @@ public class PurOrderListBn implements Serializable {
 
     public List<PurOrder> getPurOrders() {
         if (purOrders == null) {
-            RetObject retObject = purOrderService.findAllSubmittedPo(userSession.getLoggedInUserObj(), userSession.isCompany());
+            RetObject retObject = purOrderService.findAllSubmittedPo(userSession.getLoggedINUserID(), userSession.getApplcantID(), userSession.isCompany());
             purOrders = (List<PurOrder>) retObject.getObj();
         }
         return purOrders;

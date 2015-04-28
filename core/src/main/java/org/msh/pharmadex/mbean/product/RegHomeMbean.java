@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -105,11 +106,8 @@ public class RegHomeMbean implements Serializable {
     @PostConstruct
     private void init() {
         if (prodApplications == null) {
-
-            prodApplications = new ProdApplications();
-            product = new Product(prodApplications);
-            prodApplications.setProd(product);
-            product.setProdApplications(prodApplications);
+            product = new Product();
+            prodApplications = new ProdApplications(product);
 
             //Initialize associated product entities
             product.setDosForm(new DosageForm());
@@ -138,7 +136,7 @@ public class RegHomeMbean implements Serializable {
 
             if (pricing == null) {
                 pricing = new Pricing(new ArrayList<DrugPrice>());
-                prodApplications.setPricing(pricing);
+                product.setPricing(pricing);
             }
 
             //Initialize companies if null
@@ -150,8 +148,8 @@ public class RegHomeMbean implements Serializable {
             //Set logged in user company as the company.
             if (userSession.isCompany()) {
                 applicantUser = userService.findUser(getLoggedInUser().getUserId());
-                product.setApplicant(applicantUser.getApplicant());
-                prodApplications.setUser(applicantUser);
+                prodApplications.setApplicant(applicantUser.getApplicant());
+                prodApplications.setCreatedBy(applicantUser);
             }
 
             prodInn = new ProdInn();
@@ -165,11 +163,11 @@ public class RegHomeMbean implements Serializable {
 //            }
 
 
-            if (userSession.getProdApplications() != null) {
+            if (userSession.getProdAppID() != null) {
                 initProdApps();
             }
 
-            ProdApp prodApp = userSession.getProdApp();
+            ProdAppInit prodApp = userSession.getProdAppInit();
             if (prodApp != null) {
                 prodApplications.setProdAppType(prodApp.getProdAppType());
                 prodApplications.setSra(prodApp.isSRA());
@@ -180,7 +178,7 @@ public class RegHomeMbean implements Serializable {
                 if (prodApplications.getId() == null) {
                     if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
                         prodAppChecklists = new ArrayList<ProdAppChecklist>();
-                        prodApplications.setProdAppChecklists(prodAppChecklists);
+//                        prodApplications.setProdAppChecklists(prodAppChecklists);
                         List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
                         ProdAppChecklist eachProdAppCheck;
                         if (allChecklist != null && allChecklist.size() > 0) {
@@ -191,7 +189,7 @@ public class RegHomeMbean implements Serializable {
                                 prodAppChecklists.add(eachProdAppCheck);
                             }
                         }
-                        prodApplications.setProdAppChecklists(prodAppChecklists);
+//                        prodApplications.setProdAppChecklists(prodAppChecklists);
                     }
                 }
 
@@ -200,9 +198,16 @@ public class RegHomeMbean implements Serializable {
 
     }
 
+    @PreDestroy
+    private void destroyBn(){
+        System.out.println("--------------------------------------");
+        System.out.println("------ReghomeMbean Bean destroyed-----");
+        System.out.println("--------------------------------------");
+    }
+
     public void PDF() throws JRException, IOException {
         context = FacesContext.getCurrentInstance();
-        jasperPrint = reportService.reportinit(product);
+        jasperPrint = reportService.reportinit(prodApplications);
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
         httpServletResponse.setContentType("application/pdf");
@@ -273,17 +278,17 @@ public class RegHomeMbean implements Serializable {
     @Transactional
     public void saveApp() {
         context = FacesContext.getCurrentInstance();
-        product.setApplicant(applicant);
-        prodApplications.setUser(applicantUser);
-        prodApplications.setForeignAppStatus(foreignAppStatuses);
-        prodApplications.setUseCategories(useCategories);
-        product.setProdApplications(prodApplications);
+        prodApplications.setApplicant(applicant);
+        prodApplications.setCreatedBy(applicantUser);
+//        product.setForeignAppStatus(foreignAppStatuses);
+        product.setUseCategories(useCategories);
+        prodApplications.setProduct(product);
         if (product.getId() == null) {
             product.setCreatedBy(getLoggedInUser());
         }
 //        try {
         product = productService.updateProduct(product);
-        prodApplications = product.getProdApplications();
+//        prodApplications = product.getProdApplications();
         setFieldValues();
         context.addMessage(null, new FacesMessage(bundle.getString("app_save_success")));
 //        } catch (Exception e) {
@@ -345,15 +350,15 @@ public class RegHomeMbean implements Serializable {
 
     public String validateApp() {
         context = FacesContext.getCurrentInstance();
-        product.setApplicant(applicant);
-        prodApplications.setUser(applicantUser);
-        prodApplications.setForeignAppStatus(foreignAppStatuses);
-        product.setProdApplications(prodApplications);
+        prodApplications.setApplicant(applicant);
+        prodApplications.setCreatedBy(applicantUser);
+//        prodApplications.setForeignAppStatus(foreignAppStatuses);
+        prodApplications.setProduct(product);
         if (product.getId() == null) {
             product.setCreatedBy(getLoggedInUser());
         }
 
-        RetObject retObject = productService.validateProduct(product);
+        RetObject retObject = productService.validateProduct(prodApplications);
 
         if (retObject.getMsg().equals("persist")) {
             return "/secure/consentform.faces";
@@ -371,7 +376,7 @@ public class RegHomeMbean implements Serializable {
     public String submitApp() {
         context = FacesContext.getCurrentInstance();
 
-        if (!userService.verifyUser(userSession.getLoggedInUserObj(), password)) {
+        if (!userService.verifyUser(userSession.getLoggedINUserID(), password)) {
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
 
         }
@@ -387,9 +392,9 @@ public class RegHomeMbean implements Serializable {
         timeLine.setStatusDate(new Date());
         timeLines.add(timeLine);
 
-        prodApplications.setTimeLines(timeLines);
+//        prodApplications.setTimeLines(timeLines);
         prodApplications.setRegState(RegState.NEW_APPL);
-        product.setRegState(RegState.NEW_APPL);
+        prodApplications.setRegState(RegState.NEW_APPL);
         prodApplications.setSubmitDate(new Date());
 
         saveApp();
@@ -484,9 +489,9 @@ public class RegHomeMbean implements Serializable {
     }
 
     public ProdApplications getProdApplications() {
-        if (prodApplications == null || userSession.getProdApplications() != null) {
+        if (prodApplications == null || userSession.getProdAppID() != null) {
             initProdApps();
-            userSession.setProdApplications(null);
+            userSession.setProdAppID(null);
         }
         return prodApplications;
     }
@@ -494,38 +499,38 @@ public class RegHomeMbean implements Serializable {
     @Transactional
     public void setProdApplications(ProdApplications prodApplications) {
 //        this.prodApplications = prodApplicationsService.findProdApplications(prodApplications.getId());
-        product = productService.findProduct(prodApplications.getProd().getId());
-        this.prodApplications = product.getProdApplications();
+//        product = productService.findProduct(prodApplications.getProd().getId());
+        this.prodApplications = prodApplications;
         setFieldValues();
     }
 
     private void initProdApps() {
-        String prodID = "" + userSession.getProdApplications().getProd().getId();
-        userSession.setProduct(null);
-        userSession.setProdApplications(null);
+        String prodID = "" + userSession.getProdID();
+        userSession.setProdID(null);
+        userSession.setProdAppID(null);
         product = productService.findProduct(Long.valueOf(prodID));
         setFieldValues();
     }
 
     //used to set all the field values after insert/update operation
     private void setFieldValues() {
-        prodApplications = product.getProdApplications();
+//        prodApplications = product.getProdApplications();
         selectedInns = product.getInns();
         selectedExipients = product.getExcipients();
         selectedAtcs = product.getAtcs();
         companies = product.getProdCompanies();
-        prodAppChecklists = prodApplications.getProdAppChecklists();
-        applicant = product.getApplicant();
-        applicantUser = prodApplications.getUser();
-        drugPrices = prodApplications.getPricing().getDrugPrices();
-        foreignAppStatuses = prodApplications.getForeignAppStatus();
-        useCategories = prodApplications.getUseCategories();
+//        prodAppChecklists = prodApplications.getProdAppChecklists();
+//        applicant = product.getApplicant();
+//        applicantUser = prodApplications.getUser();
+        drugPrices = product.getPricing().getDrugPrices();
+//        foreignAppStatuses = prodApplications.getForeignAppStatus();
+//        useCategories = prodApplications.getUseCategories();
     }
 
     public Applicant getApplicant() {
         if (applicant == null || applicant.getApplcntId() == null) {
-            if (product != null && product.getApplicant() != null && product.getApplicant().getApplcntId() != null) {
-                applicant = applicantService.findApplicant(product.getApplicant().getApplcntId());
+            if (prodApplications != null && prodApplications.getApplicant() != null && prodApplications.getApplicant().getApplcntId() != null) {
+                applicant = applicantService.findApplicant(prodApplications.getApplicant().getApplcntId());
             } else if (getLoggedInUser().getApplicant() != null) {
                 applicant = applicantService.findApplicant(getLoggedInUser().getApplicant().getApplcntId());
             } else
@@ -610,7 +615,7 @@ public class RegHomeMbean implements Serializable {
 
     public User getLoggedInUser() {
         if (loggedInUser == null)
-            loggedInUser = userSession.getLoggedInUserObj();
+            loggedInUser = userService.findUser(userSession.getLoggedINUserID());
         return loggedInUser;
     }
 
@@ -676,7 +681,7 @@ public class RegHomeMbean implements Serializable {
         }
         app.setStart(event.getStartDate());
         app.setEnd(event.getEndDate());
-        app.setTile(prodApplications.getProd().getApplicant().getAppName() + "-" + prodApplications.getProd().getProdName());
+        app.setTile(prodApplications.getApplicant().getAppName() + "-" + prodApplications.getProduct().getProdName());
         setAppointment();
         prodApplications.setAppointment(app);
         event = new DefaultScheduleEvent();
@@ -708,7 +713,7 @@ public class RegHomeMbean implements Serializable {
 
     public List<DrugPrice> getDrugPrices() {
         if (drugPrices == null)
-            drugPrices = getProduct().getProdApplications().getPricing().getDrugPrices();
+            drugPrices = getProduct().getPricing().getDrugPrices();
         return drugPrices;
     }
 

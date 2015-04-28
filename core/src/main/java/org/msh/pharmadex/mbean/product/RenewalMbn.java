@@ -43,9 +43,7 @@ public class RenewalMbn implements Serializable {
     private Reminder reminder;
 
     public Product getSelProd() {
-        Product p = selProApp.getProd();
-        p.setProdApplications(selProApp);
-        return selProApp.getProd();
+        return getSelProductApp()!=null?selProApp.getProduct():null;
     }
 
     public void setSelProd(Product selProd) {
@@ -70,7 +68,7 @@ public class RenewalMbn implements Serializable {
         if (invoices == null)
             invoices = new ArrayList<Invoice>();
         invoices.add(invoice);
-        selProApp.setInvoices(invoices);
+//        selProApp.setInvoices(invoices);
         processProdBn.setInvoices(invoices);
 
         invoiceService.createInvoice(invoice, selProApp);
@@ -83,7 +81,7 @@ public class RenewalMbn implements Serializable {
         String result = null;
         context = FacesContext.getCurrentInstance();
         try {
-            result = invoiceService.sendReminder(getSelProductApp(), userSession.getLoggedInUserObj(), invoice);
+            result = invoiceService.sendReminder(getSelProductApp(), userSession.getLoggedINUserID(), invoice);
             if (result.equalsIgnoreCase("reminder_sent")) {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("reminder_sent")));
             } else if (result.equalsIgnoreCase("no_invoice")) {
@@ -162,10 +160,12 @@ public class RenewalMbn implements Serializable {
     }
 
     public String preparePayment() {
-        List<Invoice> invoices = invoiceService.findInvoicesByProdApp(getSelProductApp().getId());
-        for (Invoice i : invoices) {
-            setInvoice(i);
-            setPayment(i.getPayment());
+        if(getSelProductApp()!=null) {
+            List<Invoice> invoices = invoiceService.findInvoicesByProdApp(getSelProductApp().getId());
+            for (Invoice i : invoices) {
+                setInvoice(i);
+                setPayment(i.getPayment());
+            }
         }
         return "";
     }

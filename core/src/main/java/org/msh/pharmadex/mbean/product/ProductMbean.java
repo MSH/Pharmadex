@@ -1,11 +1,12 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ProductService;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,31 +20,38 @@ public class ProductMbean implements Serializable {
 
     @ManagedProperty(value = "#{productService}")
     private ProductService productService;
-    private List<Product> products;
-    private List<Product> filteredProducts;
+    private List<ProdTable> products;
+    private List<ProdTable> filteredProducts;
 
+    public String sentToDetail(Long id) {
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("prodAppID", id);
+        return "/internal/processreg?faces-redirect=true";
+    }
 
-    public List<Product> getProducts() {
+    public List<ProdTable> getProducts() {
         if (products == null)
             products = productService.findAllRegisteredProduct();
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<ProdTable> products) {
         this.products = products;
     }
 
-    public List<Product> getFilteredProducts() {
+    public List<ProdTable> getFilteredProducts() {
         return filteredProducts;
     }
 
-    public void setFilteredProducts(List<Product> filteredProducts) {
+    public void setFilteredProducts(List<ProdTable> filteredProducts) {
         this.filteredProducts = filteredProducts;
     }
 
-    public String goToDetails(Product prod) {
-        System.out.println("Product == " + prod.getProdName() + " ID ==" + prod.getId());
-        return "productdetail";  //To change body of created methods use File | Settings | File Templates.
+    public String goToDetails(Long id) {
+        System.out.println("Product ID ==" + id);
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("prodAppID", id);
+        return "productdetail";
     }
 
     public ProductService getProductService() {

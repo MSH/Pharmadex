@@ -3,12 +3,12 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.AtcDAO;
+import org.msh.pharmadex.dao.iface.DrugPriceDAO;
 import org.msh.pharmadex.dao.iface.InnDAO;
-import org.msh.pharmadex.domain.Atc;
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.ProdCompany;
-import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.dao.iface.PricingDAO;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.CompanyType;
+import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +41,14 @@ public class ProductService implements Serializable {
     @Autowired
     private ProdApplicationsService prodApplicationsService;
 
-    public List<Product> findAllRegisteredProduct() {
+    public List<ProdTable> findAllRegisteredProduct() {
         return productDAO.findRegProducts();
     }
 
     @Transactional
     public Product updateProduct(Product prod) {
-        prod.setApplicant(applicantDAO.findApplicant(prod.getApplicant().getApplcntId()));
-        prod.getProdApplications().setUser(userService.findUser(prod.getProdApplications().getUser().getUserId()));
+//        prod.getProdApplications().setApplicant(applicantDAO.findApplicant(prod.getApplicant().getApplcntId()));
+//        prod.getProdApplications().setUser(userService.findUser(prod.getProdApplications().getUser().getUserId()));
         return productDAO.updateProduct(prod);
     }
 
@@ -74,12 +74,13 @@ public class ProductService implements Serializable {
         return prod;
     }
 
-    public RetObject validateProduct(Product product) {
+    public RetObject validateProduct(ProdApplications prodApplications) {
         RetObject retObject = new RetObject();
         List<String> issues = new ArrayList<String>();
+        Product product = prodApplications.getProduct();
         try {
             boolean issue = false;
-            if (product.getApplicant() == null) {
+            if (prodApplications.getApplicant() == null) {
                 issues.add("no_applicant");
                 issue = true;
             }
@@ -111,23 +112,23 @@ public class ProductService implements Serializable {
                 }
 
             }
-            if (product.getProdApplications().getPrescreenBankName().equalsIgnoreCase("") || product.getProdApplications().getPrescreenfeeSubmittedDt().equals(null)) {
+            if (prodApplications.getBankName().equalsIgnoreCase("") || prodApplications.getFeeSubmittedDt()==null) {
                 issues.add("no_fee");
                 issue = true;
             }
-            List<ProdAppChecklist> prodAppChkLst = product.getProdApplications().getProdAppChecklists();
-            if (prodAppChkLst != null) {
-                for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {
-                    if (prodAppChecklist.getChecklist().isHeader()&&!prodAppChecklist.isValue()) {
-                        issues.add("checklist_incomplete");
-                        issue = true;
-                        break;
-                    }
-                }
-            } else {
-                issues.add("checklist_incomplete");
-                issue = true;
-            }
+//            List<ProdAppChecklist> prodAppChkLst = prodApplications.getProdAppChecklists();
+//            if (prodAppChkLst != null) {
+//                for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {
+//                    if (prodAppChecklist.getChecklist().isHeader()&&!prodAppChecklist.isValue()) {
+//                        issues.add("checklist_incomplete");
+//                        issue = true;
+//                        break;
+//                    }
+//                }
+//            } else {
+//                issues.add("checklist_incomplete");
+//                issue = true;
+//            }
 
             if (issue) {
                 retObject.setObj(issues);
@@ -148,5 +149,30 @@ public class ProductService implements Serializable {
         }
 
 
+    }
+
+    @Autowired
+    private PricingDAO pricingDAO;
+    public RetObject findDrugPriceByProd(Long prodID) {
+        RetObject retObject;
+
+        try {
+            retObject = new RetObject("persist", pricingDAO.findByProduct_Id(prodID));
+        }catch(Exception ex){
+            ex.printStackTrace();
+            retObject = new RetObject(ex.getMessage(), null);
+        }
+        return retObject;
+    }
+
+    @Autowired
+    private DrugPriceDAO drugPriceDAO;
+    public DrugPrice saveDrugPrice(DrugPrice selectedDrugPrice) {
+         return drugPriceDAO.save(selectedDrugPrice);
+
+    }
+
+    public Pricing savePricing(Pricing pricing) {
+        return pricingDAO.save(pricing);
     }
 }

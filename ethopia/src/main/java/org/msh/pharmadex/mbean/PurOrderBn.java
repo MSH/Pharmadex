@@ -3,9 +3,11 @@ package org.msh.pharmadex.mbean;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.PurOrderService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -41,6 +43,8 @@ public class PurOrderBn implements Serializable {
     private PurOrderService purOrderService;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
     @ManagedProperty(value = "#{productService}")
@@ -57,7 +61,7 @@ public class PurOrderBn implements Serializable {
     private void init() {
         purOrder = new PurOrder();
         if (userSession.isCompany()) {
-            applicantUser = userSession.getLoggedInUserObj();
+            applicantUser = userService.findUser(userSession.getLoggedINUserID());
             applicant = applicantUser.getApplicant();
             purOrder.setCreatedBy(applicantUser);
             purOrder.setApplicantUser(applicantUser);
@@ -74,12 +78,12 @@ public class PurOrderBn implements Serializable {
         }
     }
 
-    public List<Product> completeProduct(String query) {
-        List<Product> suggestions = new ArrayList<Product>();
-        for (Product p : globalEntityLists.getRegProducts()) {
+    public List<ProdTable> completeProduct(String query) {
+        List<ProdTable> suggestions = new ArrayList<ProdTable>();
+        for (ProdTable p : globalEntityLists.getRegProducts()) {
             if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
-                    || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query))
-                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
+                    || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
+//                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
                 suggestions.add(p);
         }
         return suggestions;
@@ -109,7 +113,7 @@ public class PurOrderBn implements Serializable {
         purProd.setCreatedDate(new Date());
         purProd.setProductDesc(purProd.getProduct().getProdDesc());
         purProd.setProductName(purProd.getProduct().getProdName());
-        purProd.setProductNo(purProd.getProduct().getRegNo());
+//        purProd.setProductNo(purProd.getProduct().getRegNo());
         purProds.add(purProd);
 
 
@@ -134,7 +138,7 @@ public class PurOrderBn implements Serializable {
 
         context = FacesContext.getCurrentInstance();
         purOrder.setSubmitDate(new Date());
-        purOrder.setCreatedBy(userSession.getLoggedInUserObj());
+        purOrder.setCreatedBy(applicantUser);
         purOrder.setState(AmdmtState.NEW_APPLICATION);
         purOrder.setPurOrderChecklists(purOrderChecklists);
         purOrder.setPurProds(purProds);
@@ -143,7 +147,7 @@ public class PurOrderBn implements Serializable {
 
 
         if (userSession.isCompany())
-            purOrder.setApplicant(userSession.getApplicant());
+            purOrder.setApplicant(purOrder.getApplicant());
 
         RetObject retValue = purOrderService.saveOrder(purOrder);
         if (retValue.getMsg().equals("persist")) {
@@ -298,5 +302,13 @@ public class PurOrderBn implements Serializable {
 
     public void setProductService(ProductService productService) {
         this.productService = productService;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }
