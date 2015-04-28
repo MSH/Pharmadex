@@ -8,6 +8,7 @@ import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.AmdmtType;
 import org.msh.pharmadex.service.AmdmtService;
+import org.msh.pharmadex.service.UserService;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -33,6 +34,9 @@ public class AmendmentMbn implements Serializable {
 
     @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
+
+    @ManagedProperty(value = "#{userService}")
+    UserService userService;
 
     private ProdApplications selProApp;
 
@@ -79,7 +83,7 @@ public class AmendmentMbn implements Serializable {
             prodAppAmdmt.setApproved(false);
             prodAppAmdmt.setProdApplications(processProdBn.getProdApplications());
             prodAppAmdmt.setCreatedDate(new Date());
-            prodAppAmdmt.setSubmittedBy(userSession.getLoggedInUserObj());
+            prodAppAmdmt.setSubmittedBy(userService.findUser(userSession.getLoggedINUserID()));
             prodAppAmdmts.add(prodAppAmdmt);
         }
         return "/secure/amdmtdetails.faces";
@@ -94,7 +98,7 @@ public class AmendmentMbn implements Serializable {
     }
 
     public Product getSelProd() {
-        return selProApp.getProd();
+        return selProApp.getProduct();
     }
 
     public void setSelProd(Product selProd) {
@@ -174,5 +178,13 @@ public class AmendmentMbn implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

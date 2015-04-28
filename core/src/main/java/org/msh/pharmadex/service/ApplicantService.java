@@ -1,11 +1,13 @@
 package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.ApplicantDAO;
+import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.ApplicantTypeDAO;
 import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.service.converter.ApplicantConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -37,7 +40,7 @@ public class ApplicantService implements Serializable {
     ApplicantTypeDAO applicantTypeDAO;
 
     @Autowired
-    ProductDAO productDAO;
+    ProdApplicationsDAO prodApplicationsDAO;
 
     @Autowired
     RoleDAO roleDAO;
@@ -150,8 +153,12 @@ public class ApplicantService implements Serializable {
     }
 
     @Transactional
-    public List<Product> findRegProductForApplicant(Long appID) {
-        return productDAO.findRegProductByApp(appID);
+    public List<ProdApplications> findRegProductForApplicant(Long appID) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("appID", appID);
+        params.put("regState", RegState.REGISTERED);
+        List<ProdApplications> prodApps = prodApplicationsDAO.getProdAppByParams(params);
+        return prodApps;
     }
 
 

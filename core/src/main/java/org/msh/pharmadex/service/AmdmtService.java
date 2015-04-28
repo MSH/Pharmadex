@@ -30,6 +30,9 @@ public class AmdmtService implements Serializable {
     @Autowired
     private AmdmtDAO amdmtDAO;
 
+    @Autowired
+    private UserService userService;
+
     public List<AmdmtCategory> findAmdmtCategoryByType(AmdmtType amdmtType) {
 
         return (List<AmdmtCategory>) amdmtCategoryDAO.findByAmdmtType(amdmtType);
@@ -58,8 +61,9 @@ public class AmdmtService implements Serializable {
         return amdmtDAO.findByAmdmtState(AmdmtState.NEW_APPLICATION);
     }
 
-    public String saveAmdmt(ProdAppAmdmt prodAppAmdmt) {
+    public String saveAmdmt(ProdAppAmdmt prodAppAmdmt, Long loggedINUserID) {
         try {
+            prodAppAmdmt.setApprovedBy(userService.findUser(loggedINUserID));
             prodAppAmdmtDAO.saveAndFlush(prodAppAmdmt);
             return "persisted";
         } catch (Exception ex) {

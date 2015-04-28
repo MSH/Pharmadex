@@ -30,8 +30,8 @@ public class CompanyMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(CompanyMBean.class);
     private static final long serialVersionUID = 4226719621949851455L;
 
-    @ManagedProperty(value = "#{regHomeMbean}")
-    RegHomeMbean regHomeMbean;
+    @ManagedProperty(value = "#{prodRegAppMbean}")
+    ProdRegAppMbean prodRegAppMbean;
 
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
@@ -50,21 +50,22 @@ public class CompanyMBean implements Serializable {
     private boolean showGMP = false;
 
     @Transactional
-    public void addCompany() {
+    public String addCompany() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            List<ProdCompany> prodCompanies = companyService.addCompany(regHomeMbean.getProduct(), selectedCompany, companyTypes);
+            List<ProdCompany> prodCompanies = companyService.addCompany(prodRegAppMbean.getProduct(), selectedCompany, companyTypes);
             if (prodCompanies == null) {
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_value_req")));
             } else {
-                regHomeMbean.setCompanies(prodCompanies);
+                prodRegAppMbean.setCompanies(prodCompanies);
             }
-            regHomeMbean.setShowCompany(false);
+//            prodRegAppMbean.setShowCompany(false);
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("company_add_success")));
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), e.getMessage()));
         }
+        return null;
     }
 
     public void gmpChangeListener() {
@@ -95,14 +96,14 @@ public class CompanyMBean implements Serializable {
 
     public void initAddCompany() {
         selectedCompany = new Company();
-        regHomeMbean.setShowCompany(true);
+//        regHomeMbean.setShowCompany(true);
     }
 
 
     public String cancelAdd() {
 
         selectedCompany = null;
-        regHomeMbean.setShowCompany(false);
+//        regHomeMbean.setShowCompany(false);
         return null;
     }
 
@@ -136,14 +137,6 @@ public class CompanyMBean implements Serializable {
         this.showGMP = showGMP;
     }
 
-    public RegHomeMbean getRegHomeMbean() {
-        return regHomeMbean;
-    }
-
-    public void setRegHomeMbean(RegHomeMbean regHomeMbean) {
-        this.regHomeMbean = regHomeMbean;
-    }
-
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;
     }
@@ -166,5 +159,13 @@ public class CompanyMBean implements Serializable {
 
     public void setCompanyService(CompanyService companyService) {
         this.companyService = companyService;
+    }
+
+    public ProdRegAppMbean getProdRegAppMbean() {
+        return prodRegAppMbean;
+    }
+
+    public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
+        this.prodRegAppMbean = prodRegAppMbean;
     }
 }

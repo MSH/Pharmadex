@@ -5,9 +5,6 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.service.AmdmtService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -52,10 +49,10 @@ public class AmdmtProcessMBean implements Serializable {
         else if (currState.equals(AmdmtState.REVIEW)) {
             prodAppAmdmt.setAmdmtState(AmdmtState.APPROVED);
             prodAppAmdmt.setApproved(true);
-            prodAppAmdmt.setApprovedBy(userSession.getLoggedInUserObj());
+//            prodAppAmdmt.setApprovedBy(userSession.getLoggedINUserID());
         }
 
-        String result = amdmtService.saveAmdmt(prodAppAmdmt);
+        String result = amdmtService.saveAmdmt(prodAppAmdmt, userSession.getLoggedINUserID());
         prodApplicationses = null;
         facesContext = FacesContext.getCurrentInstance();
         if (result.equalsIgnoreCase("persisted"))
@@ -66,7 +63,7 @@ public class AmdmtProcessMBean implements Serializable {
     }
 
     public String saveAmdmt() {
-        amdmtService.saveAmdmt(prodAppAmdmt);
+        amdmtService.saveAmdmt(prodAppAmdmt, userSession.getLoggedINUserID());
         return "";
     }
 

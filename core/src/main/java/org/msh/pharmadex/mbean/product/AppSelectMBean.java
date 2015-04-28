@@ -10,8 +10,9 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -31,8 +32,8 @@ import java.util.ResourceBundle;
 public class AppSelectMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(AppSelectMBean.class);
 
-    @ManagedProperty(value = "#{regHomeMbean}")
-    RegHomeMbean regHomeMbean;
+    @ManagedProperty(value = "#{prodRegAppMbean}")
+    ProdRegAppMbean prodRegAppMbean;
 
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
@@ -58,7 +59,16 @@ public class AppSelectMBean implements Serializable {
     private List<UserDTO> users;
     private UserDTO selectedUser;
 
-    @Transactional
+    @PostConstruct
+    public void init(){
+        System.out.println("Initialize AppSelectMBean");
+    }
+
+    @PreDestroy
+    public void destroy(){
+        System.out.println("Destroy bean");
+    }
+
     public void gmpChangeListener() {
 //        if (selectedCompany.isGmpInsp())
 //            showGMP = true;
@@ -119,12 +129,14 @@ public class AppSelectMBean implements Serializable {
 
     }
 
-    @Transactional
-    public void addApptoRegistration() {
+    public String addApptoRegistration() {
         selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
         applicantUser = userService.findUser(selectedUser.getUserId());
-        regHomeMbean.setApplicant(selectedApplicant);
-        regHomeMbean.setApplicantUser(applicantUser);
+        prodRegAppMbean.setApplicant(selectedApplicant);
+        prodRegAppMbean.setApplicantUser(applicantUser);
+        prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
+        prodRegAppMbean.getProdApplications().setApplicant(selectedApplicant);
+        return "";
     }
 
     public void cancelAddApplicant() {
@@ -194,14 +206,6 @@ public class AppSelectMBean implements Serializable {
         this.selectedUser = selectedUser;
     }
 
-    public RegHomeMbean getRegHomeMbean() {
-        return regHomeMbean;
-    }
-
-    public void setRegHomeMbean(RegHomeMbean regHomeMbean) {
-        this.regHomeMbean = regHomeMbean;
-    }
-
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;
     }
@@ -232,5 +236,13 @@ public class AppSelectMBean implements Serializable {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public ProdRegAppMbean getProdRegAppMbean() {
+        return prodRegAppMbean;
+    }
+
+    public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
+        this.prodRegAppMbean = prodRegAppMbean;
     }
 }

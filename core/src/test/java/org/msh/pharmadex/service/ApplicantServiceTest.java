@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -44,11 +45,11 @@ public class ApplicantServiceTest {
     public void testFindProductByApp() throws Exception {
         Assert.assertEquals(true, true);
 
-        List<Product> products = applicantService.findRegProductForApplicant(new Long(22));
+        List<ProdApplications> products = applicantService.findRegProductForApplicant(new Long(22));
         System.out.println("products === " + products.size());
-        for (Product p : products) {
+        for (ProdApplications p : products) {
             System.out.println("------------------");
-            System.out.println("Product name == " + p.getProdName());
+            System.out.println("Product name == " + p.getProduct().getProdName());
         }
         Assert.assertNotNull(products);
 

@@ -64,7 +64,8 @@
         <p:inputText id="gmpCertNo" value="#{companydata.gmpCertNo}"/>
 
         <p:outputLabel value="#{msgs.gmp_cert_date}" styleClass="label" for="gmpCertDt"/>
-        <p:calendar value="#{companydata.gmpInspDate}" id="gmpCertDt" showOn="button"/>
+        <p:calendar value="#{companydata.gmpInspDate}" id="gmpCertDt" showOn="button"
+                    pattern="#{userAccessMBean.workspace.datePattern}"/>
     </h:panelGrid>
 
 

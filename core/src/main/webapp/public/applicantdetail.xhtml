@@ -50,52 +50,50 @@
                     </p:panel>
 
                     <p:panel header="#{msgs.product_list}">
-                        <p:dataTable id="products" var="product" value="#{applicantHome.products}">
-                            <p:column sortBy="#{product.prodName}">
+                        <p:dataTable id="products" var="prodApps" value="#{applicantHome.prodApplicationses}">
+                            <p:column sortBy="#{prodApps.product.prodName}">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.prodName}"/>
                                 </f:facet>
-                                <p:commandLink id="viewLink" value="#{product.prodName}" action="productdetail"
+                                <p:commandLink id="viewLink" value="#{prodApps.product.prodName}" action="#{applicantHome.sentToDetail(prodApps.id)}"
                                                ajax="false">
-                                    <f:param name = "id" value="#{product.id}"/>
-                                    <f:param name="applicantID" value="#{applicantHome.applicant.applcntId}"/>
                                 </p:commandLink>
                             </p:column>
 
-                            <p:column sortBy="#{product.genName}">
+                            <p:column sortBy="#{prodApps.product.genName}">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.prodgenname}"/>
                                 </f:facet>
-                                <h:outputText value="#{product.genName}"/>
+                                <h:outputText value="#{prodApps.product.genName}"/>
                             </p:column>
 
-                            <p:column sortBy="#{product.dosForm.dosForm}">
+                            <p:column sortBy="#{prodApps.product.dosForm.dosForm}">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.dos_form}"/>
                                 </f:facet>
-                                <h:outputText value="#{product.dosForm.dosForm}"/>
+                                <h:outputText value="#{prodApps.product.dosForm.dosForm}"/>
                             </p:column>
 
-                            <p:column sortBy="#{product.dosStrength}">
+                            <p:column sortBy="#{prodApps.product.dosStrength}">
                                 <f:facet name="header">
                                     <h:outputText value="Dosage Strength"/>
                                 </f:facet>
-                                <h:outputText value="#{product.dosStrength}"/>
+                                <h:outputText value="#{prodApps.product.dosStrength}"/>
                             </p:column>
 
-                            <p:column sortBy="#{product.applicant.appName}">
+                            <p:column sortBy="#{prodApps.applicant.appName}">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.registration_applicant}"/>
                                 </f:facet>
-                                <h:outputText value="#{product.applicant.appName}"/>
+                                <h:outputText value="#{prodApps.applicant.appName}"/>
                             </p:column>
 
-                            <p:column sortBy="#{product.prodApplications.registrationDate}">
+                            <p:column sortBy="#{prodApps.registrationDate}">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.registration_date}"/>
                                 </f:facet>
                                 <h:outputLabel converter="javax.faces.DateTime"
-                                               value="#{product.prodApplications.registrationDate}"/>
+                                               value="#{prodApps.registrationDate}"/>
                             </p:column>
                         </p:dataTable>
                     </p:panel>

@@ -41,9 +41,6 @@ public class Company extends CreationDetail implements Serializable {
     @Column(length = 255, unique = true)
     private String siteNumber;
 
-    @OneToMany(mappedBy = "company", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    private List<ProdCompany> prodCompanies;
-
     private boolean gmpInsp;
 
     @Column(name = "gmp_insp_date")
@@ -114,14 +111,6 @@ public class Company extends CreationDetail implements Serializable {
 
     public void setGmpInsp(boolean gmpInsp) {
         this.gmpInsp = gmpInsp;
-    }
-
-    public List<ProdCompany> getProdCompanies() {
-        return prodCompanies;
-    }
-
-    public void setProdCompanies(List<ProdCompany> prodCompanies) {
-        this.prodCompanies = prodCompanies;
     }
 
     public String getSiteNumber() {

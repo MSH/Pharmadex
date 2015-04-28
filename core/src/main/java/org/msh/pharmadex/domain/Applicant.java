@@ -71,9 +71,6 @@ public class Applicant extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "applicant", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private List<User> users;
 
-    @OneToMany(mappedBy = "applicant", cascade = {CascadeType.ALL})
-    private List<Product> products;
-
     public Long getApplcntId() {
         return applcntId;
     }
@@ -88,15 +85,6 @@ public class Applicant extends CreationDetail implements Serializable {
 
     public void setAppName(String appName) {
         this.appName = appName;
-    }
-
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 
     public String getContactName() {

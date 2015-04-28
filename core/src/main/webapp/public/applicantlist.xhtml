@@ -25,9 +25,8 @@
                     </f:facet>
 
 
-                    <p:commandLink id="viewLink" value="#{licHolder.appName}" action="applicantdetail.faces"
+                    <p:commandLink id="viewLink" value="#{licHolder.appName}" action="#{applicantMBean.sentToDetail(licHolder.applcntId)}"
                                    ajax="false">
-                        <f:param name="applicantID" value="#{licHolder.applcntId}"/>
                     </p:commandLink>
                 </p:column>
 

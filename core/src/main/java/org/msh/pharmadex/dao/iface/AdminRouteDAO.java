@@ -13,7 +13,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface AdminRouteDAO extends JpaRepository<AdminRoute, Long> {
+public interface AdminRouteDAO extends JpaRepository<AdminRoute, Integer> {
 
 
 }

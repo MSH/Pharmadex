@@ -19,9 +19,9 @@ public class Address implements Serializable{
    	@Column(length = 500)
    	private String zipcode;
 
-    @OneToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name="CNTRY_ID")
-   	private Country country = new Country();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CNTRY_ID")
+   	private Country country;
 
     public String getAddress1() {
         return address1;

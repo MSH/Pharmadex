@@ -1,13 +1,16 @@
 package org.msh.pharmadex.mbean.applicant;
 
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ApplicantService;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +19,7 @@ import java.util.Map;
  * Author: usrivastava
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ApplicantHome implements Serializable {
 
     @ManagedProperty(value = "#{applicantService}")
@@ -24,23 +27,30 @@ public class ApplicantHome implements Serializable {
 
     private Applicant applicant;
 
-    private List<Product> products;
+    private List<ProdApplications> prodApplicationses;
 
-    public List<Product> getProducts() {
-        if (products == null)
-            products = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
-        return products;
+    public String sentToDetail(Long id) {
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("prodAppID", id);
+        return "productdetail";
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public List<ProdApplications> getProdApplicationses() {
+        if (prodApplicationses == null&&getApplicant()!=null)
+            prodApplicationses = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
+
+        return prodApplicationses;
+    }
+
+    public void setProdApplicationses(List<ProdApplications> prodApplicationses) {
+        this.prodApplicationses = prodApplicationses;
     }
 
     public Applicant getApplicant() {
         if (applicant == null) {
-            Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-            String applicantID = params.get("applicantID");
-            applicant = applicantService.findApplicant(Long.valueOf(applicantID));
+            Long applicantID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("appID");
+            if(applicantID!=null)
+                applicant = applicantService.findApplicant(applicantID);
         }
 
         return applicant;

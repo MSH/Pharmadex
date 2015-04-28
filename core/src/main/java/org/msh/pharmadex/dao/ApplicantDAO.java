@@ -34,7 +34,7 @@ public class ApplicantDAO implements Serializable {
 
     @Transactional
     public Applicant findApplicant(long id) {
-        Applicant applicant = (Applicant) entityManager.createQuery("select a from Applicant a left join fetch a.applicantType apptype left join fetch a.address.country c left join fetch a.users u where a.applcntId = :id ")
+        Applicant applicant = (Applicant) entityManager.createQuery("select a from Applicant a fetch all properties where a.applcntId = :id ")
                 .setParameter("id", id)
                 .getSingleResult();
 

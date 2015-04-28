@@ -18,6 +18,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,11 +57,10 @@ public class ApplicantMBean implements Serializable {
     private void init() {
         selectedApplicant = new Applicant();
         if (userSession.isGeneral()||userSession.isCompany()) {
-            user = userSession.getLoggedInUserObj();
+            user = userService.findUser(userSession.getLoggedINUserID());
             selectedApplicant.getAddress().setCountry(user.getAddress().getCountry());
             selectedApplicant.setContactName(user != null ? user.getName() : null);
             selectedApplicant.setEmail(user != null ? user.getEmail() : null);
-            user = userSession.getLoggedInUserObj();
 
         }
     }
@@ -69,6 +69,12 @@ public class ApplicantMBean implements Serializable {
         setShowAdd(true);
         facesContext = FacesContext.getCurrentInstance();
         facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), "Selected " + selectedApplicant.getAppName()));
+    }
+
+    public String sentToDetail(Long id) {
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("appID", id);
+        return "applicantdetail";
     }
 
     public void initNewUser() {
@@ -91,8 +97,9 @@ public class ApplicantMBean implements Serializable {
             if (selectedApplicant != null) {
                 user.setApplicant(selectedApplicant);
                 if (userSession.isCompany()) {
-                    userSession.getLoggedInUserObj().setApplicant(selectedApplicant);
+                    userSession.setApplcantID(selectedApplicant.getApplcntId());
                     userSession.setDisplayAppReg(false);
+                    userSession.setApplcantID(selectedApplicant.getApplcntId());
                 }
                 selectedApplicant = new Applicant();
                 setShowAdd(false);

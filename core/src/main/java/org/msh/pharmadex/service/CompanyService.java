@@ -2,8 +2,8 @@ package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.iface.CompanyDAO;
 import org.msh.pharmadex.dao.iface.ProdCompanyDAO;
+import org.msh.pharmadex.domain.Address;
 import org.msh.pharmadex.domain.Company;
-import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.CompanyType;
@@ -55,40 +55,29 @@ public class CompanyService implements Serializable {
 
         if (selectedCompany == null)
             return null;
-
-        List<ProdCompany> prodCompanies;
-        List<ProdCompany> companyProds;
-        Country c = selectedCompany.getAddress().getCountry();
-        c = countryService.findCountryById(c.getId());
-        selectedCompany.getAddress().setCountry(c);
-
-        if (prod.getProdCompanies() == null) {
-            prod.setProdCompanies(new ArrayList<ProdCompany>());
+        Address address = selectedCompany.getAddress();
+        if (address != null && address.getCountry() != null) {
+            selectedCompany.getAddress().setCountry(countryService.findCountryById(address.getCountry().getId()));
         }
-        prodCompanies = prod.getProdCompanies();
+        List<ProdCompany> prodCompanies = prod.getProdCompanies();
 
-        if (selectedCompany.getProdCompanies() == null) {
-            selectedCompany.setProdCompanies(new ArrayList<ProdCompany>());
-        } else {
+        if (prodCompanies == null) {
+            prodCompanies = new ArrayList<ProdCompany>();
+        }
+
+        if(selectedCompany.getId()!=null)
             selectedCompany = findCompanyById(selectedCompany.getId());
+        else {
+            selectedCompany = saveCompany(selectedCompany);
+            globalEntityLists.setManufacturers(null);
         }
-
-        companyProds = selectedCompany.getProdCompanies();
-
 
         for (String ct : companyTypes) {
             ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
             prodCompanies.add(prodCompany);
-            companyProds.add(prodCompany);
         }
 
-
-        if (selectedCompany.getId() == null) {
-            selectedCompany = saveCompany(selectedCompany);
-            globalEntityLists.setManufacturers(null);
-        } else {
-            selectedCompany = findCompanyById(selectedCompany.getId());
-        }
+        prodCompanies = prodCompanyDAO.save(prodCompanies);
         return prodCompanies;
     }
 
@@ -105,5 +94,9 @@ public class CompanyService implements Serializable {
     public String removeProdCompany(ProdCompany selectedCompany) {
         prodCompanyDAO.delete(selectedCompany);
         return "removed";
+    }
+
+    public List<ProdCompany> findCompanyByProdID(Long prodID) {
+        return prodCompanyDAO.findByProduct_Id(prodID);
     }
 }
