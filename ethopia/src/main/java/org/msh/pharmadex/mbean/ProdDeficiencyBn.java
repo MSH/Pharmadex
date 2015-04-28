@@ -9,9 +9,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProcessProdBn;
 import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.UserService;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -38,6 +40,9 @@ public class ProdDeficiencyBn implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
 
@@ -59,8 +64,9 @@ public class ProdDeficiencyBn implements Serializable {
     }
 
     public void PDF() throws JRException, IOException {
+        User user = userService.findUser(userSession.getLoggedINUserID());
         context = FacesContext.getCurrentInstance();
-        jasperPrint = reportService.generateDeficiency(prodAppChecklists, summary, userSession.getLoggedInUserObj());
+        jasperPrint = reportService.generateDeficiency(prodAppChecklists, summary);
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
         httpServletResponse.setContentType("application/pdf");
@@ -73,7 +79,7 @@ public class ProdDeficiencyBn implements Serializable {
         TimeLine timeLine = new TimeLine();
         timeLine.setRegState(RegState.FOLLOW_UP);
         timeLine.setStatusDate(new Date());
-        timeLine.setUser(userSession.getLoggedInUserObj());
+        timeLine.setUser(user);
         timeLine.setComment(summary);
         processProdBn.setTimeLine(timeLine);
         processProdBn.addTimeline();

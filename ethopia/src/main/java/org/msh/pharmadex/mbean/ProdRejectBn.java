@@ -14,6 +14,7 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProcessProdBn;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.UserService;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -41,6 +42,9 @@ public class ProdRejectBn implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
 
@@ -66,10 +70,10 @@ public class ProdRejectBn implements Serializable {
 
         timeLine.setProdApplications(prodApplications);
         timeLine.setStatusDate(new Date());
-        timeLine.setUser(userSession.getLoggedInUserObj());
+        timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
         processProdBn.getTimeLineList().add(timeLine);
         prodApplications.setRegState(timeLine.getRegState());
-        prodApplications.getProd().setRegState(timeLine.getRegState());
+        prodApplications.setRegState(timeLine.getRegState());
 //        prodApplications = prodApplicationsService.updateProdApp(prodApplications);
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("status_change_success")));
 
@@ -104,5 +108,13 @@ public class ProdRejectBn implements Serializable {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

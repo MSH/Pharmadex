@@ -10,16 +10,16 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.service.ProdAppChecklistService;
-import org.msh.pharmadex.service.ReportService;
-import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,19 +33,21 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ProdDeficiencyBn implements Serializable {
 
     @ManagedProperty(value = "#{prodAppChecklistService}")
     ProdAppChecklistService prodAppChecklistService;
-    @ManagedProperty(value = "#{processProdBn}")
-    private ProcessProdBn processProdBn;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    private ProdApplicationsService prodApplicationsService;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -54,19 +56,13 @@ public class ProdDeficiencyBn implements Serializable {
     private String summary;
     private FacesContext context;
     private JasperPrint jasperPrint;
-
-
-    public ProcessProdBn getProcessProdBn() {
-        return processProdBn;
-    }
-
-    public void setProcessProdBn(ProcessProdBn processProdBn) {
-        this.processProdBn = processProdBn;
-    }
+    private ProdApplications prodApplications;
 
     public void PDF() throws JRException, IOException {
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", prodApplications.getId());
         context = FacesContext.getCurrentInstance();
-        jasperPrint = reportService.generateDeficiency(prodAppChecklists, summary, userSession.getLoggedInUserObj());
+        User user = userService.findUser(userSession.getLoggedINUserID());
+        jasperPrint = reportService.generateDeficiency(prodAppChecklists, summary);
         HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
         httpServletResponse.setContentType("application/pdf");
@@ -76,29 +72,22 @@ public class ProdDeficiencyBn implements Serializable {
 //        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 //        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
 
-        ProdApplications prodApplications;
-        prodApplications = processProdBn.getProdApplications();
-        prodApplications.setProdAppChecklists(prodAppChecklists);
         TimeLine timeLine = new TimeLine();
         timeLine.setRegState(RegState.FOLLOW_UP);
         timeLine.setStatusDate(new Date());
-        timeLine.setUser(userSession.getLoggedInUserObj());
+        timeLine.setUser(user);
         timeLine.setComment(summary);
         timeLine.setProdApplications(prodApplications);
         prodApplications.setRegState(timeLine.getRegState());
-        prodApplications.getProd().setRegState(timeLine.getRegState());
         RetObject retObject = timelineService.saveTimeLine(timeLine);
-        if (retObject.getMsg().equals("persist")) {
-            timeLine = (TimeLine) retObject.getObj();
-            processProdBn.setTimeLine(timeLine);
-            processProdBn.getTimeLineList().add(timeLine);
-            processProdBn.setProdApplications(timeLine.getProdApplications());
-            processProdBn.setProduct(timeLine.getProdApplications().getProd());
-//            processProdBn.save();
-            facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
-        } else {
+        if (!retObject.getMsg().equals("persist")) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
         }
+    }
+
+    public String sendToHome(){
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", prodApplications.getId());
+        return "/internal/processreg";
     }
 
     public UserSession getUserSession() {
@@ -111,12 +100,20 @@ public class ProdDeficiencyBn implements Serializable {
 
     public List<ProdAppChecklist> getProdAppChecklists() {
         if (prodAppChecklists == null) {
-            prodAppChecklists = prodAppChecklistService.findProdAppChecklistByProdApp(processProdBn.getProdApplications().getId());
+            initDefBn();
+        }
+        return prodAppChecklists;
+    }
+
+    private void initDefBn() {
+        Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
+        if(prodAppID!=null) {
+            prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+            prodAppChecklists = prodAppChecklistService.findProdAppChecklistByProdApp(prodAppID);
             for (ProdAppChecklist pacs : prodAppChecklists) {
                 pacs.setSendToApp(!pacs.isStaffValue());
             }
         }
-        return prodAppChecklists;
     }
 
     public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
@@ -153,5 +150,31 @@ public class ProdDeficiencyBn implements Serializable {
 
     public void setTimelineService(TimelineService timelineService) {
         this.timelineService = timelineService;
+    }
+
+    public ProdApplications getProdApplications() {
+        if(prodApplications==null)
+            initDefBn();
+        return prodApplications;
+    }
+
+    public void setProdApplications(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

@@ -16,6 +16,8 @@ import java.util.List;
 
 public interface ProdCompanyDAO extends JpaRepository<ProdCompany, Long> {
 
+    public List<ProdCompany> findByProduct_Id(Long product_Id);
+
 
 
 }

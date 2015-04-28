@@ -1,6 +1,7 @@
 package org.msh.pharmadex.service.converter;
 
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,15 +26,15 @@ public class ProductConverter implements Converter, Serializable {
     @Autowired
     private GlobalEntityLists globalEntityLists;
 
-    private List<Product> products;
+    private List<ProdTable> products;
 
-    public List<Product> getProducts() {
-        if (products == null)
+    public List<ProdTable> getProducts() {
+        if(products == null)
             products = globalEntityLists.getRegProducts();
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<ProdTable> products) {
         this.products = products;
     }
 
@@ -43,7 +44,7 @@ public class ProductConverter implements Converter, Serializable {
         } else {
             try {
 //                int number = Integer.parseInt(submittedValue);
-                for (Product p : getProducts()) {
+                for (ProdTable p : getProducts()) {
                     if (String.valueOf(p.getId()).equalsIgnoreCase(submittedValue))
                         return p;
                 }

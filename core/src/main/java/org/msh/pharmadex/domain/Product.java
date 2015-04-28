@@ -4,7 +4,6 @@ import org.hibernate.envers.Audited;
 import org.msh.pharmadex.domain.enums.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
@@ -23,6 +22,10 @@ public class Product extends CreationDetail implements Serializable {
     @Size(max = 500, min = 3)
     private String prodName;
 
+    @Column(name = "gen_name", length = 500)
+    @Size(max = 500, min = 3)
+    private String genName;
+
     @Column(name = "apprvd_name", length = 500)
     @Size(max = 500, min = 3)
     private String apprvdName;
@@ -31,34 +34,23 @@ public class Product extends CreationDetail implements Serializable {
     @Size(max = 500, min = 3)
     private String prodDesc;
 
-    @Column(name = "ingredient", length = 500)
-    @Size(max = 500, min = 3)
-    private String ingredient;
-
-    @Column(name = "gen_name", length = 500)
-    @Size(max = 500, min = 3)
-    private String genName;
+    @Column(name = "new_chemical_entity")
+    private boolean newChemicalEntity;
 
     @Column(name = "new_chem_name", length = 500)
     @Size(max = 500, min = 3)
     private String newChemicalName;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOSFORM_ID")
     private DosageForm dosForm;
 
     @Column(name = "dosage_strength")
     private String dosStrength;
 
-    @Column(name = "new_chemical_entity")
-    private boolean newChemicalEntity;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOSUNIT_ID")
     private DosUom dosUnit;
-
-    @Column(name = "lic_no", length = 50)
-    private String licNo;
 
     @Column(name = "prod_type")
     @Enumerated(EnumType.STRING)
@@ -72,9 +64,6 @@ public class Product extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProdCategory prodCategory;
 
-    @Column(name = "reg_no", length = 255)
-    private String regNo;
-
     @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<ProdInn> inns;
 
@@ -87,51 +76,75 @@ public class Product extends CreationDetail implements Serializable {
 
     private boolean noAtc = false;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ADMIN_ROUTE_ID")
     private AdminRoute adminRoute;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PHARM_CLASSIF_ID")
     private PharmClassif pharmClassif;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "APP_ID", nullable = false)
-    private Applicant applicant;
-
-//    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-//    private List<Company> companies;
-
-//    @ManyToMany(targetEntity = Company.class, fetch = FetchType.LAZY)
-//    @JoinTable(name = "prod_company", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "company_id"))
-//    private List<Company> companyList;
-
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<ProdCompany> prodCompanies;
-
-
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROD_APP_ID")
-    @NotNull
-    private ProdApplications prodApplications;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdBy")
     private User createdBy;
 
-    @Enumerated(EnumType.STRING)
-    private RegState regState;
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL})
+    private List<ProdApplications> prodApplicationses;
 
     @Transient
     private String manufName;
 
-    public Product() {
+    @Column(length = 500)
+    private String ingrdStatment;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Pricing pricing;
+
+    @Enumerated(EnumType.STRING)
+    private ProdDrugType drugType;
+
+    @ElementCollection(targetClass = UseCategory.class)
+    @JoinTable(name = "tblusecategories", joinColumns = @JoinColumn(name = "prodID"))
+    @Column(name = "useCategory")
+    @Enumerated(EnumType.STRING)
+    private List<UseCategory> useCategories;
+
+    @Column(length = 500)
+    private String packSize;
+
+    @Column(length = 500)
+    private String contType;
+
+    @Column(length = 500)
+    private String shelfLife;
+
+    @Column(length = 500)
+    private String storageCndtn;
+
+    @Column(length = 1500)
+    private String indications;
+
+    @Column(length = 500)
+    private String posology;
+
+
+    public String getManufName() {
+        if (prodCompanies != null) {
+            for (ProdCompany c : getProdCompanies()) {
+                if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
+                    return c.getCompany().getCompanyName();
+                }
+            }
+        }
+        return manufName;
     }
 
-    public Product(ProdApplications prodApplications) {
-        this.prodApplications = prodApplications;
+    public void setManufName(String manufName) {
+        this.manufName = manufName;
     }
-
 
     public Long getId() {
         return id;
@@ -149,100 +162,12 @@ public class Product extends CreationDetail implements Serializable {
         this.prodName = prodName;
     }
 
-    public String getProdDesc() {
-        return prodDesc;
-    }
-
-    public void setProdDesc(String prodDesc) {
-        this.prodDesc = prodDesc;
-    }
-
     public String getGenName() {
         return genName;
     }
 
     public void setGenName(String genName) {
         this.genName = genName;
-    }
-
-    public String getDosStrength() {
-        return dosStrength;
-    }
-
-    public void setDosStrength(String dosStrength) {
-        this.dosStrength = dosStrength;
-    }
-
-    public String getLicNo() {
-        return licNo;
-    }
-
-    public void setLicNo(String licNo) {
-        this.licNo = licNo;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getRegNo() {
-        return regNo;
-    }
-
-    public void setRegNo(String regNo) {
-        this.regNo = regNo;
-    }
-
-    public List<ProdInn> getInns() {
-        return inns;
-    }
-
-    public void setInns(List<ProdInn> inns) {
-        this.inns = inns;
-    }
-
-    public boolean isNoAtc() {
-        return noAtc;
-    }
-
-    public void setNoAtc(boolean noAtc) {
-        this.noAtc = noAtc;
-    }
-
-    public List<Atc> getAtcs() {
-        return atcs;
-    }
-
-    public void setAtcs(List<Atc> atcs) {
-        this.atcs = atcs;
-    }
-
-    public PharmClassif getPharmClassif() {
-        return pharmClassif;
-    }
-
-    public void setPharmClassif(PharmClassif pharmClassif) {
-        this.pharmClassif = pharmClassif;
-    }
-
-    public DosageForm getDosForm() {
-        return dosForm;
-    }
-
-    public void setDosForm(DosageForm dosForm) {
-        this.dosForm = dosForm;
-    }
-
-    public DosUom getDosUnit() {
-        return dosUnit;
-    }
-
-    public void setDosUnit(DosUom dosUnit) {
-        this.dosUnit = dosUnit;
     }
 
     public String getApprvdName() {
@@ -253,76 +178,12 @@ public class Product extends CreationDetail implements Serializable {
         this.apprvdName = apprvdName;
     }
 
-    public AdminRoute getAdminRoute() {
-        return adminRoute;
+    public String getProdDesc() {
+        return prodDesc;
     }
 
-    public void setAdminRoute(AdminRoute adminRoute) {
-        this.adminRoute = adminRoute;
-    }
-
-    public Applicant getApplicant() {
-        return applicant;
-    }
-
-    public void setApplicant(Applicant applicant) {
-        this.applicant = applicant;
-    }
-
-//    public List<Company> getCompanies() {
-//        return companies;
-//    }
-//
-//    public void setCompanies(List<Company> companies) {
-//        this.companies = companies;
-//    }
-
-    public ProdApplications getProdApplications() {
-        return prodApplications;
-    }
-
-    public void setProdApplications(ProdApplications prodApplications) {
-        this.prodApplications = prodApplications;
-    }
-
-    public RegState getRegState() {
-        return regState;
-    }
-
-    public void setRegState(RegState regState) {
-        this.regState = regState;
-    }
-
-    public ProdType getProdType() {
-        return prodType;
-    }
-
-    public void setProdType(ProdType prodType) {
-        this.prodType = prodType;
-    }
-
-    public ProdCategory getProdCategory() {
-        return prodCategory;
-    }
-
-    public void setProdCategory(ProdCategory prodCategory) {
-        this.prodCategory = prodCategory;
-    }
-
-    public AgeGroup getAgeGroup() {
-        return ageGroup;
-    }
-
-    public void setAgeGroup(AgeGroup ageGroup) {
-        this.ageGroup = ageGroup;
-    }
-
-    public String getIngredient() {
-        return ingredient;
-    }
-
-    public void setIngredient(String ingredient) {
-        this.ingredient = ingredient;
+    public void setProdDesc(String prodDesc) {
+        this.prodDesc = prodDesc;
     }
 
     public boolean isNewChemicalEntity() {
@@ -341,27 +202,60 @@ public class Product extends CreationDetail implements Serializable {
         this.newChemicalName = newChemicalName;
     }
 
-    public String getManufName() {
-        if (prodCompanies != null) {
-            for (ProdCompany c : getProdCompanies()) {
-                if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
-                    return c.getCompany().getCompanyName();
-                }
-            }
-        }
-        return manufName;
+    public DosageForm getDosForm() {
+        return dosForm;
     }
 
-    public void setManufName(String manufName) {
-        this.manufName = manufName;
+    public void setDosForm(DosageForm dosForm) {
+        this.dosForm = dosForm;
     }
 
-    public List<ProdCompany> getProdCompanies() {
-        return prodCompanies;
+    public String getDosStrength() {
+        return dosStrength;
     }
 
-    public void setProdCompanies(List<ProdCompany> prodCompanies) {
-        this.prodCompanies = prodCompanies;
+    public void setDosStrength(String dosStrength) {
+        this.dosStrength = dosStrength;
+    }
+
+    public DosUom getDosUnit() {
+        return dosUnit;
+    }
+
+    public void setDosUnit(DosUom dosUnit) {
+        this.dosUnit = dosUnit;
+    }
+
+    public ProdType getProdType() {
+        return prodType;
+    }
+
+    public void setProdType(ProdType prodType) {
+        this.prodType = prodType;
+    }
+
+    public AgeGroup getAgeGroup() {
+        return ageGroup;
+    }
+
+    public void setAgeGroup(AgeGroup ageGroup) {
+        this.ageGroup = ageGroup;
+    }
+
+    public ProdCategory getProdCategory() {
+        return prodCategory;
+    }
+
+    public void setProdCategory(ProdCategory prodCategory) {
+        this.prodCategory = prodCategory;
+    }
+
+    public List<ProdInn> getInns() {
+        return inns;
+    }
+
+    public void setInns(List<ProdInn> inns) {
+        this.inns = inns;
     }
 
     public List<ProdExcipient> getExcipients() {
@@ -372,6 +266,140 @@ public class Product extends CreationDetail implements Serializable {
         this.excipients = excipients;
     }
 
+    public List<Atc> getAtcs() {
+        return atcs;
+    }
 
+    public void setAtcs(List<Atc> atcs) {
+        this.atcs = atcs;
+    }
+
+    public boolean isNoAtc() {
+        return noAtc;
+    }
+
+    public void setNoAtc(boolean noAtc) {
+        this.noAtc = noAtc;
+    }
+
+    public AdminRoute getAdminRoute() {
+        return adminRoute;
+    }
+
+    public void setAdminRoute(AdminRoute adminRoute) {
+        this.adminRoute = adminRoute;
+    }
+
+    public PharmClassif getPharmClassif() {
+        return pharmClassif;
+    }
+
+    public void setPharmClassif(PharmClassif pharmClassif) {
+        this.pharmClassif = pharmClassif;
+    }
+
+    public List<ProdCompany> getProdCompanies() {
+        return prodCompanies;
+    }
+
+    public void setProdCompanies(List<ProdCompany> prodCompanies) {
+        this.prodCompanies = prodCompanies;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getIngrdStatment() {
+        return ingrdStatment;
+    }
+
+    public void setIngrdStatment(String ingrdStatment) {
+        this.ingrdStatment = ingrdStatment;
+    }
+
+    public Pricing getPricing() {
+        return pricing;
+    }
+
+    public void setPricing(Pricing pricing) {
+        this.pricing = pricing;
+    }
+
+    public ProdDrugType getDrugType() {
+        return drugType;
+    }
+
+    public void setDrugType(ProdDrugType drugType) {
+        this.drugType = drugType;
+    }
+
+    public List<UseCategory> getUseCategories() {
+        return useCategories;
+    }
+
+    public void setUseCategories(List<UseCategory> useCategories) {
+        this.useCategories = useCategories;
+    }
+
+    public String getPackSize() {
+        return packSize;
+    }
+
+    public void setPackSize(String packSize) {
+        this.packSize = packSize;
+    }
+
+    public String getContType() {
+        return contType;
+    }
+
+    public void setContType(String contType) {
+        this.contType = contType;
+    }
+
+    public String getShelfLife() {
+        return shelfLife;
+    }
+
+    public void setShelfLife(String shelfLife) {
+        this.shelfLife = shelfLife;
+    }
+
+    public String getStorageCndtn() {
+        return storageCndtn;
+    }
+
+    public void setStorageCndtn(String storageCndtn) {
+        this.storageCndtn = storageCndtn;
+    }
+
+    public String getIndications() {
+        return indications;
+    }
+
+    public void setIndications(String indications) {
+        this.indications = indications;
+    }
+
+    public String getPosology() {
+        return posology;
+    }
+
+    public void setPosology(String posology) {
+        this.posology = posology;
+    }
+
+    public List<ProdApplications> getProdApplicationses() {
+        return prodApplicationses;
+    }
+
+    public void setProdApplicationses(List<ProdApplications> prodApplicationses) {
+        this.prodApplicationses = prodApplicationses;
+    }
 }
 

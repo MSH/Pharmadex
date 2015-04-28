@@ -10,7 +10,6 @@ import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.FeeSchedule;
 import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.enums.ProdAppType;
-import org.msh.pharmadex.mbean.product.ProdApp;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.LicenseHolderService;
@@ -21,7 +20,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
@@ -91,16 +89,16 @@ public class ProdRegInit implements Serializable {
 
         calculate();
 
-        ProdApp prodApp = new ProdApp();
-        prodApp.setEml(eml);
-        prodApp.setProdAppType(prodAppType);
-        prodApp.setSelSRA(selSRA);
-        prodApp.setFee(fee);
-        prodApp.setPrescreenfee(prescreenfee);
-        prodApp.setTotalfee(totalfee);
-        prodApp.setSRA(selSRA.length > 0);
+        ProdAppInit prodAppInit = new ProdAppInit();
+        prodAppInit.setEml(eml);
+        prodAppInit.setProdAppType(prodAppType);
+        prodAppInit.setSelSRA(selSRA);
+        prodAppInit.setFee(fee);
+        prodAppInit.setPrescreenfee(prescreenfee);
+        prodAppInit.setTotalfee(totalfee);
+        prodAppInit.setSRA(selSRA.length > 0);
 
-        userSession.setProdApp(prodApp);
+        userSession.setProdAppInit(prodAppInit);
         return "/secure/prodreghome";
     }
 
@@ -166,10 +164,10 @@ public class ProdRegInit implements Serializable {
             eligible = true;
 
         if (userSession.isCompany()) {
-            if (userSession.getApplicant() == null)
+            if (userSession.getApplcantID() == null)
                 eligible = false;
             else {
-                LicenseHolder licenseHolder = licenseHolderService.findLicHolderByApplicant(userSession.getApplicant().getApplcntId());
+                LicenseHolder licenseHolder = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
                 if (licenseHolder != null)
                     eligible = true;
                 else

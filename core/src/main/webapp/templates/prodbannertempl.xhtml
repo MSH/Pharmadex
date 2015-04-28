@@ -9,63 +9,67 @@
         <table class="banner">
             <tr>
                 <td>
-                    <p:outputLabel value="#{product.prodName}"
+                    <p:outputLabel value="#{prodApp.product.prodName}"
                                    styleClass="title"
-                                   style="font-weight: bold;  font-size: 1.5em; #{product.prodApplications.fastrack?'color: #a52a2a;':''}" />
+                                   style="font-weight: bold;  font-size: 1.5em; #{prodApp.fastrack?'color: #a52a2a;':''}" />
                 </td>
                 <td align="right">
                     <p:outputLabel value="#{msgs.registration_status}: "
                                    style="font-weight: bold;color: #a52a2a;"/>
-                    <p:outputLabel value="#{msgs[product.prodApplications.regState.key]}"
+                    <p:outputLabel value="#{msgs[prodApp.regState.key]}"
                                    style="font-weight: bold;color: #a52a2a;"/>
                 </td>
             </tr>
             <tr>
                 <td>
                     <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                    <h:outputFormat value="#{product.prodApplications.prodAppNo}" styleClass="title"/>
+                    <h:outputFormat value="#{prodApp.prodAppNo}" styleClass="title"/>
                 </td>
                 <td align="right">
-                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                    <h:outputFormat value="#{product.prodApplications.submitDate}">
-                    <f:convertDateTime pattern="MMM dd, yyyy"/>
-                    </h:outputFormat>
-
+                    <h:outputLabel value="#{msgs.submitted_by}: " styleClass="title"/>
+                    <h:outputLabel value="#{prodApp.createdBy.name}" styleClass="title"/>
                 </td>
+
             </tr>
             <tr>
                 <td>
                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
-                    <p:commandLink id="viewLink" value="#{product.applicant.appName}"
+                    <p:commandLink id="viewLink" value="#{prodApp.applicant.appName}"
                                    action="/public/applicantdetail.faces"
                                    ajax="false" style="color: darkblue;">
-                        <f:param name="applicantID" value="#{product.applicant.applcntId}"/>
-                        <f:param name="id" value="#{product.id}"/>
+                        <f:param name="applicantID" value="#{prodApp.applicant.applcntId}"/>
                     </p:commandLink>
 
 
                     <!--                                    <h:outputFormat value="#{productDisplay.product.applicant.appName}"/> -->
                 </td>
                 <td align="right">
-                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
-                                   rendered="#{not empty product.prodApplications.regExpiryDate}"/>
-                    <h:outputFormat value="#{product.prodApplications.regExpiryDate}"
-                                    rendered="#{not empty product.prodApplications.regExpiryDate}">
+                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
+                    <h:outputFormat value="#{prodApp.submitDate}">
                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                     </h:outputFormat>
+
                 </td>
             </tr>
             <tr>
                 <td>
                     <h:outputLabel value="#{msgs.manuf_name}: " styleClass="title"/>
-                    <h:outputLabel value="#{product.manufName}"/>
+                    <h:outputLabel value="#{prodApp.product.manufName}"/>
+                </td>
+                <td align="right">
+                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
+                                   rendered="#{not empty prodApp.regExpiryDate}"/>
+                    <h:outputFormat value="#{prodApp.regExpiryDate}"
+                                    rendered="#{not empty prodApp.regExpiryDate}">
+                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                    </h:outputFormat>
                 </td>
 <!--
                 <td align="right">
                     <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
                                    rendered="#{not empty product.manufName}"/>
-                    <h:outputFormat value="#{product.prodApplications.regExpiryDate}"
-                                    rendered="#{not empty product.prodApplications.regExpiryDate}"/>
+                    <h:outputFormat value="#{prodApp.regExpiryDate}"
+                                    rendered="#{not empty prodApp.regExpiryDate}"/>
                 </td>
                 -->
             </tr>

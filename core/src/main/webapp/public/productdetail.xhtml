@@ -21,14 +21,14 @@
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.registration_status}: " style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{productDisplay.product.regState}"
+                                    <h:outputLabel value="#{productDisplay.prodApplications.regState}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h:outputLabel value="#{msgs.reg_number}: " styleClass="title"/>
-                                    <h:outputFormat value="#{productDisplay.product.regNo}" styleClass="title"/>
+                                    <h:outputFormat value="#{productDisplay.prodApplications.prodRegNo}" styleClass="title"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
@@ -74,7 +74,7 @@
                 <p:growl id="growl" showDetail="true" showSummary="true"/>
 
                 <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                    <ui:param name="prodData" value="#{productDisplay.product}"/>
+                    <ui:param name="prodAppData" value="#{productDisplay.prodApplications}"/>
                 </ui:decorate>
 
             </h:panelGrid>

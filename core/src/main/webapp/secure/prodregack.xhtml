@@ -13,12 +13,12 @@
 
             <p:panel header="Download">
                 <h:panelGrid columns="1" cellpadding="10" cellspacing="10">
-                    <p:outputLabel value="Your Application for registration of #{regHomeMbean.product.prodName} is sucessfully submitted.
+                    <p:outputLabel value="Your Application for registration of #{prodConsentForm.product.prodName} is sucessfully submitted.
                 Please click on the link below to download the achnowledgement letter."/>
 
-                    <p:commandLink actionListener="#{regHomeMbean.PDF}" value="Report" ajax="false"/>
+                    <p:commandLink actionListener="#{prodConsentForm.PDF}" value="Report" ajax="false"/>
 
-                    <p:commandLink action="#{regHomeMbean.cancel}" ajax="false" immediate="true" value="Exit"/>
+                    <p:commandLink action="#{prodConsentForm.cancel}" ajax="false" immediate="true" value="Exit"/>
                 </h:panelGrid>
             </p:panel>
 

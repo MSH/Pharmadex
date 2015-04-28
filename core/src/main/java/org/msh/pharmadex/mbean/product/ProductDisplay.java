@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
@@ -34,6 +35,9 @@ public class ProductDisplay implements Serializable {
     @ManagedProperty(value = "#{atcService}")
     AtcService atcService;
 
+    @ManagedProperty(value = "#{userSession}")
+    UserSession userSession;
+
     private Product product;
 
     private Applicant applicant;
@@ -42,6 +46,7 @@ public class ProductDisplay implements Serializable {
 
     public Product getProduct() {
         if (product == null) {
+            FacesContext.getCurrentInstance().getExternalContext().getFlash();
             initFields();
         }
         return product;
@@ -52,11 +57,12 @@ public class ProductDisplay implements Serializable {
     }
 
     private void initFields() {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String prodID = params.get("id");
-        product = productService.findProduct(Long.valueOf(prodID));
-        this.prodApplications = this.product.getProdApplications();
-        this.applicant = this.product.getApplicant();
+        Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
+        if(prodAppID!=null) {
+            prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+            product = prodApplications.getProduct();
+            applicant = prodApplications.getApplicant();
+        }
     }
 
     public ProdApplications getProdApplications() {
@@ -115,5 +121,13 @@ public class ProductDisplay implements Serializable {
 
     public void setAtcService(AtcService atcService) {
         this.atcService = atcService;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }

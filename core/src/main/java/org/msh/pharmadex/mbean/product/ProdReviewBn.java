@@ -63,21 +63,21 @@ public class ProdReviewBn implements Serializable {
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     public String findReview() {
-        review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedInUserObj().getUserId(), processProdBn.getProdApplications().getId());
-        userSession.setReview(review);
+        review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
+        userSession.setReviewID(review.getId());
         return "/internal/review";
     }
 
     public String findReviewInfo() {
-        ReviewInfo reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedInUserObj().getUserId(), processProdBn.getProdApplications().getId());
-        userSession.setProduct(processProdBn.getProduct());
+        ReviewInfo reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
+        userSession.setProdID(processProdBn.getProduct().getId());
         userSession.setReviewInfoID(reviewInfo.getId());
         return "/internal/reviewInfo";
     }
 
     public void assignReviewer() {
         facesContext = FacesContext.getCurrentInstance();
-        ProdApplications prodApplications = prodApplicationsService.findProdApplicationByProduct(processProdBn.getProduct().getId());
+        ProdApplications prodApplications = processProdBn.getProdApplications();
 
         if (!userAccessMBean.isDetailReview()) {
             if (review == null) {
@@ -136,6 +136,7 @@ public class ProdReviewBn implements Serializable {
     public boolean getCheckReviewStatus() {
 //        if (prodApplications.getId() == null)
         ProdApplications prodApplications = processProdBn.getProdApplications();
+        reviews = reviewService.findReviews(prodApplications.getId());
         if (prodApplications != null) {
             if (userAccessMBean.isDetailReview()) {
                 for (ReviewInfo ri : getReviewInfos()) {
@@ -146,7 +147,7 @@ public class ProdReviewBn implements Serializable {
 
                 }
             } else {
-                for (Review each : prodApplications.getReviews()) {
+                for (Review each : reviews) {
                     if (!each.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
                         checkReviewStatus = false;
                         break;
@@ -200,8 +201,8 @@ public class ProdReviewBn implements Serializable {
     }
 
     public List<ReviewInfo> getReviewInfos() {
-        if (reviewInfos == null && processProdBn.getProdApplications() != null) {
-            reviewInfos = reviewService.findReviewInfos(processProdBn.getProdApplications().getId());
+        if (reviewInfos == null) {
+            reviewInfos = processProdBn.getReviewInfos();
         }
         return reviewInfos;
     }

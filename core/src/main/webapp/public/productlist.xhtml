@@ -11,30 +11,31 @@
 
         <h:form prependId="false">
             <p:growl/>
-            <p:dataTable id="products" var="product" value="#{globalEntityLists.regProducts}" tableStyle="width: auto"
+            <p:dataTable id="products" var="prodApps" value="#{globalEntityLists.regProducts}" tableStyle="width: auto"
                          filteredValue="#{productMbean.filteredProducts}" widgetVar="prodTable"
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,40,100">
-                <p:column filterBy="#{product.prodName}" sortBy="#{product.prodName}">
+                <p:column filterBy="#{prodApps.prodName}" sortBy="#{prodApps.prodName}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prod_name}"/>
                     </f:facet>
-                    <p:commandLink id="viewLink" value="#{product.prodName}" action="productdetail"
+                    <p:commandLink id="viewLink" value="#{prodApps.prodName}" action="#{productMbean.goToDetails(prodApps.id)}"
                                    ajax="false">
-                        <f:param name="id" value="#{product.id}"/>
+                        <f:param name="id" value="#{prodApps.id}"/>
                     </p:commandLink>
 
                 </p:column>
 
-                <p:column filterBy="#{product.genName}"
-                          sortBy="#{product.genName}">
+                <p:column filterBy="#{prodApps.genName}"
+                          sortBy="#{prodApps.genName}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prodgenname}"/>
                     </f:facet>
-                    <h:outputText value="#{product.genName}"/>
+                    <h:outputText value="#{prodApps.genName}"/>
                 </p:column>
 
+<!--
                 <p:column filterBy="#{product.regNo}"
                           sortBy="#{product.regNo}">
                     <f:facet name="header">
@@ -42,7 +43,7 @@
                     </f:facet>
                     <h:outputText value="#{product.regNo}"/>
                 </p:column>
-
+-->
                 <!--                <p:column filterBy="#{product.dosForm.dosForm}"
                                           sortBy="#{product.dosForm.dosForm}">
                                     <f:facet name="header">
@@ -60,36 +61,51 @@
                                 </p:column>
                 -->
 
-                <p:column filterBy="#{product.prodCategory}" filterMatchMode="exact" headerText="#{msgs.prod_cat}"
-                          sortBy="#{product.prodCategory}">
+                <p:column filterBy="#{prodApps.prodCategory}" filterMatchMode="exact" headerText="#{msgs.prod_cat}"
+                          sortBy="#{prodApps.prodCategory}">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('prodTable').filter()">
                             <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
                             <f:selectItems value="#{globalLists.prodCategories}"/>
                         </p:selectOneMenu>
                     </f:facet>
-                    <h:outputText value="#{product.prodCategory}"/>
+                    <h:outputText value="#{prodApps.prodCategory}"/>
                 </p:column>
 
 
-                <p:column filterBy="#{product.applicant.appName}"
-                          sortBy="#{product.applicant.appName}">
+                <p:column filterBy="#{prodApps.appName}"
+                          sortBy="#{prodApps.appName}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_applicant}"/>
                     </f:facet>
-                    <h:outputText value="#{product.applicant.appName}"/>
+                    <h:outputText value="#{prodApps.appName}"/>
                 </p:column>
 
-                <p:column filterBy="#{product.prodApplications.registrationDate}"
-                          sortBy="#{product.prodApplications.registrationDate}">
+                <p:column filterBy="#{prodApps.regDate}"
+                          sortBy="#{prodApps.regDate}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_date}"/>
                     </f:facet>
                     <h:outputLabel converter="javax.faces.DateTime"
-                                   value="#{product.prodApplications.registrationDate}"/>
+                                   value="#{prodApps.regDate}"/>
                 </p:column>
 
+                <p:column filterBy="#{prodApps.regExpiryDate}"
+                          sortBy="#{prodApps.regExpiryDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.expiry_date}"/>
+                    </f:facet>
+                    <h:outputLabel converter="javax.faces.DateTime"
+                                   value="#{prodApps.regExpiryDate}"/>
+                </p:column>
 
+                <p:column filterBy="#{prodApps.manufName}"
+                          sortBy="#{prodApps.manufName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.manuf_name}"/>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.manufName}"/>
+                </p:column>
             </p:dataTable>
 
             <h:panelGrid columns="2" width="100%">
