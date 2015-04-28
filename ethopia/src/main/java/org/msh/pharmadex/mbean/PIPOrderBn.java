@@ -4,6 +4,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.service.PIPOrderService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +35,9 @@ public class PIPOrderBn implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+
     private PIPOrder pipOrder;
     private PIPProd pipProd;
     private List<PIPProd> pipProds;
@@ -49,7 +53,7 @@ public class PIPOrderBn implements Serializable {
     private void init() {
         pipOrder = new PIPOrder();
         if (userSession.isCompany()) {
-            applicantUser = userSession.getLoggedInUserObj();
+            applicantUser = userService.findUser(userSession.getLoggedINUserID());
             applicant = applicantUser.getApplicant();
             pipOrder.setCreatedBy(applicantUser);
             pipOrder.setApplicantUser(applicantUser);
@@ -101,7 +105,7 @@ public class PIPOrderBn implements Serializable {
 
         context = FacesContext.getCurrentInstance();
         pipOrder.setSubmitDate(new Date());
-        pipOrder.setCreatedBy(userSession.getLoggedInUserObj());
+        pipOrder.setCreatedBy(applicantUser);
         pipOrder.setState(AmdmtState.NEW_APPLICATION);
         pipOrder.setPipOrderChecklists(pipOrderChecklists);
         pipOrder.setPipProds(pipProds);
@@ -110,7 +114,7 @@ public class PIPOrderBn implements Serializable {
 
 
         if (userSession.isCompany())
-            pipOrder.setApplicant(userSession.getApplicant());
+            pipOrder.setApplicant(applicantUser.getApplicant());
 
         RetObject retValue = pipOrderService.saveOrder(pipOrder);
         if (retValue.getMsg().equals("persist")) {
@@ -196,5 +200,13 @@ public class PIPOrderBn implements Serializable {
 
     public void setApplicant(Applicant applicant) {
         this.applicant = applicant;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

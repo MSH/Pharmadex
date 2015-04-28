@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface PharmClassDAO extends JpaRepository<PharmClassif, Long> {
+public interface PharmClassDAO extends JpaRepository<PharmClassif, Integer> {
 
 
 }

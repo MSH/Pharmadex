@@ -58,9 +58,8 @@
 
 
     <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
-              id="completescreen" modal="true" appendTo=":reghome"
+              id="completescreen" appendTo="@form"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
-        <h:form>
 
             <p:panelGrid columns="2" columnClasses="label value">
                 <h:outputText value="#{msgs.moderator_name}: "
@@ -83,13 +82,12 @@
 
             <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
                              action="#{preScreenProdMBn.completeScreen}"
-                             oncomplete="PF('completescreendlg').hide()" update=":reghome @form" process="@form"/>
+                             oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form"/>
 
-        </h:form>
     </p:dialog>
 
     <p:dialog header="#{msgs.complete_screen}" widgetVar="archiveappdlg" resizable="false"
-              id="archiveapp" modal="true" appendTo=":reghome"
+              id="archiveapp" modal="true" appendTo="@(body)"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
 
         <h:form>

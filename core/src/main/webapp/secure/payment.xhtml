@@ -8,13 +8,14 @@
     <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
         <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
-        <p:inputText id="bankname" value="#{regHomeMbean.prodApplications.prescreenBankName}"/>
+        <p:inputText id="bankname" value="#{prodRegAppMbean.prodApplications.bankName}"/>
 
         <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
-        <p:inputText id="receiptno" value="#{regHomeMbean.prodApplications.prescreenReceiptNo}"/>
+        <p:inputText id="receiptno" value="#{prodRegAppMbean.prodApplications.receiptNo}"/>
 
         <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
-        <p:calendar value="#{regHomeMbean.prodApplications.prescreenfeeSubmittedDt}" id="feesubmitdt" showOn="button"/>
+        <p:calendar value="#{prodRegAppMbean.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"
+                pattern="#{userAccessMBean.workspace.datePattern}"/>
 
     </h:panelGrid>
 

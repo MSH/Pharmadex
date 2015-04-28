@@ -5,6 +5,7 @@ import org.msh.pharmadex.domain.AgentInfo;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.mbean.NavigationBean;
+import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.springframework.web.util.WebUtils;
 
@@ -27,6 +28,9 @@ public class NavigationBeanET extends NavigationBean implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
+    @ManagedProperty(value = "#{applicantService}")
+    private ApplicantService applicantService;
+
     @Override
     public String regProductAction() {
         System.out.println("reached ethiopian regProductAction");
@@ -34,7 +38,7 @@ public class NavigationBeanET extends NavigationBean implements Serializable {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "regHomeMbean", null);
         if(userSession.isCompany()){
-            Applicant app = userSession.getApplicant();
+            Applicant app =  applicantService.findApplicant(userSession.getApplcantID());
             if(app!=null) {
                 LicenseHolder licenseHolder = licenseHolderService.findLicHolderByApplicant(app.getApplcntId());
                 if(licenseHolder==null) {

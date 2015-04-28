@@ -50,21 +50,17 @@ public class PIPOrderService implements Serializable{
 
     }
 
-    public RetObject findAllSubmittedPIP(User loggedInUserObj, boolean companyUser) {
+    public RetObject findAllSubmittedPIP(Long userID, Long applcntId, boolean companyUser) {
         RetObject retObject = new RetObject();
         List<PIPOrder> pipOrders = null;
-        Long applcntId;
-        Long userId;
 
-        if (loggedInUserObj == null) {
+        if (userID == null) {
             retObject.setMsg("error");
         }
 
         try {
             if (companyUser) {
-                applcntId = (loggedInUserObj.getApplicant() != null ? loggedInUserObj.getApplicant().getApplcntId() : null);
-                userId = loggedInUserObj.getUserId();
-                pipOrders = customPIPOrderDAO.findPIPOrderByUser(userId, applcntId);
+               pipOrders = customPIPOrderDAO.findPIPOrderByUser(userID, applcntId);
             } else {
                 pipOrders = customPIPOrderDAO.findAllPIPOrder();
             }

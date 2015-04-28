@@ -31,7 +31,7 @@ public class PharmClassifService implements Serializable {
     }
 
     @Transactional
-    public PharmClassif findPharmClassifById(long id) {
+    public PharmClassif findPharmClassifById(int id) {
         return pharmClassDAO.findOne(id);
     }
 }

@@ -5,6 +5,7 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.PharmacySiteService;
+import org.msh.pharmadex.service.UserService;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,9 @@ public class PharmacySiteMbean implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
 
+    @ManagedProperty(value = "#{userService}")
+    UserService userService;
+
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
 
@@ -53,7 +57,7 @@ public class PharmacySiteMbean implements Serializable {
         selectedSite.setSiteAddress(new Address());
         selectedSite.getSiteAddress().setCountry(new Country());
         siteChecklists = new ArrayList<PharmacySiteChecklist>();
-        user = userSession.getLoggedInUserObj();
+        user = userService.findUser(userSession.getLoggedINUserID());
 
         List<SiteChecklist> allChecklist = pharmacySiteService.findAllCheckList();
         PharmacySiteChecklist eachPharmacySiteChecklist;
@@ -136,7 +140,7 @@ public class PharmacySiteMbean implements Serializable {
     public List<PharmacySite> getSubmittedSites() {
         if (submittedSites == null) {
             List<User> users = new ArrayList<User>();
-            users.add(userSession.getLoggedInUserObj());
+            users.add(user);
             submittedSites = pharmacySiteService.findPharmacySiteByStateUser(users, ApplicantState.NEW_APPLICATION);
         }
         return submittedSites;

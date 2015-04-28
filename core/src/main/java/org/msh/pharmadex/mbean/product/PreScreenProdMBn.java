@@ -10,6 +10,7 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdAppChecklistService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.model.UploadedFile;
 
@@ -18,6 +19,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +40,8 @@ public class PreScreenProdMBn {
     private ProcessProdBn processProdBn;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
 
@@ -70,22 +74,21 @@ public class PreScreenProdMBn {
             return "";
         }
 
-        ProdApplications prodApplications = prodApplicationsService.findProdApplicationByProduct(processProdBn.getProduct().getId());
+        ProdApplications prodApplications = processProdBn.getProdApplications();
         prodApplications.setModerator(moderator);
-        prodApplications.setProdAppChecklists(prodAppChecklists);
+//        prodApplications.setProdAppChecklists(prodAppChecklists);
         if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)
                 || prodApplications.getRegState().equals(RegState.VERIFY)) {
             timeLine = new TimeLine();
             timeLine.setProdApplications(prodApplications);
             timeLine.setRegState(RegState.SCREENING);
             timeLine.setStatusDate(new Date());
-            timeLine.setUser(userSession.getLoggedInUserObj());
+            timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
             timeLine.setComment("Pre-Screening completed successfully");
             String ret = timelineService.validateStatusChange(timeLine);
 
             if (ret.equals("success")) {
                 prodApplications.setRegState(timeLine.getRegState());
-                prodApplications.getProd().setRegState(timeLine.getRegState());
                 RetObject retObject2 = timelineService.saveTimeLine(timeLine);
                 if (retObject2.getMsg().equals("persist")) {
                     timeLine = (TimeLine) retObject2.getObj();
@@ -93,7 +96,7 @@ public class PreScreenProdMBn {
                     processProdBn.setTimeLine(timeLine);
                     processProdBn.getTimeLineList().add(timeLine);
                     processProdBn.setProdApplications(timeLine.getProdApplications());
-                    processProdBn.setProduct(timeLine.getProdApplications().getProd());
+                    processProdBn.setProduct(timeLine.getProdApplications().getProduct());
                     facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
                 } else {
                     facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail")));
@@ -131,6 +134,8 @@ public class PreScreenProdMBn {
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
         prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
+        Flash flash = facesContext.getExternalContext().getFlash();
+        flash.put("prodAppID", processProdBn.getProdApplications().getId());
         if (!retObject.getMsg().equals("persist")) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, retObject.getMsg(), retObject.getMsg()));
             return "";
@@ -149,7 +154,7 @@ public class PreScreenProdMBn {
 //        timeLine = new TimeLine();
         timeLine.setRegState(RegState.DEFAULTED);
         timeLine.setStatusDate(new Date());
-        timeLine.setUser(userSession.getLoggedInUserObj());
+        timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
         processProdBn.setTimeLine(timeLine);
         retObject = timelineService.saveTimeLine(timeLine);
         if (retObject.getMsg().equals("persist")) {
@@ -172,7 +177,7 @@ public class PreScreenProdMBn {
                 prodAppChecklist.setFile(IOUtils.toByteArray(file.getInputstream()));
                 prodAppChecklist.setFileName(file.getFileName());
                 prodAppChecklist.setContentType(file.getContentType());
-                prodAppChecklist.setUploadedBy(userSession.getLoggedInUserObj());
+                prodAppChecklist.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
                 prodAppChecklist.setFileUploaded(true);
                 RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
                 prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
@@ -290,5 +295,13 @@ public class PreScreenProdMBn {
 
     public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
         this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

@@ -61,7 +61,7 @@ public class PIPOrderListBn implements Serializable {
 
     public List<PIPOrder> getPipOrders() {
         if (pipOrders == null) {
-            RetObject retObject = pipOrderService.findAllSubmittedPIP(userSession.getLoggedInUserObj(), userSession.isCompany());
+            RetObject retObject = pipOrderService.findAllSubmittedPIP(userSession.getLoggedINUserID(), userSession.getApplcantID(), userSession.isCompany());
             pipOrders = (List<PIPOrder>) retObject.getObj();
         }
         return pipOrders;
