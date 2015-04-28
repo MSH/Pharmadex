@@ -18,7 +18,8 @@ public class ForeignAppStatus extends CreationDetail implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CNTRY_ID")
     private Country country;
 
     @Column(name = "prodName", length = 255)

@@ -7,6 +7,7 @@ import org.msh.pharmadex.domain.Attachment;
 import org.msh.pharmadex.domain.Invoice;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.service.UserService;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -15,7 +16,7 @@ import org.primefaces.model.UploadedFile;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,7 +28,7 @@ import java.util.Calendar;
  * Author: usrivastava
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class FileUploadController {
 
     @ManagedProperty(value = "#{attachmentDAO}")
@@ -38,6 +39,9 @@ public class FileUploadController {
 
     @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
+
+    @ManagedProperty(value = "#{userService}")
+    UserService userService;
 
     private ArrayList<Attachment> attachments;
     private UploadedFile file;
@@ -60,9 +64,9 @@ public class FileUploadController {
         attach.setProdApplications(prodApplications);
         attach.setFileName(file.getFileName());
         attach.setContentType(file.getContentType());
-        attach.setUploadedBy(userSession.getLoggedInUserObj());
+        attach.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
         attach.setRegState(prodApplications.getRegState());
-        userSession.setFile(file);
+//        userSession.setFile(file);
     }
 
     public void prepareUpload() {
@@ -72,11 +76,11 @@ public class FileUploadController {
     public void addDocument() {
         facesContext = FacesContext.getCurrentInstance();
         ProdApplications prodApplications = processProdBn.getProdApplications();
-        file = userSession.getFile();
+//        file = userSession.getFile();
         FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
         attachmentDAO.save(attach);
         setAttachments(null);
-        userSession.setFile(null);
+//        userSession.setFile(null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
     }
@@ -187,4 +191,11 @@ public class FileUploadController {
         this.userSession = userSession;
     }
 
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 }

@@ -6,7 +6,9 @@ import org.msh.pharmadex.domain.ForeignAppStatus;
 import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.CountryService;
 import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.RetObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,17 +32,14 @@ import java.util.ResourceBundle;
 public class ForeignAppStatusMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ForeignAppStatusMBean.class);
 
-    @ManagedProperty(value = "#{regHomeMbean}")
-    RegHomeMbean regHomeMbean;
+    @ManagedProperty(value = "#{prodRegAppMbean}")
+    private ProdRegAppMbean prodRegAppMbean;
 
     @ManagedProperty(value = "#{globalEntityLists}")
-    GlobalEntityLists globalEntityLists;
+    private GlobalEntityLists globalEntityLists;
 
-    @ManagedProperty(value = "#{countryService}")
-    CountryService countryService;
-
-    @ManagedProperty(value = "#{companyService}")
-    CompanyService companyService;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    private ProdApplicationsService prodApplicationsService;
 
     private ForeignAppStatus selForeignAppStatus;
     private List<ForeignAppStatus> foreignAppStatuses;
@@ -56,24 +55,29 @@ public class ForeignAppStatusMBean implements Serializable {
     }
 
     @Transactional
-    public void addForStatus() {
+    public String addForStatus() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            foreignAppStatuses = regHomeMbean.getForeignAppStatuses();
+            foreignAppStatuses = prodRegAppMbean.getForeignAppStatuses();
             if (foreignAppStatuses == null) {
                 foreignAppStatuses = new ArrayList<ForeignAppStatus>();
             }
-            selForeignAppStatus.setProdApplications(regHomeMbean.getProdApplications());
-            selForeignAppStatus.setCountry(countryService.findCountryById(selForeignAppStatus.getCountry().getId()));
-            foreignAppStatuses.add(selForeignAppStatus);
-            regHomeMbean.setForeignAppStatuses(foreignAppStatuses);
-            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("company_add_success")));
-            selForeignAppStatus = new ForeignAppStatus();
-            selForeignAppStatus.setCountry(new Country());
+            selForeignAppStatus.setProdApplications(prodRegAppMbean.getProdApplications());
+            RetObject retObject = prodApplicationsService.saveForeignAppStatus(selForeignAppStatus);
+            if(retObject.getMsg().equals("persist")) {
+                selForeignAppStatus = (ForeignAppStatus) retObject.getObj();
+                foreignAppStatuses.add(selForeignAppStatus);
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("company_add_success")));
+                selForeignAppStatus = new ForeignAppStatus();
+                selForeignAppStatus.setCountry(new Country());
+            }else{
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), retObject.getMsg()));
+            }
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), e.getMessage()));
         }
+        return "";
     }
 
     public void initAddCompany() {
@@ -100,14 +104,6 @@ public class ForeignAppStatusMBean implements Serializable {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getManufacturers());
     }
 
-    public RegHomeMbean getRegHomeMbean() {
-        return regHomeMbean;
-    }
-
-    public void setRegHomeMbean(RegHomeMbean regHomeMbean) {
-        this.regHomeMbean = regHomeMbean;
-    }
-
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;
     }
@@ -116,28 +112,28 @@ public class ForeignAppStatusMBean implements Serializable {
         this.globalEntityLists = globalEntityLists;
     }
 
-    public CountryService getCountryService() {
-        return countryService;
-    }
-
-    public void setCountryService(CountryService countryService) {
-        this.countryService = countryService;
-    }
-
-    public CompanyService getCompanyService() {
-        return companyService;
-    }
-
-    public void setCompanyService(CompanyService companyService) {
-        this.companyService = companyService;
-    }
-
     public List<ForeignAppStatus> getForeignAppStatuses() {
         return foreignAppStatuses;
     }
 
     public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
         this.foreignAppStatuses = foreignAppStatuses;
+    }
+
+    public ProdRegAppMbean getProdRegAppMbean() {
+        return prodRegAppMbean;
+    }
+
+    public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
+        this.prodRegAppMbean = prodRegAppMbean;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
     }
 
 

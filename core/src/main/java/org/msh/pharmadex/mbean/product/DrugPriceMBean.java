@@ -1,6 +1,8 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.DrugPrice;
+import org.msh.pharmadex.domain.Pricing;
+import org.msh.pharmadex.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -21,8 +24,11 @@ public class DrugPriceMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(DrugPriceMBean.class);
     private static final long serialVersionUID = 5084991828668543L;
 
-    @ManagedProperty(value = "#{regHomeMbean}")
-    RegHomeMbean regHomeMbean;
+    @ManagedProperty(value = "#{prodRegAppMbean}")
+    ProdRegAppMbean prodRegAppMbean;
+
+    @ManagedProperty(value = "#{productService}")
+    private ProductService productService;
 
     private DrugPrice selectedDrugPrice;
 
@@ -32,13 +38,16 @@ public class DrugPriceMBean implements Serializable {
     public void addDrugPrice() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            selectedDrugPrice.setPricing(regHomeMbean.getProdApplications().getPricing());
-            regHomeMbean.getDrugPrices().add(selectedDrugPrice);
-            regHomeMbean.setShowDrugPrice(false);
+            Pricing pricing = prodRegAppMbean.getPricing();
+            List<DrugPrice> drugPriceList = prodRegAppMbean.getDrugPrices();
+            selectedDrugPrice.setPricing(prodRegAppMbean.getPricing());
+            pricing = productService.savePricing(pricing);
+            drugPriceList.add(selectedDrugPrice);
+            prodRegAppMbean.setShowDrugPrice(false);
             selectedDrugPrice = new DrugPrice();
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("msgs"), e.getMessage()));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), e.getMessage()));
         }
     }
 
@@ -56,11 +65,20 @@ public class DrugPriceMBean implements Serializable {
         this.selectedDrugPrice = drugPrice;
     }
 
-    public RegHomeMbean getRegHomeMbean() {
-        return regHomeMbean;
+
+    public ProdRegAppMbean getProdRegAppMbean() {
+        return prodRegAppMbean;
     }
 
-    public void setRegHomeMbean(RegHomeMbean regHomeMbean) {
-        this.regHomeMbean = regHomeMbean;
+    public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
+        this.prodRegAppMbean = prodRegAppMbean;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
     }
 }

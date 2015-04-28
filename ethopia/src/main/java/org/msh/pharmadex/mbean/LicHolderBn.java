@@ -1,11 +1,9 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.Address;
-import org.msh.pharmadex.domain.AgentInfo;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.LicenseHolderService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.context.RequestContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +32,15 @@ public class LicHolderBn implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+
     FacesContext facesContext;
     java.util.ResourceBundle resourceBundle;
 
 
     private LicenseHolder licenseHolder;
-
+    private User user;
     private List<AgentInfo> agentInfos;
     private AgentInfo agentInfo;
 
@@ -54,6 +55,7 @@ public class LicHolderBn implements Serializable {
     @PostConstruct
     public void init() {
         agentInfo = new AgentInfo();
+        user = userService.findUser(userSession.getLoggedINUserID());
     }
 
     @Transactional
@@ -63,7 +65,7 @@ public class LicHolderBn implements Serializable {
         if (agentInfos == null)
             agentInfos = new ArrayList<AgentInfo>();
         agentInfo.setLicenseHolder(licenseHolder);
-        agentInfo.setCreatedBy(userSession.getLoggedInUserObj());
+        agentInfo.setCreatedBy(user);
         String ret = licenseHolderService.addAgent(agentInfo);
         if (ret.equalsIgnoreCase("persist")) {
             agentInfos.add(agentInfo);
@@ -87,7 +89,7 @@ public class LicHolderBn implements Serializable {
         java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
         licenseHolder.setCreatedDate(new Date());
-        licenseHolder.setCreatedBy(userSession.getLoggedInUserObj());
+        licenseHolder.setCreatedBy(user);
         String ret = licenseHolderService.saveLicHolder(licenseHolder);
 
         if (ret.equalsIgnoreCase("persist")) {
@@ -161,4 +163,6 @@ public class LicHolderBn implements Serializable {
     public void setAgentInfo(AgentInfo agentInfo) {
         this.agentInfo = agentInfo;
     }
+
+
 }

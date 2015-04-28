@@ -16,14 +16,14 @@
 
 
                 <ui:decorate template="/templates/prodbannertempl.xhtml">
-                    <ui:param name="product" value="#{processProdBn.product}"/>
+                    <ui:param name="prodApp" value="#{prodDeficiencyBn.prodApplications}"/>
                 </ui:decorate>
 
                 <div align="left">
 
                     <p:commandButton value="#{msgs.generate_report}"
                                      ajax="false" actionListener="#{prodDeficiencyBn.PDF}"/>
-                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{prodDeficiencyBn.sendToHome}"
                                      ajax="false"/>
                 </div>
 

@@ -3,6 +3,7 @@ package org.msh.pharmadex.service;
 import org.msh.pharmadex.dao.CustomFeeSchDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -23,7 +24,7 @@ public class GlobalEntityLists implements Serializable {
     private List<DosageForm> dosageForms;
     private List<DosUom> dosUoms;
     private List<Country> countries;
-    private List<Product> regProducts;
+    private List<ProdTable> regProducts;
     private List<Applicant> regApplicants;
     private List<PharmacySite> pharmacySites;
     private List<AmdmtCategory> amdmtCategories;
@@ -36,6 +37,10 @@ public class GlobalEntityLists implements Serializable {
     private List<Excipient> excipients;
     private List<DisplayReviewQ> displayReviewQ;
     private List<FeeSchedule> feeSchedules;
+    private Workspace workspace;
+
+    @Autowired
+    private UserAccessService userAccessService;
 
     @Autowired
     private CustomFeeSchDAO customFeeSchDAO;
@@ -130,13 +135,13 @@ public class GlobalEntityLists implements Serializable {
         return dosUoms;
     }
 
-    public List<Product> getRegProducts() {
+    public List<ProdTable> getRegProducts() {
         if (regProducts == null)
             regProducts = productService.findAllRegisteredProduct();
         return regProducts;
     }
 
-    public void setRegProducts(List<Product> regProducts) {
+    public void setRegProducts(List<ProdTable> regProducts) {
         this.regProducts = regProducts;
     }
 
@@ -216,4 +221,13 @@ public class GlobalEntityLists implements Serializable {
         return JsfUtils.completeSuggestions(query, userService.findModerators());
     }
 
+    public Workspace getWorkspace() {
+        if(workspace==null)
+            workspace = userAccessService.getWorkspace();
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
 }

@@ -62,7 +62,7 @@ public class InvoiceService implements Serializable {
     public String createInvoice(Invoice invoice, ProdApplications prodApp) {
         this.invoice = invoice;
         this.prodApplications = prodApp;
-        this.product = prodApp.getProd();
+        this.product = prodApp.getProduct();
 
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
@@ -90,14 +90,15 @@ public class InvoiceService implements Serializable {
 //        Object[] args = {prodApp.getProdName(), prodApp.getApplicant().getAppName(), prodApp.getProdApplications().getId()};
 //        body = mf.format(args);
 
+        prodApplications = prodApplicationsDAO.findProdApplicationByProduct(product.getId());
         String regExpDt = DateFormat.getDateInstance().format(invoice.getNewExpDate());
-        String expDt = DateFormat.getDateInstance().format(product.getProdApplications().getRegExpiryDate());
+        String expDt = DateFormat.getDateInstance().format(prodApplications.getRegExpiryDate());
 
         URL resource = getClass().getResource("/reports/invoice.jasper");
         HashMap param = new HashMap();
         param.put("invoice_number", invoice.getInvoiceNumber());
         param.put("prod_name", product.getProdName());
-        param.put("applicant_name", product.getApplicant().getAppName());
+        param.put("applicant_name", prodApplications.getApplicant().getAppName());
         param.put("expiry_date", expDt);
         param.put("new_expiry_date", regExpDt);
         param.put("amount", invoice.getInvoiceAmt());
@@ -106,14 +107,14 @@ public class InvoiceService implements Serializable {
 //        param.put("body", "Thank you for applying to register " + prodApp.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()
 //                + ". Your application is successfully submitted and the application number is " + prodApp.getProdApplications().getId() + ". "
 //                +"Please use this application number for any future correspondence.");
-        param.put("addr1", product.getApplicant().getAddress().getAddress1());
-        param.put("addr2", product.getApplicant().getAddress().getAddress2());
-        param.put("addr3", product.getApplicant().getAddress().getCountry().getCountryName());
+        param.put("addr1", prodApplications.getApplicant().getAddress().getAddress1());
+        param.put("addr2", prodApplications.getApplicant().getAddress().getAddress2());
+        param.put("addr3", prodApplications.getApplicant().getAddress().getCountry().getCountryName());
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
 
-    public String sendReminder(ProdApplications selProdApp, User user, Invoice invoice) throws MessagingException {
+    public String sendReminder(ProdApplications selProdApp, Long userID, Invoice invoice) throws MessagingException {
         Reminder reminder = new Reminder();
 
         if (invoice.getInvoiceType().equals(InvoiceType.RENEWAL)) {
@@ -143,10 +144,10 @@ public class InvoiceService implements Serializable {
 
 
         Mail mail = new Mail();
-        mail.setMailto(selProdApp.getProd().getApplicant().getEmail());
+        mail.setMailto(selProdApp.getApplicant().getEmail());
         mail.setProdApplications(selProdApp);
         mail.setSubject("Pharmadex Registration Renewal");
-        mail.setUser(user);
+        mail.setUser(userDAO.findUser(userID));
         mail.setDate(new Date());
         mail.setMessage("Please renew your registration. The registration invoice is attached. If you have trouble opening the attachment you can also check it out by logging into your account.");
 
@@ -157,9 +158,9 @@ public class InvoiceService implements Serializable {
 
     }
 
-    public List<ProdApplications> findPendingByApplicant(User user) {
-        if (user.getApplicant() != null) {
-            List<User> users = userDAO.findByApplicant(user.getApplicant().getApplcntId());
+    public List<ProdApplications> findPendingByApplicant(Long applicantID) {
+        if (applicantID != null) {
+            List<User> users = userDAO.findByApplicant(applicantID);
             //        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("users", users);

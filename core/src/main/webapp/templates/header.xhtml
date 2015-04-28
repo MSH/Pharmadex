@@ -86,15 +86,14 @@
                         <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                     url="/secure/prodreginit.faces" ajax="false"/>
                         <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
-                                    action="#{navigationBean.regApplicantAction}"
+                                    url="/secure/appregistration.faces"
                                     ajax="false" rendered="#{userSession.displayAppReg}"/>
                         <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"
                                     url="/secure/pharmacyregistration.faces" ajax="false"/>
                     </p:submenu>
 
                     <p:separator/>
-                    <p:submenu label="#{msgs.current_applications}"
-                               rendered="#{userSession.company||userSession.admin}">
+                    <p:submenu label="#{msgs.current_applications}">
                         <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
                                     url="/secure/submittedproducts.faces"/>
                         <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
