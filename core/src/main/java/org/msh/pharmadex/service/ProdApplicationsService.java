@@ -6,6 +6,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.ApplicantDAO;
+import org.msh.pharmadex.dao.CountryDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
@@ -13,9 +14,9 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.util.RegistrationUtil;
+import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -66,6 +67,10 @@ public class ProdApplicationsService implements Serializable {
     ChecklistDAO checklistDAO;
     @Autowired
     ForeignAppStatusDAO foreignAppStatusDAO;
+
+    @Autowired
+    private CountryDAO countryDAO;
+
     ProdApplications prodApp;
     Product product;
     private List<ProdApplications> prodApplications;
@@ -76,22 +81,9 @@ public class ProdApplicationsService implements Serializable {
     @Autowired
     private ReviewDAO reviewDAO;
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public ProdApplications findProdApplications(long id) {
         ProdApplications prodApp = prodApplicationsDAO.findProdApplications(id);
-        prodApp.getProd();
-        prodApp.getComments();
-        prodApp.getTimeLines();
-        prodApp.getProdAppChecklists();
-        prodApp.getProdAppAmdmts();
-        prodApp.getInvoices();
-        prodApp.getMails();
-        prodApp.getInvoices();
-        prodApp.getComments();
-        prodApp.getMails();
-        prodApp.getProdAppAmdmts();
-        prodApp.getProdAppChecklists();
-        prodApp.getTimeLines();
         return prodApp;
     }
 
@@ -232,7 +224,7 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.SCREENING);
             regState.add(RegState.VERIFY);
             params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isModerator()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.FOLLOW_UP);
@@ -240,17 +232,17 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.VERIFY);
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
-            params.put("moderatorId", userSession.getLoggedInUserObj().getUserId());
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+            params.put("moderatorId", userSession.getLoggedINUserID());
+//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isReviewer()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
             if (workspaceDAO.findAll().get(0).isDetailReview())
-                params.put("reviewerInfoId", userSession.getLoggedInUserObj().getUserId());
+                params.put("reviewerInfoId", userSession.getLoggedINUserID());
             else
-                params.put("reviewerId", userSession.getLoggedInUserObj().getUserId());
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+                params.put("reviewerId", userSession.getLoggedINUserID());
+//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isHead()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.NEW_APPL);
@@ -263,7 +255,7 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.NOT_RECOMMENDED);
             regState.add(RegState.REJECTED);
             params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isStaff()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.NEW_APPL);
@@ -271,7 +263,7 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.VERIFY);
             regState.add(RegState.FOLLOW_UP);
             params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isCompany()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.NEW_APPL);
@@ -285,8 +277,8 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.VERIFY);
             regState.add(RegState.REGISTERED);
             params.put("regState", regState);
-            params.put("userId", userSession.getLoggedInUserObj().getUserId());
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+            params.put("userId", userSession.getLoggedINUserID());
+//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isLab()){
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.VERIFY);
@@ -295,18 +287,17 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.RECOMMENDED);
             regState.add(RegState.NOT_RECOMMENDED);
             params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
 
         }
+        prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         return prodApplicationses;
     }
 
     @Transactional
     public ProdApplications saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
-        if (prodApplications.getProd().getId() == null) {
-            prodApplications.getProd().setCreatedBy(loggedInUserObj);
+        if (prodApplications.getProduct().getId() == null) {
+            prodApplications.getProduct().setCreatedBy(loggedInUserObj);
             prodApplications.setSubmitDate(new Date());
-            prodApplications.getProd().setLicNo("licno");
         }
 
 //        applicantDAO.updateApplicant(prodApplications.getProd().getApplicant());
@@ -321,9 +312,44 @@ public class ProdApplicationsService implements Serializable {
         return prodApplications;
     }
 
+    @Autowired
+    private DosUomDAO dosUomDAO;
+
+    @Autowired
+    private AdminRouteDAO adminRouteDAO;
+
+    @Autowired
+    private PharmClassDAO pharmClassDAO;
+
     @Transactional
-    public ProdApplications updateProdApp(ProdApplications prodApplications) {
-        return prodApplicationsDAO.updateApplication(prodApplications);
+    public RetObject updateProdApp(ProdApplications prodApplications, Long loggedInUserID) {
+        RetObject retObject;
+        User loggedInUser = userService.findUser(loggedInUserID);
+        if(prodApplications==null){
+            retObject = new RetObject("empty_prodApp", null);
+        }
+        if(prodApplications.getProduct()==null){
+            retObject = new RetObject("empty_product", null);
+        }
+
+        try {
+            prodApplications.setUpdatedDate(new Date());
+            prodApplications.setUpdatedBy(loggedInUser);
+            if(prodApplications.getProduct().getId()==null){
+                productDAO.saveProduct(prodApplications.getProduct());
+            }
+            if(prodApplications.getId()==null) {
+                prodApplications.setApplicant(applicantDAO.findApplicant(prodApplications.getApplicant().getApplcntId()));
+                prodApplicationsDAO.saveApplication(prodApplications);
+            }else
+                prodApplications = prodApplicationsDAO.updateApplication(prodApplications);
+                prodApplications = prodApplicationsDAO.findProdApplications(prodApplications.getId());
+            retObject = new RetObject("persist", prodApplications);
+            return retObject;
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return new RetObject(ex.getMessage(), null);
+        }
     }
 
     @Transactional
@@ -369,11 +395,11 @@ public class ProdApplicationsService implements Serializable {
         URL resource = getClass().getResource("/reports/reg_letter.jasper");
         HashMap param = new HashMap();
         param.put("regName", product.getProdName());
-        param.put("regNumber", product.getRegNo());
+        param.put("regNumber", prodApp.getProdRegNo());
         param.put("genName",product.getGenName());
         param.put("adminRoute", product.getAdminRoute().getName());
 //        param.put("regType", product.getProdType());
-        param.put("shelfLife", product.getProdApplications().getShelfLife());
+        param.put("shelfLife", product.getShelfLife());
 
         String inns = "";
         if (product.getInns().size() > 0) {
@@ -384,7 +410,7 @@ public class ProdApplicationsService implements Serializable {
         }
 
         param.put("activeIngredient", inns);
-        param.put("appName", product.getApplicant().getAppName());
+        param.put("appName", prodApp.getApplicant().getAppName());
 
         String companyName = "";
         String fprcName = "";
@@ -426,7 +452,7 @@ public class ProdApplicationsService implements Serializable {
 
     public String createRegCert(ProdApplications prodApp) {
         this.prodApp = prodApp;
-        this.product = prodApp.getProd();
+        this.product = prodApp.getProduct();
 
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
@@ -467,12 +493,43 @@ public class ProdApplicationsService implements Serializable {
         return "removed";
     }
 
-    public List<ProdApplications> findSavedApps(User loggedInUserObj) {
-        return prodApplicationsDAO.findSavedProdApp(loggedInUserObj);
+    public List<ProdApplications> findSavedApps(Long loggedInUserID) {
+        return prodApplicationsDAO.findSavedProdApp(loggedInUserID);
     }
 
     public Long findApplicationCount() {
         return prodApplicationsDAO.findApplicationCount();
+
+    }
+
+    public RetObject saveForeignAppStatus(ForeignAppStatus selForeignAppStatus) {
+        RetObject retObject = new RetObject();
+        try {
+            selForeignAppStatus.setCountry(countryDAO.find(selForeignAppStatus.getCountry().getId()));
+            selForeignAppStatus = foreignAppStatusDAO.save(selForeignAppStatus);
+            retObject.setObj(selForeignAppStatus);
+            retObject.setMsg("persist");
+        }catch (Exception ex){
+            ex.printStackTrace();
+            retObject.setObj(null);
+            retObject.setMsg(ex.getMessage());
+        }
+        return retObject;
+    }
+
+    public List<ForeignAppStatus> findForeignAppStatus(Long prodAppID) {
+        return foreignAppStatusDAO.findByProdApplications_Id(prodAppID);
+
+
+    }
+
+    public String saveProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
+        try {
+            prodAppChecklistDAO.save(prodAppChecklists);
+            return "persist";
+        }catch (Exception ex){
+            return "error";
+        }
 
     }
 }

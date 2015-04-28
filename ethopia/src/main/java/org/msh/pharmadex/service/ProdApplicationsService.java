@@ -76,19 +76,6 @@ public class ProdApplicationsService implements Serializable {
     @Transactional(propagation = Propagation.REQUIRED)
     public ProdApplications findProdApplications(long id) {
         ProdApplications prodApp = prodApplicationsDAO.findProdApplications(id);
-        prodApp.getProd();
-        prodApp.getComments();
-        prodApp.getTimeLines();
-        prodApp.getProdAppChecklists();
-        prodApp.getProdAppAmdmts();
-        prodApp.getInvoices();
-        prodApp.getMails();
-        prodApp.getInvoices();
-        prodApp.getComments();
-        prodApp.getMails();
-        prodApp.getProdAppAmdmts();
-        prodApp.getProdAppChecklists();
-        prodApp.getTimeLines();
         return prodApp;
     }
 
@@ -302,10 +289,9 @@ public class ProdApplicationsService implements Serializable {
 
     @Transactional
     public ProdApplications saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
-        if (prodApplications.getProd().getId() == null) {
-            prodApplications.getProd().setCreatedBy(loggedInUserObj);
+        if (prodApplications.getProduct().getId() == null) {
+            prodApplications.getProduct().setCreatedBy(loggedInUserObj);
             prodApplications.setSubmitDate(new Date());
-            prodApplications.getProd().setLicNo("licno");
         }
 
 //        applicantDAO.updateApplicant(prodApplications.getProd().getApplicant());
@@ -379,11 +365,11 @@ public class ProdApplicationsService implements Serializable {
         URL resource = getClass().getResource("/reports/reg_letter.jasper");
         HashMap param = new HashMap();
         param.put("regName", product.getProdName());
-        param.put("regNumber", product.getRegNo());
+        param.put("regNumber", prodApp.getProdRegNo());
         param.put("genName",product.getGenName());
         param.put("adminRoute", product.getAdminRoute().getName());
 //        param.put("regType", product.getProdType().name());
-        param.put("shelfLife", product.getProdApplications().getShelfLife());
+        param.put("shelfLife", product.getShelfLife());
 
         String inns = "";
         if (product.getInns().size() > 0) {
@@ -394,7 +380,7 @@ public class ProdApplicationsService implements Serializable {
         }
 
         param.put("activeIngredient", inns);
-        param.put("appName", product.getApplicant().getAppName());
+        param.put("appName", prodApp.getApplicant().getAppName());
 
         String companyName = "";
         String fprcName = "";
@@ -460,8 +446,8 @@ public class ProdApplicationsService implements Serializable {
 
     public String createRegCert(ProdApplications prodApp) {
         this.prodApp = prodApp;
-        this.product = prodApp.getProd();
-        product.setRegNo(generateRegNo());
+        this.product = prodApp.getProduct();
+        prodApp.setProdRegNo(generateRegNo());
 
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
@@ -484,7 +470,7 @@ public class ProdApplicationsService implements Serializable {
 
     public String createRejectCert(ProdApplications prodApp) {
         this.prodApp = prodApp;
-        this.product = prodApp.getProd();
+        this.product = prodApp.getProduct();
 
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
@@ -509,19 +495,19 @@ public class ProdApplicationsService implements Serializable {
 
         URL resource = getClass().getResource("/reports/rejection_letter.jasper");
         HashMap param = new HashMap();
-        param.put("appName", product.getApplicant().getAppName());
+        param.put("appName", prodApp.getApplicant().getAppName());
         param.put("prodName", product.getProdName());
         param.put("prodStrength", product.getDosStrength()+product.getDosUnit());
         param.put("dosForm", product.getDosForm().getDosForm());
         param.put("manufName", product.getManufName());
         param.put("appType", "New Medicine Registration");
         param.put("subject", "Sample request letter for  " + product.getProdName());
-        param.put("address1", product.getApplicant().getAddress().getAddress1());
-        param.put("address2", product.getApplicant().getAddress().getAddress2());
-        param.put("country", product.getApplicant().getAddress().getCountry().getCountryName());
+        param.put("address1", prodApp.getApplicant().getAddress().getAddress1());
+        param.put("address2", prodApp.getApplicant().getAddress().getAddress2());
+        param.put("country", prodApp.getApplicant().getAddress().getCountry().getCountryName());
 //        param.put("cso",userS.getName());
         param.put("date", new Date());
-        param.put("appNumber", product.getProdApplications().getProdAppNo());
+        param.put("appNumber", prodApp.getProdAppNo());
 
         return JasperFillManager.fillReport(resource.getFile(), param);
     }

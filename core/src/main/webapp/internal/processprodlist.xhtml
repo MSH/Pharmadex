@@ -31,25 +31,23 @@
                              filteredValue="#{prodAppMBean.filteredApps}">
 
 
-                    <p:column filterBy="#{eachprod.prod.prodName}"
-                              sortBy="#{eachprod.prod.prodName}" >
+                    <p:column filterBy="#{eachprod.product.prodName}"
+                              sortBy="#{eachprod.product.prodName}" >
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
-                        <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}" action="processreg"
+                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}" action="#{prodAppMBean.sentToDetail(eachprod.id)}"
                                        ajax="false" style="#{eachprod.fastrack?'color: #a52a2a;':''}">
-                             <f:param name="id" value="#{eachprod.prod.id}"/>
-                            <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
                         </p:commandLink>
                     </p:column>
 
 
-                    <p:column filterBy="#{eachprod.prod.genName}"
-                              sortBy="#{eachprod.prod.genName}">
+                    <p:column filterBy="#{eachprod.product.genName}"
+                              sortBy="#{eachprod.product.genName}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prodgenname}"/>
                         </f:facet>
-                        <h:outputText value="#{eachprod.prod.genName}"/>
+                        <h:outputText value="#{eachprod.product.genName}"/>
                     </p:column>
 
                     <p:column filterBy="#{eachprod.prodAppNo}"
@@ -75,20 +73,20 @@
                         <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
                     </p:column>
 
-                    <p:column sortBy="#{eachprod.prod.applicant.appName}"
-                              filterBy="#{eachprod.prod.applicant.appName}">
+                    <p:column sortBy="#{eachprod.applicant.appName}"
+                              filterBy="#{eachprod.applicant.appName}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.applicant_name}"/>
                         </f:facet>
-                        <h:outputLabel value="#{eachprod.prod.applicant.appName}"/>
+                        <h:outputLabel value="#{eachprod.applicant.appName}"/>
                     </p:column>
 
-                    <p:column sortBy="#{eachprod.prod.manufName}"
-                              filterBy="#{eachprod.prod.manufName}">
+                    <p:column sortBy="#{eachprod.product.manufName}"
+                              filterBy="#{eachprod.product.manufName}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.manuf_name}"/>
                         </f:facet>
-                        <h:outputLabel value="#{eachprod.prod.manufName}"/>
+                        <h:outputLabel value="#{eachprod.product.manufName}"/>
                     </p:column>
                 </p:dataTable>
             </p:panel>

@@ -6,28 +6,36 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
+        <p:outputLabel value="#{msgs.prod_indications}" for="indication" />
+        <p:inputTextarea id="indication" value="#{prodRegAppMbean.product.indications}" cols="100"/>
+        <p:outputLabel/>
+
+        <p:outputLabel value="#{msgs.prod_posology}" for="posology"/>
+        <p:inputTextarea id="posology" value="#{prodRegAppMbean.product.posology}" cols="100"/>
+        <p:outputLabel/>
+
         <p:outputLabel value="#{msgs.product_shelflife}" for="shelflife"/>
-        <p:inputText id="shelflife" value="#{regHomeMbean.prodApplications.shelfLife}"/>
+        <p:inputText id="shelflife" value="#{prodRegAppMbean.product.shelfLife}"/>
         <p:message for="shelflife" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
-        <p:selectOneMenu id="cbdrugtype" value="#{regHomeMbean.prodApplications.drugType}">
+        <p:selectOneMenu id="cbdrugtype" value="#{prodRegAppMbean.product.drugType}">
             <f:selectItem itemLabel="-" itemValue=""/>
             <f:selectItems value="#{globalLists.drugTypes}" var="dt" itemLabel="#{msgs[dt.key]}"/>
         </p:selectOneMenu>
         <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
-        <p:inputText id="inpacksize" value="#{regHomeMbean.prodApplications.packSize}" style="width: 300px"/>
+        <p:inputText id="inpacksize" value="#{prodRegAppMbean.product.packSize}" style="width: 300px"/>
         <p:message for="inpacksize" showSummary="true" showDetail="false"/>
 
 
         <p:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
-        <p:inputTextarea id="inconttype" value="#{regHomeMbean.prodApplications.contType}" style="width: 300px"/>
+        <p:inputTextarea id="inconttype" value="#{prodRegAppMbean.product.contType}" style="width: 300px"/>
         <p:message for="inconttype" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
-        <p:inputText id="instorecndtn" value="#{regHomeMbean.prodApplications.storageCndtn}" style="width: 300px"/>
+        <p:inputText id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}" style="width: 300px"/>
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
 

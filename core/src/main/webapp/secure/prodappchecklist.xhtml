@@ -6,7 +6,7 @@
     <h:panelGrid cellspacing="10" columns="1" width="100%">
         <h:outputLabel value="#{msgs.checklist_inst}" styleClass="label"/>
 
-        <p:dataTable var="checkList" value="#{regHomeMbean.prodAppChecklists}" style="width:100%;"
+        <p:dataTable var="checkList" value="#{prodRegAppMbean.prodAppChecklists}" style="width:100%;"
                      sortBy="#{checkList.checklist.id}">
             <p:column headerText="#{msgs.checklist_moduleno}" colspan="4" rendered="#{!checkList.checklist.header}" style="background-color: bisque;font-weight: bolder;">
                 <h:outputLabel value="#{checkList.checklist.name}" />

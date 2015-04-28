@@ -1,9 +1,12 @@
 package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
+import org.msh.pharmadex.dao.iface.DosUomDAO;
+import org.msh.pharmadex.dao.iface.DosageFormDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +28,26 @@ public class ProdApplicationsDAO implements Serializable {
 
     @Transactional
     public ProdApplications findProdApplications(long id) {
-        ProdApplications prodApp = entityManager.find(ProdApplications.class, id);
+        ProdApplications prodApp = (ProdApplications) entityManager.createQuery("select pa from ProdApplications pa where pa.id = :prodId ")
+                .setParameter("prodId", id)
+                .getSingleResult();
         Hibernate.initialize(prodApp);
-        return prodApp;
+        Hibernate.initialize(prodApp.getProduct());
+        Hibernate.initialize(prodApp.getProduct().getDosForm());
+        Hibernate.initialize(prodApp.getProduct().getDosUnit());
+        Hibernate.initialize(prodApp.getProduct().getAdminRoute());
+        Hibernate.initialize(prodApp.getProduct().getInns());
+        Hibernate.initialize(prodApp.getProduct().getExcipients());
+        Hibernate.initialize(prodApp.getProduct().getAtcs());
+        Hibernate.initialize(prodApp.getProduct().getProdCompanies());
+        Hibernate.initialize(prodApp.getProduct().getPricing());
+        if(prodApp.getProduct().getPricing()!=null) {
+            Hibernate.initialize(prodApp.getProduct().getPricing());
+            Hibernate.initialize(prodApp.getProduct().getPricing().getDrugPrices());
+        }
+
+
+            return prodApp;
     }
 
 
@@ -37,10 +57,12 @@ public class ProdApplicationsDAO implements Serializable {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<ProdApplications> cq = cb.createQuery(ProdApplications.class);
             Root<ProdApplications> paRoot = cq.from(ProdApplications.class);
-            Join<ProdApplications, User> userJoin = paRoot.join("user", JoinType.LEFT);
-            Join<ProdApplications, Product> prodJoin = paRoot.join("prod");
+//            Join<ProdApplications, User> userJoin = paRoot.join("user", JoinType.LEFT);
+            Join<ProdApplications, Product> prodJoin = paRoot.join("product");
 
             paRoot.fetch("user", JoinType.LEFT);
+            paRoot.fetch("product", JoinType.LEFT);
+            paRoot.fetch("applicant", JoinType.LEFT);
 
 
             Predicate p = cb.equal(prodJoin.get("id"), prodId);
@@ -61,7 +83,7 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaQuery<ProdApplications> query = builder.createQuery(ProdApplications.class);
         Root<ProdApplications> root = query.from(ProdApplications.class);
 //        Join<ProdApplications, Invoice> invoiceJoin = root.join("invoices");
-        Join<ProdApplications, User> userJoin = root.join("user", JoinType.LEFT);
+        Join<ProdApplications, User> userJoin = root.join("createdBy", JoinType.LEFT);
 //        root.fetch("invoices", JoinType.RIGHT);
 
         Predicate p = null;
@@ -89,8 +111,8 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProdApplications> query = builder.createQuery(ProdApplications.class);
         Root<ProdApplications> root = query.from(ProdApplications.class);
-        Join<ProdApplications, Invoice> invoiceJoin = root.join("invoices");
-        Join<ProdApplications, User> userJoin = root.join("user", JoinType.LEFT);
+//        Join<ProdApplications, Invoice> invoiceJoin = root.join("invoices");
+        Join<ProdApplications, User> userJoin = root.join("createdBy", JoinType.LEFT);
 //        root.fetch("invoices", JoinType.RIGHT);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -100,9 +122,9 @@ public class ProdApplicationsDAO implements Serializable {
             if (param.getKey().equals("startDt") && params.get("endDt") != null) {
                 p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
             }
-            if (param.getKey().equals("paymentStatus") && param.getValue() != null) {
-                p = builder.equal(invoiceJoin.<PaymentStatus>get("paymentStatus"), param.getValue());
-            }
+//            if (param.getKey().equals("paymentStatus") && param.getValue() != null) {
+//                p = builder.equal(invoiceJoin.<PaymentStatus>get("paymentStatus"), param.getValue());
+//            }
             if (param.getKey().equals("users") && param.getValue() != null) {
                 List<Long> userIdList = new ArrayList<Long>();
                 for (User u : (List<User>) params.get("users")) {
@@ -124,10 +146,10 @@ public class ProdApplicationsDAO implements Serializable {
     }
 
     @Transactional
-    public List<ProdApplications> findSavedProdApp(User loggedInUser) {
-        List<ProdApplications> prodApplicationses = entityManager.createQuery("select p from ProdApplications p where p.regState=:regState " +
-                "and (p.prod.createdBy.userId = :userId or p.user.userId =:userId)")
-                .setParameter("userId", loggedInUser.getUserId())
+    public List<ProdApplications> findSavedProdApp(Long loggedInUserID) {
+        List<ProdApplications> prodApplicationses = entityManager.createQuery("select pa from ProdApplications pa join fetch pa.product where pa.regState=:regState " +
+                "and (pa.createdBy.userId = :userId or pa.applicantUser.userId =:userId)")
+                .setParameter("userId", loggedInUserID)
                 .setParameter("regState", RegState.SAVED)
                 .getResultList();
         return prodApplicationses;
@@ -136,16 +158,23 @@ public class ProdApplicationsDAO implements Serializable {
     }
 
 
+    @Autowired
+    private DosageFormDAO dosageFormDAO;
+
+    @Autowired
+    private DosUomDAO dosUomDAO;
+
     @Transactional
     public String saveApplication(ProdApplications prodApplications) {
+
         entityManager.persist(prodApplications);
         return "persisted";
     }
 
     @Transactional
     public ProdApplications updateApplication(ProdApplications prodApplications) {
-        Product prod = entityManager.merge(prodApplications.getProd());
-        return prod.getProdApplications();
+        prodApplications = entityManager.merge(prodApplications);
+        return prodApplications;
     }
 
     public List<Company> findCompanies(Long prodId) {
@@ -202,17 +231,17 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaQuery<ProdApplications> query = cb.createQuery(ProdApplications.class);
         Root<ProdApplications> prodApp = query.from(ProdApplications.class);
 //        Join statusUser = prodApp.join("statusUser", JoinType.LEFT);
-        Fetch<ProdApplications, Product> prod =  prodApp.fetch("prod", JoinType.LEFT);
-        prodApp.fetch("statusUser", JoinType.LEFT);
-        prod.fetch("applicant", JoinType.LEFT);
+        Fetch<ProdApplications, Product> prod =  prodApp.fetch("product", JoinType.LEFT);
+//        prodApp.fetch("statusUser", JoinType.LEFT);
+        prodApp.fetch("applicant", JoinType.LEFT);
         prod.fetch("dosForm", JoinType.LEFT);
         prod.fetch("dosUnit", JoinType.LEFT);
         prod.fetch("pharmClassif", JoinType.LEFT);
         prodApp.fetch("appointment", JoinType.LEFT);
         prodApp.fetch("moderator", JoinType.LEFT);
-        prodApp.fetch("reviews", JoinType.LEFT);
+//        prodApp.fetch("reviews", JoinType.LEFT);
         prod.fetch("adminRoute", JoinType.LEFT);
-        prodApp.fetch("pricing", JoinType.LEFT);
+        prod.fetch("pricing", JoinType.LEFT);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
         Predicate p = null;
@@ -221,13 +250,19 @@ public class ProdApplicationsDAO implements Serializable {
                 Expression<String> exp = prodApp.get("regState");
                 p = exp.in(params.get("regState"));
             } else if (param.getKey().equals("userId") && param.getValue() != null) {
-                Join user = prodApp.join("user", JoinType.LEFT);
+                Join user = prodApp.join("createdBy", JoinType.LEFT);
                 Expression userid = user.get("userId");
-                p = cb.equal(userid, param.getValue());
+                Join user2 = prodApp.join("applicantUser", JoinType.LEFT);
+                Expression userid2 = user2.get("userId");
+                p = cb.or((cb.equal(userid, param.getValue())),(cb.equal(userid2, param.getValue())));
             } else if (param.getKey().equals("moderatorId") && param.getValue() != null) {
                 Join user = prodApp.join("moderator", JoinType.LEFT);
                 Expression moderatorId = user.get("userId");
                 p = cb.equal(moderatorId, param.getValue());
+            } else if (param.getKey().equals("appID") && param.getValue() != null) {
+                Join user = prodApp.join("applicant", JoinType.LEFT);
+                Expression appID = user.get("applcntId");
+                p = cb.equal(appID, param.getValue());
             } else if (param.getKey().equals("reviewerId") && param.getValue() != null) {
                 Join<Review, ProdApplications> user = prodApp.join("reviews", JoinType.LEFT).join("user");
                 Expression reviewId = user.get("userId");

@@ -50,6 +50,9 @@ public class ProcessProdBnET implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
 
@@ -87,15 +90,15 @@ public class ProcessProdBnET implements Serializable {
             timeLine = new TimeLine();
             timeLine.setRegState(RegState.SCREENING);
             timeLine.setStatusDate(new Date());
-            timeLine.setUser(userSession.getLoggedInUserObj());
+            timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
             timeLine.setComment("Pre-Screening completed successfully");
             processProdBn.setTimeLine(timeLine);
-            RetObject retObject = timelineService.validatescreening(prodApplications.getProdAppChecklists());
-            if (retObject.getMsg().equals("persist")) {
+//            RetObject retObject = timelineService.validatescreening(prodAppChecklists);
+//            if (retObject.getMsg().equals("persist")) {
                 addTimeline();
-            } else {
-                facesContext.addMessage(null, new FacesMessage("Please verify the dossier and update the checklist"));
-            }
+//            } else {
+//                facesContext.addMessage(null, new FacesMessage("Please verify the dossier and update the checklist"));
+//            }
 
         }
         return null;
@@ -111,17 +114,16 @@ public class ProcessProdBnET implements Serializable {
             Product product = processProdBn.getProduct();
             timeLine.setProdApplications(prodApplications);
             timeLine.setStatusDate(new Date());
-            timeLine.setUser(userSession.getLoggedInUserObj());
+            timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
             String retValue = timelineService.validateStatusChange(timeLine);
 
             if (retValue.equalsIgnoreCase("success")) {
                 processProdBn.getTimeLineList().add(timeLine);
                 prodApplications.setRegState(timeLine.getRegState());
-                product.setRegState(timeLine.getRegState());
                 prodApplications = prodApplicationsService.updateProdApp(prodApplications);
                 processProdBn.setProdApplications(prodApplications);
                 processProdBn.setFieldValues();
-                product = productService.findProduct(prodApplications.getProd().getId());
+                product = productService.findProduct(prodApplications.getProduct().getId());
                 processProdBn.setProduct(product);
                 processProdBn.setProdApplications(prodApplications);
                 processProdBn.setFieldValues();
@@ -152,7 +154,7 @@ public class ProcessProdBnET implements Serializable {
             facesContext.addMessage(null, new FacesMessage("You can only issue a Sample Request letter after you have received the fee and verified the dossier for completeness"));
         }
         Product product = productService.findProduct(processProdBn.getProduct().getId());
-        jasperPrint = reportService.generateSampleRequest(product, userSession.getLoggedInUserObj());
+        jasperPrint = reportService.generateSampleRequest(product, userService.findUser(userSession.getLoggedINUserID()));
         javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=sample_req_letter.pdf");
         httpServletResponse.setContentType("application/pdf");
@@ -170,7 +172,7 @@ public class ProcessProdBnET implements Serializable {
         processProdBn.save();
         sampleTest.setLetterGenerated(true);
         sampleTest.setProdApplications(processProdBn.getProdApplications());
-        sampleTest.setUser(userSession.getLoggedInUserObj());
+        sampleTest.setUser(userService.findUser(userSession.getLoggedINUserID()));
         RetObject retObject = sampleTestService.saveSample(sampleTest);
         if(retObject.getMsg().equals("persist")) {
             sampleTest = (SampleTest) retObject.getObj();
@@ -245,7 +247,7 @@ public class ProcessProdBnET implements Serializable {
 //        timeLine = new TimeLine();
         timeLine.setRegState(RegState.FOLLOW_UP);
         timeLine.setStatusDate(new Date());
-        timeLine.setUser(userSession.getLoggedInUserObj());
+        timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
         processProdBn.setTimeLine(timeLine);
         addTimeline();
         return "";
@@ -261,7 +263,7 @@ public class ProcessProdBnET implements Serializable {
 //        timeLine = new TimeLine();
         timeLine.setRegState(RegState.DEFAULTED);
         timeLine.setStatusDate(new Date());
-        timeLine.setUser(userSession.getLoggedInUserObj());
+        timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
         processProdBn.setTimeLine(timeLine);
         addTimeline();
         return "";
@@ -400,5 +402,13 @@ public class ProcessProdBnET implements Serializable {
 
     public void setAttach(boolean attach) {
         this.attach = attach;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

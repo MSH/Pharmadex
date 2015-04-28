@@ -5,7 +5,7 @@ import org.msh.pharmadex.domain.enums.ProdAppType;
 /**
  * Created by utkarsh on 1/20/15.
  */
-public class ProdApp {
+public class ProdAppInit {
 
     private ProdAppType prodAppType;
     private String[] selSRA;

@@ -70,7 +70,7 @@ public class ProcessRxSiteBn {
 
         }
         selectedSite.setState(ApplicantState.REGISTERED);
-        pharmacySiteService.updateApp(selectedSite, userSession.getLoggedInUserObj());
+        pharmacySiteService.updateApp(selectedSite, userService.findUser(userSession.getLoggedINUserID()));
         globalEntityLists.setPharmacySites(null);
         HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processRxSiteBn", null);

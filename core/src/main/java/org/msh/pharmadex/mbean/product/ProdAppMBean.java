@@ -10,6 +10,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.io.Serializable;
 import java.util.List;
 
@@ -42,6 +44,7 @@ public class ProdAppMBean implements Serializable {
     private List<ProdApplications> filteredApps;
     private List<ProdApplications> pendingRenewals;
 
+
     public String onRowSelect() {
 //        setShowAdd(true);
 //        FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -50,8 +53,15 @@ public class ProdAppMBean implements Serializable {
         return "/internal/processreg.faces";
     }
 
+    public String sentToDetail(Long id){
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("prodAppID", id);
+        return "/internal/processreg?faces-redirect=true";
+    }
+
     @PostConstruct
     private void init() {
+
     }
 
     public String cancelApp() {
@@ -63,7 +73,7 @@ public class ProdAppMBean implements Serializable {
 
     public List<ProdApplications> getPendingRenewals() {
         if (pendingRenewals == null)
-            pendingRenewals = invoiceService.findPendingByApplicant(userSession.getLoggedInUserObj());
+            pendingRenewals = invoiceService.findPendingByApplicant(userSession.getApplcantID());
         return pendingRenewals;
     }
 
@@ -91,7 +101,7 @@ public class ProdAppMBean implements Serializable {
 
     public List<ProdApplications> getSavedAppList() {
         if (savedAppList == null)
-            savedAppList = prodApplicationsService.findSavedApps(userSession.getLoggedInUserObj());
+            savedAppList = prodApplicationsService.findSavedApps(userSession.getLoggedINUserID());
         return savedAppList;
     }
 

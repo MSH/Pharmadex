@@ -16,7 +16,7 @@
 
                     <h:panelGroup styleClass="ui-widget">
                         <ui:decorate template="/templates/prodbannertempl.xhtml">
-                            <ui:param name="product" value="#{processProdBn.product}"/>
+                            <ui:param name="prodApp" value="#{processProdBn.prodApplications}"/>
                         </ui:decorate>
 
                         <pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
@@ -32,7 +32,9 @@
                                    activeIndex="#{processProdBn.selectedTab}" dynamic="true">
                             <p:tab title="#{msgs.application_info}" id="infotab">
                                 <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                                    <ui:param name="prodData" value="#{processProdBn.product}"/>
+                                    <ui:param name="prodAppData" value="#{processProdBn.prodApplications}"/>
+                                    <ui:param name="foreignAppStatus" value="#{processProdBn.foreignAppStatuses}"/>
+                                    <ui:param name="prodAppChecklists" value="#{processProdBn.prodAppChecklists}"/>
                                 </ui:decorate>
                             </p:tab>
 
@@ -240,7 +242,7 @@
         </h:form>
 
         <p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false"
-                  id="moderatordlg" modal="true"
+                  id="moderatordlg" modal="true" dynamic="true"
                   rendered="#{userSession.head||userSession.admin||userSession.staff}">
             <h:form>
 
@@ -266,7 +268,7 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
-                  modal="true">
+                  modal="true" dynamic="true">
             <h:form prependId="false">
             <h:panelGrid columns="2" style="margin-bottom:10px">
                 <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
@@ -291,7 +293,7 @@
         </p:dialog>
 
 
-        <p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true"
+        <p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true" dynamic="true"
                   rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head||userSession.staff||userSession.moderator}">
         <h:form enctype="multipart/form-data">
             <h:panelGrid columns="2" style="margin-bottom:10px">
@@ -312,12 +314,12 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.issue_invoice}" widgetVar="invoicedlg" resizable="true" id="invoicedlg"
-                  modal="true">
+                  modal="true" rendered="false" dynamic="true">
             <h:form>
             <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
                          cellspacing="10">
                 <p:outputLabel value="#{msgs.reg_number}"/>
-                <h:outputText value="#{renewalMbn.selProd.regNo}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
 
                 <p:outputLabel value="#{msgs.prodName}"/>
                 <h:outputText value="#{renewalMbn.selProd.prodName}"/>
@@ -326,14 +328,14 @@
                 <h:outputText value="#{renewalMbn.selProd.genName}"/>
 
                 <p:outputLabel value="#{msgs.applicant_name}"/>
-                <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
 
                 <p:outputLabel value="#{msgs.expiry_date}"/>
-                <h:outputText value="#{renewalMbn.selProd.prodApplications.regExpiryDate}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
 
                 <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
                 <p:calendar value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"
-                            showOn="button"/>
+                            showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"/>
 
                 <p:outputLabel value="#{msgs.invoice_amt}" for="invamt"/>
                 <p:inputText value="#{renewalMbn.invoice.invoiceAmt}" id="invamt"/>
@@ -355,13 +357,13 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.report_payment}" widgetVar="reportpaymentdlg" resizable="true"
-                  id="reportpaymentdlg"
+                  id="reportpaymentdlg" dynamic="true"
                   modal="true">
         <h:form>
             <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
                          cellspacing="10">
                 <p:outputLabel value="#{msgs.reg_number}"/>
-                <h:outputText value="#{renewalMbn.selProd.regNo}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
 
                 <p:outputLabel value="#{msgs.prodName}"/>
                 <h:outputText value="#{renewalMbn.selProd.prodName}"/>
@@ -370,10 +372,10 @@
                 <h:outputText value="#{renewalMbn.selProd.genName}"/>
 
                 <p:outputLabel value="#{msgs.applicant_name}"/>
-                <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
 
                 <p:outputLabel value="#{msgs.expiry_date}"/>
-                <h:outputText value="#{renewalMbn.selProd.prodApplications.regExpiryDate}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
 
                 <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
                 <h:outputText value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"/>
@@ -407,12 +409,12 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.renew}" widgetVar="renewdlg" resizable="true" id="renewdlg"
-                  modal="true">
+                  modal="true" dynamic="true">
         <h:form>
             <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
                          cellspacing="10">
                 <p:outputLabel value="#{msgs.reg_number}"/>
-                <h:outputText value="#{renewalMbn.selProd.regNo}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
 
                 <p:outputLabel value="#{msgs.prodName}"/>
                 <h:outputText value="#{renewalMbn.selProd.prodName}"/>
@@ -421,7 +423,7 @@
                 <h:outputText value="#{renewalMbn.selProd.genName}"/>
 
                 <p:outputLabel value="#{msgs.applicant_name}"/>
-                <h:outputText value="#{renewalMbn.selProd.applicant.appName}"/>
+                <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
 
                 <p:outputLabel value="#{msgs.expiry_date}"/>
                 <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
@@ -457,7 +459,7 @@
 
 
         <p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment" showEffect="fade" hideEffect="fade"
-                  modal="true"
+                  modal="true" dynamic="true"
                   id="dlgAmdment" width="800px" height="500px">
         <h:form id="amdmtCatFrm">
             <ui:include src="amdmtCategoryDlg.xhtml"/>
@@ -465,7 +467,7 @@
         </p:dialog>
 
 
-        <p:dialog header="#{msgs.send_mail}" widgetVar="maildlg" resizable="false" modal="true">
+        <p:dialog header="#{msgs.send_mail}" widgetVar="maildlg" resizable="false" modal="true" dynamic="true">
         <h:form>
             <h:panelGrid columns="2" style="margin-bottom:10px">
                 <h:outputLabel for="tomail" value="#{msgs.mail_to}"/>
@@ -486,17 +488,17 @@
 
 
         <p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
-                >
+                  dynamic="true">
             <h:form id="regdatedlg">
                 <h:panelGrid columns="2" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.registration_date}"/>
                     <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
-                                required="true">
+                                required="true" pattern="#{userAccessMBean.workspace.datePattern}">
                         <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
                     </p:calendar>
                     <p:outputLabel value="#{msgs.expiry_date}"/>
                     <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
-                                required="true"/>
+                                required="true" pattern="#{userAccessMBean.workspace.datePattern}"/>
 
                 </h:panelGrid>
 
@@ -507,7 +509,7 @@
 
         </p:dialog>
 
-        <p:dialog header="#{msgs.add_comment}" widgetVar="dlg" resizable="false" id="commentdlg" modal="true">
+        <p:dialog header="#{msgs.add_comment}" widgetVar="dlg" resizable="false" id="commentdlg" modal="true" dynamic="true">
             <h:form id="addCommentFrm">
                 <h:panelGrid columns="2" style="margin-bottom:10px">
                     <h:outputLabel for="commenttext" value="Enter Comment:"/>
@@ -525,7 +527,7 @@
 
 
         <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
-                  resizable="false">
+                  resizable="false" dynamic="true">
             <p:graphicImage value="/resources/images/ajax-loader.gif"/>
         </p:dialog>
 

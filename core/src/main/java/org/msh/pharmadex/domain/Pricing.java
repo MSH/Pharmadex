@@ -31,14 +31,23 @@ public class Pricing extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String treatCost;
 
+    @OneToOne
+    @JoinColumn(name = "PROD_ID")
+    private Product product;
+
     @OneToMany(mappedBy = "pricing", cascade = CascadeType.ALL)
     private List<DrugPrice> drugPrices;
 
     public Pricing() {
     }
 
-    public Pricing(ArrayList<DrugPrice> drugPrices) {
+    public Pricing(List<DrugPrice> drugPrices) {
         this.drugPrices = drugPrices;
+    }
+
+    public Pricing(List<DrugPrice> drugPrices, Product product) {
+        this.drugPrices = drugPrices;
+        this.product = product;
     }
 
     public List<DrugPrice> getDrugPrices() {
@@ -87,5 +96,13 @@ public class Pricing extends CreationDetail implements Serializable {
 
     public void setTreatCost(String treatCost) {
         this.treatCost = treatCost;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }
