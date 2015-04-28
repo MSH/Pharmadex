@@ -10,23 +10,23 @@
         </div>
 
         <h:form prependId="false">
-            <h:panelGroup rendered="#{not empty prodAppMBean.pendingRenewals}">
+<!--            <h:panelGroup rendered="#{not empty prodAppMBean.pendingRenewals}"> -->
+            <h:panelGroup rendered="false">
                 <p:outputLabel value="#{msgs.pending_renewals}" style="font-weight: bolder;color: orangered;"/>
                 <p:dataTable id="renewals" var="eachprod" value="#{prodAppMBean.pendingRenewals}"
                              rendered="#{not empty prodAppMBean.pendingRenewals}">
 
                     <p:column headerText="Product Name">
-                        <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}"
+                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
                                        action="/internal/processreg?faces-redirect=true"
                                        ajax="false">
-                            <f:param name="id" value="#{eachprod.prod.id}"/>
-                            <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
-                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{userSession.product}"/>
+                            <f:param name="id" value="#{eachprod.product.id}"/>
+                            <f:setPropertyActionListener value="#{eachprod.id}" target="#{userSession.prodAppID}"/>
                         </p:commandLink>
                     </p:column>
 
                     <p:column headerText="#{msgs.prodgenname}">
-                        #{eachprod.prod.genName}
+                        #{eachprod.product.genName}
                     </p:column>
 
                     <p:column headerText="#{msgs.application_no}">
@@ -38,7 +38,7 @@
                     </p:column>
 
                     <p:column headerText="#{msgs.prod_cat}">
-                        #{msgs[eachprod.prod.prodCategory.key]}
+                        #{msgs[eachprod.product.prodCategory.key]}
                     </p:column>
 
                     <p:column headerText="Date Submitted">
@@ -46,7 +46,7 @@
                     </p:column>
 
                     <p:column headerText="Manufacturer Name">
-                        #{eachprod.prod.manufName}
+                        #{eachprod.product.manufName}
                     </p:column>
 
                 </p:dataTable>
@@ -63,19 +63,16 @@
 
                 <p:column headerText="Product Name">
                     <p:column headerText="Product Name">
-                        <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}"
-                                       action="/internal/processreg?faces-redirect=true"
+                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
+                                       action="#{prodAppMBean.sentToDetail(eachprod.id)}"
                                        ajax="false">
-                            <f:param name="id" value="#{eachprod.prod.id}"/>
-                            <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
-                            <f:setPropertyActionListener value="#{eachprod.getProd()}" target="#{userSession.product}"/>
                         </p:commandLink>
                     </p:column>
                 </p:column>
 
 
                 <p:column headerText="Generic Name">
-                    #{eachprod.prod.genName}
+                    #{eachprod.product.genName}
                 </p:column>
 
                 <p:column headerText="#{msgs.application_no}">
@@ -87,7 +84,7 @@
                 </p:column>
 
                 <p:column headerText="#{msgs.prod_cat}">
-                    #{msgs[eachprod.prod.prodCategory.key]}
+                    #{msgs[eachprod.product.prodCategory.key]}
                 </p:column>
 
                 <p:column headerText="Date Submitted">
@@ -95,7 +92,7 @@
                 </p:column>
 
                 <p:column headerText="Manufacturer Name">
-                    #{eachprod.prod.manufName}
+                    #{eachprod.product.manufName}
                 </p:column>
 
             </p:dataTable>

@@ -35,7 +35,7 @@
                     <f:selectItems value="#{userController.itemsAvailableSelectOne}"/>
                 </p:selectOneMenu>
                 <h:outputLabel styleClass="label" value="#{bundle.CreateProductLabel_regNo}" for="regNo"/>
-                <p:inputText id="regNo" value="#{productController.selected.regNo}"
+                <p:inputText id="regNo" value="#{productController.selected.prodRegNo}"
                              title="#{bundle.CreateProductTitle_regNo}"/>
                 <h:outputLabel styleClass="label" value="#{bundle.CreateProductLabel_pharmClassif}" for="pharmClassif"/>
                 <p:selectOneMenu id="pharmClassif" value="#{productController.selected.pharmClassif}"

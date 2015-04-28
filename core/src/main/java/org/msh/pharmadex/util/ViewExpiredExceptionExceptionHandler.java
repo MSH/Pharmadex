@@ -76,7 +76,7 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 StringWriter errors = new StringWriter();
                 t.printStackTrace(new PrintWriter(errors));
                 errorLog.setStackTrace(errors.toString().substring(0, 255));
-                errorLog.setUser(userSession.getLoggedInUserObj());
+//                errorLog.setUser(userSession);
                 errorLogDAO.save(errorLog);
 
 

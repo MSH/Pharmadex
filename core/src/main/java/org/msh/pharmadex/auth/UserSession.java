@@ -1,12 +1,11 @@
 package org.msh.pharmadex.auth;
 
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.mbean.product.ProdApp;
+import org.msh.pharmadex.mbean.product.ProdAppInit;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.UserAccessService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
-import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,15 +38,13 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private UserAccess userAccess;
     private boolean displayMessagesKeys;
     private String loggedInUser;
-    private User loggedInUserObj;
-    private Applicant applicant;
-    private Product product;
-    private UploadedFile file;
-    private ProdApplications prodApplications;
-    private Review review;
+//    private User loggedInUserObj;
+    private Long loggedINUserID;
+    private Long reviewID;
     private Long reviewInfoID;
     private Long applcantID;
     private Long prodID;
+    private Long prodAppID;
     private boolean admin = false;
     private boolean company = false;
     private boolean staff = false;
@@ -61,7 +58,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
     private DisplayReviewInfo displayReviewInfo;
-    private ProdApp prodApp;
+    private ProdAppInit prodAppInit;
     private String workspaceName;
     private boolean ethiopia;
 
@@ -133,7 +130,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         // get client information
         String ipAddr = request.getRemoteAddr();
         String app = request.getHeader("User-Agent");
-        user = userService.findUser(user.getUserId());
+//        user = userService.findUser(user.getUserId());
 
         // register new login
         userAccess = new UserAccess();
@@ -143,8 +140,8 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         userAccess.setIpAddress(ipAddr);
         onlineUserBean.add(userAccess);
         userAccessService.saveUserAccess(userAccess);
-        setLoggedInUserObj(user);
-        setApplicant(user.getApplicant());
+        setLoggedINUserID(user.getUserId());
+        setApplcantID(user.getApplicant()!=null?user.getApplicant().getApplcntId():null);
         setWorkspaceParam();
         loadUserRoles();
     }
@@ -307,17 +304,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.displayMessagesKeys = displayMessagesKeys;
     }
 
-    public User getLoggedInUserObj() {
-        if (userAccess != null)
-            return userAccess.getUser();
-        else
-            return null;
-    }
-
-    public void setLoggedInUserObj(User loggedInUserObj) {
-        this.loggedInUserObj = loggedInUserObj;
-    }
-
     public boolean isAdmin() {
         return admin;
     }
@@ -398,46 +384,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.displayPricing = displayPricing;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public ProdApplications getProdApplications() {
-        return prodApplications;
-    }
-
-    public void setProdApplications(ProdApplications prodApplications) {
-        this.prodApplications = prodApplications;
-    }
-
-    public Review getReview() {
-        return review;
-    }
-
-    public void setReview(Review review) {
-        this.review = review;
-    }
-
-    public UploadedFile getFile() {
-        return file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
-    public Applicant getApplicant() {
-        return applicant;
-    }
-
-    public void setApplicant(Applicant applicant) {
-        this.applicant = applicant;
-    }
-
     public Long getApplcantID() {
         return applcantID;
     }
@@ -478,14 +424,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.reviewInfoID = reviewInfoID;
     }
 
-    public DisplayReviewInfo getDisplayReviewInfo() {
-        return displayReviewInfo;
-    }
-
-    public void setDisplayReviewInfo(DisplayReviewInfo displayReviewInfo) {
-        this.displayReviewInfo = displayReviewInfo;
-    }
-
     public String getLicHolderID() {
         return licHolderID;
     }
@@ -500,14 +438,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
     public void setPipOrderID(String pipOrderID) {
         this.pipOrderID = pipOrderID;
-    }
-
-    public ProdApp getProdApp() {
-        return prodApp;
-    }
-
-    public void setProdApp(ProdApp prodApp) {
-        this.prodApp = prodApp;
     }
 
     public String getWorkspaceName() {
@@ -572,5 +502,45 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
     public void setProdID(Long prodID) {
         this.prodID = prodID;
+    }
+
+    public Long getProdAppID() {
+        return prodAppID;
+    }
+
+    public void setProdAppID(Long prodAppID) {
+        this.prodAppID = prodAppID;
+    }
+
+    public Long getReviewID() {
+        return reviewID;
+    }
+
+    public void setReviewID(Long reviewID) {
+        this.reviewID = reviewID;
+    }
+
+    public DisplayReviewInfo getDisplayReviewInfo() {
+        return displayReviewInfo;
+    }
+
+    public void setDisplayReviewInfo(DisplayReviewInfo displayReviewInfo) {
+        this.displayReviewInfo = displayReviewInfo;
+    }
+
+    public ProdAppInit getProdAppInit() {
+        return prodAppInit;
+    }
+
+    public void setProdAppInit(ProdAppInit prodAppInit) {
+        this.prodAppInit = prodAppInit;
+    }
+
+    public Long getLoggedINUserID() {
+        return loggedINUserID;
+    }
+
+    public void setLoggedINUserID(Long loggedINUserID) {
+        this.loggedINUserID = loggedINUserID;
     }
 }

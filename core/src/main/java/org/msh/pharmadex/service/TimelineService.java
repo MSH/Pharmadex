@@ -2,10 +2,7 @@ package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.iface.TimelineDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +44,8 @@ public class TimelineService implements Serializable {
         TimeLine timeline;
         if (msg.equals("success")) {
             timeline = timelineDAO.saveAndFlush(timeLine);
-            timeline.setProdApplications(prodApplicationsService.updateProdApp(timeline.getProdApplications()));
+            retObject = prodApplicationsService.updateProdApp(timeline.getProdApplications(), timeline.getUser().getUserId());
+            timeline.setProdApplications((ProdApplications) retObject.getObj());
             retObject.setObj(timeline);
             retObject.setMsg("persist");
         } else {
@@ -82,7 +80,8 @@ public class TimelineService implements Serializable {
                 if (reviewInfos == null || reviewInfos.size() == 0)
                     return "valid_assign_reviewer";
             } else {
-                if (prodApplications.getReviews().size() == 0)
+                List<Review> reviews = reviewService.findReviews(prodApplications.getId());
+                if (reviews.size() == 0)
                     return "valid_assign_reviewer";
             }
         }

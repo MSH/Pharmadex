@@ -97,7 +97,7 @@ public class UserService implements Serializable {
     }
 
     public String changePwd(User user, String oldpwd, String newpwd1) {
-        if (verifyUser(user, oldpwd)) return "PWDERROR";
+        if (verifyUser(user.getUserId(), oldpwd)) return "PWDERROR";
 
         user.setPassword(newpwd1);
         user = passwordGenerator(user);
@@ -105,9 +105,9 @@ public class UserService implements Serializable {
         return "persisted";
     }
 
-    public boolean verifyUser(User user, String oldpwd) {
-        User userFromDb = userDAO.findByUsername(user.getUsername());
-        Object salt = saltSource.getSalt(new UserDetailsAdapter(user));
+    public boolean verifyUser(Long userID, String oldpwd) {
+        User userFromDb = userDAO.findUser(userID);
+        Object salt = saltSource.getSalt(new UserDetailsAdapter(userFromDb));
 
         if (!passwordEncoder.isPasswordValid(userFromDb.getPassword(), oldpwd, salt))
             return true;

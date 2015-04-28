@@ -33,7 +33,7 @@ public class TimeLine implements Serializable {
     @JoinColumn(name = "PROD_APP_ID", nullable = false)
     private ProdApplications prodApplications;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 

@@ -38,7 +38,7 @@ public class TimelineServiceET extends TimelineService implements Serializable {
             if(prodApplications.getModerator()==null)
                 return "valid_assign_moderator";
         } else if (timeLine.getRegState().equals(RegState.REVIEW_BOARD) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-            if(prodApplications.getReviews().size()==0)
+            if(reviewService.findReviews(prodApplications.getId()).size()==0)
                 return "valid_assign_reviewer";
         }
         return "success";

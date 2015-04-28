@@ -48,8 +48,8 @@ public class ReviewService implements Serializable {
     @Autowired
     private ReviewDetailDAO reviewDetailDAO;
 
-    public Review findReview(Review review) {
-        review = reviewDAO.findOne(review.getId());
+    public Review findReview(Long reviewID) {
+        Review review = reviewDAO.findOne(reviewID);
 //        List<ReviewChecklist> reviewChecklists = review.getReviewChecklists();
 //        if (reviewChecklists.size() < 1) {
 //            reviewChecklists = new ArrayList<ReviewChecklist>();

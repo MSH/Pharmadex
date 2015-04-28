@@ -34,6 +34,9 @@ public class Workspace extends CreationDetail implements Serializable {
     @Column
     private boolean detailReview;
 
+    @Column
+    private String datePattern;
+
     public String getName() {
         return name;
     }
@@ -80,5 +83,13 @@ public class Workspace extends CreationDetail implements Serializable {
 
     public void setDetailReview(boolean detailReview) {
         this.detailReview = detailReview;
+    }
+
+    public void setDatePattern(String datePattern) {
+        this.datePattern = datePattern;
+    }
+
+    public String getDatePattern() {
+        return datePattern;
     }
 }
