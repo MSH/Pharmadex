@@ -96,10 +96,13 @@ public class LicenseHolderService implements Serializable {
             return null;
         }
 
-        AgentInfo agentInfo = agentInfoDAO.findByApplicant_applcntIdAndAgentType(applcntId, AgentType.FIRST);
-        if(agentInfo!=null)
-            licenseHolder = agentInfo.getLicenseHolder();
-
+        List<AgentInfo> agentInfos = agentInfoDAO.findByApplicant_applcntIdAndAgentType(applcntId, AgentType.FIRST);
+        if(agentInfos!=null) {
+            for(AgentInfo agentInfo : agentInfos) {
+                if(agentInfo.getStartDate().before(new Date())&&agentInfo.getEndDate().after(new Date()))
+                    licenseHolder = agentInfo.getLicenseHolder();
+            }
+        }
         return licenseHolder;
     }
 }

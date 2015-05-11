@@ -20,11 +20,11 @@
                         rendered="#{processProdBn.canReject}"/>
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
-                        action="#{processProdBn.findReview}" ajax="false"/>
+                        action="#{prodReviewBn.findReview}" ajax="false"/>
 
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
-                        action="#{processProdBn.findReviewInfo}" ajax="false"/>
+                        action="#{prodReviewBn.findReviewInfo}" ajax="false"/>
 
             <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" ajax="false" icon="ui-icon-extlink"/>
 

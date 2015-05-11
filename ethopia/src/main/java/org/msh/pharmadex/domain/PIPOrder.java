@@ -34,7 +34,7 @@ public class PIPOrder extends CreationDetail implements Serializable {
     private String paymentMethod;
 
     @Column(length = 255)
-    private String fileNumber;
+    private String entryPort;
 
     @Column(length = 500)
     private String comment;
@@ -44,6 +44,9 @@ public class PIPOrder extends CreationDetail implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date approvalDate;
+
+    @Temporal(TemporalType.DATE)
+    private Date expiryDate;
 
     @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PIPOrderChecklist> pipOrderChecklists;
@@ -101,14 +104,6 @@ public class PIPOrder extends CreationDetail implements Serializable {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-
-    public String getFileNumber() {
-        return fileNumber;
-    }
-
-    public void setFileNumber(String fileNumber) {
-        this.fileNumber = fileNumber;
     }
 
     public String getComment() {
@@ -181,5 +176,21 @@ public class PIPOrder extends CreationDetail implements Serializable {
 
     public void setApplicantUser(User applicantUser) {
         this.applicantUser = applicantUser;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public String getEntryPort() {
+        return entryPort;
+    }
+
+    public void setEntryPort(String entryPort) {
+        this.entryPort = entryPort;
     }
 }

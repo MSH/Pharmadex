@@ -164,5 +164,19 @@ public class LicHolderBn implements Serializable {
         this.agentInfo = agentInfo;
     }
 
+    public UserService getUserService() {
+        return userService;
+    }
 
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

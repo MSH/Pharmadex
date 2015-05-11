@@ -32,67 +32,18 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>all-themes</artifactId>
+            <version>1.0.9</version>
+        </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>${jasperreports.version}</version>
         </dependency>
 
-
-        <!-- JSF Dependencies -->
-        <dependency>
-            <groupId>org.primefaces</groupId>
-            <artifactId>primefaces</artifactId>
-            <version>5.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>all-themes</artifactId>
-            <version>1.0.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.primefaces.extensions</groupId>
-            <artifactId>primefaces-extensions</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.omnifaces</groupId>
-            <artifactId>omnifaces</artifactId>
-            <version>1.8.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-api</artifactId>
-            <version>2.2.7</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-impl</artifactId>
-            <version>2.2.7</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>south-street</artifactId>
-            <version>1.0.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>1.7.1.RELEASE</version>
-        </dependency>
-
-
     </dependencies>
-
     <repositories>
         <repository>
             <id>core</id>
@@ -121,6 +72,30 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/reports</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/jasperreports/</directory>
+                                    <includes>
+                                        <include>*.png</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Jasper reports plugin to compile the jrxml report -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -147,9 +122,8 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
         </plugins>
 
-        <finalName>ethopia</finalName>
+        <finalName>ethiopia</finalName>
     </build>
 </project>

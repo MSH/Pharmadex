@@ -794,7 +794,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public StreamedContent fileDownload() {
-        byte[] file1 = sampleTest.getFile();
+        byte[] file1 = getSampleTest().getFile();
         InputStream ist = new ByteArrayInputStream(file1);
         StreamedContent download = new DefaultStreamedContent(ist);
 //        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
@@ -810,7 +810,7 @@ public class ProcessProdBn implements Serializable {
             msg = new FacesMessage(resourceBundle.getString("global.success"), file.getFileName() + resourceBundle.getString("upload_success"));
             facesContext.addMessage(null, msg);
             try {
-                sampleTest.setFile(IOUtils.toByteArray(file.getInputstream()));
+                getSampleTest().setFile(IOUtils.toByteArray(file.getInputstream()));
                 saveSample();
             } catch (IOException e) {
                 msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
@@ -845,12 +845,13 @@ public class ProcessProdBn implements Serializable {
 
     public void saveSample() {
         save();
-        sampleTest.setLetterGenerated(true);
-        sampleTest.setProdApplications(prodApplications);
-        sampleTest.setUser(loggedInUser);
+        SampleTest sampleTest1 = getSampleTest();
+        sampleTest1.setLetterGenerated(true);
+        sampleTest1.setProdApplications(prodApplications);
+        sampleTest1.setUser(loggedInUser);
         RetObject retObject = sampleTestService.saveSample(sampleTest);
         if (retObject.getMsg().equals("persist")) {
-            sampleTest = (SampleTest) retObject.getObj();
+            sampleTest1 = (SampleTest) retObject.getObj();
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error saving sample"));
         }

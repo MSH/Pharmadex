@@ -17,7 +17,7 @@ public class PIPProd extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 255, nullable = true)
     private String productNo;
 
     @Column(length = 255, nullable = false)

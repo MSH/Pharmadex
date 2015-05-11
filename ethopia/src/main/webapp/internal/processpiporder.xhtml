@@ -112,6 +112,10 @@
                             <p:outputLabel id="shipinst" required="true"
                                            value="#{processPIPOrderBn.pipOrder.shippingInstruction}"/>
 
+                            <p:outputLabel value="#{msgs.portof_entry}" for="port"/>
+                            <p:outputLabel id="port" required="true"
+                                           value="#{processPIPOrderBn.pipOrder.entryPort}"/>
+
                             <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
                             <p:outputLabel id="delivery" required="true"
                                            value="#{processPIPOrderBn.pipOrder.delivery}"/>
@@ -119,9 +123,6 @@
                             <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
                             <p:outputLabel id="payinfo" required="true"
                                            value="#{processPIPOrderBn.pipOrder.paymentMethod}"/>
-
-                            <p:outputLabel value="#{msgs.file_number}" for="filno"/>
-                            <p:outputLabel id="filno" value="#{processPIPOrderBn.pipOrder.fileNumber}"/>
 
                             <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                             <p:outputLabel id="comment" value="#{processPIPOrderBn.pipOrder.comment}"/>
