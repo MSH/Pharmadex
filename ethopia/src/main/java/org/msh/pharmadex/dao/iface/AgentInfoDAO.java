@@ -16,6 +16,6 @@ public interface AgentInfoDAO extends JpaRepository<AgentInfo, Long> {
 
     public List<AgentInfo> findByLicenseHolder_Id(Long id);
 
-    public AgentInfo findByApplicant_applcntIdAndAgentType(Long applicantId, AgentType agentType);
+    public List<AgentInfo> findByApplicant_applcntIdAndAgentType(Long applicantId, AgentType agentType);
 
 }

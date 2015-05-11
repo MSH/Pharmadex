@@ -7,14 +7,14 @@
 <h:panelGroup id = "app_lh_user">
 
     <p:panel header="#{msgs.license_holder}" rendered="#{not empty regHomeData.applicant.applcntId and displayLH}" id="lic_holder_detail">
-        <h:panelGroup rendered="#{not empty regHomeMbeanET.licenseHolder.id}">
+        <h:panelGroup rendered="#{not empty prodRegAppMbeanET.licenseHolder.id}">
             <ui:decorate template="/templates/licholderdetailtmpl.xhtml">
-                <ui:param name="licholderdata" value="#{regHomeMbeanET.licenseHolder}"/>
+                <ui:param name="licholderdata" value="#{prodRegAppMbeanET.licenseHolder}"/>
                 <ui:param name="input" value="false"/>
             </ui:decorate>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{empty regHomeMbeanET.licenseHolder.id}">
+        <h:panelGroup rendered="#{empty prodRegAppMbeanET.licenseHolder.id}">
             <p:outputLabel
                     value="You are not an agent for License holder. Please complete the agency agreement before you register product"
                     styleClass="ui-message-warn"/>

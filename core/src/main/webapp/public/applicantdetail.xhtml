@@ -55,7 +55,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.prodName}"/>
                                 </f:facet>
-                                <p:commandLink id="viewLink" value="#{prodApps.product.prodName}" action="#{applicantHome.sentToDetail(prodApps.id)}"
+                                <p:commandLink id="viewLink" value="#{prodApps.product.prodName}" action="#{applicantHome.sentToDetail(prodApps.product.id)}"
                                                ajax="false">
                                 </p:commandLink>
                             </p:column>
