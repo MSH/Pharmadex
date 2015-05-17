@@ -238,6 +238,7 @@ public class ProcessProdBn implements Serializable {
         if (prodAppID != null) {
             prodApplications = prodApplicationsService.findProdApplications(prodAppID);
             setFieldValues();
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
         }
     }
 

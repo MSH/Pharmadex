@@ -64,8 +64,7 @@ public class ProcessPurOrderBn {
     }
 
     public String approveOrder() {
-        facesContext = FacesContext.getCurrentInstance();
-        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext,"msgs");
+        resourceBundle = FacesContext.getCurrentInstance().getApplication().getResourceBundle(facesContext,"msgs");
         if(purOrder.getState().equals(AmdmtState.RECOMMENDED)) {
             purOrder.setState(AmdmtState.APPROVED);
             purOrder.setApprovalDate(new Date());

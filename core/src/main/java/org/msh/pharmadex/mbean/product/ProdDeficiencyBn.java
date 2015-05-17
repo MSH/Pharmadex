@@ -113,6 +113,7 @@ public class ProdDeficiencyBn implements Serializable {
             for (ProdAppChecklist pacs : prodAppChecklists) {
                 pacs.setSendToApp(!pacs.isStaffValue());
             }
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
         }
     }
 

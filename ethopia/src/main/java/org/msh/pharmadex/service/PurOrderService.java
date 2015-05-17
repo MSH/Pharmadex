@@ -90,7 +90,7 @@ public class PurOrderService implements Serializable{
         try {
             purOrder = purOrderDAO.findOne(purOrderID);
             Hibernate.initialize(purOrder.getPurProds());
-            Hibernate.initialize(purOrder.getPurOrderChecklists());
+//            Hibernate.initialize(purOrder.getPurOrderChecklists());
             Hibernate.initialize(purOrder.getApplicant());
             Hibernate.initialize(purOrder.getCreatedBy());
         } catch (Exception ex) {

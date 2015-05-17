@@ -29,6 +29,9 @@ public class Workspace extends CreationDetail implements Serializable {
     private int prodRegDuration;
 
     @Column
+    private int pipRegDuration;
+
+    @Column
     private boolean displatPricing;
 
     @Column
@@ -91,5 +94,13 @@ public class Workspace extends CreationDetail implements Serializable {
 
     public String getDatePattern() {
         return datePattern;
+    }
+
+    public int getPipRegDuration() {
+        return pipRegDuration;
+    }
+
+    public void setPipRegDuration(int pipRegDuration) {
+        this.pipRegDuration = pipRegDuration;
     }
 }

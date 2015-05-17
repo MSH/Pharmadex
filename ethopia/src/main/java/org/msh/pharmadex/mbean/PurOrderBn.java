@@ -4,10 +4,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.mbean.product.ProdTable;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.ProductService;
-import org.msh.pharmadex.service.PurOrderService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -35,46 +32,42 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class PurOrderBn implements Serializable {
+public class PurOrderBn extends POrderBn {
     private static final Logger logger = LoggerFactory.getLogger(PurOrderBn.class);
     FacesContext context = FacesContext.getCurrentInstance();
     java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
-    @ManagedProperty(value = "#{purOrderService}")
-    private PurOrderService purOrderService;
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
-    @ManagedProperty(value = "#{userService}")
-    private UserService userService;
+
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
+
     @ManagedProperty(value = "#{productService}")
     private ProductService productService;
-    private PurOrder purOrder;
-    private PurProd purProd;
+
     private List<PurProd> purProds;
-    private List<PurOrderChecklist> purOrderChecklists;
-    private User applicantUser;
-    private Applicant applicant;
-    private Product product;
+    private PurOrder purOrder;
+    private List<POrderChecklist> pOrderChecklists;
+    private PurProd purProd;
+    private ProdTable product;
 
     @PostConstruct
     private void init() {
         purOrder = new PurOrder();
-        if (userSession.isCompany()) {
-            applicantUser = userService.findUser(userSession.getLoggedINUserID());
-            applicant = applicantUser.getApplicant();
+        if (getUserSession().isCompany()) {
+            User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
+            setApplicantUser(applicantUser);
+            setApplicant(applicantUser.getApplicant());
             purOrder.setCreatedBy(applicantUser);
             purOrder.setApplicantUser(applicantUser);
         }
 
-        purOrderChecklists = new ArrayList<PurOrderChecklist>();
-        List<PIPOrderLookUp> allChecklist = purOrderService.findPurOrderCheckList();
-        PurOrderChecklist eachCheckList;
+        pOrderChecklists = new ArrayList<POrderChecklist>();
+        List<PIPOrderLookUp> allChecklist = findAllChecklists();
+        POrderChecklist eachCheckList;
         for (int i = 0; allChecklist.size() > i; i++) {
-            eachCheckList = new PurOrderChecklist();
+            eachCheckList = new POrderChecklist();
             eachCheckList.setPipOrderLookUp(allChecklist.get(i));
             eachCheckList.setPurOrder(purOrder);
-            purOrderChecklists.add(eachCheckList);
+            pOrderChecklists.add(eachCheckList);
         }
     }
 
@@ -89,10 +82,28 @@ public class PurOrderBn implements Serializable {
         return suggestions;
     }
 
+    @Override
+    public void addDocument() {
+//        file = userSession.getFile();
+        getpOrderDoc().setPurOrder(purOrder);
+//        getpOrderService().save(getpOrderDoc());
+        setpOrderDocs(null);
+//        userSession.setFile(null);
+        FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+
+    }
+
+
+    @Override
+    protected List<PIPOrderLookUp> findAllChecklists() {
+        return getpOrderService().findPIPCheckList(getApplicant().getApplicantType(), false);
+    }
+
 
     public void initAddProd() {
         purProd = new PurProd();
-        product = new Product();
+        product = new ProdTable();
     }
 
     public void addProd() {
@@ -109,16 +120,20 @@ public class PurOrderBn implements Serializable {
             context.addMessage(null,new FacesMessage("Please select the product."));
         }
 
-        purProd.setPurOrder(purOrder);
+//        purProd.setPurOrder(purOrder);
         purProd.setCreatedDate(new Date());
         purProd.setProductDesc(purProd.getProduct().getProdDesc());
         purProd.setProductName(purProd.getProduct().getProdName());
-//        purProd.setProductNo(purProd.getProduct().getRegNo());
+//        purProd.setProductNo(purProd.getProduct().get);
         purProds.add(purProd);
 
 
         purProd = new PurProd();
-        product = new Product();
+        product = new ProdTable();
+    }
+
+    public String removeProd(PIPProd pipProd) {
+        return null;
     }
 
     public String removeProd(PurProd purProd) {
@@ -138,18 +153,18 @@ public class PurOrderBn implements Serializable {
 
         context = FacesContext.getCurrentInstance();
         purOrder.setSubmitDate(new Date());
-        purOrder.setCreatedBy(applicantUser);
+        purOrder.setCreatedBy(getApplicantUser());
         purOrder.setState(AmdmtState.NEW_APPLICATION);
-        purOrder.setPurOrderChecklists(purOrderChecklists);
+//        purOrder.setPurOrderChecklists(purOrderChecklists);
         purOrder.setPurProds(purProds);
-        purOrder.setApplicant(applicant);
-        purOrder.setApplicantUser(applicantUser);
+        purOrder.setApplicant(getApplicant());
+        purOrder.setApplicantUser(getApplicantUser());
 
 
-        if (userSession.isCompany())
+        if (getUserSession().isCompany())
             purOrder.setApplicant(purOrder.getApplicant());
 
-        RetObject retValue = purOrderService.saveOrder(purOrder);
+        RetObject retValue = getpOrderService().saveOrder(purOrder);
         if (retValue.getMsg().equals("persist")) {
             purOrder = (PurOrder) retValue.getObj();
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
@@ -165,14 +180,11 @@ public class PurOrderBn implements Serializable {
         return "/home.faces";
     }
 
-
-    public UserSession getUserSession() {
-        return userSession;
+    @Override
+    protected ArrayList<POrderDoc> findPOrdersDocs() {
+        return  (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(purOrder);
     }
 
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
 
     public void appChangeListenener(SelectEvent event) {
         logger.error("inside appChangeListenener");
@@ -198,8 +210,9 @@ public class PurOrderBn implements Serializable {
 //            showGMP = false;
         logger.error("inside gmpChangeListener");
         if (product != null && product.getId() != null) {
-            product = productService.findProduct(product.getId());
-            purProd.setProduct(product);
+            Product prod = productService.findProduct(product.getId());
+            purProd.setProduct(prod);
+            purProd.setProductNo(product.getRegNo());
 //            showApp = true;
 //            convertUser(selectedApplicant.getUsers());
 //            if (users.size() > 1) {
@@ -214,21 +227,6 @@ public class PurOrderBn implements Serializable {
 
     }
 
-
-    public List<PurOrderChecklist> getPurOrderChecklists() {
-        if (purOrderChecklists == null) {
-            purOrderChecklists = purOrder.getPurOrderChecklists();
-        }
-        return purOrderChecklists;
-    }
-
-    public void setPurOrderChecklists(List<PurOrderChecklist> purOrderChecklists) {
-        this.purOrderChecklists = purOrderChecklists;
-    }
-
-    public void setPipOrderChecklists(List<PurOrderChecklist> pipOrderChecklists) {
-        this.purOrderChecklists = pipOrderChecklists;
-    }
 
     public List<PurProd> getPurProds() {
         if (purProds == null)
@@ -256,35 +254,11 @@ public class PurOrderBn implements Serializable {
         this.purProd = purProd;
     }
 
-    public User getApplicantUser() {
-        return applicantUser;
-    }
-
-    public void setApplicantUser(User applicantUser) {
-        this.applicantUser = applicantUser;
-    }
-
-    public Applicant getApplicant() {
-        return applicant;
-    }
-
-    public void setApplicant(Applicant applicant) {
-        this.applicant = applicant;
-    }
-
-    public PurOrderService getPurOrderService() {
-        return purOrderService;
-    }
-
-    public void setPurOrderService(PurOrderService purOrderService) {
-        this.purOrderService = purOrderService;
-    }
-
-    public Product getProduct() {
+    public ProdTable getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProdTable product) {
         this.product = product;
     }
 
@@ -304,11 +278,11 @@ public class PurOrderBn implements Serializable {
         this.productService = productService;
     }
 
-    public UserService getUserService() {
-        return userService;
+    public List<POrderChecklist> getpOrderChecklists() {
+        return pOrderChecklists;
     }
 
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setpOrderChecklists(List<POrderChecklist> pOrderChecklists) {
+        this.pOrderChecklists = pOrderChecklists;
     }
 }

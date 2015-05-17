@@ -9,6 +9,7 @@ import java.util.Date;
  */
 public class ProdTable {
     private Long id;
+    private String regNo;
     private String prodName;
     private String genName;
     private ProdCategory prodCategory;
@@ -16,6 +17,7 @@ public class ProdTable {
     private Date regDate;
     private Date regExpiryDate;
     private String manufName;
+    private String prodDesc;
 
     public Long getId() {
         return id;
@@ -79,5 +81,21 @@ public class ProdTable {
 
     public void setManufName(String manufName) {
         this.manufName = manufName;
+    }
+
+    public String getRegNo() {
+        return regNo;
+    }
+
+    public void setRegNo(String regNo) {
+        this.regNo = regNo;
+    }
+
+    public String getProdDesc() {
+        return prodDesc;
+    }
+
+    public void setProdDesc(String prodDesc) {
+        this.prodDesc = prodDesc;
     }
 }
