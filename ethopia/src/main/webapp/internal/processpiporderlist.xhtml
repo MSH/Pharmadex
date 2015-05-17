@@ -22,9 +22,7 @@
                     <p:column headerText="#{msgs.applicant_name}" filterBy="#{eachprod.applicant.appName}"
                               sortBy="#{eachprod.applicant.appName}">
                         <p:commandLink id="viewLink" value="#{eachprod.applicant.appName}"
-                                       action="processpiporder" ajax="false">
-                            <f:setPropertyActionListener value="#{eachprod.id}"
-                                                         target="#{userSession.pipOrderID}"/>
+                                       action="#{pIPOrderListBn.sendToProcess(eachprod.id)}" ajax="false">
 
                         </p:commandLink>
                     </p:column>

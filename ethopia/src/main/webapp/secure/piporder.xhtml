@@ -25,14 +25,15 @@
                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
                     <p:inputText id="shipinst" required="true" value="#{pIPOrderBn.pipOrder.shippingInstruction}"/>
 
+                    <p:outputLabel value="#{msgs.portof_entry}" for="port"/>
+                    <p:inputText id="port" required="true"
+                                   value="#{pIPOrderBn.pipOrder.entryPort}"/>
+
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
                     <p:inputText id="delivery" required="true" value="#{pIPOrderBn.pipOrder.delivery}" />
 
                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
                     <p:inputText id="payinfo" required="true" value="#{pIPOrderBn.pipOrder.paymentMethod}" />
-
-                    <p:outputLabel value="#{msgs.file_number}" for="filno"/>
-                    <p:inputText id="filno" value="#{pIPOrderBn.pipOrder.fileNumber}" />
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                     <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}" />
@@ -95,8 +96,54 @@
 
             <div style="height:10px"/>
 
+            <p:panel header="#{msgs.attachments}">
+                <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                 oncomplete="PF('attachdlg').show()"
+                                 action="#{pIPOrderBn.prepareUpload}"
+                                 update=":attachdlg" id="addDocBtn"/>
+
+                <p:dataTable id="attachtable" value="#{pIPOrderBn.pOrderDocs}" var="doc">
+
+                    <p:column headerText="#{msgs.title}">
+                        <h:outputText value="#{doc.title}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.filename}">
+                        <h:outputText value="#{doc.fileName}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.uploaddate}">
+                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.uploadedby}">
+                        <h:outputText value="#{doc.uploadedBy.name}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.registration_status}">
+                        <h:outputText value="#{msgs[doc.regState.key]}"/>
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                         icon="ui-icon-arrowthichk-n">
+                            <p:fileDownload value="#{pIPOrderBn.fileDownload(doc)}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton id="deleteattach"
+                                         action="#{pIPOrderBn.deleteDoc(doc)}" ajax="false"
+                                         icon="ui-icon-trash"
+                                         update=":reghome:attachtab:attachtable"/>
+                    </p:column>
+                </p:dataTable>
+
+            </p:panel>
+
             <p:panel header="#{msgs.checklist}">
-                <p:dataTable var="checkList" value="#{pIPOrderBn.pipOrderChecklists}" style="width:100%;">
+                <p:dataTable var="checkList" value="#{pIPOrderBn.pOrderChecklists}" style="width:100%;">
                     <p:column headerText="" colspan="3" rendered="#{checkList.pipOrderLookUp.header}" style="background-color: bisque;font-weight: bolder;">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
@@ -203,6 +250,31 @@
                                      value="#{msgs.global_cancel}" oncomplete="PF('orderdetailDlg').hide()"/>
                 </h:panelGroup>
 
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                    <p:inputText id="attachtitle" value="#{pIPOrderBn.pOrderDoc.title}"/>
+                    <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="attachcomment" value="#{pIPOrderBn.pOrderDoc.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{pIPOrderBn.handleFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reghome:growl :reghome:messages"
+                              multiple="false"
+                              sizeLimit="10000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{pIPOrderBn.addDocument}"
+                                 oncomplete="PF('attachdlg').hide()" update=":reghome:growl :reghome:messages :reghome"/>
             </h:form>
         </p:dialog>
 

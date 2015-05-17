@@ -24,6 +24,10 @@ public class PIPOrderLookUp extends CreationDetail implements Serializable {
 
     private boolean header;
 
+    private boolean optional;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private ApplicantType applicantType;
 
     public Long getId() {
         return id;
@@ -63,5 +67,21 @@ public class PIPOrderLookUp extends CreationDetail implements Serializable {
 
     public void setNo(String no) {
         this.no = no;
+    }
+
+    public ApplicantType getApplicantType() {
+        return applicantType;
+    }
+
+    public void setApplicantType(ApplicantType applicantType) {
+        this.applicantType = applicantType;
+    }
+
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public void setOptional(boolean optional) {
+        this.optional = optional;
     }
 }

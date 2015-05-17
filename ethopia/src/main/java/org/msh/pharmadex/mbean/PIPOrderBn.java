@@ -1,10 +1,11 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.POrderDocDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.service.PIPOrderService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
@@ -13,7 +14,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,98 +27,113 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class PIPOrderBn implements Serializable {
+public class PIPOrderBn extends POrderBn{
 
-    @ManagedProperty(value = "#{PIPOrderService}")
-    private PIPOrderService pipOrderService;
-
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
-
-    @ManagedProperty(value = "#{userService}")
-    private UserService userService;
-
-    private PIPOrder pipOrder;
-    private PIPProd pipProd;
     private List<PIPProd> pipProds;
-    private List<PIPOrderChecklist> pipOrderChecklists;
-    private User applicantUser;
-    private Applicant applicant;
-
-    FacesContext context = FacesContext.getCurrentInstance();
-    java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+    private PIPOrder pipOrder;
+    private List<POrderChecklist> pOrderChecklists;
+    private PIPProd pipProd;
 
 
     @PostConstruct
     private void init() {
-        pipOrder = new PIPOrder();
-        if (userSession.isCompany()) {
-            applicantUser = userService.findUser(userSession.getLoggedINUserID());
-            applicant = applicantUser.getApplicant();
-            pipOrder.setCreatedBy(applicantUser);
-            pipOrder.setApplicantUser(applicantUser);
-        }
+        Long pipOrderID = (Long) JsfUtils.flashScope().get("pipOrderID");
+        if(pipOrderID!=null){
+            pipOrder = getpOrderService().findPIPOrderEager(pipOrderID);
+            pOrderChecklists = pipOrder.getpOrderChecklists();
+            pipProds =pipOrder.getPipProds();
+            setApplicantUser(pipOrder.getApplicantUser());
+            setApplicant(pipOrder.getApplicantUser().getApplicant());
+            JsfUtils.flashScope().keep("pipOrderID");
+        }else {
+            pipOrder = new PIPOrder();
+            if (getUserSession().isCompany()) {
+                User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
+                setApplicantUser(applicantUser);
+                setApplicant(applicantUser.getApplicant());
+                pipOrder.setCreatedBy(applicantUser);
+                pipOrder.setApplicantUser(applicantUser);
+            }
 
-        pipOrderChecklists = new ArrayList<PIPOrderChecklist>();
-        List<PIPOrderLookUp> allChecklist = pipOrderService.findPIPCheckList();
-        PIPOrderChecklist eachCheckList;
-        for (int i = 0; allChecklist.size() > i; i++) {
-            eachCheckList = new PIPOrderChecklist();
-            eachCheckList.setPipOrderLookUp(allChecklist.get(i));
-            eachCheckList.setPipOrder(pipOrder);
-            pipOrderChecklists.add(eachCheckList);
+            pOrderChecklists = new ArrayList<POrderChecklist>();
+            List<PIPOrderLookUp> allChecklist = findAllChecklists();
+            POrderChecklist eachCheckList;
+            for (int i = 0; allChecklist.size() > i; i++) {
+                eachCheckList = new POrderChecklist();
+                eachCheckList.setPipOrderLookUp(allChecklist.get(i));
+                eachCheckList.setPipOrder(pipOrder);
+                pOrderChecklists.add(eachCheckList);
+            }
         }
     }
 
-    public void initAddProd(){
-        pipProd = new PIPProd();
+    @Override
+    public void addDocument() {
+//        file = userSession.getFile();
+        getpOrderDoc().setPipOrder(pipOrder);
+//        getpOrderDocDAO().save(getpOrderDoc());
+        getpOrderDocs().add(getpOrderDoc());
+//        userSession.setFile(null);
+        FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+
     }
 
-    public void addProd(){
-        if(pipProds==null) {
+    @Override
+    protected List<PIPOrderLookUp> findAllChecklists() {
+        return getpOrderService().findPIPCheckList(getApplicant().getApplicantType(), true);
+    }
+
+    @Override
+    public void initAddProd() {
+        setPipProd(new PIPProd());
+
+    }
+
+    @Override
+    public void addProd() {
+        if (pipProds == null) {
             pipProds = pipOrder.getPipProds();
-            if(pipProds==null)
+            if (pipProds == null)
                 pipProds = new ArrayList<PIPProd>();
         }
-
         pipProd.setPipOrder(pipOrder);
         pipProd.setCreatedDate(new Date());
         pipProds.add(pipProd);
-
         pipProd = new PIPProd();
     }
 
-    public String removeProd(PIPProd pipProd) {
-        context = FacesContext.getCurrentInstance();
-        pipProds.remove(pipProd);
-        context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
-        return null;
+    public String cancelOrder(){
+        pipOrder = new PIPOrder();
+        return "/home.faces";
     }
 
-
-    public void cancelAddProd(){
-        pipProd = new PIPProd();
+    @Override
+    protected ArrayList<POrderDoc> findPOrdersDocs() {
+        return  (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(pipOrder);
     }
 
     public String saveOrder(){
         System.out.println("Inside saveorder");
 
+
         context = FacesContext.getCurrentInstance();
         pipOrder.setSubmitDate(new Date());
-        pipOrder.setCreatedBy(applicantUser);
+        pipOrder.setCreatedBy(getApplicantUser());
         pipOrder.setState(AmdmtState.NEW_APPLICATION);
-        pipOrder.setPipOrderChecklists(pipOrderChecklists);
+        pipOrder.setpOrderChecklists(getpOrderChecklists());
         pipOrder.setPipProds(pipProds);
-        pipOrder.setApplicant(applicant);
-        pipOrder.setApplicantUser(applicantUser);
+        pipOrder.setApplicant(getApplicant());
+        pipOrder.setApplicantUser(getApplicantUser());
 
 
-        if (userSession.isCompany())
-            pipOrder.setApplicant(applicantUser.getApplicant());
+        if (getUserSession().isCompany())
+            pipOrder.setApplicant(getApplicantUser().getApplicant());
 
-        RetObject retValue = pipOrderService.saveOrder(pipOrder);
+        RetObject retValue = getpOrderService().saveOrder(pipOrder);
         if (retValue.getMsg().equals("persist")) {
             pipOrder = (PIPOrder) retValue.getObj();
+            String retMsg = super.saveOrder();
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
             return "piporderlist";
         } else {
@@ -127,50 +142,20 @@ public class PIPOrderBn implements Serializable {
         }
     }
 
-    public String cancelOrder(){
-        pipOrder = new PIPOrder();
-        return "/home.faces";
+
+    public String removeProd(PIPProd pipProd) {
+        context = FacesContext.getCurrentInstance();
+        pipProds.remove(pipProd);
+        context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
+        return null;
     }
 
-
-    public PIPOrderService getPipOrderService() {
-        return pipOrderService;
-    }
-
-    public void setPipOrderService(PIPOrderService pipOrderService) {
-        this.pipOrderService = pipOrderService;
-    }
-
-    public UserSession getUserSession() {
-        return userSession;
-    }
-
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
-
-    public PIPOrder getPipOrder() {
-        return pipOrder;
-    }
-
-    public void setPipOrder(PIPOrder pipOrder) {
-        this.pipOrder = pipOrder;
-    }
-
-    public List<PIPOrderChecklist> getPipOrderChecklists() {
-        if(pipOrderChecklists==null){
-            pipOrderChecklists = pipOrder.getPipOrderChecklists();
-        }
-        return pipOrderChecklists;
-    }
-
-    public void setPipOrderChecklists(List<PIPOrderChecklist> pipOrderChecklists) {
-        this.pipOrderChecklists = pipOrderChecklists;
+    @Override
+    public void cancelAddProd() {
+        setPipProd(new PIPProd());
     }
 
     public List<PIPProd> getPipProds() {
-        if(pipProds==null)
-            pipProds = pipOrder.getPipProds();
         return pipProds;
     }
 
@@ -178,12 +163,15 @@ public class PIPOrderBn implements Serializable {
         this.pipProds = pipProds;
     }
 
-    public User getApplicantUser() {
-        return applicantUser;
+    public List<POrderChecklist> getpOrderChecklists() {
+        if(pOrderChecklists==null){
+            pOrderChecklists = pipOrder.getpOrderChecklists();
+        }
+        return pOrderChecklists;
     }
 
-    public void setApplicantUser(User applicantUser) {
-        this.applicantUser = applicantUser;
+    public void setpOrderChecklists(List<POrderChecklist> pOrderChecklists) {
+        this.pOrderChecklists = pOrderChecklists;
     }
 
     public PIPProd getPipProd() {
@@ -194,19 +182,12 @@ public class PIPOrderBn implements Serializable {
         this.pipProd = pipProd;
     }
 
-    public Applicant getApplicant() {
-        return applicant;
+    public PIPOrder getPipOrder() {
+        return pipOrder;
     }
 
-    public void setApplicant(Applicant applicant) {
-        this.applicant = applicant;
+    public void setPipOrder(PIPOrder pipOrder) {
+        this.pipOrder = pipOrder;
     }
 
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 }

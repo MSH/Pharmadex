@@ -16,62 +16,23 @@ import java.util.List;
  */
 @Entity
 @Table(name = "pip_order")
-public class PIPOrder extends CreationDetail implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class PIPOrder extends POrderBase {
 
     @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PIPProd> pipProds;
 
-    @Column(length = 255)
-    private String shippingInstruction;
-
-    @Column(length = 255)
-    private String delivery;
-
-    @Column(length = 255)
-    private String paymentMethod;
-
-    @Column(length = 255)
-    private String entryPort;
-
-    @Column(length = 500)
-    private String comment;
-
-    @Temporal(TemporalType.DATE)
-    private Date submitDate;
-
-    @Temporal(TemporalType.DATE)
-    private Date approvalDate;
-
-    @Temporal(TemporalType.DATE)
-    private Date expiryDate;
+    @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<POrderComment> pOrderComments;
 
     @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<PIPOrderChecklist> pipOrderChecklists;
+    private List<POrderChecklist> pOrderChecklists;
 
-    @OneToOne
-    private Applicant applicant;
-
-    @OneToOne
-    private User applicantUser;
-
-    @OneToOne
-    private User createdBy;
-
-    @OneToOne
-    private User updatedBy;
-
-    @Enumerated(EnumType.STRING)
-    private AmdmtState state;
-
-    public Long getId() {
-        return id;
+    public List<POrderChecklist> getpOrderChecklists() {
+        return pOrderChecklists;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setpOrderChecklists(List<POrderChecklist> pOrderChecklists) {
+        this.pOrderChecklists = pOrderChecklists;
     }
 
     public List<PIPProd> getPipProds() {
@@ -82,115 +43,11 @@ public class PIPOrder extends CreationDetail implements Serializable {
         this.pipProds = pipProds;
     }
 
-    public String getShippingInstruction() {
-        return shippingInstruction;
+    public List<POrderComment> getpOrderComments() {
+        return pOrderComments;
     }
 
-    public void setShippingInstruction(String shippingInstruction) {
-        this.shippingInstruction = shippingInstruction;
-    }
-
-    public String getDelivery() {
-        return delivery;
-    }
-
-    public void setDelivery(String delivery) {
-        this.delivery = delivery;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public Date getSubmitDate() {
-        return submitDate;
-    }
-
-    public void setSubmitDate(Date submitDate) {
-        this.submitDate = submitDate;
-    }
-
-    public Date getApprovalDate() {
-        return approvalDate;
-    }
-
-    public void setApprovalDate(Date approvalDate) {
-        this.approvalDate = approvalDate;
-    }
-
-    public List<PIPOrderChecklist> getPipOrderChecklists() {
-        return pipOrderChecklists;
-    }
-
-    public void setPipOrderChecklists(List<PIPOrderChecklist> pipOrderChecklists) {
-        this.pipOrderChecklists = pipOrderChecklists;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public AmdmtState getState() {
-        return state;
-    }
-
-    public void setState(AmdmtState state) {
-        this.state = state;
-    }
-
-    public Applicant getApplicant() {
-        return applicant;
-    }
-
-    public void setApplicant(Applicant applicant) {
-        this.applicant = applicant;
-    }
-
-    public User getApplicantUser() {
-        return applicantUser;
-    }
-
-    public void setApplicantUser(User applicantUser) {
-        this.applicantUser = applicantUser;
-    }
-
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
-    public String getEntryPort() {
-        return entryPort;
-    }
-
-    public void setEntryPort(String entryPort) {
-        this.entryPort = entryPort;
+    public void setpOrderComments(List<POrderComment> pOrderComments) {
+        this.pOrderComments = pOrderComments;
     }
 }

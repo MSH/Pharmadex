@@ -3,12 +3,15 @@ package org.msh.pharmadex.mbean;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.service.PIPOrderService;
+import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,8 +26,9 @@ import java.util.List;
 @ViewScoped
 public class PIPOrderListBn implements Serializable {
 
-    @ManagedProperty(value = "#{PIPOrderService}")
-    PIPOrderService pipOrderService;
+    @ManagedProperty(value = "#{POrderService}")
+    private POrderService pOrderService;
+
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
@@ -35,13 +39,18 @@ public class PIPOrderListBn implements Serializable {
     private void init() {
     }
 
-    public PIPOrderService getPipOrderService() {
-        return pipOrderService;
+    public String sendToDetails(Long pipOrderID){
+        JsfUtils.flashScope().put("pipOrderID", pipOrderID);
+        return "/secure/piporder";
+
     }
 
-    public void setPipOrderService(PIPOrderService pipOrderService) {
-        this.pipOrderService = pipOrderService;
+    public String sendToProcess(Long pipOrderID){
+        JsfUtils.flashScope().put("pipOrderID", pipOrderID);
+        return "processpiporder";
+
     }
+
 
     public UserSession getUserSession() {
         return userSession;
@@ -61,7 +70,7 @@ public class PIPOrderListBn implements Serializable {
 
     public List<PIPOrder> getPipOrders() {
         if (pipOrders == null) {
-            RetObject retObject = pipOrderService.findAllSubmittedPIP(userSession.getLoggedINUserID(), userSession.getApplcantID(), userSession.isCompany());
+            RetObject retObject = pOrderService.findAllSubmittedPIP(userSession.getLoggedINUserID(), userSession.getApplcantID(), userSession.isCompany());
             pipOrders = (List<PIPOrder>) retObject.getObj();
         }
         return pipOrders;
@@ -69,5 +78,13 @@ public class PIPOrderListBn implements Serializable {
 
     public void setPipOrders(List<PIPOrder> pipOrders) {
         this.pipOrders = pipOrders;
+    }
+
+    public POrderService getpOrderService() {
+        return pOrderService;
+    }
+
+    public void setpOrderService(POrderService pOrderService) {
+        this.pOrderService = pOrderService;
     }
 }

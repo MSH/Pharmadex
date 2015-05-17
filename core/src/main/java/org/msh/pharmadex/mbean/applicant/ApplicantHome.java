@@ -51,6 +51,7 @@ public class ApplicantHome implements Serializable {
             Long applicantID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("appID");
             if(applicantID!=null)
                 applicant = applicantService.findApplicant(applicantID);
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("appID");
         }
 
         return applicant;

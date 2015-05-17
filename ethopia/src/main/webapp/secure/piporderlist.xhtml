@@ -20,8 +20,8 @@
                     </p:column>
 
                     <p:column headerText="#{msgs.applicant_name}">
-                        <p:commandLink id="viewLink" value="#{eachprod.applicant.appName}"
-                                       action="/secure/piporder?faces-redirect=true">
+                        <p:commandLink id="viewLink" value="#{eachprod.applicant.appName}" ajax="false"
+                                       action="#{pIPOrderListBn.sendToDetails(eachprod.id)}">
                         </p:commandLink>
                     </p:column>
 

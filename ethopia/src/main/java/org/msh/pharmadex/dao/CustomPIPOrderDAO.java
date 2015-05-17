@@ -1,9 +1,7 @@
 package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
-import org.msh.pharmadex.domain.PIPOrder;
-import org.msh.pharmadex.domain.PIPOrderLookUp;
-import org.msh.pharmadex.domain.PurOrder;
+import org.msh.pharmadex.domain.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -31,9 +29,10 @@ public class CustomPIPOrderDAO {
         return pipOrders;
     }
 
-    public List<PIPOrderLookUp> findAllPIPOrderLookUp(){
-        return entityManager.createQuery("select lookup from PIPOrderLookUp lookup where lookup.pip = :pip ")
-                .setParameter("pip", true)
+    public List<PIPOrderLookUp> findAllPIPOrderLookUp(ApplicantType applicantType, boolean pip){
+        return entityManager.createQuery("select lookup from PIPOrderLookUp lookup where lookup.pip = :pip and lookup.applicantType = :applicantType")
+                .setParameter("pip", pip)
+                .setParameter("applicantType", applicantType)
                 .getResultList();
     }
 

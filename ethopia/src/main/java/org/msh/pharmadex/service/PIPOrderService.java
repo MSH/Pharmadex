@@ -4,9 +4,9 @@ import org.hibernate.Hibernate;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderLookUpDAO;
+import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.domain.PIPOrderLookUp;
-import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,10 @@ public class PIPOrderService implements Serializable{
     @Autowired
     private CustomPIPOrderDAO customPIPOrderDAO;
 
-    public List<PIPOrderLookUp> findPIPCheckList() {
-        return customPIPOrderDAO.findAllPIPOrderLookUp();
+    public List<PIPOrderLookUp> findPIPCheckList(ApplicantType applicantType, boolean pip) {
+        if(applicantType.getId()<5)
+            applicantType.setId(Long.valueOf(2));
+        return customPIPOrderDAO.findAllPIPOrderLookUp(applicantType, pip);
     }
 
     public RetObject saveOrder(PIPOrder pipOrder) {
@@ -87,7 +89,7 @@ public class PIPOrderService implements Serializable{
         try {
             pipOrder = pipOrderDAO.findOne(pipOrderID);
             Hibernate.initialize(pipOrder.getPipProds());
-            Hibernate.initialize(pipOrder.getPipOrderChecklists());
+            Hibernate.initialize(pipOrder.getpOrderChecklists());
             Hibernate.initialize(pipOrder.getApplicant());
             Hibernate.initialize(pipOrder.getCreatedBy());
         } catch (Exception ex) {

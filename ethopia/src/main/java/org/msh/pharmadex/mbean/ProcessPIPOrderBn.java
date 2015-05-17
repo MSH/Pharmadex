@@ -1,23 +1,18 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.PIPOrder;
-import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.PIPOrderService;
-import org.omnifaces.util.Faces;
-import org.springframework.web.util.WebUtils;
+import org.msh.pharmadex.domain.PIPProd;
+import org.msh.pharmadex.domain.POrderBase;
+import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.RetObject;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.List;
 
-import static javax.faces.application.FacesMessage.FACES_MESSAGES;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
@@ -26,35 +21,56 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
  */
 @ManagedBean
 @ViewScoped
-public class ProcessPIPOrderBn {
+public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
-    @ManagedProperty(value = "#{globalEntityLists}")
-    GlobalEntityLists globalEntityLists;
-    FacesContext facesContext = FacesContext.getCurrentInstance();
-    ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-    private PIPOrder pipOrder;
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
-    @ManagedProperty(value = "#{PIPOrderService}")
-    private PIPOrderService pipOrderService;
-    private boolean displayRecommend;
+    private List<PIPProd> pipProds;
+
+    @PostConstruct
+    public void init() {
+        pOrderBase = new PIPOrder();
+        Long pipOrderID = (Long) JsfUtils.flashScope().get("pipOrderID");
+        if (pipOrderID != null) {
+            pOrderBase = pOrderService.findPIPOrderEager(pipOrderID);
+            initVariables();
+            JsfUtils.flashScope().keep("pipOrderID");
+        }
+
+    }
+
+    private void initVariables() {
+        pOrderChecklists = ((PIPOrder) pOrderBase).getpOrderChecklists();
+        pipProds = ((PIPOrder) pOrderBase).getPipProds();
+        pipProds = ((PIPOrder) pOrderBase).getPipProds();
+        pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
+        setApplicantUser(pOrderBase.getApplicantUser());
+        setApplicant(pOrderBase.getApplicantUser().getApplicant());
+    }
 
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
-            pipOrder.setUpdatedDate(new Date());
-            if (pipOrder.getPipProds() == null || pipOrder.getPipProds().size() == 0) {
+            pipProds = ((PIPOrder) pOrderBase).getPipProds();
+            if (pipProds == null || pipProds.size() == 0) {
                 FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
                 error.setSeverity(SEVERITY_ERROR);
                 facesContext.addMessage(null, error);
                 return null;
             }
-            pipOrder = pipOrderService.updatePIPOrder(pipOrder);
+            RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+            if (!retObject.getMsg().equals("persist")) {
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), retObject.getMsg()));
+                return null;
+            } else {
+                pOrderBase = (POrderBase) retObject.getObj();
+            }
 
-            if (pipOrder == null) {
+            if (pOrderBase == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
                 return null;
             }
+
+            pOrderService.save(pOrderDocs);
+            initVariables();
 
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
             return "/public/processpiporderlist.faces";
@@ -65,151 +81,19 @@ public class ProcessPIPOrderBn {
         }
     }
 
-    public String approveOrder() {
-        facesContext = FacesContext.getCurrentInstance();
-        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext,"msgs");
-        if(pipOrder.getState().equals(AmdmtState.RECOMMENDED)) {
-            pipOrder.setState(AmdmtState.APPROVED);
-            pipOrder.setApprovalDate(new Date());
-            return saveApp();
-        }else{
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"),"Invalid Operation!!!" ));
-            return "";
-        }
+    @Override
+    public void addDocument() {
+        getpOrderDoc().setPipOrder((PIPOrder) pOrderBase);
+        pOrderDocs.add(getpOrderDoc());
+        FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public String rejectOrder() {
-        facesContext = FacesContext.getCurrentInstance();
-        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext,"msgs");
-        if(pipOrder.getState().equals(AmdmtState.NOT_RECOMMENDED)) {
-            pipOrder.setState(AmdmtState.REJECTED);
-            pipOrder.setApprovalDate(new Date());
-            return saveApp();
-        }else{
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Invalid Operation!!!"));
-            return "";
-        }
+    @Override
+    protected void setPOrderForComment() {
+        pOrderComment.setPipOrder((PIPOrder) pOrderBase);
 
     }
 
-    public String recommendOrder() {
-        if(pipOrder.getState().equals(AmdmtState.NEW_APPLICATION)||pipOrder.getState().equals(AmdmtState.NOT_RECOMMENDED)){
-            pipOrder.setState(AmdmtState.RECOMMENDED);
-            return saveApp();
-        }else{
-            return "";
-        }
-    }
 
-    public String notRecommendedOrder() {
-        pipOrder.setState(AmdmtState.NOT_RECOMMENDED);
-
-        return saveApp();
-    }
-//    public String registerApplicant() {
-//        applicant.setState(ApplicantState.REGISTERED);
-//        applicantService.updateApp(applicant, null);
-//        globalEntityLists.setRegApplicants(null);
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-//        WebUtils.setSessionAttribute(request, "processAppBn", null);
-//        return "/internal/processpiporderlist.faces";
-//
-//    }
-
-    public String cancel() {
-        pipOrder = new PIPOrder();
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "processAppBn", null);
-        return "/internal/processpiporderlist.faces";
-    }
-
-    //    public Applicant getApplicant() {
-//        if (applicant == null) {
-//            if (userSession.getApplcantID() != null) {
-//                applicant = applicantService.findApplicant(userSession.getApplcantID());
-//                userSession.setApplcantID(null);
-//                if (applicant.getAddress() == null)
-//                    applicant.setAddress(new Address());
-//                if (applicant.getAddress().getCountry() == null)
-//                    applicant.getAddress().setCountry(new Country());
-//            } else {
-//                applicant = null;
-//            }
-//        }
-//        return applicant;
-//    }
-    public PIPOrder getPipOrder() {
-        if (pipOrder == null) {
-            if (userSession.getPipOrderID() != null) {
-                pipOrder = pipOrderService.findPIPOrderEager(Long.valueOf(userSession.getPipOrderID()));
-
-            } else {
-                pipOrder = null;
-            }
-        }
-        if(pipOrder!=null) {
-            if (pipOrder.getState().equals(AmdmtState.NEW_APPLICATION))
-                displayRecommend = true;
-            else
-                displayRecommend = false;
-        }
-        return pipOrder;
-    }
-
-
-    public GlobalEntityLists getGlobalEntityLists() {
-        return globalEntityLists;
-    }
-
-    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
-        this.globalEntityLists = globalEntityLists;
-    }
-
-    public FacesContext getFacesContext() {
-        return facesContext;
-    }
-
-    public void setFacesContext(FacesContext facesContext) {
-        this.facesContext = facesContext;
-    }
-
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle;
-    }
-
-    public void setResourceBundle(ResourceBundle resourceBundle) {
-        this.resourceBundle = resourceBundle;
-    }
-
-
-    public void setPipOrder(PIPOrder pipOrder) {
-        this.pipOrder = pipOrder;
-    }
-
-    public UserSession getUserSession() {
-        return userSession;
-    }
-
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
-
-    public PIPOrderService getPipOrderService() {
-        return pipOrderService;
-    }
-
-    public void setPipOrderService(PIPOrderService pipOrderService) {
-        this.pipOrderService = pipOrderService;
-    }
-
-    public boolean isDisplayRecommend() {
-        getPipOrder();
-        return displayRecommend;
-    }
-
-    public void setDisplayRecommend(boolean displayRecommend) {
-        this.displayRecommend = displayRecommend;
-    }
 }

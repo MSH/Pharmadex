@@ -5,8 +5,8 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "piporder_checklist")
-public class PIPOrderChecklist extends CreationDetail implements Serializable {
+@Table(name = "porder_checklist")
+public class POrderChecklist extends CreationDetail implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,8 +18,12 @@ public class PIPOrderChecklist extends CreationDetail implements Serializable {
     private PIPOrderLookUp pipOrderLookUp;
 
     @ManyToOne
-    @JoinColumn(name = "pipOrder_id")
+    @JoinColumn(name = "piporder_id", nullable = true)
     private PIPOrder pipOrder;
+
+    @ManyToOne
+    @JoinColumn(name = "purorder_id", nullable = true)
+    private PurOrder purOrder;
 
     private boolean value;
 
@@ -74,5 +78,13 @@ public class PIPOrderChecklist extends CreationDetail implements Serializable {
 
     public void setPipOrder(PIPOrder pipOrder) {
         this.pipOrder = pipOrder;
+    }
+
+    public PurOrder getPurOrder() {
+        return purOrder;
+    }
+
+    public void setPurOrder(PurOrder purOrder) {
+        this.purOrder = purOrder;
     }
 }
