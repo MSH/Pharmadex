@@ -449,6 +449,46 @@ public class ProdApplicationsService implements Serializable {
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
+    public JasperPrint initRejCert() throws JRException {
+        URL resource = getClass().getResource("/reports/rejection_letter.jasper");
+        HashMap param = new HashMap();
+        param.put("appName", prodApp.getApplicant().getAppName());
+        param.put("prodName", product.getProdName());
+        param.put("prodStrength", product.getDosStrength() + product.getDosUnit());
+        param.put("dosForm", product.getDosForm().getDosForm());
+        param.put("manufName", product.getManufName());
+        param.put("appType", "New Medicine Registration");
+        param.put("subject", "Sample request letter for  " + product.getProdName());
+        param.put("address1", prodApp.getApplicant().getAddress().getAddress1());
+        param.put("address2", prodApp.getApplicant().getAddress().getAddress2());
+        param.put("country", prodApp.getApplicant().getAddress().getCountry().getCountryName());
+        //        param.put("cso",userS.getName()); 
+        param.put("date", new Date());
+        param.put("appNumber", prodApp.getProdAppNo());
+
+        return JasperFillManager.fillReport(resource.getFile(), param);
+    }
+
+    public String createRejectCert(ProdApplications prodApp) {
+        this.prodApp = prodApp;
+        this.product = prodApp.getProduct();
+        try{
+        //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED); 
+        File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
+            JasperPrint jasperPrint = initRejCert();
+            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+            prodApp.setRejCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
+            prodApplicationsDAO.updateApplication(prodApp);
+        } catch (JRException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates. 
+            return "error";
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates. 
+            // return "error"; 
+        }
+        return "created";
+    }
+
 
     public String createRegCert(ProdApplications prodApp) {
         this.prodApp = prodApp;

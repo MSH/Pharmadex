@@ -60,9 +60,9 @@ public class ProdApplicationsDAO implements Serializable {
 //            Join<ProdApplications, User> userJoin = paRoot.join("user", JoinType.LEFT);
             Join<ProdApplications, Product> prodJoin = paRoot.join("product");
 
-            paRoot.fetch("user", JoinType.LEFT);
+//            paRoot.fetch("user", JoinType.LEFT);
             paRoot.fetch("product", JoinType.LEFT);
-            paRoot.fetch("applicant", JoinType.LEFT);
+//            paRoot.fetch("applicant", JoinType.LEFT);
 
 
             Predicate p = cb.equal(prodJoin.get("id"), prodId);

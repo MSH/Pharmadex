@@ -105,6 +105,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<ReviewInfo> reviewInfos;
 
+    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    private List<Review> reviews;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MODERATOR_ID", nullable = true)
     private User moderator;
@@ -481,6 +484,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setReviewInfos(List<ReviewInfo> reviewInfos) {
         this.reviewInfos = reviewInfos;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }
 
