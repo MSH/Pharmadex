@@ -9,7 +9,9 @@ import org.msh.pharmadex.service.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -17,7 +19,7 @@ import java.util.Map;
  * Author: usrivastava
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ProductDisplay implements Serializable {
 
     @ManagedProperty(value = "#{prodApplicationsService}")
@@ -44,6 +46,12 @@ public class ProductDisplay implements Serializable {
 
     private ProdApplications prodApplications;
 
+    public String sentToDetail() {
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("appID", applicant.getApplcntId());
+        return "applicantdetail";
+    }
+
     public Product getProduct() {
         if (product == null) {
             FacesContext.getCurrentInstance().getExternalContext().getFlash();
@@ -59,9 +67,10 @@ public class ProductDisplay implements Serializable {
     private void initFields() {
         Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
         if(prodAppID!=null) {
-            prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+            prodApplications = prodApplicationsService.findProdApplicationByProduct(prodAppID);
             product = prodApplications.getProduct();
             applicant = prodApplications.getApplicant();
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
         }
     }
 

@@ -21,11 +21,11 @@
 
         <h:outputText/>
         <p:commandLink value="#{msgs.global_upload}" ajax="false"
-                       actionListener="#{processProdBn.handleFileUpload}" rendered="#{!processProdBnET.attach}"/>
+                       actionListener="#{processProdBn.handleFileUpload}" rendered="#{!processProdBn.attach}"/>
 
         <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="true"
                          onclick="PrimeFaces.monitorDownload(start, stop)" immediate="true"
-                         icon="ui-icon-arrowthickstop-1-s" rendered="#{processProdBnET.attach}">
+                         icon="ui-icon-arrowthickstop-1-s" rendered="#{processProdBn.attach}">
             <p:fileDownload value="#{processProdBn.fileDownload()}"/>
         </p:commandButton>
 

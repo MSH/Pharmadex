@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" isSummaryNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="804"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="currDay" class="java.lang.String"/>
 	<parameter name="currMnthYr" class="java.lang.String"/>
 	<parameter name="regName" class="java.lang.String"/>
@@ -35,7 +35,7 @@
 			</staticText>
 			<image>
 				<reportElement x="223" y="0" width="137" height="125" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
-				<imageExpression><![CDATA["images/na_namibia_header.png"]]></imageExpression>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="0" y="178" width="572" height="26" uuid="72df8617-6275-409e-acfc-328219996595"/>

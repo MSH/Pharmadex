@@ -65,6 +65,7 @@ public class ProdReviewBn implements Serializable {
     public String findReview() {
         review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
         userSession.setReviewID(review.getId());
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("reviewID",review.getId());
         return "/internal/review";
     }
 
@@ -73,6 +74,11 @@ public class ProdReviewBn implements Serializable {
         userSession.setProdID(processProdBn.getProduct().getId());
         userSession.setReviewInfoID(reviewInfo.getId());
         return "/internal/reviewInfo";
+    }
+
+    public String sendToDetail(Long id){
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("reviewID", id);
+        return "/internal/review.faces";
     }
 
     public void assignReviewer() {
@@ -162,7 +168,7 @@ public class ProdReviewBn implements Serializable {
     }
 
     public List<Review> getReviews() {
-        if (reviews == null) {
+        if (reviews == null && processProdBn.getProdApplications()!=null) {
             reviews = reviewService.findReviews(processProdBn.getProdApplications().getId());
         }
         return reviews;

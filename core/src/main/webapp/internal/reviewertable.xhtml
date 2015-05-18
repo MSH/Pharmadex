@@ -23,9 +23,8 @@
             <f:facet name="header">
                 <h:outputText value="#{msgs.processor}"/>
             </f:facet>
-            <p:commandLink id="viewLink" value="#{each.user.name}" action="/internal/review.faces"
+            <p:commandLink id="viewLink" value="#{each.user.name}" action="#{prodReviewBn.sendToDetail(each.id)}"
                            ajax="false" immediate="true">
-                <f:setPropertyActionListener value="#{each}" target="#{userSession.review}"/>
             </p:commandLink>
         </p:column>
 

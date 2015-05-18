@@ -2,10 +2,7 @@ package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProductDAO;
-import org.msh.pharmadex.dao.iface.AtcDAO;
-import org.msh.pharmadex.dao.iface.DrugPriceDAO;
-import org.msh.pharmadex.dao.iface.InnDAO;
-import org.msh.pharmadex.dao.iface.PricingDAO;
+import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.mbean.product.ProdTable;
@@ -40,6 +37,8 @@ public class ProductService implements Serializable {
     private AtcDAO atcDAO;
     @Autowired
     private ProdApplicationsService prodApplicationsService;
+    @Autowired
+    private WorkspaceDAO workspaceDAO;
 
     public List<ProdTable> findAllRegisteredProduct() {
         return productDAO.findRegProducts();
@@ -112,9 +111,18 @@ public class ProductService implements Serializable {
                 }
 
             }
-            if (prodApplications.getBankName().equalsIgnoreCase("") || prodApplications.getFeeSubmittedDt()==null) {
-                issues.add("no_fee");
-                issue = true;
+
+            Workspace workspace = workspaceDAO.findAll().get(0);
+            if(workspace.getName().equals("Ethiopia")){
+                if (prodApplications.getPrescreenBankName().equalsIgnoreCase("") || prodApplications.getPrescreenfeeSubmittedDt() == null) {
+                    issues.add("no_fee");
+                    issue = true;
+                }
+            }else {
+                if (prodApplications.getBankName().equalsIgnoreCase("") || prodApplications.getFeeSubmittedDt() == null) {
+                    issues.add("no_fee");
+                    issue = true;
+                }
             }
 //            List<ProdAppChecklist> prodAppChkLst = prodApplications.getProdAppChecklists();
 //            if (prodAppChkLst != null) {

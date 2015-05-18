@@ -5,6 +5,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.service.DisplayReviewInfo;
@@ -89,7 +90,7 @@ public class ReviewDetailBn implements Serializable {
 
     public Product getProduct() {
         if(product==null){
-            product = productService.findProduct(userSession.getProdID());
+            getReviewDetail();
 
         }
         return product;
@@ -111,7 +112,8 @@ public class ReviewDetailBn implements Serializable {
         if(reviewDetail==null){
             DisplayReviewInfo displayReviewInfo = userSession.getDisplayReviewInfo();
             if(displayReviewInfo !=null) {
-                    reviewDetail = reviewService.findReviewDetails(displayReviewInfo);
+                reviewDetail = reviewService.findReviewDetails(displayReviewInfo);
+                product = productService.findProduct(reviewDetail.getReviewInfo().getProdApplications().getProduct().getId());
             }
         }
         return reviewDetail;

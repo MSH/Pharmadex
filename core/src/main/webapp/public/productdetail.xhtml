@@ -55,10 +55,8 @@
                                 <td>
                                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
                                     <p:commandLink id="viewLink" value="#{productDisplay.applicant.appName}"
-                                                   action="applicantdetail.faces"
+                                                   action="#{productDisplay.sentToDetail}"
                                                    ajax="false" style="color: darkblue;">
-                                        <f:param name="applicantID" value="#{productDisplay.applicant.applcntId}"/>
-                                        <f:param name="id" value="#{productDisplay.product.id}"/>
                                     </p:commandLink>
 
 

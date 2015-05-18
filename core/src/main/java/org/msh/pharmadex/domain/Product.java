@@ -130,6 +130,12 @@ public class Product extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String posology;
 
+    @Column(length = 500)
+    private String fnm;
+
+    @Column(length = 500)
+    private String pharmacopeiaStds;
+
 
     public String getManufName() {
         if (prodCompanies != null) {
@@ -400,6 +406,22 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setProdApplicationses(List<ProdApplications> prodApplicationses) {
         this.prodApplicationses = prodApplicationses;
+    }
+
+    public void setFnm(String fnm) {
+        this.fnm = fnm;
+    }
+
+    public String getFnm() {
+        return fnm;
+    }
+
+    public void setPharmacopeiaStds(String pharmacopeiaStds) {
+        this.pharmacopeiaStds = pharmacopeiaStds;
+    }
+
+    public String getPharmacopeiaStds() {
+        return pharmacopeiaStds;
     }
 }
 

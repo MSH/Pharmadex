@@ -15,7 +15,7 @@
 
             <div style="width:1054px">
                 <ui:decorate template="/templates/prodbannertempl.xhtml">
-                    <ui:param name="product" value="#{reviewInfoBn.product}"/>
+                    <ui:param name="product" value="#{reviewDetailBn.product}"/>
                 </ui:decorate>
             </div>
 
@@ -57,7 +57,7 @@
                     <p:outputLabel value="#{msgs.review_info_satifno}:" styleClass="label"/>
                     <p:editor value="#{reviewDetailBn.reviewDetail.noReason}" width="700"/>
 
-                    <p:outputLabel value="#{msgs.global_comment}:" styleClass="label"/>
+                    <p:outputLabel value="#{msgs.sec_review_comment}:" styleClass="label"/>
                     <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"/>
 
                 </h:panelGrid>

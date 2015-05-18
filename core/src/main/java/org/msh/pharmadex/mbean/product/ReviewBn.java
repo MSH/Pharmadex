@@ -21,6 +21,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +48,9 @@ public class ReviewBn implements Serializable {
 
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
+
+    @ManagedProperty(value = "#{flash}")
+    private Flash flash;
 
     private Review review;
 
@@ -125,6 +129,7 @@ public class ReviewBn implements Serializable {
     public String reviewerFeedback() {
         review.setReviewStatus(ReviewStatus.FEEDBACK);
         saveReview();
+        flash.put("prodAppID", review.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -139,8 +144,7 @@ public class ReviewBn implements Serializable {
 
         review.setReviewStatus(ReviewStatus.ACCEPTED);
         saveReview();
-        userSession.setProdAppID(review.getProdApplications().getId());
-        userSession.setProdID(review.getProdApplications().getProduct().getId());
+        flash.put("prodAppID", review.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -152,23 +156,24 @@ public class ReviewBn implements Serializable {
         review.setSubmitDate(new Date());
         review.setReviewStatus(ReviewStatus.SUBMITTED);
         saveReview();
-        userSession.setProdAppID(review.getProdApplications().getId());
-        userSession.setProdID(review.getProdApplications().getProduct().getId());
+        flash.put("prodAppID", review.getProdApplications().getId());
         return "/internal/processreg";
     }
 
     public String cancelReview() {
-        userSession.setReviewID(null);
-        userSession.setProdAppID(review.getProdApplications().getId());
-        userSession.setProdID(review.getProdApplications().getProduct().getId());
+        flash.put("prodAppID", review.getProdApplications().getId());
         return "/internal/processreg";
 
     }
 
     public Review getReview() {
         if (review == null) {
-            review = reviewService.findReview(userSession.getReviewID());
+            Long reviewID = (Long) flash.get("reviewID");
+            if(reviewID!=null) {
+                review = reviewService.findReview(reviewID);
+            }
             reviewChecklists = review.getReviewChecklists();
+            flash.keep("reviewID");
         }
         return review;
     }
@@ -215,5 +220,13 @@ public class ReviewBn implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
+    }
+
+    public Flash getFlash() {
+        return flash;
+    }
+
+    public void setFlash(Flash flash) {
+        this.flash = flash;
     }
 }
