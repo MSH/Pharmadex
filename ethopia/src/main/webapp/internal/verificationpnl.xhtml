@@ -20,7 +20,7 @@
         <p:outputLabel value="#{processProdBn.prodApplications.feeAmt}"/>
 
         <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
-        <p:inputText id="bankname" value="#{regHomeMbean.prodApplications.bankName}"/>
+        <p:inputText id="bankname" value="#{processProdBn.prodApplications.bankName}"/>
 
         <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
         <p:inputText id="receiptno" value="#{processProdBn.prodApplications.receiptNo}"/>
@@ -61,7 +61,7 @@
                     listener="#{processProdBnET.changeStatusListener}"/>
         </p:selectBooleanButton>
 
-        <p:commandButton value="Generate Sample Request Letter" actionListener="#{processProdBnET.generateSampleRequestLetter}" ajax="false"/>
+        <p:commandButton value="Generate Sample Request Letter" actionListener="#{processProdBn.generateSampleRequestLetter}" ajax="false"/>
 
     </h:panelGrid>
 
