@@ -31,6 +31,10 @@ public class GlobalLists {
         return Arrays.asList(ProdType.values());
     }
 
+    public List<CTDModule> getcTDModules() {
+        return Arrays.asList(CTDModule.values());
+    }
+
     public List<ProdCategory> getProdCategories() {
         List<ProdCategory> prodCategories = new ArrayList<ProdCategory>();
         prodCategories.add(ProdCategory.HUMAN);

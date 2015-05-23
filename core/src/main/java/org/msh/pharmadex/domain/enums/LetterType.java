@@ -9,7 +9,8 @@ public enum LetterType {
     INVOICE,
     PAYMENT_RECEIVED,
     REMINDER,
-    NEW_USER_REGISTRATION;
+    NEW_USER_REGISTRATION,
+    DEFICIENCY;
 
 
     public String getKey() {

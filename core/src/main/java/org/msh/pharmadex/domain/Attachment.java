@@ -32,6 +32,9 @@ public class Attachment extends CreationDetail {
     private ProdApplications prodApplications;
 
     @OneToOne
+    private ReviewInfo reviewInfo;
+
+    @OneToOne
     private User uploadedBy;
 
     @Enumerated(EnumType.STRING)
@@ -111,5 +114,13 @@ public class Attachment extends CreationDetail {
 
     public void setRegState(RegState regState) {
         this.regState = regState;
+    }
+
+    public ReviewInfo getReviewInfo() {
+        return reviewInfo;
+    }
+
+    public void setReviewInfo(ReviewInfo reviewInfo) {
+        this.reviewInfo = reviewInfo;
     }
 }
