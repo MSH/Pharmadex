@@ -319,6 +319,13 @@ body {
     border-radius: 5px;
 }
 
+.row_inactive {
+    background-color: rgb(160,160,160);
+}
+.row_inactive {
+    background-color: #FFFFFF;
+}
+
 .ui-datatable.borderless thead th,
 .ui-datatable.borderless tbody,
 .ui-datatable.borderless tbody tr,
