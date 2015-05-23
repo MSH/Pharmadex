@@ -34,6 +34,12 @@ public class ReviewInfo implements Serializable {
     @OneToMany(mappedBy = "reviewInfo", cascade = {CascadeType.ALL})
     private List<ReviewDetail> reviewDetails;
 
+    @OneToMany(mappedBy = "reviewInfo", cascade = {CascadeType.ALL})
+    private List<ReviewComment> reviewComments;
+
+    @OneToMany(mappedBy = "reviewInfo", cascade = {CascadeType.ALL})
+    private List<RevDeficiency> revDeficiencies;
+
     @Enumerated(EnumType.STRING)
     private RecomendType recomendType;
 
@@ -42,6 +48,9 @@ public class ReviewInfo implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date submitDate;
+
+    @Temporal(TemporalType.DATE)
+    private Date dueDate;
 
     @Lob
     @Column(nullable = true)
@@ -92,13 +101,13 @@ public class ReviewInfo implements Serializable {
         this.reviewer = reviewer;
     }
 
-    public RecomendType getRecomendType() {
-        return recomendType;
-    }
-
-    public void setRecomendType(RecomendType recomendType) {
-        this.recomendType = recomendType;
-    }
+//    public RecomendType getRecomendType() {
+//        return recomendType;
+//    }
+//
+//    public void setRecomendType(RecomendType recomendType) {
+//        this.recomendType = recomendType;
+//    }
 
     public Date getAssignDate() {
         return assignDate;
@@ -182,5 +191,37 @@ public class ReviewInfo implements Serializable {
 
     public void setSubmitted(boolean submitted) {
         this.submitted = submitted;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public List<ReviewComment> getReviewComments() {
+        return reviewComments;
+    }
+
+    public void setReviewComments(List<ReviewComment> reviewComments) {
+        this.reviewComments = reviewComments;
+    }
+
+    public List<RevDeficiency> getRevDeficiencies() {
+        return revDeficiencies;
+    }
+
+    public void setRevDeficiencies(List<RevDeficiency> revDeficiencies) {
+        this.revDeficiencies = revDeficiencies;
+    }
+
+    public RecomendType getRecomendType() {
+        return recomendType;
+    }
+
+    public void setRecomendType(RecomendType recomendType) {
+        this.recomendType = recomendType;
     }
 }

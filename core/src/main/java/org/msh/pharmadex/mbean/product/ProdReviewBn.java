@@ -10,6 +10,7 @@ import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.faces.application.FacesMessage;
@@ -71,14 +72,23 @@ public class ProdReviewBn implements Serializable {
 
     public String findReviewInfo() {
         ReviewInfo reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
-        userSession.setProdID(processProdBn.getProduct().getId());
-        userSession.setReviewInfoID(reviewInfo.getId());
+        JsfUtils.flashScope().put("reviewInfoID", reviewInfo.getId());
         return "/internal/reviewInfo";
     }
 
     public String sendToDetail(Long id){
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("reviewID", id);
+        JsfUtils.flashScope().put("reviewID", id);
         return "/internal/review.faces";
+    }
+
+    public String sendToReviewInfo(Long id){
+        JsfUtils.flashScope().put("reviewInfoID", id);
+        return "/internal/reviewInfo.faces";
+    }
+
+    public String sendToExecSumm(Long id){
+        JsfUtils.flashScope().put("prodAppID", id);
+        return "/internal/execsumm.faces";
     }
 
     public void assignReviewer() {
@@ -282,6 +292,8 @@ public class ProdReviewBn implements Serializable {
     }
 
     public ReviewInfo getReviewInfo() {
+        if(reviewInfo==null)
+            reviewInfo = new ReviewInfo();
         return reviewInfo;
     }
 

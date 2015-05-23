@@ -12,6 +12,10 @@ public class RetObject {
     public RetObject() {
     }
 
+    public RetObject(String msg) {
+        this.msg = msg;
+    }
+
     public RetObject(String msg, Object obj) {
         this.msg = msg;
         this.obj = obj;

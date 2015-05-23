@@ -8,6 +8,9 @@ public enum ReviewStatus {
     NOT_ASSIGNED,
     ASSIGNED,
     IN_PROGRESS,
+    APPLICANT_RFI,
+    RFI_SUBMIT,
+    RFI_RECIEVED,
     SUBMITTED,
     FEEDBACK,
     ACCEPTED;

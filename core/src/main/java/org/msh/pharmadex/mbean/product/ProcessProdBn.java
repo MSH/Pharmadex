@@ -101,14 +101,15 @@ public class ProcessProdBn implements Serializable {
     private boolean registered;
     private String reviewComment;
     private List<Invoice> invoices;
-    private String prodID;
+//    private String prodID;
     private List<ProdInn> prodInns;
     private boolean checkReviewStatus = false;
     private int selectedTab;
     private User moderator;
     private boolean displayVerify = false;
     private boolean displaySample = false;
-    private ReviewInfo reviewInfo;
+    private boolean displayReviewStatus = false;
+//    private ReviewInfo reviewInfo;
     private SampleTest sampleTest;
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
@@ -118,6 +119,7 @@ public class ProcessProdBn implements Serializable {
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
     private User loggedInUser;
+    private List<ProdAppLetter> letters;
 
     @PostConstruct
     private void init() {
@@ -469,7 +471,6 @@ public class ProcessProdBn implements Serializable {
         timeLine.setStatusDate(new Date());
         timeLine.setUser(loggedInUser);
         timeLineList.add(timeLine);
-        prodApplications.setRegState(timeLine.getRegState());
         prodApplications.setRegState(timeLine.getRegState());
         prodApplications.setActive(true);
 //        prodApplications = prodApplicationsService.updateProdApp(prodApplications);
@@ -915,5 +916,34 @@ public class ProcessProdBn implements Serializable {
 
     public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
         this.prodAppChecklists = prodAppChecklists;
+    }
+
+    public List<ProdAppLetter> getLetters() {
+        if(letters == null){
+            letters = prodApplicationsService.findAllLettersByProdApp(getProdApplications().getId());
+        }
+        return letters;
+    }
+
+    public void setLetters(List<ProdAppLetter> letters) {
+        this.letters = letters;
+    }
+
+    public StreamedContent fileDownload(ProdAppLetter doc) {
+        InputStream ist = new ByteArrayInputStream(doc.getFile());
+        StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
+        return download;
+    }
+
+    public boolean isDisplayReviewStatus() {
+        if(prodApplications.getRegState().equals(RegState.REVIEW_BOARD))
+            displayReviewStatus = true;
+        else
+            displayReviewStatus = false;
+        return displayReviewStatus;
+    }
+
+    public void setDisplayReviewStatus(boolean displayReviewStatus) {
+        this.displayReviewStatus = displayReviewStatus;
     }
 }

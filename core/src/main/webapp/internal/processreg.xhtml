@@ -167,6 +167,43 @@
                                 </p:dataTable>
                             </p:tab>
 
+                            <p:tab title="#{msgs.letters}" id="lettertab">
+                                <p:dataTable id="lettertable" value="#{processProdBn.letters}" var="letter">
+
+                                    <p:column headerText="#{msgs.title}">
+                                        <h:outputText value="#{letter.title}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.letter_type}">
+                                        <h:outputText value="#{msgs[letter.letterType.key]}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.filename}">
+                                        <h:outputText value="#{letter.fileName}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploaddate}">
+                                        <h:outputText converter="javax.faces.DateTime" value="#{letter.createdDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploadedby}">
+                                        <h:outputText value="#{letter.uploadedBy.name}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.registration_status}">
+                                        <h:outputText value="#{msgs[letter.regState.key]}"/>
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandButton id="downloadletter" value="#{msgs.global_download}" ajax="false"
+                                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                         icon="ui-icon-arrowthichk-n">
+                                            <p:fileDownload value="#{fileUploadController.fileDownload(letter)}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:tab>
 
                             <p:tab title="#{msgs.add_info}" id="addinfotab"
                                    rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">

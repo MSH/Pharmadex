@@ -2,10 +2,8 @@ package org.msh.pharmadex.domain;
 
 import org.hibernate.envers.Audited;
 import org.msh.pharmadex.domain.enums.ProdAppType;
-import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.UseCategory;
-import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -130,6 +128,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String dossLoc;
 
+    @Lob
+    @Column(name = "exec_summary")
+    private String execSummary;
+
     private boolean sendToGazette;
 
     @Lob
@@ -145,6 +147,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @Column(length = 255)
     private String position;
+
+    @Transient
+    private ReviewStatus reviewStatus;
+
 
     public ProdApplications(Product prod, Applicant applicant) {
         this.product = prod;
@@ -492,6 +498,38 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getExecSummary() {
+        return execSummary;
+    }
+
+    public void setExecSummary(String execSummary) {
+        this.execSummary = execSummary;
+    }
+
+    public ReviewStatus getReviewStatus() {
+        if(regState.equals(RegState.REVIEW_BOARD)){
+            if(reviewInfos==null)
+                reviewStatus = ReviewStatus.NOT_ASSIGNED;
+            else if(reviewInfos.size()<1)
+                reviewStatus = ReviewStatus.NOT_ASSIGNED;
+            else {
+                reviewStatus = ReviewStatus.ACCEPTED;
+                for(ReviewInfo reviewInfo : reviewInfos){
+                    if(reviewStatus.ordinal()>reviewInfo.getReviewStatus().ordinal())
+                        reviewStatus = reviewInfo.getReviewStatus();
+                }
+            }
+
+        }else{
+            reviewStatus = null;
+        }
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(ReviewStatus reviewStatus) {
+        this.reviewStatus = reviewStatus;
     }
 }
 

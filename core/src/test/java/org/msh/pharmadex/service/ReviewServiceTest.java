@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.msh.pharmadex.dao.AmdmtDAO;
+import org.msh.pharmadex.dao.ReviewQDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ReviewInfo;
@@ -34,6 +35,9 @@ public class ReviewServiceTest {
 
     @Autowired
     ReviewDAO reviewDAO;
+
+    @Autowired
+    ReviewQDAO reviewQDAO;
 
     @Before
     public void setUp() throws Exception {

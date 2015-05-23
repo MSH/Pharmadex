@@ -12,7 +12,10 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.product.ProdDeficiencyBn;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +45,8 @@ public class ProdApplicationsService implements Serializable {
     @Autowired
     UserService userService;
 
-//    @Autowired
-//    private UserSession userSession;
+    @Autowired
+    private RevDeficiencyDAO revDeficiencyDAO;
 
     @Autowired
     ApplicantDAO applicantDAO;
@@ -70,6 +73,9 @@ public class ProdApplicationsService implements Serializable {
 
     @Autowired
     private CountryDAO countryDAO;
+
+    @Autowired
+    private ProdAppLetterDAO prodAppLetterDAO;
 
     ProdApplications prodApp;
     Product product;
@@ -571,5 +577,41 @@ public class ProdApplicationsService implements Serializable {
             return "error";
         }
 
+    }
+
+    public String submitExecSummary(ProdApplications prodApplications, User user, List<ReviewInfo> reviewInfos) {
+        try {
+            if (reviewInfos == null || prodApplications == null || user == null)
+                return "empty";
+
+            boolean complete = false;
+            for (ReviewInfo reviewInfo : reviewInfos) {
+                if (!reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
+                    complete = false;
+                    break;
+                }else{
+                    complete = true;
+                }
+            }
+
+            if (complete) {
+                saveApplication(prodApplications, user);
+                return "persist";
+            } else {
+                return "state_error";
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return "error";
+        }
+
+    }
+
+    public List<RevDeficiency> findRevDefByRI(ReviewInfo reviewInfo) {
+        return revDeficiencyDAO.findByReviewInfo_Id(reviewInfo.getId());
+    }
+
+    public List<ProdAppLetter> findAllLettersByProdApp(Long id) {
+        return prodAppLetterDAO.findByProdApplications_Id(id);
     }
 }

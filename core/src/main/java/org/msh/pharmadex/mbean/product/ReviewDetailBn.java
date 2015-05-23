@@ -11,6 +11,7 @@ import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.util.JsfUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -56,7 +57,7 @@ public class ReviewDetailBn implements Serializable {
     }
 
     public String back(){
-        userSession.setReviewInfoID(reviewDetail.getReviewInfo().getId());
+        JsfUtils.flashScope().put("reviewInfoID", reviewDetail.getReviewInfo().getId());
         return "reviewInfo";
     }
 
@@ -64,6 +65,7 @@ public class ReviewDetailBn implements Serializable {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
         saveReview();
+        JsfUtils.flashScope().put("reviewInfoID", reviewDetail.getReviewInfo().getId());
         userSession.setReviewInfoID(reviewDetail.getReviewInfo().getId());
         msg = new FacesMessage(bundle.getString("app_submit_success"));
         facesContext.addMessage(null, msg);

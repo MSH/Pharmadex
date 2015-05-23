@@ -63,16 +63,12 @@
                                     rendered="#{not empty prodApp.regExpiryDate}">
                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                     </h:outputFormat>
+                    <p:outputLabel value="#{msgs.review_status}: " rendered="#{not empty prodApp.reviewStatus}"
+                                   style="font-weight: bold;color: #a52a2a;"/>
+                    <p:outputLabel value="#{msgs[prodApp.reviewStatus.key]}" rendered="#{not empty prodApp.reviewStatus}"
+                                   style="font-weight: bold;color: #a52a2a;"/>
                 </td>
-<!--
-                <td align="right">
-                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
-                                   rendered="#{not empty product.manufName}"/>
-                    <h:outputFormat value="#{prodApp.regExpiryDate}"
-                                    rendered="#{not empty prodApp.regExpiryDate}"/>
-                </td>
-                -->
-            </tr>
+                </tr>
         </table>
     </h1>
 
