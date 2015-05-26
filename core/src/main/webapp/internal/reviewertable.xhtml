@@ -13,7 +13,7 @@
     <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
                      oncomplete="PF('assignreviewdlg').show()"
                      action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
-                     rendered="#{userSession.moderator||userSession.admin}"/>
+                     rendered="#{userSession.moderator||userSession.admin}" update="reghome:processtab:assignreviewDlg"/>
 
     <p:commandButton value="#{msgs.execsummary}" icon="ui-icon-gear" ajax="false"
                      action="#{prodReviewBn.sendToExecSumm(processProdBn.prodApplications.id)}" id="execsumm"
@@ -136,9 +136,8 @@
         -->
     </p:dataTable>
 
-    <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg"
-              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" appendTo=":reghome">
-        <h:form>
+    <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"
+              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" >
             <p:panel>
                 <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
 
@@ -179,7 +178,6 @@
                                  update=":reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl"/>
             </p:panel>
 
-        </h:form>
     </p:dialog>
 
 

@@ -143,6 +143,7 @@ public class ProdReviewBn implements Serializable {
         review.setAssignDate(new Date());
 
         reviewInfo = new ReviewInfo();
+        reviewInfo.setReviewer(new User());
         reviewInfo.setProdApplications(processProdBn.getProdApplications());
         reviewInfo.setAssignDate(new Date());
 
