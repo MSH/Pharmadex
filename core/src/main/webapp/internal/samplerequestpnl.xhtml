@@ -2,14 +2,66 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 
     <p:commandButton action="#{processProdBn.saveSample}" update="sampletestpg" value="#{msgs.global_save}"/>
     <p:commandButton value="Generate Sample Request Letter"
                      actionListener="#{processProdBn.generateSampleRequestLetter}" ajax="false"/>
 
+
+    <p:dataTable id="sampletable" var="sample" value="#{sampleTestBn.samples}" editable="true" style="margin-bottom:20px">
+        <f:facet name="header">
+            Row Editing
+        </f:facet>
+
+        <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form:msgs" />
+        <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form:msgs" />
+
+        <p:column headerText="Id">
+            <p:cellEditor>
+                <f:facet name="output"><h:outputText value="#{car.id}" /></f:facet>
+                <f:facet name="input"><p:inputText id="modelInput" value="#{car.id}" style="width:100%"/></f:facet>
+            </p:cellEditor>
+        </p:column>
+
+        <p:column headerText="Year">
+            <p:cellEditor>
+                <f:facet name="output"><h:outputText value="#{car.year}" /></f:facet>
+                <f:facet name="input"><p:inputText value="#{car.year}" style="width:100%" label="Year"/></f:facet>
+            </p:cellEditor>
+        </p:column>
+
+        <p:column headerText="Brand">
+            <p:cellEditor>
+                <f:facet name="output"><h:outputText value="#{car.brand}" /></f:facet>
+                <f:facet name="input">
+                    <h:selectOneMenu value="#{car.brand}" style="width:100%">
+                        <f:selectItems value="#{dtEditView.brands}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                    </h:selectOneMenu>
+                </f:facet>
+            </p:cellEditor>
+        </p:column>
+
+        <p:column headerText="Color">
+            <p:cellEditor>
+                <f:facet name="output"><h:outputText value="#{car.color}" /></f:facet>
+                <f:facet name="input">
+                    <h:selectOneMenu value="#{car.color}" style="width:100%">
+                        <f:selectItems value="#{dtEditView.colors}" var="color" itemLabel="#{color}" itemValue="#{color}" />
+                    </h:selectOneMenu>
+                </f:facet>
+            </p:cellEditor>
+        </p:column>
+
+        <p:column style="width:32px">
+            <p:rowEditor />
+        </p:column>
+    </p:dataTable>
+
     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" id="sampletestpg">
+
+
 
         <p:outputLabel value="#{msgs.sampletest_notified}" for="dossloc" styleClass="label"/>
         <p:selectBooleanCheckbox value="#{processProdBn.sampleTest.letterSent}"/>

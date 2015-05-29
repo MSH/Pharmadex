@@ -1,6 +1,6 @@
 package org.msh.pharmadex.dao.iface;
 
-import org.msh.pharmadex.domain.SampleTest;
+import org.msh.pharmadex.domain.lab.SampleTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

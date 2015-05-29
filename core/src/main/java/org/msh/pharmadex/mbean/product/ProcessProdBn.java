@@ -8,6 +8,7 @@ import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
@@ -795,96 +796,96 @@ public class ProcessProdBn implements Serializable {
         this.sampleTestService = sampleTestService;
     }
 
-    public StreamedContent fileDownload() {
-        byte[] file1 = getSampleTest().getFile();
-        InputStream ist = new ByteArrayInputStream(file1);
-        StreamedContent download = new DefaultStreamedContent(ist);
-//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
-        return download;
-    }
+//    public StreamedContent fileDownload() {
+//        byte[] file1 = getSampleTest().getFile();
+//        InputStream ist = new ByteArrayInputStream(file1);
+//        StreamedContent download = new DefaultStreamedContent(ist);
+////        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+//        return download;
+//    }
 
-    public void handleFileUpload() {
-        FacesMessage msg;
-        facesContext = FacesContext.getCurrentInstance();
-        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+//    public void handleFileUpload() {
+//        FacesMessage msg;
+//        facesContext = FacesContext.getCurrentInstance();
+//        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+//
+//        if (file != null) {
+//            msg = new FacesMessage(resourceBundle.getString("global.success"), file.getFileName() + resourceBundle.getString("upload_success"));
+//            facesContext.addMessage(null, msg);
+//            try {
+//                getSampleTest().setFile(IOUtils.toByteArray(file.getInputstream()));
+//                saveSample();
+//            } catch (IOException e) {
+//                msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+//                FacesContext.getCurrentInstance().addMessage(null, msg);
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            }
+//        } else {
+//            msg = new FacesMessage(resourceBundle.getString("upload_fail"));
+//            FacesContext.getCurrentInstance().addMessage(null, msg);
+//        }
+//
+//    }
 
-        if (file != null) {
-            msg = new FacesMessage(resourceBundle.getString("global.success"), file.getFileName() + resourceBundle.getString("upload_success"));
-            facesContext.addMessage(null, msg);
-            try {
-                getSampleTest().setFile(IOUtils.toByteArray(file.getInputstream()));
-                saveSample();
-            } catch (IOException e) {
-                msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        } else {
-            msg = new FacesMessage(resourceBundle.getString("upload_fail"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
+//    public void generateSampleRequestLetter() throws JRException, IOException {
+//        facesContext = FacesContext.getCurrentInstance();
+//        if (!getProdApplications().getRegState().equals(RegState.VERIFY)) {
+//            facesContext.addMessage(null, new FacesMessage("You can only issue a Sample Request letter after you have received the fee and verified the dossier for completeness"));
+//        }
+//        Product product = productService.findProduct(getProduct().getId());
+//        jasperPrint = reportService.generateSampleRequest(product, loggedInUser);
+//        javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+//        httpServletResponse.addHeader("Content-disposition", "attachment; filename=sample_req_letter.pdf");
+//        httpServletResponse.setContentType("application/pdf");
+//        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+//        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+//        javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+////        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+////        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
+//
+//        saveSample();
+//    }
 
-    }
+//    public void saveSample() {
+//        save();
+//        SampleTest sampleTest1 = getSampleTest();
+//        sampleTest1.setLetterGenerated(true);
+//        sampleTest1.setProdApplications(prodApplications);
+//        sampleTest1.setUser(loggedInUser);
+//        RetObject retObject = sampleTestService.saveSample(sampleTest);
+//        if (retObject.getMsg().equals("persist")) {
+//            sampleTest1 = (SampleTest) retObject.getObj();
+//        } else {
+//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error saving sample"));
+//        }
+//    }
+//
+//    public SampleTest getSampleTest() {
+//        if (sampleTest == null) {
+//            sampleTest = sampleTestService.findSampleForProd(getProdApplications().getId());
+//            if (sampleTest == null)
+//                sampleTest = new SampleTest();
+//        }
+//        return sampleTest;
+//    }
+//
+//    public void setSampleTest(SampleTest sampleTest) {
+//        this.sampleTest = sampleTest;
+//    }
 
-    public void generateSampleRequestLetter() throws JRException, IOException {
-        facesContext = FacesContext.getCurrentInstance();
-        if (!getProdApplications().getRegState().equals(RegState.VERIFY)) {
-            facesContext.addMessage(null, new FacesMessage("You can only issue a Sample Request letter after you have received the fee and verified the dossier for completeness"));
-        }
-        Product product = productService.findProduct(getProduct().getId());
-        jasperPrint = reportService.generateSampleRequest(product, loggedInUser);
-        javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-        httpServletResponse.addHeader("Content-disposition", "attachment; filename=sample_req_letter.pdf");
-        httpServletResponse.setContentType("application/pdf");
-        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
-        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
-        javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
-//        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-//        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
-
-        saveSample();
-    }
-
-    public void saveSample() {
-        save();
-        SampleTest sampleTest1 = getSampleTest();
-        sampleTest1.setLetterGenerated(true);
-        sampleTest1.setProdApplications(prodApplications);
-        sampleTest1.setUser(loggedInUser);
-        RetObject retObject = sampleTestService.saveSample(sampleTest);
-        if (retObject.getMsg().equals("persist")) {
-            sampleTest1 = (SampleTest) retObject.getObj();
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error saving sample"));
-        }
-    }
-
-    public SampleTest getSampleTest() {
-        if (sampleTest == null) {
-            sampleTest = sampleTestService.findSampleForProd(getProdApplications().getId());
-            if (sampleTest == null)
-                sampleTest = new SampleTest();
-        }
-        return sampleTest;
-    }
-
-    public void setSampleTest(SampleTest sampleTest) {
-        this.sampleTest = sampleTest;
-    }
-
-    public boolean isAttach() {
-        if (getSampleTest() != null) {
-            if (getSampleTest().getFile() != null && getSampleTest().getFile().length > 0)
-                return true;
-            else
-                return false;
-        }
-        return false;
-    }
-
-    public void setAttach(boolean attach) {
-        this.attach = attach;
-    }
+//    public boolean isAttach() {
+//        if (getSampleTest() != null) {
+//            if (getSampleTest().getFile() != null && getSampleTest().getFile().length > 0)
+//                return true;
+//            else
+//                return false;
+//        }
+//        return false;
+//    }
+//
+//    public void setAttach(boolean attach) {
+//        this.attach = attach;
+//    }
 
     public ReportService getReportService() {
         return reportService;

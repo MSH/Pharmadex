@@ -32,6 +32,10 @@ public class ProdAppLetter extends CreationDetail {
     @OneToOne
     private ProdApplications prodApplications;
 
+    @Enumerated(value = EnumType.STRING)
+
+
+
     @OneToOne
     private ReviewInfo reviewInfo;
 
