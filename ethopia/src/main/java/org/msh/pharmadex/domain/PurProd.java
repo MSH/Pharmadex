@@ -21,6 +21,15 @@ public class PurProd extends PProdBase {
     @JoinColumn(name = "purorder_id")
     private PurOrder purOrder;
 
+    public PurProd(DosageForm dosForm, DosUom dosUnit, PurOrder purOrder) {
+        super(dosForm, dosUnit);
+        this.purOrder = purOrder;
+    }
+
+    public PurProd() {
+        super();
+    }
+
     public PurOrder getPurOrder() {
         return purOrder;
     }

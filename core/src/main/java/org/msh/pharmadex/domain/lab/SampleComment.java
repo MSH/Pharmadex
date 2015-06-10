@@ -35,6 +35,13 @@ public class SampleComment implements Serializable {
     @Enumerated(EnumType.STRING)
     private SampleTestStatus sampleTestStatus;
 
+    public SampleComment(SampleTest sampleTest) {
+        this.sampleTest = sampleTest;
+    }
+
+    public SampleComment() {
+    }
+
     public Long getId() {
         return id;
     }

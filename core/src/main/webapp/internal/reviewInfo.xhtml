@@ -228,12 +228,12 @@
                     </p:outputLabel>
                     <p:outputLabel/>
 
-                    <p:outputLabel value="#{msgs.submitted_date}:" styleClass="label"/>
+                    <p:outputLabel value="#{msgs.submitted_date}:" styleClass="label" for="acksubmitdt"/>
                     <p:calendar value="#{reviewInfoBn.revDeficiency.ackDate}" id="acksubmitdt" showOn="button"
                                 pattern="#{userAccessMBean.workspace.datePattern}" required="true"/>
                     <p:message for="acksubmitdt"/>
 
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revcommsummary" styleClass="label"/>
                     <p:editor value="#{reviewInfoBn.revDeficiency.ackComment.comment}" id="revcommsummary" required="true"
                               width="700"/>
                     <p:message for="revcommsummary"/>

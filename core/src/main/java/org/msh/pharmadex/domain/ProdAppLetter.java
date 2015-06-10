@@ -2,6 +2,7 @@ package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.lab.SampleTest;
 
 import javax.persistence.*;
 
@@ -32,12 +33,11 @@ public class ProdAppLetter extends CreationDetail {
     @OneToOne
     private ProdApplications prodApplications;
 
-    @Enumerated(value = EnumType.STRING)
-
-
-
     @OneToOne
     private ReviewInfo reviewInfo;
+
+    @OneToOne
+    private SampleTest sampleTest;
 
     @OneToOne
     private User uploadedBy;
@@ -138,5 +138,13 @@ public class ProdAppLetter extends CreationDetail {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public SampleTest getSampleTest() {
+        return sampleTest;
+    }
+
+    public void setSampleTest(SampleTest sampleTest) {
+        this.sampleTest = sampleTest;
     }
 }

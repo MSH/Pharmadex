@@ -5,9 +5,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.PIPOrderService;
 import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
@@ -20,11 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.util.WebUtils;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
@@ -33,9 +28,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.ResourceBundle;
-
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static org.msh.pharmadex.domain.enums.RegState.FEE;
 
 /**
  * Backing bean to process the application made for registration
@@ -70,6 +62,7 @@ public abstract class ProcessPOrderBn implements Serializable{
     protected ArrayList<POrderDoc> pOrderDocs;
     protected POrderComment pOrderComment;
     protected List<POrderComment> pOrderComments;
+    protected boolean openAPP;
 
 
 
@@ -103,13 +96,16 @@ public abstract class ProcessPOrderBn implements Serializable{
         }else{
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global.success"), retObject.getMsg());
             pOrderBase = (POrderBase) retObject.getObj();
+            initVariables();
 
         }
 
     }
 
+    public abstract void initVariables();
 
-    public void deleteDoc(POrderDoc attach) {
+
+        public void deleteDoc(POrderDoc attach) {
         try {
             facesContext = FacesContext.getCurrentInstance();
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_delete"), attach.getFileName() + resourceBundle.getString("is_deleted"));
@@ -156,8 +152,19 @@ public abstract class ProcessPOrderBn implements Serializable{
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderBase.setReviewState(pOrderComment.getRecomendType());
         pOrderComments.add(pOrderComment);
+        String retObject = saveApp();
+    }
 
-
+    public void addComment(){
+        if(pOrderComments==null) {
+            pOrderComments = new ArrayList<POrderComment>();
+        }
+        setPOrderForComment();
+        pOrderComment.setDate(new Date());
+        pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
+        pOrderComments.add(pOrderComment);
+        if(userSession.isCsd())
+            pOrderBase.setState(AmdmtState.FEEDBACK);
         String retObject = saveApp();
     }
 
@@ -165,7 +172,16 @@ public abstract class ProcessPOrderBn implements Serializable{
 
     public void initApprove(){
         pOrderComment = new POrderComment();
-        pOrderComment.setRecomendType(RecomendType.ACCEPTED);
+//        pOrderComment.setRecomendType(RecomendType.ACCEPTED);
+        pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
+        pOrderComment.setDate(new Date());
+        setPOrderForComment();
+        pOrderComments.add(pOrderComment);
+    }
+
+    public void initReject(){
+        pOrderComment = new POrderComment();
+//        pOrderComment.setRecomendType(RecomendType.ACCEPTED);
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderComment.setDate(new Date());
         setPOrderForComment();
@@ -176,7 +192,7 @@ public abstract class ProcessPOrderBn implements Serializable{
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext,"msgs");
         if(pOrderBase.getReviewState().equals(RecomendType.RECOMENDED)) {
-            pOrderBase.setReviewState(RecomendType.ACCEPTED);
+//            pOrderBase.setReviewState(RecomendType.ACCEPTED);
             pOrderBase.setState(AmdmtState.APPROVED);
             pOrderBase.setApprovalDate(new Date());
             pOrderBase.setExpiryDate(JsfUtils.addDate(new Date(), globalEntityLists.getWorkspace().getPipRegDuration()));
@@ -190,8 +206,8 @@ public abstract class ProcessPOrderBn implements Serializable{
     public String rejectOrder() {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext,"msgs");
-        if(pOrderBase.getReviewState().equals(AmdmtState.NOT_RECOMMENDED)) {
-            pOrderBase.setReviewState(RecomendType.ACCEPTED);
+        if(pOrderBase.getReviewState().equals(RecomendType.NOT_RECOMENDED)) {
+//            pOrderBase.setReviewState(RecomendType.ACCEPTED);
             pOrderBase.setState(AmdmtState.REJECTED);
             pOrderBase.setApprovalDate(new Date());
             return saveApp();
@@ -314,11 +330,12 @@ public abstract class ProcessPOrderBn implements Serializable{
 
     public boolean isDisplayReview() {
         if(userSession.isStaff()) {
-            if (pOrderBase.getReviewState() != null) {
-                if (pOrderBase.getReviewState().equals(RecomendType.RECOMENDED) || pOrderBase.getReviewState().equals(RecomendType.NOT_RECOMENDED))
-                    displayReview = false;
-                else
+            if (pOrderBase.getState() != null) {
+                if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION)||
+                        pOrderBase.getState().equals(AmdmtState.REVIEW)||pOrderBase.getState().equals(AmdmtState.FEEDBACK))
                     displayReview = true;
+                else
+                    displayReview = false;
             } else {
                 displayReview = true;
             }
@@ -333,12 +350,13 @@ public abstract class ProcessPOrderBn implements Serializable{
     }
 
     public boolean isDisplayReviewComment() {
-        if(userSession.isCsd()){
-            if (pOrderBase.getReviewState() != null) {
-                if (pOrderBase.getReviewState().equals(RecomendType.RECOMENDED) || pOrderBase.getReviewState().equals(RecomendType.NOT_RECOMENDED))
+            if (pOrderBase.getState() != null) {
+                if (pOrderBase.getState().equals(AmdmtState.SUBMITTED) || pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION)||
+                        pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK))
                     displayReviewComment = true;
+                else
+                    displayReviewComment = false;
             }
-        }
         return displayReviewComment;
     }
 
@@ -352,5 +370,20 @@ public abstract class ProcessPOrderBn implements Serializable{
 
     public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
         this.globalEntityLists = globalEntityLists;
+    }
+
+    public boolean isOpenAPP() {
+        if(pOrderBase!=null&&pOrderBase.getState()!=null){
+            if(pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION)||pOrderBase.getState().equals(AmdmtState.REVIEW))
+            openAPP = true;
+            else
+            openAPP = false;
+
+        }
+        return openAPP;
+    }
+
+    public void setOpenAPP(boolean openAPP) {
+        this.openAPP = openAPP;
     }
 }

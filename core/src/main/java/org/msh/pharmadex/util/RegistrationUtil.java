@@ -26,7 +26,7 @@ public class RegistrationUtil {
         String no = String.format("%04d", count);
 
 
-        String prodAppNo = no + appType + year;
+        String prodAppNo = no + "/" + appType + "/" + year;
         return prodAppNo;
     }
 

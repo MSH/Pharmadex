@@ -37,19 +37,19 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     }
 
-    private void initVariables() {
+    @Override
+    public void initVariables() {
         pOrderChecklists = ((PIPOrder) pOrderBase).getpOrderChecklists();
-        pipProds = ((PIPOrder) pOrderBase).getPipProds();
         pipProds = ((PIPOrder) pOrderBase).getPipProds();
         pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
         setApplicantUser(pOrderBase.getApplicantUser());
         setApplicant(pOrderBase.getApplicantUser().getApplicant());
+        setpOrderDocs(null);
     }
 
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
-            pipProds = ((PIPOrder) pOrderBase).getPipProds();
             if (pipProds == null || pipProds.size() == 0) {
                 FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
                 error.setSeverity(SEVERITY_ERROR);
@@ -62,6 +62,7 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
                 return null;
             } else {
                 pOrderBase = (POrderBase) retObject.getObj();
+                initVariables();
             }
 
             if (pOrderBase == null) {
@@ -95,5 +96,11 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     }
 
+    public List<PIPProd> getPipProds() {
+        return pipProds;
+    }
 
+    public void setPipProds(List<PIPProd> pipProds) {
+        this.pipProds = pipProds;
+    }
 }
