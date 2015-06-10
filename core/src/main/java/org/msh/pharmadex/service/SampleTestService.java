@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
@@ -18,9 +19,11 @@ import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,31 +44,17 @@ public class SampleTestService implements Serializable {
     @Autowired
     private GlobalEntityLists globalEntityLists;
 
-    public SampleTest findSampleTest(SampleTest sampleTest) {
-        sampleTest = sampleTestDAO.findOne(sampleTest.getId());
-//        List<ReviewChecklist> reviewChecklists = review.getReviewChecklists();
-//        if (reviewChecklists.size() < 1) {
-//            reviewChecklists = new ArrayList<ReviewChecklist>();
-//            review.setReviewChecklists(reviewChecklists);
-//            List<Checklist> allChecklist = checklistService.getChecklists(review.getProdApplications().getProdAppType(), true);
-//            ReviewChecklist eachReviewChecklist;
-//            for (int i = 0; allChecklist.size() > i; i++) {
-//                eachReviewChecklist = new ReviewChecklist();
-//                eachReviewChecklist.setChecklist(allChecklist.get(i));
-//                eachReviewChecklist.setReview(review);
-//                reviewChecklists.add(eachReviewChecklist);
-//            }
-//            review.setReviewChecklists(reviewChecklists);
-//        }
+    @Transactional
+    public SampleTest findSampleTest(Long sampleTestID) {
+        SampleTest sampleTest = sampleTestDAO.findOne(sampleTestID);
+        Hibernate.initialize(sampleTest.getSampleComments());
+        Hibernate.initialize(sampleTest.getProdAppLetters());
         return sampleTest;
     }
 
-    public SampleTest findSampleForProd(Long prodApplicationsId) {
+    public List<SampleTest> findSampleForProd(Long prodApplicationsId) {
         List<SampleTest> sampleTests = sampleTestDAO.findByProdApplications_Id(prodApplicationsId);
-        if (sampleTests.size() > 0)
-            return sampleTests.get(0);
-        else
-            return null;
+        return sampleTests;
 
     }
     public RetObject createDefLetter(SampleTest sampleTest){
@@ -87,7 +76,11 @@ public class SampleTestService implements Serializable {
             attachment.setUploadedBy(sampleTest.getCreatedBy());
             attachment.setComment("Automatically generated Letter");
             attachment.setContentType("application/pdf");
-            sampleTest.setProdAppLetter(attachment);
+            attachment.setSampleTest(sampleTest);
+
+            if(sampleTest.getProdAppLetters()==null)
+                sampleTest.setProdAppLetters(new ArrayList<ProdAppLetter>());
+            sampleTest.getProdAppLetters().add(attachment);
             sampleTestDAO.saveAndFlush(sampleTest);
             return saveSample(sampleTest);
         } catch (JRException e) {

@@ -29,16 +29,16 @@ public class SampleTest implements Serializable {
     @OneToOne
     private ProdApplications prodApplications;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "updatedby_id", nullable = true)
     private User updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "createdby_id", nullable = false)
     private User createdBy;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private ProdAppLetter prodAppLetter;
+    @OneToMany(mappedBy = "sampleTest", cascade = {CascadeType.ALL})
+    private List<ProdAppLetter> prodAppLetters;
 
     @OneToMany(mappedBy = "sampleTest", cascade = {CascadeType.ALL})
     private List<SampleComment> sampleComments;
@@ -96,14 +96,6 @@ public class SampleTest implements Serializable {
 
     public void setUpdatedBy(User updatedBy) {
         this.updatedBy = updatedBy;
-    }
-
-    public ProdAppLetter getProdAppLetter() {
-        return prodAppLetter;
-    }
-
-    public void setProdAppLetter(ProdAppLetter prodAppLetter) {
-        this.prodAppLetter = prodAppLetter;
     }
 
     public List<SampleComment> getSampleComments() {
@@ -184,5 +176,13 @@ public class SampleTest implements Serializable {
 
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public List<ProdAppLetter> getProdAppLetters() {
+        return prodAppLetters;
+    }
+
+    public void setProdAppLetters(List<ProdAppLetter> prodAppLetters) {
+        this.prodAppLetters = prodAppLetters;
     }
 }

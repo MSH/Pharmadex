@@ -16,6 +16,7 @@ import org.msh.pharmadex.service.SampleTestService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -60,6 +61,15 @@ public class SampleTestBn implements Serializable {
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
+    @PostConstruct
+    public void init(){
+        if(sampleTests==null){
+            if(processProdBn.getProdApplications()!=null){
+                sampleTests = sampleTestService.findSampleForProd(processProdBn.getProdApplications().getId());
+            }
+        }
+    }
+
     public void addSample() {
         facesContext = FacesContext.getCurrentInstance();
         ProdApplications prodApplications = processProdBn.getProdApplications();
@@ -75,10 +85,12 @@ public class SampleTestBn implements Serializable {
         sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
         sampleTest.setProdApplications(processProdBn.getProdApplications());
         sampleTest.setSampleTestStatus(SampleTestStatus.REQUESTED);
+        sampleTest.setReqDt(new Date());
         sampleComment.setSampleTestStatus(SampleTestStatus.REQUESTED);
         sampleComment.setSampleTest(sampleTest);
         sampleComment.setDate(new Date());
         sampleComment.setUser(sampleTest.getCreatedBy());
+        sampleTest.getSampleComments().add(sampleComment);
 
         RetObject riRetObj = sampleTestService.createDefLetter(sampleTest);
         if (!riRetObj.getMsg().equalsIgnoreCase("persist")) {
@@ -92,6 +104,7 @@ public class SampleTestBn implements Serializable {
 
     public void initSampleAdd() {
         sampleTest = new SampleTest(new ArrayList<SampleComment>());
+        sampleComment = new SampleComment(sampleTest);
     }
 
     public GlobalEntityLists getGlobalEntityLists() {
