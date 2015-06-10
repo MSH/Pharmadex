@@ -49,4 +49,8 @@ public class DosageFormService implements Serializable {
     }
 
 
+    public DosUom findDosUom(int id) {
+        return dosUomDAO.findOne(id);
+
+    }
 }
