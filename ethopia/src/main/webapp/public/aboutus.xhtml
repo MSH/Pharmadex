@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html">
+<ui:composition template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.aboutus}</h1>
+
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <td style="width: 790px;vertical-align: top;">
+                        <p:panel>
+                            <h:panelGrid cellspacing="10" cellpadding="10" columns="1">
+                                <p>
+                                    The government of Ethiopia has issued proclamation 661/2009 in order to protect the public health from unsafe, inefficacious and poor quality of medicines that are either imported or locally manufactured to be made available on the Ethiopian market. Medicines safety, efficacy and quality will be ensured through different mechanisms including good manufacturing practice inspection, standardized premarketing dossier evaluation, quality control analysis, port inspection and post marketing quality and safety monitoring of the medicines.
+                                </p>
+
+                                <p>
+                                    The Ethiopian Food, Medicines and Healthcare Administration and Control Authority (EFMHACA) is mandated, in the proclamation 661/2009, to ensure the safety, quality and efficacy of medicines. To achieve this, the authority has been working on different regulatory activities. The medicine market authorization system is one of the top priority areas that have been implemented. In addition to the dedicated assessors, the authority uses a national drug advisory committee for the assessment and registration of medicines. This has evolved through the years to improve the medicine dossier evaluation system. As the Socioeconomic development of the nation is transforming, there is a high flow of investments in the healthcare. However, the market authorization system available at this time is yet unable to satisfy and fully accommodate the demands coming in to the country.
+                                </p>
+
+                                <p>
+                                    To address these issues, automation emplacement is demanding for the government. Hence, EFMHACA has developed medicine registration information system that is the conversant and demanding system to implement. This system ensures good governance, transparency, accountability, traceability and speed of work. In addition to this, medicine registration information system increases access to registered medicines information to different type of users in this endeavour. MRIS helps not only for dossier evaluation but also it has online interface to help applicants to apply their application without the limitation to location. It is a web based system.
+                                </p>
+
+                                <p>
+                                    Medicine registration and licensing directorate strives to offer quality, safe and effective medicines in the pursuit of protecting public health through its competent and dedicated staffs. Currently the directorate consists of pharmacists, pharmacologists, public health specialists, clinical pharmacists, pharmaceutics experts, biomedical engineers and secretary.
+                                </p>
+
+                                <p>
+                                    The Authority is found at the Ethiopian capital, Addis Ababa, in Addis Ababa City Administration at a distance of 5km from Bole international airport. Its address is at Africa Avenue, near wolosefer, Kirkos sub city, 02/03 kebelle, 02 House number, Tel: +251-115-524120/22, Fax: +251-115-52411392, Website: fmhaca.gov.et, E-mail: regulatory@fmhaca.gov.et.
+                                </p>
+                            </h:panelGrid>
+                        </p:panel>
+
+                    </td>
+
+
+                    <td style="vertical-align: top; ">
+                        <h:form>
+                            <p:menu style="width:260px;">
+                                <p:submenu label="#{msgs.home_quicklinks}">
+                                    <p:menuitem value="#{msgs.registration_product}" ajax="false"
+                                                action="/public/productlist.faces"/>
+                                    <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
+                                                url="/public/applicantlist.faces"/>
+                                    <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces"
+                                                ajax="false"/>
+                                </p:submenu>
+
+                                <sec:isAuthenticated>
+                                    <p:submenu label="#{msgs.admin_loggedinuser}">
+                                        <p:menuitem value="#{msgs.application_status}"
+                                                    action="/secure/submittedproducts.faces" ajax="false"
+                                                    rendered="#{userSession.company}"/>
+                                        <p:menuitem value="#{msgs.applicant_detail}" action="/internal/processapp.faces"
+                                                    ajax="false" rendered="#{userSession.company}">
+                                            <f:setPropertyActionListener
+                                                    value="#{userSession.loggedInUserObj.applicant}"
+                                                    target="#{processAppBn.applicant}"/>
+                                        </p:menuitem>
+                                        <p:menuitem value="#{msgs.usersettings_preferences}"
+                                                    action="/secure/usersettings.faces"
+                                                    ajax="false"/>
+                                    </p:submenu>
+                                </sec:isAuthenticated>
+
+                                <p:submenu label="#{msgs.home_links}">
+                                    <p:menuitem value="#{msgs.Home_aboutus}" url="/public/aboutus.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_guidelines}" url="/public/guidelines.faces"
+                                                ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_newsevents}" url="/public/newsevent.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_contactus}" url="/public/contactus.faces" ajax="false"/>
+                                </p:submenu>
+
+                            </p:menu>
+
+                            <!-- end three column -->
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+    </ui:define>
+</ui:composition>
+</html>

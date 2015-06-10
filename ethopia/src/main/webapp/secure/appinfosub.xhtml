@@ -200,7 +200,7 @@
 
             <h:panelGroup>
                 <p:commandButton value="#{msgs.global_add}" action="#{appSelectData.addApptoRegistration}"
-                                 oncomplete="PF('addapplicantDlg').hide()" update="app_lh_user" process="@this"/>
+                                 oncomplete="PF('addapplicantDlg').hide()" update="app_lh_user @form" process="@this"/>
                 <p:commandButton action="#{appSelectData.cancelAddApplicant}" immediate="true"
                                  value="#{msgs.global_cancel}" update="@form"/>
             </h:panelGroup>

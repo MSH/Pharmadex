@@ -7,6 +7,7 @@ public enum AmdmtState {
     NEW_APPLICATION,
     REVIEW,
     SUBMITTED,
+    FEEDBACK,
     RECOMMENDED,
     APPROVED,
     NOT_RECOMMENDED,
