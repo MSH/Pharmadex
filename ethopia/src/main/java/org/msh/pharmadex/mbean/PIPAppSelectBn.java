@@ -1,12 +1,11 @@
 package org.msh.pharmadex.mbean;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.mbean.product.RegHomeMbean;
+import org.msh.pharmadex.domain.PIPOrderLookUp;
+import org.msh.pharmadex.domain.POrderChecklist;
 import org.msh.pharmadex.mbean.product.UserDTO;
-import org.msh.pharmadex.service.ApplicantService;
-import org.msh.pharmadex.service.CountryService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -122,13 +121,33 @@ public class PIPAppSelectBn implements Serializable {
 
     }
 
+    @ManagedProperty(value = "#{userSession}")
+    private UserSession userSession;
+
+    @ManagedProperty(value = "#{POrderService}")
+    private POrderService pOrderService;
+
+
     @Transactional
     public void addApptoRegistration() {
         selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
-        if(selectedUser!=null)
+        if (selectedUser != null)
             applicantUser = userService.findUser(selectedUser.getUserId());
         pipOrderBn.setApplicant(selectedApplicant);
         pipOrderBn.setApplicantUser(applicantUser);
+        pipOrderBn.getPipOrder().setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
+        pipOrderBn.getPipOrder().setApplicantUser(applicantUser);
+
+        List<POrderChecklist> pOrderChecklists = new ArrayList<POrderChecklist>();
+        List<PIPOrderLookUp> allChecklist = pOrderService.findPIPCheckList(selectedApplicant.getApplicantType(), true);
+        POrderChecklist eachCheckList;
+        for (int i = 0; allChecklist.size() > i; i++) {
+            eachCheckList = new POrderChecklist();
+            eachCheckList.setPipOrderLookUp(allChecklist.get(i));
+            eachCheckList.setPipOrder(pipOrderBn.getPipOrder());
+            pOrderChecklists.add(eachCheckList);
+        }
+        pipOrderBn.setpOrderChecklists(pOrderChecklists);
     }
 
     public void cancelAddApplicant() {
@@ -236,5 +255,21 @@ public class PIPAppSelectBn implements Serializable {
 
     public void setPipOrderBn(PIPOrderBn pipOrderBn) {
         this.pipOrderBn = pipOrderBn;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public POrderService getpOrderService() {
+        return pOrderService;
+    }
+
+    public void setpOrderService(POrderService pOrderService) {
+        this.pOrderService = pOrderService;
     }
 }

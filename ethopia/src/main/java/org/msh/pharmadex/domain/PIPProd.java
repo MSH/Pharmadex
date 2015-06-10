@@ -18,6 +18,14 @@ public class PIPProd extends PProdBase {
     @JoinColumn(name = "piporder_id")
     private PIPOrder pipOrder;
 
+    public PIPProd(DosageForm dosForm, DosUom dosUnit, PIPOrder pipOrder) {
+        super(dosForm, dosUnit);
+        this.pipOrder = pipOrder;
+    }
+
+    public PIPProd() {
+    }
+
     public PIPOrder getPipOrder() {
         return pipOrder;
     }

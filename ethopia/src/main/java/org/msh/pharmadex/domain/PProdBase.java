@@ -25,18 +25,42 @@ public class PProdBase extends CreationDetail implements Serializable {
     @Column(length = 255, nullable = true)
     private String productDesc;
 
+    @Column(length = 500, nullable = true)
+    private String manufName;
 
-    @Column(length = 255, nullable = false)
-    private String unit;
+    @Column(length = 500, nullable = true)
+    private String manufSite;
 
-    @Column(length = 255, nullable = false)
-    private String quantity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DOSFORM_ID")
+    private DosageForm dosForm;
 
-    @Column(length = 255, nullable = false)
-    private String unitPrice;
+    @Column(name = "dosage_strength")
+    private String dosStrength;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DOSUNIT_ID")
+    private DosUom dosUnit;
+
+    @Column(length = 500)
+    private String shelfLife;
+
+    private Integer quantity;
+
+    @Column(nullable = false)
+    private Integer unitPrice;
 
     @Column(length = 255)
     private String totalPrice;
+
+    public PProdBase(DosageForm dosForm, DosUom dosUnit) {
+        this.dosForm = dosForm;
+        this.dosUnit = dosUnit;
+    }
+
+    public PProdBase() {
+
+    }
 
     public Long getId() {
         return id;
@@ -70,30 +94,6 @@ public class PProdBase extends CreationDetail implements Serializable {
         this.productDesc = productDesc;
     }
 
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public String getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(String unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public String getTotalPrice() {
         return totalPrice;
     }
@@ -102,4 +102,67 @@ public class PProdBase extends CreationDetail implements Serializable {
         this.totalPrice = totalPrice;
     }
 
+    public DosageForm getDosForm() {
+        return dosForm;
+    }
+
+    public void setDosForm(DosageForm dosForm) {
+        this.dosForm = dosForm;
+    }
+
+    public String getDosStrength() {
+        return dosStrength;
+    }
+
+    public void setDosStrength(String dosStrength) {
+        this.dosStrength = dosStrength;
+    }
+
+    public DosUom getDosUnit() {
+        return dosUnit;
+    }
+
+    public void setDosUnit(DosUom dosUnit) {
+        this.dosUnit = dosUnit;
+    }
+
+    public String getShelfLife() {
+        return shelfLife;
+    }
+
+    public void setShelfLife(String shelfLife) {
+        this.shelfLife = shelfLife;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Integer getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Integer unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public String getManufName() {
+        return manufName;
+    }
+
+    public void setManufName(String manufName) {
+        this.manufName = manufName;
+    }
+
+    public String getManufSite() {
+        return manufSite;
+    }
+
+    public void setManufSite(String manufSite) {
+        this.manufSite = manufSite;
+    }
 }

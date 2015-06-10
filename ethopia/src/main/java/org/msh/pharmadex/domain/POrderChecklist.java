@@ -1,5 +1,8 @@
 package org.msh.pharmadex.domain;
 
+import org.hibernate.type.YesNoType;
+import org.msh.pharmadex.domain.enums.YesNoNA;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -25,9 +28,11 @@ public class POrderChecklist extends CreationDetail implements Serializable {
     @JoinColumn(name = "purorder_id", nullable = true)
     private PurOrder purOrder;
 
-    private boolean value;
+    @Enumerated(value = EnumType.STRING)
+    private YesNoNA value;
 
-    private boolean staffValue;
+    @Enumerated(value = EnumType.STRING)
+    private YesNoNA staffValue;
 
     @Column(length = 500)
     private String staffComment;
@@ -48,19 +53,19 @@ public class POrderChecklist extends CreationDetail implements Serializable {
         this.pipOrderLookUp = pipOrderLookUp;
     }
 
-    public boolean isValue() {
+    public YesNoNA getValue() {
         return value;
     }
 
-    public void setValue(boolean value) {
+    public void setValue(YesNoNA value) {
         this.value = value;
     }
 
-    public boolean isStaffValue() {
+    public YesNoNA getStaffValue() {
         return staffValue;
     }
 
-    public void setStaffValue(boolean staffValue) {
+    public void setStaffValue(YesNoNA staffValue) {
         this.staffValue = staffValue;
     }
 

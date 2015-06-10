@@ -1,10 +1,8 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.dao.iface.POrderDocDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.msh.pharmadex.service.PIPOrderService;
-import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
@@ -27,7 +25,7 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class PIPOrderBn extends POrderBn{
+public class PIPOrderBn extends POrderBn {
 
     private List<PIPProd> pipProds;
     private PIPOrder pipOrder;
@@ -38,14 +36,14 @@ public class PIPOrderBn extends POrderBn{
     @PostConstruct
     private void init() {
         Long pipOrderID = (Long) JsfUtils.flashScope().get("pipOrderID");
-        if(pipOrderID!=null){
+        if (pipOrderID != null) {
             pipOrder = getpOrderService().findPIPOrderEager(pipOrderID);
             pOrderChecklists = pipOrder.getpOrderChecklists();
-            pipProds =pipOrder.getPipProds();
+            pipProds = pipOrder.getPipProds();
             setApplicantUser(pipOrder.getApplicantUser());
             setApplicant(pipOrder.getApplicantUser().getApplicant());
             JsfUtils.flashScope().keep("pipOrderID");
-        }else {
+        } else {
             pipOrder = new PIPOrder();
             if (getUserSession().isCompany()) {
                 User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
@@ -53,17 +51,24 @@ public class PIPOrderBn extends POrderBn{
                 setApplicant(applicantUser.getApplicant());
                 pipOrder.setCreatedBy(applicantUser);
                 pipOrder.setApplicantUser(applicantUser);
-            }
 
-            pOrderChecklists = new ArrayList<POrderChecklist>();
-            List<PIPOrderLookUp> allChecklist = findAllChecklists();
-            POrderChecklist eachCheckList;
-            for (int i = 0; allChecklist.size() > i; i++) {
-                eachCheckList = new POrderChecklist();
-                eachCheckList.setPipOrderLookUp(allChecklist.get(i));
-                eachCheckList.setPipOrder(pipOrder);
-                pOrderChecklists.add(eachCheckList);
+                pOrderChecklists = new ArrayList<POrderChecklist>();
+                List<PIPOrderLookUp> allChecklist = findAllChecklists();
+                POrderChecklist eachCheckList;
+                for (int i = 0; allChecklist.size() > i; i++) {
+                    eachCheckList = new POrderChecklist();
+                    eachCheckList.setPipOrderLookUp(allChecklist.get(i));
+                    eachCheckList.setPipOrder(pipOrder);
+                    pOrderChecklists.add(eachCheckList);
+                }
             }
+        }
+    }
+
+    public void calculateTotalPrice() {
+        if (pipProd.getUnitPrice() != null && pipProd.getQuantity() != null) {
+            int unitPrice = pipProd.getUnitPrice();
+            pipProd.setTotalPrice("" + (unitPrice * pipProd.getQuantity()));
         }
     }
 
@@ -86,9 +91,13 @@ public class PIPOrderBn extends POrderBn{
 
     @Override
     public void initAddProd() {
-        setPipProd(new PIPProd());
+        setPipProd(new PIPProd(new DosageForm(), new DosUom(), pipOrder));
 
     }
+
+    @ManagedProperty(value = "#{dosageFormService}")
+    private DosageFormService dosageFormService;
+
 
     @Override
     public void addProd() {
@@ -97,29 +106,31 @@ public class PIPOrderBn extends POrderBn{
             if (pipProds == null)
                 pipProds = new ArrayList<PIPProd>();
         }
+
+        pipProd.setDosForm(dosageFormService.findDosagedForm(pipProd.getDosForm().getUid()));
+        pipProd.setDosUnit(dosageFormService.findDosUom(pipProd.getDosUnit().getId()));
         pipProd.setPipOrder(pipOrder);
         pipProd.setCreatedDate(new Date());
         pipProds.add(pipProd);
-        pipProd = new PIPProd();
+        initAddProd();
     }
 
-    public String cancelOrder(){
+    public String cancelOrder() {
         pipOrder = new PIPOrder();
         return "/home.faces";
     }
 
     @Override
     protected ArrayList<POrderDoc> findPOrdersDocs() {
-        return  (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(pipOrder);
+        return (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(pipOrder);
     }
 
-    public String saveOrder(){
+    public String saveOrder() {
         System.out.println("Inside saveorder");
 
 
         context = FacesContext.getCurrentInstance();
-        pipOrder.setSubmitDate(new Date());
-        pipOrder.setCreatedBy(getApplicantUser());
+//        pipOrder.setCreatedBy(getApplicantUser());
         pipOrder.setState(AmdmtState.NEW_APPLICATION);
         pipOrder.setpOrderChecklists(getpOrderChecklists());
         pipOrder.setPipProds(pipProds);
@@ -137,7 +148,7 @@ public class PIPOrderBn extends POrderBn{
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
             return "piporderlist";
         } else {
-            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), retValue.getMsg()));
             return "";
         }
     }
@@ -164,7 +175,7 @@ public class PIPOrderBn extends POrderBn{
     }
 
     public List<POrderChecklist> getpOrderChecklists() {
-        if(pOrderChecklists==null){
+        if (pOrderChecklists == null) {
             pOrderChecklists = pipOrder.getpOrderChecklists();
         }
         return pOrderChecklists;
@@ -190,4 +201,11 @@ public class PIPOrderBn extends POrderBn{
         this.pipOrder = pipOrder;
     }
 
+    public DosageFormService getDosageFormService() {
+        return dosageFormService;
+    }
+
+    public void setDosageFormService(DosageFormService dosageFormService) {
+        this.dosageFormService = dosageFormService;
+    }
 }

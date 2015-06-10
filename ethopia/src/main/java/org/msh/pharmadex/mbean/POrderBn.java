@@ -5,6 +5,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.POrderDocDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.event.FileUploadEvent;
@@ -42,6 +43,9 @@ public abstract class POrderBn implements Serializable {
 
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
+
+    @ManagedProperty(value = "#{globalEntityLists}")
+    protected GlobalEntityLists globalEntityLists;
 
 
     //    private POrderBase pOrderBase;
@@ -184,5 +188,11 @@ public abstract class POrderBn implements Serializable {
         this.file = file;
     }
 
+    public GlobalEntityLists getGlobalEntityLists() {
+        return globalEntityLists;
+    }
 
+    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+        this.globalEntityLists = globalEntityLists;
+    }
 }

@@ -18,6 +18,9 @@ public class POrderBase extends CreationDetail {
     private Long id;
 
     @Column(length = 255)
+    private String pipNo;
+
+    @Column(length = 255)
     private String shippingInstruction;
 
     @Column(length = 255)
@@ -230,5 +233,13 @@ public class POrderBase extends CreationDetail {
 
     public void setReviewState(RecomendType reviewState) {
         this.reviewState = reviewState;
+    }
+
+    public String getPipNo() {
+        return pipNo;
+    }
+
+    public void setPipNo(String pipNo) {
+        this.pipNo = pipNo;
     }
 }

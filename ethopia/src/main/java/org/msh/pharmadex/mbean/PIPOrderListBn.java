@@ -2,7 +2,7 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.PIPOrder;
-import org.msh.pharmadex.service.PIPOrderService;
+import org.msh.pharmadex.domain.POrderBase;
 import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
@@ -11,7 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
 
@@ -34,6 +33,7 @@ public class PIPOrderListBn implements Serializable {
 
     private PIPOrder pipOrder = new PIPOrder();
     private List<PIPOrder> pipOrders;
+    private String pipNo;
 
     @PostConstruct
     private void init() {
@@ -43,6 +43,11 @@ public class PIPOrderListBn implements Serializable {
         JsfUtils.flashScope().put("pipOrderID", pipOrderID);
         return "/secure/piporder";
 
+    }
+
+    public String searchPIPOrder(){
+        POrderBase pOrderBase = pOrderService.findPOrder(pipNo);
+        return sendToProcess(pOrderBase.getId());
     }
 
     public String sendToProcess(Long pipOrderID){
@@ -86,5 +91,13 @@ public class PIPOrderListBn implements Serializable {
 
     public void setpOrderService(POrderService pOrderService) {
         this.pOrderService = pOrderService;
+    }
+
+    public String getPipNo() {
+        return pipNo;
+    }
+
+    public void setPipNo(String pipNo) {
+        this.pipNo = pipNo;
     }
 }
