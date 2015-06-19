@@ -162,9 +162,12 @@ public abstract class ProcessPOrderBn implements Serializable{
         setPOrderForComment();
         pOrderComment.setDate(new Date());
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
-        pOrderComments.add(pOrderComment);
         if(userSession.isCsd())
-            pOrderBase.setState(AmdmtState.FEEDBACK);
+            pOrderBase.setReviewState(RecomendType.FEEDBACK);
+        else
+            pOrderBase.setReviewState(RecomendType.COMMENT);
+        pOrderComment.setRecomendType(pOrderBase.getReviewState());
+        pOrderComments.add(pOrderComment);
         String retObject = saveApp();
     }
 
@@ -219,13 +222,7 @@ public abstract class ProcessPOrderBn implements Serializable{
     }
 
 
-    public String cancel() {
-//        pOrderBase = new pOrderBase();
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "processAppBn", null);
-        return "/internal/processpiporderlist.faces";
-    }
+    public abstract String cancel();
 
     public POrderBase getpOrderBase() {
         return pOrderBase;
@@ -332,10 +329,13 @@ public abstract class ProcessPOrderBn implements Serializable{
         if(userSession.isStaff()) {
             if (pOrderBase.getState() != null) {
                 if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION)||
-                        pOrderBase.getState().equals(AmdmtState.REVIEW)||pOrderBase.getState().equals(AmdmtState.FEEDBACK))
+                        pOrderBase.getState().equals(AmdmtState.REVIEW)||pOrderBase.getState().equals(AmdmtState.FEEDBACK)) {
                     displayReview = true;
-                else
+                }else if(pOrderBase.getReviewState().equals(RecomendType.FEEDBACK)) {
+                    displayReview = true;
+                }else {
                     displayReview = false;
+                }
             } else {
                 displayReview = true;
             }
@@ -351,11 +351,16 @@ public abstract class ProcessPOrderBn implements Serializable{
 
     public boolean isDisplayReviewComment() {
             if (pOrderBase.getState() != null) {
-                if (pOrderBase.getState().equals(AmdmtState.SUBMITTED) || pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION)||
+                if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION)||
                         pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK))
                     displayReviewComment = true;
                 else
                     displayReviewComment = false;
+                if(userSession.isCsd()){
+                    if(pOrderBase.getState().equals(AmdmtState.SUBMITTED)){
+                        displayReviewComment = true;
+                    }
+                }
             }
         return displayReviewComment;
     }

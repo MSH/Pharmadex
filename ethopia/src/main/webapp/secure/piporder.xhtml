@@ -169,8 +169,11 @@
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
                     <p:column rendered="#{!checkList.pipOrderLookUp.header and empty checkList.pipOrder.submitDate}">
-                        <p:selectOneButton id="console" value="#{checkList.value}">
+                        <p:selectOneButton id="console" value="#{checkList.value}" rendered="#{checkList.pipOrderLookUp.optional}">
                             <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
+                        </p:selectOneButton>
+                        <p:selectOneButton id="console2" value="#{checkList.value}" rendered="#{!checkList.pipOrderLookUp.optional}">
+                            <f:selectItems value="#{globalLists.yesNo}" var="value" itemLabel="#{msgs[value.key]}" />
                         </p:selectOneButton>
                     </p:column>
                     <p:column rendered="#{!checkList.pipOrderLookUp.header and not empty checkList.pipOrder.submitDate}">

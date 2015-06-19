@@ -116,8 +116,7 @@ public class PIPOrderBn extends POrderBn {
     }
 
     public String cancelOrder() {
-        pipOrder = new PIPOrder();
-        return "/home.faces";
+        return "";
     }
 
     @Override

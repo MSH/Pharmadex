@@ -96,6 +96,11 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     }
 
+    @Override
+    public String cancel() {
+        return "/internal/processpiporderlist.faces";
+    }
+
     public List<PIPProd> getPipProds() {
         return pipProds;
     }

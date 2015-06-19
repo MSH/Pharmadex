@@ -36,13 +36,13 @@ public abstract class POrderBn implements Serializable {
     java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
 
     @ManagedProperty(value = "#{POrderService}")
-    private POrderService pOrderService;
+    protected POrderService pOrderService;
 
     @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
+    protected UserSession userSession;
 
     @ManagedProperty(value = "#{userService}")
-    private UserService userService;
+    protected UserService userService;
 
     @ManagedProperty(value = "#{globalEntityLists}")
     protected GlobalEntityLists globalEntityLists;

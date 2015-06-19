@@ -9,8 +9,8 @@ public enum AmdmtState {
     SUBMITTED,
     FEEDBACK,
     RECOMMENDED,
-    APPROVED,
     NOT_RECOMMENDED,
+    APPROVED,
     REJECTED;
 
 

@@ -8,6 +8,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.impl.SessionImpl;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
+import org.msh.pharmadex.dao.CustomPurOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderLookUpDAO;
 import org.msh.pharmadex.dao.iface.POrderDocDAO;
@@ -15,6 +16,7 @@ import org.msh.pharmadex.dao.iface.PurOrderDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.YesNoNA;
+import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class POrderService implements Serializable {
     private CustomPIPOrderDAO customPIPOrderDAO;
 
     @Autowired
+    private CustomPurOrderDAO customPurOrderDAO;
+
+    @Autowired
     private PIPOrderDAO pipOrderDAO;
 
     @Autowired
@@ -60,33 +65,47 @@ public class POrderService implements Serializable {
 
     public RetObject saveOrder(POrderBase pipOrderBase) {
         RetObject retObject = new RetObject();
-        RegistrationUtil registrationUtil= new RegistrationUtil();
+        RegistrationUtil registrationUtil = new RegistrationUtil();
         try {
             if (pipOrderBase instanceof PIPOrder) {
                 PIPOrder pipOrder = (PIPOrder) pipOrderBase;
                 String retValue = validate(pipOrder);
-                if(retValue.equals("persist")) {
+                if (retValue.equals("persist")) {
                     pipOrder.setSubmitDate(new Date());
                     pipOrder = pipOrderDAO.save(pipOrder);
                     pipOrder.setPipNo(registrationUtil.generateAppNo(pipOrder.getId(), "PIP"));
                     pipOrder = pipOrderDAO.save(pipOrder);
                     retObject = createAckLetter(pipOrder);
-                    if(!retObject.getMsg().equals("error")){
-                        retObject = new RetObject("persist",pipOrder);
-                    }else {
+                    if (!retObject.getMsg().equals("error")) {
+                        retObject = new RetObject("persist", pipOrder);
+                    } else {
                         retObject.setObj(pipOrder);
                         retObject.setMsg("letter_error");
                     }
-                }else{
+                } else {
                     retObject.setMsg(retValue);
                 }
             }
 
             if (pipOrderBase instanceof PurOrder) {
                 PurOrder purOrder = (PurOrder) pipOrderBase;
-                purOrder = purOrderDAO.save(purOrder);
-                retObject.setMsg("persist");
-                retObject.setObj(purOrder);
+                String retValue = validate(purOrder);
+                if (retValue.equals("persist")) {
+                    purOrder.setSubmitDate(new Date());
+                    purOrder = purOrderDAO.save(purOrder);
+                    purOrder.setPipNo(registrationUtil.generateAppNo(purOrder.getId(), "PO"));
+                    purOrder = purOrderDAO.save(purOrder);
+//                    retObject = createAckLetter(purOrder);
+                    retObject = new RetObject("persist", purOrder);
+                    if (!retObject.getMsg().equals("error")) {
+                        retObject = new RetObject("persist", purOrder);
+                    } else {
+                        retObject.setObj(purOrder);
+                        retObject.setMsg("letter_error");
+                    }
+                } else {
+                    retObject.setMsg(retValue);
+                }
             }
 
         } catch (Exception ex) {
@@ -118,13 +137,21 @@ public class POrderService implements Serializable {
         return file;
     }
 
-    public RetObject createAckLetter(POrderBase pipOrderBase){
+    public RetObject createAckLetter(POrderBase pipOrderBase) {
         try {
-            File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_ack", ".pdf");
-            byte[] file = generateLetter(pipOrderBase.getId(), "/reports/pip_ack.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
-            pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR)+"_ack.pdf");
-            pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
+            byte[] file = new byte[0];
+            if(pipOrderBase instanceof PIPOrder) {
+                File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_ack", ".pdf");
+                file = generateLetter(pipOrderBase.getId(), "/reports/pip_ack.jasper", invoicePDF);
+                pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
+                pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
+            }else if(pipOrderBase instanceof PurOrder) {
+                File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_ack", ".pdf");
+                file = generateLetter(pipOrderBase.getId(), "/reports/po_ack.jasper", invoicePDF);
+                pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
+                pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
+            }
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
             pOrderDoc.setRegState(pipOrderBase.getState());
@@ -141,12 +168,12 @@ public class POrderService implements Serializable {
         }
     }
 
-    public RetObject createApprovalLetter(POrderBase pipOrderBase){
+    public RetObject createApprovalLetter(POrderBase pipOrderBase) {
         try {
             File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_cert", ".pdf");
             byte[] file = generateLetter(pipOrderBase.getId(), "/reports/pip_cert.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
-            pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR)+"_cert.pdf");
+            pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_cert.pdf");
             pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
@@ -164,12 +191,12 @@ public class POrderService implements Serializable {
         }
     }
 
-    public RetObject createRejectionLetter(POrderBase pipOrderBase){
+    public RetObject createRejectionLetter(POrderBase pipOrderBase) {
         try {
             File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_reject", ".pdf");
             byte[] file = generateLetter(pipOrderBase.getId(), "/reports/pip_reject.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
-            pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR)+"_reject.pdf");
+            pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf");
             pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
@@ -189,15 +216,35 @@ public class POrderService implements Serializable {
 
 
     private String validate(PIPOrder pipOrder) {
-        String retValue ="persist";
+        String retValue = "persist";
         List<POrderChecklist> pOrderChecklists = pipOrder.getpOrderChecklists();
-        if(pipOrder.getPipProds()==null||pipOrder.getPipProds().size()<1){
+        if (pipOrder.getPipProds() == null || pipOrder.getPipProds().size() < 1) {
             retValue = "no_prod";
         }
 
-        for(POrderChecklist pOrderChecklist : pOrderChecklists){
+        for (POrderChecklist pOrderChecklist : pOrderChecklists) {
             YesNoNA value = pOrderChecklist.getValue();
-            if(!pOrderChecklist.getPipOrderLookUp().isHeader()) {
+            if (!pOrderChecklist.getPipOrderLookUp().isHeader()) {
+                if (value == null || value.equals(YesNoNA.NO)) {
+                    retValue = "missing_doc";
+                    break;
+                }
+            }
+        }
+
+        return retValue;
+    }
+
+    private String validate(PurOrder purOrder) {
+        String retValue = "persist";
+        List<POrderChecklist> pOrderChecklists = purOrder.getpOrderChecklists();
+        if (purOrder.getPurProds() == null || purOrder.getPurProds().size() < 1) {
+            retValue = "no_prod";
+        }
+
+        for (POrderChecklist pOrderChecklist : pOrderChecklists) {
+            YesNoNA value = pOrderChecklist.getValue();
+            if (!pOrderChecklist.getPipOrderLookUp().isHeader()) {
                 if (value == null || value.equals(YesNoNA.NO)) {
                     retValue = "missing_doc";
                     break;
@@ -235,16 +282,53 @@ public class POrderService implements Serializable {
         return retObject;
     }
 
+    public RetObject findAllSubmittedPO(Long userID, Long applcntId, boolean companyUser) {
+        RetObject retObject = new RetObject();
+        List<PurOrder> purOrders = null;
+
+        if (userID == null) {
+            retObject.setMsg("error");
+        }
+
+        try {
+            if (companyUser) {
+                purOrders = customPurOrderDAO.findPurOrderByUser(userID, applcntId);
+            } else {
+                purOrders = customPurOrderDAO.findAllPIPOrder();
+            }
+
+
+            retObject.setObj(purOrders);
+            retObject.setMsg("persist");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            retObject.setMsg("error");
+            retObject.setObj(null);
+        }
+        return retObject;
+    }
+
     public RetObject updatePIPOrder(POrderBase pOrderBase) {
 
         if (pOrderBase instanceof PIPOrder) {
             PIPOrder pipOrder = (PIPOrder) pOrderBase;
             pOrderBase = pipOrderDAO.save((PIPOrder) pOrderBase);
-            if(pipOrder.getState().equals(AmdmtState.APPROVED)){
+            if (pipOrder.getState().equals(AmdmtState.APPROVED)) {
                 createApprovalLetter(pipOrder);
-            }else if(pipOrder.getState().equals(AmdmtState.REJECTED)){
+            } else if (pipOrder.getState().equals(AmdmtState.REJECTED)) {
                 createRejectionLetter(pipOrder);
             }
+        }
+
+        if (pOrderBase instanceof PurOrder) {
+            PurOrder purOrder = (PurOrder) pOrderBase;
+            pOrderBase = purOrderDAO.save(purOrder);
+//            if (pOrderBase.getState().equals(AmdmtState.APPROVED)) {
+//                createApprovalLetter(purOrder);
+//            } else if (purOrder.getState().equals(AmdmtState.REJECTED)) {
+//                createRejectionLetter(purOrder);
+//            }
         }
 
         return new RetObject("persist", pOrderBase);
@@ -287,7 +371,7 @@ public class POrderService implements Serializable {
         try {
             pOrderDocDAO.delete(pOrderDoc);
             return "success";
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return "fail";
         }
@@ -297,18 +381,18 @@ public class POrderService implements Serializable {
         try {
             pOrderDocDAO.save(pOrderDocs);
             return "success";
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return "fail";
         }
     }
 
     public RetObject save(POrderDoc pOrderDoc) {
-        try{
+        try {
             pOrderDoc = pOrderDocDAO.save(pOrderDoc);
             RetObject retObject = new RetObject("persist", pOrderDoc);
             return retObject;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return new RetObject("fail", null);
         }
@@ -316,12 +400,21 @@ public class POrderService implements Serializable {
 
     public List<POrderDoc> findPOrderDocs(POrderBase pOrderBase) {
         List<POrderDoc> pOrderDocs = null;
-        if(pOrderBase==null)
-            pOrderDocs =  new ArrayList<POrderDoc>();
-        if(pOrderBase instanceof PIPOrder)
-            pOrderDocs = pOrderDocDAO.findByPipOrder_Id(pOrderBase.getId());
-        if(pOrderBase instanceof PurOrder)
-            pOrderDocs = pOrderDocDAO.findByPurOrder_Id(pOrderBase.getId());
+        if (pOrderBase == null)
+            pOrderDocs = new ArrayList<POrderDoc>();
+        if (pOrderBase instanceof PIPOrder) {
+            if (pOrderBase != null)
+                pOrderDocs = pOrderDocDAO.findByPipOrder_Id(pOrderBase.getId());
+            else
+                pOrderDocs = new ArrayList<POrderDoc>();
+        }
+        if (pOrderBase instanceof PurOrder) {
+            if (pOrderBase.getId() != null)
+                pOrderDocs = pOrderDocDAO.findByPurOrder_Id(pOrderBase.getId());
+            else
+                pOrderDocs = new ArrayList<POrderDoc>();
+
+        }
         return pOrderDocs;
 
     }
@@ -337,5 +430,15 @@ public class POrderService implements Serializable {
     public POrderBase findPOrder(String pipNo) {
         POrderBase pOrderBase = pipOrderDAO.findByPipNo(pipNo);
         return pOrderBase;
+    }
+
+    public List<ProdTable> findProdByLH(Long applcntId) {
+        List<ProdTable> prodTables = new ArrayList<ProdTable>();
+        if (applcntId != null) {
+            prodTables = customPurOrderDAO.findProdByLH(applcntId);
+
+        }
+        return prodTables;
+
     }
 }

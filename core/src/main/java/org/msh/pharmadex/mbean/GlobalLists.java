@@ -82,6 +82,13 @@ public class GlobalLists {
         return Arrays.asList(YesNoNA.values());
     }
 
+    public List<YesNoNA> getYesNo() {
+        List<YesNoNA> yesNoNAs = new ArrayList<YesNoNA>(2);
+        yesNoNAs.add(YesNoNA.YES);
+        yesNoNAs.add(YesNoNA.NO);
+        return yesNoNAs;
+    }
+
     public List<String> getRegAuthority() {
         List<String> regAuth = new ArrayList<String>();
         regAuth.add("USA");
