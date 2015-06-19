@@ -5,773 +5,830 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/admin_layout.xhtml">
-<ui:define name="content">
-<div class="post">
-    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
-</div>
-
-<h:form id="reghome">
-<p:growl id="growl" showSummary="true"/>
-    <p:messages showSummary="true" id="messages"/>
-<pe:ajaxErrorHandler/>
-
-    <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="false" flowListener="#{prodRegAppMbean.onFlowProcess}">
-    <pe:ajaxErrorHandler/>
-
-<p:tab id="prodreg" title="#{msgs.applicant_detail}">
-
-    <ui:decorate template="appinfosub.xhtml">
-        <ui:param name="regHomeData" value="#{prodRegAppMbean}"/>
-        <ui:param name="appSelectData" value="#{appSelectMBean}"/>
-        <ui:param name="displayLH" value="#{userSession.ethiopia}"/>
-    </ui:decorate>
-
-    <div align="right">
-        <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                         ajax="false" />
-        <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="prodregSaveBtn"/>
-    </div>
-
-</p:tab>
-
-<p:tab id="proddetails" title="#{msgs.product_details}">
-    <p:panel header="#{msgs.product_details}">
-
-        <ui:include src="proddetails.xhtml"/>
-
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
-                             update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn" />
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="proddetailBackBtn"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="proddetailNxtBtn"/>
-        </div>
-    </p:panel>
-</p:tab>
-
-
-<p:tab id="appdetails" title="#{msgs.application_detail}">
-    <p:panel header="#{msgs.application_detail}" id="appDetailPnl">
-
-        <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10" columnClasses="label value">
-            <p:outputLabel value="#{msgs.new_chemical_entity}" for="nceChkbox" styleClass="label"/>
-            <p:selectBooleanCheckbox value="#{prodRegAppMbean.product.newChemicalEntity}" id="nceChkbox">
-                <p:ajax update=":reghome:adddetailgrid" listener="#{prodRegAppMbean.nceChangeListener}"
-                        process="@this"/>
-            </p:selectBooleanCheckbox>
-            <p:outputLabel value="#{msgs.new_chemical_name}" styleClass="label"
-                           rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
-            <p:inputText id="nceInput" value="#{prodRegAppMbean.product.newChemicalName}" style="width: 300px;"
-                         rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
-
-            <h:outputLabel value="#{msgs.active_substance}" style="width: 60px;" styleClass="label"/>
-
-
-            <p:dataTable id="inntable" var="prodInn" value="#{prodRegAppMbean.selectedInns}" style="width:100%;"
-                         emptyMessage="No Inns selected"
-                    >
-                <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" action="#{prodAddDetailMBean.openAddInn}" id="addInnBtn"
-                                   oncomplete="PF('addInnDlg').show()" update=":addInnFrm"/>
-
-                </f:facet>
-                <p:column headerText="#{msgs.product_innname}">
-                    <h:outputText value="#{prodInn.inn.name}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.dos_strength}">
-                    <h:outputText value="#{prodInn.dosStrength}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.dos_unit}">
-                    <h:outputText value="#{prodInn.dosUnit.uom}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.inn_funct}">
-                    <h:outputText value="#{prodInn.function}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.inn_ref}">
-                    <h:outputText value="#{prodInn.refStd}"/>
-                </p:column>
-
-                <p:column>
-                    <p:commandButton action="#{prodRegAppMbean.removeInn(prodInn)}" value="#{msgs.global_delete}"
-                                     update=":reghome:atctable :reghome:inntable :reghome:growl" immediate="true">
-                    </p:commandButton>
-                </p:column>
-
-            </p:dataTable>
-
-            <h:outputLabel value="#{msgs.product_active}" style="width: 60px;" styleClass="label"/>
-            <p:dataTable id="expnttable" var="prodExp" value="#{prodRegAppMbean.selectedExipients}" style="width:100%;"
-                         emptyMessage="#{msgs.prod_expnt_not_selected}"
-                    >
-                <f:facet name="header">
-                    <p:commandLink value="#{msgs.global_add}" action="#{prodAddDetailMBean.openAddExp}" id="addExpBtn"
-                                   oncomplete="PF('addExpntDlg').show()" update=":addExpFrm"/>
-                </f:facet>
-                <p:column headerText="#{msgs.active_substance}">
-                    <h:outputText value="#{prodExp.excipient.name}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.dos_strength}">
-                    <h:outputText value="#{prodExp.dosStrength}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.dos_unit}">
-                    <h:outputText value="#{prodExp.dosUnit.uom}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.inn_funct}">
-                    <h:outputText value="#{prodExp.function}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.inn_ref}">
-                    <h:outputText value="#{prodExp.refStd}"/>
-                </p:column>
-
-                <p:column>
-                    <p:commandButton action="#{prodRegAppMbean.removeExcipient(prodExp)}" value="#{msgs.global_delete}"
-                                     update=":reghome:expnttable :reghome:growl" immediate="true">
-                    </p:commandButton>
-                </p:column>
-
-            </p:dataTable>
-
-            <h:outputLabel value="#{msgs.atc_header}" style="width: 60px;" styleClass="label"/>
-
-
-            <h:panelGrid columns="3" cellspacing="10">
-                <h:outputLabel value="#{msgs.atc_noatc}: " for="noatc"/>
-                <p:selectBooleanCheckbox id="noatc"
-                                         value="#{prodRegAppMbean.product.noAtc}"> </p:selectBooleanCheckbox>
-                <p:commandLink id="atcLookUpBtn" value="#{msgs.atc_lookup}" oncomplete="PF('addAtcDlg').show()"
-                               action="#{prodAddDetailMBean.openAddATC}"/>
-            </h:panelGrid>
-            <h:outputLabel/>
-
-            <p:dataTable id="atctable" var="atc" value="#{prodRegAppMbean.selectedAtcs}" style="width:100%;">
-                <p:column headerText="#{msgs.atc_code}">
-                    <h:outputText value="#{atc.atcCode}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.atc_name}">
-                    <h:outputText value="#{atc.atcName}"/>
-                </p:column>
-
-                <p:column>
-                    <p:commandButton action="#{prodRegAppMbean.removeAtc(atc)}" value="#{msgs.global_delete}"
-                                     update=":reghome:atctable :reghome:inntable :reghome:growl" immediate="true">
-                    </p:commandButton>
-                </p:column>
-            </p:dataTable>
-
-        </h:panelGrid>
-
-        <ui:include src="prodadddetails.xhtml"/>
-
-        <p:blockUI block="appDetailPnl" trigger=":reghome:inntable:addInnBtn :reghome:atcLookUpBtn :reghome:expnttable:addExpBtn">
-            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
-        </p:blockUI>
-
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
-                             update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn"/>
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="adddetailBackBtn"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="adddetailNxtBtn"/>
-        </div>
-    </p:panel>
-
-
-</p:tab>
-
-<p:tab id="applicationStatus" title="#{msgs.appl_status_country}">
-    <p:panel header="#{msgs.appl_status_country}" id="statusPnl">
-        <p:messages/>
-        <h:panelGrid columns="1" cellspacing="10" id="foreignstatusgrid" width="100%">
-
-            <p:outputLabel value="#{msgs.foreign_country_status_txt}" styleClass="label"/>
-
-
-            <p:dataTable id="foreignStatusTable" var="appstatus" value="#{prodRegAppMbean.foreignAppStatuses}"
-                         style="width:100%;">
-                <f:facet name="header">
-                    <p:commandLink id="addStatusBtn" value="#{msgs.global_add}" oncomplete="PF('addForeignStatusDlg').show()"
-                                   action="#{foreignAppStatusMBean.initAddCompany}" update=":addForeignStatus"
-                                   >
-                    </p:commandLink>
-                </f:facet>
-                <p:column headerText="#{msgs.applicant_country}">
-                    <h:outputText value="#{appstatus.country.countryName}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.foreign_country_status_type}">
-                    <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.prod_name}">
-                    <h:outputText value="#{appstatus.prodName}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.mkt_auth_holder}">
-                    <h:outputText value="#{appstatus.mktAuthHolder}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.mkt_auth_cert}">
-                    <h:outputText value="#{appstatus.mktAuthCert}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.mkt_auth_date}">
-                    <h:outputText value="#{appstatus.mktAuthDate}">
-                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                    </h:outputText>
-                </p:column>
-
-                <p:column>
-                    <p:commandButton action="#{prodRegAppMbean.removeAppStatus(appstatus)}" value="#{msgs.global_delete}"
-                                     update=":addForeignStatus :reghome:foreignStatusTable :reghome:growl"
-                                     immediate="true"
-                            >
-                    </p:commandButton>
-                </p:column>
-
-            </p:dataTable>
-
-        </h:panelGrid>
-
-        <p:blockUI block="statusPnl" trigger=":reghome:foreignStatusTable:addStatusBtn">
-            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
-        </p:blockUI>
-
-
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true" update=":reghome" id="appStatusSaveBtn" />
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="appStatusBackBtn"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="appStatusNxtBtn"/>
-        </div>
-    </p:panel>
-
-</p:tab>
-
-
-<p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
-    <p:panel header="#{msgs.manufacturer_detail}" id="manufPnl">
-        <p:messages/>
-        <h:panelGrid columns="1" cellspacing="10" id="companygrid" width="100%">
-
-            <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
-
-
-            <p:dataTable id="companyTable" var="company" value="#{prodRegAppMbean.companies}"
-                         style="width:100%;">
-                <f:facet name="header">
-                    <p:commandLink id="addManufBtn" value="#{msgs.global_add}" oncomplete="PF('addCompanyDlg').show()"
-                                   action="#{companyMBean.initAddCompany}" update=":addcompany"
-                                   process="@form :addcompany">
-                    </p:commandLink>
-                </f:facet>
-                <p:column headerText="#{msgs.applicant_name}">
-                    <h:outputText value="#{company.company.companyName}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.applicant_country}">
-                    <h:outputText value="#{company.company.address.country.countryName}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.applicant_type}">
-                    <h:outputText value="#{msgs[company.companyType.key]}"/>
-                </p:column>
-
-                <p:column headerText="#{msgs.applicant_phone}">
-                    <h:outputText value="#{company.company.phoneNo}"/>
-                </p:column>
-
-                <p:column>
-                    <p:commandButton action="#{prodRegAppMbean.removeCompany(company)}" value="#{msgs.global_delete}"
-                                     update=":addcompany :reghome:companyTable :reghome:growl" immediate="true"
-                                     >
-                    </p:commandButton>
-                </p:column>
-            </p:dataTable>
-
-        </h:panelGrid>
-
-        <p:blockUI block="manufPnl" trigger=":reghome:companyTable:addManufBtn">
-            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
-        </p:blockUI>
-
-
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true" update=":reghome" id="manufSaveBtn"/>
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="manufBackBtn"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="manufNextBtn"/>
-        </div>
-    </p:panel>
-
-</p:tab>
-
-<p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.displayPricing}">
-    <p:panel header="#{msgs.product_pricing_general}" id="pricingPnl">
-        <p:messages/>
-
-        <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
-            <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
-            <p:inputText id="msrp" value="#{prodRegAppMbean.pricing.msrp}"
-                         title="#{msgs.product_pricing_max}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="msrp" showSummary="true" showDetail="false"/>
-
-            <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
-            <p:inputText id="priceperdose" value="#{prodRegAppMbean.pricing.pricePerDose}"
-                         title="#{msgs.product_pricing_perdose}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="priceperdose" showSummary="true" showDetail="false"/>
-
-            <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
-            <p:inputText id="priceperday" value="#{prodRegAppMbean.pricing.pricePerDay}"
-                         title="#{msgs.product_pricing_perdose}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="priceperday" showSummary="true" showDetail="false"/>
-
-            <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
-            <p:inputText id="treatcost" value="#{prodRegAppMbean.pricing.treatCost}"
-                         title="#{msgs.product_pricing_perdose}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="treatcost" showSummary="true" showDetail="false"/>
-
-        </h:panelGrid>
-    </p:panel>
-
-    <p:panel header="#{msgs.product_price_comparison}" id="priceCompPnl">
-        <p:dataTable id="pricetable" var="price" value="#{prodRegAppMbean.drugPrices}" style="width:100%;">
-            <f:facet name="header">
-                <p:commandLink id="priceCompBtn" value="#{msgs.global_add}" oncomplete="PF('addPricingDlg').show()" update=":addpricing"
-                               >
-                    <f:setPropertyActionListener value="true" target="#{prodRegAppMbean.showDrugPrice}"/>
-                </p:commandLink>
-            </f:facet>
-            <p:column headerText="#{msgs.drug_price_name}">
-                <h:outputText value="#{price.drugName}"/>
-            </p:column>
-
-            <p:column headerText="#{msgs.drug_price_msrp}">
-                <h:outputText value="#{price.msrp}"/>
-            </p:column>
-
-            <p:column>
-                <p:commandButton action="#{prodRegAppMbean.removeDrugPrice(price)}" value="#{msgs.global_delete}"
-                                 update=":addpricing :reghome:pricetable :reghome:growl" immediate="true">
-                </p:commandButton>
-            </p:column>
-        </p:dataTable>
-
-        <p:blockUI block="priceCompPnl" trigger=":reghome:pricetable:priceCompBtn">
-            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
-        </p:blockUI>
-
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" id="priceSaveBtn" update=":reghome"/>
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="priceBackBtn"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="priceNxtBtn"/>
-        </div>
-    </p:panel>
-
-</p:tab>
-
-<p:tab id="payment" title="#{msgs.payment_info}">
-    <p:panel header="#{msgs.payment_info}">
-        <ui:include src="payment.xhtml"/>
-
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true" update=":reghome" id="paySaveBtn"/>
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="payBackBtn"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="payNxtBtn"/>
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
         </div>
 
-    </p:panel>
-</p:tab>
+        <h:form id="reghome">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showSummary="true" id="messages"/>
+            <pe:ajaxErrorHandler/>
 
-<p:tab id="prodAppChecklist" title="#{msgs.checklist}">
-    <p:panel header="#{msgs.checklist}">
-        <ui:include src="prodappchecklist.xhtml"/>
+            <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="false"
+                      flowListener="#{prodRegAppMbean.onFlowProcess}">
+                <pe:ajaxErrorHandler/>
 
+                <p:tab id="prodreg" title="#{msgs.applicant_detail}">
 
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true" update=":reghome" id="chkSaveBtn"/>
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="chkBackBtn"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="chkNxtBtn"/>
-        </div>
+                    <ui:decorate template="appinfosub.xhtml">
+                        <ui:param name="regHomeData" value="#{prodRegAppMbean}"/>
+                        <ui:param name="appSelectData" value="#{appSelectMBean}"/>
+                        <ui:param name="displayLH" value="#{userSession.ethiopia}"/>
+                    </ui:decorate>
 
-    </p:panel>
-</p:tab>
+                    <div align="right">
+                        <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                         action="#{prodRegAppMbean.cancel}"
+                                         ajax="false"/>
+                        <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="prodregSaveBtn"/>
+                    </div>
 
-        <!--
-<p:tab id="appointment" title="#{msgs.appointment}" rendered="false">
-    <p:panel header="#{msgs.selappointment}">
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="false"/>
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
-        </div>
-        <p:schedule value="#{prodRegAppMbean.eventModel}" widgetVar="myschedule">
+                </p:tab>
 
-            <p:ajax event="dateSelect" listener="#{prodRegAppMbean.onDateSelect}" update=":event:eventDetails"
-                    oncomplete="PF('eventDialog').show()"/>
-            <p:ajax event="eventSelect" listener="#{prodRegAppMbean.onEventSelect}" update=":event:eventDetails"
-                    oncomplete="PF('eventDialog').show()"/>
-            <p:ajax event="eventMove" listener="#{prodRegAppMbean.onEventMove}" update=":reghome:growl"/>
-            <p:ajax event="eventResize" listener="#{prodRegAppMbean.onEventResize}" update=":reghome:growl"/>
+                <p:tab id="proddetails" title="#{msgs.product_details}">
+                    <p:panel header="#{msgs.product_details}">
 
-        </p:schedule>
+                        <ui:include src="proddetails.xhtml"/>
 
-    </p:panel>
-</p:tab>
--->
-
-<p:tab id="summary" title="Summary">
-    <p:panel header="Summary">
-        <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-            <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
-            <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
-            <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
-
-        </ui:decorate>
-
-        <div align="right">
-            <p:commandButton value="#{msgs.global_save}" ajax="true" update=":reghome" action="#{prodRegAppMbean.saveApp}" id="sumSaveBtn"/>
-            <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                             ajax="false"/>
-            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="sumBackBtn"/>
-            <p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbean.validateApp}" ajax="false"/>
-        </div>
-
-    </p:panel>
-</p:tab>
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
+                                             update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"
+                                             id="proddetailBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="proddetailNxtBtn"/>
+                        </div>
+                    </p:panel>
+                </p:tab>
 
 
+                <p:tab id="appdetails" title="#{msgs.application_detail}">
+                    <p:panel header="#{msgs.application_detail}" id="appDetailPnl">
+
+                        <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10"
+                                     columnClasses="label value">
+                            <p:outputLabel value="#{msgs.new_chemical_entity}" for="nceChkbox" styleClass="label"/>
+                            <p:selectBooleanCheckbox value="#{prodRegAppMbean.product.newChemicalEntity}"
+                                                     id="nceChkbox">
+                                <p:ajax update=":reghome:adddetailgrid" listener="#{prodRegAppMbean.nceChangeListener}"
+                                        process="@this"/>
+                            </p:selectBooleanCheckbox>
+                            <p:outputLabel value="#{msgs.new_chemical_name}" styleClass="label"
+                                           rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
+                            <p:inputText id="nceInput" value="#{prodRegAppMbean.product.newChemicalName}"
+                                         style="width: 300px;"
+                                         rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
+
+                            <h:outputLabel value="#{msgs.active_substance}" style="width: 60px;" styleClass="label"/>
 
 
-</p:wizard>
+                            <p:dataTable id="inntable" var="prodInn" value="#{prodRegAppMbean.selectedInns}"
+                                         style="width:100%;"
+                                         emptyMessage="No Inns selected"
+                                    >
+                                <f:facet name="header">
+                                    <p:commandLink value="#{msgs.global_add}" action="#{prodAddDetailMBean.openAddInn}"
+                                                   id="addInnBtn"
+                                                   oncomplete="PF('addInnDlg').show()" update=":addInnFrm"/>
 
-    <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
+                                </f:facet>
+                                <p:column headerText="#{msgs.product_innname}">
+                                    <h:outputText value="#{prodInn.inn.name}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.dos_strength}">
+                                    <h:outputText value="#{prodInn.dosStrength}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.dos_unit}">
+                                    <h:outputText value="#{prodInn.dosUnit.uom}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.inn_funct}">
+                                    <h:outputText value="#{prodInn.function}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.inn_ref}">
+                                    <h:outputText value="#{prodInn.refStd}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{prodRegAppMbean.removeInn(prodInn)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":reghome:atctable :reghome:inntable :reghome:growl"
+                                                     immediate="true">
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+
+                            <h:outputLabel value="#{msgs.product_active}" style="width: 60px;" styleClass="label"/>
+                            <p:dataTable id="expnttable" var="prodExp" value="#{prodRegAppMbean.selectedExipients}"
+                                         style="width:100%;"
+                                         emptyMessage="#{msgs.prod_expnt_not_selected}"
+                                    >
+                                <f:facet name="header">
+                                    <p:commandLink value="#{msgs.global_add}" action="#{prodAddDetailMBean.openAddExp}"
+                                                   id="addExpBtn"
+                                                   oncomplete="PF('addExpntDlg').show()" update=":addExpFrm"/>
+                                </f:facet>
+                                <p:column headerText="#{msgs.active_substance}">
+                                    <h:outputText value="#{prodExp.excipient.name}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.dos_strength}">
+                                    <h:outputText value="#{prodExp.dosStrength}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.dos_unit}">
+                                    <h:outputText value="#{prodExp.dosUnit.uom}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.inn_funct}">
+                                    <h:outputText value="#{prodExp.function}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.inn_ref}">
+                                    <h:outputText value="#{prodExp.refStd}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{prodRegAppMbean.removeExcipient(prodExp)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":reghome:expnttable :reghome:growl" immediate="true">
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+
+                            <h:outputLabel value="#{msgs.atc_header}" style="width: 60px;" styleClass="label"/>
+
+
+                            <h:panelGrid columns="3" cellspacing="10">
+                                <h:outputLabel value="#{msgs.atc_noatc}: " for="noatc"/>
+                                <p:selectBooleanCheckbox id="noatc"
+                                                         value="#{prodRegAppMbean.product.noAtc}"> </p:selectBooleanCheckbox>
+                                <p:commandLink id="atcLookUpBtn" value="#{msgs.atc_lookup}"
+                                               oncomplete="PF('addAtcDlg').show()"
+                                               action="#{prodAddDetailMBean.openAddATC}"/>
+                            </h:panelGrid>
+                            <h:outputLabel/>
+
+                            <p:dataTable id="atctable" var="atc" value="#{prodRegAppMbean.selectedAtcs}"
+                                         style="width:100%;">
+                                <p:column headerText="#{msgs.atc_code}">
+                                    <h:outputText value="#{atc.atcCode}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.atc_name}">
+                                    <h:outputText value="#{atc.atcName}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{prodRegAppMbean.removeAtc(atc)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":reghome:atctable :reghome:inntable :reghome:growl"
+                                                     immediate="true">
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:panelGrid>
+
+                        <ui:include src="prodadddetails.xhtml"/>
+
+                        <p:blockUI block="appDetailPnl"
+                                   trigger=":reghome:inntable:addInnBtn :reghome:atcLookUpBtn :reghome:expnttable:addExpBtn">
+                            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
+                                             update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="adddetailBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="adddetailNxtBtn"/>
+                        </div>
+                    </p:panel>
+
+
+                </p:tab>
+
+                <p:tab id="applicationStatus" title="#{msgs.appl_status_country}">
+                    <p:panel header="#{msgs.appl_status_country}" id="statusPnl">
+                        <p:messages/>
+                        <h:panelGrid columns="1" cellspacing="10" id="foreignstatusgrid" width="100%">
+
+                            <p:outputLabel value="#{msgs.foreign_country_status_txt}" styleClass="label"/>
+
+
+                            <p:dataTable id="foreignStatusTable" var="appstatus"
+                                         value="#{prodRegAppMbean.foreignAppStatuses}"
+                                         style="width:100%;">
+                                <f:facet name="header">
+                                    <p:commandLink id="addStatusBtn" value="#{msgs.global_add}"
+                                                   oncomplete="PF('addForeignStatusDlg').show()"
+                                                   action="#{foreignAppStatusMBean.initAddCompany}"
+                                                   update=":addForeignStatus"
+                                            >
+                                    </p:commandLink>
+                                </f:facet>
+                                <p:column headerText="#{msgs.applicant_country}">
+                                    <h:outputText value="#{appstatus.country.countryName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.foreign_country_status_type}">
+                                    <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.prod_name}">
+                                    <h:outputText value="#{appstatus.prodName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_holder}">
+                                    <h:outputText value="#{appstatus.mktAuthHolder}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_cert}">
+                                    <h:outputText value="#{appstatus.mktAuthCert}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_date}">
+                                    <h:outputText value="#{appstatus.mktAuthDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{prodRegAppMbean.removeAppStatus(appstatus)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":addForeignStatus :reghome:foreignStatusTable :reghome:growl"
+                                                     immediate="true"
+                                            >
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </h:panelGrid>
+
+                        <p:blockUI block="statusPnl" trigger=":reghome:foreignStatusTable:addStatusBtn">
+                            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
+                                             update=":reghome" id="appStatusSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="appStatusBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="appStatusNxtBtn"/>
+                        </div>
+                    </p:panel>
+
+                </p:tab>
+
+
+                <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
+                    <p:panel header="#{msgs.manufacturer_detail}" id="manufPnl">
+                        <p:messages/>
+                        <h:panelGrid columns="1" cellspacing="10" id="companygrid" width="100%">
+
+                            <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
+
+
+                            <p:dataTable id="companyTable" var="company" value="#{prodRegAppMbean.companies}"
+                                         style="width:100%;">
+                                <f:facet name="header">
+                                    <p:commandLink id="addManufBtn" value="#{msgs.global_add}"
+                                                   oncomplete="PF('addCompanyDlg').show()"
+                                                   action="#{companyMBean.initAddCompany}" update=":addcompany"
+                                                   process="@form :addcompany">
+                                    </p:commandLink>
+                                </f:facet>
+                                <p:column headerText="#{msgs.applicant_name}">
+                                    <h:outputText value="#{company.company.companyName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_country}">
+                                    <h:outputText value="#{company.company.address.country.countryName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_type}">
+                                    <h:outputText value="#{msgs[company.companyType.key]}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_phone}">
+                                    <h:outputText value="#{company.company.phoneNo}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{prodRegAppMbean.removeCompany(company)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":addcompany :reghome:companyTable :reghome:growl"
+                                                     immediate="true"
+                                            >
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:panelGrid>
+
+                        <p:blockUI block="manufPnl" trigger=":reghome:companyTable:addManufBtn">
+                            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
+                                             update=":reghome" id="manufSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="manufBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="manufNextBtn"/>
+                        </div>
+                    </p:panel>
+
+                </p:tab>
+
+                <p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.displayPricing}">
+                    <p:panel header="#{msgs.product_pricing_general}" id="pricingPnl">
+                        <p:messages/>
+
+                        <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
+                            <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
+                            <p:inputText id="msrp" value="#{prodRegAppMbean.pricing.msrp}"
+                                         title="#{msgs.product_pricing_max}"
+                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                            </p:inputText>
+                            <p:message for="msrp" showSummary="true" showDetail="false"/>
+
+                            <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
+                            <p:inputText id="priceperdose" value="#{prodRegAppMbean.pricing.pricePerDose}"
+                                         title="#{msgs.product_pricing_perdose}"
+                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                            </p:inputText>
+                            <p:message for="priceperdose" showSummary="true" showDetail="false"/>
+
+                            <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
+                            <p:inputText id="priceperday" value="#{prodRegAppMbean.pricing.pricePerDay}"
+                                         title="#{msgs.product_pricing_perdose}"
+                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                            </p:inputText>
+                            <p:message for="priceperday" showSummary="true" showDetail="false"/>
+
+                            <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
+                            <p:inputText id="treatcost" value="#{prodRegAppMbean.pricing.treatCost}"
+                                         title="#{msgs.product_pricing_perdose}"
+                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                            </p:inputText>
+                            <p:message for="treatcost" showSummary="true" showDetail="false"/>
+
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="#{msgs.product_price_comparison}" id="priceCompPnl">
+                        <p:dataTable id="pricetable" var="price" value="#{prodRegAppMbean.drugPrices}"
+                                     style="width:100%;">
+                            <f:facet name="header">
+                                <p:commandLink id="priceCompBtn" value="#{msgs.global_add}"
+                                               oncomplete="PF('addPricingDlg').show()" update=":addpricing"
+                                        >
+                                    <f:setPropertyActionListener value="true"
+                                                                 target="#{prodRegAppMbean.showDrugPrice}"/>
+                                </p:commandLink>
+                            </f:facet>
+                            <p:column headerText="#{msgs.drug_price_name}">
+                                <h:outputText value="#{price.drugName}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.drug_price_msrp}">
+                                <h:outputText value="#{price.msrp}"/>
+                            </p:column>
+
+                            <p:column>
+                                <p:commandButton action="#{prodRegAppMbean.removeDrugPrice(price)}"
+                                                 value="#{msgs.global_delete}"
+                                                 update=":addpricing :reghome:pricetable :reghome:growl"
+                                                 immediate="true">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:blockUI block="priceCompPnl" trigger=":reghome:pricetable:priceCompBtn">
+                            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
+                                             id="priceSaveBtn" update=":reghome"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="priceBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="priceNxtBtn"/>
+                        </div>
+                    </p:panel>
+
+                </p:tab>
+
+                <p:tab id="payment" title="#{msgs.payment_info}">
+                    <p:panel header="#{msgs.payment_info}">
+                        <ui:include src="payment.xhtml"/>
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
+                                             update=":reghome" id="paySaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="payBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="payNxtBtn"/>
+                        </div>
+
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="prodAppChecklist" title="#{msgs.checklist}">
+                    <p:panel header="#{msgs.checklist}">
+                        <ui:include src="prodappchecklist.xhtml"/>
+
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
+                                             update=":reghome" id="chkSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="chkBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="chkNxtBtn"/>
+                        </div>
+
+                    </p:panel>
+                </p:tab>
+
+                <!--
+        <p:tab id="appointment" title="#{msgs.appointment}" rendered="false">
+            <p:panel header="#{msgs.selappointment}">
+                <div align="right">
+                    <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="false"/>
+                    <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
+                                     ajax="false"/>
+                    <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
+                    <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+                </div>
+                <p:schedule value="#{prodRegAppMbean.eventModel}" widgetVar="myschedule">
+
+                    <p:ajax event="dateSelect" listener="#{prodRegAppMbean.onDateSelect}" update=":event:eventDetails"
+                            oncomplete="PF('eventDialog').show()"/>
+                    <p:ajax event="eventSelect" listener="#{prodRegAppMbean.onEventSelect}" update=":event:eventDetails"
+                            oncomplete="PF('eventDialog').show()"/>
+                    <p:ajax event="eventMove" listener="#{prodRegAppMbean.onEventMove}" update=":reghome:growl"/>
+                    <p:ajax event="eventResize" listener="#{prodRegAppMbean.onEventResize}" update=":reghome:growl"/>
+
+                </p:schedule>
+
+            </p:panel>
+        </p:tab>
+        -->
+
+                <p:tab id="summary" title="Summary">
+                    <p:panel header="Summary">
+                        <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                            <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
+                            <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
+                            <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
+
+                        </ui:decorate>
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" ajax="true" update=":reghome"
+                                             action="#{prodRegAppMbean.saveApp}" id="sumSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="sumBackBtn"/>
+                            <p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbean.validateApp}"
+                                             ajax="false"/>
+                        </div>
+
+                    </p:panel>
+                </p:tab>
+
+
+            </p:wizard>
+
+            <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
                 :reghome:adddetailSaveBtn :reghome:adddetailBackBtn :reghome:adddetailNxtBtn :reghome:appStatusSaveBtn :reghome:appStatusBackBtn
                 :reghome:appStatusNxtBtn :reghome:manufSaveBtn :reghome:manufBackBtn :reghome:manufNextBtn :reghome:priceSaveBtn :reghome:priceBackBtn
                 :reghome:priceNxtBtn :reghome:sumSaveBtn
                 :reghome:sumBackBtn :reghome:paySaveBtn :reghome:payBackBtn :reghome:payNxtBtn :reghome:chkSaveBtn :reghome:chkBackBtn :reghome:chkNxtBtn">
-        <p:graphicImage value="/resources/images/ajax-loader.gif"/>
-    </p:blockUI>
+                <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+            </p:blockUI>
 
-    <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException"
-                            update="exceptionDialog"
-                            onexception="PF('exceptionDialog').show();" />
+            <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException"
+                                    update="exceptionDialog"
+                                    onexception="PF('exceptionDialog').show();"/>
 
-    <p:ajaxExceptionHandler type="java.lang.NullPointerException"
-                            update="exceptionDialog"
-                            onexception="PF('exceptionDialog').show();" />
-    <p:ajaxExceptionHandler type="java.lang.Exception"
-                            update="exceptionDialog"
-                            onexception="PF('exceptionDialog').show();" />
-    <p:dialog id="exceptionDialog" header="Exception occured!" widgetVar="exceptionDialog"
-              height="500px" dynamic="true">
-
-
-        <p:button onclick="document.location.href = document.location.href;"
-                  value="Reload!"
-                   />
-    </p:dialog>
-</h:form>
-
-<p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true" modal="true" dynamic="true">
-    <h:form id="addInnFrm">
-        <pe:ajaxErrorHandler/>
-        <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
-            <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
-            <p:autoComplete id="innname" value="#{prodAddDetailMBean.prodInn.inn}"
-                            completeMethod="#{globalEntityLists.completeInnCodes}"
-                            var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{innConverter}"
-                            forceSelection="false" required="true" requiredMessage="#{msgs.product_innname_valid}">
-            </p:autoComplete>
-            <p:message for="innname" showSummary="true"/>
-
-            <p:outputLabel value="#{msgs.dos_strength}" for="innqty"/>
-            <p:inputText id="innqty" value="#{prodAddDetailMBean.prodInn.dosStrength}" required="true"/>
-            <p:message for="innqty" showSummary="true"/>
-
-            <p:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
-            <p:selectOneMenu id="innunit" value="#{prodAddDetailMBean.prodInn.dosUnit}" converter="omnifaces.SelectItemsConverter"
-                             requiredMessage="#{msgs.valid_dos_form}" required="true">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
-                               itemValue="#{dosUom}"/>
-                <f:ajax render="select_item"/>
-            </p:selectOneMenu>
-            <p:message for="innunit" showSummary="true"/>
-
-            <h:outputLabel value="#{msgs.inn_ref}" for="innref"/>
-            <p:inputText id="innref" value="#{prodAddDetailMBean.prodInn.refStd}"/>
-
-            <h:outputLabel/>
-
-            <h:panelGroup>
-                <p:commandButton action="#{prodAddDetailMBean.addProdInn}" value="#{msgs.global_add}"
-                                 oncomplete="!if(args.validationFailed) addInnDlg.hide()"
-                                 update=":reghome:atctable :reghome:inntable :addInnFrm :reghome:growl"/>
-                <p:commandButton action="#{prodAddDetailMBean.cancelAddInn}" immediate="true" value="#{msgs.global_cancel}"
-                                 ajax="true"
-                                 oncomplete="PF('addInnDlg').hide()" update=":addInnFrm"/>
-            </h:panelGroup>
-            <h:outputLabel/>
-
-        </h:panelGrid>
-    </h:form>
-</p:dialog>
-
-<p:dialog header="#{msgs.product_active}" widgetVar="addExpntDlg" id="addExpntdlg" resizable="true" modal="true" dynamic="true">
-    <h:form id="addExpFrm">
-        <pe:ajaxErrorHandler/>
-        <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
-            <p:outputLabel value="#{msgs.product_active}" for="expname"/>
-            <p:autoComplete id="expname" value="#{prodAddDetailMBean.prodExcipient.excipient}"
-                            completeMethod="#{globalEntityLists.completeExcipients}"
-                            var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{excipientConverter}"
-                            forceSelection="false" required="true" requiredMessage="#{msgs.product_innname_valid}">
-            </p:autoComplete>
-            <p:message for="expname" showSummary="true"/>
-
-            <p:outputLabel value="#{msgs.dos_strength}" for="expqty"/>
-            <p:inputText id="expqty" value="#{prodAddDetailMBean.prodExcipient.dosStrength}" required="true"/>
-            <p:message for="expqty" showSummary="true"/>
-
-            <p:outputLabel value="#{msgs.dos_unit}" for="expunit"/>
-            <p:selectOneMenu id="expunit" value="#{prodAddDetailMBean.prodExcipient.dosUnit.id}"
-                             requiredMessage="#{msgs.valid_dos_form}" required="true">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
-                               itemValue="#{dosUom.id}"/>
-            </p:selectOneMenu>
-            <p:message for="expunit" showSummary="true"/>
-
-            <h:outputLabel value="#{msgs.inn_funct}" for="expfunct"/>
-            <p:inputText id="expfunct" value="#{prodAddDetailMBean.prodExcipient.function}"/>
-            <p:message for="expfunct" showSummary="true"/>
+            <p:ajaxExceptionHandler type="java.lang.NullPointerException"
+                                    update="exceptionDialog"
+                                    onexception="PF('exceptionDialog').show();"/>
+            <p:ajaxExceptionHandler type="java.lang.Exception"
+                                    update="exceptionDialog"
+                                    onexception="PF('exceptionDialog').show();"/>
+            <p:dialog id="exceptionDialog" header="Exception occured!" widgetVar="exceptionDialog"
+                      height="500px" dynamic="true">
 
 
-            <h:outputLabel value="#{msgs.inn_ref}" for="expref"/>
-            <p:inputText id="expref" value="#{prodAddDetailMBean.prodExcipient.refStd}"/>
+                <p:button onclick="document.location.href = document.location.href;"
+                          value="Reload!"
+                        />
+            </p:dialog>
+        </h:form>
 
-            <h:outputLabel/>
+        <p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true"
+                  modal="true" dynamic="true">
+            <h:form id="addInnFrm">
+                <pe:ajaxErrorHandler/>
+                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+                    <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
+                    <p:autoComplete id="innname" value="#{prodAddDetailMBean.prodInn.inn}"
+                                    completeMethod="#{globalEntityLists.completeInnCodes}"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{innConverter}"
+                                    forceSelection="false" required="true"
+                                    requiredMessage="#{msgs.product_innname_valid}">
+                    </p:autoComplete>
+                    <p:message for="innname" showSummary="true"/>
 
-            <h:panelGroup>
-                <p:commandButton action="#{prodAddDetailMBean.addProdExcipient}" value="#{msgs.global_add}"
-                                 oncomplete="!if(args.validationFailed) addExpntDlg.hide()"
-                                 update=":reghome:expnttable :addExpFrm :reghome:growl"/>
-                <p:commandButton action="#{prodAddDetailMBean.cancelAddExcipient}" immediate="true"
-                                 value="#{msgs.global_cancel}"
-                                 ajax="true"
-                                 oncomplete="PF('addExpntDlg').hide()" update=":addExpFrm"/>
-            </h:panelGroup>
-            <h:outputLabel/>
+                    <p:outputLabel value="#{msgs.dos_strength}" for="innqty"/>
+                    <p:inputText id="innqty" value="#{prodAddDetailMBean.prodInn.dosStrength}" required="true"/>
+                    <p:message for="innqty" showSummary="true"/>
 
-        </h:panelGrid>
-    </h:form>
-</p:dialog>
+                    <p:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
+                    <p:selectOneMenu id="innunit" value="#{prodAddDetailMBean.prodInn.dosUnit}"
+                                     converter="omnifaces.SelectItemsConverter"
+                                     requiredMessage="#{msgs.valid_dos_form}" required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
+                                       itemValue="#{dosUom}"/>
+                        <f:ajax render="select_item"/>
+                    </p:selectOneMenu>
+                    <p:message for="innunit" showSummary="true"/>
 
-<p:dialog header="ATC Lookup" widgetVar="addAtcDlg" resizable="true" modal="true" dynamic="true">
-    <h:form id="atcdetail">
-        <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid" id="atclookupgrid">
-            <h:outputLabel value="#{msgs.atc_name}" for="atcname"/>
-            <p:autoComplete id="atcname" value="#{prodAddDetailMBean.atc}"
-                            completeMethod="#{globalEntityLists.completeAtcNames}"
-                            var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
-                            forceSelection="true">
-                <p:ajax event="itemSelect" listener="#{prodAddDetailMBean.updateAtc}" update=":atcdetail"/>
-            </p:autoComplete>
+                    <h:outputLabel value="#{msgs.inn_ref}" for="innref"/>
+                    <p:inputText id="innref" value="#{prodAddDetailMBean.prodInn.refStd}"/>
 
-            <h:outputLabel value="#{msgs.atc_code}" for="atccode"/>
-            <p:outputLabel value="#{prodAddDetailMBean.atc.atcCode}" id="atccode"/>
-        </h:panelGrid>
+                    <h:outputLabel/>
 
+                    <h:panelGroup>
+                        <p:commandButton action="#{prodAddDetailMBean.addProdInn}" value="#{msgs.global_add}"
+                                         oncomplete="!if(args.validationFailed) addInnDlg.hide()"
+                                         update=":reghome:atctable :reghome:inntable :addInnFrm :reghome:growl"/>
+                        <p:commandButton action="#{prodAddDetailMBean.cancelAddInn}" immediate="true"
+                                         value="#{msgs.global_cancel}"
+                                         ajax="true"
+                                         oncomplete="PF('addInnDlg').hide()" update=":addInnFrm"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
 
-        <p:tree value="#{prodAddDetailMBean.selAtcTree}" var="node" id="treeMultiple" selectionMode="single">
-            <p:treeNode>
-                <h:outputText value="#{node}"/>
-            </p:treeNode>
-        </p:tree>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
 
+        <p:dialog header="#{msgs.product_active}" widgetVar="addExpntDlg" id="addExpntdlg" resizable="true" modal="true"
+                  dynamic="true">
+            <h:form id="addExpFrm">
+                <pe:ajaxErrorHandler/>
+                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+                    <p:outputLabel value="#{msgs.product_active}" for="expname"/>
+                    <p:autoComplete id="expname" value="#{prodAddDetailMBean.prodExcipient.excipient}"
+                                    completeMethod="#{globalEntityLists.completeExcipients}"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{excipientConverter}"
+                                    forceSelection="false" required="true"
+                                    requiredMessage="#{msgs.product_innname_valid}">
+                    </p:autoComplete>
+                    <p:message for="expname" showSummary="true"/>
 
-        <h:outputLabel/>
+                    <p:outputLabel value="#{msgs.dos_strength}" for="expqty"/>
+                    <p:inputText id="expqty" value="#{prodAddDetailMBean.prodExcipient.dosStrength}" required="true"/>
+                    <p:message for="expqty" showSummary="true"/>
 
-        <h:panelGroup>
-            <p:commandButton action="#{prodAddDetailMBean.addAtc}" value="#{msgs.global_add}"
-                             update=":reghome:atctable :atcdetail :atcdetail:treeMultiple"
-                             oncomplete="PF('addAtcDlg').hide()" />
-            <p:commandButton action="#{prodAddDetailMBean.cancelAddInn}" value="#{msgs.global_cancel}"
-                             oncomplete="PF('addAtcDlg').hide()"/>
-        </h:panelGroup>
-        <h:outputLabel/>
+                    <p:outputLabel value="#{msgs.dos_unit}" for="expunit"/>
+                    <p:selectOneMenu id="expunit" value="#{prodAddDetailMBean.prodExcipient.dosUnit.id}"
+                                     requiredMessage="#{msgs.valid_dos_form}" required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
+                                       itemValue="#{dosUom.id}"/>
+                    </p:selectOneMenu>
+                    <p:message for="expunit" showSummary="true"/>
 
-    </h:form>
-</p:dialog>
-
-<!--
-<p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
-    <h:form id="event">
-        <h:panelGrid id="eventDetails" columns="2">
-
-            <h:outputLabel for="from" value="From:"/>
-            <p:inputMask id="from" value="#{prodRegAppMbean.event.startDate}" mask="99/99/9999">
-                <f:convertDateTime pattern="dd/MM/yyyy"/>
-            </p:inputMask>
-
-            <h:outputLabel for="to" value="To:"/>
-            <p:inputMask id="to" value="#{prodRegAppMbean.event.endDate}" mask="99/99/9999">
-                <f:convertDateTime pattern="dd/MM/yyyy"/>
-            </p:inputMask>
-
-            <h:outputLabel for="allDay" value="All Day:"/>
-            <h:selectBooleanCheckbox id="allDay" value="#{prodRegAppMbean.event.allDay}"/>
-
-            <p:commandButton type="reset" value="Reset"/>
-            <p:commandButton value="Save" actionListener="#{prodRegAppMbean.addEvent}"
-                             oncomplete="reghome:myschedule.update(); event:eventDialog.hide();"/>
-        </h:panelGrid>
-    </h:form>
-</p:dialog>
-
--->
-
-<p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="true" modal="true" dynamic="true">
-    <h:form id="addcompany">
-        <p:messages showSummary="true"/>
-        <ui:decorate template="/templates/companydetailtmpl.xhtml">
-            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
-            <ui:param name="input" value="#{true}"/>
-        </ui:decorate>
-
-        <h:outputLabel/>
-
-        <h:panelGroup>
-            <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}"
-                             oncomplete="if (!args.validationFailed) PF('addCompanyDlg').hide()" process="@form"
-                             update="@form :reghome:companygrid :reghome:companyTable :reghome:growl"/>
-            <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
-                             oncomplete="PF('addCompanyDlg').hide()" ajax="false" process="@form"
-                             update=":addcompany :reghome:companyTable"/>
-        </h:panelGroup>
-        <h:outputLabel/>
-    </h:form>
-</p:dialog>
-
-<p:dialog header="#{msgs.foreign_country_status_txt}" widgetVar="addForeignStatusDlg" id="addForeignStatusdlg" dynamic="true"
-          resizable="true" modal="true">
-    <h:form id="addForeignStatus">
-        <p:messages showSummary="true"/>
-
-        <h:panelGrid id="foreignstatustable" columns="2" columnClasses="label value">
-            <p:outputLabel value="#{msgs.foreign_country_status_type}" for="forStatuscb"
-                           styleClass="fy-required-field"/>
-            <p:selectOneMenu id="forStatuscb" value="#{foreignAppStatusMBean.selForeignAppStatus.foreignAppStatusType}"
-                             required="true">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalLists.foreignAppStatusType}" var="prodcat"
-                               itemLabel="#{msgs[prodcat.key]}"/>
-            </p:selectOneMenu>
-
-            <p:outputLabel value="#{msgs.applicant_country}" for="statusCntry"/>
-            <p:selectOneMenu value="#{foreignAppStatusMBean.selForeignAppStatus.country.id}" required="true"
-                             id="statusCntry">
-                <f:selectItem itemLabel="-" itemValue=""/>
-                <f:selectItems value="#{globalEntityLists.countries}" var="cntry" itemLabel="#{cntry.countryName}"
-                               itemValue="#{cntry.id}"/>
-            </p:selectOneMenu>
-
-            <p:outputLabel for="otherprodname" value="#{msgs.prod_name}"/>
-            <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.prodName}" required="true"
-                         id="otherprodname"/>
-
-            <p:outputLabel for="mktauthholder" value="#{msgs.mkt_auth_holder}"/>
-            <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthHolder}" required="true"
-                         id="mktauthholder"/>
-
-            <p:outputLabel for="mktauthcert" value="#{msgs.mkt_auth_cert}"/>
-            <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
-
-            <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
-            <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate"
-                        showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"/>
-        </h:panelGrid>
-
-        <h:panelGroup>
-            <p:commandButton action="#{foreignAppStatusMBean.addForStatus()}" value="#{msgs.global_add}"
-                             oncomplete="if (!args.validationFailed) PF('addForeignStatusDlg').hide()" ajax="true"
-                             update=":reghome:foreignstatusgrid :addForeignStatus" process="@form"/>
-            <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
-                             oncomplete="PF('addForeignStatusDlg').hide()" ajax="true" process="@form"
-                             update=":reghome:foreignstatusgrid :addForeignStatus"/>
-        </h:panelGroup>
-        <h:outputLabel/>
-    </h:form>
-</p:dialog>
+                    <h:outputLabel value="#{msgs.inn_funct}" for="expfunct"/>
+                    <p:inputText id="expfunct" value="#{prodAddDetailMBean.prodExcipient.function}"/>
+                    <p:message for="expfunct" showSummary="true"/>
 
 
-<p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg" resizable="true" dynamic="true"
-          modal="true">
-    <h:form id="addpricing">
-        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10" cellspacing="10">
-            <h:outputLabel value="#{msgs.drug_price_name}" for="dpname"/>
-            <p:inputText id="dpname" value="#{drugPriceMBean.selectedDrugPrice.drugName}"
-                         title="#{msgs.product_pricing_perdose}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="dpname" showSummary="true" showDetail="false"/>
+                    <h:outputLabel value="#{msgs.inn_ref}" for="expref"/>
+                    <p:inputText id="expref" value="#{prodAddDetailMBean.prodExcipient.refStd}"/>
 
-            <h:outputLabel value="#{msgs.drug_price_msrp}" for="dpmsrp"/>
-            <p:inputText id="dpmsrp" value="#{drugPriceMBean.selectedDrugPrice.msrp}"
-                         title="#{msgs.product_pricing_max}"
-                         required="true" requiredMessage="#{msgs.valid_value_req}">
-            </p:inputText>
-            <p:message for="dpmsrp" showSummary="true" showDetail="false"/>
-        </h:panelGrid>
+                    <h:outputLabel/>
+
+                    <h:panelGroup>
+                        <p:commandButton action="#{prodAddDetailMBean.addProdExcipient}" value="#{msgs.global_add}"
+                                         oncomplete="!if(args.validationFailed) addExpntDlg.hide()"
+                                         update=":reghome:expnttable :addExpFrm :reghome:growl"/>
+                        <p:commandButton action="#{prodAddDetailMBean.cancelAddExcipient}" immediate="true"
+                                         value="#{msgs.global_cancel}"
+                                         ajax="true"
+                                         oncomplete="PF('addExpntDlg').hide()" update=":addExpFrm"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="ATC Lookup" widgetVar="addAtcDlg" resizable="true" modal="true" dynamic="true">
+            <h:form id="atcdetail">
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid"
+                             id="atclookupgrid">
+                    <h:outputLabel value="#{msgs.atc_name}" for="atcname"/>
+                    <p:autoComplete id="atcname" value="#{prodAddDetailMBean.atc}"
+                                    completeMethod="#{globalEntityLists.completeAtcNames}"
+                                    var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
+                                    forceSelection="true">
+                        <p:ajax event="itemSelect" listener="#{prodAddDetailMBean.updateAtc}" update=":atcdetail"/>
+                    </p:autoComplete>
+
+                    <h:outputLabel value="#{msgs.atc_code}" for="atccode"/>
+                    <p:outputLabel value="#{prodAddDetailMBean.atc.atcCode}" id="atccode"/>
+                </h:panelGrid>
 
 
-        <h:panelGroup>
-            <p:commandButton action="#{drugPriceMBean.addDrugPrice}" value="#{msgs.global_add}"
-                             oncomplete="if (!args.validationFailed) PF('addPricingDlg').hide()"
-                             update=":reghome:pricetable :reghome:growl :addpricing"/>
-            <p:commandButton action="#{drugPriceMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
-                             oncomplete="PF('addPricingDlg').hide()" ajax="false"
-                             update=":addpricing :reghome:pricingTable"/>
-        </h:panelGroup>
-        <h:outputLabel/>
-    </h:form>
-</p:dialog>
+                <p:tree value="#{prodAddDetailMBean.selAtcTree}" var="node" id="treeMultiple" selectionMode="single">
+                    <p:treeNode>
+                        <h:outputText value="#{node}"/>
+                    </p:treeNode>
+                </p:tree>
 
 
-    <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
-        <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
-    </p:dialog>
+                <h:outputLabel/>
 
-</ui:define>
+                <h:panelGroup>
+                    <p:commandButton action="#{prodAddDetailMBean.addAtc}" value="#{msgs.global_add}"
+                                     update=":reghome:atctable :atcdetail :atcdetail:treeMultiple"
+                                     oncomplete="PF('addAtcDlg').hide()"/>
+                    <p:commandButton action="#{prodAddDetailMBean.cancelAddInn}" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addAtcDlg').hide()"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+
+            </h:form>
+        </p:dialog>
+
+        <!--
+        <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+            <h:form id="event">
+                <h:panelGrid id="eventDetails" columns="2">
+
+                    <h:outputLabel for="from" value="From:"/>
+                    <p:inputMask id="from" value="#{prodRegAppMbean.event.startDate}" mask="99/99/9999">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </p:inputMask>
+
+                    <h:outputLabel for="to" value="To:"/>
+                    <p:inputMask id="to" value="#{prodRegAppMbean.event.endDate}" mask="99/99/9999">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </p:inputMask>
+
+                    <h:outputLabel for="allDay" value="All Day:"/>
+                    <h:selectBooleanCheckbox id="allDay" value="#{prodRegAppMbean.event.allDay}"/>
+
+                    <p:commandButton type="reset" value="Reset"/>
+                    <p:commandButton value="Save" actionListener="#{prodRegAppMbean.addEvent}"
+                                     oncomplete="reghome:myschedule.update(); event:eventDialog.hide();"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        -->
+
+        <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="true"
+                  modal="true" dynamic="true">
+            <h:form id="addcompany">
+                <p:messages showSummary="true"/>
+                <ui:decorate template="/templates/companydetailtmpl.xhtml">
+                    <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
+                    <ui:param name="input" value="#{true}"/>
+                </ui:decorate>
+
+                <h:outputLabel/>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{companyMBean.addCompany}" value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('addCompanyDlg').hide()" process="@form"
+                                     update="@form :reghome:companygrid :reghome:companyTable :reghome:growl"/>
+                    <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addCompanyDlg').hide()" ajax="false" process="@form"
+                                     update=":addcompany :reghome:companyTable"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.foreign_country_status_txt}" widgetVar="addForeignStatusDlg" id="addForeignStatusdlg"
+                  dynamic="true"
+                  resizable="true" modal="true">
+            <h:form id="addForeignStatus">
+                <p:messages showSummary="true"/>
+
+                <h:panelGrid id="foreignstatustable" columns="2" columnClasses="label value">
+                    <p:outputLabel value="#{msgs.foreign_country_status_type}" for="forStatuscb"
+                                   styleClass="fy-required-field"/>
+                    <p:selectOneMenu id="forStatuscb"
+                                     value="#{foreignAppStatusMBean.selForeignAppStatus.foreignAppStatusType}"
+                                     required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalLists.foreignAppStatusType}" var="prodcat"
+                                       itemLabel="#{msgs[prodcat.key]}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="#{msgs.applicant_country}" for="statusCntry"/>
+                    <p:selectOneMenu value="#{foreignAppStatusMBean.selForeignAppStatus.country.id}" required="true"
+                                     id="statusCntry">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.countries}" var="cntry"
+                                       itemLabel="#{cntry.countryName}"
+                                       itemValue="#{cntry.id}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="otherprodname" value="#{msgs.prod_name}"/>
+                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.prodName}" required="true"
+                                 id="otherprodname"/>
+
+                    <p:outputLabel for="mktauthholder" value="#{msgs.mkt_auth_holder}"/>
+                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthHolder}" required="true"
+                                 id="mktauthholder"/>
+
+                    <p:outputLabel for="mktauthcert" value="#{msgs.mkt_auth_cert}"/>
+                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
+
+                    <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
+                    <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate"
+                                showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"/>
+                </h:panelGrid>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{foreignAppStatusMBean.addForStatus()}" value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('addForeignStatusDlg').hide()"
+                                     ajax="true"
+                                     update=":reghome:foreignstatusgrid :addForeignStatus" process="@form"/>
+                    <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addForeignStatusDlg').hide()" ajax="true" process="@form"
+                                     update=":reghome:foreignstatusgrid :addForeignStatus"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg"
+                  resizable="true" dynamic="true"
+                  modal="true">
+            <h:form id="addpricing">
+                <h:panelGrid columns="3" columnClasses="label value" cellpadding="10" cellspacing="10">
+                    <h:outputLabel value="#{msgs.drug_price_name}" for="dpname"/>
+                    <p:inputText id="dpname" value="#{drugPriceMBean.selectedDrugPrice.drugName}"
+                                 title="#{msgs.product_pricing_perdose}"
+                                 required="true" requiredMessage="#{msgs.valid_value_req}">
+                    </p:inputText>
+                    <p:message for="dpname" showSummary="true" showDetail="false"/>
+
+                    <h:outputLabel value="#{msgs.drug_price_msrp}" for="dpmsrp"/>
+                    <p:inputText id="dpmsrp" value="#{drugPriceMBean.selectedDrugPrice.msrp}"
+                                 title="#{msgs.product_pricing_max}"
+                                 required="true" requiredMessage="#{msgs.valid_value_req}">
+                    </p:inputText>
+                    <p:message for="dpmsrp" showSummary="true" showDetail="false"/>
+                </h:panelGrid>
+
+
+                <h:panelGroup>
+                    <p:commandButton action="#{drugPriceMBean.addDrugPrice}" value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('addPricingDlg').hide()"
+                                     update=":reghome:pricetable :reghome:growl :addpricing"/>
+                    <p:commandButton action="#{drugPriceMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addPricingDlg').hide()" ajax="false"
+                                     update=":addpricing :reghome:pricingTable"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
+                  resizable="false">
+            <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
+        </p:dialog>
+
+    </ui:define>
     <script type="text/javascript">
         function start() {
             PF('statusDialog').show();

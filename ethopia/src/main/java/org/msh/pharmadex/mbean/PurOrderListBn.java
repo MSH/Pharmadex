@@ -1,8 +1,11 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.POrderBase;
 import org.msh.pharmadex.domain.PurOrder;
+import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.service.PurOrderService;
+import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
@@ -23,24 +26,43 @@ import java.util.List;
 @ViewScoped
 public class PurOrderListBn implements Serializable {
 
-    @ManagedProperty(value = "#{purOrderService}")
-    PurOrderService purOrderService;
+    @ManagedProperty(value = "#{POrderService}")
+    POrderService pOrderService;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
     private PurOrder purOrder = new PurOrder();
     private List<PurOrder> purOrders;
+    private String pipNo;
+
 
     @PostConstruct
     private void init() {
     }
 
-    public PurOrderService getPurOrderService() {
-        return purOrderService;
+    public String sendToDetails(Long purOrderID){
+        JsfUtils.flashScope().put("purOrderID", purOrderID);
+        return "/secure/purorder";
+
     }
 
-    public void setPurOrderService(PurOrderService purOrderService) {
-        this.purOrderService = purOrderService;
+    public String searchPurOrder(){
+        POrderBase pOrderBase = pOrderService.findPOrder(pipNo);
+        return sendToProcess(pOrderBase.getId());
+    }
+
+    public String sendToProcess(Long pipOrderID){
+        JsfUtils.flashScope().put("purOrderID", pipOrderID);
+        return "processpurorder";
+
+    }
+
+    public POrderService getpOrderService() {
+        return pOrderService;
+    }
+
+    public void setpOrderService(POrderService pOrderService) {
+        this.pOrderService = pOrderService;
     }
 
     public UserSession getUserSession() {
@@ -61,7 +83,7 @@ public class PurOrderListBn implements Serializable {
 
     public List<PurOrder> getPurOrders() {
         if (purOrders == null) {
-            RetObject retObject = purOrderService.findAllSubmittedPo(userSession.getLoggedINUserID(), userSession.getApplcantID(), userSession.isCompany());
+            RetObject retObject = pOrderService.findAllSubmittedPO(userSession.getLoggedINUserID(), userSession.getApplcantID(), userSession.isCompany());
             purOrders = (List<PurOrder>) retObject.getObj();
         }
         return purOrders;
@@ -69,5 +91,13 @@ public class PurOrderListBn implements Serializable {
 
     public void setPurOrders(List<PurOrder> purOrders) {
         this.purOrders = purOrders;
+    }
+
+    public String getPipNo() {
+        return pipNo;
+    }
+
+    public void setPipNo(String pipNo) {
+        this.pipNo = pipNo;
     }
 }

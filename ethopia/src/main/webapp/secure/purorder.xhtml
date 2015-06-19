@@ -21,18 +21,28 @@
             <div style="height:10px"/>
 
             <p:panel header="#{msgs.general_info}">
-                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                <h:panelGrid columns="3" cellspacing="10" columnClasses="col1, col2, col3">
                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
-                    <p:inputText id="shipinst" required="true" value="#{purOrderBn.purOrder.shippingInstruction}"/>
+                    <p:inputText id="shipinst" required="true" value="#{purOrderBn.purOrder.shippingInstruction}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:message for="shipinst" showSummary="true"/>
+
+
+                    <p:outputLabel value="#{msgs.portof_entry}" for="port"/>
+                    <p:inputText id="port" required="true" readonly="#{not empty purOrderBn.purOrder.submitDate}"
+                                 value="#{purOrderBn.purOrder.entryPort}"/>
+                    <p:message for="port" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
-                    <p:inputText id="delivery" required="true" value="#{purOrderBn.purOrder.delivery}" />
+                    <p:inputText id="delivery" required="true" value="#{purOrderBn.purOrder.delivery}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:message for="delivery" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
-                    <p:inputText id="payinfo" required="true" value="#{purOrderBn.purOrder.paymentMethod}" />
+                    <p:inputText id="payinfo" required="true" value="#{purOrderBn.purOrder.paymentMethod}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:message for="payinfo" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
-                    <p:inputText id="comment" value="#{purOrderBn.purOrder.comment}" />
+                    <p:inputText id="comment" value="#{purOrderBn.purOrder.comment}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:message for="comment" showSummary="true"/>
 
                 </h:panelGrid>
 
@@ -46,44 +56,54 @@
                             value="Please specify all the products that will imported as part of this order by clicking the add button"
                             styleClass="hint"/>
 
+                    <p:dataTable id="ordertable" var="order" value="#{purOrderBn.purProds}" style="width:100%;">
+                        <f:facet name="header">
+                            <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()" 
+                                             rendered="#{empty purOrderBn.purOrder.submitDate}"
+                                             action="#{purOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
+                        </f:facet>
 
-                        <p:dataTable id="ordertable" var="order" value="#{purOrderBn.purProds}" style="width:100%;">
-                            <f:facet name="header">
-                                <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
-                                                 action="#{purOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
-                            </f:facet>
+                        <p:column headerText="#{msgs.prod_name}">
+                            <h:outputText value="#{order.productName}"/>
+                        </p:column>
 
-                            <p:column headerText="#{msgs.prod_name}">
-                                <h:outputText value="#{order.productName}"/>
-                            </p:column>
+                        <p:column headerText="#{msgs.dos_strength}">
+                            <h:outputText value="#{order.dosStrength}"/>
+                        </p:column>
 
-                            <p:column headerText="#{msgs.prod_desc}">
-                                <h:outputText value="#{order.productDesc}"/>
-                            </p:column>
+                        <p:column headerText="#{msgs.dos_unit}">
+                            <h:outputText value="#{order.dosUnit.uom}"/>
+                        </p:column>
 
-                            <p:column headerText="#{msgs.inn_unit}">
-                                <h:outputText value="#{order.unit}"/>
-                            </p:column>
+                        <p:column headerText="#{msgs.dos_form}">
+                            <h:outputText value="#{order.dosForm.dosForm}"/>
+                        </p:column>
 
-                            <p:column headerText="#{msgs.global_quantity}">
-                                <h:outputText value="#{order.quantity}"/>
-                            </p:column>
 
-                            <p:column headerText="#{msgs.product_pricing}">
-                                <h:outputText value="#{order.unitPrice}"/>
-                            </p:column>
+                        <p:column headerText="#{msgs.prod_presentation}">
+                            <h:outputText value="#{order.productDesc}"/>
+                        </p:column>
 
-                            <p:column headerText="#{msgs.total_price}">
-                                <h:outputText value="#{order.totalPrice}"/>
-                            </p:column>
+                        <p:column headerText="#{msgs.global_quantity}">
+                            <h:outputText value="#{order.quantity}"/>
+                        </p:column>
 
-                            <p:column>
-                                <p:commandButton action="#{purOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
-                                                 update=":reghome:ordertable :reghome:growl" immediate="true">
-                                </p:commandButton>
-                            </p:column>
+                        <p:column headerText="#{msgs.product_pricing}">
+                            <h:outputText value="#{order.unitPrice}"/>
+                        </p:column>
 
-                        </p:dataTable>
+                        <p:column headerText="#{msgs.total_price}">
+                            <h:outputText value="#{order.totalPrice}"/>
+                        </p:column>
+
+                        <p:column rendered="#{empty order.purOrder.submitDate}">
+                            <p:commandButton action="#{purOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
+                                             update=":reghome:ordertable :reghome:growl" immediate="true">
+                            </p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+
                 </h:panelGrid>
 
 
@@ -92,9 +112,55 @@
 
             <div style="height:10px"/>
 
+            <p:panel header="#{msgs.attachments}">
+                <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                 oncomplete="PF('attachdlg').show()" rendered="#{empty purOrderBn.purOrder.submitDate}"
+                                 action="#{purOrderBn.prepareUpload}"
+                                 update=":attachdlg" id="addDocBtn"/>
+
+                <p:dataTable id="attachtable" value="#{purOrderBn.pOrderDocs}" var="doc">
+
+                    <p:column headerText="#{msgs.title}">
+                        <h:outputText value="#{doc.title}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.filename}">
+                        <h:outputText value="#{doc.fileName}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.uploaddate}">
+                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.uploadedby}">
+                        <h:outputText value="#{doc.uploadedBy.name}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.registration_status}">
+                        <h:outputText value="#{msgs[doc.regState.key]}"/>
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                         icon="ui-icon-arrowthichk-s">
+                            <p:fileDownload value="#{purOrderBn.fileDownload(doc)}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column rendered="#{empty purOrderBn.purOrder.submitDate}">
+                        <p:commandButton id="deleteattach"
+                                         action="#{purOrderBn.deleteDoc(doc)}" ajax="false"
+                                         icon="ui-icon-trash"
+                                         update=":reghome:attachtab:attachtable"/>
+                    </p:column>
+                </p:dataTable>
+
+            </p:panel>
+
             <p:panel header="#{msgs.checklist}">
                 <p:dataTable var="checkList" value="#{purOrderBn.pOrderChecklists}" style="width:100%;">
-                    <p:column headerText="" rendered="#{checkList.pipOrderLookUp.header}" colspan="3" style="background-color: bisque;font-weight: bolder;">
+                    <p:column headerText="" colspan="3" rendered="#{checkList.pipOrderLookUp.header}" style="background-color: bisque;font-weight: bolder;">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
                     <p:column rendered="#{!checkList.pipOrderLookUp.header}">
@@ -103,15 +169,23 @@
                     <p:column rendered="#{!checkList.pipOrderLookUp.header}">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
-                    <p:column rendered="#{!checkList.pipOrderLookUp.header}" >
-                        <p:selectBooleanCheckbox value="#{checkList.value}"/>
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header and empty checkList.purOrder.submitDate}">
+                        <p:selectOneButton id="console" value="#{checkList.value}" rendered="#{checkList.pipOrderLookUp.optional}">
+                            <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
+                        </p:selectOneButton>
+                        <p:selectOneButton id="console2" value="#{checkList.value}" rendered="#{!checkList.pipOrderLookUp.optional}">
+                            <f:selectItems value="#{globalLists.yesNo}" var="value" itemLabel="#{msgs[value.key]}" />
+                        </p:selectOneButton>
+                    </p:column>
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header and not empty checkList.purOrder.submitDate}">
+                        <h:outputLabel value="#{msgs[checkList.value.key]}"/>
                     </p:column>
                 </p:dataTable>
             </p:panel>
 
 
             <div align="center" style="height: 60px">
-                <p:commandButton value="#{msgs.global_submit}"
+                <p:commandButton value="#{msgs.global_submit}" rendered="#{empty purOrderBn.purOrder.submitDate}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
                                  update="messages growl"/>
                 <p:commandButton action="#{purOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
@@ -121,7 +195,7 @@
         </h:form>
 
         <p:dialog header="#{msgs.global_agreement}" widgetVar="confirmDlg" id="confirmdlg" resizable="true"
-                  modal="true">
+                  modal="true" dynamic="true">
             <h:form>
                 <div>
                     <p>
@@ -164,14 +238,14 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{msgs.order_detail}" widgetVar="orderdetailDlg" id="orderdetaildlg" resizable="true" modal="true">
+        <p:dialog header="#{msgs.order_detail}" widgetVar="orderdetailDlg" id="orderdetaildlg" resizable="true" modal="true" dynamic="true">
             <h:form id="orderdetailfrm">
                 <p:growl showSummary="true"/>
                 <p:messages/>
                 <h:panelGrid columns="3" cellpadding="5">
                 </h:panelGrid>
 
-                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2" id="order_detail">
+                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2" id="search_prod">
                     <h:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
                     <p:autoComplete value="#{purOrderBn.product}" id="basicPojo" dropdown="true"
                                     completeMethod="#{purOrderBn.completeProduct}"
@@ -186,30 +260,64 @@
                                 partialSubmit="true" process="@this"/>
 
                     </p:autoComplete>
+                    </h:panelGrid>
 
-                    <p:outputLabel/>
-                    <p:outputLabel/>
+
+
+                <h:panelGrid columns="3" cellspacing="10" columnClasses="col1, col2, col3" id="order_detail">
 
                     <p:outputLabel value="#{msgs.reg_number}" for="prodnum"/>
                     <p:outputLabel id="prodnum" required="true" value="#{purOrderBn.product.regNo}" />
+                    <p:message for="prodnum" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
-                    <p:outputLabel id="prodname" required="true" value="#{purOrderBn.product.prodName}" />
+                    <p:outputLabel id="prodname" required="true" value="#{purOrderBn.purProd.productName}" />
+                    <p:message for="prodname" showSummary="true"/>
 
-                    <p:outputLabel value="#{msgs.prod_desc}" for="proddesc"/>
-                    <p:outputLabel id="proddesc" required="true" value="#{purOrderBn.product.prodDesc}" />
+                    <p:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
+                    <p:outputLabel id="dosForm" required="true" value="#{purOrderBn.purProd.dosForm.dosForm}" />
+                    <p:message for="dosForm" showSummary="true" showDetail="false"/>
 
-                    <p:outputLabel value="#{msgs.inn_unit}" for="unit"/>
-                    <p:inputText id="unit" required="true" value="#{purOrderBn.purProd.unit}" />
+                    <p:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
+                    <p:outputLabel id="dosUnit" required="true" value="#{purOrderBn.purProd.dosUnit}" />
+                    <p:message for="dosUnit" showSummary="true" showDetail="false"/>
+
+                    <p:outputLabel value="#{msgs.prod_presentation}" for="proddesc"/>
+                    <p:outputLabel id="proddesc" required="true" value="#{purOrderBn.purProd.productDesc}" />
+                    <p:message for="proddesc" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.product_shelflife}" for="shelflife"/>
+                    <p:outputLabel id="shelflife" value="#{purOrderBn.purProd.shelfLife}"/>
+                    <p:message for="shelflife" showSummary="true" showDetail="false"/>
+
+                    <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
+                    <p:inputText id="dosStrength" value="#{purOrderBn.purProd.dosStrength}" title="DosStrength"
+                                 required="true" requiredMessage="#{msgs.dos_strength}: Value required">
+                    </p:inputText>
+                    <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
+
+                    <p:outputLabel value="#{msgs.manuf_name}" for="manufName"/>
+                    <p:inputText id="manufName" value="#{purOrderBn.purProd.manufName}"/>
+                    <p:message for="manufName" showSummary="true" showDetail="false"/>
+
+                    <p:outputLabel value="#{msgs.pharmacy_address}" for="manufSite"/>
+                    <p:inputText id="manufSite" value="#{purOrderBn.purProd.manufSite}"/>
+                    <p:message for="manufSite" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
-                    <p:inputText id="quant" required="true" value="#{purOrderBn.purProd.quantity}" />
+                    <p:inputText id="quant" required="true" value="#{purOrderBn.purProd.quantity}" >
+                        <p:ajax event="blur" update =":orderdetailfrm:total" process="@form" listener="#{purOrderBn.calculateTotalPrice}"></p:ajax>
+                    </p:inputText>
+                    <p:message for="quant" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.product_pricing}" for="price"/>
-                    <p:inputText id="price" required="true" value="#{purOrderBn.purProd.unitPrice}" />
+                    <p:inputText id="price" required="true" value="#{purOrderBn.purProd.unitPrice}" >
+                        <p:ajax event="blur" update =":orderdetailfrm:total" process="@form" listener="#{purOrderBn.calculateTotalPrice}"></p:ajax>
+                    </p:inputText>
+                    <p:message for="price" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
-                    <p:inputText id="total" required="true" value="#{purOrderBn.purProd.totalPrice}" />
+                    <p:outputLabel id="total" value="#{purOrderBn.purProd.totalPrice}"  styleClass="label"/>
 
                 </h:panelGrid>
 
@@ -222,6 +330,31 @@
                                      value="#{msgs.global_cancel}" oncomplete="PF('orderdetailDlg').hide()"/>
                 </h:panelGroup>
 
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                    <p:inputText id="attachtitle" value="#{purOrderBn.pOrderDoc.title}"/>
+                    <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="attachcomment" value="#{purOrderBn.pOrderDoc.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{purOrderBn.handleFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reghome:growl :reghome:messages"
+                              multiple="false"
+                              sizeLimit="10000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{purOrderBn.addDocument}"
+                                 oncomplete="PF('attachdlg').hide()" update=":reghome:growl :reghome:messages :reghome"/>
             </h:form>
         </p:dialog>
 

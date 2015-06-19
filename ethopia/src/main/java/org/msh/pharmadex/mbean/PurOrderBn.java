@@ -1,10 +1,12 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.mbean.product.ProdTable;
-import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.service.DosageFormService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -18,7 +20,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +35,6 @@ import java.util.List;
 @ViewScoped
 public class PurOrderBn extends POrderBn {
     private static final Logger logger = LoggerFactory.getLogger(PurOrderBn.class);
-    FacesContext context = FacesContext.getCurrentInstance();
-    java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
 
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
@@ -51,28 +50,39 @@ public class PurOrderBn extends POrderBn {
 
     @PostConstruct
     private void init() {
-        purOrder = new PurOrder();
-        if (getUserSession().isCompany()) {
-            User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
-            setApplicantUser(applicantUser);
-            setApplicant(applicantUser.getApplicant());
-            purOrder.setCreatedBy(applicantUser);
-            purOrder.setApplicantUser(applicantUser);
-        }
+        Long purOrderID = (Long) JsfUtils.flashScope().get("purOrderID");
+        if (purOrderID != null) {
+            purOrder = getpOrderService().findPurOrderEager(purOrderID);
+            pOrderChecklists = purOrder.getpOrderChecklists();
+            purProds = purOrder.getPurProds();
+            setApplicantUser(purOrder.getApplicantUser());
+            setApplicant(purOrder.getApplicantUser().getApplicant());
+            JsfUtils.flashScope().keep("purOrderID");
+        } else {
+            purOrder = new PurOrder();
+            if (getUserSession().isCompany()) {
+                User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
+                setApplicantUser(applicantUser);
+                setApplicant(applicantUser.getApplicant());
+                purOrder.setCreatedBy(applicantUser);
+                purOrder.setApplicantUser(applicantUser);
 
-        pOrderChecklists = new ArrayList<POrderChecklist>();
-        List<PIPOrderLookUp> allChecklist = findAllChecklists();
-        POrderChecklist eachCheckList;
-        for (int i = 0; allChecklist.size() > i; i++) {
-            eachCheckList = new POrderChecklist();
-            eachCheckList.setPipOrderLookUp(allChecklist.get(i));
-            eachCheckList.setPurOrder(purOrder);
-            pOrderChecklists.add(eachCheckList);
+                pOrderChecklists = new ArrayList<POrderChecklist>();
+                List<PIPOrderLookUp> allChecklist = findAllChecklists();
+                POrderChecklist eachCheckList;
+                for (int i = 0; allChecklist.size() > i; i++) {
+                    eachCheckList = new POrderChecklist();
+                    eachCheckList.setPipOrderLookUp(allChecklist.get(i));
+                    eachCheckList.setPurOrder(purOrder);
+                    pOrderChecklists.add(eachCheckList);
+                }
+            }
         }
     }
 
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
+        suggestions = pOrderService.findProdByLH(getApplicant().getApplcntId());
         for (ProdTable p : globalEntityLists.getRegProducts()) {
             if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
                     || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
@@ -82,13 +92,18 @@ public class PurOrderBn extends POrderBn {
         return suggestions;
     }
 
+    public void calculateTotalPrice() {
+        if (purProd.getUnitPrice() != null && purProd.getQuantity() != null) {
+            int unitPrice = purProd.getUnitPrice();
+            purProd.setTotalPrice("" + (unitPrice * purProd.getQuantity()));
+        }
+    }
+
+
     @Override
     public void addDocument() {
-//        file = userSession.getFile();
         getpOrderDoc().setPurOrder(purOrder);
-//        getpOrderService().save(getpOrderDoc());
-        setpOrderDocs(null);
-//        userSession.setFile(null);
+        getpOrderDocs().add(getpOrderDoc());
         FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
@@ -101,39 +116,30 @@ public class PurOrderBn extends POrderBn {
     }
 
 
+    @Override
     public void initAddProd() {
-        purProd = new PurProd();
-        product = new ProdTable();
+        setPurProd(new PurProd(new DosageForm(), new DosUom(), purOrder));
+
     }
 
-    public void addProd() {
-        context = FacesContext.getCurrentInstance();
-        bundle = context.getApplication().getResourceBundle(context, "msgs");
+    @ManagedProperty(value = "#{dosageFormService}")
+    private DosageFormService dosageFormService;
 
+
+    @Override
+    public void addProd() {
         if (purProds == null) {
             purProds = purOrder.getPurProds();
             if (purProds == null)
                 purProds = new ArrayList<PurProd>();
         }
 
-        if(purProd.getProduct()==null){
-            context.addMessage(null,new FacesMessage("Please select the product."));
-        }
-
-//        purProd.setPurOrder(purOrder);
+        purProd.setDosForm(dosageFormService.findDosagedForm(purProd.getDosForm().getUid()));
+        purProd.setDosUnit(dosageFormService.findDosUom(purProd.getDosUnit().getId()));
+        purProd.setPurOrder(purOrder);
         purProd.setCreatedDate(new Date());
-        purProd.setProductDesc(purProd.getProduct().getProdDesc());
-        purProd.setProductName(purProd.getProduct().getProdName());
-//        purProd.setProductNo(purProd.getProduct().get);
         purProds.add(purProd);
-
-
-        purProd = new PurProd();
-        product = new ProdTable();
-    }
-
-    public String removeProd(PIPProd pipProd) {
-        return null;
+        initAddProd();
     }
 
     public String removeProd(PurProd purProd) {
@@ -144,6 +150,7 @@ public class PurOrderBn extends POrderBn {
     }
 
 
+    @Override
     public void cancelAddProd() {
         purProd = new PurProd();
     }
@@ -155,7 +162,7 @@ public class PurOrderBn extends POrderBn {
         purOrder.setSubmitDate(new Date());
         purOrder.setCreatedBy(getApplicantUser());
         purOrder.setState(AmdmtState.NEW_APPLICATION);
-//        purOrder.setPurOrderChecklists(purOrderChecklists);
+        purOrder.setpOrderChecklists(pOrderChecklists);
         purOrder.setPurProds(purProds);
         purOrder.setApplicant(getApplicant());
         purOrder.setApplicantUser(getApplicantUser());
@@ -176,13 +183,12 @@ public class PurOrderBn extends POrderBn {
     }
 
     public String cancelOrder() {
-        purOrder = new PurOrder();
-        return "/home.faces";
+        return "";
     }
 
     @Override
     protected ArrayList<POrderDoc> findPOrdersDocs() {
-        return  (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(purOrder);
+        return (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(purOrder);
     }
 
 
@@ -204,25 +210,16 @@ public class PurOrderBn extends POrderBn {
 
     @Transactional
     public void gmpChangeListener() {
-//        if (selectedCompany.isGmpInsp())
-//            showGMP = true;
-//        else
-//            showGMP = false;
         logger.error("inside gmpChangeListener");
         if (product != null && product.getId() != null) {
             Product prod = productService.findProduct(product.getId());
             purProd.setProduct(prod);
+            purProd.setProductName(prod.getProdName());
+            purProd.setDosUnit(prod.getDosUnit());
+            purProd.setDosForm(prod.getDosForm());
+            purProd.setProductDesc(prod.getProdDesc());
+            purProd.setShelfLife(prod.getShelfLife());
             purProd.setProductNo(product.getRegNo());
-//            showApp = true;
-//            convertUser(selectedApplicant.getUsers());
-//            if (users.size() > 1) {
-//                setShowUserSelect(true);
-//            } else {
-//                if (users.size() == 1) {
-//                    selectedUser = users.get(0);
-//                    showUser = true;
-//                }
-//            }
         }
 
     }
@@ -284,5 +281,13 @@ public class PurOrderBn extends POrderBn {
 
     public void setpOrderChecklists(List<POrderChecklist> pOrderChecklists) {
         this.pOrderChecklists = pOrderChecklists;
+    }
+
+    public DosageFormService getDosageFormService() {
+        return dosageFormService;
+    }
+
+    public void setDosageFormService(DosageFormService dosageFormService) {
+        this.dosageFormService = dosageFormService;
     }
 }

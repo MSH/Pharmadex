@@ -19,14 +19,17 @@
                         <p:rowToggler/>
                     </p:column>
 
-                    <p:column headerText="#{msgs.applicant_name}" filterBy="#{eachprod.applicant.appName}"
-                              sortBy="#{eachprod.applicant.appName}">
-                        <p:commandLink id="viewLink" value="#{eachprod.applicant.appName}"
-                                       action="processpurorder" ajax="false">
-                            <f:setPropertyActionListener value="#{eachprod.id}"
-                                                         target="#{userSession.purOrderID}"/>
+                    <p:column headerText="#{msgs.application_no}" filterBy="#{eachprod.pipNo}"
+                              sortBy="#{eachprod.pipNo}">
+                        <p:commandLink id="viewLink" value="#{eachprod.pipNo}"
+                                       action="#{purOrderListBn.sendToProcess(eachprod.id)}" ajax="false">
 
                         </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.applicant_name}" filterBy="#{eachprod.applicant.appName}"
+                              sortBy="#{eachprod.applicant.appName}">
+                        <p:outputLabel value="#{eachprod.applicant.appName}"/>
                     </p:column>
 
                     <p:column headerText="#{msgs.registration_status}" filterBy="#{eachprod.state}"

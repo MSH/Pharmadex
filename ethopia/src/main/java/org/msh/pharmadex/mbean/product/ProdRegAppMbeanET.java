@@ -42,6 +42,9 @@ public class ProdRegAppMbeanET extends ProdRegAppMbean implements Serializable {
     @ManagedProperty(value = "#{licenseHolderService}")
     private LicenseHolderService licenseHolderService;
 
+    @ManagedProperty(value = "#{appSelectMBean}")
+    private AppSelectMBean appSelectMBean;
+
     @PostConstruct
     private void init() {
 
@@ -49,7 +52,11 @@ public class ProdRegAppMbeanET extends ProdRegAppMbean implements Serializable {
 
     public LicenseHolder getLicenseHolder() {
         if(licenseHolder==null){
-            licenseHolder = licenseHolderService.findLicHolderByApplicant(getApplicant().getApplcntId());
+            if(getApplicant().getApplcntId()!=null) {
+                licenseHolder = licenseHolderService.findLicHolderByApplicant(getApplicant().getApplcntId());
+            }else{
+                licenseHolder = licenseHolderService.findLicHolderByApplicant(appSelectMBean.getSelectedApplicant().getApplcntId());
+            }
         }
         return licenseHolder;
     }
@@ -64,5 +71,13 @@ public class ProdRegAppMbeanET extends ProdRegAppMbean implements Serializable {
 
     public void setLicenseHolderService(LicenseHolderService licenseHolderService) {
         this.licenseHolderService = licenseHolderService;
+    }
+
+    public AppSelectMBean getAppSelectMBean() {
+        return appSelectMBean;
+    }
+
+    public void setAppSelectMBean(AppSelectMBean appSelectMBean) {
+        this.appSelectMBean = appSelectMBean;
     }
 }

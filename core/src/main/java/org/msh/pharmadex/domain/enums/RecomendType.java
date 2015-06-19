@@ -13,7 +13,9 @@ package org.msh.pharmadex.domain.enums;
  */
 public enum RecomendType {
     RECOMENDED,
-    NOT_RECOMENDED;
+    NOT_RECOMENDED,
+    FEEDBACK,
+    COMMENT;
 
 
     public String getKey() {
