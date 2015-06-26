@@ -306,3 +306,29 @@ body {
 
 .ui-inputfield {
 }
+
+.review_question_active {
+    background-color: rgb(33, 145, 192);
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    border: 2px solid;
+    border-color: #015270;
+    border-radius: 5px;
+}
+
+.review_question_inactive {
+    background-color: rgb(160,160,160);
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.row_inactive {
+    background-color: rgb(160,160,160);
+}
+.row_inactive {
+    background-color: #FFFFFF;
+}

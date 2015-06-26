@@ -53,6 +53,15 @@ public class LicenseHolder extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "licenseHolder", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private List<AgentInfo> agentInfos;
 
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name="licholder_prod",
+            joinColumns = @JoinColumn( name="licholder_id"),
+            inverseJoinColumns = @JoinColumn( name="prod_id")
+
+    )
+    private List<Product> products;
+
     public Long getId() {
         return id;
     }
@@ -139,5 +148,13 @@ public class LicenseHolder extends CreationDetail implements Serializable {
 
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

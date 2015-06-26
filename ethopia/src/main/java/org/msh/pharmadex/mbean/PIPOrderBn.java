@@ -116,8 +116,16 @@ public class PIPOrderBn extends POrderBn {
     }
 
     public String cancelOrder() {
+        if(userSession.isCompany())
+            return "/secure/piporderlist";
+        else
+            return "/internal/processpiporderlist";
+    }
+
+    public String noOrder() {
         return "";
     }
+
 
     @Override
     protected ArrayList<POrderDoc> findPOrdersDocs() {

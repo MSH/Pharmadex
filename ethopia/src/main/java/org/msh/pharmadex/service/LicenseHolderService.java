@@ -7,11 +7,13 @@ import org.msh.pharmadex.dao.iface.LicenseHolderDAO;
 import org.msh.pharmadex.domain.AgentInfo;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.AgentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,5 +106,19 @@ public class LicenseHolderService implements Serializable {
             }
         }
         return licenseHolder;
+    }
+
+    public String saveProduct(Long applcntId, Product product) {
+        try {
+            LicenseHolder licenseHolder = findLicHolderByApplicant(applcntId);
+            if (licenseHolder.getProducts() == null)
+                licenseHolder.setProducts(new ArrayList<Product>());
+            licenseHolder.getProducts().add(product);
+            licenseHolderDAO.save(licenseHolder);
+            return "persist";
+        }catch (Exception ex){
+            return "error";
+        }
+
     }
 }

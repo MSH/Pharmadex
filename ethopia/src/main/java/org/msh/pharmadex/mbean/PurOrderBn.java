@@ -82,12 +82,8 @@ public class PurOrderBn extends POrderBn {
 
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
-        suggestions = pOrderService.findProdByLH(getApplicant().getApplcntId());
-        for (ProdTable p : globalEntityLists.getRegProducts()) {
-            if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
-                    || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
-//                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
-                suggestions.add(p);
+        if(getApplicant()!=null) {
+            suggestions = pOrderService.findProdByLH(getApplicant().getApplcntId());
         }
         return suggestions;
     }
@@ -183,6 +179,13 @@ public class PurOrderBn extends POrderBn {
     }
 
     public String cancelOrder() {
+        if(userSession.isCompany())
+            return "/secure/purorderlist";
+        else
+            return "/internal/processpurorderlist";
+    }
+
+    public String noOrder() {
         return "";
     }
 

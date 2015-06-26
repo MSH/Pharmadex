@@ -15,6 +15,7 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -105,6 +106,7 @@ public class ProdDeficiencyBn implements Serializable {
         return prodAppChecklists;
     }
 
+    @PostConstruct
     private void initDefBn() {
         Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
         if(prodAppID!=null) {
