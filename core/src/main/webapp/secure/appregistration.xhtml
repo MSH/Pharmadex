@@ -34,7 +34,7 @@
                         <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"/>
                         <p:commandLink value="#{msgs.user_add}" oncomplete="PF('newUserDlg').show()" immediate="true"
                                        style="font-weight: bolder; font-size: larger"
-                                       action="#{applicantMBean.initNewUser}"/>
+                                       action="#{applicantMBean.initNewUser}" update=":newUserdlg"/>
 
                     </h:panelGrid>
 
@@ -78,7 +78,7 @@
                                          value="#{msgs.global_add}"
                                          oncomplete="PF('addUserDlg').hide()" update=":appreg:usertable"/>
                         <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
-                                         value="#{msgs.global_cancel}" oncomplete="PF('addUserDlg').hide()"/>
+                                         value="#{msgs.global_cancel}" oncomplete="PF('addUserDlg').hide()" update=":newuser :appreg"/>
                     </h:panelGroup>
                     <h:outputLabel/>
 
@@ -103,7 +103,7 @@
                                      oncomplete="if (!args.validationFailed) PF('newUserDlg').hide()"
                                      update=":appreg:usertable :newuser"/>
                     <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
-                                     value="#{msgs.global_cancel}" oncomplete="PF('newUserDlg').hide()"/>
+                                     value="#{msgs.global_cancel}" oncomplete="PF('newUserDlg').hide()" update=":newuser :appreg"/>
                 </h:panelGroup>
 
 

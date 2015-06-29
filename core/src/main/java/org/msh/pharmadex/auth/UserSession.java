@@ -67,7 +67,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
     @ManagedProperty(value = "#{onlineUserBean}")
     private OnlineUserBean onlineUserBean;
-    private String licHolderID;
+    private Long licHolderID;
     private String pipOrderID;
     private String purOrderID;
     private String sessionID;
@@ -424,14 +424,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.reviewInfoID = reviewInfoID;
     }
 
-    public String getLicHolderID() {
-        return licHolderID;
-    }
-
-    public void setLicHolderID(String licHolderID) {
-        this.licHolderID = licHolderID;
-    }
-
     public String getPipOrderID() {
         return pipOrderID;
     }
@@ -542,5 +534,13 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
     public void setLoggedINUserID(Long loggedINUserID) {
         this.loggedINUserID = loggedINUserID;
+    }
+
+    public Long getLicHolderID() {
+        return licHolderID;
+    }
+
+    public void setLicHolderID(Long licHolderID) {
+        this.licHolderID = licHolderID;
     }
 }

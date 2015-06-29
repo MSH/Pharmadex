@@ -1,5 +1,6 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.AgentType;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 
 import javax.persistence.*;
@@ -61,6 +62,26 @@ public class LicenseHolder extends CreationDetail implements Serializable {
 
     )
     private List<Product> products;
+
+    @Transient
+    private String firstAgent;
+
+    public String getFirstAgent() {
+        List<AgentInfo> agentInfos = getAgentInfos();
+        Date currDate = new Date();
+        for(AgentInfo agentInfo : agentInfos){
+            if(agentInfo.getAgentType().equals(AgentType.FIRST)&&currDate.after(agentInfo.getStartDate())&&currDate.before(agentInfo.getEndDate())) {
+                firstAgent = agentInfo.getApplicant().getAppName();
+                break;
+            }
+        }
+        return firstAgent;
+    }
+
+    public void setFirstAgent(String firstAgent) {
+        this.firstAgent = firstAgent;
+    }
+
 
     public Long getId() {
         return id;

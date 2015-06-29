@@ -22,6 +22,10 @@
                     </p:commandLink>
                 </p:column>
 
+                <p:column headerText="#{msgs.agent_first}">
+                    #{licHolder.firstAgent}
+                </p:column>
+
                 <p:column headerText="#{msgs.applicant_addr1}">
                     <h:outputLabel converter="javax.faces.DateTime" value="#{licHolder.address.address1}"/>
                 </p:column>

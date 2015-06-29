@@ -22,10 +22,10 @@ public class AgentInfo extends CreationDetail implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "licHolder_id")
+    @JoinColumn(name = "licHolder_id", nullable = false)
     private LicenseHolder licenseHolder;
 
-    @OneToOne
+    @OneToOne(optional = false)
     private Applicant applicant;
 
     @Column(name = "agent_type")

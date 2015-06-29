@@ -80,6 +80,9 @@ public class ApplicantService implements Serializable {
     public Applicant saveApp(Applicant applicant, User userParam) {
         applicant.setState(ApplicantState.NEW_APPLICATION);
         userParam.setType(UserType.COMPANY);
+
+
+
         if (applicant.getUsers() == null) {
             applicant.setUsers(new ArrayList<User>());
             applicant.getUsers().add(userParam);

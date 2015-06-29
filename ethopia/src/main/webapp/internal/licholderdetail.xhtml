@@ -64,7 +64,8 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.agent_type}"/>
                                 </f:facet>
-                                <p:commandLink id="viewLink" value="#{agentInfo.agentType}">
+                                <p:commandLink id="viewLink" value="#{agentInfo.agentType}" oncomplete="PF('addAgentDlg').show()" action="#{licHolderBn.initEdit(agentInfo)}"
+                                        update=":addAgentdlg">
                                 </p:commandLink>
                             </p:column>
 
@@ -115,15 +116,16 @@
         </h:form>
 
         <p:dialog header="#{msgs.global_add}" widgetVar="addAgentDlg" id="addAgentdlg" resizable="true" closable="false" modal="true">
-            <p:messages id="message"/>
+            <p:messages id="message" />
             <h:form id="addAgentFrm">
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                     <h:outputLabel value="#{msgs.applicant_name}" for="applicant"/>
-                    <p:autoComplete id="applicant" value="#{licHolderBn.agentInfo.applicant}"
+                    <p:autoComplete id="applicant" value="#{licHolderBn.agentInfo.applicant}" rendered="#{empty licHolderBn.agentInfo.id}"
                                     completeMethod="#{licHolderBn.completeApplicantList}" dropdown="true"
                                     var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" forceSelection="true"
                                     converter="#{applicantConverter}">
                     </p:autoComplete>
+                    <p:outputLabel value="#{licHolderBn.agentInfo.applicant.appName}" rendered="#{not empty licHolderBn.agentInfo.id}"/>
 
                     <p:outputLabel value="#{msgs.agent_type}" for="forAgentTypecb"
                                    styleClass="fy-required-field"/>
@@ -143,9 +145,11 @@
                                 required="true"/>
 
                     <h:panelGroup>
-                        <p:commandButton actionListener="#{licHolderBn.addAgent}" value="#{msgs.global_add}" ajax="true"
+                        <p:commandButton action="#{licHolderBn.updateAgent}" value="#{msgs.global_update}" ajax="false" rendered="#{!empty licHolderBn.agentInfo.id}"
+                                         update=":reghome:agents :addAgentdlg :message :reghome:growl" oncomplete="PF('addAgentDlg').hide()" process="@form"/>
+                        <p:commandButton action="#{licHolderBn.addAgent}" value="#{msgs.global_add}" ajax="false" rendered="#{empty licHolderBn.agentInfo.id}"
                                          update=":reghome:agents :addAgentdlg :message :reghome:growl" />
-                        <p:commandButton action="#{licHolderBn.cancelAddAgent}" immediate="true"
+                        <p:commandButton action="#{licHolderBn.cancelAddAgent}" immediate="true" ajax="false"
                                          value="#{msgs.global_cancel}" oncomplete="PF('addAgentDlg').hide()"/>
                     </h:panelGroup>
                     <h:outputLabel/>

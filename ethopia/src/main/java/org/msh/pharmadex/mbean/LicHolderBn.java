@@ -54,7 +54,21 @@ public class LicHolderBn implements Serializable {
 
     @PostConstruct
     public void init() {
+        if(licenseHolder == null){
+            if(userSession.getLicHolderID()!=null) {
+                licenseHolder = licenseHolderService.findLicHolder(userSession.getLicHolderID());
+                agentInfos = licenseHolderService.findAllAgents(licenseHolder.getId());
+            }else{
+                licenseHolder = new LicenseHolder();
+                licenseHolder.setAddress(new Address());
+            }
+        }
         agentInfo = new AgentInfo();
+        user = userService.findUser(userSession.getLoggedINUserID());
+    }
+
+    public void initEdit(AgentInfo agentInfo) {
+        this.agentInfo = licenseHolderService.findAgentInfoByID(agentInfo.getId());
         user = userService.findUser(userSession.getLoggedINUserID());
     }
 
@@ -70,12 +84,35 @@ public class LicHolderBn implements Serializable {
         if (ret.equalsIgnoreCase("persist")) {
             agentInfos.add(agentInfo);
             licenseHolder.setAgentInfos(agentInfos);
-            RequestContext.getCurrentInstance().execute("addAgentdlg.hide()");
-        } else {
-            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to add Agent", "Unable to add Agent"));
-            RequestContext.getCurrentInstance().execute("addAgentdlg.show()");
+            agentInfo = new AgentInfo();
+        } else if (ret.equalsIgnoreCase("error")) {
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to update Agent", "Unable to update Agent"));
+        } else if (ret.equalsIgnoreCase("date_end_before_start")) {
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "End date cannot be before start date", "End date cannot be before start date"));
+        } else if (ret.equalsIgnoreCase("licholder_present")) {
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "There is an active Local agent present during the period. If you are adding a new license holder or updating an existing license holder then fix the dates for the existing holder be adding a new one",
+                    "There is an active Local agent present during the period. If you are adding a new license holder or updating an existing license holder then fix the dates for the existing holder before adding a new one"));
         }
-        agentInfo = new AgentInfo();
+
+    }
+
+    @Transactional
+    public String updateAgent(){
+        facesContext = FacesContext.getCurrentInstance();
+        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+        String ret = licenseHolderService.updateAgent(agentInfo);
+        if (ret.equalsIgnoreCase("persist")) {
+            agentInfo = new AgentInfo();
+            userSession.setLicHolderID(licenseHolder.getId());
+            agentInfos = null;
+            licenseHolder = null;
+        } else if (ret.equalsIgnoreCase("error")) {
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to update Agent", "Unable to update Agent"));
+        } else if (ret.equalsIgnoreCase("date_end_before_start")) {
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "End date cannot be before start date", "End date cannot be before start date"));
+        }
+        return null;
 
     }
 
@@ -123,7 +160,6 @@ public class LicHolderBn implements Serializable {
         if (licenseHolder == null) {
             if (userSession.getLicHolderID() != null) {
                 licenseHolder = licenseHolderService.findLicHolder(userSession.getLicHolderID());
-                userSession.setLicHolderID(null);
             }else{
                 licenseHolder = new LicenseHolder();
                 licenseHolder.setAddress(new Address());

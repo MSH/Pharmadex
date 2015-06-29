@@ -56,7 +56,7 @@ public class ApplicantMBean implements Serializable {
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
-        if (userSession.isGeneral()||userSession.isCompany()) {
+        if (userSession.isGeneral() || userSession.isCompany()) {
             user = userService.findUser(userSession.getLoggedINUserID());
             selectedApplicant.getAddress().setCountry(user.getAddress().getCountry());
             selectedApplicant.setContactName(user != null ? user.getName() : null);
@@ -86,6 +86,10 @@ public class ApplicantMBean implements Serializable {
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
+            if(applicantService.isApplicantDuplicated(selectedApplicant.getAppName())){
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_applicant_exist"), ""));
+                return "";
+            }
             selectedApplicant.setSubmitDate(new Date());
             if (selectedApplicant.getUsers() == null && user.getEmail() == null) {
                 FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
@@ -167,12 +171,19 @@ public class ApplicantMBean implements Serializable {
         String username = user.getName().replaceAll("\\s", "");
         user.setUsername(username);
         user.setPassword(username);
-        if (userList == null)
-            userList = new ArrayList<User>();
-        userList.add(user);
-        selectedApplicant.setUsers(userList);
+        if (!userService.isEmailDuplicated(user.getEmail()) && !userService.isUsernameDuplicated(user.getUsername())) {
+            if (userList == null)
+                userList = new ArrayList<User>();
+            userList.add(user);
+            selectedApplicant.setUsers(userList);
 //        applicantService.updateApp(selectedApplicant, user);
-        user = new User();
+            user = new User();
+        } else {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            facesContext.validationFailed();
+            ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+            facesContext.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("valid_user_exist"), resourceBundle.getString("valid_user_exist")));
+        }
 
     }
 

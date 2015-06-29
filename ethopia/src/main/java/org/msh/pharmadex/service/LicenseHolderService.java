@@ -40,9 +40,9 @@ public class LicenseHolderService implements Serializable {
         return licenseHolderDAO.findAll();
     }
 
-    public LicenseHolder findLicHolder(String licHolderID) {
+    public LicenseHolder findLicHolder(Long licHolderID) {
         if(licHolderID!=null)
-            return licenseHolderDAO.findOne(Long.valueOf(licHolderID));
+            return licenseHolderDAO.findOne(licHolderID);
         else
             return null;
     }
@@ -70,6 +70,18 @@ public class LicenseHolderService implements Serializable {
             return "licholder_present";
 
         agentInfo.setCreatedDate(new Date());
+        agentInfo = agentInfoDAO.save(agentInfo);
+        return "persist";
+
+    }
+
+    public String updateAgent(AgentInfo agentInfo) {
+        if(agentInfo==null)
+            return "error";
+        if(agentInfo.getEndDate().before(agentInfo.getStartDate()))
+            return "date_end_before_start";
+
+        agentInfo.setUpdatedDate(new Date());
         agentInfo = agentInfoDAO.save(agentInfo);
         return "persist";
 
@@ -119,6 +131,14 @@ public class LicenseHolderService implements Serializable {
         }catch (Exception ex){
             return "error";
         }
+
+    }
+
+    public AgentInfo findAgentInfoByID(Long id) {
+        if(id==null)
+            return null;
+
+        return agentInfoDAO.findOne(id);
 
     }
 }
