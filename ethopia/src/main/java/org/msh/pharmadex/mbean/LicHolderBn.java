@@ -102,9 +102,9 @@ public class LicHolderBn implements Serializable {
             agentInfos = null;
             licenseHolder = null;
         } else if (ret.equalsIgnoreCase("error")) {
-            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to update Agent", "Unable to update Agent"));
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("agent_update_fail"), resourceBundle.getString("agent_update_fail")));
         } else if (ret.equalsIgnoreCase("date_end_before_start")) {
-            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "End date cannot be before start date", "End date cannot be before start date"));
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("valid_enddt_before_startdt"), resourceBundle.getString("valid_enddt_before_startdt")));
         }
         return null;
 
