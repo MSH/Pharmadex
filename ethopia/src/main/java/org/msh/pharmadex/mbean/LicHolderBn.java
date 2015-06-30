@@ -5,7 +5,6 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
-import org.primefaces.context.RequestContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -26,19 +25,14 @@ import java.util.List;
 @ViewScoped
 public class LicHolderBn implements Serializable {
 
-    @ManagedProperty(value = "#{licenseHolderService}")
-    private LicenseHolderService licenseHolderService;
-
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
-
-    @ManagedProperty(value = "#{userService}")
-    private UserService userService;
-
     FacesContext facesContext;
     java.util.ResourceBundle resourceBundle;
-
-
+    @ManagedProperty(value = "#{licenseHolderService}")
+    private LicenseHolderService licenseHolderService;
+    @ManagedProperty(value = "#{userSession}")
+    private UserSession userSession;
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
     private LicenseHolder licenseHolder;
     private User user;
     private List<AgentInfo> agentInfos;
@@ -86,12 +80,12 @@ public class LicHolderBn implements Serializable {
             licenseHolder.setAgentInfos(agentInfos);
             agentInfo = new AgentInfo();
         } else if (ret.equalsIgnoreCase("error")) {
-            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unable to update Agent", "Unable to update Agent"));
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("agent_update_fail"), resourceBundle.getString("agent_update_fail")));
         } else if (ret.equalsIgnoreCase("date_end_before_start")) {
-            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "End date cannot be before start date", "End date cannot be before start date"));
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("valid_enddt_before_startdt"), resourceBundle.getString("valid_enddt_before_startdt")));
         } else if (ret.equalsIgnoreCase("licholder_present")) {
-            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, "There is an active Local agent present during the period. If you are adding a new license holder or updating an existing license holder then fix the dates for the existing holder be adding a new one",
-                    "There is an active Local agent present during the period. If you are adding a new license holder or updating an existing license holder then fix the dates for the existing holder before adding a new one"));
+            facesContext.addMessage("Error", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("valid_licholder_exist"),
+                    resourceBundle.getString("valid_licholder_exist")));
         }
 
     }
