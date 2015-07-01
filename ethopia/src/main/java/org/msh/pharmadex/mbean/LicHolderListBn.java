@@ -1,27 +1,17 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.UserType;
-import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.WebUtils;
 
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
+import javax.faces.context.Flash;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -36,22 +26,24 @@ import java.util.ResourceBundle;
 @ViewScoped
 public class LicHolderListBn implements Serializable {
 
-    @ManagedProperty(value = "#{licenseHolderService}")
-    private LicenseHolderService licenseHolderService;
-
-    @ManagedProperty(value = "#{userService}")
-    private UserService userService;
-
-    @ManagedProperty(value = "#{globalEntityLists}")
-    private GlobalEntityLists globalEntityLists;
-
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
-
     FacesContext facesContext = FacesContext.getCurrentInstance();
     ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-
+    @ManagedProperty(value = "#{licenseHolderService}")
+    private LicenseHolderService licenseHolderService;
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+    @ManagedProperty(value = "#{globalEntityLists}")
+    private GlobalEntityLists globalEntityLists;
+    @ManagedProperty(value = "#{userSession}")
+    private UserSession userSession;
     private List<LicenseHolder> licenseHolders;
+    private List<LicenseHolder> filteredlicHolders;
+
+    public String sentToDetail(Long id) {
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("licHolderID", id);
+        return "licholderdetail";
+    }
 
     public List<LicenseHolder> getLicenseHolders() {
         if(licenseHolders==null){
@@ -94,5 +86,13 @@ public class LicHolderListBn implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
+    }
+
+    public List<LicenseHolder> getFilteredlicHolders() {
+        return filteredlicHolders;
+    }
+
+    public void setFilteredlicHolders(List<LicenseHolder> filteredlicHolders) {
+        this.filteredlicHolders = filteredlicHolders;
     }
 }

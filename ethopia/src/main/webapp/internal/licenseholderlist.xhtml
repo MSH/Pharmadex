@@ -1,5 +1,4 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
@@ -13,24 +12,39 @@
                 <h1 class="title ui-widget-header ui-corner-all"> #{msgs.license_holder}</h1>
             </div>
 
-            <p:dataTable id="applicants" var="licHolder" value="#{licHolderListBn.licenseHolders}">
-                <p:column headerText="#{msgs.license_holder}">
-                    <p:commandLink value="#{licHolder.name}" action="licholderdetail"
-                                   ajax="false">
-                        <f:setPropertyActionListener value="#{licHolder.id}"
-                                                     target="#{userSession.licHolderID}"/>
+            <p:dataTable id="applicants" var="licHolder" value="#{licHolderListBn.licenseHolders}"
+                         filteredValue="#{productMbean.filteredProducts}" widgetVar="licHolderTable"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,40,100">
+                <p:column headerText="#{msgs.license_holder}" filterBy="#{licHolder.name}" sortBy="#{licHolder.name}">
+                    <p:commandLink value="#{licHolder.name}" action="#{licHolderListBn.sentToDetail(licHolder.id)}"
+                                   ajax="false" style="#{licHolder.state eq 'BLOCKED' ?'color: #a52a2a;':''}">
                     </p:commandLink>
                 </p:column>
 
-                <p:column headerText="#{msgs.agent_first}">
+                <p:column headerText="#{msgs.agent_first}" filterBy="#{licHolder.firstAgent}"
+                          sortBy="#{licHolder.firstAgent}">
                     #{licHolder.firstAgent}
                 </p:column>
 
-                <p:column headerText="#{msgs.applicant_addr1}">
+                <p:column headerText="#{msgs.agent_second}" filterBy="#{licHolder.secAgent}"
+                          sortBy="#{licHolder.secAgent}">
+                    #{licHolder.secAgent}
+                </p:column>
+
+                <p:column headerText="#{msgs.agent_third}" filterBy="#{licHolder.thirdAgent}"
+                          sortBy="#{licHolder.thirdAgent}">
+                    #{licHolder.thirdAgent}
+                </p:column>
+
+                <p:column headerText="#{msgs.applicant_addr1}" filterBy="#{licHolder.address.address1}"
+                          sortBy="#{licHolder.address.address1}">
                     <h:outputLabel converter="javax.faces.DateTime" value="#{licHolder.address.address1}"/>
                 </p:column>
 
-                <p:column headerText="#{msgs.applicant_country}">
+                <p:column headerText="#{msgs.applicant_country}" filterBy="#{licHolder.address.country.countryName}"
+                          sortBy="#{licHolder.address.country.countryName}">
                     #{licHolder.address.country.countryName}
                 </p:column>
 

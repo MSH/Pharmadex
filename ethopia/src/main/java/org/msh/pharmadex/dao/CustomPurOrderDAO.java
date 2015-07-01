@@ -1,9 +1,7 @@
 package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
-import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.domain.PIPOrderLookUp;
-import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.PurOrder;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
@@ -58,24 +56,25 @@ public class CustomPurOrderDAO {
     }
 
     public List<ProdTable> findProdByLH(Long applcntId) {
-        List<Object[]> products =  entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a1.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc "+
-                "from prodApplications pa, product p, applicant a1, prod_company pc, company c, lic_holder lh, licholder_prod lp "+
-                "where pa.PROD_ID = p.id "+
+        List<Object[]> products = entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a1.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc " +
+                "from prodApplications pa, product p, applicant a1, prod_company pc, company c, lic_holder lh, licholder_prod lp " +
+                "where pa.PROD_ID = p.id " +
                 "and pa.regState = :regState " +
                 "and pa.active = :active " +
                 "and pc.companyType = :companyType " +
-                "and a1.applcntId = pa.APP_ID "+
-                "and c.id = pc.company_id "+
-                "and lp.licholder_id = lh.id "+
-                "and lp.prod_id = p.id "+
-                "and pc.prod_id = p.id "+
-                "and lh.id in (select l.id from lic_holder l, agent_info ai, applicant a where ai.licholder_id = l.id "+
-                "        and a.applcntId = ai.applicant_applcntId "+
+                "and a1.applcntId = pa.APP_ID " +
+                "and c.id = pc.company_id " +
+                "and lp.licholder_id = lh.id " +
+                "and lp.prod_id = p.id " +
+                "and pc.prod_id = p.id " +
+                "and lh.id in (select l.id from lic_holder l, agent_info ai, applicant a where ai.licholder_id = l.id " +
+                "        and a.applcntId = ai.applicant_applcntId " +
                 "        and a.applcntId = :appID " +
-                        "and sysdate() BETWEEN ai.startDate and ai.endDate  order by a.appname, ai.agent_type);")
+                "and l.state = 'ACTIVE' " +
+                "and sysdate() BETWEEN ai.startDate and ai.endDate  order by a.appname, ai.agent_type);")
                 .setParameter("appID", applcntId)
                 .setParameter("active", true)
-                .setParameter("regState", ""+ RegState.REGISTERED)
+                .setParameter("regState", "" + RegState.REGISTERED)
                 .setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
                 .getResultList();
 //        List<Product> products =  entityManager.createQuery("select pa from ProdApplications pa where pa.active = :active and pa.regState = :regstate ")

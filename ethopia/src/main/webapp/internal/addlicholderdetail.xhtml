@@ -2,7 +2,6 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -93,7 +92,10 @@
             </h:panelGrid>
 
             <div align="center" style="height: 60px">
-                <p:commandButton action="#{licHolderBn.addLicHolder}" value="#{msgs.global_submit}" ajax="false"/>
+                <p:commandButton action="#{licHolderBn.updateLicHolder}" value="#{msgs.global_update}" ajax="false"
+                                 rendered="#{not empty licHolderBn.licenseHolder.id}"/>
+                <p:commandButton action="#{licHolderBn.addLicHolder}" value="#{msgs.global_submit}" ajax="false"
+                                 rendered="#{empty licHolderBn.licenseHolder.id}"/>
                 <p:commandButton action="#{licHolderBn.cancelAddLicHolder}" value="#{msgs.global_cancel}" ajax="false"
                                  immediate="true"/>
             </div>

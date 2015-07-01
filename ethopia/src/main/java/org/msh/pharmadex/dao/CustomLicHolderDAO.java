@@ -2,12 +2,11 @@ package org.msh.pharmadex.dao;
 
 import org.msh.pharmadex.domain.AgentInfo;
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.LicenseHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,5 +37,12 @@ public class CustomLicHolderDAO {
             return false;
         else
             return true;
+    }
+
+    public List<LicenseHolder> findAll() {
+        List<LicenseHolder> licenseHolders = entityManager.createQuery("select lh from LicenseHolder lh ")
+                .getResultList();
+        return licenseHolders;
+
     }
 }

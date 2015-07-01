@@ -1,7 +1,7 @@
 package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.AgentType;
-import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.domain.enums.UserState;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -51,6 +51,9 @@ public class LicenseHolder extends CreationDetail implements Serializable {
     @OneToOne
     private User createdBy;
 
+    @Enumerated(EnumType.STRING)
+    private UserState state;
+
     @OneToMany(mappedBy = "licenseHolder", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private List<AgentInfo> agentInfos;
 
@@ -66,14 +69,15 @@ public class LicenseHolder extends CreationDetail implements Serializable {
     @Transient
     private String firstAgent;
 
+    @Transient
+    private String secAgent;
+
+    @Transient
+    private String thirdAgent;
+
     public String getFirstAgent() {
-        List<AgentInfo> agentInfos = getAgentInfos();
-        Date currDate = new Date();
-        for(AgentInfo agentInfo : agentInfos){
-            if(agentInfo.getAgentType().equals(AgentType.FIRST)&&currDate.after(agentInfo.getStartDate())&&currDate.before(agentInfo.getEndDate())) {
-                firstAgent = agentInfo.getApplicant().getAppName();
-                break;
-            }
+        if (firstAgent == null) {
+            initAgents();
         }
         return firstAgent;
     }
@@ -82,6 +86,46 @@ public class LicenseHolder extends CreationDetail implements Serializable {
         this.firstAgent = firstAgent;
     }
 
+    public String getSecAgent() {
+        if (secAgent == null) {
+            initAgents();
+        }
+        return secAgent;
+    }
+
+    public void setSecAgent(String secAgent) {
+        this.secAgent = secAgent;
+    }
+
+    public String getThirdAgent() {
+        if (thirdAgent == null) {
+            initAgents();
+        }
+        return thirdAgent;
+    }
+
+    public void setThirdAgent(String thirdAgent) {
+        this.thirdAgent = thirdAgent;
+    }
+
+    private void initAgents() {
+        List<AgentInfo> agentInfos = getAgentInfos();
+        Date currDate = new Date();
+        firstAgent = "";
+        secAgent = "";
+        thirdAgent = "";
+        for (AgentInfo agentInfo : agentInfos) {
+            if (agentInfo.getAgentType().equals(AgentType.FIRST) && currDate.after(agentInfo.getStartDate()) && currDate.before(agentInfo.getEndDate())) {
+                firstAgent = agentInfo.getApplicant().getAppName();
+            }
+            if (agentInfo.getAgentType().equals(AgentType.SECOND) && currDate.after(agentInfo.getStartDate()) && currDate.before(agentInfo.getEndDate())) {
+                secAgent = agentInfo.getApplicant().getAppName();
+            }
+            if (agentInfo.getAgentType().equals(AgentType.THIRD) && currDate.after(agentInfo.getStartDate()) && currDate.before(agentInfo.getEndDate())) {
+                thirdAgent = agentInfo.getApplicant().getAppName();
+            }
+        }
+    }
 
     public Long getId() {
         return id;
@@ -177,5 +221,13 @@ public class LicenseHolder extends CreationDetail implements Serializable {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public UserState getState() {
+        return state;
+    }
+
+    public void setState(UserState state) {
+        this.state = state;
     }
 }

@@ -5,7 +5,6 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.service.DisplayReviewInfo;
@@ -66,7 +65,6 @@ public class ReviewDetailBn implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         saveReview();
         JsfUtils.flashScope().put("reviewInfoID", reviewDetail.getReviewInfo().getId());
-        userSession.setReviewInfoID(reviewDetail.getReviewInfo().getId());
         msg = new FacesMessage(bundle.getString("app_submit_success"));
         facesContext.addMessage(null, msg);
         return "reviewInfo";

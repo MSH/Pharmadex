@@ -1,6 +1,5 @@
 package org.msh.pharmadex.service;
 
-import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.CustomLicHolderDAO;
 import org.msh.pharmadex.dao.iface.AgentInfoDAO;
 import org.msh.pharmadex.dao.iface.LicenseHolderDAO;
@@ -37,7 +36,7 @@ public class LicenseHolderService implements Serializable {
     private CustomLicHolderDAO customLicHolderDAO;
 
     public List<LicenseHolder> findAllLicenseHolder() {
-        return licenseHolderDAO.findAll();
+        return customLicHolderDAO.findAll();
     }
 
     public LicenseHolder findLicHolder(Long licHolderID) {
@@ -100,6 +99,18 @@ public class LicenseHolderService implements Serializable {
             licenseHolderDAO.save(licenseHolder);
             return "persist";
         }catch (Exception ex){
+            return "error";
+        }
+    }
+
+    public String updateLicHolder(LicenseHolder licenseHolder) {
+        try {
+            if (licenseHolder == null)
+                return "empty";
+
+            licenseHolderDAO.saveAndFlush(licenseHolder);
+            return "persist";
+        } catch (Exception ex) {
             return "error";
         }
     }

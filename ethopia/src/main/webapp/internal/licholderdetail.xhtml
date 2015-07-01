@@ -42,6 +42,20 @@
 
                     <p:growl id="growl" showSummary="true"/>
 
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msgs.global_update}" icon="ui-icon-pencil"
+                                         action="#{licHolderBn.sentToDetail}" ajax="false"></p:commandButton>
+                        <p:commandButton value="#{msgs.global_suspend}" icon="ui-icon-cancel"
+                                         action="#{licHolderBn.suspend}" ajax="false"
+                                         rendered="#{licHolderBn.licenseHolder.state eq 'ACTIVE'}"></p:commandButton>
+                        <p:commandButton value="#{msgs.global_activate}" icon="ui-icon-check"
+                                         action="#{licHolderBn.activate}" ajax="false"
+                                         rendered="#{licHolderBn.licenseHolder.state eq 'BLOCKED'}"></p:commandButton>
+                        <p:commandButton value="#{msgs.global_back}" icon="ui-icon-circle-triangle-w"
+                                         action="#{licHolderBn.back}" ajax="false" immediate="true"/>
+
+                    </h:panelGrid>
+
                     <p:panel header="#{msgs.lic_holder_detail}">
                         <ui:decorate template="/templates/licholderdetailtmpl.xhtml">
                             <ui:param name="licholderdata" value="#{licHolderBn.licenseHolder}"/>
@@ -53,8 +67,8 @@
                     <p:panel header="#{msgs.agentList}">
 
                         <h:panelGrid columns="2" cellpadding="10px">
-                            <p:commandLink value="#{msgs.global_add}" oncomplete="PF('addAgentDlg').show()"
-                                           style="font-weight: bolder; font-size: larger" update=":addAgentFrm :message"/>
+                            <p:commandButton value="#{msgs.global_add}" oncomplete="PF('addAgentDlg').show()"
+                                             icon="ui-icon-circle-plus" update=":addAgentFrm :message"/>
 
                         </h:panelGrid>
 
@@ -109,6 +123,41 @@
 
                     </p:panel>
 
+                    <p:panel header="#{msgs.product_list}">
+                        <p:dataTable id="products" var="prodApps" value="#{licHolderBn.products}">
+                            <p:column sortBy="#{prodApps.prodName}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodName}"/>
+                                </f:facet>
+                                <p:commandLink id="viewLink" value="#{prodApps.prodName}"
+                                               action="#{applicantHome.sentToDetail(prodApps.product.id)}"
+                                               ajax="false">
+                                </p:commandLink>
+                            </p:column>
+
+                            <p:column sortBy="#{prodApps.genName}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodgenname}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.genName}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{prodApps.dosForm.dosForm}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.dos_form}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.dosForm.dosForm}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{prodApps.dosStrength}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.dos_strength}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.dosStrength}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
 
                 </h:panelGroup>
             </h:panelGrid>

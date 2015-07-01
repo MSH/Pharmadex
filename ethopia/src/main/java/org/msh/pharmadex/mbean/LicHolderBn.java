@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.UserState;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
@@ -13,6 +14,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +39,7 @@ public class LicHolderBn implements Serializable {
     private User user;
     private List<AgentInfo> agentInfos;
     private AgentInfo agentInfo;
+    private List<Product> products;
 
     public LicenseHolderService getLicenseHolderService() {
         return licenseHolderService;
@@ -49,9 +52,12 @@ public class LicHolderBn implements Serializable {
     @PostConstruct
     public void init() {
         if(licenseHolder == null){
-            if(userSession.getLicHolderID()!=null) {
-                licenseHolder = licenseHolderService.findLicHolder(userSession.getLicHolderID());
+            Long licHolderID = (Long) JsfUtils.flashScope().get("licHolderID");
+            if (licHolderID != null) {
+                licenseHolder = licenseHolderService.findLicHolder(licHolderID);
                 agentInfos = licenseHolderService.findAllAgents(licenseHolder.getId());
+                products = licenseHolder.getProducts();
+                JsfUtils.flashScope().keep("licHolderID");
             }else{
                 licenseHolder = new LicenseHolder();
                 licenseHolder.setAddress(new Address());
@@ -66,8 +72,25 @@ public class LicHolderBn implements Serializable {
         user = userService.findUser(userSession.getLoggedINUserID());
     }
 
+    public String sentToDetail() {
+        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        flash.put("licHolderID", licenseHolder.getId());
+        return "addlicholderdetail";
+    }
+
+    public String suspend() {
+        licenseHolder.setState(UserState.BLOCKED);
+        return updateLicHolder();
+    }
+
+    public String activate() {
+        licenseHolder.setState(UserState.ACTIVE);
+        return updateLicHolder();
+    }
+
     @Transactional
     public void addAgent() {
+        JsfUtils.flashScope().keep("licHolderID");
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         if (agentInfos == null)
@@ -92,13 +115,14 @@ public class LicHolderBn implements Serializable {
 
     @Transactional
     public String updateAgent(){
+        JsfUtils.flashScope().keep("licHolderID");
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
         String ret = licenseHolderService.updateAgent(agentInfo);
         if (ret.equalsIgnoreCase("persist")) {
             agentInfo = new AgentInfo();
-            userSession.setLicHolderID(licenseHolder.getId());
+            JsfUtils.flashScope().put("licHolderID", licenseHolder.getId());
             agentInfos = null;
             licenseHolder = null;
         } else if (ret.equalsIgnoreCase("error")) {
@@ -115,12 +139,14 @@ public class LicHolderBn implements Serializable {
 
     }
 
+
     public String addLicHolder() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
         licenseHolder.setCreatedDate(new Date());
         licenseHolder.setCreatedBy(user);
+        licenseHolder.setState(UserState.ACTIVE);
         String ret = licenseHolderService.saveLicHolder(licenseHolder);
 
         if (ret.equalsIgnoreCase("persist")) {
@@ -130,6 +156,26 @@ public class LicHolderBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
             return null;
         }
+    }
+
+    public String updateLicHolder() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+        licenseHolder.setUpdatedDate(new Date());
+        String ret = licenseHolderService.updateLicHolder(licenseHolder);
+
+        if (ret.equalsIgnoreCase("persist")) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("lic_holder_update_success")));
+            return "licenseholderlist";
+        } else {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
+            return null;
+        }
+    }
+
+    public String back() {
+        return "licenseholderlist";
     }
 
     public String cancelAddLicHolder(){
@@ -151,14 +197,14 @@ public class LicHolderBn implements Serializable {
 
 
     public LicenseHolder getLicenseHolder() {
-        if (licenseHolder == null) {
-            if (userSession.getLicHolderID() != null) {
-                licenseHolder = licenseHolderService.findLicHolder(userSession.getLicHolderID());
-            }else{
-                licenseHolder = new LicenseHolder();
-                licenseHolder.setAddress(new Address());
-            }
-        }
+//        if (licenseHolder == null) {
+//            if (userSession.getLicHolderID() != null) {
+//                licenseHolder = licenseHolderService.findLicHolder(userSession.getLicHolderID());
+//            }else{
+//                licenseHolder = new LicenseHolder();
+//                licenseHolder.setAddress(new Address());
+//            }
+//        }
         return licenseHolder;
     }
 
@@ -208,5 +254,13 @@ public class LicHolderBn implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

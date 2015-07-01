@@ -1,6 +1,9 @@
 package org.msh.pharmadex.auth;
 
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Role;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.UserAccess;
+import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.mbean.product.ProdAppInit;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.UserAccessService;
@@ -40,8 +43,8 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private String loggedInUser;
 //    private User loggedInUserObj;
     private Long loggedINUserID;
-    private Long reviewID;
-    private Long reviewInfoID;
+    //    private Long reviewID;
+//    private Long reviewInfoID;
     private Long applcantID;
     private Long prodID;
     private Long prodAppID;
@@ -67,9 +70,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
     @ManagedProperty(value = "#{onlineUserBean}")
     private OnlineUserBean onlineUserBean;
-    private Long licHolderID;
-    private String pipOrderID;
-    private String purOrderID;
     private String sessionID;
 
     public void login() {
@@ -416,22 +416,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.onlineUserBean = onlineUserBean;
     }
 
-    public Long getReviewInfoID() {
-        return reviewInfoID;
-    }
-
-    public void setReviewInfoID(Long reviewInfoID) {
-        this.reviewInfoID = reviewInfoID;
-    }
-
-    public String getPipOrderID() {
-        return pipOrderID;
-    }
-
-    public void setPipOrderID(String pipOrderID) {
-        this.pipOrderID = pipOrderID;
-    }
-
     public String getWorkspaceName() {
         return workspaceName;
     }
@@ -456,13 +440,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.ethiopia = ethiopia;
     }
 
-    public String getPurOrderID() {
-        return purOrderID;
-    }
-
-    public void setPurOrderID(String purOrderID) {
-        this.purOrderID = purOrderID;
-    }
 
     public boolean isLab() {
         return lab;
@@ -504,13 +481,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.prodAppID = prodAppID;
     }
 
-    public Long getReviewID() {
-        return reviewID;
-    }
-
-    public void setReviewID(Long reviewID) {
-        this.reviewID = reviewID;
-    }
 
     public DisplayReviewInfo getDisplayReviewInfo() {
         return displayReviewInfo;
@@ -536,11 +506,4 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         this.loggedINUserID = loggedINUserID;
     }
 
-    public Long getLicHolderID() {
-        return licHolderID;
-    }
-
-    public void setLicHolderID(Long licHolderID) {
-        this.licHolderID = licHolderID;
-    }
 }

@@ -65,7 +65,6 @@ public class ProdReviewBn implements Serializable {
 
     public String findReview() {
         review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
-        userSession.setReviewID(review.getId());
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("reviewID",review.getId());
         return "/internal/review";
     }
