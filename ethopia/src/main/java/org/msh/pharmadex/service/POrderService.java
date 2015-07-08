@@ -56,11 +56,13 @@ public class POrderService implements Serializable {
 
     @Autowired
     private UserService userService;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public List<PIPOrderLookUp> findPIPCheckList(ApplicantType applicantType, boolean pip) {
         if (applicantType.getId() < 5)
             applicantType.setId(Long.valueOf(2));
-        return customPIPOrderDAO.findAllPIPOrderLookUp(applicantType, pip);
+        return customPIPOrderDAO.findAllPIPOrderLookUp(applicantType.getId(), pip);
     }
 
     public RetObject saveOrder(POrderBase pipOrderBase) {
@@ -95,7 +97,7 @@ public class POrderService implements Serializable {
                     purOrder = purOrderDAO.save(purOrder);
                     purOrder.setPipNo(registrationUtil.generateAppNo(purOrder.getId(), "PO"));
                     purOrder = purOrderDAO.save(purOrder);
-//                    retObject = createAckLetter(purOrder);
+                    retObject = createAckLetter(purOrder);
                     retObject = new RetObject("persist", purOrder);
                     if (!retObject.getMsg().equals("error")) {
                         retObject = new RetObject("persist", purOrder);
@@ -118,10 +120,6 @@ public class POrderService implements Serializable {
 
 
     }
-
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public byte[] generateLetter(Long piporderid, String path, File pdfFile) throws JRException, IOException {
         JasperPrint jasperPrint;
@@ -191,6 +189,29 @@ public class POrderService implements Serializable {
         }
     }
 
+    public RetObject createPOApprovalLetter(POrderBase pipOrderBase) {
+        try {
+            File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_cert", ".pdf");
+            byte[] file = generateLetter(pipOrderBase.getId(), "/reports/po_cert.jasper", invoicePDF);
+            POrderDoc pOrderDoc = new POrderDoc();
+            pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_cert.pdf");
+            pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
+            pOrderDoc.setContentType("application/pdf");
+            pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
+            pOrderDoc.setRegState(pipOrderBase.getState());
+            pOrderDoc.setTitle("Approval Certificate");
+            pOrderDoc.setComment("Automated generated Approval Certificate");
+            pOrderDoc.setFile(file);
+            return save(pOrderDoc);
+        } catch (JRException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        }
+    }
+
     public RetObject createRejectionLetter(POrderBase pipOrderBase) {
         try {
             File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_reject", ".pdf");
@@ -214,6 +235,28 @@ public class POrderService implements Serializable {
         }
     }
 
+    public RetObject createPORejectionLetter(POrderBase pipOrderBase) {
+        try {
+            File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_reject", ".pdf");
+            byte[] file = generateLetter(pipOrderBase.getId(), "/reports/po_reject.jasper", invoicePDF);
+            POrderDoc pOrderDoc = new POrderDoc();
+            pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf");
+            pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
+            pOrderDoc.setContentType("application/pdf");
+            pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
+            pOrderDoc.setRegState(pipOrderBase.getState());
+            pOrderDoc.setTitle("Rejection Letter");
+            pOrderDoc.setComment("Automated generated Rejection Letter");
+            pOrderDoc.setFile(file);
+            return save(pOrderDoc);
+        } catch (JRException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        }
+    }
 
     private String validate(PIPOrder pipOrder) {
         String retValue = "persist";
@@ -324,11 +367,11 @@ public class POrderService implements Serializable {
         if (pOrderBase instanceof PurOrder) {
             PurOrder purOrder = (PurOrder) pOrderBase;
             pOrderBase = purOrderDAO.save(purOrder);
-//            if (pOrderBase.getState().equals(AmdmtState.APPROVED)) {
-//                createApprovalLetter(purOrder);
-//            } else if (purOrder.getState().equals(AmdmtState.REJECTED)) {
-//                createRejectionLetter(purOrder);
-//            }
+            if (pOrderBase.getState().equals(AmdmtState.APPROVED)) {
+                createPOApprovalLetter(purOrder);
+            } else if (purOrder.getState().equals(AmdmtState.REJECTED)) {
+                createPORejectionLetter(purOrder);
+            }
         }
 
         return new RetObject("persist", pOrderBase);

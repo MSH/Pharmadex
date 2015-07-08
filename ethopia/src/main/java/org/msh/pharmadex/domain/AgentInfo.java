@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.enums.AgentType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -40,6 +41,23 @@ public class AgentInfo extends CreationDetail implements Serializable {
 
     @OneToOne
     private User createdBy;
+
+    @Transient
+    private boolean active;
+
+    public boolean isActive() {
+        Date currDate = Calendar.getInstance().getTime();
+        if (startDate.before(currDate) && endDate.after(currDate))
+            active = true;
+        else
+            active = false;
+
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public Long getId() {
         return id;

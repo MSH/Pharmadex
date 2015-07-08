@@ -31,33 +31,29 @@ import java.util.ResourceBundle;
 @ViewScoped
 public class PIPAppSelectBn implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(PIPAppSelectBn.class);
-
-    @ManagedProperty(value = "#{pIPOrderBn}")
-    PIPOrderBn pipOrderBn;
-
-    @ManagedProperty(value = "#{globalEntityLists}")
-    GlobalEntityLists globalEntityLists;
-
-    @ManagedProperty(value = "#{countryService}")
-    CountryService countryService;
-
-    @ManagedProperty(value = "#{applicantService}")
-    ApplicantService applicantService;
-
     @ManagedProperty(value = "#{userService}")
-    UserService userService;
-
+    protected UserService userService;
+    @ManagedProperty(value = "#{userSession}")
+    protected UserSession userSession;
+    @ManagedProperty(value = "#{POrderService}")
+    protected POrderService pOrderService;
     protected Applicant selectedApplicant;
     protected org.msh.pharmadex.domain.User applicantUser;
-
+    protected UserDTO selectedUser;
+    @ManagedProperty(value = "#{pIPOrderBn}")
+    PIPOrderBn pipOrderBn;
+    @ManagedProperty(value = "#{globalEntityLists}")
+    GlobalEntityLists globalEntityLists;
+    @ManagedProperty(value = "#{countryService}")
+    CountryService countryService;
+    @ManagedProperty(value = "#{applicantService}")
+    ApplicantService applicantService;
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private boolean showApp;
     private boolean showUser;
     private boolean showUserSelect;
-
     private List<UserDTO> users;
-    protected UserDTO selectedUser;
 
     @Transactional
     public void gmpChangeListener() {
@@ -121,11 +117,6 @@ public class PIPAppSelectBn implements Serializable {
 
     }
 
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
-
-    @ManagedProperty(value = "#{POrderService}")
-    private POrderService pOrderService;
 
 
     @Transactional

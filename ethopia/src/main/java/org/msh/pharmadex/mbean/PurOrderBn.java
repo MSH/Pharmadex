@@ -47,6 +47,8 @@ public class PurOrderBn extends POrderBn {
     private List<POrderChecklist> pOrderChecklists;
     private PurProd purProd;
     private ProdTable product;
+    @ManagedProperty(value = "#{dosageFormService}")
+    private DosageFormService dosageFormService;
 
     @PostConstruct
     private void init() {
@@ -95,7 +97,6 @@ public class PurOrderBn extends POrderBn {
         }
     }
 
-
     @Override
     public void addDocument() {
         getpOrderDoc().setPurOrder(purOrder);
@@ -105,22 +106,16 @@ public class PurOrderBn extends POrderBn {
 
     }
 
-
     @Override
     protected List<PIPOrderLookUp> findAllChecklists() {
         return getpOrderService().findPIPCheckList(getApplicant().getApplicantType(), false);
     }
-
 
     @Override
     public void initAddProd() {
         setPurProd(new PurProd(new DosageForm(), new DosUom(), purOrder));
 
     }
-
-    @ManagedProperty(value = "#{dosageFormService}")
-    private DosageFormService dosageFormService;
-
 
     @Override
     public void addProd() {
@@ -170,6 +165,7 @@ public class PurOrderBn extends POrderBn {
         RetObject retValue = getpOrderService().saveOrder(purOrder);
         if (retValue.getMsg().equals("persist")) {
             purOrder = (PurOrder) retValue.getObj();
+            String retMsg = super.saveOrder();
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
             return "purorderlist";
         } else {
@@ -279,6 +275,10 @@ public class PurOrderBn extends POrderBn {
     }
 
     public List<POrderChecklist> getpOrderChecklists() {
+        if (pOrderChecklists == null) {
+            pOrderChecklists = purOrder.getpOrderChecklists();
+        }
+
         return pOrderChecklists;
     }
 

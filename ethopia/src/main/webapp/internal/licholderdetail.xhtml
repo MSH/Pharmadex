@@ -79,7 +79,7 @@
                                     <h:outputText value="#{msgs.agent_type}"/>
                                 </f:facet>
                                 <p:commandLink id="viewLink" value="#{agentInfo.agentType}" oncomplete="PF('addAgentDlg').show()" action="#{licHolderBn.initEdit(agentInfo)}"
-                                        update=":addAgentdlg">
+                                               update=":addAgentdlg" style="#{agentInfo.active ?'color: #006600;':''}">
                                 </p:commandLink>
                             </p:column>
 

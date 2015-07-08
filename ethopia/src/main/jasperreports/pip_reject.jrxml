@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="182"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -66,7 +66,7 @@
 	<subDataset name="pip_prod" uuid="4254ef9d-8b7d-498d-91f6-158edfc3ef2e">
 		<parameter name="piporderid" class="java.lang.String"/>
 		<queryString>
-			<![CDATA[select * from pip_prod p, dosform d, dosuom u where piporder_id = $P{piporderid}
+			<![CDATA[select * from pur_prod p, dosform d, dosuom u where purorder_id = $P{piporderid}
 and d.uid = p.DOSFORM_ID
 and p.DOSUNIT_ID = u.id]]>
 		</queryString>
@@ -115,7 +115,10 @@ and p.DOSUNIT_ID = u.id]]>
 		<field name="DOSUNIT_ID" class="java.lang.Integer">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="piporder_id" class="java.lang.Long">
+		<field name="product_id" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="purorder_id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="uid" class="java.lang.Long">
@@ -142,7 +145,7 @@ and p.DOSUNIT_ID = u.id]]>
 	</parameter>
 	<parameter name="comment" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from pip_order pip, applicant a, country c
+		<![CDATA[select * from pur_order pip, applicant a, country c
 where pip.applicant_applcntid = a.`applcntId`
 and c.id = a.`CNTRY_ID`
 and pip.id = $P{piporderid}]]>
