@@ -5,14 +5,14 @@
 <p:accordionPanel value="Product Information" activeIndex="0" multiple="true">
 <p:tab title="#{msgs.applicant_detail}">
     <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-        <ui:param name="applicantdata" value="#{prodData.applicant}"/>
+        <ui:param name="applicantdata" value="#{prodAppData.applicant}"/>
         <ui:param name="input" value="#{false}"/>
     </ui:decorate>
 </p:tab>
 
 <p:tab title="#{msgs.person_responsible}" rendered="#{userSession.staff or userSession.company}">
     <ui:decorate template="/templates/userdetailtmpl.xhtml">
-        <ui:param name="userdata" value="#{prodData.prodApplications.applicantUser}"/>
+        <ui:param name="userdata" value="#{prodAppData.applicantUser}"/>
         <ui:param name="input" value="#{false}"/>
     </ui:decorate>
 </p:tab>
@@ -21,41 +21,41 @@
     <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
 
         <h:outputLabel value="#{msgs.prodName}:"/>
-        <h:outputLabel value="#{prodData.prodName}"/>
+        <h:outputLabel value="#{prodAppData.product.prodName}"/>
 
         <h:outputLabel value="#{msgs.prod_type}:"/>
-        <h:outputLabel value="#{prodData.prodApplications.drugType}"/>
+        <h:outputLabel value="#{prodAppData.product.drugType}"/>
 
         <h:outputLabel value="#{msgs.prodgenname}:"/>
-        <h:outputLabel value="#{prodData.genName}"/>
+        <h:outputLabel value="#{prodAppData.product.genName}"/>
 
         <h:outputLabel value="#{msgs.dos_form}"/>
-        <h:outputLabel value="#{prodData.dosForm.dosForm}"/>
+        <h:outputLabel value="#{prodAppData.product.dosForm.dosForm}"/>
 
         <h:outputLabel value="Dosage Strength:" style="font-weight: bold;"/>
-        <h:outputLabel value="#{prodData.dosStrength}"/>
+        <h:outputLabel value="#{prodAppData.product.dosStrength}"/>
 
         <h:outputLabel value="#{msgs.dos_unit}"/>
-        <h:outputLabel value="#{prodData.dosUnit.uom}"/>
+        <h:outputLabel value="#{prodAppData.product.dosUnit.uom}"/>
 
         <h:outputLabel value="#{msgs.admin_route}"/>
-        <h:outputLabel value="#{prodData.adminRoute.name}"/>
+        <h:outputLabel value="#{prodAppData.product.adminRoute.name}"/>
 
         <h:outputLabel value="#{msgs.age_group}"/>
-        <h:outputLabel value="#{prodData.ageGroup}"/>
+        <h:outputLabel value="#{prodAppData.product.ageGroup}"/>
 
         <h:outputLabel value="#{msgs.product_pharmclassif}"/>
-        <h:outputLabel value="#{prodData.pharmClassif.displayName}"/>
+        <h:outputLabel value="#{prodAppData.product.pharmClassif.displayName}"/>
 
         <h:outputLabel value="#{msgs.prod_desc}"/>
-        <h:outputLabel value="#{prodData.prodDesc}"/>
+        <h:outputLabel value="#{prodAppData.product.prodDesc}"/>
     </h:panelGrid>
 </p:tab>
 
 <p:tab title="#{msgs.inn_header}">
     <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
         <h:outputLabel value="#{msgs.active_substance}:"/>
-        <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodData.inns}" style="width:100%;">
+        <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}" style="width:100%;">
             <p:column headerText="Substance">
                 <h:outputText value="#{prodInn.inn.name}"/>
             </p:column>
@@ -77,7 +77,7 @@
 
     <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
         <h:outputLabel value="#{msgs.product_active}:"/>
-        <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodData.excipients}" style="width:100%;">
+        <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodAppData.product.excipients}" style="width:100%;">
             <p:column headerText="#{msgs.active_substance}">
                 <h:outputText value="#{prodExp.excipient.name}"/>
             </p:column>
@@ -103,7 +103,7 @@
 <p:tab title="#{msgs.atc_header}">
     <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
         <h:outputLabel value="#{msgs.atc_header}" style="font-weight: bold;"/>
-        <p:dataTable id="atcsummarytable" var="atc" value="#{prodData.atcs}" style="width:100%;">
+        <p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.product.atcs}" style="width:100%;">
             <p:column headerText="#{msgs.atc_code}">
                 <h:outputText value="#{atc.atcCode}"/>
             </p:column>
@@ -119,34 +119,34 @@
 <p:tab title="#{msgs.application_detail}">
     <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
         <p:outputLabel value="#{msgs.product_drug_type}"/>
-        <p:outputLabel value="#{prodData.prodApplications.drugType}"/>
+        <p:outputLabel value="#{prodAppData.product.drugType}"/>
 
         <p:outputLabel value="#{msgs.product_shelflife}:" style="font-weight: bold;"/>
-        <p:outputLabel value="#{prodData.prodApplications.shelfLife}"/>
+        <p:outputLabel value="#{prodAppData.product.shelfLife}"/>
 
         <p:outputLabel value="#{msgs.product_packsize}:" style="font-weight: bold;"/>
-        <p:outputLabel value="#{prodData.prodApplications.packSize}"/>
+        <p:outputLabel value="#{prodAppData.product.packSize}"/>
 
         <p:outputLabel value="#{msgs.product_conttype}"/>
-        <p:outputLabel value="#{prodData.prodApplications.contType}"/>
+        <p:outputLabel value="#{prodAppData.product.contType}"/>
 
         <p:outputLabel value="#{msgs.product_storcndtn}"/>
-        <p:outputLabel value="#{prodData.prodApplications.storageCndtn}"/>
+        <p:outputLabel value="#{prodAppData.product.storageCndtn}"/>
 
         <p:outputLabel value="#{msgs.statement_ingrd}"/>
-        <p:outputLabel value="#{prodData.prodApplications.ingrdStatment}"/>
+        <p:outputLabel value="#{prodAppData.product.ingrdStatment}"/>
 
         <h:outputLabel value="#{msgs.prod_indications}"/>
-        <h:outputLabel value="#{prodData.prodApplications.indications}"/>
+        <h:outputLabel value="#{prodAppData.product.indications}"/>
 
         <h:outputLabel value="#{msgs.prod_posology}"/>
-        <h:outputLabel value="#{prodData.prodApplications.posology}"/>
+        <h:outputLabel value="#{prodAppData.product.posology}"/>
 
     </h:panelGrid>
 </p:tab>
 
 <p:tab title="#{msgs.appl_status_country}">
-    <p:dataTable id="foreignStatusTable" var="appstatus" value="#{prodData.prodApplications.foreignAppStatus}"
+    <p:dataTable id="foreignStatusTable" var="appstatus" value="#{foreignAppStatus}"
                  style="width:100%;">
         <p:column headerText="#{msgs.applicant_country}">
             <h:outputText value="#{appstatus.country.countryName}"/>
@@ -176,7 +176,7 @@
 
 
 <p:tab title="#{msgs.manufacturer_detail}">
-    <p:dataTable id="companyTable" var="company" value="#{prodData.prodCompanies}" style="width:100%;">
+    <p:dataTable id="companyTable" var="company" value="#{prodAppData.product.prodCompanies}" style="width:100%;">
         <p:column headerText="#{msgs.applicant_name}">
             <h:outputText value="#{company.company.companyName}"/>
         </p:column>
@@ -201,13 +201,13 @@
     <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
         <h:outputLabel value="#{msgs.bank_name}" for="bankname"/>
-        <h:outputLabel id="bankname" value="#{prodData.prodApplications.bankName}"/>
+        <h:outputLabel id="bankname" value="#{prodAppData.bankName}"/>
 
         <h:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
-        <h:outputLabel id="receiptno" value="#{prodData.prodApplications.receiptNo}"/>
+        <h:outputLabel id="receiptno" value="#{prodAppData.receiptNo}"/>
 
         <h:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"/>
-        <h:outputLabel id="feesubmitdt" value="#{prodData.prodApplications.feeSubmittedDt}">
+        <h:outputLabel id="feesubmitdt" value="#{prodAppData.feeSubmittedDt}">
             <f:convertDateTime pattern="MMM dd, yyyy"/>
         </h:outputLabel>
     </h:panelGrid>
@@ -216,7 +216,7 @@
 </p:tab>
 
 <p:tab title="#{msgs.checklist}">
-    <p:dataTable var="checkList" value="#{prodData.prodApplications.prodAppChecklists}" style="width:100%;">
+    <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;">
         <p:column>
             <h:outputLabel value="#{checkList.checklist.module}"/>
         </p:column>

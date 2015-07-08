@@ -7,24 +7,24 @@
     <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
 
         <p:outputLabel value="#{msgs.product_shelflife}" for="shelflife"/>
-        <p:inputText id="shelflife" value="#{regHomeMbean.prodApplications.shelfLife}"/>
+        <p:inputText id="shelflife" value="#{prodRegAppMbean.product.shelfLife}"/>
         <p:message for="shelflife" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
-        <p:inputText id="inpacksize" value="#{regHomeMbean.prodApplications.packSize}"/>
+        <p:inputText id="inpacksize" value="#{prodRegAppMbean.product.packSize}"/>
         <p:message for="inpacksize" showSummary="true" showDetail="false"/>
 
 
         <p:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
-        <p:inputTextarea id="inconttype" value="#{regHomeMbean.prodApplications.contType}"/>
+        <p:inputTextarea id="inconttype" value="#{prodRegAppMbean.product.contType}"/>
         <p:message for="inconttype" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
-        <p:inputText id="instorecndtn" value="#{regHomeMbean.prodApplications.storageCndtn}"/>
+        <p:inputText id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}"/>
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.statement_ingrd}" for="statement"/>
-        <p:inputTextarea id="statement" value="#{regHomeMbean.prodApplications.ingrdStatment}" rows="4" cols="50"
+        <p:inputTextarea id="statement" value="#{prodRegAppMbean.product.ingrdStatment}" rows="4" cols="50"
                          title="ProdDesc"/>
         <p:message for="statement" showSummary="true" showDetail="false"/>
         <h:outputLabel value="#{msgs.statement_ingrd_hint}" for="statement"/>

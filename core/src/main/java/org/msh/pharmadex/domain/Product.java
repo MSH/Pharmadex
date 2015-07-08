@@ -91,7 +91,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinColumn(name = "createdBy")
     private User createdBy;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "product")
     private List<ProdApplications> prodApplicationses;
 
     @Transient
@@ -408,20 +408,20 @@ public class Product extends CreationDetail implements Serializable {
         this.prodApplicationses = prodApplicationses;
     }
 
-    public void setFnm(String fnm) {
-        this.fnm = fnm;
-    }
-
     public String getFnm() {
         return fnm;
     }
 
-    public void setPharmacopeiaStds(String pharmacopeiaStds) {
-        this.pharmacopeiaStds = pharmacopeiaStds;
+    public void setFnm(String fnm) {
+        this.fnm = fnm;
     }
 
     public String getPharmacopeiaStds() {
         return pharmacopeiaStds;
+    }
+
+    public void setPharmacopeiaStds(String pharmacopeiaStds) {
+        this.pharmacopeiaStds = pharmacopeiaStds;
     }
 }
 
