@@ -37,7 +37,7 @@
 			</staticText>
 			<image>
 				<reportElement x="219" y="52" width="137" height="125" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
-				<imageExpression><![CDATA["images/na_namibia_header.png"]]></imageExpression>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="0" y="177" width="572" height="26" uuid="72df8617-6275-409e-acfc-328219996595"/>
