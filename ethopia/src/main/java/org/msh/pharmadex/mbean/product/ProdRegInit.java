@@ -13,14 +13,13 @@ import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.LicenseHolderService;
-import org.springframework.web.util.WebUtils;
+import org.msh.pharmadex.util.JsfUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -55,6 +54,14 @@ public class ProdRegInit implements Serializable {
     private boolean eligible;
     private List<Checklist> checklists;
 
+    private LicenseHolder selLicHolder;
+
+
+    public List<LicenseHolder> completeLicHolderList(String query) {
+        List<LicenseHolder> licenseHolders = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
+        return JsfUtils.completeSuggestions(query, licenseHolders);
+    }
+
     public void calculate() {
         context = FacesContext.getCurrentInstance();
         if (prodAppType==null) {
@@ -83,10 +90,6 @@ public class ProdRegInit implements Serializable {
     }
 
     public String regApp() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
-
         calculate();
 
         ProdAppInit prodAppInit = new ProdAppInit();
@@ -97,6 +100,8 @@ public class ProdRegInit implements Serializable {
         prodAppInit.setPrescreenfee(prescreenfee);
         prodAppInit.setTotalfee(totalfee);
         prodAppInit.setSRA(selSRA.length > 0);
+        if (selLicHolder != null)
+            prodAppInit.setLicHolderID(selLicHolder.getId());
 
         userSession.setProdAppInit(prodAppInit);
         return "/secure/prodreghome";
@@ -167,8 +172,8 @@ public class ProdRegInit implements Serializable {
             if (userSession.getApplcantID() == null)
                 eligible = false;
             else {
-                LicenseHolder licenseHolder = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
-                if (licenseHolder != null)
+                List<LicenseHolder> licenseHolders = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
+                if (licenseHolders != null && licenseHolders.size() > 0)
                     eligible = true;
                 else
                     eligible = false;
@@ -219,5 +224,13 @@ public class ProdRegInit implements Serializable {
 
     public void setChecklistService(ChecklistService checklistService) {
         this.checklistService = checklistService;
+    }
+
+    public LicenseHolder getSelLicHolder() {
+        return selLicHolder;
+    }
+
+    public void setSelLicHolder(LicenseHolder selLicHolder) {
+        this.selLicHolder = selLicHolder;
     }
 }

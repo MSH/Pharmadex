@@ -35,12 +35,21 @@
                     </p:selectOneMenu>
                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
 
+                    <h:outputLabel value="#{msgs.applicant_name}" for="licname"/>
+                    <p:autoComplete id="licname" value="#{prodRegInit.selLicHolder}"
+                                    completeMethod="#{prodRegInit.completeLicHolderList}" dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
+                                    converter="#{licHolderConverter}">
+                    </p:autoComplete>
+                    <p:message for="licname" showSummary="true" showDetail="false"/>
+
+
                     <p:outputLabel
                             value="Is the product been registered in a Stringent Regulatory authority mentioned below?"/>
                     <h:panelGroup>
                         <p:selectManyCheckbox id="regauth" value="#{prodRegInit.selSRA}" layout="grid" columns="3">
                             <f:selectItems value="#{globalListsET.sras}" var="cntry" itemValue="#{cntry}"
-                                           itemLabel="#{cntry.country   }"/>
+                                           itemLabel="#{cntry.country}"/>
                         </p:selectManyCheckbox>
                     </h:panelGroup>
                     <p:message for="regauth"/>
