@@ -181,7 +181,8 @@
 
                 <h:panelGroup>
                     <p:commandButton value="#{msgs.global_add}" action="#{appSelectMBean.addApptoRegistration}"
-                                     oncomplete="PF('addapplicantDlg').hide()" update=":reghome" process=":reghome:addapplicantdlg"/>
+                                     oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()"
+                                     update=":reghome" process=":reghome:addapplicantdlg"/>
                     <p:commandButton action="#{appSelectMBean.cancelAddApplicant}" immediate="true"
                                      value="#{msgs.global_cancel}" update=":reghome:addapplicantdlg" oncomplete="PF('addapplicantDlg').hide()"/>
                 </h:panelGroup>

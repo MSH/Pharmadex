@@ -131,11 +131,15 @@ public class AppSelectMBean implements Serializable {
 
     public String addApptoRegistration() {
         selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
-        applicantUser = userService.findUser(selectedUser.getUserId());
-        prodRegAppMbean.setApplicant(selectedApplicant);
-        prodRegAppMbean.setApplicantUser(applicantUser);
-        prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
-        prodRegAppMbean.getProdApplications().setApplicant(selectedApplicant);
+        if (selectedUser == null) {
+            FacesContext.getCurrentInstance().validationFailed();
+        } else {
+            applicantUser = userService.findUser(selectedUser.getUserId());
+            prodRegAppMbean.setApplicant(selectedApplicant);
+            prodRegAppMbean.setApplicantUser(applicantUser);
+            prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
+            prodRegAppMbean.getProdApplications().setApplicant(selectedApplicant);
+        }
         return "";
     }
 
