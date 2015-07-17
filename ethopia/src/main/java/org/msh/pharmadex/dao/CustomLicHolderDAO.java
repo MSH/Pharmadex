@@ -3,10 +3,13 @@ package org.msh.pharmadex.dao;
 import org.msh.pharmadex.domain.AgentInfo;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.enums.AgentType;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +18,7 @@ import java.util.List;
 @Repository
 public class CustomLicHolderDAO {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "acme-et", name = "acme-et")
     EntityManager entityManager;
 
     public List<Applicant> findApplicantsByLicHolderAvailability(){
@@ -37,6 +40,24 @@ public class CustomLicHolderDAO {
             return false;
         else
             return true;
+    }
+
+    public Applicant findFirstAgent(Long id) {
+        Applicant applicant;
+        try {
+            applicant = (Applicant) entityManager.createQuery("select ai.applicant from AgentInfo ai join ai.applicant where ai.licenseHolder.id = :licHolder " +
+                    "and ai.agentType = :agentType " +
+                    "and (:currDate between ai.startDate and ai.endDate)")
+                    .setParameter("licHolder", id)
+                    .setParameter("agentType", AgentType.FIRST)
+                    .setParameter("currDate", new Date())
+                    .getSingleResult();
+        } catch (NoResultException no) {
+            applicant = null;
+        } catch (Exception ex) {
+            applicant = null;
+        }
+        return applicant;
     }
 
     public List<LicenseHolder> findAll() {
