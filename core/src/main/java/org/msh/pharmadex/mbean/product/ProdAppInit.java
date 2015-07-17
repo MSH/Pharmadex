@@ -14,6 +14,7 @@ public class ProdAppInit {
     private String prescreenfee;
     private String totalfee;
     private boolean SRA;
+    private Long licHolderID;
 
     public ProdAppType getProdAppType() {
         return prodAppType;
@@ -47,12 +48,12 @@ public class ProdAppInit {
         this.totalfee = totalfee;
     }
 
-    public void setSRA(boolean SRA) {
-        this.SRA = SRA;
-    }
-
     public boolean isSRA() {
         return SRA;
+    }
+
+    public void setSRA(boolean SRA) {
+        this.SRA = SRA;
     }
 
     public String getFee() {
@@ -69,5 +70,13 @@ public class ProdAppInit {
 
     public void setPrescreenfee(String prescreenfee) {
         this.prescreenfee = prescreenfee;
+    }
+
+    public Long getLicHolderID() {
+        return licHolderID;
+    }
+
+    public void setLicHolderID(Long licHolderID) {
+        this.licHolderID = licHolderID;
     }
 }

@@ -1,8 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
@@ -32,9 +30,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -121,6 +117,7 @@ public class ProcessProdBn implements Serializable {
     private ReviewService reviewService;
     private User loggedInUser;
     private List<ProdAppLetter> letters;
+    private List<ReviewInfo> reviewInfos;
 
     @PostConstruct
     private void init() {
@@ -135,8 +132,6 @@ public class ProcessProdBn implements Serializable {
             return prodApplicationsService.nextStepOptions(prodApplications.getRegState(), userSession, getCheckReviewStatus());
         return null;
     }
-
-    private List<ReviewInfo> reviewInfos;
 
     public List<ReviewInfo> getReviewInfos() {
         if(reviewInfos ==null)
@@ -237,11 +232,11 @@ public class ProcessProdBn implements Serializable {
     }
 
     private void initProdApps() {
-        Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
+        Long prodAppID = (Long) JsfUtils.flashScope().get("prodAppID");
         if (prodAppID != null) {
             prodApplications = prodApplicationsService.findProdApplications(prodAppID);
             setFieldValues();
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
+            JsfUtils.flashScope().keep("prodAppID");
         }
     }
 

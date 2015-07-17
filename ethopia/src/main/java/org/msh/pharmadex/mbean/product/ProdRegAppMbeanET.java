@@ -1,61 +1,69 @@
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.UseCategory;
-import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.RetObject;
-import org.primefaces.event.FlowEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.WebUtils;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.service.LicenseHolderService;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
  */
 @ManagedBean
 @ViewScoped
-public class ProdRegAppMbeanET extends ProdRegAppMbean implements Serializable {
+public class ProdRegAppMbeanET implements Serializable {
 
     private LicenseHolder licenseHolder;
 
     @ManagedProperty(value = "#{licenseHolderService}")
     private LicenseHolderService licenseHolderService;
 
+    @ManagedProperty(value = "#{prodRegAppMbean}")
+    private ProdRegAppMbean prodRegAppMbean;
+
     @ManagedProperty(value = "#{appSelectMBean}")
     private AppSelectMBean appSelectMBean;
 
+    @ManagedProperty(value = "#{userSession}")
+    private UserSession userSession;
+
     @PostConstruct
     private void init() {
+        ProdAppInit prodAppInit = userSession.getProdAppInit();
+        if (prodAppInit != null && prodAppInit.getLicHolderID() != null) {
+            licenseHolder = licenseHolderService.findLicHolder(prodAppInit.getLicHolderID());
+            Applicant applicant = licenseHolderService.findApplicantByLicHolder(licenseHolder.getId());
+            if (applicant != null) {
+                prodRegAppMbean.setApplicant(applicant);
+                User applicantUser = applicant.getUsers().get(0);
+                prodRegAppMbean.setApplicantUser(applicantUser);
+                prodRegAppMbean.getProdApplications().setApplicant(applicant);
+                prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
+            }
+        }
 
     }
 
     public LicenseHolder getLicenseHolder() {
         if(licenseHolder==null){
-            if(getApplicant().getApplcntId()!=null) {
-                licenseHolder = licenseHolderService.findLicHolderByApplicant(getApplicant().getApplcntId());
+            List<LicenseHolder> licenseHolders;
+            if (prodRegAppMbean.getApplicant().getApplcntId() != null) {
+                licenseHolders = licenseHolderService.findLicHolderByApplicant(prodRegAppMbean.getApplicant().getApplcntId());
+                if (licenseHolders != null && licenseHolders.size() < 2)
+                    licenseHolder = licenseHolders.get(0);
             }else{
-                licenseHolder = licenseHolderService.findLicHolderByApplicant(appSelectMBean.getSelectedApplicant().getApplcntId());
+                if (appSelectMBean.getSelectedApplicant() != null && appSelectMBean.getSelectedApplicant().getApplcntId() != null) {
+                    licenseHolders = licenseHolderService.findLicHolderByApplicant(appSelectMBean.getSelectedApplicant().getApplcntId());
+                    if (licenseHolders != null && licenseHolders.size() < 2)
+                        licenseHolder = licenseHolders.get(0);
+                }
             }
         }
         return licenseHolder;
@@ -79,5 +87,21 @@ public class ProdRegAppMbeanET extends ProdRegAppMbean implements Serializable {
 
     public void setAppSelectMBean(AppSelectMBean appSelectMBean) {
         this.appSelectMBean = appSelectMBean;
+    }
+
+    public ProdRegAppMbean getProdRegAppMbean() {
+        return prodRegAppMbean;
+    }
+
+    public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
+        this.prodRegAppMbean = prodRegAppMbean;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }

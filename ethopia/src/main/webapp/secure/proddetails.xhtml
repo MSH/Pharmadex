@@ -29,13 +29,13 @@
         -->
         <p:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
         <p:inputText id="prodDetailName" value="#{prodRegAppMbean.product.prodName}" title="Product Name"
-                     required="true" requiredMessage="#{msgs.valid_prod_name}">
+                     required="true" requiredMessage="#{msgs.valid_prod_name}" onblur="value=value.toUpperCase()">
         </p:inputText>
         <p:message for="prodDetailName" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.prodgenname}" for="prodGenName"/>
         <p:inputText id="prodGenName" value="#{prodRegAppMbean.product.genName}" title="Generic Name"
-                     required="true" requiredMessage="#{msgs.valid_gen_name}"/>
+                     required="true" requiredMessage="#{msgs.valid_gen_name}" onblur="value=value.toUpperCase()"/>
         <p:message for="prodGenName" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.inn_ref}" for="pharmacopeia"/>

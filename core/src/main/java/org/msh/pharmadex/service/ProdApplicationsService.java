@@ -4,6 +4,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
+import org.hibernate.Session;
+import org.hibernate.impl.SessionImpl;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.CountryDAO;
@@ -11,11 +13,10 @@ import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
-import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.mbean.product.ProdDeficiencyBn;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.net.URL;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.util.*;
 
@@ -44,41 +48,30 @@ public class ProdApplicationsService implements Serializable {
 
     @Autowired
     UserService userService;
-
-    @Autowired
-    private RevDeficiencyDAO revDeficiencyDAO;
-
     @Autowired
     ApplicantDAO applicantDAO;
-
     @Autowired
     ProductDAO productDAO;
-
     @Autowired
     AtcDAO atcDAO;
-
     @Autowired
     AppointmentDAO appointmentDAO;
-
     @Autowired
     WorkspaceDAO workspaceDAO;
-
     @Autowired
     ProdAppChecklistDAO prodAppChecklistDAO;
-
     @Autowired
     ChecklistDAO checklistDAO;
     @Autowired
     ForeignAppStatusDAO foreignAppStatusDAO;
-
-    @Autowired
-    private CountryDAO countryDAO;
-
-    @Autowired
-    private ProdAppLetterDAO prodAppLetterDAO;
-
     ProdApplications prodApp;
     Product product;
+    @Autowired
+    private RevDeficiencyDAO revDeficiencyDAO;
+    @Autowired
+    private CountryDAO countryDAO;
+    @Autowired
+    private ProdAppLetterDAO prodAppLetterDAO;
     private List<ProdApplications> prodApplications;
     @Autowired
     private DosageFormService dosageFormService;
@@ -86,6 +79,14 @@ public class ProdApplicationsService implements Serializable {
     private StatusUserDAO statusUserDAO;
     @Autowired
     private ReviewDAO reviewDAO;
+    @Autowired
+    private DosUomDAO dosUomDAO;
+    @Autowired
+    private AdminRouteDAO adminRouteDAO;
+    @Autowired
+    private PharmClassDAO pharmClassDAO;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     public ProdApplications findProdApplications(long id) {
@@ -168,7 +169,6 @@ public class ProdApplicationsService implements Serializable {
 
     }
 
-
     public List<ProdApplications> getApplications() {
         if (prodApplications == null)
             prodApplications = prodApplicationsDAO.allProdApplications();
@@ -178,7 +178,6 @@ public class ProdApplicationsService implements Serializable {
     public void refresh() {
         prodApplications = null;
     }
-
 
     public List<ProdApplications> getSavedApplications(Long userId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -213,7 +212,6 @@ public class ProdApplicationsService implements Serializable {
 
         return prodApps;
     }
-
 
     public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
         List<ProdApplications> prodApplicationses = null;
@@ -285,7 +283,7 @@ public class ProdApplicationsService implements Serializable {
             params.put("regState", regState);
             params.put("userId", userSession.getLoggedINUserID());
 //            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isLab()){
+        } else if (userSession.isLab()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.VERIFY);
             regState.add(RegState.REVIEW_BOARD);
@@ -318,41 +316,32 @@ public class ProdApplicationsService implements Serializable {
         return prodApplications;
     }
 
-    @Autowired
-    private DosUomDAO dosUomDAO;
-
-    @Autowired
-    private AdminRouteDAO adminRouteDAO;
-
-    @Autowired
-    private PharmClassDAO pharmClassDAO;
-
     @Transactional
     public RetObject updateProdApp(ProdApplications prodApplications, Long loggedInUserID) {
         RetObject retObject;
         User loggedInUser = userService.findUser(loggedInUserID);
-        if(prodApplications==null){
+        if (prodApplications == null) {
             retObject = new RetObject("empty_prodApp", null);
         }
-        if(prodApplications.getProduct()==null){
+        if (prodApplications.getProduct() == null) {
             retObject = new RetObject("empty_product", null);
         }
 
         try {
             prodApplications.setUpdatedDate(new Date());
             prodApplications.setUpdatedBy(loggedInUser);
-            if(prodApplications.getProduct().getId()==null){
+            if (prodApplications.getProduct().getId() == null) {
                 productDAO.saveProduct(prodApplications.getProduct());
             }
-            if(prodApplications.getId()==null) {
+            if (prodApplications.getId() == null) {
                 prodApplications.setApplicant(applicantDAO.findApplicant(prodApplications.getApplicant().getApplcntId()));
                 prodApplicationsDAO.saveApplication(prodApplications);
-            }else
+            } else
                 prodApplications = prodApplicationsDAO.updateApplication(prodApplications);
-                prodApplications = prodApplicationsDAO.findProdApplications(prodApplications.getId());
+            prodApplications = prodApplicationsDAO.findProdApplications(prodApplications.getId());
             retObject = new RetObject("persist", prodApplications);
             return retObject;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return new RetObject(ex.getMessage(), null);
         }
@@ -402,7 +391,7 @@ public class ProdApplicationsService implements Serializable {
         HashMap param = new HashMap();
         param.put("regName", product.getProdName());
         param.put("regNumber", prodApp.getProdRegNo());
-        param.put("genName",product.getGenName());
+        param.put("genName", product.getGenName());
         param.put("adminRoute", product.getAdminRoute().getName());
 //        param.put("regType", product.getProdType());
         param.put("shelfLife", product.getShelfLife());
@@ -478,9 +467,9 @@ public class ProdApplicationsService implements Serializable {
     public String createRejectCert(ProdApplications prodApp) {
         this.prodApp = prodApp;
         this.product = prodApp.getProduct();
-        try{
-        //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED); 
-        File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
+        try {
+            //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED); 
+            File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
             JasperPrint jasperPrint = initRejCert();
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             prodApp.setRejCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
@@ -494,7 +483,6 @@ public class ProdApplicationsService implements Serializable {
         }
         return "created";
     }
-
 
     public String createRegCert(ProdApplications prodApp) {
         this.prodApp = prodApp;
@@ -519,12 +507,11 @@ public class ProdApplicationsService implements Serializable {
         return "created";
     }
 
-    public String generateAppNo(ProdApplications prodApplications){
+    public String generateAppNo(ProdApplications prodApplications) {
         RegistrationUtil registrationUtil = new RegistrationUtil();
         return registrationUtil.generateAppNo(prodApplications.getId());
 
     }
-
 
     public ProdApplications getProdApp() {
         return prodApp;
@@ -555,7 +542,7 @@ public class ProdApplicationsService implements Serializable {
             selForeignAppStatus = foreignAppStatusDAO.save(selForeignAppStatus);
             retObject.setObj(selForeignAppStatus);
             retObject.setMsg("persist");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             retObject.setObj(null);
             retObject.setMsg(ex.getMessage());
@@ -573,7 +560,7 @@ public class ProdApplicationsService implements Serializable {
         try {
             prodAppChecklistDAO.save(prodAppChecklists);
             return "persist";
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return "error";
         }
 
@@ -589,7 +576,7 @@ public class ProdApplicationsService implements Serializable {
                 if (!reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
                     complete = false;
                     break;
-                }else{
+                } else {
                     complete = true;
                 }
             }
@@ -600,7 +587,7 @@ public class ProdApplicationsService implements Serializable {
             } else {
                 return "state_error";
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return "error";
         }
@@ -613,5 +600,80 @@ public class ProdApplicationsService implements Serializable {
 
     public List<ProdAppLetter> findAllLettersByProdApp(Long id) {
         return prodAppLetterDAO.findByProdApplications_Id(id);
+    }
+
+    public RetObject submitProdApp(ProdApplications prodApplications, Long loggedINUserID) {
+        RetObject retObject;
+        try {
+            retObject = updateProdApp(prodApplications, loggedINUserID);
+            this.prodApp = (ProdApplications) retObject.getObj();
+            createAckLetter();
+            return retObject;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            retObject = new RetObject("error", ex.getMessage());
+            return retObject;
+        }
+    }
+
+    public String createAckLetter() {
+        Product prod = prodApp.getProduct();
+        try {
+            File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
+
+            JasperPrint jasperPrint;
+            Session hibernateSession = entityManager.unwrap(Session.class);
+            SessionImpl session = (SessionImpl) hibernateSession;
+            Connection conn = session.connection();
+            HashMap param = new HashMap();
+            param.put("prodAppNo", prodApp.getProdAppNo());
+            param.put("id", prodApp.getId());
+            param.put("subject", "Product Registration for  " + prod.getProdName() + " recieved");
+//                + letter.getSubject() + " " + product.getProdName() + " ");
+//        param.put("body", body);
+            param.put("body", "Thank you for applying to register " + prod.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()
+                    + ". The application number is " + prodApp.getProdAppNo() + ". "
+                    + "Please use this application number for any future correspondence.");
+            param.put("manufName", prod.getManufName());
+            param.put("subject", "Product application deficiency letter for  " + prod.getProdName());
+
+            URL resource = getClass().getResource("/reports/letter.jasper");
+            jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+            byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
+
+
+            ProdAppLetter attachment = new ProdAppLetter();
+            attachment.setRegState(prodApp.getRegState());
+            attachment.setFile(file);
+            attachment.setProdApplications(prodApp);
+            attachment.setFileName(invoicePDF.getName());
+            attachment.setTitle("Acknowledgement Letter");
+            attachment.setUploadedBy(prodApp.getCreatedBy());
+            attachment.setComment("Automatically generated Letter");
+            attachment.setContentType("application/pdf");
+            attachment.setLetterType(LetterType.ACK_SUBMITTED);
+            prodAppLetterDAO.save(attachment);
+            return "persist";
+
+//                prodApplicationsDAO.updateApplication(prodApp);
+
+        } catch (JRException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return "error";
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return "error";
+        }
+    }
+
+    public ProdAppLetter findAllLettersByProdAppAndType(ProdApplications prodApplications, LetterType ackSubmitted) {
+        List<ProdAppLetter> prodAppLetters = prodAppLetterDAO.findByProdApplications_IdAndLetterType(prodApplications.getId(), ackSubmitted);
+        if (prodAppLetters != null && prodAppLetters.size() > 0)
+            return prodAppLetters.get(0);
+        else
+            return null;
+
+
     }
 }

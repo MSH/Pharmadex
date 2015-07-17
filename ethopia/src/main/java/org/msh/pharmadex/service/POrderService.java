@@ -6,7 +6,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.impl.SessionImpl;
+import org.hibernate.internal.SessionImpl;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
 import org.msh.pharmadex.dao.CustomPurOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderDAO;
@@ -61,7 +61,7 @@ public class POrderService implements Serializable {
 
     public List<PIPOrderLookUp> findPIPCheckList(ApplicantType applicantType, boolean pip) {
         if (applicantType.getId() < 5)
-            applicantType.setId(Long.valueOf(2));
+            applicantType.setId((long) 2);
         return customPIPOrderDAO.findAllPIPOrderLookUp(applicantType.getId(), pip);
     }
 
@@ -126,7 +126,7 @@ public class POrderService implements Serializable {
         Session hibernateSession = entityManager.unwrap(Session.class);
         SessionImpl session = (SessionImpl) hibernateSession;
         Connection conn = session.connection();
-        HashMap param = new HashMap();
+        HashMap<String, Object> param = new HashMap<String, Object>();
         param.put("piporderid", piporderid);
         URL resource = getClass().getResource(path);
         jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
@@ -300,7 +300,7 @@ public class POrderService implements Serializable {
 
     public RetObject findAllSubmittedPIP(Long userID, Long applcntId, boolean companyUser) {
         RetObject retObject = new RetObject();
-        List<PIPOrder> pipOrders = null;
+        List<PIPOrder> pipOrders;
 
         if (userID == null) {
             retObject.setMsg("error");
@@ -327,7 +327,7 @@ public class POrderService implements Serializable {
 
     public RetObject findAllSubmittedPO(Long userID, Long applcntId, boolean companyUser) {
         RetObject retObject = new RetObject();
-        List<PurOrder> purOrders = null;
+        List<PurOrder> purOrders;
 
         if (userID == null) {
             retObject.setMsg("error");
@@ -433,8 +433,7 @@ public class POrderService implements Serializable {
     public RetObject save(POrderDoc pOrderDoc) {
         try {
             pOrderDoc = pOrderDocDAO.save(pOrderDoc);
-            RetObject retObject = new RetObject("persist", pOrderDoc);
-            return retObject;
+            return new RetObject("persist", pOrderDoc);
         } catch (Exception ex) {
             ex.printStackTrace();
             return new RetObject("fail", null);
@@ -446,10 +445,7 @@ public class POrderService implements Serializable {
         if (pOrderBase == null)
             pOrderDocs = new ArrayList<POrderDoc>();
         if (pOrderBase instanceof PIPOrder) {
-            if (pOrderBase != null)
-                pOrderDocs = pOrderDocDAO.findByPipOrder_Id(pOrderBase.getId());
-            else
-                pOrderDocs = new ArrayList<POrderDoc>();
+            pOrderDocs = pOrderDocDAO.findByPipOrder_Id(pOrderBase.getId());
         }
         if (pOrderBase instanceof PurOrder) {
             if (pOrderBase.getId() != null)
@@ -466,13 +462,11 @@ public class POrderService implements Serializable {
         pOrderBase.setState(AmdmtState.REVIEW);
         pOrderBase.setUpdatedDate(new Date());
         pOrderBase.setFeeRecieveDate(new Date());
-        RetObject retObject = updatePIPOrder(pOrderBase);
-        return retObject;
+        return updatePIPOrder(pOrderBase);
     }
 
     public POrderBase findPOrder(String pipNo) {
-        POrderBase pOrderBase = pipOrderDAO.findByPipNo(pipNo);
-        return pOrderBase;
+        return pipOrderDAO.findByPipNo(pipNo);
     }
 
     public List<ProdTable> findProdByLH(Long applcntId) {

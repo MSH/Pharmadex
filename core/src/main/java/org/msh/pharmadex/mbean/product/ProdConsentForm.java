@@ -9,10 +9,16 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.service.*;
-import org.omnifaces.util.Faces;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.RetObject;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
@@ -21,14 +27,16 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.util.*;
-import java.util.ResourceBundle;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Backing bean to capture review of products
@@ -38,29 +46,40 @@ import java.util.ResourceBundle;
 @RequestScoped
 public class ProdConsentForm implements Serializable {
 
+    java.util.ResourceBundle bundle;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
-
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
-
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
-
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
-
     private String password;
     private Product product;
     private ProdApplications prodApplications;
     private FacesContext context;
     private JasperPrint jasperPrint;
-    java.util.ResourceBundle bundle;
+    private UploadedFile file;
+
+    public StreamedContent fileDownload() {
+        ProdAppLetter prodAppLetter = prodApplicationsService.findAllLettersByProdAppAndType(prodApplications, LetterType.ACK_SUBMITTED);
+        if (prodAppLetter != null) {
+            InputStream ist = new ByteArrayInputStream(prodAppLetter.getFile());
+            StreamedContent download = new DefaultStreamedContent(ist, prodAppLetter.getContentType(), prodAppLetter.getFileName());
+//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+            return download;
+        } else {
+
+            return null;
+        }
+    }
+
 
     @PostConstruct
-    private void init(){
+    private void init() {
         Long prodAppID = userSession.getProdAppID();
-        if(prodAppID!=null){
+        if (prodAppID != null) {
             prodApplications = prodApplicationsService.findProdApplications(prodAppID);
             product = prodApplications.getProduct();
         }
@@ -89,17 +108,19 @@ public class ProdConsentForm implements Serializable {
         timeLine.setStatusDate(new Date());
         timeLines.add(timeLine);
 
-//        prodApplications.setTimeLines(timeLines);
         prodApplications.setRegState(RegState.NEW_APPL);
         prodApplications.setSubmitDate(new Date());
-        prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
-//        saveApp();
-
-        context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
-
-
-//        timelineService.saveTimeLine(timeLine);
-        return "/secure/prodregack.faces";
+        RetObject retObject = prodApplicationsService.submitProdApp(prodApplications, userSession.getLoggedINUserID());
+        if (retObject.getMsg().equals("persist")) {
+            prodApplications = (ProdApplications) retObject.getObj();
+            context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
+            userSession.setProdAppID(prodApplications.getId());
+            JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
+            return "/internal/processreg.faces";
+        } else {
+            context.addMessage(null, new FacesMessage(bundle.getString("global_fail")));
+            return "";
+        }
     }
 
     public void PDF() throws JRException, IOException {
@@ -122,7 +143,6 @@ public class ProdConsentForm implements Serializable {
         WebUtils.setSessionAttribute(request, "regHomeMbean", null);
         return "/public/registrationhome.faces";
     }
-
 
 
     public ProdApplicationsService getProdApplicationsService() {
@@ -179,5 +199,13 @@ public class ProdConsentForm implements Serializable {
 
     public void setReportService(ReportService reportService) {
         this.reportService = reportService;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
     }
 }
