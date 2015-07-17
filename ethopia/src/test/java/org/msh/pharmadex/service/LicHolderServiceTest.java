@@ -1,27 +1,17 @@
 package org.msh.pharmadex.service;
 
-import junit.framework.Assert;
-import org.msh.pharmadex.dao.AmdmtDAO;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
-
 /**
  * Created with IntelliJ IDEA.
  * User: utkarsh
  * Date: 2/16/13
  * Time: 3:21 PM
- * To change this template use File | Settings | File Templates.
+ * To change this template use File | Settings | File T emplates.
  */
-//@ContextConfiguration("/test-context.xml")
+//@ContextConfiguration(locations = "classpath*:test-context.xml")
 //@RunWith(SpringJUnit4ClassRunner.class)
-public class LicHolderServiceTest {
-
-
+//public class LicHolderServiceTest {
+//
+//
 //    @Autowired
 //    AmdmtService amdmtService;
 //
@@ -40,7 +30,7 @@ public class LicHolderServiceTest {
 //
 //    }
 //
-//
+
 //    @Test
 //    public void testFindAmdmtRecvd() throws Exception {
 //        Assert.assertEquals(true, true);
@@ -63,4 +53,4 @@ public class LicHolderServiceTest {
 //
 //    }
 
-}
+//}

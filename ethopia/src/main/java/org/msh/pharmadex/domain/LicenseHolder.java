@@ -230,4 +230,10 @@ public class LicenseHolder extends CreationDetail implements Serializable {
     public void setState(UserState state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        return getName();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
 }

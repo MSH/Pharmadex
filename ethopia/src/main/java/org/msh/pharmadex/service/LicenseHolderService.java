@@ -115,25 +115,28 @@ public class LicenseHolderService implements Serializable {
         }
     }
 
-    public LicenseHolder findLicHolderByApplicant(Long applcntId) {
-        LicenseHolder licenseHolder = null;
+    public List<LicenseHolder> findLicHolderByApplicant(Long applcntId) {
+        List<LicenseHolder> licenseHolders = new ArrayList<LicenseHolder>();
         if(applcntId==null){
-            return null;
+            return customLicHolderDAO.findAll();
         }
 
         List<AgentInfo> agentInfos = agentInfoDAO.findByApplicant_applcntIdAndAgentType(applcntId, AgentType.FIRST);
         if(agentInfos!=null) {
             for(AgentInfo agentInfo : agentInfos) {
                 if(agentInfo.getStartDate().before(new Date())&&agentInfo.getEndDate().after(new Date()))
-                    licenseHolder = agentInfo.getLicenseHolder();
+                    licenseHolders.add(agentInfo.getLicenseHolder());
             }
         }
-        return licenseHolder;
+        return licenseHolders;
     }
 
     public String saveProduct(Long applcntId, Product product) {
         try {
-            LicenseHolder licenseHolder = findLicHolderByApplicant(applcntId);
+            List<LicenseHolder> licenseHolders = findLicHolderByApplicant(applcntId);
+            //TODO
+            //Replaces this code with the license holder selection done.
+            LicenseHolder licenseHolder = licenseHolders.get(0);
             if (licenseHolder.getProducts() == null)
                 licenseHolder.setProducts(new ArrayList<Product>());
             licenseHolder.getProducts().add(product);
@@ -151,5 +154,14 @@ public class LicenseHolderService implements Serializable {
 
         return agentInfoDAO.findOne(id);
 
+    }
+
+
+    public Applicant findApplicantByLicHolder(Long id) {
+        if (id == null)
+            return null;
+
+        Applicant applicant = customLicHolderDAO.findFirstAgent(id);
+        return applicant;
     }
 }
