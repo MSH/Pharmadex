@@ -76,7 +76,8 @@ public class RegHomeMbeanET implements Serializable{
 
     public LicenseHolder getLicenseHolder() {
         if(licenseHolder==null){
-            licenseHolder = licenseHolderService.findLicHolderByApplicant(regHomeMbean.getApplicant().getApplcntId());
+            List<LicenseHolder> licenseHolders = licenseHolderService.findLicHolderByApplicant(regHomeMbean.getApplicant().getApplcntId());
+            licenseHolder = licenseHolders.get(0);
         }
         return licenseHolder;
     }

@@ -10,7 +10,7 @@
             <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
         </div>
 
-        <h:form id="reghome">
+        <h:form id="reghome" enctype="multipart/form-data">
             <p:growl id="growl" showSummary="true"/>
             <p:messages showSummary="true" id="messages"/>
             <pe:ajaxErrorHandler/>
@@ -448,48 +448,58 @@
                 </p:tab>
 
                 <p:tab id="attach" title="#{msgs.attachments}">
-                    <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
-                                     oncomplete="PF('attachdlg').show()"
-                                     action="#{fileUploadController.prepareUpload}"
-                                     update=":attachdlg" id="addDocBtn"/>
+                    <p:panel>
+                        <h:panelGrid columns="1" cellpadding="5" cellspacing="5">
+                            <p:outputLabel
+                                    value="Please attach the soft copy of the following documents: CPP, Label, Bank Receipt"/>
 
-                    <p:dataTable id="attachtable" value="#{fileUploadController.attachments}" var="doc">
+                            <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                             oncomplete="PF('attachDlg').show()"
+                                             action="#{prodRegAppMbean.prepareUpload}"
+                                             update=":attachfrm" id="addDocBtn"/>
 
-                        <p:column headerText="#{msgs.title}">
-                            <h:outputText value="#{doc.title}"/>
-                        </p:column>
+                            <p:dataTable id="attachtable" value="#{prodRegAppMbean.attachments}" var="doc">
 
-                        <p:column headerText="#{msgs.filename}">
-                            <h:outputText value="#{doc.fileName}"/>
-                        </p:column>
+                                <p:column headerText="#{msgs.title}">
+                                    <h:outputText value="#{doc.title}"/>
+                                </p:column>
 
-                        <p:column headerText="#{msgs.uploaddate}">
-                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
-                        </p:column>
+                                <p:column headerText="#{msgs.filename}">
+                                    <h:outputText value="#{doc.fileName}"/>
+                                </p:column>
 
-                        <p:column headerText="#{msgs.uploadedby}">
-                            <h:outputText value="#{doc.uploadedBy.name}"/>
-                        </p:column>
+                                <p:column headerText="#{msgs.uploaddate}">
+                                    <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                                </p:column>
 
-                        <p:column headerText="#{msgs.registration_status}">
-                            <h:outputText value="#{msgs[doc.regState.key]}"/>
-                        </p:column>
+                                <p:column headerText="#{msgs.uploadedby}">
+                                    <h:outputText value="#{doc.uploadedBy.name}"/>
+                                </p:column>
 
-                        <p:column>
-                            <p:commandButton id="downloadLink" value="Download" ajax="false"
-                                             onclick="PrimeFaces.monitorDownload(start, stop)"
-                                             icon="ui-icon-arrowthichk-s">
-                                <p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
-                            </p:commandButton>
-                        </p:column>
+                                <p:column headerText="#{msgs.registration_status}">
+                                    <h:outputText value="#{msgs[doc.regState.key]}"/>
+                                </p:column>
 
-                        <p:column>
-                            <p:commandButton id="deleteattach"
-                                             action="#{fileUploadController.deleteDoc(doc)}" ajax="false"
-                                             icon="ui-icon-trash"
-                                             update=":reghome:attachtab:attachtable"/>
-                        </p:column>
-                    </p:dataTable>
+
+                                <p:column>
+                                    <p:commandButton id="deleteattach"
+                                                     action="#{prodRegAppMbean.deleteDoc(doc)}" ajax="false"
+                                                     icon="ui-icon-trash"
+                                                     update=":reghome:attachtab:attachtable"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
+                                             update=":reghome" id="attachSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{prodRegAppMbean.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="attachBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="attachNxtBtn"/>
+                        </div>
+                    </p:panel>
 
                 </p:tab>
 
@@ -865,6 +875,34 @@
                                      update=":addpricing :reghome:pricingTable"/>
                 </h:panelGroup>
                 <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachDlg" resizable="false"
+                  dynamic="true">
+            <h:form id="attachfrm">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.title}"/>
+                    <p:inputText value="#{prodRegAppMbean.attachment.title}"/>
+                    <p:outputLabel value="#{msgs.global_comment}"/>
+                    <p:inputTextarea value="#{prodRegAppMbean.attachment.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{prodRegAppMbean.handleFileUpload}"
+                              mode="advanced" process=":attachfrm" auto="true"
+                              update=":reghome:growl :reghome:messages"
+                              multiple="false"
+                              sizeLimit="10000000">
+
+                </p:fileUpload>
+
+                <!--<p:fileUpload value="#{prodRegAppMbean.file}" mode="simple" skinSimple="true"/>-->
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{prodRegAppMbean.addDocument}" process=":attachfrm"
+                                 oncomplete="PF('attachDlg').hide()"
+                                 update=":reghome:growl :reghome:messages :reghome :attachfrm"/>
             </h:form>
         </p:dialog>
 

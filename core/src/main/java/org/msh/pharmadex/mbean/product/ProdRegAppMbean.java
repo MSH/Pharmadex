@@ -2,13 +2,17 @@ package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +64,8 @@ public class ProdRegAppMbean implements Serializable {
     private CompanyService companyService;
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
+    @ManagedProperty(value = "#{attachmentDAO}")
+    private AttachmentDAO attachmentDAO;
 
     private List<ProdInn> selectedInns;
     private List<ProdExcipient> selectedExipients;
@@ -79,6 +85,9 @@ public class ProdRegAppMbean implements Serializable {
     private Pricing pricing;
     private boolean showDrugPrice;
     private JasperPrint jasperPrint;
+    private Attachment attachment;
+    private List<Attachment> attachments;
+    private UploadedFile file;
 
     @PostConstruct
     private void init() {
@@ -150,6 +159,67 @@ public class ProdRegAppMbean implements Serializable {
         WebUtils.setSessionAttribute(request, "regHomeMbean", null);
 
     }
+
+    public void prepareUpload() {
+        attachment = new Attachment();
+        attachment.setUpdatedDate(new Date());
+        attachment.setProdApplications(prodApplications);
+        attachment.setRegState(RegState.SAVED);
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+        file = event.getFile();
+        try {
+            attachment.setFile(IOUtils.toByteArray(file.getInputstream()));
+        } catch (IOException e) {
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+            facesContext.addMessage(null, msg);
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        attachment.setProdApplications(prodApplications);
+        attachment.setFileName(file.getFileName());
+        attachment.setContentType(file.getContentType());
+        attachment.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
+        attachment.setRegState(prodApplications.getRegState());
+//        attachmentDAO.save(attachment);
+//        userSession.setFile(file);
+    }
+
+    public void addDocument() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        facesContext = FacesContext.getCurrentInstance();
+//        file = userSession.getFile();
+//        attachment.setFile(file.getContents());
+        attachmentDAO.save(attachment);
+        setAttachments(null);
+//        userSession.setFile(null);
+        FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+        facesContext.addMessage(null, msg);
+
+    }
+
+    public void deleteDoc(Attachment attach) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        try {
+
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_delete"), attach.getFileName() + resourceBundle.getString("is_deleted"));
+            attachmentDAO.delete(attach);
+            attachments = null;
+            facesContext.addMessage(null, msg);
+        } catch (Exception e) {
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), attach.getFileName() + resourceBundle.getString("cannot_delte"));
+            facesContext.addMessage(null, msg);
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
+    }
+
 
     //fires everytime you click on next or prev button on the wizard
     @Transactional
@@ -644,5 +714,41 @@ public class ProdRegAppMbean implements Serializable {
 
     public void setContext(FacesContext context) {
         this.context = context;
+    }
+
+    public Attachment getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Attachment attachment) {
+        this.attachment = attachment;
+    }
+
+
+    public List<Attachment> getAttachments() {
+        if (attachments == null)
+            attachments = (ArrayList<Attachment>) attachmentDAO.findByProdApplications_Id(getProdApplications().getId());
+
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public AttachmentDAO getAttachmentDAO() {
+        return attachmentDAO;
+    }
+
+    public void setAttachmentDAO(AttachmentDAO attachmentDAO) {
+        this.attachmentDAO = attachmentDAO;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
     }
 }
