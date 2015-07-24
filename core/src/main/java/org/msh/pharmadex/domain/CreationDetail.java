@@ -46,7 +46,7 @@ public abstract class CreationDetail implements Serializable {
 
     @Override
     public String toString() {
-        return "org.msh.tb.CreationDetail[ ]";
+        return "[createdDate:" + createdDate + " -- updatedDate:" + updatedDate;
     }
 
 }
