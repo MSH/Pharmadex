@@ -3,7 +3,6 @@ package org.msh.pharmadex.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +35,9 @@ public class Workspace extends CreationDetail implements Serializable {
 
     @Column
     private boolean detailReview;
+
+    @Column
+    private boolean secReview;
 
     @Column
     private String datePattern;
@@ -88,12 +90,12 @@ public class Workspace extends CreationDetail implements Serializable {
         this.detailReview = detailReview;
     }
 
-    public void setDatePattern(String datePattern) {
-        this.datePattern = datePattern;
-    }
-
     public String getDatePattern() {
         return datePattern;
+    }
+
+    public void setDatePattern(String datePattern) {
+        this.datePattern = datePattern;
     }
 
     public int getPipRegDuration() {
@@ -102,5 +104,13 @@ public class Workspace extends CreationDetail implements Serializable {
 
     public void setPipRegDuration(int pipRegDuration) {
         this.pipRegDuration = pipRegDuration;
+    }
+
+    public boolean isSecReview() {
+        return secReview;
+    }
+
+    public void setSecReview(boolean secReview) {
+        this.secReview = secReview;
     }
 }
