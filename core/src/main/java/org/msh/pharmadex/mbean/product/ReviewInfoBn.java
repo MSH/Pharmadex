@@ -9,6 +9,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
@@ -70,6 +71,8 @@ public class ReviewInfoBn implements Serializable {
     private List<ReviewComment> reviewComments;
     private RevDeficiency revDeficiency;
     private List<RevDeficiency> revDeficiencies;
+    @ManagedProperty(value = "#{userAccessMBean}")
+    private UserAccessMBean userAccessMBean;
 
     @PostConstruct
     private void init() {
@@ -239,7 +242,14 @@ public class ReviewInfoBn implements Serializable {
                 reviewComment.setFinalSummary(false);
             } else {
                 if (reviewComment.getRecomendType().equals(RecomendType.RECOMENDED) || reviewComment.getRecomendType().equals(RecomendType.NOT_RECOMENDED)) {
-                    reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
+                    if (userAccessMBean.getWorkspace().isSecReview()) {
+                        if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId()))
+                            reviewInfo.setReviewStatus(ReviewStatus.SEC_REVIEW);
+                        else if (userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
+                            reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
+                    } else {
+                        reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
+                    }
                     reviewComment.setFinalSummary(true);
                 }
 //                } else if (reviewComment.getRecomendType().equals(RecomendType.FEEDBACK)) {
@@ -484,5 +494,13 @@ public class ReviewInfoBn implements Serializable {
 
     public void setRevDeficiency(RevDeficiency revDeficiency) {
         this.revDeficiency = revDeficiency;
+    }
+
+    public UserAccessMBean getUserAccessMBean() {
+        return userAccessMBean;
+    }
+
+    public void setUserAccessMBean(UserAccessMBean userAccessMBean) {
+        this.userAccessMBean = userAccessMBean;
     }
 }

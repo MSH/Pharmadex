@@ -35,7 +35,7 @@
                     </p:selectOneMenu>
                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
 
-                    <h:outputLabel value="#{msgs.applicant_name}" for="licname"/>
+                    <h:outputLabel value="#{msgs.license_holder}" for="licname"/>
                     <p:autoComplete id="licname" value="#{prodRegInit.selLicHolder}"
                                     completeMethod="#{prodRegInit.completeLicHolderList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"

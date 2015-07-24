@@ -2,9 +2,7 @@ package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.Atc;
-import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -14,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -183,6 +183,7 @@ public class ProductDAO implements Serializable {
         Hibernate.initialize(prod.getProdCompanies());
         Hibernate.initialize(prod.getDosUnit());
         Hibernate.initialize(prod.getDosForm());
+        Hibernate.initialize(prod.getPricing());
 //        Hibernate.initialize(prod.getProdApplications());
 //        Hibernate.initialize(prod.getApplicant());
 

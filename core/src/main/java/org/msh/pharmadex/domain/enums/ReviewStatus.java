@@ -13,7 +13,8 @@ public enum ReviewStatus {
     RFI_RECIEVED,
     SUBMITTED,
     FEEDBACK,
-    ACCEPTED;
+    ACCEPTED,
+    SEC_REVIEW;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());

@@ -31,6 +31,10 @@ public class ReviewInfo implements Serializable {
     @JoinColumn(name = "reviewer_id", nullable = false)
     private User reviewer;
 
+    @ManyToOne
+    @JoinColumn(name = "sec_reviewer_id", nullable = true)
+    private User secReviewer;
+
     @OneToMany(mappedBy = "reviewInfo", cascade = {CascadeType.ALL})
     private List<ReviewDetail> reviewDetails;
 
@@ -223,5 +227,13 @@ public class ReviewInfo implements Serializable {
 
     public void setRecomendType(RecomendType recomendType) {
         this.recomendType = recomendType;
+    }
+
+    public User getSecReviewer() {
+        return secReviewer;
+    }
+
+    public void setSecReviewer(User secReviewer) {
+        this.secReviewer = secReviewer;
     }
 }

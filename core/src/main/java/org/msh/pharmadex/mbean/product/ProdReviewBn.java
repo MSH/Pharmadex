@@ -56,6 +56,7 @@ public class ProdReviewBn implements Serializable {
     private List<ReviewInfo> reviewInfos;
     private boolean checkReviewStatus;
     private User reviewer;
+    private User secReviewer;
 
 
     private Review review;
@@ -121,6 +122,8 @@ public class ProdReviewBn implements Serializable {
             reviewInfo.setAssignDate(new Date());
             reviewInfo.setProdApplications(prodApplications);
             reviewInfo.setReviewStatus(ReviewStatus.ASSIGNED);
+            if (userAccessMBean.getWorkspace().isSecReview())
+                reviewInfo.setSecReviewer(secReviewer);
 
             RetObject riRetObj = reviewService.addReviewInfo(reviewInfo);
             if (!riRetObj.getMsg().equalsIgnoreCase("success")) {
@@ -309,5 +312,11 @@ public class ProdReviewBn implements Serializable {
         this.reviewer = reviewer;
     }
 
+    public User getSecReviewer() {
+        return secReviewer;
+    }
 
+    public void setSecReviewer(User secReviewer) {
+        this.secReviewer = secReviewer;
+    }
 }

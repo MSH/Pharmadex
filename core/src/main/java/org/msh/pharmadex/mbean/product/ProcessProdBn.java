@@ -243,6 +243,7 @@ public class ProcessProdBn implements Serializable {
     public void setFieldValues() {
         product = prodApplications.getProduct();
         prodInns = product.getInns();
+
 //        prodAppAmdmts = prodApplications.getProdAppAmdmts();
         moderator = prodApplications.getModerator();
         foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
@@ -443,7 +444,7 @@ public class ProcessProdBn implements Serializable {
     @Transactional(propagation = Propagation.REQUIRED)
     public void save() {
         try {
-            product = productService.updateProduct(product);
+            prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedINUserID());
             product = productService.findProduct(product.getId());
             setFieldValues();
         } catch (Exception e) {

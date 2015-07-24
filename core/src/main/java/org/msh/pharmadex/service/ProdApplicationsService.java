@@ -298,10 +298,17 @@ public class ProdApplicationsService implements Serializable {
     }
 
     @Transactional
-    public ProdApplications saveApplication(ProdApplications prodApplications, User loggedInUserObj) {
+    public ProdApplications saveApplication(ProdApplications prodApplications, Long loggedInUserID) {
+        if (prodApplications == null || loggedInUserID == null)
+            return null;
+        User loggedInUserObj = userService.findUser(loggedInUserID);
+
         if (prodApplications.getProduct().getId() == null) {
             prodApplications.getProduct().setCreatedBy(loggedInUserObj);
+            prodApplications.setCreatedBy(loggedInUserObj);
             prodApplications.setSubmitDate(new Date());
+        } else {
+            prodApplications.setUpdatedDate(new Date());
         }
 
 //        applicantDAO.updateApplicant(prodApplications.getProd().getApplicant());
@@ -582,7 +589,7 @@ public class ProdApplicationsService implements Serializable {
             }
 
             if (complete) {
-                saveApplication(prodApplications, user);
+                saveApplication(prodApplications, user.getUserId());
                 return "persist";
             } else {
                 return "state_error";
