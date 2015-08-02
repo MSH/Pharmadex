@@ -114,14 +114,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @JoinColumn(name = "applicantUser")
     private User applicantUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "createdBy")
-    private User createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "updatedBy")
-    private User updatedBy;
-
     @OneToOne(cascade = CascadeType.ALL)
     private Appointment appointment;
 
@@ -380,14 +372,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.moderator = moderator;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
     public Appointment getAppointment() {
         return appointment;
     }
@@ -468,14 +452,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.active = active;
     }
 
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public User getApplicantUser() {
         return applicantUser;
     }
@@ -515,9 +491,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
             else if(reviewInfos.size()<1)
                 reviewStatus = ReviewStatus.NOT_ASSIGNED;
             else {
-                reviewStatus = ReviewStatus.ACCEPTED;
+                reviewStatus = ReviewStatus.NOT_ASSIGNED;
                 for(ReviewInfo reviewInfo : reviewInfos){
-                    if(reviewStatus.ordinal()>reviewInfo.getReviewStatus().ordinal())
+                    if (reviewStatus.ordinal() < reviewInfo.getReviewStatus().ordinal())
                         reviewStatus = reviewInfo.getReviewStatus();
                 }
             }

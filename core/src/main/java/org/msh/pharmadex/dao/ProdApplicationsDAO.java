@@ -4,7 +4,6 @@ import org.hibernate.Hibernate;
 import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.dao.iface.DosageFormDAO;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,6 +24,10 @@ public class ProdApplicationsDAO implements Serializable {
     private static final long serialVersionUID = 8496860054039645100L;
     @PersistenceContext
     EntityManager entityManager;
+    @Autowired
+    private DosageFormDAO dosageFormDAO;
+    @Autowired
+    private DosUomDAO dosUomDAO;
 
     @Transactional
     public ProdApplications findProdApplications(long id) {
@@ -49,7 +52,6 @@ public class ProdApplicationsDAO implements Serializable {
 
             return prodApp;
     }
-
 
     @Transactional
     public ProdApplications findProdApplicationByProduct(Long prodId) {
@@ -156,13 +158,6 @@ public class ProdApplicationsDAO implements Serializable {
 
 
     }
-
-
-    @Autowired
-    private DosageFormDAO dosageFormDAO;
-
-    @Autowired
-    private DosUomDAO dosUomDAO;
 
     @Transactional
     public String saveApplication(ProdApplications prodApplications) {
@@ -283,6 +278,24 @@ public class ProdApplicationsDAO implements Serializable {
         if (predicateList.size() > 0)
             query.where(predicates);
         return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<ProdApplications> findProdAppByReviewer(HashMap params) {
+        if (params == null)
+            return null;
+
+        Long reviewer = (Long) params.get("reviewer");
+        List<RegState> regStates = (List<RegState>) params.get("regState");
+
+        if (reviewer == null)
+            return null;
+
+        List<ProdApplications> prodApplicationses = entityManager.createQuery("select pa from ProdApplications pa left join pa.reviewInfos ri where pa.regState in (:regStates) " +
+                "and  (ri.reviewer.userId = :reviewer or ri.secReviewer.userId = :reviewer)")
+                .setParameter("reviewer", reviewer)
+                .setParameter("regStates", regStates)
+                .getResultList();
+        return prodApplicationses;
     }
 
     public Long findApplicationCount() {

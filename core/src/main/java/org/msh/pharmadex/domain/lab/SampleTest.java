@@ -1,10 +1,8 @@
 package org.msh.pharmadex.domain.lab;
 
+import org.msh.pharmadex.domain.CreationDetail;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ReviewComment;
-import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
 
 import javax.persistence.*;
@@ -18,7 +16,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "sample_test")
-public class SampleTest implements Serializable {
+public class SampleTest extends CreationDetail implements Serializable {
 
 
     @Id
@@ -28,14 +26,6 @@ public class SampleTest implements Serializable {
 
     @OneToOne
     private ProdApplications prodApplications;
-
-    @OneToOne
-    @JoinColumn(name = "updatedby_id", nullable = true)
-    private User updatedBy;
-
-    @OneToOne
-    @JoinColumn(name = "createdby_id", nullable = false)
-    private User createdBy;
 
     @OneToMany(mappedBy = "sampleTest", cascade = {CascadeType.ALL})
     private List<ProdAppLetter> prodAppLetters;
@@ -88,14 +78,6 @@ public class SampleTest implements Serializable {
 
     public void setProdApplications(ProdApplications prodApplications) {
         this.prodApplications = prodApplications;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
     }
 
     public List<SampleComment> getSampleComments() {
@@ -168,14 +150,6 @@ public class SampleTest implements Serializable {
 
     public void setSubmitDate(Date submitDate) {
         this.submitDate = submitDate;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 
     public List<ProdAppLetter> getProdAppLetters() {

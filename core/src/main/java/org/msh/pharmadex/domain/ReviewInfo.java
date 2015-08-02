@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "review_info")
-public class ReviewInfo implements Serializable {
+public class ReviewInfo extends CreationDetail implements Serializable {
 
 
     @Id

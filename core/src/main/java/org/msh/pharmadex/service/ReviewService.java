@@ -10,9 +10,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.dao.ReviewQDAO;
-import org.msh.pharmadex.dao.iface.*;
+import org.msh.pharmadex.dao.iface.RevDeficiencyDAO;
+import org.msh.pharmadex.dao.iface.ReviewDAO;
+import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
+import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.net.URL;
-import java.text.DateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Author: usrivastava
@@ -48,6 +52,10 @@ public class ReviewService implements Serializable {
 
     @Autowired
     private ReviewDetailDAO reviewDetailDAO;
+    @Autowired
+    private ProdApplicationsService prodApplicationsService;
+    @Autowired
+    private RevDeficiencyDAO revDeficiencyDAO;
 
     public Review findReview(Long reviewID) {
         Review review = reviewDAO.findOne(reviewID);
@@ -85,7 +93,7 @@ public class ReviewService implements Serializable {
     }
 
     public ReviewInfo findReviewInfoByUserAndProdApp(Long userId, Long prodAppID) {
-        return reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(userId, prodAppID);
+        return reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
     }
 
     public void delete(Review review) {
@@ -109,6 +117,73 @@ public class ReviewService implements Serializable {
         return reviewQDAO.findReviewSummary(userID, reviewInfoID);
 
     }
+
+
+//    public List<DisplayReviewQ> getDisplayReviewQ() {
+//        List<ReviewQuestion> reviewQuestions = reviewQDAO.findAll();
+//        List<DisplayReviewQ> header1 = new ArrayList<DisplayReviewQ>();
+//        List<DisplayReviewQ.Header2> header2 = new ArrayList<DisplayReviewQ.Header2>();
+//
+//        String header1Name = "";
+//        String header2Name = "";
+//
+//        List<DisplayReviewInfo> questions = null;
+//        DisplayReviewQ dispHeader1 = null;
+//        DisplayReviewQ.Header2 dispHeader2;
+//        int size = reviewQuestions.size();
+//        ReviewQuestion rq;
+//        for (int i = 0; i < reviewQuestions.size(); i++) {
+//            rq = reviewQuestions.get(i);
+//            if (header1Name.equals("")) {
+//                header1Name = rq.getHeader1();
+//                header2Name = rq.getHeader2();
+//                questions = new ArrayList<DisplayReviewInfo>();
+//                questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false, null));
+//                dispHeader1 = new DisplayReviewQ(header1Name, header2);
+//                dispHeader2 = dispHeader1.new Header2(header2Name, questions);
+//                header2.add(dispHeader2);
+//                header1.add(dispHeader1);
+//
+////                    header2 = header1.new Header2(header2Name, questions);
+//
+////                    header2.put(header2Name, questions);
+////                    header1.put(header1Name, header2);
+//            } else {
+//                if (header1Name.equals(rq.getHeader1())) {
+//                    if (header2Name.equals(rq.getHeader2())) {
+//                        questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false));
+//                    } else {
+//                        questions = new ArrayList<DisplayReviewInfo>();
+//                        questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false));
+//                        header2Name = rq.getHeader2();
+//                        dispHeader2 = dispHeader1.new Header2(header2Name, questions);
+//                        header2.add(dispHeader2);
+////                            header2.put(header2Name, questions);
+//                    }
+//                } else {
+//                    header2 = new ArrayList<DisplayReviewQ.Header2>();
+//                    header1Name = rq.getHeader1();
+//                    header2Name = rq.getHeader2();
+//                    questions = new ArrayList<DisplayReviewInfo>();
+//                    questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false));
+////                        header1 = new DisplayReviewQ(header1Name, header2);
+//                    dispHeader1 = new DisplayReviewQ(header1Name, header2);
+//                    dispHeader2 = dispHeader1.new Header2(header2Name, questions);
+//                    header2.add(dispHeader2);
+//                    header1.add(dispHeader1);
+//
+//
+////                        header2.put(header2Name, questions);
+////                        header1.put(header1Name, header2);
+//
+//                }
+//            }
+//
+//
+//        }
+//
+//        return header1;
+//    }
 
     public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo) {
         List<ReviewDetail> reviewDetails = new ArrayList<ReviewDetail>();
@@ -196,73 +271,6 @@ public class ReviewService implements Serializable {
         return header1;
     }
 
-
-//    public List<DisplayReviewQ> getDisplayReviewQ() {
-//        List<ReviewQuestion> reviewQuestions = reviewQDAO.findAll();
-//        List<DisplayReviewQ> header1 = new ArrayList<DisplayReviewQ>();
-//        List<DisplayReviewQ.Header2> header2 = new ArrayList<DisplayReviewQ.Header2>();
-//
-//        String header1Name = "";
-//        String header2Name = "";
-//
-//        List<DisplayReviewInfo> questions = null;
-//        DisplayReviewQ dispHeader1 = null;
-//        DisplayReviewQ.Header2 dispHeader2;
-//        int size = reviewQuestions.size();
-//        ReviewQuestion rq;
-//        for (int i = 0; i < reviewQuestions.size(); i++) {
-//            rq = reviewQuestions.get(i);
-//            if (header1Name.equals("")) {
-//                header1Name = rq.getHeader1();
-//                header2Name = rq.getHeader2();
-//                questions = new ArrayList<DisplayReviewInfo>();
-//                questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false, null));
-//                dispHeader1 = new DisplayReviewQ(header1Name, header2);
-//                dispHeader2 = dispHeader1.new Header2(header2Name, questions);
-//                header2.add(dispHeader2);
-//                header1.add(dispHeader1);
-//
-////                    header2 = header1.new Header2(header2Name, questions);
-//
-////                    header2.put(header2Name, questions);
-////                    header1.put(header1Name, header2);
-//            } else {
-//                if (header1Name.equals(rq.getHeader1())) {
-//                    if (header2Name.equals(rq.getHeader2())) {
-//                        questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false));
-//                    } else {
-//                        questions = new ArrayList<DisplayReviewInfo>();
-//                        questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false));
-//                        header2Name = rq.getHeader2();
-//                        dispHeader2 = dispHeader1.new Header2(header2Name, questions);
-//                        header2.add(dispHeader2);
-////                            header2.put(header2Name, questions);
-//                    }
-//                } else {
-//                    header2 = new ArrayList<DisplayReviewQ.Header2>();
-//                    header1Name = rq.getHeader1();
-//                    header2Name = rq.getHeader2();
-//                    questions = new ArrayList<DisplayReviewInfo>();
-//                    questions.add(new DisplayReviewInfo(rq.getId(), null, rq.getQuestion(), false));
-////                        header1 = new DisplayReviewQ(header1Name, header2);
-//                    dispHeader1 = new DisplayReviewQ(header1Name, header2);
-//                    dispHeader2 = dispHeader1.new Header2(header2Name, questions);
-//                    header2.add(dispHeader2);
-//                    header1.add(dispHeader1);
-//
-//
-////                        header2.put(header2Name, questions);
-////                        header1.put(header1Name, header2);
-//
-//                }
-//            }
-//
-//
-//        }
-//
-//        return header1;
-//    }
-
     public JasperPrint initRegCert(ProdApplications prodApplications, RevDeficiency reviewComment) throws JRException {
         String emailBody = reviewComment.getSentComment().getComment();
         Product product = prodApplications.getProduct();
@@ -287,11 +295,6 @@ public class ReviewService implements Serializable {
 
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
-
-    @Autowired
-    private ProdApplicationsService prodApplicationsService;
-    @Autowired
-    private RevDeficiencyDAO revDeficiencyDAO;
 
     public RetObject createDefLetter(RevDeficiency reviewComment){
         ProdApplications prodApp = prodApplicationsService.findProdApplications(reviewComment.getReviewInfo().getProdApplications().getId());

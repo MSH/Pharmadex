@@ -21,7 +21,10 @@
                 </ui:decorate>
             </div>
 
-            <div style="height: 10px;"/>
+            <div align="center" style="background: #2191c0; padding: 5px; border-radius: 5px;">
+                <p:outputLabel value="#{reviewInfoBn.revType}"
+                               style="align-content: center; font-weight: bold; color:darkred;"/>
+            </div>
 
             <div align="right">
                 <p:commandButton value="#{msgs.approve_review}" action="#{reviewInfoBn.approveReview}"
@@ -37,13 +40,11 @@
                                  rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted}"/>
                 <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('reviewDlg').show()"
                                  ajax="true" action="#{reviewInfoBn.initComment}"
-                                 rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted}"/>
+                                 rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted and reviewInfoBn.priReview}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewInfoBn.cancelReview}"
                                  ajax="false"/>
             </div>
 
-
-            <div style="height: 10px;"/>
 
             <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
                 <p:tab title="#{msgs.review_detail}">

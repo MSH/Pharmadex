@@ -14,6 +14,12 @@ public abstract class CreationDetail implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
 
+    @OneToOne
+    private User updatedBy;
+
+    @OneToOne
+    private User createdBy;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
 
@@ -43,6 +49,21 @@ public abstract class CreationDetail implements Serializable {
         this.updatedDate = updatedDate;
     }
 
+    public User getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(User updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
 
     @Override
     public String toString() {

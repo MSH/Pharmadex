@@ -5,11 +5,15 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ReviewDetail;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.DisplayReviewInfo;
-import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 
 import javax.faces.application.FacesMessage;
@@ -35,32 +39,50 @@ public class ReviewDetailBn implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
-    @ManagedProperty(value = "#{productService}")
-    private ProductService productService;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    private ProdApplicationsService prodApplicationsService;
+
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
 
     private ReviewDetail reviewDetail;
-    private Product product;
-
+    private boolean satisfactory;
+    private ProdApplications prodApplications;
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+    private String revType;
+    private boolean priReviewer;
+    private boolean secReviewer;
 
 
-    public void saveReview(){
+    public void saveReview() {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
         reviewDetail.setAnswered(true);
-        reviewDetail =  reviewService.saveReviewDetail(reviewDetail);
+        ReviewInfo ri = reviewDetail.getReviewInfo();
+        if (ri.getReviewStatus().equals(ReviewStatus.ASSIGNED))
+            ri.setReviewStatus(ReviewStatus.IN_PROGRESS);
+        User user = userService.findUser(userSession.getLoggedINUserID());
+        reviewDetail.setUpdatedBy(user);
+        reviewDetail = reviewService.saveReviewDetail(reviewDetail);
         msg = new FacesMessage(bundle.getString("app_save_success"));
         facesContext.addMessage(null, msg);
     }
 
-    public String back(){
+    public String back() {
         JsfUtils.flashScope().put("reviewInfoID", reviewDetail.getReviewInfo().getId());
         return "reviewInfo";
     }
 
-    public String submitReview(){
+    public void satisAction() {
+        if (reviewDetail.isSatifactory())
+            satisfactory = true;
+        else
+            satisfactory = false;
+    }
+
+    public String submitReview() {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
         saveReview();
@@ -88,32 +110,21 @@ public class ReviewDetailBn implements Serializable {
         this.userSession = userSession;
     }
 
-    public Product getProduct() {
-        if(product==null){
-            getReviewDetail();
-
-        }
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public ProductService getProductService() {
-        return productService;
-    }
-
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
-
     public ReviewDetail getReviewDetail() {
-        if(reviewDetail==null){
+        if (reviewDetail == null) {
             DisplayReviewInfo displayReviewInfo = userSession.getDisplayReviewInfo();
-            if(displayReviewInfo !=null) {
+            if (displayReviewInfo != null) {
                 reviewDetail = reviewService.findReviewDetails(displayReviewInfo);
-                product = productService.findProduct(reviewDetail.getReviewInfo().getProdApplications().getProduct().getId());
+                setSatisfactory(reviewDetail.isSatifactory());
+                prodApplications = prodApplicationsService.findProdApplications(reviewDetail.getReviewInfo().getProdApplications().getId());
+                if (reviewDetail.getReviewInfo().getReviewer().getUserId().equals(userSession.getLoggedINUserID())) {
+                    setPriReviewer(true);
+                    setSecReviewer(false);
+                } else if (reviewDetail.getReviewInfo().getSecReviewer().getUserId().equals(userSession.getLoggedINUserID())) {
+                    setSecReviewer(true);
+                    setPriReviewer(false);
+
+                }
             }
         }
         return reviewDetail;
@@ -121,5 +132,70 @@ public class ReviewDetailBn implements Serializable {
 
     public void setReviewDetail(ReviewDetail reviewDetail) {
         this.reviewDetail = reviewDetail;
+    }
+
+    public boolean isSatisfactory() {
+        return satisfactory;
+    }
+
+    public void setSatisfactory(boolean satisfactory) {
+        this.satisfactory = satisfactory;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public ProdApplications getProdApplications() {
+        if (prodApplications == null)
+            getReviewDetail();
+        return prodApplications;
+    }
+
+    public void setProdApplications(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
+    }
+
+    public String getRevType() {
+        ReviewInfo reviewInfo = getReviewDetail().getReviewInfo();
+        if (reviewInfo != null) {
+            if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
+                revType = bundle.getString("pri_processor");
+            } else if (userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
+                revType = bundle.getString("sec_processor");
+        }
+        return revType;
+    }
+
+    public void setRevType(String revType) {
+        this.revType = revType;
+    }
+
+    public boolean isPriReviewer() {
+        return priReviewer;
+    }
+
+    public void setPriReviewer(boolean priReviewer) {
+        this.priReviewer = priReviewer;
+    }
+
+    public boolean isSecReviewer() {
+        return secReviewer;
+    }
+
+    public void setSecReviewer(boolean secReviewer) {
+        this.secReviewer = secReviewer;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

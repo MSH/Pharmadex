@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -71,6 +70,22 @@ public class ProdApplicationDAOTest {
 //            e.printStackTrace();
 //        }
 //        Assert.assertNotNull(prodApps);
+
+    }
+
+    @Test
+    public void testFindProdByReviewer() throws Exception {
+        Assert.assertEquals(true, true);
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        List<RegState> regStates = new ArrayList<RegState>();
+        regStates.add(RegState.REVIEW_BOARD);
+        params.put("reviewer", new Long(5));
+        params.put("regState", regStates);
+
+        List<ProdApplications> prodApplicationses = prodApplicationsDAO.findProdAppByReviewer(params);
+        Assert.assertNotNull(prodApplicationses);
+
 
     }
 

@@ -5,7 +5,6 @@
 package org.msh.pharmadex.domain;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Author: usrivastava
@@ -22,7 +21,7 @@ public class ReviewDetail extends CreationDetail {
     @JoinColumn(name = "reviewquest_id", nullable = false)
     private ReviewQuestion reviewQuestions;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "review_info_id", nullable = false)
     private ReviewInfo reviewInfo;
 
@@ -124,4 +123,6 @@ public class ReviewDetail extends CreationDetail {
     public void setVolume(String volume) {
         this.volume = volume;
     }
+
+
 }

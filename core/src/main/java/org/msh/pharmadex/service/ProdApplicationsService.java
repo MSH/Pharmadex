@@ -242,9 +242,10 @@ public class ProdApplicationsService implements Serializable {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
-            if (workspaceDAO.findAll().get(0).isDetailReview())
-                params.put("reviewerInfoId", userSession.getLoggedINUserID());
-            else
+            if (workspaceDAO.findAll().get(0).isDetailReview()) {
+                params.put("reviewer", userSession.getLoggedINUserID());
+                return prodApplicationsDAO.findProdAppByReviewer(params);
+            } else
                 params.put("reviewerId", userSession.getLoggedINUserID());
 //            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isHead()) {

@@ -73,6 +73,8 @@ public class ReviewInfoBn implements Serializable {
     private List<RevDeficiency> revDeficiencies;
     @ManagedProperty(value = "#{userAccessMBean}")
     private UserAccessMBean userAccessMBean;
+    private String revType;
+    private boolean priReview;
 
     @PostConstruct
     private void init() {
@@ -154,6 +156,7 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String saveReview() {
+        reviewInfo.setUpdatedBy(userService.findUser(userSession.getLoggedINUserID()));
         RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
         reviewInfo = (ReviewInfo) retObject.getObj();
         return "";
@@ -176,7 +179,7 @@ public class ReviewInfoBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
         }
 
-        reviewComment = reviewInfo.getReviewComments().get(reviewInfo.getReviewComments().size()-1);
+        reviewComment = reviewInfo.getReviewComments().get(reviewInfo.getReviewComments().size() - 1);
         reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
         reviewInfo.setComment(reviewComment.getComment());
         saveReview();
@@ -266,7 +269,7 @@ public class ReviewInfoBn implements Serializable {
                 reviewInfo = (ReviewInfo) retObject.getObj();
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
 
-            }else if(retObject.getMsg().equals("close_def")){
+            } else if (retObject.getMsg().equals("close_def")) {
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
 
             }
@@ -478,7 +481,7 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public List<RevDeficiency> getRevDeficiencies() {
-        if(revDeficiencies==null){
+        if (revDeficiencies == null) {
             revDeficiencies = prodApplicationsService.findRevDefByRI(getReviewInfo());
         }
         return revDeficiencies;
@@ -502,5 +505,33 @@ public class ReviewInfoBn implements Serializable {
 
     public void setUserAccessMBean(UserAccessMBean userAccessMBean) {
         this.userAccessMBean = userAccessMBean;
+    }
+
+    public String getRevType() {
+        if (reviewInfo != null) {
+            if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
+                revType = bundle.getString("pri_processor");
+            } else if (userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
+                revType = bundle.getString("sec_processor");
+        }
+        return revType;
+    }
+
+    public void setRevType(String revType) {
+        this.revType = revType;
+    }
+
+    public boolean isPriReview() {
+        if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
+            if (reviewInfo.getReviewStatus().equals(ReviewStatus.SEC_REVIEW))
+                priReview = false;
+        } else {
+            priReview = true;
+        }
+        return priReview;
+    }
+
+    public void setPriReview(boolean priReview) {
+        this.priReview = priReview;
     }
 }

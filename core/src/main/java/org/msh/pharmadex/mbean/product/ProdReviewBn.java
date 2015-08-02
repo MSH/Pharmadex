@@ -71,7 +71,7 @@ public class ProdReviewBn implements Serializable {
     }
 
     public String findReviewInfo() {
-        ReviewInfo reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
+        reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
         JsfUtils.flashScope().put("reviewInfoID", reviewInfo.getId());
         return "/internal/reviewInfo";
     }

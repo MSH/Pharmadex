@@ -6,7 +6,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -15,17 +15,25 @@
 
             <div style="width:1054px">
                 <ui:decorate template="/templates/prodbannertempl.xhtml">
-                    <ui:param name="product" value="#{reviewDetailBn.product}"/>
+                    <ui:param name="prodApp" value="#{reviewDetailBn.prodApplications}"/>
                 </ui:decorate>
             </div>
 
+            <div align="center" style="background: #2191c0; padding: 5px; border-radius: 5px;">
+                <p:outputLabel value="#{reviewDetailBn.revType}"
+                               style="align-content: center; font-weight: bold; color:darkred;"/>
+            </div>
+            <div style="height: 5px;"/>
+
             <p:panel header="#{msgs.complete_review}">
-                <p:commandButton value="#{msgs.global_back}" action="#{reviewDetailBn.back}" ajax="false" immediate="true"/>
+                <p:commandButton value="#{msgs.global_back}" action="#{reviewDetailBn.back}" ajax="false"
+                                 immediate="true"/>
                 <p:commandButton value="#{msgs.global_save}" action="#{reviewDetailBn.saveReview}"
+                                 rendered="#{userSession.reviewer}"
                                  update=":reviewHome:growl reviewHome:reviewChkPnl" ajax="true">
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewDetailBn.submitReview}"
-                                 ajax="false">
+                                 ajax="false" rendered="#{userSession.reviewer}">
                 </p:commandButton>
 
                 <div style="height: 10px;"/>
@@ -34,35 +42,40 @@
                     <h:outputText value="#{reviewDetailBn.reviewDetail.reviewQuestions.question}" escape="false"/>
                 </div>
 
-
-                <h:panelGrid columns="1" cellspacing="5px" id="reviewChkPnl">
-                    <h:panelGrid columnClasses="label value" columns="2">
-                        <p:outputLabel value="#{msgs.volumes}:"/>
-                        <p:inputText value="#{reviewDetailBn.reviewDetail.volume}"/>
-                    </h:panelGrid>
+                <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px" id="reviewChkPnl">
+                    <p:outputLabel value="#{msgs.volumes}:"/>
+                    <p:inputText value="#{reviewDetailBn.reviewDetail.volume}"/>
 
 
                     <p:outputLabel value="#{msgs.reviewer_response}: " styleClass="label"/>
+                    <p:outputLabel/>
 
-                    <h:panelGrid columnClasses="label value" columns="2" cellspacing="10px">
-                        <p:outputLabel
-                                value="#{msgs.review_info_satisf}:"/>
-                        <p:selectBooleanButton id="value2" onLabel="Yes" offLabel="No"
-                                               onIcon="ui-icon-check" value="#{reviewDetailBn.reviewDetail.satifactory}"
-                                               offIcon="ui-icon-close" style="width:60px">
-                            <p:ajax/>
-                        </p:selectBooleanButton>
-                    </h:panelGrid>
-
-                    <p:outputLabel value="#{msgs.review_info_satifno}:" styleClass="label"/>
-                    <p:editor value="#{reviewDetailBn.reviewDetail.noReason}" width="700"/>
-
-                    <p:outputLabel value="#{msgs.sec_review_comment}:" styleClass="label"/>
-                    <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"/>
-
+                    <p:outputLabel
+                            value="#{msgs.review_info_satisf}:"/>
+                    <p:selectBooleanButton id="value2" onLabel="Yes" offLabel="No"
+                                           onIcon="ui-icon-check" value="#{reviewDetailBn.reviewDetail.satifactory}"
+                                           offIcon="ui-icon-close" style="width:60px">
+                        <p:ajax update=":reviewHome:satispg" process="@this"
+                                listener="#{reviewDetailBn.satisAction}"/>
+                    </p:selectBooleanButton>
                 </h:panelGrid>
 
+                <h:panelGrid columnClasses="label value" columns="2" cellspacing="5px" id="satispg">
+                    <p:outputLabel id="satisLbl" value="#{msgs.review_info_satifno}:" styleClass="label"
+                                   rendered="#{!reviewDetailBn.satisfactory}"/>
+                    <p:editor id="noreasonTxt" value="#{reviewDetailBn.reviewDetail.noReason}" width="700"
+                              rendered="#{!reviewDetailBn.satisfactory and userSession.reviewer}"/>
+                    <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.noReason}"
+                                  rendered="#{!userSession.reviewer}"></h:outputText>
+                </h:panelGrid>
 
+                <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
+                    <p:outputLabel value="#{msgs.sec_review_comment}:" styleClass="label"/>
+                    <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"
+                              rendered="#{userSession.reviewer}"/>
+                    <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.otherComment}"
+                                  rendered="#{!userSession.reviewer}"></h:outputText>
+                </h:panelGrid>
             </p:panel>
 
 

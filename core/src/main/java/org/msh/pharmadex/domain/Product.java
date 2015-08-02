@@ -87,10 +87,6 @@ public class Product extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<ProdCompany> prodCompanies;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "createdBy")
-    private User createdBy;
-
     @OneToMany(mappedBy = "product")
     private List<ProdApplications> prodApplicationses;
 
@@ -310,14 +306,6 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setProdCompanies(List<ProdCompany> prodCompanies) {
         this.prodCompanies = prodCompanies;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 
     public String getIngrdStatment() {
