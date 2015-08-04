@@ -75,6 +75,7 @@ public class ReviewInfoBn implements Serializable {
     private UserAccessMBean userAccessMBean;
     private String revType;
     private boolean priReview;
+    private User loggedInUser;
 
     @PostConstruct
     private void init() {
@@ -89,6 +90,7 @@ public class ReviewInfoBn implements Serializable {
                 }
                 reviewComments = reviewInfo.getReviewComments();
             }
+            loggedInUser = userService.findUser(userSession.getLoggedINUserID());
         }
     }
 
@@ -131,6 +133,13 @@ public class ReviewInfoBn implements Serializable {
 
     public void initComment() {
         reviewComment = new ReviewComment();
+        if (reviewInfo.getReviewComments() == null) {
+            reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
+        }
+
+        reviewComment.setUser(loggedInUser);
+        reviewComment.setDate(new Date());
+        reviewComment.setReviewInfo(reviewInfo);
     }
 
     public void initRevDef() {
@@ -156,13 +165,14 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String saveReview() {
-        reviewInfo.setUpdatedBy(userService.findUser(userSession.getLoggedINUserID()));
+        reviewInfo.setUpdatedBy(loggedInUser);
         RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
         reviewInfo = (ReviewInfo) retObject.getObj();
         return "";
     }
 
     public String reviewerFeedback() {
+        reviewInfo.getReviewComments().add(reviewComment);
         reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
         RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
         reviewInfo = (ReviewInfo) retObject.getObj();
@@ -223,7 +233,7 @@ public class ReviewInfoBn implements Serializable {
 
     public String cancelReview() {
 //        userSession.setReview(null);
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", reviewInfo.getProdApplications().getId());
+        JsfUtils.flashScope().put("prodAppID", reviewInfo.getProdApplications().getId());
         userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
         return "/internal/processreg";
 
@@ -233,13 +243,6 @@ public class ReviewInfoBn implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
-            if (reviewInfo.getReviewComments() == null) {
-                reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
-            }
-
-            reviewComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
-            reviewComment.setDate(new Date());
-            reviewComment.setReviewInfo(reviewInfo);
             if (reviewComment.getRecomendType() == null) {
                 reviewInfo.setReviewStatus(ReviewStatus.IN_PROGRESS);
                 reviewComment.setFinalSummary(false);
@@ -283,13 +286,6 @@ public class ReviewInfoBn implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
-            if (reviewInfo.getReviewComments() == null) {
-                reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
-            }
-
-            reviewComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
-            reviewComment.setDate(new Date());
-            reviewComment.setReviewInfo(reviewInfo);
             reviewComment.setFinalSummary(false);
             reviewInfo.setReviewStatus(ReviewStatus.RFI_RECIEVED);
 
@@ -315,13 +311,6 @@ public class ReviewInfoBn implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
-            if (reviewInfo.getReviewComments() == null) {
-                reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
-            }
-
-            reviewComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
-            reviewComment.setDate(new Date());
-            reviewComment.setReviewInfo(reviewInfo);
 //            reviewComment.setRecomendType(RecomendType.APPLICANT_FEEDBACK);
             revDeficiency.setSentComment(reviewComment);
             revDeficiency.setUser(reviewComment.getUser());
@@ -522,12 +511,17 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public boolean isPriReview() {
-        if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
-            if (reviewInfo.getReviewStatus().equals(ReviewStatus.SEC_REVIEW))
-                priReview = false;
-        } else {
-            priReview = true;
+        if (reviewInfo != null && reviewInfo.getReviewer() != null) {
+            if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
+                if (reviewInfo.getReviewStatus().equals(ReviewStatus.SEC_REVIEW))
+                    priReview = false;
+                else
+                    priReview = true;
+            } else {
+                priReview = true;
+            }
         }
+
         return priReview;
     }
 

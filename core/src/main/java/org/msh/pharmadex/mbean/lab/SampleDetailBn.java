@@ -4,17 +4,21 @@
 
 package org.msh.pharmadex.mbean.lab;
 
-import javassist.tools.reflect.Sample;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
-import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.SampleTestService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -67,6 +71,7 @@ public class SampleDetailBn implements Serializable {
     private SampleComment sampleComment;
     private List<SampleComment> sampleComments;
     private List<ProdAppLetter> prodAppLetters;
+    private ProdAppLetter prodAppLetter;
 
     @PostConstruct
     private void init() {
@@ -76,6 +81,7 @@ public class SampleDetailBn implements Serializable {
                 sampleTest = sampleTestService.findSampleTest(sampleTestID);
                 sampleComments = sampleTest.getSampleComments();
                 prodAppLetters = sampleTest.getProdAppLetters();
+                prodApplications = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
                 JsfUtils.flashScope().keep("reviewInfoID");
 //                if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
 //                    readOnly = true;
@@ -84,9 +90,45 @@ public class SampleDetailBn implements Serializable {
         }
     }
 
+    public void submitComment() {
+        facesContext = FacesContext.getCurrentInstance();
+        bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        try {
+            if (sampleTest.getSampleComments() == null) {
+                sampleTest.setSampleComments(new ArrayList<SampleComment>());
+            }
+
+            sampleComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
+            sampleComment.setDate(new Date());
+            sampleComment.setSampleTest(sampleTest);
+            if (sampleTest.getSampleTestStatus() == null) {
+                sampleTest.setSampleTestStatus(SampleTestStatus.IN_PROGRESS);
+            }
+            sampleComment.setSampleTestStatus(sampleTest.getSampleTestStatus());
+
+            sampleTest.setUpdatedDate(new Date());
+            sampleTest.setUpdatedBy(userService.findUser(userSession.getLoggedINUserID()));
+
+            sampleTest.getSampleComments().add(sampleComment);
+            RetObject retObject = sampleTestService.saveSample(sampleTest);
+            if (retObject.getMsg().equals("success")) {
+                sampleTest = (SampleTest) retObject.getObj();
+                facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
+
+            } else if (retObject.getMsg().equals("close_def")) {
+                facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
+        }
+    }
+
     public StreamedContent fileDownload(ProdAppLetter doc) {
-        InputStream ist = new ByteArrayInputStream(doc.getFile());
-        StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
+        ProdAppLetter prodAppLetter = sampleTest.getProdAppLetters().get(0);
+        InputStream ist = new ByteArrayInputStream(prodAppLetter.getFile());
+        StreamedContent download = new DefaultStreamedContent(ist, prodAppLetter.getContentType(), prodAppLetter.getFileName());
         return download;
     }
 
@@ -94,20 +136,57 @@ public class SampleDetailBn implements Serializable {
          sampleComment = new SampleComment();
     }
 
-
     public String saveReview() {
         RetObject retObject = sampleTestService.saveSample(sampleTest);
         sampleTest = (SampleTest) retObject.getObj();
         return "";
     }
 
+    public void prepareUpload() {
+        prodAppLetter = new ProdAppLetter();
+    }
+
+
+    public void handleFileUpload(FileUploadEvent event) {
+        FacesMessage msg;
+        facesContext = FacesContext.getCurrentInstance();
+
+        file = event.getFile();
+        try {
+            if (prodAppLetter == null)
+                prodAppLetter = new ProdAppLetter();
+            prodAppLetter.setFile(IOUtils.toByteArray(file.getInputstream()));
+        } catch (IOException e) {
+            msg = new FacesMessage(bundle.getString("global_fail"), file.getFileName() + bundle.getString("upload_fail"));
+            facesContext.addMessage(null, msg);
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+//        pOrderDoc.setPipOrder(get);
+        prodAppLetter.setFileName(file.getFileName());
+        prodAppLetter.setContentType(file.getContentType());
+        prodAppLetter.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
+        prodAppLetter.setRegState(prodApplications.getRegState());
+//        userSession.setFile(file);
+
+    }
+
+    public void addDocument() {
+//        file = userSession.getFile();
+        prodAppLetter.setSampleTest(sampleTest);
+//        getpOrderDocDAO().save(getpOrderDoc());
+        prodAppLetters.add(prodAppLetter);
+        sampleTest.setProdAppLetters(prodAppLetters);
+//        userSession.setFile(null);
+        FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+
+    }
 
     public String cancelSampleTestDetail() {
 //        userSession.setReview(null);
-        JsfUtils.flashScope().put("sampleTestID", sampleTest.getId());
+        JsfUtils.flashScope().put("prodAppID", sampleTest.getProdApplications().getId());
         userSession.setProdID(sampleTest.getProdApplications().getProduct().getId());
         return "/internal/processreg";
-
     }
 
 
@@ -133,10 +212,6 @@ public class SampleDetailBn implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public UserService getUserService() {
@@ -175,6 +250,10 @@ public class SampleDetailBn implements Serializable {
         return product;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public ProdApplications getProdApplications() {
         return prodApplications;
     }
@@ -205,5 +284,13 @@ public class SampleDetailBn implements Serializable {
 
     public void setProdAppLetters(List<ProdAppLetter> prodAppLetters) {
         this.prodAppLetters = prodAppLetters;
+    }
+
+    public ProdAppLetter getProdAppLetter() {
+        return prodAppLetter;
+    }
+
+    public void setProdAppLetter(ProdAppLetter prodAppLetter) {
+        this.prodAppLetter = prodAppLetter;
     }
 }

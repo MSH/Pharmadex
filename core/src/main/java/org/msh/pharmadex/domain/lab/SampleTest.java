@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.CreationDetail;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
+import org.msh.pharmadex.domain.enums.SampleType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,6 +37,12 @@ public class SampleTest extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private SampleTestStatus sampleTestStatus;
 
+    @ElementCollection(targetClass = SampleType.class)
+    @JoinTable(name = "tblsampletypes", joinColumns = @JoinColumn(name = "sampleTestID"))
+    @Column(name = "sample_type")
+    @Enumerated(EnumType.STRING)
+    private List<SampleType> sampleTypes;
+
     @Column
     private boolean letterGenerated;
 
@@ -56,6 +63,9 @@ public class SampleTest extends CreationDetail implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date submitDate;
+
+    @Column(length = 255)
+    private String quantity;
 
     public SampleTest() {
     }
@@ -158,5 +168,21 @@ public class SampleTest extends CreationDetail implements Serializable {
 
     public void setProdAppLetters(List<ProdAppLetter> prodAppLetters) {
         this.prodAppLetters = prodAppLetters;
+    }
+
+    public List<SampleType> getSampleTypes() {
+        return sampleTypes;
+    }
+
+    public void setSampleTypes(List<SampleType> sampleTypes) {
+        this.sampleTypes = sampleTypes;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
 }

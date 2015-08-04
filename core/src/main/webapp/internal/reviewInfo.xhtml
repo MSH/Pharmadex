@@ -31,9 +31,9 @@
                                  update=":reviewHome"
                                  ajax="false"
                                  rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}"/>
-                <p:commandButton value="#{msgs.send_to_review}" action="#{reviewInfoBn.reviewerFeedback}"
-                                 update=":reviewHome"
-                                 ajax="false"
+                <p:commandButton value="#{msgs.send_to_review}" action="#{reviewInfoBn.initComment}"
+                                 update=":reviewHome" oncomplete="PF('feedbackDlg').show()"
+                                 ajax="true"
                                  rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}"/>
                 <p:commandButton value="#{msgs.global_save}" action="#{reviewInfoBn.saveReview}" ajax="true"
                                  update=":reviewHome" process="@this"
@@ -156,6 +156,20 @@
 
 
         </h:form>
+
+        <p:dialog header="#{msgs.review_feedback}" widgetVar="feedbackDlg" id="feedbackdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
+                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="feedback" required="true"
+                              width="700"/>
+                    <p:message for="revsummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.reviewerFeedback}"
+                                 oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
 
         <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" id="reviewDlg"
                   modal="true" dynamic="true">

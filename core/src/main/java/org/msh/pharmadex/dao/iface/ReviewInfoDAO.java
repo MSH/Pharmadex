@@ -6,6 +6,7 @@ package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public interface ReviewInfoDAO extends JpaRepository<ReviewInfo, Long> {
 
     public List<ReviewInfo> findByProdApplications_IdOrderByAssignDateAsc(Long id);
 
-    public ReviewInfo findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(Long prodApplications_Id, Long reviewer_UserId, Long secReviewer_UserId);
+    @Query("select r from ReviewInfo r where r.prodApplications.id=?1 and (r.reviewer.userId = ?2 or r.secReviewer.userId = ?3)")
+    public List<ReviewInfo> findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(Long prodApplications_Id, Long reviewer_UserId, Long secReviewer_UserId);
 }
 

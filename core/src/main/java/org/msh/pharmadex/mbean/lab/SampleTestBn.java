@@ -14,6 +14,7 @@ import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.SampleTestService;
 import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
@@ -66,6 +67,7 @@ public class SampleTestBn implements Serializable {
         if(sampleTests==null){
             if(processProdBn.getProdApplications()!=null){
                 sampleTests = sampleTestService.findSampleForProd(processProdBn.getProdApplications().getId());
+                sampleTest = new SampleTest();
             }
         }
     }
@@ -91,6 +93,7 @@ public class SampleTestBn implements Serializable {
         sampleComment.setDate(new Date());
         sampleComment.setUser(sampleTest.getCreatedBy());
         sampleTest.getSampleComments().add(sampleComment);
+        sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
 
         RetObject riRetObj = sampleTestService.createDefLetter(sampleTest);
         if (!riRetObj.getMsg().equalsIgnoreCase("persist")) {
@@ -101,6 +104,12 @@ public class SampleTestBn implements Serializable {
         }
         sampleTest = new SampleTest();
     }
+
+    public String sendToDetail(Long id) {
+        JsfUtils.flashScope().put("sampleTestID", id);
+        return "/internal/lab/sampletestdetail.faces";
+    }
+
 
     public void initSampleAdd() {
         sampleTest = new SampleTest(new ArrayList<SampleComment>());

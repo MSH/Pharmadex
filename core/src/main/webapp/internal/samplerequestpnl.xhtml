@@ -17,11 +17,25 @@
 -->
 
         <p:column headerText="#{msgs.requested_date}">
-            <p:outputLabel value="#{sample.reqDt}" converter="javax.faces.DateTime"/>
+            <p:commandLink id="viewLink2" value="#{sample.reqDt}" converter="javax.faces.DateTime"
+                           action="#{sampleTestBn.sendToDetail(sample.id)}"
+                           ajax="false" immediate="true">
+            </p:commandLink>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.global_curr_status}"/>
+            </f:facet>
+            <h:outputText value="#{msgs[sample.sampleTestStatus.key]}"/>
         </p:column>
 
         <p:column headerText="#{msgs.created_by}">
             <p:outputLabel value="#{sample.createdBy.name}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.updated_date}">
+            <p:outputLabel value="#{sample.updatedDate}"/>
         </p:column>
 
         <p:column headerText="#{msgs.sampletest_recieved}">
@@ -40,9 +54,7 @@
             </p:cellEditor>
         </p:column>
 
-        <p:column style="width:32px">
-            <p:rowEditor />
-        </p:column>
+
 
 
     </p:dataTable>
@@ -78,6 +90,21 @@
     <p:dialog header="#{msgs.sample_test_result}" widgetVar="addSampleTestDlg" id="addSampleTestDlg"
               modal="true" dynamic="true">
             <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+                <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
+                <p:selectManyCheckbox id="itm_req" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
+                                      columns="1"
+                                      converter="omnifaces.GenericEnumConverter">
+                    <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
+                                   itemValue="#{type}"/>
+                    <f:attribute name="collectionType" value="java.util.ArrayList"/>
+                </p:selectManyCheckbox>
+                <p:message for="itm_req" showSummary="true" showDetail="false"/>
+
+                <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
+                <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity"/>
+                <p:message for="quantity" showSummary="true" showDetail="false"/>
+
+
                 <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
                 <p:editor value="#{sampleTestBn.sampleComment.comment}" id="revsummary" required="true"
                           width="700"/>

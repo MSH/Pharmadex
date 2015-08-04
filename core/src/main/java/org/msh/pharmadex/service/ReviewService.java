@@ -93,7 +93,9 @@ public class ReviewService implements Serializable {
     }
 
     public ReviewInfo findReviewInfoByUserAndProdApp(Long userId, Long prodAppID) {
-        return reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
+        List<ReviewInfo> reviewInfos = reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
+        System.out.println("reviewinfos == " + reviewInfos.size());
+        return reviewInfos.get(0);
     }
 
     public void delete(Review review) {

@@ -13,7 +13,7 @@ import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RetObject;
@@ -72,9 +72,9 @@ public class SampleTestService implements Serializable {
             attachment.setFile(file);
             attachment.setProdApplications(prodApp);
             attachment.setFileName(invoicePDF.getName());
-            attachment.setTitle("Review Deficiency Letter");
+            attachment.setTitle("Sample Request Letter");
             attachment.setUploadedBy(sampleTest.getCreatedBy());
-            attachment.setComment("Automatically generated Letter");
+            attachment.setComment("System generated Letter");
             attachment.setContentType("application/pdf");
             attachment.setSampleTest(sampleTest);
 
@@ -120,6 +120,13 @@ public class SampleTestService implements Serializable {
 
         RetObject retObject = new RetObject();
         try {
+            if (sampleTest.getSampleTestStatus().equals(SampleTestStatus.REQUESTED)) {
+                if (sampleTest.getRecievedDt() != null) {
+                    sampleTest.setSampleTestStatus(SampleTestStatus.SAMPLE_RECIEVED);
+                }
+            } else if (sampleTest.getSampleTestStatus().equals(SampleTestStatus.SAMPLE_RECIEVED)) {
+                sampleTest.setSampleTestStatus(SampleTestStatus.RESULT);
+            }
             SampleTest sampleTest1 = sampleTestDAO.save(sampleTest);
             retObject.setObj(sampleTest1);
             retObject.setMsg("persist");

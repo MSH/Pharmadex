@@ -48,9 +48,6 @@ public class LicenseHolder extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String comment;
 
-    @OneToOne
-    private User createdBy;
-
     @Enumerated(EnumType.STRING)
     private UserState state;
 
@@ -205,14 +202,6 @@ public class LicenseHolder extends CreationDetail implements Serializable {
 
     public void setAgentInfos(List<AgentInfo> agentInfos) {
         this.agentInfos = agentInfos;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 
     public List<Product> getProducts() {

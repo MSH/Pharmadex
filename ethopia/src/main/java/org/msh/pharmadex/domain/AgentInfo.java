@@ -39,9 +39,6 @@ public class AgentInfo extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    @OneToOne
-    private User createdBy;
-
     @Transient
     private boolean active;
 
@@ -107,11 +104,4 @@ public class AgentInfo extends CreationDetail implements Serializable {
         this.endDate = endDate;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
 }

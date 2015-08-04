@@ -70,7 +70,7 @@
                 </h:panelGrid>
 
                 <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
-                    <p:outputLabel value="#{msgs.sec_review_comment}:" styleClass="label"/>
+                    <p:outputLabel value="#{msgs.review_comment}:" styleClass="label"/>
                     <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"
                               rendered="#{userSession.reviewer}"/>
                     <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.otherComment}"

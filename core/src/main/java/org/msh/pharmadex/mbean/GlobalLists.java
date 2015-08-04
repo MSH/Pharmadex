@@ -96,4 +96,12 @@ public class GlobalLists {
         regAuth.add("UK");
         return regAuth;
     }
+
+    public List<SampleTestStatus> getSampleTestStatuss() {
+        return Arrays.asList(SampleTestStatus.values());
+    }
+
+    public List<SampleType> getSampleTypes() {
+        return Arrays.asList(SampleType.values());
+    }
 }

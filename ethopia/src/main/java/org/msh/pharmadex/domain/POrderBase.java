@@ -5,7 +5,6 @@ import org.msh.pharmadex.domain.enums.RecomendType;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by utkarsh on 5/12/15.
@@ -60,12 +59,6 @@ public class POrderBase extends CreationDetail {
 
     @OneToOne
     private User processor;
-
-    @OneToOne
-    private User createdBy;
-
-    @OneToOne
-    private User updatedBy;
 
     @Enumerated(EnumType.STRING)
     private AmdmtState state;
@@ -161,22 +154,6 @@ public class POrderBase extends CreationDetail {
 
     public void setApplicantUser(User applicantUser) {
         this.applicantUser = applicantUser;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
     }
 
     public AmdmtState getState() {
