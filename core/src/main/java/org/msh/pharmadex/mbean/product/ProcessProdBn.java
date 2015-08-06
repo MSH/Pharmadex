@@ -61,6 +61,7 @@ public class ProcessProdBn implements Serializable {
     protected org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
     protected FacesContext facesContext = FacesContext.getCurrentInstance();
     protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+    protected boolean displayVerify = false;
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     @ManagedProperty(value = "#{amdmtService}")
@@ -78,10 +79,8 @@ public class ProcessProdBn implements Serializable {
     private MailService mailService;
     @ManagedProperty(value = "#{userAccessMBean}")
     private UserAccessMBean userAccessMBean;
-
     @ManagedProperty(value = "#{sampleTestService}")
     private SampleTestService sampleTestService;
-
     private Applicant applicant;
     private List<Comment> comments;
     private List<Mail> mails;
@@ -103,7 +102,6 @@ public class ProcessProdBn implements Serializable {
     private boolean checkReviewStatus = false;
     private int selectedTab;
     private User moderator;
-    private boolean displayVerify = false;
     private boolean displaySample = false;
     private boolean displayReviewStatus = false;
 //    private ReviewInfo reviewInfo;
@@ -242,11 +240,11 @@ public class ProcessProdBn implements Serializable {
 
     public void setFieldValues() {
         product = prodApplications.getProduct();
-        prodInns = product.getInns();
+//        prodInns = product.getInns();
 
 //        prodAppAmdmts = prodApplications.getProdAppAmdmts();
         moderator = prodApplications.getModerator();
-        foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
+//        foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
         prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
         timeLineList = timelineService.findTimelineByApp(prodApplications.getId());
     }
@@ -445,7 +443,7 @@ public class ProcessProdBn implements Serializable {
     public void save() {
         try {
             prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedINUserID());
-            product = productService.findProduct(product.getId());
+//            product = productService.findProduct(product.getId());
             setFieldValues();
         } catch (Exception e) {
             e.printStackTrace();

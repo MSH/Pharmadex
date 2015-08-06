@@ -22,11 +22,11 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "APP_ID", nullable = false)
     private Applicant applicant;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_ID", nullable = true)
     private Product product;
 
@@ -106,7 +106,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<Review> reviews;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MODERATOR_ID", nullable = true)
     private User moderator;
 

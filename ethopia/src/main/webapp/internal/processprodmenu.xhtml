@@ -1,7 +1,5 @@
 <!-- Creates the table with passed in values of product -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
@@ -9,7 +7,7 @@
         <p:submenu label="#{msgs.Registration}">
             <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
                         id="saveMenuItem"
-                        ajax="true" update=":reghome"/>
+                        ajax="false" update=":reghome"/>
             <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document"
                         onclick="PF('dlg').show()" id="addCommentMI"/>
             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"

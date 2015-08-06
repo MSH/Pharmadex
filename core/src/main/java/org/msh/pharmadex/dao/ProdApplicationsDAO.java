@@ -36,18 +36,18 @@ public class ProdApplicationsDAO implements Serializable {
                 .getSingleResult();
         Hibernate.initialize(prodApp);
         Hibernate.initialize(prodApp.getProduct());
-        Hibernate.initialize(prodApp.getProduct().getDosForm());
-        Hibernate.initialize(prodApp.getProduct().getDosUnit());
-        Hibernate.initialize(prodApp.getProduct().getAdminRoute());
-        Hibernate.initialize(prodApp.getProduct().getInns());
-        Hibernate.initialize(prodApp.getProduct().getExcipients());
-        Hibernate.initialize(prodApp.getProduct().getAtcs());
-        Hibernate.initialize(prodApp.getProduct().getProdCompanies());
-        Hibernate.initialize(prodApp.getProduct().getPricing());
-        if(prodApp.getProduct().getPricing()!=null) {
-            Hibernate.initialize(prodApp.getProduct().getPricing());
-            Hibernate.initialize(prodApp.getProduct().getPricing().getDrugPrices());
-        }
+//        Hibernate.initialize(prodApp.getProduct().getDosForm());
+//        Hibernate.initialize(prodApp.getProduct().getDosUnit());
+//        Hibernate.initialize(prodApp.getProduct().getAdminRoute());
+//        Hibernate.initialize(prodApp.getProduct().getInns());
+//        Hibernate.initialize(prodApp.getProduct().getExcipients());
+//        Hibernate.initialize(prodApp.getProduct().getAtcs());
+//        Hibernate.initialize(prodApp.getProduct().getProdCompanies());
+//        Hibernate.initialize(prodApp.getProduct().getPricing());
+//        if(prodApp.getProduct().getPricing()!=null) {
+//            Hibernate.initialize(prodApp.getProduct().getPricing());
+//            Hibernate.initialize(prodApp.getProduct().getPricing().getDrugPrices());
+//        }
 
 
             return prodApp;

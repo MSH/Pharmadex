@@ -18,7 +18,6 @@
                         <ui:decorate template="/templates/prodbannertempl.xhtml">
                             <ui:param name="prodApp" value="#{processProdBn.prodApplications}"/>
                         </ui:decorate>
-
                         <pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
                                      axisPosition="top"
                                      showNavigation="true"
@@ -38,20 +37,8 @@
                                 </ui:decorate>
                             </p:tab>
 
-                            <p:tab title="#{msgs.prod_screening}"
-                                   rendered="#{userSession.admin||userSession.moderator||userSession.reviewer||userSession.head||userSession.staff}"
-                                   id="checklisttab">
-
-                                <ui:include src="prescreenpnl.xhtml"/>
-
-                            </p:tab>
-
-                            <p:tab title="#{msgs.prod_verification}" id="verficationtab"
-                                   rendered="#{processProdBn.displayVerify}">
-
-                                <ui:include src="verificationpnl.xhtml"/>
-
-                            </p:tab>
+                            <!-- Include workspace specific sequence of tabs. -->
+                            <ui:include src="prodscreenverify.xhtml"/>
 
                             <p:tab title="Sample Request" id="sampletab"
                                    rendered="#{processProdBn.displaySample}">
@@ -330,22 +317,7 @@
 
         <p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true" dynamic="true"
                   rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head||userSession.staff||userSession.moderator}">
-        <h:form enctype="multipart/form-data">
-            <h:panelGrid columns="2" style="margin-bottom:10px">
-                <h:outputLabel for="statuscb" value="#{msgs.registration_status}: "/>
-                <p:selectOneMenu id="statuscb" value="#{processProdBn.timeLine.regState}">
-                    <f:selectItems value="#{processProdBn.regSate}" var="type"
-                                   itemLabel="#{msgs[type.key]}"/>
-                </p:selectOneMenu>
-                <h:outputLabel for="steptext" value="#{msgs.global_comment}:"/>
-                <p:inputTextarea id="steptext" value="#{processProdBn.timeLine.comment}" rows="5"
-                                 cols="50"/>
-            </h:panelGrid>
-
-            <p:commandButton id="submittimeline" value="#{msgs.global_submit}"
-                             action="#{processProdBn.addTimeline}"
-                             oncomplete="PF('stepDlg').hide()" ajax="false"/>
-        </h:form>
+            <ui:include src="nextstepdlg.xhtml"/>
         </p:dialog>
 
         <p:dialog header="#{msgs.issue_invoice}" widgetVar="invoicedlg" resizable="true" id="invoicedlg"

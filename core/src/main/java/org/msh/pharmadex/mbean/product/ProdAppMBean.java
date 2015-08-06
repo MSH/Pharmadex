@@ -8,7 +8,6 @@ import org.msh.pharmadex.service.ProdApplicationsService;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
@@ -26,18 +25,17 @@ import java.util.List;
 @ViewScoped
 public class ProdAppMBean implements Serializable {
     private static final long serialVersionUID = -900861644263726931L;
-
+    @ManagedProperty(value = "#{userSession}")
+    protected UserSession userSession;
+    protected List<ProdApplications> prodApplicationsList;
+    protected List<ProdApplications> submmittedAppList;
     @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
     @ManagedProperty(value = "#{processProdBn}")
     ProcessProdBn processProdBn;
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
     @ManagedProperty(value = "#{invoiceService}")
     private InvoiceService invoiceService;
     private ProdApplications selectedApplication = new ProdApplications();
-    private List<ProdApplications> prodApplicationsList;
-    private List<ProdApplications> submmittedAppList;
     private List<ProdApplications> savedAppList;
     private boolean showAdd = false;
     private List<ProdApplications> allApplicationForProcess;

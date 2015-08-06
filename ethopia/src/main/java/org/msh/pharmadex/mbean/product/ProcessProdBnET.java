@@ -1,32 +1,19 @@
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.RetObject;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
+import org.msh.pharmadex.service.ProdApplicationsServiceET;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.List;
 
 /**
  * Backing bean to process the application made for registration
@@ -37,11 +24,32 @@ import java.util.ResourceBundle;
 public class ProcessProdBnET implements Serializable {
 
 
+    @ManagedProperty(value = "#{processProdBn}")
+    public ProcessProdBn processProdBn;
+    @ManagedProperty(value = "#{userSession}")
+    public UserSession userSession;
+    @ManagedProperty(value = "#{prodApplicationsServiceET}")
+    public ProdApplicationsServiceET prodApplicationsServiceET;
+    protected boolean displayVerify = false;
     private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
     private JasperPrint jasperPrint;
 
-    @ManagedProperty(value = "#{processProdBn}")
-    public ProcessProdBn processProdBn;
+    public boolean isDisplayVerify() {
+        if (userSession.isAdmin() || userSession.isHead() || userSession.isModerator())
+            return true;
+        if ((userSession.isStaff())) {
+            if (processProdBn.getProdApplications() != null && !(processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL)))
+                displayVerify = true;
+            else
+                displayVerify = false;
+        }
+        return displayVerify;
+
+    }
+
+    public void setDisplayVerify(boolean displayVerify) {
+        this.displayVerify = displayVerify;
+    }
 
     public void prescreenfeerecvd(){
         processProdBn.prodApplications.setPrescreenfeeReceived(true);
@@ -75,11 +83,34 @@ public class ProcessProdBnET implements Serializable {
         processProdBn.setSelectedTab(2);
     }
 
+    public List<RegState> getRegSate() {
+        ProdApplications prodApplications = processProdBn.getProdApplications();
+        if (prodApplications != null)
+            return prodApplicationsServiceET.nextStepOptions(prodApplications.getRegState(), userSession, processProdBn.getCheckReviewStatus());
+        return null;
+    }
+
     public ProcessProdBn getProcessProdBn() {
         return processProdBn;
     }
 
     public void setProcessProdBn(ProcessProdBn processProdBn) {
         this.processProdBn = processProdBn;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public ProdApplicationsServiceET getProdApplicationsServiceET() {
+        return prodApplicationsServiceET;
+    }
+
+    public void setProdApplicationsServiceET(ProdApplicationsServiceET prodApplicationsServiceET) {
+        this.prodApplicationsServiceET = prodApplicationsServiceET;
     }
 }

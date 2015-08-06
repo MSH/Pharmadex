@@ -346,7 +346,7 @@ public class ProdApplicationsService implements Serializable {
                 prodApplicationsDAO.saveApplication(prodApplications);
             } else
                 prodApplications = prodApplicationsDAO.updateApplication(prodApplications);
-            prodApplications = prodApplicationsDAO.findProdApplications(prodApplications.getId());
+//            prodApplications = prodApplicationsDAO.findProdApplications(prodApplications.getId());
             retObject = new RetObject("persist", prodApplications);
             return retObject;
         } catch (Exception ex) {

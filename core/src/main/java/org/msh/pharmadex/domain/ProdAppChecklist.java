@@ -14,11 +14,11 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checklist_id", nullable = false)
     private Checklist checklist;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prod_app_id", nullable = false)
     private ProdApplications prodApplications;
 

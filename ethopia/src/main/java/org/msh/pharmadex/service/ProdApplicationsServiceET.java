@@ -1,27 +1,11 @@
 package org.msh.pharmadex.service;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.dao.ApplicantDAO;
-import org.msh.pharmadex.dao.ProdApplicationsDAO;
-import org.msh.pharmadex.dao.ProductDAO;
-import org.msh.pharmadex.dao.iface.*;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.PaymentStatus;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.util.RegistrationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
 import java.util.*;
 
 /**
@@ -165,7 +149,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             regState.add(RegState.NEW_APPL);
             regState.add(RegState.SCREENING);
             regState.add(RegState.FEE);
-            regState.add(RegState.VERIFY);
+//            regState.add(RegState.VERIFY);
             regState.add(RegState.FOLLOW_UP);
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);

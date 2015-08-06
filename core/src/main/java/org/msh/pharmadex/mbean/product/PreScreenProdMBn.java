@@ -8,7 +8,6 @@ import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdAppChecklistService;
-import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
@@ -42,8 +41,6 @@ public class PreScreenProdMBn {
     private UserSession userSession;
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
-    @ManagedProperty(value = "#{prodApplicationsService}")
-    private ProdApplicationsService prodApplicationsService;
 
 
     private FacesContext facesContext;
@@ -287,14 +284,6 @@ public class PreScreenProdMBn {
 
     public void setFile(UploadedFile file) {
         this.file = file;
-    }
-
-    public ProdApplicationsService getProdApplicationsService() {
-        return prodApplicationsService;
-    }
-
-    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
-        this.prodApplicationsService = prodApplicationsService;
     }
 
     public UserService getUserService() {
