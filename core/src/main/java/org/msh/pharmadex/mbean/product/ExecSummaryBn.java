@@ -4,21 +4,17 @@
 
 package org.msh.pharmadex.mbean.product;
 
-import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
-import org.msh.pharmadex.util.RetObject;
-import org.omnifaces.util.Faces;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -26,10 +22,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.print.attribute.standard.Severity;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -167,10 +159,12 @@ public class ExecSummaryBn implements Serializable {
     }
 
     public boolean isReadOnly() {
-        if(prodApplications.getRegState().equals(RegState.RECOMMENDED)||prodApplications.getRegState().equals(RegState.NOT_RECOMMENDED))
-            readOnly = true;
-        else
-            readOnly = false;
+        if (prodApplications != null && prodApplications.getRegState() != null) {
+            if (prodApplications.getRegState().equals(RegState.RECOMMENDED) || prodApplications.getRegState().equals(RegState.NOT_RECOMMENDED))
+                readOnly = true;
+            else
+                readOnly = false;
+        }
         return readOnly;
     }
 

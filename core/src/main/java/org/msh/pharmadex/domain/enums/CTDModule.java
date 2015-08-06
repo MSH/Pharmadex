@@ -8,7 +8,8 @@ public enum CTDModule {
     MODULE_1,
     MODULE_2,
     MODULE_3,
-    MODULE_4;
+    MODULE_4,
+    ALL;
 
 
     public String getKey() {

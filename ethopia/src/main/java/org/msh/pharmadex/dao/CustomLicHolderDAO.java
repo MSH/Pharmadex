@@ -21,7 +21,7 @@ public class CustomLicHolderDAO {
     @PersistenceContext(unitName = "acme-et", name = "acme-et")
     EntityManager entityManager;
 
-    public List<Applicant> findApplicantsByLicHolderAvailability(){
+    public List<Applicant> findApplicantsByLicHolderAvailability() {
         return entityManager.createQuery("select a from Applicant a")
                 .getResultList();
     }
@@ -36,7 +36,7 @@ public class CustomLicHolderDAO {
                 .setParameter("enddate", agentInfo.getEndDate())
                 .getResultList();
 
-        if(agentInfos.size()>0)
+        if (agentInfos.size() > 0)
             return false;
         else
             return true;
@@ -65,5 +65,15 @@ public class CustomLicHolderDAO {
                 .getResultList();
         return licenseHolders;
 
+    }
+
+    public LicenseHolder findLicHolderByProduct(Long prodID) {
+        List<LicenseHolder> licenseHolders = entityManager.createQuery("select lh from LicenseHolder lh join lh.products p where p.id = :prodID")
+                .setParameter("prodID", prodID)
+                .getResultList();
+        if (licenseHolders != null && licenseHolders.size() > 0)
+            return licenseHolders.get(0);
+        else
+            return null;
     }
 }
