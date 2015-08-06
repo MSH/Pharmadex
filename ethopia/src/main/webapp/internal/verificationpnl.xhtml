@@ -1,6 +1,5 @@
 <!-- Creates the table with passed in values of product -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
@@ -36,7 +35,7 @@
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}"/>
+                    listener="#{processProdBnET.changeStatusListener}" process="@this"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"
@@ -47,7 +46,7 @@
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}"/>
+                    listener="#{processProdBnET.changeStatusListener}" process="@this"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label"
@@ -58,10 +57,9 @@
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}"/>
+                    listener="#{processProdBnET.changeStatusListener}" process="@this"/>
         </p:selectBooleanButton>
 
-        <p:commandButton value="Generate Sample Request Letter" actionListener="#{processProdBn.generateSampleRequestLetter}" ajax="false"/>
 
     </h:panelGrid>
 

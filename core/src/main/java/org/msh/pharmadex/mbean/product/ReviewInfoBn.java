@@ -143,8 +143,11 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public void initRevDef() {
-        reviewComment = new ReviewComment();
+        initComment();
         revDeficiency = new RevDeficiency();
+        revDeficiency.setUser(loggedInUser);
+        revDeficiency.setReviewInfo(reviewInfo);
+        revDeficiency.setCreatedDate(new Date());
     }
 
     public void findRevDef(RevDeficiency revDeficiency) {

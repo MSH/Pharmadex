@@ -5,6 +5,7 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.service.LicenseHolderService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -47,18 +48,35 @@ public class ProdRegAppMbeanET implements Serializable {
                 prodRegAppMbean.getProdApplications().setApplicant(applicant);
                 prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
             }
+            prodAppInit = null;
+        } else {
+            if (prodRegAppMbean.getProdApplications() != null) {
+                licenseHolder = licenseHolderService.findLicHolderByProduct(prodRegAppMbean.getProdApplications().getProduct().getId());
+            }
         }
 
     }
 
+    @Transactional
+    public void saveApp() {
+        try {
+            if (licenseHolder != null && prodRegAppMbean.getProduct() != null) {
+                String retValue = licenseHolderService.saveProduct(licenseHolder, prodRegAppMbean.getProduct());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
     public LicenseHolder getLicenseHolder() {
-        if(licenseHolder==null){
+        if (licenseHolder == null) {
             List<LicenseHolder> licenseHolders;
             if (prodRegAppMbean.getApplicant().getApplcntId() != null) {
                 licenseHolders = licenseHolderService.findLicHolderByApplicant(prodRegAppMbean.getApplicant().getApplcntId());
-                if (licenseHolders != null && licenseHolders.size() < 2)
+                if (licenseHolders != null && licenseHolders.size() > 0)
                     licenseHolder = licenseHolders.get(0);
-            }else{
+            } else {
                 if (appSelectMBean.getSelectedApplicant() != null && appSelectMBean.getSelectedApplicant().getApplcntId() != null) {
                     licenseHolders = licenseHolderService.findLicHolderByApplicant(appSelectMBean.getSelectedApplicant().getApplcntId());
                     if (licenseHolders != null && licenseHolders.size() < 2)

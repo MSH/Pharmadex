@@ -41,16 +41,6 @@
 
                         <ui:include src="proddetails.xhtml"/>
 
-                        <div align="right">
-                            <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
-                                             update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn"/>
-                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
-                                             action="#{prodRegAppMbean.cancel}"
-                                             ajax="false"/>
-                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"
-                                             id="proddetailBackBtn"/>
-                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="proddetailNxtBtn"/>
-                        </div>
                     </p:panel>
                 </p:tab>
 
@@ -451,7 +441,7 @@
                     <p:panel>
                         <h:panelGrid columns="1" cellpadding="5" cellspacing="5">
                             <p:outputLabel
-                                    value="Please attach the soft copy of the following documents: CPP, Label, Bank Receipt"/>
+                                    value="#{msgs.reg_form_attach_hint}"/>
 
                             <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                              oncomplete="PF('attachDlg').show()"

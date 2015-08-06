@@ -458,7 +458,7 @@ public class ProdRegAppMbean implements Serializable {
     //used to set all the field values after insert/update operation
     private void setFieldValues() {
 //        prodApplications = product.getProdApplications();
-        product = prodApplications.getProduct();
+        product = productService.findProduct(prodApplications.getProduct().getId());
         selectedInns = product.getInns();
         selectedExipients = product.getExcipients();
         selectedAtcs = product.getAtcs();
@@ -466,7 +466,8 @@ public class ProdRegAppMbean implements Serializable {
 //        prodAppChecklists = prodApplications.getProdAppChecklists();
         applicant = prodApplications.getApplicant();
         applicantUser = prodApplications.getCreatedBy();
-        drugPrices = product.getPricing()!=null?product.getPricing().getDrugPrices():null;
+        pricing = product.getPricing();
+        drugPrices = pricing != null ? pricing.getDrugPrices() : null;
 //        foreignAppStatuses = prodApplications.getForeignAppStatus();
         useCategories = product.getUseCategories();
     }

@@ -115,7 +115,7 @@
 
 
                 </p:tab>
-                <p:tab title="#{msgs.deficiency_reports}">
+                <p:tab title="#{msgs.deficiency_reports}" rendered="#{userSession.moderator}">
                     <p:commandButton icon="ui-icon-document" value="#{msgs.generate_report}"
                                      oncomplete="PF('attachDlg').show()" action="#{reviewInfoBn.initRevDef}"/>
 

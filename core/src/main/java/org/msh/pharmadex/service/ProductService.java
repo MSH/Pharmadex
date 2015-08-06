@@ -23,7 +23,6 @@ import java.util.List;
 @Transactional
 public class ProductService implements Serializable {
 
-
     private static final long serialVersionUID = -5511467617579154680L;
     @Autowired
     ApplicantDAO applicantDAO;
@@ -39,6 +38,10 @@ public class ProductService implements Serializable {
     private ProdApplicationsService prodApplicationsService;
     @Autowired
     private WorkspaceDAO workspaceDAO;
+    @Autowired
+    private PricingDAO pricingDAO;
+    @Autowired
+    private DrugPriceDAO drugPriceDAO;
 
     public List<ProdTable> findAllRegisteredProduct() {
         return productDAO.findRegProducts();
@@ -51,17 +54,14 @@ public class ProductService implements Serializable {
         return productDAO.updateProduct(prod);
     }
 
-
     public List<Product> findProductByFilter(ProductFilter filter) {
         HashMap<String, Object> params = filter.getFilters();
         return productDAO.findProductByFilter(params);
-
     }
 
     public List<Atc> findAtcsByProduct(Long id) {
         return productDAO.findAtcsByProduct(id);
     }
-
 
     /* Eager fetches the product details
     *  @Param long id product id
@@ -159,8 +159,6 @@ public class ProductService implements Serializable {
 
     }
 
-    @Autowired
-    private PricingDAO pricingDAO;
     public RetObject findDrugPriceByProd(Long prodID) {
         RetObject retObject;
 
@@ -173,8 +171,6 @@ public class ProductService implements Serializable {
         return retObject;
     }
 
-    @Autowired
-    private DrugPriceDAO drugPriceDAO;
     public DrugPrice saveDrugPrice(DrugPrice selectedDrugPrice) {
          return drugPriceDAO.save(selectedDrugPrice);
 

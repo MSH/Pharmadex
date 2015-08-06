@@ -184,6 +184,9 @@ public class ProductDAO implements Serializable {
         Hibernate.initialize(prod.getDosUnit());
         Hibernate.initialize(prod.getDosForm());
         Hibernate.initialize(prod.getPricing());
+        Hibernate.initialize(prod.getUseCategories());
+
+
 //        Hibernate.initialize(prod.getProdApplications());
 //        Hibernate.initialize(prod.getApplicant());
 
@@ -201,12 +204,11 @@ public class ProductDAO implements Serializable {
 //            Hibernate.initialize(prod.getProdApplications().getModerator());
 //            Hibernate.initialize(prod.getProdApplications().getForeignAppStatus());
 //            Hibernate.initialize(prod.getProdApplications().getUser());
-//            Hibernate.initialize(prod.getProdApplications().getUseCategories());
 //            if (prod.getProdApplications().getReviews() != null)
 //                Hibernate.initialize(prod.getProdApplications().getReviews());
-//            if (prod.getProdApplications().getPricing() != null) {
-//                Hibernate.initialize(prod.getProdApplications().getPricing().getDrugPrices());
-//            }
+        if (prod.getPricing() != null) {
+            Hibernate.initialize(prod.getPricing().getDrugPrices());
+        }
 //        }
         return prod;
 
