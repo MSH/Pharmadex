@@ -1,0 +1,24 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:form enctype="multipart/form-data">
+        <h:panelGrid columns="2" style="margin-bottom:10px">
+            <h:outputLabel for="statuscb" value="#{msgs.registration_status}: "/>
+            <p:selectOneMenu id="statuscb" value="#{processProdBn.timeLine.regState}">
+                <f:selectItems value="#{processProdBn.regSate}" var="type"
+                               itemLabel="#{msgs[type.key]}"/>
+            </p:selectOneMenu>
+            <h:outputLabel for="steptext" value="#{msgs.global_comment}:"/>
+            <p:inputTextarea id="steptext" value="#{processProdBn.timeLine.comment}" rows="5"
+                             cols="50"/>
+        </h:panelGrid>
+
+        <p:commandButton id="submittimeline" value="#{msgs.global_submit}"
+                         action="#{processProdBn.addTimeline}"
+                         oncomplete="PF('stepDlg').hide()" ajax="false"/>
+    </h:form>
+
+</ui:composition>
