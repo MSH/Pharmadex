@@ -650,7 +650,6 @@ public class ProdApplicationsService implements Serializable {
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 
-
             ProdAppLetter attachment = new ProdAppLetter();
             attachment.setRegState(prodApp.getRegState());
             attachment.setFile(file);

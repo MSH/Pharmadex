@@ -84,30 +84,22 @@ public class ProcessProdBn implements Serializable {
     private Applicant applicant;
     private List<Comment> comments;
     private List<Mail> mails;
-    private List<Company> companies;
     private List<ProdAppAmdmt> prodAppAmdmts;
-    private List<ForeignAppStatus> foreignAppStatuses;
-    private List<ProdAppChecklist> prodAppChecklists;
+    //    private List<ProdAppChecklist> prodAppChecklists;
     private TimelineModel model;
     private List<Timeline> timelinesChartData;
     private Comment selComment = new Comment();
     private Mail mail = new Mail();
-    private boolean readyReg;
-    private StatusUser module;
-    private boolean registered;
     private String reviewComment;
     private List<Invoice> invoices;
-//    private String prodID;
-    private List<ProdInn> prodInns;
+    //    private String prodID;
     private boolean checkReviewStatus = false;
     private int selectedTab;
     private User moderator;
     private boolean displaySample = false;
     private boolean displayReviewStatus = false;
-//    private ReviewInfo reviewInfo;
+    //    private ReviewInfo reviewInfo;
     private SampleTest sampleTest;
-    @ManagedProperty(value = "#{reportService}")
-    private ReportService reportService;
     private UploadedFile file;
     private boolean attach;
     private JasperPrint jasperPrint;
@@ -116,6 +108,7 @@ public class ProcessProdBn implements Serializable {
     private User loggedInUser;
     private List<ProdAppLetter> letters;
     private List<ReviewInfo> reviewInfos;
+    private boolean registered;
 
     @PostConstruct
     private void init() {
@@ -125,14 +118,21 @@ public class ProcessProdBn implements Serializable {
         selComment.setUser(loggedInUser);
     }
 
+    public String goProdDetails() {
+        System.out.println("Product ID ==" + prodApplications.getId());
+        JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
+        return "processproddetail";
+    }
+
+
     public List<RegState> getRegSate() {
-        if(prodApplications!=null)
+        if (prodApplications != null)
             return prodApplicationsService.nextStepOptions(prodApplications.getRegState(), userSession, getCheckReviewStatus());
         return null;
     }
 
     public List<ReviewInfo> getReviewInfos() {
-        if(reviewInfos ==null)
+        if (reviewInfos == null)
             reviewInfos = reviewService.findReviewInfos(prodApplications.getId());
         return reviewInfos;
     }
@@ -207,26 +207,8 @@ public class ProcessProdBn implements Serializable {
         return prodApplications;
     }
 
-
-//    public void assignProcessor() {
-//        facesContext = FacesContext.getCurrentInstance();
-//        if (module == null) {
-//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-//        }
-//        module.setProdApplications(prodApplications);
-//        module.setAssignDate(new Date());
-//
-//        if (!prodApplicationsService.saveProcessors(module).equalsIgnoreCase("success"))
-//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//                    resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-//    }
-
     public void setProdApplications(ProdApplications prodApplications) {
         this.prodApplications = prodApplications;
-//        prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
-//        this.prodApplications.setProd(productService.findProductById(prodApplications.getProd().getId()));
-
     }
 
     private void initProdApps() {
@@ -240,12 +222,8 @@ public class ProcessProdBn implements Serializable {
 
     public void setFieldValues() {
         product = prodApplications.getProduct();
-//        prodInns = product.getInns();
-
-//        prodAppAmdmts = prodApplications.getProdAppAmdmts();
         moderator = prodApplications.getModerator();
-//        foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
-        prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
+//        prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
         timeLineList = timelineService.findTimelineByApp(prodApplications.getId());
     }
 
@@ -267,38 +245,18 @@ public class ProcessProdBn implements Serializable {
         return "";
     }
 
-//    public void initProcessor() {
-//        if (prodApplications != null) {
-//            module = prodApplicationsService.findStatusUser(prodApplications.getId());
-//            if (module == null) {
-//                module = new StatusUser(prodApplications);
-//                module.setModule1(new User());
-//                module.setModule2(new User());
-//                module.setModule3(new User());
-//                module.setModule4(new User());
-//            } else {
-//                if (module.getModule1() != null)
-//                    module.setModule1(userService.findUser(module.getModule1().getUserId()));
-//                if (module.getModule2() != null)
-//                    module.setModule2(userService.findUser(module.getModule2().getUserId()));
-//                if (module.getModule3() != null)
-//                    module.setModule3(userService.findUser(module.getModule3().getUserId()));
-//                if (module.getModule4() != null)
-//                    module.setModule4(userService.findUser(module.getModule4().getUserId()));
-//            }
-//        }
-//    }
-
     public void assignModerator() {
         try {
             facesContext = FacesContext.getCurrentInstance();
             prodApplications.setUpdatedDate(new Date());
             prodApplications.setModerator(moderator);
-            product = productService.updateProduct(product);
-//            prodApplications = prodApplicationsService.updateProdApp(prodApplications);
-//            product = prodApplications.getProd();
-            setFieldValues();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("moderator_add_success")));
+            RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
+            if (retObject.getMsg().equals("persist")) {
+//            product = productService.updateProduct(product);
+                prodApplications = (ProdApplications) retObject.getObj();
+                setFieldValues();
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("moderator_add_success")));
+            }
         } catch (Exception e) {
             logger.error("Problems saving moderator {}", "processprodbn", e);
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
@@ -331,7 +289,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public List<TimeLine> getTimeLineList() {
-        if(timeLineList == null)
+        if (timeLineList == null)
             timeLineList = timelineService.findTimelineByApp(prodApplications.getId());
         return timeLineList;
     }
@@ -405,6 +363,9 @@ public class ProcessProdBn implements Serializable {
             timeLine.setProdApplications(prodApplications);
             timeLine.setStatusDate(new Date());
             timeLine.setUser(loggedInUser);
+            RetObject paObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
+            prodApplications = (ProdApplications) paObject.getObj();
+
             String retValue = timelineService.validateStatusChange(timeLine);
 
             if (retValue.equalsIgnoreCase("success")) {
@@ -489,7 +450,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public Mail getMail() {
-        if(prodApplications!=null&&prodApplications.getApplicant()!=null)
+        if (prodApplications != null && prodApplications.getApplicant() != null)
             mail.setMailto(prodApplications.getApplicant().getEmail());
         return mail;
     }
@@ -498,27 +459,11 @@ public class ProcessProdBn implements Serializable {
         this.mail = mail;
     }
 
-    public List<Company> getCompanies() {
-        return companies;
-    }
-
-    public void setCompanies(List<Company> companies) {
-        this.companies = companies;
-    }
-
     public boolean isReadyReg() {
         if ((userSession.isAdmin() || userSession.isStaff()) && prodApplications.getRegState().equals(RegState.RECOMMENDED))
             return true;
         else
             return false;
-    }
-
-    public void setReadyReg(boolean readyReg) {
-        this.readyReg = readyReg;
-    }
-
-    public void setModule(StatusUser module) {
-        this.module = module;
     }
 
     public TimelineModel getModel() {
@@ -621,28 +566,12 @@ public class ProcessProdBn implements Serializable {
         this.comments = comments;
     }
 
-    public List<ProdInn> getProdInns() {
-        return prodInns;
-    }
-
-    public void setProdInns(List<ProdInn> prodInns) {
-        this.prodInns = prodInns;
-    }
-
     public int getSelectedTab() {
         return selectedTab;
     }
 
     public void setSelectedTab(int selectedTab) {
         this.selectedTab = selectedTab;
-    }
-
-    public List<ForeignAppStatus> getForeignAppStatuses() {
-        return foreignAppStatuses;
-    }
-
-    public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
-        this.foreignAppStatuses = foreignAppStatuses;
     }
 
     public UserService getUserService() {
@@ -745,8 +674,8 @@ public class ProcessProdBn implements Serializable {
         if (userSession.isAdmin() || userSession.isHead() || userSession.isModerator())
             return true;
         if ((userSession.isStaff())) {
-            if (prodApplications != null && (prodApplications.getRegState().equals(RegState.NEW_APPL)||prodApplications.getRegState().equals(RegState.FEE)
-                    ||prodApplications.getRegState().equals(RegState.FOLLOW_UP)))
+            if (prodApplications != null && (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FEE)
+                    || prodApplications.getRegState().equals(RegState.FOLLOW_UP)))
                 displayVerify = true;
             else
                 displayVerify = false;
@@ -790,105 +719,6 @@ public class ProcessProdBn implements Serializable {
         this.sampleTestService = sampleTestService;
     }
 
-//    public StreamedContent fileDownload() {
-//        byte[] file1 = getSampleTest().getFile();
-//        InputStream ist = new ByteArrayInputStream(file1);
-//        StreamedContent download = new DefaultStreamedContent(ist);
-////        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
-//        return download;
-//    }
-
-//    public void handleFileUpload() {
-//        FacesMessage msg;
-//        facesContext = FacesContext.getCurrentInstance();
-//        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-//
-//        if (file != null) {
-//            msg = new FacesMessage(resourceBundle.getString("global.success"), file.getFileName() + resourceBundle.getString("upload_success"));
-//            facesContext.addMessage(null, msg);
-//            try {
-//                getSampleTest().setFile(IOUtils.toByteArray(file.getInputstream()));
-//                saveSample();
-//            } catch (IOException e) {
-//                msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
-//                FacesContext.getCurrentInstance().addMessage(null, msg);
-//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//            }
-//        } else {
-//            msg = new FacesMessage(resourceBundle.getString("upload_fail"));
-//            FacesContext.getCurrentInstance().addMessage(null, msg);
-//        }
-//
-//    }
-
-//    public void generateSampleRequestLetter() throws JRException, IOException {
-//        facesContext = FacesContext.getCurrentInstance();
-//        if (!getProdApplications().getRegState().equals(RegState.VERIFY)) {
-//            facesContext.addMessage(null, new FacesMessage("You can only issue a Sample Request letter after you have received the fee and verified the dossier for completeness"));
-//        }
-//        Product product = productService.findProduct(getProduct().getId());
-//        jasperPrint = reportService.generateSampleRequest(product, loggedInUser);
-//        javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-//        httpServletResponse.addHeader("Content-disposition", "attachment; filename=sample_req_letter.pdf");
-//        httpServletResponse.setContentType("application/pdf");
-//        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
-//        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
-//        javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
-////        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-////        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
-//
-//        saveSample();
-//    }
-
-//    public void saveSample() {
-//        save();
-//        SampleTest sampleTest1 = getSampleTest();
-//        sampleTest1.setLetterGenerated(true);
-//        sampleTest1.setProdApplications(prodApplications);
-//        sampleTest1.setUser(loggedInUser);
-//        RetObject retObject = sampleTestService.saveSample(sampleTest);
-//        if (retObject.getMsg().equals("persist")) {
-//            sampleTest1 = (SampleTest) retObject.getObj();
-//        } else {
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error saving sample"));
-//        }
-//    }
-//
-//    public SampleTest getSampleTest() {
-//        if (sampleTest == null) {
-//            sampleTest = sampleTestService.findSampleForProd(getProdApplications().getId());
-//            if (sampleTest == null)
-//                sampleTest = new SampleTest();
-//        }
-//        return sampleTest;
-//    }
-//
-//    public void setSampleTest(SampleTest sampleTest) {
-//        this.sampleTest = sampleTest;
-//    }
-
-//    public boolean isAttach() {
-//        if (getSampleTest() != null) {
-//            if (getSampleTest().getFile() != null && getSampleTest().getFile().length > 0)
-//                return true;
-//            else
-//                return false;
-//        }
-//        return false;
-//    }
-//
-//    public void setAttach(boolean attach) {
-//        this.attach = attach;
-//    }
-
-    public ReportService getReportService() {
-        return reportService;
-    }
-
-    public void setReportService(ReportService reportService) {
-        this.reportService = reportService;
-    }
-
     public UploadedFile getFile() {
         return file;
     }
@@ -905,16 +735,8 @@ public class ProcessProdBn implements Serializable {
         this.reviewService = reviewService;
     }
 
-    public List<ProdAppChecklist> getProdAppChecklists() {
-        return prodAppChecklists;
-    }
-
-    public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
-        this.prodAppChecklists = prodAppChecklists;
-    }
-
     public List<ProdAppLetter> getLetters() {
-        if(letters == null){
+        if (letters == null) {
             letters = prodApplicationsService.findAllLettersByProdApp(getProdApplications().getId());
         }
         return letters;
@@ -931,7 +753,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplayReviewStatus() {
-        if(prodApplications.getRegState().equals(RegState.REVIEW_BOARD))
+        if (prodApplications.getRegState().equals(RegState.REVIEW_BOARD))
             displayReviewStatus = true;
         else
             displayReviewStatus = false;

@@ -41,14 +41,14 @@ public class Product extends CreationDetail implements Serializable {
     @Size(max = 500, min = 3)
     private String newChemicalName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DOSFORM_ID")
     private DosageForm dosForm;
 
     @Column(name = "dosage_strength")
     private String dosStrength;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DOSUNIT_ID")
     private DosUom dosUnit;
 
@@ -76,11 +76,11 @@ public class Product extends CreationDetail implements Serializable {
 
     private boolean noAtc = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ADMIN_ROUTE_ID")
     private AdminRoute adminRoute;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PHARM_CLASSIF_ID")
     private PharmClassif pharmClassif;
 
@@ -131,7 +131,6 @@ public class Product extends CreationDetail implements Serializable {
 
     @Column(length = 500)
     private String pharmacopeiaStds;
-
 
     public String getManufName() {
         if (prodCompanies != null) {

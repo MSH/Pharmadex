@@ -30,11 +30,51 @@
                         <p:tabView id="processtab" style="width: 830px;"
                                    activeIndex="#{processProdBn.selectedTab}" dynamic="true">
                             <p:tab title="#{msgs.application_info}" id="infotab">
-                                <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                                    <ui:param name="prodAppData" value="#{processProdBn.prodApplications}"/>
-                                    <ui:param name="foreignAppStatus" value="#{processProdBn.foreignAppStatuses}"/>
-                                    <ui:param name="prodAppChecklists" value="#{processProdBn.prodAppChecklists}"/>
-                                </ui:decorate>
+                                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+
+                                    <h:outputLabel value="#{msgs.prodName}:"/>
+                                    <h:outputLabel value="#{processProdBn.product.prodName}"/>
+
+                                    <h:outputLabel value="#{msgs.prod_cat}:"/>
+                                    <h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}"/>
+
+                                    <h:outputLabel value="#{msgs.prodgenname}:"/>
+                                    <h:outputLabel value="#{processProdBn.product.genName}"/>
+
+                                    <h:outputLabel value="#{msgs.prod_app_type}:"/>
+                                    <h:outputLabel value="#{msgs[processProdBn.prodApplications.prodAppType.key]}"/>
+
+                                    <h:outputLabel value="#{msgs.dos_form}"/>
+                                    <h:outputLabel value="#{processProdBn.product.dosForm.dosForm}"/>
+
+                                    <h:outputLabel value="Dosage Strength:" style="font-weight: bold;"/>
+                                    <h:outputLabel value="#{processProdBn.product.dosStrength}"/>
+
+                                    <h:outputLabel value="#{msgs.dos_unit}"/>
+                                    <h:outputLabel value="#{processProdBn.product.dosUnit.uom}"/>
+
+                                    <h:outputLabel value="#{msgs.prod_cat}"/>
+                                    <h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}"/>
+
+                                    <h:outputLabel value="#{msgs.admin_route}"/>
+                                    <h:outputLabel value="#{msgs[processProdBn.product.adminRoute.key]}"/>
+
+                                    <h:outputLabel value="#{msgs.age_group}"/>
+                                    <h:outputLabel value="#{msgs[processProdBn.product.ageGroup.key]}"/>
+
+                                    <h:outputLabel value="#{msgs.product_pharmclassif}"/>
+                                    <h:outputLabel value="#{processProdBn.product.pharmClassif.displayName}"/>
+
+                                    <h:outputLabel value="#{msgs.prod_desc}"/>
+                                    <h:outputLabel value="#{processProdBn.product.prodDesc}"/>
+
+                                    <h:outputLabel value="#{msgs.product_details}"/>
+                                    <p:commandButton id="viewLink" value="#{msgs.click_here}"
+                                                     action="#{processProdBn.goProdDetails}"
+                                                     ajax="false" target="_blank" icon="ui-icon-search"/>
+                                </h:panelGrid>
+
+
                             </p:tab>
 
                             <!-- Include workspace specific sequence of tabs. -->
@@ -42,9 +82,7 @@
 
                             <p:tab title="Sample Request" id="sampletab"
                                    rendered="#{processProdBn.displaySample}">
-
                                 <ui:include src="samplerequestpnl.xhtml"/>
-
                             </p:tab>
 
 
