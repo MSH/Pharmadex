@@ -4,7 +4,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" id="verifypnl">
         <p:outputLabel value="#{msgs.application_fee}" styleClass="label" for="feerecieved"/>
         <p:selectBooleanButton id="feerecieved"
                                value="#{processProdBn.prodApplications.feeReceived}"
@@ -12,7 +12,7 @@
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}"/>
+                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.application_fee}" styleClass="label"/>
@@ -35,7 +35,7 @@
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}" process="@this"/>
+                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"
@@ -46,7 +46,7 @@
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}" process="@this"/>
+                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label"
@@ -57,7 +57,7 @@
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}" process="@this"/>
+                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
         </p:selectBooleanButton>
 
 
