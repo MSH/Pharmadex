@@ -38,6 +38,8 @@ public class GlobalEntityLists implements Serializable {
     private List<DisplayReviewQ> displayReviewQ;
     private List<FeeSchedule> feeSchedules;
     private Workspace workspace;
+    private List<SRA> sras;
+
 
     @Autowired
     private UserAccessService userAccessService;
@@ -84,6 +86,9 @@ public class GlobalEntityLists implements Serializable {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SraService sraService;
+
     public List<Atc> getAtcs() {
         if (atcs == null)
             atcs = atcService.getAtcList();
@@ -128,6 +133,15 @@ public class GlobalEntityLists implements Serializable {
         return JsfUtils.completeSuggestions(query, getCountries());
     }
 
+    public List<SRA> getSras() {
+        if (sras == null)
+            sras = sraService.findAllSRAs();
+        return sras;
+    }
+
+    public void setSras(List<SRA> sras) {
+        this.sras = sras;
+    }
 
     public List<DosUom> getDosUoms() {
         if (dosUoms == null)

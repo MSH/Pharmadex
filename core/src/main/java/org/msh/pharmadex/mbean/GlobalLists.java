@@ -104,4 +104,8 @@ public class GlobalLists {
     public List<SampleType> getSampleTypes() {
         return Arrays.asList(SampleType.values());
     }
+
+    public List<SraType> getSras() {
+        return Arrays.asList(SraType.values());
+    }
 }

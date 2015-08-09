@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="srafrm">
+            <h:panelGroup id="content">
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.fasttrack_list}</h1>
+                </div>
+
+                <p:growl id="growl" showDetail="true"/>
+                <p:messages id="messages" showSummary="true"/>
+                <p:dataTable id="sras" var="user" value="#{fastTrackMBean.fastTrackMeds}">
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}" action="#{fastTrackMBean.initAdd}"
+                                         oncomplete="PF('addsra').show();"
+                                         update=":addsrafrm"/>
+                    </f:facet>
+
+                    <p:column headerText="#{msgs.global_name}">
+                        <p:commandLink value=" #{user.genMed}" oncomplete="PF('addsra').show();" update=":addsrafrm"
+                                       ajax="true" action="#{fastTrackMBean.initUpdate(user)}">
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.User_username}">
+                        #{user.theraGroup}
+                    </p:column>
+
+                    <p:column sortBy="#{user.startDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_startdate}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime"
+                                       value="#{user.startDate}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{user.endDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_enddate}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime"
+                                       value="#{user.endDate}"/>
+                    </p:column>
+
+
+                    <p:column>
+                        <p:commandButton action="#{fastTrackMBean.removeSra(user)}"
+                                         value="#{msgs.global_delete}"
+                                         update=":srafrm :srafrm:messages :addsrafrm"
+                                         immediate="true">
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="addsra" modal="true" resizable="false" header="#{msgs.sra_list}">
+            <h:form id="addsrafrm">
+                <p:messages showDetail="true" showSummary="true"/>
+
+                <h:panelGrid columns="3" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5"
+                             id="detailfrm">
+                    <h:outputLabel value="#{msgs.global_name}" for="agency"/>
+                    <p:inputText value="#{fastTrackMBean.fastTrackMed.genMed}" required="true" id="agency"/>
+                    <p:message for="agency"/>
+
+
+                    <h:outputLabel value="#{msgs.sra_code}" for="code"/>
+                    <p:inputText value="#{fastTrackMBean.fastTrackMed.theraGroup}" required="true" id="code"/>
+                    <p:message for="code"/>
+
+                    <p:outputLabel value="#{msgs.registration_date}" for="startDate"/>
+                    <p:calendar id="startDate" value="#{fastTrackMBean.fastTrackMed.startDate}" showOn="button"
+                                required="true">
+                    </p:calendar>
+                    <p:message for="startDate"/>
+
+                    <p:outputLabel value="#{msgs.expiry_date}" for="expiryDate"/>
+                    <p:calendar value="#{fastTrackMBean.fastTrackMed.endDate}" id="expiryDate" showOn="button"
+                                required="true"/>
+                    <p:message for="expiryDate"/>
+
+                </h:panelGrid>
+
+
+                <p:blockUI block="addsrafrm" trigger=":addsrafrm:saveuserbtn :addsrafrm:updateuserbtn">
+                    <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+                </p:blockUI>
+
+
+                <p:commandButton action="#{fastTrackMBean.saveFastTrack}" value="#{msgs.global_add}" id="saveuserbtn"
+                                 oncomplete="if (!args.validationFailed) PF('addsra').hide()"
+                                 update=":srafrm :srafrm:messages :addsrafrm" rendered="#{!fastTrackMBean.edit}"/>
+                <p:commandButton action="#{fastTrackMBean.updateSRA}" value="#{msgs.global_update}" id="updateuserbtn"
+                                 oncomplete="if (!args.validationFailed) PF('addsra').hide()"
+                                 update=":srafrm :srafrm:messages :addsrafrm" rendered="#{fastTrackMBean.edit}"/>
+                <p:commandButton action="#{userMBean.cancelUser}" immediate="true" value="#{msgs.global_cancel}"
+                                 oncomplete="PF('adduser').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>
