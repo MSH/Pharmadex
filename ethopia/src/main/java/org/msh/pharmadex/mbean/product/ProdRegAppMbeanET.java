@@ -1,9 +1,8 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.LicenseHolder;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.service.FastTrackMedService;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +34,10 @@ public class ProdRegAppMbeanET implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
+    @ManagedProperty(value = "#{fastTrackMedService}")
+    private FastTrackMedService fastTrackMedService;
+
+
     @PostConstruct
     private void init() {
         ProdAppInit prodAppInit = userSession.getProdAppInit();
@@ -60,9 +63,17 @@ public class ProdRegAppMbeanET implements Serializable {
     @Transactional
     public void saveApp() {
         try {
+            ProdApplications prodApplications = prodRegAppMbean.getProdApplications();
+            Product product = prodRegAppMbean.getProduct();
             if (licenseHolder != null && prodRegAppMbean.getProduct() != null) {
-                String retValue = licenseHolderService.saveProduct(licenseHolder, prodRegAppMbean.getProduct());
+                String retValue = licenseHolderService.saveProduct(licenseHolder, product);
             }
+            if (fastTrackMedService.genmedExists(product.getGenName())) {
+                prodApplications.setFastrack(true);
+            } else {
+                prodApplications.setFastrack(false);
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -121,5 +132,13 @@ public class ProdRegAppMbeanET implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
+    }
+
+    public FastTrackMedService getFastTrackMedService() {
+        return fastTrackMedService;
+    }
+
+    public void setFastTrackMedService(FastTrackMedService fastTrackMedService) {
+        this.fastTrackMedService = fastTrackMedService;
     }
 }

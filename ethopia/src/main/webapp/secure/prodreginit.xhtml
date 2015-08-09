@@ -43,12 +43,11 @@
                     </p:autoComplete>
                     <p:message for="licname" showSummary="true" showDetail="false"/>
 
-
                     <p:outputLabel
-                            value="Is the product been registered in a Stringent Regulatory authority mentioned below?"/>
+                            value="Is the product been registered in a Stringent Regulatory authority or country mentioned below?"/>
                     <h:panelGroup>
-                        <p:selectManyCheckbox id="regauth" value="#{prodRegInit.selSRA}" layout="grid" columns="3">
-                            <f:selectItems value="#{globalListsET.sras}" var="cntry" itemValue="#{cntry}"
+                        <p:selectManyCheckbox id="regauth" value="#{prodRegInit.selSRA}" layout="grid" columns="2">
+                            <f:selectItems value="#{globalEntityLists.sras}" var="cntry" itemValue="#{cntry.country}"
                                            itemLabel="#{cntry.country}"/>
                         </p:selectManyCheckbox>
                     </h:panelGroup>
