@@ -1,5 +1,7 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.SraType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -24,6 +26,10 @@ public class SRA extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String code;
 
+    @Enumerated(EnumType.STRING)
+    private SraType sraType;
+
+
     public Long getId() {
         return id;
     }
@@ -46,5 +52,13 @@ public class SRA extends CreationDetail implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public SraType getSraType() {
+        return sraType;
+    }
+
+    public void setSraType(SraType sraType) {
+        this.sraType = sraType;
     }
 }

@@ -1,0 +1,100 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="srafrm">
+            <h:panelGroup id="content">
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.sra_list}</h1>
+                </div>
+
+                <p:growl id="growl" showDetail="true"/>
+                <p:messages id="messages" showSummary="true"/>
+                <p:dataTable id="sras" var="user" value="#{sraMBean.sras}">
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}" action="#{sraMBean.initAdd}"
+                                         oncomplete="PF('addsra').show();"
+                                         update=":addsrafrm"/>
+                    </f:facet>
+
+                    <p:column headerText="#{msgs.global_name}">
+                        <p:commandLink value=" #{user.country}" oncomplete="PF('addsra').show();" update=":addsrafrm"
+                                       ajax="true" action="#{sraMBean.initUpdate(user)}">
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.User_username}">
+                        #{user.code}
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton action="#{sraMBean.removeSra(user)}"
+                                         value="#{msgs.global_delete}"
+                                         update=":srafrm :srafrm:messages :addsrafrm"
+                                         immediate="true">
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="addsra" modal="true" resizable="false" header="#{msgs.sra_list}">
+            <h:form id="addsrafrm">
+                <p:messages showDetail="true" showSummary="true"/>
+
+                <h:panelGrid columns="3" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5"
+                             id="detailfrm">
+                    <p:outputLabel value="#{msgs.sra_type}" for="sratypecb"/>
+                    <p:selectOneMenu id="sratypecb" value="#{sraMBean.sra.sraType}" required="true"
+                            >
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalLists.sras}" var="prodtype" itemLabel="#{prodtype}"/>
+                        <p:ajax event="change" update=":addsrafrm:detailfrm" listener="#{sraMBean.sratypechange}"/>
+                    </p:selectOneMenu>
+                    <p:message for="sratypecb" showSummary="true" showDetail="false"/>
+
+                    <h:outputLabel value="#{msgs.global_name}" for="country" rendered="#{!sraMBean.displayAgency}"/>
+                    <p:autoComplete value="#{sraMBean.sra.country}" id="country" rendered="#{!sraMBean.displayAgency}"
+                                    completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
+                                    var="it" itemLabel="#{it}" itemValue="#{it}" forceSelection="true"
+                                    required="true">
+                        <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+                    </p:autoComplete>
+                    <p:message for="country" rendered="#{!sraMBean.displayAgency}"/>
+
+                    <h:outputLabel value="#{msgs.global_name}" for="agency" rendered="#{sraMBean.displayAgency}"/>
+                    <p:inputText value="#{sraMBean.sra.country}" required="true" id="agency"
+                                 rendered="#{sraMBean.displayAgency}"/>
+                    <p:message for="agency" rendered="#{sraMBean.displayAgency}"/>
+
+
+                    <h:outputLabel value="#{msgs.sra_code}" for="code"/>
+                    <p:inputText value="#{sraMBean.sra.code}" required="true" id="code"/>
+                    <p:message for="code"/>
+                </h:panelGrid>
+
+
+                <p:blockUI block="addsrafrm" trigger=":addsrafrm:saveuserbtn :addsrafrm:updateuserbtn">
+                    <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+                </p:blockUI>
+
+
+                <p:commandButton action="#{sraMBean.saveSRA}" value="#{msgs.global_add}" id="saveuserbtn"
+                                 oncomplete="if (!args.validationFailed) PF('addsra').hide()"
+                                 update=":srafrm :srafrm:messages :addsrafrm" rendered="#{!userMBean.edit}"/>
+                <p:commandButton action="#{sraMBean.updateSRA}" value="#{msgs.global_update}" id="updateuserbtn"
+                                 oncomplete="if (!args.validationFailed) PF('addsra').hide()"
+                                 update=":srafrm :srafrm:messages :addsrafrm" rendered="#{userMBean.edit}"/>
+                <p:commandButton action="#{userMBean.cancelUser}" immediate="true" value="#{msgs.global_cancel}"
+                                 oncomplete="PF('adduser').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>
