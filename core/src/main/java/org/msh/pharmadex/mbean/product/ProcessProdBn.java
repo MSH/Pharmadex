@@ -109,6 +109,7 @@ public class ProcessProdBn implements Serializable {
     private List<ProdAppLetter> letters;
     private List<ReviewInfo> reviewInfos;
     private boolean registered;
+    private boolean prescreened;
 
     @PostConstruct
     private void init() {
@@ -360,11 +361,11 @@ public class ProcessProdBn implements Serializable {
 
         try {
 
-            timeLine.setProdApplications(prodApplications);
             timeLine.setStatusDate(new Date());
             timeLine.setUser(loggedInUser);
             RetObject paObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
             prodApplications = (ProdApplications) paObject.getObj();
+            timeLine.setProdApplications(prodApplications);
 
             String retValue = timelineService.validateStatusChange(timeLine);
 
@@ -374,6 +375,7 @@ public class ProcessProdBn implements Serializable {
                 if (retObject.getMsg().equals("persist")) {
                     prodApplications = (ProdApplications) retObject.getObj();
                     setFieldValues();
+                    timeLine.setProdApplications(prodApplications);
                     timelineService.saveTimeLine(timeLine);
                     timeLineList.add(timeLine);
                     facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
@@ -762,5 +764,18 @@ public class ProcessProdBn implements Serializable {
 
     public void setDisplayReviewStatus(boolean displayReviewStatus) {
         this.displayReviewStatus = displayReviewStatus;
+    }
+
+    public boolean isPrescreened() {
+        if (prodApplications != null && (prodApplications.getRegState().equals(RegState.NEW_APPL))
+                || prodApplications.getRegState().equals(RegState.FOLLOW_UP))
+            prescreened = true;
+        else
+            displayVerify = false;
+        return prescreened;
+    }
+
+    public void setPrescreened(boolean prescreened) {
+        this.prescreened = prescreened;
     }
 }

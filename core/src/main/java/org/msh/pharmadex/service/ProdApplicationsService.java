@@ -392,6 +392,8 @@ public class ProdApplicationsService implements Serializable {
 //        Object[] args = {prodApp.getProdName(), prodApp.getApplicant().getAppName(), prodApp.getProdApplications().getId()};
 //        body = mf.format(args);
 
+        product = productDAO.findProduct(prodApp.getProduct().getId());
+
         String regDt = DateFormat.getDateInstance().format(prodApp.getRegistrationDate());
         String expDt = DateFormat.getDateInstance().format(prodApp.getRegExpiryDate());
 

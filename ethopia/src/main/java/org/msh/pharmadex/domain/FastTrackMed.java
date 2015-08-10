@@ -22,7 +22,10 @@ public class FastTrackMed extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String genMed;
 
-    @Column(length = 255)
+    @Column(length = 500)
+    private String indications;
+
+    @Column(length = 500)
     private String theraGroup;
 
     @Temporal(TemporalType.DATE)
@@ -69,5 +72,13 @@ public class FastTrackMed extends CreationDetail implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getIndications() {
+        return indications;
+    }
+
+    public void setIndications(String indications) {
+        this.indications = indications;
     }
 }

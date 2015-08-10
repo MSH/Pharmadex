@@ -54,9 +54,9 @@
 			<staticText>
 				<reportElement x="0" y="240" width="572" height="87" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
 				<textElement textAlignment="Justified">
-					<font size="14"/>
+					<font size="12"/>
 				</textElement>
-				<text><![CDATA[It is hereby certified that the Food, Medicine and Health Care Administration and Control Authority, being the authority responsible by law, for the control of Pharmaceutical and Medical Supplies in the country, has officially appraised, analyzed and granted registration certificate in Ethiopia for]]></text>
+				<text><![CDATA[It is hereby certified that the Food, Medicine and Health Care Administration and Control Authority, being the authority responsible by law, for the control of Pharmaceutical and Medical Supplies in the country, has officially appraised, analyzed and granted registration certificate in Ethiopia for ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="126" width="572" height="26" forecolor="#006666" uuid="130d9b46-40e1-4492-8341-9328b9856ede"/>
@@ -68,21 +68,21 @@
 			<textField>
 				<reportElement x="0" y="327" width="571" height="20" uuid="4eb565f9-1b7c-4c59-8568-77af213161a4"/>
 				<textElement textAlignment="Center">
-					<font size="14"/>
+					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{regName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="347" width="571" height="68" uuid="c2ce390a-3795-40fa-a274-6256c094bb04"/>
 				<textElement>
-					<font size="14"/>
+					<font size="12"/>
 				</textElement>
 				<text><![CDATA[on the condition described in the schedule which forms part of this certificate]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="612" width="571" height="20" uuid="1ce66392-b024-497d-b50b-9ff48400ce16"/>
 				<textElement>
-					<font size="14"/>
+					<font size="12"/>
 				</textElement>
 				<text><![CDATA[Signature of Authority]]></text>
 			</staticText>

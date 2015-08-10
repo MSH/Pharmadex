@@ -2,7 +2,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+                xmlns:p="http://primefaces.org/ui">
 
 
     <h1 class="title ui-widget-header ui-corner-all">
@@ -11,7 +11,8 @@
                 <td>
                     <p:outputLabel value="#{prodApp.product.prodName}"
                                    styleClass="title"
-                                   style="font-weight: bold;  font-size: 1.5em; #{prodApp.fastrack?'color: #a52a2a;':''}" />
+                                   style="font-weight: bold;  font-size: 1.5em;
+                                   #{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}"/>
                 </td>
                 <td align="right">
                     <p:outputLabel value="#{msgs.registration_status}: "

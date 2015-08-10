@@ -128,8 +128,12 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
-            params.put("reviewerId", userSession.getLoggedINUserID());
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+            if (workspaceDAO.findAll().get(0).isDetailReview()) {
+                params.put("reviewer", userSession.getLoggedINUserID());
+                return prodApplicationsDAO.findProdAppByReviewer(params);
+            } else
+                params.put("reviewerId", userSession.getLoggedINUserID());
+//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isHead()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.NEW_APPL);

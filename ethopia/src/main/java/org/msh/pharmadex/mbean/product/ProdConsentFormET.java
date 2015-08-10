@@ -28,6 +28,7 @@ public class ProdConsentFormET extends ProdConsentForm implements Serializable {
 
     @Override
     public String submitApp() {
+        getProdApplications().setProdAppNo(getProdApplicationsService().generateAppNo(getProdApplications()));
         return super.submitApp();
     }
 

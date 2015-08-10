@@ -27,8 +27,12 @@
                         </p:commandLink>
                     </p:column>
 
-                    <p:column headerText="#{msgs.User_username}">
+                    <p:column headerText="#{msgs.thera_group}">
                         #{user.theraGroup}
+                    </p:column>
+
+                    <p:column headerText="#{msgs.med_indications}">
+                        #{user.indications}
                     </p:column>
 
                     <p:column sortBy="#{user.startDate}">
@@ -67,13 +71,20 @@
                 <h:panelGrid columns="3" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5"
                              id="detailfrm">
                     <h:outputLabel value="#{msgs.global_name}" for="agency"/>
-                    <p:inputText value="#{fastTrackMBean.fastTrackMed.genMed}" required="true" id="agency"/>
+                    <p:inputText value="#{fastTrackMBean.fastTrackMed.genMed}" required="true" id="agency"
+                                 style="width:200px;"/>
                     <p:message for="agency"/>
 
 
-                    <h:outputLabel value="#{msgs.sra_code}" for="code"/>
-                    <p:inputText value="#{fastTrackMBean.fastTrackMed.theraGroup}" required="true" id="code"/>
+                    <h:outputLabel value="#{msgs.thera_group}" for="code"/>
+                    <p:inputText value="#{fastTrackMBean.fastTrackMed.theraGroup}" required="true" id="code"
+                                 style="width:350px;"/>
                     <p:message for="code"/>
+
+                    <h:outputLabel value="#{msgs.med_indications}" for="indications"/>
+                    <p:inputText value="#{fastTrackMBean.fastTrackMed.indications}" required="true" id="indications"
+                                 style="width:350px;"/>
+                    <p:message for="indications"/>
 
                     <p:outputLabel value="#{msgs.registration_date}" for="startDate"/>
                     <p:calendar id="startDate" value="#{fastTrackMBean.fastTrackMed.startDate}" showOn="button"

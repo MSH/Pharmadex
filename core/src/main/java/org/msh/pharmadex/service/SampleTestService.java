@@ -63,7 +63,7 @@ public class SampleTestService implements Serializable {
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
             File invoicePDF = File.createTempFile("" + product.getProdName() + "_deficiency", ".pdf");
-            JasperPrint jasperPrint = initRegCert(prodApp, sampleTest.getSampleComments().get(0));
+            JasperPrint jasperPrint = initRegCert(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
             ProdAppLetter attachment = new ProdAppLetter();
@@ -92,12 +92,14 @@ public class SampleTestService implements Serializable {
         }
     }
 
-    public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment) throws JRException {
+    public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException {
         String emailBody = sampleComment.getComment();
         Product product = prodApplications.getProduct();
         URL resource = getClass().getResource("/reports/sample_request.jasper");
         HashMap param = new HashMap();
         prodApplications = prodApplicationsService.findProdApplicationByProduct(product.getId());
+        param.put("id", prodApplications.getId());
+        param.put("sampleQty", quantity);
         param.put("appName", prodApplications.getApplicant().getAppName());
         param.put("prodName", product.getProdName());
         param.put("prodStrength", product.getDosStrength()+product.getDosUnit());

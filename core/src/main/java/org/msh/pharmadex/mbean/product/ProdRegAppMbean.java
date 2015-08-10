@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.*;
@@ -102,6 +103,9 @@ public class ProdRegAppMbean implements Serializable {
                 prodApplications.setFastrack(prodApp.isEml());
                 prodApplications.setFeeAmt(prodApp.getFee());
                 prodApplications.setPrescreenfeeAmt(prodApp.getPrescreenfee());
+
+                if (prodApp.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
+                    product.setNewChemicalEntity(true);
 
                 //Initialize associated product entities
                 product.setDosForm(new DosageForm());

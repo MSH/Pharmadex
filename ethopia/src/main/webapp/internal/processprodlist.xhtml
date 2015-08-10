@@ -38,7 +38,8 @@
                         </f:facet>
                         <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
                                        action="#{prodAppMBeanET.sentToDetail(eachprod.id)}"
-                                       ajax="false" style="#{eachprod.fastrack?'color: #a52a2a;':''}">
+                                       ajax="false"
+                                       style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
                         </p:commandLink>
                     </p:column>
 

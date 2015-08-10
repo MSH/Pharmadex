@@ -2,7 +2,9 @@ package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.FastTrackMed;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,7 +12,10 @@ import java.util.List;
  */
 public interface FastTrackMedDAO extends JpaRepository<FastTrackMed, Long> {
 
-    List<FastTrackMed> findByGenMedContainingIgnoreCase(String genMed);
+    @Query("select f from FastTrackMed f where f.genMed = ?1 and ?2 between f.startDate and f.endDate")
+    List<FastTrackMed> findByGenMedAndCurrDate(String genMed, Date currDate);
+
+    List<FastTrackMed> findByGenMed(String genMed);
 
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public class FastTrackMedService implements Serializable {
     }
 
     public RetObject newFastTrackMed(FastTrackMed fastTrackMed) {
-        List<FastTrackMed> fastTrackMeds = fastTrackMedDAO.findByGenMedContainingIgnoreCase(fastTrackMed.getGenMed());
+        List<FastTrackMed> fastTrackMeds = fastTrackMedDAO.findByGenMed(fastTrackMed.getGenMed());
         if (fastTrackMeds != null && fastTrackMeds.size() > 0) {
             return new RetObject("exists", null);
         } else {
@@ -46,7 +47,7 @@ public class FastTrackMedService implements Serializable {
     }
 
     public boolean genmedExists(String genMed) {
-        List<FastTrackMed> fastTrackMeds = fastTrackMedDAO.findByGenMedContainingIgnoreCase(genMed);
+        List<FastTrackMed> fastTrackMeds = fastTrackMedDAO.findByGenMedAndCurrDate(genMed, new Date());
         if (fastTrackMeds != null && fastTrackMeds.size() > 0) {
             return true;
         } else {

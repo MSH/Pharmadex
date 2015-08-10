@@ -32,7 +32,8 @@ public class ReportService implements Serializable {
 
     @Autowired
     ProdApplicationsService prodApplicationsService;
-
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public JasperPrint reportinit(ProdApplications prodApplications) throws JRException {
 //        Letter letter = letterService.findByLetterType(LetterType.ACK_SUBMITTED);
@@ -79,6 +80,7 @@ public class ReportService implements Serializable {
         URL resource = getClass().getResource("/reports/deficiency.jasper");
         HashMap param = new HashMap();
         param.put("appName", prodApplications.getApplicant().getAppName());
+        param.put("id", prodApplications.getId());
         param.put("prodName", product.getProdName());
         param.put("prodStrength", product.getDosStrength() + product.getDosUnit());
         param.put("dosForm", product.getDosForm().getDosForm());
@@ -136,10 +138,6 @@ public class ReportService implements Serializable {
         param.put("appNumber", prodApplications.getProdAppNo());
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
 
     public JasperPrint reportinit() throws JRException {
 //        Letter letter = letterService.findByLetterType(LetterType.ACK_SUBMITTED);
