@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="242"/>
+	<property name="ireport.y" value="634"/>
 	<parameter name="subject" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -143,14 +143,14 @@
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Product Registration and Licensing Directorate]]></text>
+				<text><![CDATA[Medicine Registration and Licensing Directorate]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="25" width="572" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Dossier Pre-screening deficiency notification form]]></text>
+				<text><![CDATA[Dossier Pre-screening Deficiency Notification Form]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -203,7 +203,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[The submitted dossier was pre-screened  for the product below and there were deficiencies observed.Find attaches list of items by modules that were missing or incomplete. You are therefore requested to complete the document accordingly. ]]></text>
+				<text><![CDATA[The submitted dossier for the product mentioned below was pre-screened and found to be incomplete for the following attached deficiencies. Therefore, you are requested to complete your application dossier accordingly.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="75" y="196" width="134" height="20" uuid="070c98c8-0c88-49c4-b39c-41bfc80ee466"/>
@@ -296,6 +296,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dosForm}]]></textFieldExpression>
 			</textField>
+			<componentElement>
+				<reportElement x="372" y="0" width="200" height="50" uuid="9e091847-0359-45a9-9cb1-2480c60e7ffe"/>
+				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
+					<jr:codeExpression><![CDATA[$P{appNumber}]]></jr:codeExpression>
+				</jr:Code128>
+			</componentElement>
 		</band>
 	</columnHeader>
 	<detail>
@@ -325,7 +331,7 @@
 	<summary>
 		<band height="650" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="39" y="2" width="498" height="505" uuid="ebe4b4bf-cdb7-4dbe-a52a-3c821a22da11"/>
+				<reportElement stretchType="RelativeToBandHeight" x="40" y="0" width="498" height="543" uuid="ebe4b4bf-cdb7-4dbe-a52a-3c821a22da11"/>
 				<textElement markup="html">
 					<font size="11"/>
 				</textElement>
