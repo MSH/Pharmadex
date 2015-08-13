@@ -26,7 +26,7 @@ public class AgentInfo extends CreationDetail implements Serializable {
     @JoinColumn(name = "licHolder_id", nullable = false)
     private LicenseHolder licenseHolder;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Applicant applicant;
 
     @Column(name = "agent_type")

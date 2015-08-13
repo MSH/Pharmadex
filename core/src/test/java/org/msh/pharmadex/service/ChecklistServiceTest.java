@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.msh.pharmadex.dao.iface.ChecklistDAO;
 import org.msh.pharmadex.domain.Checklist;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,11 +58,16 @@ public class ChecklistServiceTest {
     public void testGetChecklist() throws Exception {
         Assert.assertEquals(true, true);
 
-        List<Checklist> genChecklists = checklistService.getChecklists(ProdAppType.GENERIC, true);
+        ProdApplications prodApplications = new ProdApplications();
+        prodApplications.setSra(false);
+        prodApplications.setProdAppType(ProdAppType.GENERIC);
+
+        List<Checklist> genChecklists = checklistService.getChecklists(prodApplications, true);
         Assert.assertNotNull(genChecklists);
         Assert.assertEquals(genChecklists.size(), genCount);
 
-        List<Checklist> newMedChecklists = checklistService.getChecklists(ProdAppType.NEW_CHEMICAL_ENTITY, true);
+        prodApplications.setProdAppType(ProdAppType.NEW_CHEMICAL_ENTITY);
+        List<Checklist> newMedChecklists = checklistService.getChecklists(prodApplications, true);
         Assert.assertNotNull(newMedChecklists);
         Assert.assertEquals(newMedChecklists.size(), newMedCount);
 
