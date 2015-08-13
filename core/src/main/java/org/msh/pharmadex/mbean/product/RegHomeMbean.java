@@ -179,7 +179,7 @@ public class RegHomeMbean implements Serializable {
                     if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
                         prodAppChecklists = new ArrayList<ProdAppChecklist>();
 //                        prodApplications.setProdAppChecklists(prodAppChecklists);
-                        List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
+                        List<Checklist> allChecklist = checklistService.getChecklists(prodApplications, true);
                         ProdAppChecklist eachProdAppCheck;
                         if (allChecklist != null && allChecklist.size() > 0) {
                             for (int i = 0; allChecklist.size() > i; i++) {

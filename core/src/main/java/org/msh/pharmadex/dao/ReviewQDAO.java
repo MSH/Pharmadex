@@ -1,8 +1,8 @@
 package org.msh.pharmadex.dao;
 
-import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewQuestion;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +28,16 @@ public class ReviewQDAO implements Serializable{
     @Transactional(readOnly = true)
     public List<ReviewQuestion> findAll(){
         return entityManager.createQuery(" select rq from ReviewQuestion rq").getResultList();
+    }
+
+    public List<ReviewQuestion> findByProdAppType(ProdAppType prodAppType) {
+        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.prodAppType = :prodAppType")
+                .setParameter("prodAppType", prodAppType).getResultList();
+    }
+
+    public List<ReviewQuestion> findBySRA() {
+        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.sra = true")
+                .getResultList();
     }
 
     @Transactional(readOnly = true)

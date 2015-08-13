@@ -188,9 +188,14 @@ public class ReviewService implements Serializable {
 //    }
 
     public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo) {
+        ProdApplications prodApplications = reviewInfo.getProdApplications();
         List<ReviewDetail> reviewDetails = new ArrayList<ReviewDetail>();
-        List<ReviewQuestion> reviewQuestions = reviewQDAO.findAll();
-
+        List<ReviewQuestion> reviewQuestions;
+        if (prodApplications.isSra()) {
+            reviewQuestions = reviewQDAO.findBySRA();
+        } else {
+            reviewQuestions = reviewQDAO.findByProdAppType(prodApplications.getProdAppType());
+        }
         ReviewDetail reviewDetail;
         for (ReviewQuestion reviewQuestion : reviewQuestions) {
             reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false);
