@@ -1,7 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <h:panelGrid cellspacing="10" columns="1" width="100%">
         <h:outputLabel value="#{msgs.checklist_inst}" styleClass="label"/>
@@ -22,7 +23,9 @@
                 <h:outputLabel value="#{checkList.checklist.module}"/>
             </p:column>
             <p:column rendered = "#{checkList.checklist.header}">
-                <p:selectBooleanCheckbox value="#{checkList.value}"/>
+                <p:selectOneButton id="console" value="#{checkList.value}" >
+                    <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
+                </p:selectOneButton>
             </p:column>
         </p:dataTable>
     </h:panelGrid>

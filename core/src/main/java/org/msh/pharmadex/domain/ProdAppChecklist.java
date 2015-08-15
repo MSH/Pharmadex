@@ -1,5 +1,7 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.YesNoNA;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -22,9 +24,9 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     @JoinColumn(name = "prod_app_id", nullable = false)
     private ProdApplications prodApplications;
 
-    private boolean value;
+    private YesNoNA value;
 
-    private boolean staffValue;
+    private YesNoNA staffValue;
 
     @Column(length = 500)
     private String staffComment;
@@ -72,22 +74,6 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
 
     public void setProdApplications(ProdApplications prodApplications) {
         this.prodApplications = prodApplications;
-    }
-
-    public boolean isValue() {
-        return value;
-    }
-
-    public void setValue(boolean value) {
-        this.value = value;
-    }
-
-    public boolean isStaffValue() {
-        return staffValue;
-    }
-
-    public void setStaffValue(boolean staffValue) {
-        this.staffValue = staffValue;
     }
 
     public String getStaffComment() {
@@ -153,5 +139,21 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
 
     public void setSendToApp(boolean sendToApp) {
         this.sendToApp = sendToApp;
+    }
+
+    public YesNoNA getValue() {
+        return value;
+    }
+
+    public void setValue(YesNoNA value) {
+        this.value = value;
+    }
+
+    public YesNoNA getStaffValue() {
+        return staffValue;
+    }
+
+    public void setStaffValue(YesNoNA staffValue) {
+        this.staffValue = staffValue;
     }
 }

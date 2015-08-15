@@ -4,6 +4,7 @@ import org.msh.pharmadex.dao.iface.TimelineDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,8 +94,8 @@ public class TimelineService implements Serializable {
         RetObject retObject = new RetObject();
         for (ProdAppChecklist prodAppChecklist : prodAppChecklists) {
             if (prodAppChecklist.getChecklist().isHeader()) {
-                if (prodAppChecklist.isValue()) {
-                    if (!prodAppChecklist.isStaffValue()) {
+                if (prodAppChecklist.getValue().equals(YesNoNA.YES)) {
+                    if (prodAppChecklist.getStaffValue().equals(YesNoNA.NO)) {
                         retObject.setMsg("error");
                         return retObject;
                     }

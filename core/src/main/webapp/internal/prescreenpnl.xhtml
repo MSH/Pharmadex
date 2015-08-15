@@ -2,7 +2,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <h:panelGrid cellspacing="10" cellpadding="10" columns="3">
 
@@ -31,10 +32,13 @@
             <h:outputLabel value="#{checkList.checklist.name}"/>
         </p:column>
         <p:column headerText="#{msgs.applicant}">
-            <p:selectBooleanCheckbox value="#{checkList.value}" rendered="#{checkList.checklist.header}"/>
+            <p:outputLabel value="#{checkList.value}" rendered="#{checkList.checklist.header}"/>
         </p:column>
         <p:column headerText="#{msgs.UserType_STAFF}">
             <p:selectBooleanCheckbox value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}"/>
+            <p:selectOneButton id="console" value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}" >
+                <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
+            </p:selectOneButton>
         </p:column>
         <p:column headerText="#{msgs.global_remark}">
             <p:inputText value="#{checkList.staffComment}"/>

@@ -12,6 +12,7 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 
@@ -113,7 +114,10 @@ public class ProdDeficiencyBn implements Serializable {
             prodApplications = prodApplicationsService.findProdApplications(prodAppID);
             prodAppChecklists = prodAppChecklistService.findProdAppChecklistByProdApp(prodAppID);
             for (ProdAppChecklist pacs : prodAppChecklists) {
-                pacs.setSendToApp(!pacs.isStaffValue());
+                if(pacs.getStaffValue()!=null)
+                    pacs.setSendToApp(pacs.getStaffValue().equals(YesNoNA.NO));
+                else
+                    pacs.setSendToApp(true);
             }
             FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
         }

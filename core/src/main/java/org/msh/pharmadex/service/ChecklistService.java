@@ -35,9 +35,9 @@ public class ChecklistService implements Serializable {
         if (prodApplications.isSra())
             checklists = checklistDAO.findByGenMedAndRecognizedMed(true, true);
         else if (prodApplications.getProdAppType().equals(ProdAppType.GENERIC))
-            checklists = checklistDAO.findByGenMedAndHeader(true, true);
+            checklists = checklistDAO.findByGenMed(true);
         else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
-            checklists = checklistDAO.findByNewMedAndHeader(true, true);
+            checklists = checklistDAO.findByNewMed(true);
 //        else if(prodAppType.equals(ProdAppType.RECOGNIZED))
 //            checklists = checklistDAO.findByHeaderAndRecognizedMed(true,true);
         return checklists;

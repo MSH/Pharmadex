@@ -41,16 +41,14 @@ public class ChecklistServiceTest {
     public void setUp() throws Exception {
 //        super.setUp();
 
-        genCount = checklistDAO.findByGenMedAndHeader(true, true).size();
-        newMedCount = checklistDAO.findByNewMedAndHeader(true, true).size();
+        genCount = checklistDAO.findByGenMed(true).size();
+        newMedCount = checklistDAO.findByNewMed(true).size();
         recognizedCount = checklistDAO.findByHeaderAndRecognizedMed(true, true).size();
 
     }
 
     @After
     public void tearDown() throws Exception {
-
-
     }
 
 
