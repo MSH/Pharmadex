@@ -4,6 +4,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.FastTrackMedService;
 import org.msh.pharmadex.service.LicenseHolderService;
+import org.msh.pharmadex.util.RetObject;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -44,9 +45,12 @@ public class ProdRegAppMbeanET implements Serializable {
         if (prodAppInit != null && prodAppInit.getLicHolderID() != null) {
             licenseHolder = licenseHolderService.findLicHolder(prodAppInit.getLicHolderID());
             Applicant applicant = licenseHolderService.findApplicantByLicHolder(licenseHolder.getId());
+            User applicantUser = null;
             if (applicant != null) {
                 prodRegAppMbean.setApplicant(applicant);
-                User applicantUser = applicant.getUsers().get(0);
+                if (applicant != null && applicant.getUsers() != null && applicant.getUsers().size() > 0) {
+                    applicantUser = applicant.getUsers().get(0);
+                }
                 prodRegAppMbean.setApplicantUser(applicantUser);
                 prodRegAppMbean.getProdApplications().setApplicant(applicant);
                 prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
@@ -62,11 +66,15 @@ public class ProdRegAppMbeanET implements Serializable {
 
     @Transactional
     public void saveApp() {
+        prodRegAppMbean.saveApp();
+        RetObject retObject;
         try {
             ProdApplications prodApplications = prodRegAppMbean.getProdApplications();
             Product product = prodRegAppMbean.getProduct();
             if (licenseHolder != null && prodRegAppMbean.getProduct() != null) {
-                String retValue = licenseHolderService.saveProduct(licenseHolder, product);
+                retObject = licenseHolderService.saveProduct(licenseHolder, product);
+                licenseHolder = (LicenseHolder) retObject.getObj();
+
             }
             if (fastTrackMedService.genmedExists(product.getGenName())) {
                 prodApplications.setFastrack(true);

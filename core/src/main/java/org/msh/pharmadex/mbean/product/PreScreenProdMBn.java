@@ -113,6 +113,7 @@ public class PreScreenProdMBn {
     }
 
     public String sendToApplicant() {
+        processProdBn.save();
 //        TimeLine timeLine = getTimeLine();
 //        timeLine = new TimeLine();
 //        timeLine.setRegState(RegState.FOLLOW_UP);
@@ -218,7 +219,9 @@ public class PreScreenProdMBn {
 
     public boolean isDisplayScreenAction() {
         if (processProdBn != null && processProdBn.getProdApplications() != null) {
-            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP) || processProdBn.getProdApplications().getRegState().equals(RegState.VERIFY))
+            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP)
+                    || processProdBn.getProdApplications().getRegState().equals(RegState.VERIFY) || processProdBn.getProdApplications().getRegState().equals(RegState.FEE)
+                    || processProdBn.getProdApplications().getRegState().equals(RegState.REVIEW_BOARD))
                 displayScreenAction = true;
             else
                 displayScreenAction = false;

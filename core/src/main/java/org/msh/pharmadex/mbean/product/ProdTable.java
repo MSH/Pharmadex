@@ -18,6 +18,7 @@ public class ProdTable {
     private Date regExpiryDate;
     private String manufName;
     private String prodDesc;
+    private Long prodAppID;
 
     public Long getId() {
         return id;
@@ -97,5 +98,13 @@ public class ProdTable {
 
     public void setProdDesc(String prodDesc) {
         this.prodDesc = prodDesc;
+    }
+
+    public Long getProdAppID() {
+        return prodAppID;
+    }
+
+    public void setProdAppID(Long prodAppID) {
+        this.prodAppID = prodAppID;
     }
 }

@@ -698,10 +698,16 @@ public class ProcessProdBn implements Serializable {
 
     public boolean isDisplaySample() {
         if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
-            if ((prodApplications != null && prodApplications.getRegState() != null && prodApplications.getRegState().ordinal() > 3))
-                displaySample = true;
-            else
+            RegState regState = prodApplications.getRegState();
+            if ((prodApplications != null && regState != null)) {
+                if (regState.equals(RegState.SCREENING) || regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {
+                    displaySample = false;
+                } else {
+                    displaySample = true;
+                }
+            } else {
                 displaySample = false;
+            }
         } else {
             displaySample = false;
         }

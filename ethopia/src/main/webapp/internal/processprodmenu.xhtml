@@ -12,7 +12,7 @@
                         onclick="PF('dlg').show()" id="addCommentMI"/>
             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
                         onclick="PF('stepDlg').show()" id="nextStepMI"
-                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
+                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.moderator}"/>
             <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
                         action="/internal/reject.faces" ajax="false"
                         rendered="#{processProdBn.canReject}"/>
@@ -35,8 +35,8 @@
                         rendered="#{userSession.admin||userSession.staff}" id="assignModMI"/>
             <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
                         oncomplete="PF('assignreviewdlg').show()"
-                        action="#{processProdBn.initProcessorAdd}" id="assignProMI"
-                        rendered="#{userSession.moderator||userSession.admin}"/>
+                        action="#{processProdBn.initProcessorAdd}" id="assignProMI" rendered="false"/>
+            <!--rendered="#{userSession.moderator||userSession.admin}"/>-->
 
         </p:submenu>
         <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">

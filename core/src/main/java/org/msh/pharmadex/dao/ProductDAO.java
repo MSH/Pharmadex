@@ -87,7 +87,7 @@ public class ProductDAO implements Serializable {
     }
 
     public List<ProdTable> findRegProducts() {
-        List<Object[]> products =  entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc  from prodApplications pa, product p, applicant a, prod_company pc, company c " +
+        List<Object[]> products = entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc  from prodApplications pa, product p, applicant a, prod_company pc, company c, pa.id" +
                 "where pa.PROD_ID = p.id " +
                 "and a.applcntId = pa.APP_ID " +
                 "and c.id = pc.company_id " +
@@ -117,6 +117,7 @@ public class ProductDAO implements Serializable {
                 prodTable.setManufName((String) objArr[7]);
                 prodTable.setRegNo((String) objArr[8]);
                 prodTable.setProdDesc((String) objArr[9]);
+                prodTable.setProdAppID((Long) objArr[10]);
                 prodTables.add(prodTable);
             }
         return prodTables;

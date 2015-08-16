@@ -20,9 +20,9 @@
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prod_name}"/>
                     </f:facet>
-                    <p:commandLink id="viewLink" value="#{prodApps.prodName}" action="#{productMbean.goToDetails(prodApps.id)}"
+                    <p:commandLink id="viewLink" value="#{prodApps.prodName}"
+                                   action="#{productMbean.goToDetails(prodApps.prodAppID)}"
                                    ajax="false">
-                        <f:param name="id" value="#{prodApps.id}"/>
                     </p:commandLink>
 
                 </p:column>

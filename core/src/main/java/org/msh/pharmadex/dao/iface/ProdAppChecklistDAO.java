@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface ProdAppChecklistDAO extends JpaRepository<ProdAppChecklist, Long> {
 
-    public List<ProdAppChecklist> findByProdApplications_IdOrderByIdAsc(Long prodApplications_Id);
+    List<ProdAppChecklist> findByProdApplications_IdOrderByIdAsc(Long prodApplications_Id);
 
 
 }

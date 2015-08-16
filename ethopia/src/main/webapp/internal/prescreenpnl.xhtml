@@ -48,7 +48,9 @@
             <p:outputLabel value="#{checkList.value}"/>
         </p:column>
         <p:column headerText="#{msgs.UserType_STAFF}">
-            <p:selectOneButton id="console" value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}" disabled="#{!processProdBn.prescreened}">
+            <p:outputLabel value="#{checkList.staffValue}" rendered="#{!processProdBn.prescreened}"/>
+            <p:selectOneButton id="console" value="#{checkList.staffValue}"
+                               rendered="#{checkList.checklist.header and processProdBn.prescreened}">
                 <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
             </p:selectOneButton>
         </p:column>

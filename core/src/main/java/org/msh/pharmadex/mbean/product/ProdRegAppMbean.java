@@ -284,7 +284,7 @@ public class ProdRegAppMbean implements Serializable {
                 FacesMessage msg = new FacesMessage(bundle.getString("global_fail"), retObject.getMsg());
                 context.addMessage(null, msg);
             }
-        } else if (currentWizardStep.equals("payment")) {
+        } else if (currentWizardStep.equals("attach")) {
             if(prodAppChecklists!=null&&prodAppChecklists.size()>0)
                 prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
         } else if (currentWizardStep.equals("prodAppChecklist")) {
@@ -305,7 +305,8 @@ public class ProdRegAppMbean implements Serializable {
         } else if (currentWizardStep.equals("appointment")) {
 
         } else if (currentWizardStep.equals("summary")) {
-            prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
+            if (prodAppChecklists != null)
+                prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
         }
 
     }
@@ -316,7 +317,7 @@ public class ProdRegAppMbean implements Serializable {
         context = FacesContext.getCurrentInstance();
         product.setUseCategories(useCategories);
         try {
-            prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
+//            prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
             RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
             if(retObject.getMsg().equals("persist")) {
                 prodApplications = (ProdApplications) retObject.getObj();

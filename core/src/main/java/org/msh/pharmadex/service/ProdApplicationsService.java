@@ -571,6 +571,7 @@ public class ProdApplicationsService implements Serializable {
             prodAppChecklistDAO.save(prodAppChecklists);
             return "persist";
         } catch (Exception ex) {
+            ex.printStackTrace();
             return "error";
         }
 
