@@ -8,6 +8,7 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.AgentType;
+import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -148,7 +149,7 @@ public class LicenseHolderService implements Serializable {
 
     }
 
-    public String saveProduct(LicenseHolder licenseHolder, Product product) {
+    public RetObject saveProduct(LicenseHolder licenseHolder, Product product) {
         try {
             boolean exist = false;
             licenseHolder = licenseHolderDAO.findOne(licenseHolder.getId());
@@ -170,12 +171,12 @@ public class LicenseHolderService implements Serializable {
             }
             if (!exist) {
                 licenseHolder.getProducts().add(product);
-                licenseHolderDAO.save(licenseHolder);
+                licenseHolder = licenseHolderDAO.save(licenseHolder);
             }
-            return "persist";
+            return new RetObject("persist", licenseHolder);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return "error";
+            return new RetObject("error");
         }
 
     }
