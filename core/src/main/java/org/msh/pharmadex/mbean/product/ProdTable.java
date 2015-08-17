@@ -2,12 +2,14 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.enums.ProdCategory;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by utkarsh on 4/6/15.
  */
-public class ProdTable {
+public class ProdTable implements Serializable {
+
     private Long id;
     private String regNo;
     private String prodName;
