@@ -87,7 +87,8 @@ public class ProductDAO implements Serializable {
     }
 
     public List<ProdTable> findRegProducts() {
-        List<Object[]> products = entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc  from prodApplications pa, product p, applicant a, prod_company pc, company c, pa.id" +
+        List<Object[]> products = entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id  " +
+                "from prodApplications pa, product p, applicant a, prod_company pc, company c " +
                 "where pa.PROD_ID = p.id " +
                 "and a.applcntId = pa.APP_ID " +
                 "and c.id = pc.company_id " +
@@ -96,8 +97,8 @@ public class ProductDAO implements Serializable {
                 "and pa.active = :active " +
                 "and pc.companyType = :companyType ; ")
                 .setParameter("active", true)
-                .setParameter("regState", ""+RegState.REGISTERED)
-                .setParameter("companyType", ""+CompanyType.FIN_PROD_MANUF)
+                .setParameter("regState", "" + RegState.REGISTERED)
+                .setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
                 .getResultList();
 //        List<Product> products =  entityManager.createQuery("select pa from ProdApplications pa where pa.active = :active and pa.regState = :regstate ")
 //                .setParameter("regstate", RegState.REGISTERED)
@@ -105,23 +106,22 @@ public class ProductDAO implements Serializable {
 //                .getResultList();
         List<ProdTable> prodTables = new ArrayList<ProdTable>();
         ProdTable prodTable;
-            for(Object[] objArr : products){
-                prodTable = new ProdTable();
-                prodTable.setId(Long.valueOf(""+objArr[0]));
-                prodTable.setProdName((String) objArr[1]);
-                prodTable.setGenName((String) objArr[2]);
-                prodTable.setProdCategory(ProdCategory.valueOf((String) objArr[3]));
-                prodTable.setAppName((String) objArr[4]);
-                prodTable.setRegDate((Date) objArr[5]);
-                prodTable.setRegExpiryDate((Date) objArr[6]);
-                prodTable.setManufName((String) objArr[7]);
-                prodTable.setRegNo((String) objArr[8]);
-                prodTable.setProdDesc((String) objArr[9]);
-                prodTable.setProdAppID((Long) objArr[10]);
-                prodTables.add(prodTable);
-            }
+        for (Object[] objArr : products) {
+            prodTable = new ProdTable();
+            prodTable.setId(Long.valueOf("" + objArr[0]));
+            prodTable.setProdName((String) objArr[1]);
+            prodTable.setGenName((String) objArr[2]);
+            prodTable.setProdCategory(ProdCategory.valueOf((String) objArr[3]));
+            prodTable.setAppName((String) objArr[4]);
+            prodTable.setRegDate((Date) objArr[5]);
+            prodTable.setRegExpiryDate((Date) objArr[6]);
+            prodTable.setManufName((String) objArr[7]);
+            prodTable.setRegNo((String) objArr[8]);
+            prodTable.setProdDesc((String) objArr[9]);
+            prodTable.setProdAppID(Long.valueOf("" + objArr[10]));
+            prodTables.add(prodTable);
+        }
         return prodTables;
-
     }
 
     public List<Product> findProductByFilter(HashMap<String, Object> params) {
