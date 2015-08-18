@@ -20,9 +20,6 @@ public class ReviewQuestion extends CreationDetail implements Serializable {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private ProdAppType prodAppType;
-
-    @Enumerated(EnumType.STRING)
     private CTDModule ctdModule;
 
     @Column(name = "header1", length = 255)
@@ -30,6 +27,15 @@ public class ReviewQuestion extends CreationDetail implements Serializable {
 
     @Column(name = "header2", length = 255)
     private String header2;
+
+    @Column(name = "new_med")
+    private boolean newMed;
+
+    @Column(name = "gen_med")
+    private boolean genMed;
+
+    @Column(name = "renewal")
+    private boolean renewal;
 
     @Lob
     @Column(name = "question")
@@ -78,19 +84,35 @@ public class ReviewQuestion extends CreationDetail implements Serializable {
         this.question = question;
     }
 
-    public ProdAppType getProdAppType() {
-        return prodAppType;
-    }
-
-    public void setProdAppType(ProdAppType prodAppType) {
-        this.prodAppType = prodAppType;
-    }
-
     public boolean isSra() {
         return sra;
     }
 
     public void setSra(boolean sra) {
         this.sra = sra;
+    }
+
+    public boolean isNewMed() {
+        return newMed;
+    }
+
+    public void setNewMed(boolean newMed) {
+        this.newMed = newMed;
+    }
+
+    public boolean isGenMed() {
+        return genMed;
+    }
+
+    public void setGenMed(boolean genMed) {
+        this.genMed = genMed;
+    }
+
+    public boolean isRenewal() {
+        return renewal;
+    }
+
+    public void setRenewal(boolean renewal) {
+        this.renewal = renewal;
     }
 }

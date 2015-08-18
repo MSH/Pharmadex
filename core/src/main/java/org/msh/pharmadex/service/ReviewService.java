@@ -15,6 +15,7 @@ import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,12 +191,24 @@ public class ReviewService implements Serializable {
     public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo) {
         ProdApplications prodApplications = reviewInfo.getProdApplications();
         List<ReviewDetail> reviewDetails = new ArrayList<ReviewDetail>();
-        List<ReviewQuestion> reviewQuestions;
-        if (prodApplications.isSra()) {
+        List<ReviewQuestion> reviewQuestions = null;
+
+        if(prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
             reviewQuestions = reviewQDAO.findBySRA();
-        } else {
-            reviewQuestions = reviewQDAO.findByProdAppType(prodApplications.getProdAppType());
+        }else if (prodApplications.isSra()) {
+            reviewQuestions = reviewQDAO.findBySRA();
+        }else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+            reviewQuestions = reviewQDAO.findByNewMolecule();
+        }else {
+            reviewQuestions = reviewQDAO.findByGenMed();
         }
+
+
+//        if (prodApplications.isSra()) {
+//            reviewQuestions = reviewQDAO.findBySRA();
+//        } else {
+//            reviewQuestions = reviewQDAO.findByProdAppType(prodApplications.getProdAppType());
+//        }
         ReviewDetail reviewDetail;
         for (ReviewQuestion reviewQuestion : reviewQuestions) {
             reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false);

@@ -31,6 +31,9 @@ public class Checklist extends CreationDetail implements Serializable {
     @Column(name = "recognized_med")
     private boolean recognizedMed;
 
+    @Column(name = "renewal")
+    private boolean renewal;
+
     public Long getId() {
         return id;
     }
@@ -93,5 +96,13 @@ public class Checklist extends CreationDetail implements Serializable {
 
     public void setRecognizedMed(boolean recognizedMed) {
         this.recognizedMed = recognizedMed;
+    }
+
+    public boolean isRenewal() {
+        return renewal;
+    }
+
+    public void setRenewal(boolean renewal) {
+        this.renewal = renewal;
     }
 }

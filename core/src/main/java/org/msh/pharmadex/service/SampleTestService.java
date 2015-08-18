@@ -9,6 +9,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.impl.SessionImpl;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
@@ -21,8 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -92,10 +97,16 @@ public class SampleTestService implements Serializable {
         }
     }
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException {
         String emailBody = sampleComment.getComment();
         Product product = prodApplications.getProduct();
         URL resource = getClass().getResource("/reports/sample_request.jasper");
+        Session hibernateSession = entityManager.unwrap(Session.class);
+        SessionImpl session = (SessionImpl) hibernateSession;
+        Connection conn = session.connection();
         HashMap param = new HashMap();
         prodApplications = prodApplicationsService.findProdApplicationByProduct(product.getId());
         param.put("id", prodApplications.getId());
@@ -114,7 +125,7 @@ public class SampleTestService implements Serializable {
         param.put("date", new Date());
         param.put("appNumber", prodApplications.getProdAppNo());
 
-        return JasperFillManager.fillReport(resource.getFile(), param);
+        return JasperFillManager.fillReport(resource.getFile(), param, conn);
     }
 
 

@@ -30,13 +30,23 @@ public class ReviewQDAO implements Serializable{
         return entityManager.createQuery(" select rq from ReviewQuestion rq").getResultList();
     }
 
-    public List<ReviewQuestion> findByProdAppType(ProdAppType prodAppType) {
-        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.prodAppType = :prodAppType")
-                .setParameter("prodAppType", prodAppType).getResultList();
-    }
-
     public List<ReviewQuestion> findBySRA() {
         return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.sra = true")
+                .getResultList();
+    }
+
+    public List<ReviewQuestion> findByGenMed() {
+        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.genMed = true")
+                .getResultList();
+    }
+
+    public List<ReviewQuestion> findByRenewal() {
+        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.renewal = true")
+                .getResultList();
+    }
+
+    public List<ReviewQuestion> findByNewMolecule() {
+        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.newMed = true")
                 .getResultList();
     }
 

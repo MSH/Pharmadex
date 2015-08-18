@@ -416,7 +416,9 @@
 
                 <p:tab id="payment" title="#{msgs.payment_info}">
                     <p:panel header="#{msgs.payment_info}">
-                        <ui:include src="payment.xhtml"/>
+                        <ui:decorate template="payment.xhtml">
+                            <ui:param name="prodApp" value="#{prodRegAppMbean.prodApplications}"/>
+                        </ui:decorate>
 
                         <div align="right">
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
@@ -489,7 +491,9 @@
 
                 <p:tab id="prodAppChecklist" title="#{msgs.checklist}">
                     <p:panel header="#{msgs.checklist}">
-                        <ui:include src="prodappchecklist.xhtml"/>
+                        <ui:decorate template="prodappchecklist.xhtml">
+                            <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
+                        </ui:decorate>
 
 
                         <div align="right">

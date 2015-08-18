@@ -32,7 +32,9 @@ public class ChecklistService implements Serializable {
         if (prodApplications == null)
             return null;
 
-        if (prodApplications.isSra())
+        if(prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+            checklists = checklistDAO.findByRenewal(true);
+        }else if (prodApplications.isSra())
             checklists = checklistDAO.findByGenMedAndRecognizedMed(true, true);
         else if (prodApplications.getProdAppType().equals(ProdAppType.GENERIC))
             checklists = checklistDAO.findByGenMed(true);
