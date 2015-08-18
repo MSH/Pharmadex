@@ -8,9 +8,11 @@ import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
 
@@ -46,8 +48,14 @@ public class PIPOrderListBn implements Serializable {
     }
 
     public String searchPIPOrder(){
-        POrderBase pOrderBase = pOrderService.findPOrder(pipNo);
-        return sendToProcess(pOrderBase.getId());
+        POrderBase pOrderBase = pOrderService.findPOrder(pipNo, false);
+        if(pOrderBase!=null) {
+            return sendToProcess(pOrderBase.getId());
+        }else{
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Pre-Import permit not found!!!"));
+            pipNo = null;
+            return "";
+        }
     }
 
     public String sendToProcess(Long pipOrderID){

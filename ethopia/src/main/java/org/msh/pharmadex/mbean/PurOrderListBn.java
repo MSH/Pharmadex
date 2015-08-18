@@ -9,9 +9,11 @@ import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
 
@@ -47,9 +49,15 @@ public class PurOrderListBn implements Serializable {
     }
 
     public String searchPurOrder(){
-        POrderBase pOrderBase = pOrderService.findPOrder(pipNo);
-        return sendToProcess(pOrderBase.getId());
-    }
+            POrderBase pOrderBase = pOrderService.findPOrder(pipNo, true);
+            if(pOrderBase!=null) {
+                return sendToProcess(pOrderBase.getId());
+            }else{
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Purchase order not found!!!"));
+                pipNo = null;
+                return null;
+            }
+        }
 
     public String sendToProcess(Long pipOrderID){
         JsfUtils.flashScope().put("purOrderID", pipOrderID);

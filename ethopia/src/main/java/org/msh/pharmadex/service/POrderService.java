@@ -445,7 +445,10 @@ public class POrderService implements Serializable {
         if (pOrderBase == null)
             pOrderDocs = new ArrayList<POrderDoc>();
         if (pOrderBase instanceof PIPOrder) {
-            pOrderDocs = pOrderDocDAO.findByPipOrder_Id(pOrderBase.getId());
+            if (pOrderBase.getId() != null)
+                pOrderDocs = pOrderDocDAO.findByPipOrder_Id(pOrderBase.getId());
+            else
+                pOrderDocs = new ArrayList<POrderDoc>();
         }
         if (pOrderBase instanceof PurOrder) {
             if (pOrderBase.getId() != null)
@@ -465,8 +468,18 @@ public class POrderService implements Serializable {
         return updatePIPOrder(pOrderBase);
     }
 
-    public POrderBase findPOrder(String pipNo) {
-        return pipOrderDAO.findByPipNo(pipNo);
+    public POrderBase findPOrder(String pipNo, boolean purOrder) {
+        POrderBase pOrderBase;
+        try{
+            if(purOrder)
+                pOrderBase = purOrderDAO.findByPipNo(pipNo);
+            else
+                pOrderBase = pipOrderDAO.findByPipNo(pipNo);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            pOrderBase = null;
+        }
+        return pOrderBase;
     }
 
     public List<ProdTable> findProdByLH(Long applcntId) {
