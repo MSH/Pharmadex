@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" isSummaryNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="594"/>
 	<parameter name="currDay" class="java.lang.String"/>
 	<parameter name="currMnthYr" class="java.lang.String"/>
 	<parameter name="regName" class="java.lang.String"/>
@@ -283,35 +283,19 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="0" y="581" width="570" height="96" uuid="b61b633b-209e-42ee-9383-aaec4fffd9c9"/>
+				<textElement>
+					<font size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Note: This Certificate, unless previously suspended, revoked or varied as to the period of its validity, will continue in force until the end of a period of four years from the date of issue.]]></text>
+			</staticText>
 		</band>
 	</columnFooter>
 	<pageFooter>
 		<band splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="539" splitType="Stretch">
-			<staticText>
-				<reportElement x="1" y="19" width="570" height="96" uuid="b61b633b-209e-42ee-9383-aaec4fffd9c9"/>
-				<textElement>
-					<font size="14" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Note: This Certificate, unless previously suspended, revoked or varied as to the period of its validity, will continue in force until the end of a period of four years from the date of issue.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1" y="115" width="570" height="201" uuid="c15d9fa1-7ca1-42df-a5d4-86b396acc933"/>
-				<textElement>
-					<font size="14"/>
-				</textElement>
-				<text><![CDATA[The following in formations might not need to appear on the hard copy certificate but is required as information so the new database should also include them
-1.	Therapeutic group
-2.	Analytical information(FPP specification)
-3.	API manufacturer(NAME AND ADDRESS)
-4.	Price
-5.	Status in other countries
-6.	Distributors (other than the prime agent)
-7.	Name of individual who prepared the certificate
-]]></text>
-			</staticText>
-		</band>
+		<band height="539" splitType="Stretch"/>
 	</summary>
 </jasperReport>

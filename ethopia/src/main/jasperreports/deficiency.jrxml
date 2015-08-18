@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="634"/>
+	<property name="ireport.y" value="16"/>
 	<parameter name="subject" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -302,6 +302,13 @@
 					<jr:codeExpression><![CDATA[$P{appNumber}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
+			<staticText>
+				<reportElement x="75" y="432" width="497" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Thank You,]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -312,13 +319,6 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="44" splitType="Stretch">
-			<staticText>
-				<reportElement x="75" y="1" width="497" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
-				<textElement>
-					<font size="12" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Thank You,]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="75" y="24" width="497" height="20" uuid="4ed05e4e-b872-45fe-a77a-f56c3f468cb8"/>
 				<textElement>
