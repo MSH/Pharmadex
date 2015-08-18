@@ -10,7 +10,8 @@ package org.msh.pharmadex.domain.enums;
 public enum ProdAppType {
 
     GENERIC,
-    NEW_CHEMICAL_ENTITY;
+    NEW_CHEMICAL_ENTITY,
+    RENEW;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());

@@ -5,6 +5,7 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.util.JsfUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -37,7 +38,7 @@ public class RegProdMbn {
     FacesContext context = FacesContext.getCurrentInstance();
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
 
-    private Product selectedProd;
+    private ProdTable prodTable;
 
 
     public List<ProdTable> completeProduct(String query) {
@@ -53,28 +54,11 @@ public class RegProdMbn {
 
     public String searchProduct() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (selectedProd == null)
+        if (prodTable == null)
             return null;
 
-//        userSession.setProdApplications(selectedProd.getProdApplications());
-        userSession.setProdID(selectedProd.getId());
-
-        ProdApplications pa = prodApplicationsService.findProdApplicationByProduct(selectedProd.getId());
-        if (pa != null) {
-            processProdBn.setProdApplications(pa);
-            return "/internal/processreg.faces";
-        } else {
-            facesContext.addMessage(null, new FacesMessage(bundle.getString("global_fail"), bundle.getString("legacy_prod_message")));
-            return null;
-        }
-    }
-
-    public Product getSelectedProd() {
-        return selectedProd;
-    }
-
-    public void setSelectedProd(Product selectedProd) {
-        this.selectedProd = selectedProd;
+        JsfUtils.flashScope().put("prodAppID", prodTable.getProdAppID());
+        return "/internal/processreg.faces";
     }
 
     public GlobalEntityLists getGlobalEntityLists() {
@@ -107,5 +91,13 @@ public class RegProdMbn {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
+    }
+
+    public ProdTable getProdTable() {
+        return prodTable;
+    }
+
+    public void setProdTable(ProdTable prodTable) {
+        this.prodTable = prodTable;
     }
 }

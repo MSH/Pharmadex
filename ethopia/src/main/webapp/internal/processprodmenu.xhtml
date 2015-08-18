@@ -41,9 +41,8 @@
         </p:submenu>
         <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
-                        action="#{renewalMbn.preparePayment()}"
-                        oncomplete="PF('renewdlg').show()"
-                        rendered="#{userSession.head||userSession.admin}" ajax="true"/>
+                        action="#{processProdBn.sendToRenew}"
+                        ajax="false"/>
             <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear"
                         oncomplete="PF('invoicedlg').show()"
                         rendered="#{userSession.head||userSession.admin}"

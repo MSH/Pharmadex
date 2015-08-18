@@ -380,7 +380,8 @@
 
                 <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
                 <p:calendar value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"
-                            showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"/>
+                            showOn="button" pattern="#{userAccessMBean.workspace.
+                            datePattern}"/>
 
                 <p:outputLabel value="#{msgs.invoice_amt}" for="invamt"/>
                 <p:inputText value="#{renewalMbn.invoice.invoiceAmt}" id="invamt"/>
@@ -453,6 +454,7 @@
         </h:form>
         </p:dialog>
 
+<!--
         <p:dialog header="#{msgs.renew}" widgetVar="renewdlg" resizable="true" id="renewdlg"
                   modal="true" dynamic="true">
         <h:form>
@@ -501,7 +503,7 @@
             </h:panelGrid>
         </h:form>
         </p:dialog>
-
+-->
 
         <p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment" showEffect="fade" hideEffect="fade"
                   modal="true" dynamic="true"

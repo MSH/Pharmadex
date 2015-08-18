@@ -29,6 +29,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -265,6 +266,18 @@ public class ProcessProdBn implements Serializable {
 
 
     }
+
+    public String sendToRenew() {
+        save();
+        facesContext = FacesContext.getCurrentInstance();
+        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        Flash flash = facesContext.getExternalContext().getFlash();
+        flash.put("prodID", prodApplications.getProduct().getId());
+        flash.put("appID", prodApplications.getApplicant().getApplcntId());
+        return "renew";
+
+    }
+
 
     public String sendMessage() {
         facesContext = FacesContext.getCurrentInstance();
