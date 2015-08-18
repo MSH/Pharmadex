@@ -8,16 +8,16 @@
     <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
 
         <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"/>
-        <p:outputLabel value="#{prodRegAppMbean.prodApplications.prescreenfeeAmt}"/>
+        <p:outputLabel value="#{prodApp.prescreenfeeAmt}"/>
 
         <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
-        <p:inputText id="bankname" value="#{prodRegAppMbean.prodApplications.prescreenBankName}"/>
+        <p:inputText id="bankname" value="#{prodApp.prescreenBankName}"/>
 
         <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
-        <p:inputText id="receiptno" value="#{prodRegAppMbean.prodApplications.prescreenReceiptNo}"/>
+        <p:inputText id="receiptno" value="#{prodApp.prescreenReceiptNo}"/>
 
         <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
-        <p:calendar value="#{prodRegAppMbean.prodApplications.prescreenfeeSubmittedDt}" id="feesubmitdt" showOn="button"/>
+        <p:calendar value="#{prodApp.prescreenfeeSubmittedDt}" id="feesubmitdt" showOn="button"/>
 
     </h:panelGrid>
 

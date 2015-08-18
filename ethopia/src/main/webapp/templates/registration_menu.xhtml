@@ -45,7 +45,7 @@
                 </p:submenu>
 
                 <p:submenu label="#{msgs.reg_lic_holder}"
-                           rendered="#{userSession.admin||userSession.head}">
+                           rendered="#{userSession.admin||userSession.head||userSession.csd}">
                     <p:menuitem value="#{msgs.manage_licholder}" icon="ui-icon-home"
                                 url="/internal/licenseholderlist.faces"/>
                     <p:menuitem value="#{msgs.add_licholder}" icon="ui-icon-home"

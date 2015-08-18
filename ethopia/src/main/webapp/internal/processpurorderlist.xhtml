@@ -10,7 +10,13 @@
 
         <h:form prependId="false">
             <p:growl id="growl"/>
-            <p:messages id="messages" showDetail="true"/>
+            <p:focus context="searchpg"/>
+            <p:messages id="messages"/>
+            <h:panelGrid columns="3" cellpadding="10" cellspacing="10" id="searchpg">
+                <p:outputLabel value="#{msgs.application_no}" for="searchpip" styleClass="label"></p:outputLabel>
+                <p:inputText value="#{purOrderListBn.pipNo}" id="searchpip"/>
+                <p:commandButton action="#{purOrderListBn.searchPurOrder}" ajax="false" value="#{msgs.registration_search}"/>
+            </h:panelGrid>
             <h:panelGroup rendered="#{not empty purOrderListBn.purOrders}">
                 <p:dataTable id="purtable" var="eachprod" value="#{purOrderListBn.purOrders}"
                              rendered="#{not empty purOrderListBn.purOrders}">
