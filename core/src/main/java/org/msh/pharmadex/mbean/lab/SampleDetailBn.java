@@ -22,6 +22,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -90,12 +91,16 @@ public class SampleDetailBn implements Serializable {
         }
     }
 
+    @Transactional
     public void submitComment() {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
-            if (sampleTest.getSampleComments() == null) {
-                sampleTest.setSampleComments(new ArrayList<SampleComment>());
+            SampleTest sampleTestFrmDB = sampleTestService.findSampleTest(sampleTest.getId());
+            sampleComments = sampleTestFrmDB.getSampleComments();
+            if (sampleComments == null) {
+                sampleComments = new ArrayList<SampleComment>();
+                sampleTest.setSampleComments(sampleComments);
             }
 
             sampleComment.setUser(userService.findUser(userSession.getLoggedINUserID()));

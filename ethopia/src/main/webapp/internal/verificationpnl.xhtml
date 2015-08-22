@@ -4,63 +4,73 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" id="verifypnl">
-        <p:outputLabel value="#{msgs.application_fee}" styleClass="label" for="feerecieved"/>
-        <p:selectBooleanButton id="feerecieved"
-                               value="#{processProdBn.prodApplications.feeReceived}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
-        </p:selectBooleanButton>
-
-        <p:outputLabel value="#{msgs.application_fee}" styleClass="label"/>
-        <p:outputLabel value="#{processProdBn.prodApplications.feeAmt}"/>
-
-        <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
-        <p:inputText id="bankname" value="#{processProdBn.prodApplications.bankName}"/>
-
-        <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
-        <p:inputText id="receiptno" value="#{processProdBn.prodApplications.receiptNo}"/>
-
-        <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
-        <p:calendar  value="#{processProdBn.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"/>
-
-        <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label"
-                       for="appverify"/>
-        <p:selectBooleanButton id="appverify"
-                               value="#{processProdBn.prodApplications.applicantVerified}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
-        </p:selectBooleanButton>
-
-        <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"
-                       for="prodverify"/>
-        <p:selectBooleanButton id="prodverify"
-                               value="#{processProdBn.prodApplications.productVerified}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
-        </p:selectBooleanButton>
-
-        <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label"
-                       for="dosscomplete"/>
-        <p:selectBooleanButton id="dosscomplete"
-                               value="#{processProdBn.prodApplications.dossierReceived}"
-                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
-        </p:selectBooleanButton>
+    <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10" id="verifypnl">
+        <h:panelGrid columns="1" cellpadding="10" cellspacing="10">
+            <p:outputLabel styleClass="hint"
+                           value="Please issue a sample request letter if it is required as part of processing the applications."/>
+        </h:panelGrid>
 
 
+        <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+            <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
+            <p:outputLabel value="#{processProdBn.moderator.username}"/>
+
+            <p:outputLabel value="#{msgs.application_fee}" styleClass="label" for="feerecieved"/>
+            <p:selectBooleanButton id="feerecieved"
+                                   value="#{processProdBn.prodApplications.feeReceived}"
+                                   onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                   onIcon="ui-icon-check"
+                                   offIcon="ui-icon-close" style="width:60px">
+                <p:ajax update=":reghome:growl :reghome"
+                        listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
+            </p:selectBooleanButton>
+
+            <p:outputLabel value="#{msgs.application_fee}" styleClass="label"/>
+            <p:outputLabel value="#{processProdBn.prodApplications.feeAmt}"/>
+
+            <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
+            <p:inputText id="bankname" value="#{processProdBn.prodApplications.bankName}" style="width: 400px;"/>
+
+            <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
+            <p:inputText id="receiptno" value="#{processProdBn.prodApplications.receiptNo}"/>
+
+            <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
+            <p:calendar value="#{processProdBn.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"/>
+
+            <p:outputLabel value="#{msgs.app_detail_complete}" styleClass="label"
+                           for="appverify"/>
+            <p:selectBooleanButton id="appverify"
+                                   value="#{processProdBn.prodApplications.applicantVerified}"
+                                   onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                   onIcon="ui-icon-check"
+                                   offIcon="ui-icon-close" style="width:60px">
+                <p:ajax update=":reghome:growl :reghome"
+                        listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
+            </p:selectBooleanButton>
+
+            <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"
+                           for="prodverify"/>
+            <p:selectBooleanButton id="prodverify"
+                                   value="#{processProdBn.prodApplications.productVerified}"
+                                   onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                   onIcon="ui-icon-check"
+                                   offIcon="ui-icon-close" style="width:60px">
+                <p:ajax update=":reghome:growl :reghome"
+                        listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
+            </p:selectBooleanButton>
+
+            <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label"
+                           for="dosscomplete"/>
+            <p:selectBooleanButton id="dosscomplete"
+                                   value="#{processProdBn.prodApplications.dossierReceived}"
+                                   onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                   onIcon="ui-icon-check"
+                                   offIcon="ui-icon-close" style="width:60px">
+                <p:ajax update=":reghome:growl :reghome"
+                        listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
+            </p:selectBooleanButton>
+
+        </h:panelGrid>
     </h:panelGrid>
 
     <!--

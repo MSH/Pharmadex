@@ -148,6 +148,7 @@
 
     <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"
               id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" >
+        <p:messages id="messages"/>
             <p:panel>
                 <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
 
@@ -197,8 +198,9 @@
 
                 <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
                                  action="#{prodReviewBn.assignReviewer}"
-                                 oncomplete="PF('assignreviewdlg').hide()" ajax="true" process="@form"
-                                 update=":reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl"/>
+                                 oncomplete="if (!args.validationFailed) PF('assignreviewdlg').hide()" ajax="true"
+                                 process="@form"
+                                 update=":reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl reghome:processtab:messages :reghome"/>
             </p:panel>
 
     </p:dialog>

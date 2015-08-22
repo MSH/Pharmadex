@@ -25,7 +25,7 @@
 
             <div align="right">
                 <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"
-                                 update=":reviewHome" process="@form"/>
+                                 update=":reviewHome" process="@form" rendered="#{userSession.lab}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
                                  action="#{sampleDetailBn.cancelSampleTestDetail}"
                                  ajax="false"/>
@@ -132,7 +132,7 @@
 
                     <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                      oncomplete="PF('attachdlg').show()" action="#{sampleDetailBn.prepareUpload}"
-                                     update=":attachdlg" id="addDocBtn"/>
+                                     update=":attachdlg" id="addDocBtn" rendered="#{userSession.labModerator}"/>
 
                     <p:dataTable id="attachtable" value="#{sampleDetailBn.prodAppLetters}" var="doc">
                         <p:column headerText="#{msgs.title}">

@@ -8,6 +8,7 @@ import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,6 +40,7 @@ public class TimelineService implements Serializable {
         return timeLineList;
     }
 
+    @Transactional
     public RetObject saveTimeLine(TimeLine timeLine) {
         RetObject retObject = new RetObject();
         String msg = validateStatusChange(timeLine);

@@ -237,7 +237,7 @@ public class ReviewInfoBn implements Serializable {
     public String cancelReview() {
 //        userSession.setReview(null);
         JsfUtils.flashScope().put("prodAppID", reviewInfo.getProdApplications().getId());
-        userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
+//        userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
         return "/internal/processreg";
 
     }
@@ -250,7 +250,8 @@ public class ReviewInfoBn implements Serializable {
                 reviewInfo.setReviewStatus(ReviewStatus.IN_PROGRESS);
                 reviewComment.setFinalSummary(false);
             } else {
-                if (reviewComment.getRecomendType().equals(RecomendType.RECOMENDED) || reviewComment.getRecomendType().equals(RecomendType.NOT_RECOMENDED)) {
+                if (reviewComment.getRecomendType().equals(RecomendType.RECOMENDED) || reviewComment.getRecomendType().equals(RecomendType.NOT_RECOMENDED)
+                        || reviewComment.getRecomendType().equals(RecomendType.FIR)) {
                     if (userAccessMBean.getWorkspace().isSecReview()) {
                         if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId()))
                             reviewInfo.setReviewStatus(ReviewStatus.SEC_REVIEW);
@@ -290,16 +291,18 @@ public class ReviewInfoBn implements Serializable {
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
             reviewComment.setFinalSummary(false);
+            reviewComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
             reviewInfo.setReviewStatus(ReviewStatus.RFI_RECIEVED);
-
             reviewInfo.setSubmitDate(new Date());
             revDeficiency.setAckComment(reviewComment);
             revDeficiency.setResolved(true);
+            revDeficiency.setUser(reviewComment.getUser());
             reviewInfo.getReviewComments().add(reviewComment);
             RetObject retObject = reviewService.saveRevDeficiency(revDeficiency);
 
             if (retObject.getMsg().equals("success")) {
                 revDeficiency = (RevDeficiency) retObject.getObj();
+                reviewService.saveReviewInfo(reviewInfo);
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
             }
         } catch (Exception ex) {
@@ -319,7 +322,7 @@ public class ReviewInfoBn implements Serializable {
             revDeficiency.setUser(reviewComment.getUser());
             reviewInfo.setSubmitDate(new Date());
             reviewInfo.getReviewComments().add(reviewComment);
-            reviewInfo.setReviewStatus(ReviewStatus.IN_PROGRESS);
+            reviewInfo.setReviewStatus(ReviewStatus.RFI_SUBMIT);
             revDeficiency.setReviewInfo(reviewInfo);
             revDeficiency.setCreatedDate(new Date());
             RetObject retObject = reviewService.createDefLetter(revDeficiency);
@@ -469,6 +472,7 @@ public class ReviewInfoBn implements Serializable {
         List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
         recomendTypes.add(RecomendType.RECOMENDED);
         recomendTypes.add(RecomendType.NOT_RECOMENDED);
+        recomendTypes.add(RecomendType.FIR);
         return recomendTypes;
     }
 

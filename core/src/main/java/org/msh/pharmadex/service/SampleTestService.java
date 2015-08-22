@@ -15,6 +15,7 @@ import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
@@ -48,6 +49,8 @@ public class SampleTestService implements Serializable {
 
     @Autowired
     private GlobalEntityLists globalEntityLists;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     public SampleTest findSampleTest(Long sampleTestID) {
@@ -62,12 +65,13 @@ public class SampleTestService implements Serializable {
         return sampleTests;
 
     }
+
     public RetObject createDefLetter(SampleTest sampleTest){
         ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
         Product product = prodApp.getProduct();
         try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
-            File invoicePDF = File.createTempFile("" + product.getProdName() + "_deficiency", ".pdf");
+            File invoicePDF = File.createTempFile("" + product.getProdName() + "_samplerequest", ".pdf");
             JasperPrint jasperPrint = initRegCert(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
@@ -80,6 +84,7 @@ public class SampleTestService implements Serializable {
             attachment.setTitle("Sample Request Letter");
             attachment.setUploadedBy(sampleTest.getCreatedBy());
             attachment.setComment("System generated Letter");
+            attachment.setLetterType(LetterType.SAMPLE_REQUEST_LETTER);
             attachment.setContentType("application/pdf");
             attachment.setSampleTest(sampleTest);
 
@@ -97,9 +102,6 @@ public class SampleTestService implements Serializable {
         }
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException {
         String emailBody = sampleComment.getComment();
         Product product = prodApplications.getProduct();
@@ -108,7 +110,8 @@ public class SampleTestService implements Serializable {
         SessionImpl session = (SessionImpl) hibernateSession;
         Connection conn = session.connection();
         HashMap param = new HashMap();
-        prodApplications = prodApplicationsService.findProdApplicationByProduct(product.getId());
+        List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
+        prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
         param.put("id", prodApplications.getId());
         param.put("sampleQty", quantity);
         param.put("appName", prodApplications.getApplicant().getAppName());

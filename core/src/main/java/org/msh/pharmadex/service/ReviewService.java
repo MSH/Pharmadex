@@ -16,6 +16,7 @@ import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,20 +38,17 @@ public class ReviewService implements Serializable {
 
 
     @Autowired
+    TimelineService timelineService;
+    @Autowired
     private ReviewDAO reviewDAO;
-
     @Autowired
     private GlobalEntityLists globalEntityLists;
-
     @Autowired
     private ChecklistService checklistService;
-
     @Autowired
     private ReviewInfoDAO reviewInfoDAO;
-
     @Autowired
     private ReviewQDAO reviewQDAO;
-
     @Autowired
     private ReviewDetailDAO reviewDetailDAO;
     @Autowired
@@ -113,12 +111,6 @@ public class ReviewService implements Serializable {
 //        if (reviewInfo.getReviewDetails().size() < 1)
 //            initReviewDetail(reviewInfo);
         return reviewInfo;
-    }
-
-    @Transactional
-    public List<ReviewDetail> findReviewDetails(Long userID, Long reviewInfoID) {
-        return reviewQDAO.findReviewSummary(userID, reviewInfoID);
-
     }
 
 
@@ -187,6 +179,12 @@ public class ReviewService implements Serializable {
 //
 //        return header1;
 //    }
+
+    @Transactional
+    public List<ReviewDetail> findReviewDetails(Long userID, Long reviewInfoID) {
+        return reviewQDAO.findReviewSummary(userID, reviewInfoID);
+
+    }
 
     public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo) {
         ProdApplications prodApplications = reviewInfo.getProdApplications();
@@ -321,7 +319,7 @@ public class ReviewService implements Serializable {
         Product product = prodApp.getProduct();
             try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
-                File invoicePDF = File.createTempFile("" + product.getProdName() + "_deficiency", ".pdf");
+                File invoicePDF = File.createTempFile("" + product.getProdName() + "_fir", ".pdf");
                 JasperPrint jasperPrint = initRegCert(prodApp, reviewComment);
                 net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
                 byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
@@ -331,16 +329,30 @@ public class ReviewService implements Serializable {
                 attachment.setFile(file);
                 attachment.setProdApplications(prodApp);
                 attachment.setFileName(invoicePDF.getName());
-                attachment.setTitle("Review Deficiency Letter");
+                attachment.setTitle("Further Information Request");
                 attachment.setUploadedBy(reviewComment.getUser());
                 attachment.setComment("Automatically generated Letter");
                 attachment.setContentType("application/pdf");
                 attachment.setReviewInfo(reviewComment.getReviewInfo());
                 reviewComment.setProdAppLetter(attachment);
                 revDeficiencyDAO.saveAndFlush(reviewComment);
+
+                TimeLine timeLine = new TimeLine();
+                timeLine.setComment("Status changes due to further information request");
+                timeLine.setRegState(RegState.FOLLOW_UP);
+                timeLine.setProdApplications(prodApp);
+                timeLine.setStatusDate(new Date());
+                timeLine.setUser(reviewComment.getUser());
+                RetObject retObject = timelineService.saveTimeLine(timeLine);
+                if (retObject.getMsg().equals("persist")) {
+                    timeLine = (TimeLine) retObject.getObj();
+                    prodApp = timeLine.getProdApplications();
+                    reviewComment.getReviewInfo().setProdApplications(prodApp);
+                }
                 return saveReviewInfo(reviewComment.getReviewInfo());
 
 //                prodApplicationsDAO.updateApplication(prodApp);
+
 
             } catch (JRException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -435,9 +447,22 @@ public class ReviewService implements Serializable {
 
     public RetObject saveRevDeficiency(RevDeficiency revDeficiency) {
         revDeficiency = revDeficiencyDAO.saveAndFlush(revDeficiency);
-        RetObject retObject = saveReviewInfo(revDeficiency.getReviewInfo());
-        if(retObject.getMsg().equals("success")){
-            ReviewInfo ri = (ReviewInfo) retObject.getObj();
+
+        TimeLine timeLine = new TimeLine();
+        timeLine.setComment("FIR recieved and status updated back to Under Review");
+        timeLine.setProdApplications(revDeficiency.getReviewInfo().getProdApplications());
+        timeLine.setUser(revDeficiency.getUser());
+        timeLine.setStatusDate(new Date());
+        timeLine.setRegState(RegState.REVIEW_BOARD);
+        RetObject retObject = timelineService.saveTimeLine(timeLine);
+        if (retObject.getMsg().equals("persist")) {
+            timeLine = (TimeLine) retObject.getObj();
+            revDeficiency.getReviewInfo().setProdApplications(timeLine.getProdApplications());
+        }
+
+        RetObject retObject2 = saveReviewInfo(revDeficiency.getReviewInfo());
+        if (retObject2.getMsg().equals("success")) {
+            ReviewInfo ri = (ReviewInfo) retObject2.getObj();
             revDeficiency.setReviewInfo(ri);
         }
         return new RetObject("success", revDeficiency);

@@ -1,8 +1,5 @@
 package org.msh.pharmadex.domain;
 
-import org.msh.pharmadex.domain.enums.CTDModule;
-import org.msh.pharmadex.domain.enums.ProdAppType;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -19,8 +16,7 @@ public class ReviewQuestion extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private CTDModule ctdModule;
+    private String ctdModule;
 
     @Column(name = "header1", length = 255)
     private String header1;
@@ -52,11 +48,11 @@ public class ReviewQuestion extends CreationDetail implements Serializable {
         this.id = id;
     }
 
-    public CTDModule getCtdModule() {
+    public String getCtdModule() {
         return ctdModule;
     }
 
-    public void setCtdModule(CTDModule ctdModule) {
+    public void setCtdModule(String ctdModule) {
         this.ctdModule = ctdModule;
     }
 
