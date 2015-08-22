@@ -54,7 +54,7 @@ public class ProdApplicationsDAO implements Serializable {
     }
 
     @Transactional
-    public ProdApplications findProdApplicationByProduct(Long prodId) {
+    public List<ProdApplications> findProdApplicationByProduct(Long prodId) {
         try {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<ProdApplications> cq = cb.createQuery(ProdApplications.class);
@@ -70,7 +70,7 @@ public class ProdApplicationsDAO implements Serializable {
             Predicate p = cb.equal(prodJoin.get("id"), prodId);
 
             cq.select(paRoot).where(p);
-            ProdApplications prodApp = entityManager.createQuery(cq).getSingleResult();
+            List<ProdApplications> prodApp = entityManager.createQuery(cq).getResultList();
             return prodApp;
         } catch (Exception e) {
             e.printStackTrace();

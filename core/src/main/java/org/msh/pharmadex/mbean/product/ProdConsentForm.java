@@ -13,6 +13,7 @@ import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
@@ -34,9 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Backing bean to capture review of products
@@ -55,6 +54,8 @@ public class ProdConsentForm implements Serializable {
     private UserService userService;
     @ManagedProperty(value = "#{reportService}")
     private ReportService reportService;
+    @ManagedProperty(value = "#{timelineService}")
+    private TimelineService timeLineService;
     private String password;
     private Product product;
     private ProdApplications prodApplications;
@@ -86,6 +87,7 @@ public class ProdConsentForm implements Serializable {
 
     }
 
+
     @Transactional
     public String submitApp() {
         context = FacesContext.getCurrentInstance();
@@ -100,20 +102,22 @@ public class ProdConsentForm implements Serializable {
         if (prodApplications.getProdAppNo() == null || prodApplications.getProdAppNo().equals(""))
             prodApplications.setProdAppNo(prodApplicationsService.generateAppNo(prodApplications));
 
-        List<TimeLine> timeLines = new ArrayList<TimeLine>();
+//        List<TimeLine> timeLines = new ArrayList<TimeLine>();
         TimeLine timeLine = new TimeLine();
         timeLine.setComment(bundle.getString("timeline_newapp"));
         timeLine.setRegState(RegState.NEW_APPL);
         timeLine.setProdApplications(prodApplications);
         timeLine.setUser(user);
         timeLine.setStatusDate(new Date());
-        timeLines.add(timeLine);
+//        timeLines.add(timeLine);
 
         prodApplications.setRegState(RegState.NEW_APPL);
         prodApplications.setSubmitDate(new Date());
         RetObject retObject = prodApplicationsService.submitProdApp(prodApplications, userSession.getLoggedINUserID());
         if (retObject.getMsg().equals("persist")) {
             prodApplications = (ProdApplications) retObject.getObj();
+            timeLine.setProdApplications(prodApplications);
+            timeLineService.saveTimeLine(timeLine);
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
             userSession.setProdAppID(prodApplications.getId());
             JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
@@ -208,5 +212,13 @@ public class ProdConsentForm implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public TimelineService getTimeLineService() {
+        return timeLineService;
+    }
+
+    public void setTimeLineService(TimelineService timeLineService) {
+        this.timeLineService = timeLineService;
     }
 }

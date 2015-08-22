@@ -507,5 +507,10 @@ public class ProdApplications extends CreationDetail implements Serializable {
     public void setReviewStatus(ReviewStatus reviewStatus) {
         this.reviewStatus = reviewStatus;
     }
+
+    @Override
+    public String toString() {
+        return "" + id;
+    }
 }
 

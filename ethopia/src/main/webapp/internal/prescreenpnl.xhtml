@@ -30,11 +30,10 @@
             <!--<p:ajax update="@form" listener="#{processProdBnET.prescreenfeerecvd}" />-->
 
         </p:selectBooleanButton>
+
     </h:panelGrid>
 
 
-    <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
-    <p:outputLabel value="#{processProdBn.moderator.username}"/>
 
     <p:dataTable var="checkList" value="#{preScreenProdMBn.prodAppChecklists}"
                  style="width:100%;" id="checkListTbl">

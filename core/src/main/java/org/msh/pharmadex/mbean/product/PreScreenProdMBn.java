@@ -219,9 +219,7 @@ public class PreScreenProdMBn {
 
     public boolean isDisplayScreenAction() {
         if (processProdBn != null && processProdBn.getProdApplications() != null) {
-            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP)
-                    || processProdBn.getProdApplications().getRegState().equals(RegState.VERIFY) || processProdBn.getProdApplications().getRegState().equals(RegState.FEE)
-                    || processProdBn.getProdApplications().getRegState().equals(RegState.REVIEW_BOARD))
+            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP))
                 displayScreenAction = true;
             else
                 displayScreenAction = false;

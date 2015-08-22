@@ -241,7 +241,7 @@ public class POrderService implements Serializable {
             byte[] file = generateLetter(pipOrderBase.getId(), "/reports/po_reject.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
             pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf");
-            pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
+            pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
             pOrderDoc.setRegState(pipOrderBase.getState());

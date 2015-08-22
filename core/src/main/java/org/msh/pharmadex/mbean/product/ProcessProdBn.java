@@ -4,6 +4,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.lab.SampleTest;
@@ -111,6 +112,7 @@ public class ProcessProdBn implements Serializable {
     private List<ReviewInfo> reviewInfos;
     private boolean registered;
     private boolean prescreened;
+    private List<ProdApplications> prevProdApps;
 
     @PostConstruct
     private void init() {
@@ -432,6 +434,8 @@ public class ProcessProdBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
             return "";
         }
+
+
         timeLine = new TimeLine();
         timeLine.setRegState(RegState.REGISTERED);
 //        prodApplications.setRegistrationDate(new Date());
@@ -710,21 +714,24 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplaySample() {
-        if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
-            RegState regState = prodApplications.getRegState();
-            if ((prodApplications != null && regState != null)) {
-                if (regState.equals(RegState.SCREENING) || regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {
-                    displaySample = false;
+        if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+            displaySample = false;
+        } else {
+            if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
+                RegState regState = prodApplications.getRegState();
+                if ((prodApplications != null && regState != null)) {
+                    if (regState.equals(RegState.SCREENING) || regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {
+                        displaySample = false;
+                    } else {
+                        displaySample = true;
+                    }
                 } else {
-                    displaySample = true;
+                    displaySample = false;
                 }
             } else {
                 displaySample = false;
             }
-        } else {
-            displaySample = false;
         }
-
         return displaySample;
     }
 
@@ -796,5 +803,22 @@ public class ProcessProdBn implements Serializable {
 
     public void setPrescreened(boolean prescreened) {
         this.prescreened = prescreened;
+    }
+
+    public List<ProdApplications> getPrevProdApps() {
+        if (prevProdApps == null) {
+            prevProdApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
+            for (ProdApplications pa : prevProdApps) {
+                if (pa.getId().equals(prodApplications.getId())) {
+                    prevProdApps.remove(pa);
+                    break;
+                }
+            }
+        }
+        return prevProdApps;
+    }
+
+    public void setPrevProdApps(List<ProdApplications> prevProdApps) {
+        this.prevProdApps = prevProdApps;
     }
 }

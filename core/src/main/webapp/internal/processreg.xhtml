@@ -86,7 +86,8 @@
                             </p:tab>
 
 
-                            <p:tab title="#{msgs.prod_comments}">
+                            <p:tab title="#{msgs.prod_comments}"
+                                   rendered="#{!userSession.company and !userSession.lab}">
                                 <p:commandButton icon="ui-icon-document" value="#{msgs.add_comment}"
                                                  onclick="PF('dlg').show()"/>
 
@@ -144,7 +145,7 @@
                             </p:tab>
 
                             <p:tab title="#{msgs.attachments}" id="attachtab"
-                                   rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}">
+                                   rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer||userSession.lab}">
 
                                 <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                                  oncomplete="PF('attachdlg').show()"
@@ -235,7 +236,7 @@
 
                             </p:tab>
 
-                            <p:tab title="#{msgs.amdmt_history}" rendered="#{processProdBn.registered}">
+                            <p:tab title="#{msgs.amdmt_history}" rendered="false">
 
                                 <p:dataTable id="amdmtHist" value="#{processProdBn.prodAppAmdmts}" var="amdmt">
                                     <p:column headerText="#{msgs.amdmt_type}">
@@ -278,6 +279,38 @@
                                                  icon="ui-icon-arrowthichk-n">
                                     <p:fileDownload value="#{fileUploadController.rejCertDownload()}"/>
                                 </p:commandButton>
+
+                                <p:panel header="Previous Applications">
+                                    <p:dataTable id="pa" value="#{processProdBn.prevProdApps}" var="pa">
+
+                                        <p:column headerText="#{msgs.application_no}">
+                                            <p:commandLink id="viewLink" value="#{pa.prodAppNo}"
+                                                           action="#{prodAppMBean.sentToDetail(pa.id)}"
+                                                           ajax="false"
+                                                           style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
+                                            </p:commandLink>
+                                            <h:outputText value="#{pa.prodAppNo}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msgs.reg_number}">
+                                            <h:outputText value="#{pa.prodRegNo}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msgs.prod_app_type}">
+                                            <h:outputText value="#{pa.prodAppType}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msgs.registration_date}">
+                                            <h:outputText value="#{pa.registrationDate}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msgs.expiry_date}">
+                                            <h:outputText value="#{pa.regExpiryDate}"/>
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                </p:panel>
                             </p:tab>
 
                             <p:tab title="#{msgs.processor}" id="process"

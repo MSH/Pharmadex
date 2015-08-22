@@ -76,7 +76,15 @@
                         <h:outputText value="#{msgs[eachprod.regState.key]}"/>
                     </p:column>
 
-                    <p:column sortBy="#{msgs[eachprod.regState.key]}">
+                    <p:column filterBy="#{msgs[eachprod.reviewStatus.key]}"
+                              sortBy="#{msgs[eachprod.reviewStatus.key]}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.review_status}"/>
+                        </f:facet>
+                        <h:outputText value="#{msgs[eachprod.reviewStatus.key]}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{eachprod.submitDate}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.submitted_date}"/>
                         </f:facet>

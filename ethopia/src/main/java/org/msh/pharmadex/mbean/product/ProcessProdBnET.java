@@ -9,9 +9,11 @@ import org.msh.pharmadex.service.ProdApplicationsServiceET;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
 
@@ -71,6 +73,10 @@ public class ProcessProdBnET implements Serializable {
                 timeLine.setRegState(RegState.VERIFY);
                 processProdBn.setTimeLine(timeLine);
                 processProdBn.addTimeline();
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                "Please send sample request letter if required for processing the application.",
+                                "Please send sample request letter if required for processing the application."));
             }
         }
         if (prodApplications.getRegState().equals(RegState.SCREENING)) {

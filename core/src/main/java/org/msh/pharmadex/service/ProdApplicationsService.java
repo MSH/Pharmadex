@@ -13,10 +13,7 @@ import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.LetterType;
-import org.msh.pharmadex.domain.enums.PaymentStatus;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +84,8 @@ public class ProdApplicationsService implements Serializable {
     private PharmClassDAO pharmClassDAO;
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private TimelineService timelineService;
 
     @Transactional
     public ProdApplications findProdApplications(long id) {
@@ -366,7 +365,7 @@ public class ProdApplicationsService implements Serializable {
     }
 
     @Transactional
-    public ProdApplications findProdApplicationByProduct(Long id) {
+    public List<ProdApplications> findProdApplicationByProduct(Long id) {
         return prodApplicationsDAO.findProdApplicationByProduct(id);
     }
 
@@ -498,7 +497,33 @@ public class ProdApplicationsService implements Serializable {
         this.prodApp = prodApp;
         this.product = prodApp.getProduct();
 
+        List<ProdApplications> prodApps;
+        ProdApplications proda = null;
         try {
+            if (prodApp.getProdAppType().equals(ProdAppType.RENEW)) {
+                prodApps = prodApplicationsDAO.findProdApplicationByProduct(product.getId());
+                if (prodApps != null) {
+                    for (ProdApplications pa : prodApps) {
+                        if (!pa.getProdAppType().equals(ProdAppType.RENEW)) {
+                            proda = pa;
+                        }
+                    }
+                }
+                TimeLine timeLine = new TimeLine();
+                timeLine.setRegState(RegState.RENEWED);
+                timeLine.setComment("The application is being renewed");
+                timeLine.setUser(prodApp.getUpdatedBy());
+                timeLine.setStatusDate(new Date());
+                timeLine.setProdApplications(proda);
+                timelineService.saveTimeLine(timeLine);
+
+                proda.setRegState(timeLine.getRegState());
+                prodApplicationsDAO.updateApplication(proda);
+
+
+            }
+
+
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
             File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
             JasperPrint jasperPrint = initRegCert();

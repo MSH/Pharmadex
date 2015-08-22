@@ -45,19 +45,19 @@
                         ajax="false"/>
             <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear"
                         oncomplete="PF('invoicedlg').show()"
-                        rendered="#{userSession.head||userSession.admin}"
+                        rendered="false"
                         action="#{renewalMbn.initInvoice()}">
             </p:menuitem>
             <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear"
                         action="#{renewalMbn.sendReminder}"
-                        rendered="#{userSession.head||userSession.admin}" update=":reghome:growl"/>
+                        rendered="false" update=":reghome:growl"/>
             <p:menuitem value="#{msgs.report_payment}" icon="ui-icon-gear"
                         action="#{renewalMbn.preparePayment()}"
                         oncomplete="PF('reportpaymentdlg').show()"
-                        rendered="#{userSession.company}" update=":reghome:growl" ajax="true"/>
+                        rendered="false" update=":reghome:growl" ajax="true"/>
             <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
                         oncomplete="PF('dlgAmdment').show()"
-                        rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>
+                        rendered="false" update=":reghome:growl"/>
             <!--        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" ajax="false" action="amdmtCategory.faces"
                                 rendered="#{userSession.company||userSession.admin}" />
              -->

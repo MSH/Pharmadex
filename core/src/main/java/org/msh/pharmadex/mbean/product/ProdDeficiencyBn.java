@@ -6,11 +6,11 @@ package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.TimeLine;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
+import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.service.*;
@@ -20,12 +20,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -50,6 +48,8 @@ public class ProdDeficiencyBn implements Serializable {
     private TimelineService timelineService;
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
+    @ManagedProperty(value = "#{prodAppLetterDAO}")
+    private ProdAppLetterDAO prodAppLetterDAO;
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -61,10 +61,27 @@ public class ProdDeficiencyBn implements Serializable {
     private ProdApplications prodApplications;
 
     public void PDF() throws JRException, IOException {
+        File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_def", ".pdf");
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", prodApplications.getId());
         context = FacesContext.getCurrentInstance();
         User user = userService.findUser(userSession.getLoggedINUserID());
         jasperPrint = reportService.generateDeficiency(prodAppChecklists, summary);
+
+        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+        byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
+
+        ProdAppLetter attachment = new ProdAppLetter();
+        attachment.setRegState(prodApplications.getRegState());
+        attachment.setFile(file);
+        attachment.setProdApplications(prodApplications);
+        attachment.setFileName(invoicePDF.getName());
+        attachment.setTitle("Deficiency Letter");
+        attachment.setUploadedBy(prodApplications.getCreatedBy());
+        attachment.setComment("Automatically generated Letter");
+        attachment.setContentType("application/pdf");
+        attachment.setLetterType(LetterType.DEFICIENCY);
+        prodAppLetterDAO.save(attachment);
+
         HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
         httpServletResponse.setContentType("application/pdf");
@@ -107,6 +124,10 @@ public class ProdDeficiencyBn implements Serializable {
         return prodAppChecklists;
     }
 
+    public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
+        this.prodAppChecklists = prodAppChecklists;
+    }
+
     @PostConstruct
     private void initDefBn() {
         Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
@@ -121,10 +142,6 @@ public class ProdDeficiencyBn implements Serializable {
             }
             FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
         }
-    }
-
-    public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
-        this.prodAppChecklists = prodAppChecklists;
     }
 
     public String getSummary() {
@@ -183,5 +200,13 @@ public class ProdDeficiencyBn implements Serializable {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public ProdAppLetterDAO getProdAppLetterDAO() {
+        return prodAppLetterDAO;
+    }
+
+    public void setProdAppLetterDAO(ProdAppLetterDAO prodAppLetterDAO) {
+        this.prodAppLetterDAO = prodAppLetterDAO;
     }
 }
