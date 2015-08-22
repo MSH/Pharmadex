@@ -35,26 +35,31 @@ public class ChecklistService implements Serializable {
         if(prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
             checklists = checklistDAO.findByRenewal(true);
         }else if (prodApplications.isSra())
-            checklists = checklistDAO.findByGenMedAndRecognizedMed(true, true);
-        else if (prodApplications.getProdAppType().equals(ProdAppType.GENERIC))
-            checklists = checklistDAO.findByGenMed(true);
+            checklists = checklistDAO.findByRecognizedMed(true);
         else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
             checklists = checklistDAO.findByNewMed(true);
+        else
+            checklists = checklistDAO.findByGenMed(true);
 //        else if(prodAppType.equals(ProdAppType.RECOGNIZED))
 //            checklists = checklistDAO.findByHeaderAndRecognizedMed(true,true);
         return checklists;
     }
 
     //SRA is recognized medicine
-    public List<Checklist> getETChecklists(ProdAppType prodAppType, boolean sra) {
-        if(prodAppType==null)
+    public List<Checklist> getETChecklists(ProdApplications prodApplications, boolean sra) {
+        if (prodApplications == null)
             return null;
 
-        if (prodAppType.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
-            checklists = checklistDAO.findByGenMedAndRecognizedMed(true,sra);
-        else {
-            checklists = checklistDAO.findByGenMedAndRecognizedMed(true, sra);
-        }
+        if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+            checklists = checklistDAO.findByRenewal(true);
+        } else if (prodApplications.isSra())
+            checklists = checklistDAO.findByRecognizedMed(true);
+        else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
+            checklists = checklistDAO.findByNewMed(true);
+        else
+            checklists = checklistDAO.findByGenMed(true);
+//        else if(prodAppType.equals(ProdAppType.RECOGNIZED))
+//            checklists = checklistDAO.findByHeaderAndRecognizedMed(true,true);
         return checklists;
     }
 

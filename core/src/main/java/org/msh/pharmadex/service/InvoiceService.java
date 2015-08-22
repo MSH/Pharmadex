@@ -90,7 +90,8 @@ public class InvoiceService implements Serializable {
 //        Object[] args = {prodApp.getProdName(), prodApp.getApplicant().getAppName(), prodApp.getProdApplications().getId()};
 //        body = mf.format(args);
 
-        prodApplications = prodApplicationsDAO.findProdApplicationByProduct(product.getId());
+        List<ProdApplications> prodApps = prodApplicationsDAO.findProdApplicationByProduct(product.getId());
+        ProdApplications prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
         String regExpDt = DateFormat.getDateInstance().format(invoice.getNewExpDate());
         String expDt = DateFormat.getDateInstance().format(prodApplications.getRegExpiryDate());
 

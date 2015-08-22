@@ -11,6 +11,7 @@ import org.msh.pharmadex.domain.enums.AgentType;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class LicenseHolderService implements Serializable {
         return customLicHolderDAO.findAll();
     }
 
+    @Transactional
     public LicenseHolder findLicHolder(Long licHolderID) {
         if (licHolderID != null)
             return licenseHolderDAO.findOne(licHolderID);

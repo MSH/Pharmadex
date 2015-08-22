@@ -12,7 +12,7 @@ public enum LetterType {
     NEW_USER_REGISTRATION,
     DEFICIENCY,
     SAMPLE_TEST_RESULT,
-    OTHER;
+    OTHER, SAMPLE_REQUEST_LETTER;
 
 
     public String getKey() {
