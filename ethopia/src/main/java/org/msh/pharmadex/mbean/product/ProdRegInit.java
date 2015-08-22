@@ -6,15 +6,15 @@ package org.msh.pharmadex.mbean.product;
 
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.Checklist;
-import org.msh.pharmadex.domain.FeeSchedule;
-import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.AgentType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.util.JsfUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -55,10 +55,17 @@ public class ProdRegInit implements Serializable {
     private List<Checklist> checklists;
 
     private LicenseHolder selLicHolder;
+    private List<LicenseHolder> licenseHolders;
 
+    @PostConstruct
+    public void init() {
+        licenseHolders = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
+        if (licenseHolders != null && licenseHolders.size() == 1) {
+            selLicHolder = licenseHolders.get(0);
+        }
+    }
 
     public List<LicenseHolder> completeLicHolderList(String query) {
-        List<LicenseHolder> licenseHolders = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
         return JsfUtils.completeSuggestions(query, licenseHolders);
     }
 
@@ -83,10 +90,14 @@ public class ProdRegInit implements Serializable {
     }
 
     public void populateChecklist() {
-        boolean sra = false;
-        if(selSRA!=null)
-            sra = selSRA.length > 0;
-        checklists = checklistService.getETChecklists(prodAppType, sra);
+        ProdApplications prodApplications = new ProdApplications();
+        prodApplications.setProdAppType(prodAppType);
+        if (selSRA.length > 0)
+            prodApplications.setSra(true);
+        else
+            prodApplications.setSra(false);
+        checklists = checklistService.getETChecklists(prodApplications, true);
+
     }
 
     public String regApp() {
@@ -100,11 +111,36 @@ public class ProdRegInit implements Serializable {
         prodAppInit.setPrescreenfee(prescreenfee);
         prodAppInit.setTotalfee(totalfee);
         prodAppInit.setSRA(selSRA.length > 0);
-        if (selLicHolder != null)
+        if (selLicHolder != null) {
             prodAppInit.setLicHolderID(selLicHolder.getId());
+            selLicHolder = licenseHolderService.findLicHolder(selLicHolder.getId());
+            if (selLicHolder.getAgentInfos() != null && selLicHolder.getAgentInfos().size() > 0) {
+                for (AgentInfo agentInfo : selLicHolder.getAgentInfos()) {
+                    if (agentInfo.getAgentType().equals(AgentType.FIRST)) {
+                        if (agentInfo.getApplicant() != null && agentInfo.getApplicant().getUsers() != null && agentInfo.getApplicant().getUsers().size() > 0) {
+                            userSession.setProdAppInit(prodAppInit);
+                            return "/secure/prodreghome";
+                        } else {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "No User associated with the local agent representing " + selLicHolder.getName(),
+                                    "No User associated with the local agent representing " + selLicHolder.getName()));
+                            return "";
+                        }
+                    }
+                }
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "No Local Agent associated with " + selLicHolder.getName(),
+                        "No Local Agent associated with " + selLicHolder.getName()));
+                return "";
+            }
+        } else {
+            userSession.setProdAppInit(prodAppInit);
+            return "/secure/prodreghome";
 
-        userSession.setProdAppInit(prodAppInit);
-        return "/secure/prodreghome";
+        }
+        return "";
+
     }
 
 

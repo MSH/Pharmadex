@@ -39,6 +39,10 @@ public class ReviewDetail extends CreationDetail {
     @Column(name = "other_comment")
     private String otherComment;
 
+    @Lob
+    @Column(name = "sec_comment")
+    private String secComment;
+
     @Column(name = "answered")
     private boolean answered;
 
@@ -124,5 +128,11 @@ public class ReviewDetail extends CreationDetail {
         this.volume = volume;
     }
 
+    public String getSecComment() {
+        return secComment;
+    }
 
+    public void setSecComment(String secComment) {
+        this.secComment = secComment;
+    }
 }

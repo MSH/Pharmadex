@@ -50,31 +50,40 @@
                     <p:outputLabel value="#{msgs.reviewer_response}: " styleClass="label"/>
                     <p:outputLabel/>
 
-                    <p:outputLabel
-                            value="#{msgs.review_info_satisf}:"/>
-                    <p:selectBooleanButton id="value2" onLabel="Yes" offLabel="No"
-                                           onIcon="ui-icon-check" value="#{reviewDetailBn.reviewDetail.satifactory}"
-                                           offIcon="ui-icon-close" style="width:60px">
-                        <p:ajax update=":reviewHome:satispg" process="@this"
-                                listener="#{reviewDetailBn.satisAction}"/>
-                    </p:selectBooleanButton>
+                    <!--
+                                        <p:outputLabel
+                                                value="#{msgs.review_info_satisf}:"/>
+                                        <p:selectBooleanButton id="value2" onLabel="Yes" offLabel="No"
+                                                               onIcon="ui-icon-check" value="#{reviewDetailBn.reviewDetail.satifactory}"
+                                                               offIcon="ui-icon-close" style="width:60px">
+                                            <p:ajax update=":reviewHome:satispg" process="@this"
+                                                    listener="#{reviewDetailBn.satisAction}"/>
+                                        </p:selectBooleanButton>
+                    -->
                 </h:panelGrid>
-
-                <h:panelGrid columnClasses="label value" columns="2" cellspacing="5px" id="satispg">
-                    <p:outputLabel id="satisLbl" value="#{msgs.review_info_satifno}:" styleClass="label"
-                                   rendered="#{!reviewDetailBn.satisfactory}"/>
-                    <p:editor id="noreasonTxt" value="#{reviewDetailBn.reviewDetail.noReason}" width="700"
-                              rendered="#{!reviewDetailBn.satisfactory and userSession.reviewer}"/>
-                    <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.noReason}"
-                                  rendered="#{!userSession.reviewer}"></h:outputText>
-                </h:panelGrid>
-
+                <!--
+                                <h:panelGrid columnClasses="label value" columns="2" cellspacing="5px" id="satispg">
+                                    <p:outputLabel id="satisLbl" value="#{msgs.review_info_satifno}:" styleClass="label"
+                                                   rendered="#{!reviewDetailBn.satisfactory}"/>
+                                    <p:editor id="noreasonTxt" value="#{reviewDetailBn.reviewDetail.noReason}" width="700"
+                                              rendered="#{!reviewDetailBn.satisfactory and userSession.reviewer}"/>
+                                    <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.noReason}"
+                                                  rendered="#{!userSession.reviewer}"></h:outputText>
+                                </h:panelGrid>
+                -->
                 <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
-                    <p:outputLabel value="#{msgs.review_comment}:" styleClass="label"/>
+                    <p:outputLabel value="#{msgs.pri_processor}:" styleClass="label"/>
                     <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"
-                              rendered="#{userSession.reviewer}"/>
+                              rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}"/>
                     <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.otherComment}"
-                                  rendered="#{!userSession.reviewer}"></h:outputText>
+                                  rendered="#{!userSession.reviewer or !reviewDetailBn.priReviewer}"></h:outputText>
+
+                    <p:outputLabel value="#{msgs.sec_review_comment}:" styleClass="label"/>
+                    <p:editor value="#{reviewDetailBn.reviewDetail.secComment}" width="700"
+                              rendered="#{userSession.reviewer and reviewDetailBn.secReviewer}"/>
+                    <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.secComment}"
+                                  rendered="#{!userSession.reviewer or !reviewDetailBn.secReviewer}"></h:outputText>
+
                 </h:panelGrid>
             </p:panel>
 

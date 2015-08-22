@@ -15,6 +15,7 @@ public enum RecomendType {
     RECOMENDED,
     NOT_RECOMENDED,
     FEEDBACK,
+    FIR,
     COMMENT;
 
 

@@ -102,7 +102,8 @@ public class ProductDisplay implements Serializable {
     private void initFields() {
         Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
         if(prodAppID!=null) {
-            prodApplications = prodApplicationsService.findProdApplicationByProduct(prodAppID);
+            List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
+            prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
             product = prodApplications.getProduct();
             applicant = prodApplications.getApplicant();
             FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");

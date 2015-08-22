@@ -1,10 +1,8 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.Review;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.ProdApplicationsService;
@@ -125,16 +123,28 @@ public class ProdReviewBn implements Serializable {
             if (userAccessMBean.getWorkspace().isSecReview())
                 reviewInfo.setSecReviewer(secReviewer);
 
-            RetObject riRetObj = reviewService.addReviewInfo(reviewInfo);
-            if (!riRetObj.getMsg().equalsIgnoreCase("success")) {
-                if (riRetObj.getMsg().equals("exist")) {
-                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Reviewer has already been assigned"));
+            if (reviewInfo.getDueDate().after(new Date())) {
+                RetObject riRetObj = reviewService.addReviewInfo(reviewInfo);
+                if (!riRetObj.getMsg().equalsIgnoreCase("success")) {
+                    if (riRetObj.getMsg().equals("exist")) {
+                        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Reviewer has already been assigned"));
 
-                } else
-                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-            } else
-                reviewInfos.add(reviewInfo);
-            reviewInfo = new ReviewInfo();
+                    } else
+                        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+                } else {
+                    reviewInfos.add(reviewInfo);
+                    if (!processProdBn.getProdApplications().getRegState().equals(RegState.REVIEW_BOARD)) {
+                        TimeLine timeLine = new TimeLine();
+                        timeLine.setRegState(RegState.REVIEW_BOARD);
+                        timeLine.setComment("Sent to the Review team for further review");
+                        processProdBn.setTimeLine(timeLine);
+                        processProdBn.addTimeline();
+                    }
+                }
+                reviewInfo = new ReviewInfo();
+            } else {
+                facesContext.addMessage(null, new FacesMessage("Due date must be in the future."));
+            }
         }
     }
 

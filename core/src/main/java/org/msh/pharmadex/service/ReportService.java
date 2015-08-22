@@ -122,7 +122,9 @@ public class ReportService implements Serializable {
     public JasperPrint generateSampleRequest(Product product, User user) throws JRException {
         URL resource = getClass().getResource("/reports/sample_request.jasper");
         HashMap param = new HashMap();
-        ProdApplications prodApplications = prodApplicationsService.findProdApplicationByProduct(product.getId());
+
+        List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
+        ProdApplications prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
         param.put("appName", prodApplications.getApplicant().getAppName());
         param.put("prodName", product.getProdName());
         param.put("prodStrength", product.getDosStrength() + product.getDosUnit());

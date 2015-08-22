@@ -20,7 +20,8 @@ public enum RegState {
     XFER_APPLICANCY,
     DEFAULTED,
     NOT_RECOMMENDED,
-    ARCHIVE;
+    ARCHIVE,
+    RENEWED;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());

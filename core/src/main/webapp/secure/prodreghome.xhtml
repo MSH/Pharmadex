@@ -341,28 +341,28 @@
                             <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
                             <p:inputText id="msrp" value="#{prodRegAppMbean.pricing.msrp}"
                                          title="#{msgs.product_pricing_max}"
-                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                                    >
                             </p:inputText>
                             <p:message for="msrp" showSummary="true" showDetail="false"/>
 
                             <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
                             <p:inputText id="priceperdose" value="#{prodRegAppMbean.pricing.pricePerDose}"
                                          title="#{msgs.product_pricing_perdose}"
-                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                                    >
                             </p:inputText>
                             <p:message for="priceperdose" showSummary="true" showDetail="false"/>
 
                             <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
                             <p:inputText id="priceperday" value="#{prodRegAppMbean.pricing.pricePerDay}"
                                          title="#{msgs.product_pricing_perdose}"
-                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                                    >
                             </p:inputText>
                             <p:message for="priceperday" showSummary="true" showDetail="false"/>
 
                             <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
                             <p:inputText id="treatcost" value="#{prodRegAppMbean.pricing.treatCost}"
                                          title="#{msgs.product_pricing_perdose}"
-                                         required="true" requiredMessage="#{msgs.valid_value_req}">
+                                    >
                             </p:inputText>
                             <p:message for="treatcost" showSummary="true" showDetail="false"/>
 
@@ -841,7 +841,7 @@
                     <h:outputLabel value="#{msgs.drug_price_name}" for="dpname"/>
                     <p:inputText id="dpname" value="#{drugPriceMBean.selectedDrugPrice.drugName}"
                                  title="#{msgs.product_pricing_perdose}"
-                                 required="true" requiredMessage="#{msgs.valid_value_req}">
+                                 requiredMessage="#{msgs.valid_value_req}">
                     </p:inputText>
                     <p:message for="dpname" showSummary="true" showDetail="false"/>
 

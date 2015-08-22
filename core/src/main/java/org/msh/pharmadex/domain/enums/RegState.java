@@ -17,7 +17,7 @@ public enum RegState {
     DISCONTINUED,
     XFER_APPLICANCY,
     DEFAULTED,
-    NOT_RECOMMENDED;
+    NOT_RECOMMENDED, RENEWED;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());
