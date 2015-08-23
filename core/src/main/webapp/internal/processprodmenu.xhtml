@@ -56,6 +56,9 @@
                         action="#{renewalMbn.preparePayment()}"
                         oncomplete="PF('reportpaymentdlg').show()"
                         rendered="#{userSession.company}" update=":reghome:growl" ajax="true"/>
+            <p:menuitem value="#{msgs.global_suspend}" icon="ui-icon-gear"
+                        action="#{processProdBn.sendToSuspend(null)}" ajax="false"
+                        rendered="#{userSession.admin||userSession.head}"/>
             <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
                         oncomplete="PF('dlgAmdment').show()"
                         rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>

@@ -280,7 +280,7 @@
                                     <p:fileDownload value="#{fileUploadController.rejCertDownload()}"/>
                                 </p:commandButton>
 
-                                <p:panel header="Previous Applications">
+                                <p:panel header="#{msgs.prev_applications}">
                                     <p:dataTable id="pa" value="#{processProdBn.prevProdApps}" var="pa">
 
                                         <p:column headerText="#{msgs.application_no}">
@@ -289,7 +289,6 @@
                                                            ajax="false"
                                                            style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
                                             </p:commandLink>
-                                            <h:outputText value="#{pa.prodAppNo}"/>
                                         </p:column>
 
                                         <p:column headerText="#{msgs.reg_number}">
@@ -318,6 +317,35 @@
                                 <ui:include src="reviewertable.xhtml"/>
                             </p:tab>
 
+                            <p:tab title="#{msgs.suspend_info}" id="susp"
+                                   rendered="#{(userSession.moderator||userSession.head||userSession.reviewer)and processProdBn.registered and !empty processProdBn.suspDetails}">
+                                <p:dataTable id="susptable" value="#{processProdBn.suspDetails}" var="susp">
+
+                                    <p:column headerText="#{msgs.application_no}">
+                                        <p:commandLink id="susplink" value="#{susp.suspNo}"
+                                                       action="#{processProdBn.sendToSuspend(susp.id)}"
+                                                       ajax="false">
+                                        </p:commandLink>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.moderator_name}">
+                                        <h:outputText value="#{susp.moderator.name}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.processor}">
+                                        <h:outputText value="#{susp.reviewer.name}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.requested_date}">
+                                        <h:outputText value="#{susp.reqDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.dec_date}">
+                                        <h:outputText value="#{susp.decisionDate}"/>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:tab>
 
                         </p:tabView>
 

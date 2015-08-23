@@ -2,6 +2,7 @@ package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.stereotype.Service;
@@ -202,6 +203,22 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
     @Override
     public String generateAppNo(ProdApplications prodApp){
         RegistrationUtil registrationUtil = new RegistrationUtil();
+        String appType;
+        if (prodApp.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+            appType = "NMR";
+        }
+        if (prodApp.getProdAppType().equals(ProdAppType.GENERIC) || prodApp.getProdAppType().equals(ProdAppType.GENERIC_NO_BE)) {
+            appType = "GEN";
+        }
+        if (prodApp.getProdAppType().equals(ProdAppType.RENEW)) {
+            appType = "REN";
+        }
+        if (prodApp.getProdAppType().equals(ProdAppType.VARIATION)) {
+            appType = "VAR";
+        }
+
+
+
         return registrationUtil.generateAppNo(prodApp.getId(), "NMR");
 
     }

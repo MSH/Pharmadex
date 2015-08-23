@@ -40,6 +40,9 @@ public class ProdAppLetter extends CreationDetail {
     private SampleTest sampleTest;
 
     @OneToOne
+    private SuspDetail suspDetail;
+
+    @OneToOne
     private User uploadedBy;
 
     @Enumerated(EnumType.STRING)
@@ -146,5 +149,13 @@ public class ProdAppLetter extends CreationDetail {
 
     public void setSampleTest(SampleTest sampleTest) {
         this.sampleTest = sampleTest;
+    }
+
+    public SuspDetail getSuspDetail() {
+        return suspDetail;
+    }
+
+    public void setSuspDetail(SuspDetail suspDetail) {
+        this.suspDetail = suspDetail;
     }
 }

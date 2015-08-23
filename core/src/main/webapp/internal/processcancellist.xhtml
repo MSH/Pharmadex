@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+
+        <p:messages id="messages" showDetail="true"/>
+        <h:form prependId="false">
+
+            <p:panel header="#{msgs.registration_product}">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <h:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
+                    <p:autoComplete value="#{regProdMbn.prodTable}" id="basicPojo"
+                                    completeMethod="#{regProdMbn.completeProduct}"
+                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                    converter="#{productConverter}" forceSelection="true"
+                            />
+                    <p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:panel>
+
+            <p:panel header="#{msgs.recieved_applications}">
+
+                <p:dataTable id="susptable" value="#{suspAppMBean.submmittedAppList}" var="susp">
+
+                    <p:column headerText="#{msgs.application_no}">
+                        <p:commandLink id="susplink" value="#{susp.suspNo}"
+                                       action="#{suspAppMBean.sendToSuspend(susp.id)}"
+                                       ajax="false">
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.moderator_name}">
+                        <h:outputText value="#{susp.moderator.name}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.processor}">
+                        <h:outputText value="#{susp.reviewer.name}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.requested_date}">
+                        <h:outputText value="#{susp.reqDate}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.dec_date}">
+                        <h:outputText value="#{susp.decisionDate}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

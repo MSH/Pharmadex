@@ -11,7 +11,8 @@ public enum ProdAppType {
 
     GENERIC,
     NEW_CHEMICAL_ENTITY,
-    RENEW;
+    RENEW,
+    VARIATION;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());

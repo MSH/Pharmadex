@@ -83,6 +83,9 @@ public class ProcessProdBn implements Serializable {
     private UserAccessMBean userAccessMBean;
     @ManagedProperty(value = "#{sampleTestService}")
     private SampleTestService sampleTestService;
+    @ManagedProperty(value = "#{suspendService}")
+    private SuspendService suspendService;
+
     private Applicant applicant;
     private List<Comment> comments;
     private List<Mail> mails;
@@ -113,6 +116,7 @@ public class ProcessProdBn implements Serializable {
     private boolean registered;
     private boolean prescreened;
     private List<ProdApplications> prevProdApps;
+    private List<SuspDetail> suspDetails;
 
     @PostConstruct
     private void init() {
@@ -271,13 +275,18 @@ public class ProcessProdBn implements Serializable {
 
     public String sendToRenew() {
         save();
-        facesContext = FacesContext.getCurrentInstance();
-        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-        Flash flash = facesContext.getExternalContext().getFlash();
+        Flash flash = JsfUtils.flashScope();
         flash.put("prodID", prodApplications.getProduct().getId());
         flash.put("appID", prodApplications.getApplicant().getApplcntId());
         return "renew";
 
+    }
+
+    public String sendToSuspend(Long suspID) {
+        Flash flash = JsfUtils.flashScope();
+        flash.put("prodAppID", prodApplications.getId());
+        flash.put("suspDetailID", suspID);
+        return "suspenddetail";
     }
 
 
@@ -820,5 +829,24 @@ public class ProcessProdBn implements Serializable {
 
     public void setPrevProdApps(List<ProdApplications> prevProdApps) {
         this.prevProdApps = prevProdApps;
+    }
+
+    public List<SuspDetail> getSuspDetails() {
+        if (suspDetails == null) {
+            suspDetails = suspendService.findSuspendByProd(prodApplications.getId());
+        }
+        return suspDetails;
+    }
+
+    public void setSuspDetails(List<SuspDetail> suspDetails) {
+        this.suspDetails = suspDetails;
+    }
+
+    public SuspendService getSuspendService() {
+        return suspendService;
+    }
+
+    public void setSuspendService(SuspendService suspendService) {
+        this.suspendService = suspendService;
     }
 }

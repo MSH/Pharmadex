@@ -88,7 +88,10 @@ public class ProdApplicationsService implements Serializable {
     private TimelineService timelineService;
 
     @Transactional
-    public ProdApplications findProdApplications(long id) {
+    public ProdApplications findProdApplications(Long id) {
+        if (id == null) {
+            return null;
+        }
         ProdApplications prodApp = prodApplicationsDAO.findProdApplications(id);
         return prodApp;
     }
