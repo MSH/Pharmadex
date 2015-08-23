@@ -3,6 +3,7 @@ package org.msh.pharmadex.dao.iface;
 import org.msh.pharmadex.domain.AmdmtCategory;
 import org.msh.pharmadex.domain.enums.AmdmtType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -16,9 +17,10 @@ import java.util.List;
 
 public interface AmdmtCategoryDAO extends JpaRepository<AmdmtCategory, Long> {
 
-    public List<AmdmtCategory> findByAmdmtType(AmdmtType amdmtType);
+    @Query("select a from AmdmtCategory a where a.amdmtType = ?1")
+    List<AmdmtCategory> findByAmdmtType(AmdmtType amdmtType);
 
-    public List<AmdmtCategory> findByIdIn(List<String> id);
+    List<AmdmtCategory> findByIdIn(List<String> id);
 
 
 }

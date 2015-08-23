@@ -35,16 +35,16 @@ public class AmdmtService implements Serializable {
 
     public List<AmdmtCategory> findAmdmtCategoryByType(AmdmtType amdmtType) {
 
-        return (List<AmdmtCategory>) amdmtCategoryDAO.findByAmdmtType(amdmtType);
+        return amdmtCategoryDAO.findByAmdmtType(amdmtType);
     }
 
     public List<AmdmtCategory> findAllAmdmtCategory() {
 
-        return (List<AmdmtCategory>) amdmtCategoryDAO.findAll();
+        return amdmtCategoryDAO.findAll();
     }
 
     public List<AmdmtCategory> findAmdmtCatByIDs(List selAmdmtS) {
-        return (List<AmdmtCategory>) amdmtCategoryDAO.findByIdIn(selAmdmtS);
+        return amdmtCategoryDAO.findByIdIn(selAmdmtS);
     }
 
     public String submitAmdmt(List<ProdAppAmdmt> prodAppAmdmts) {
