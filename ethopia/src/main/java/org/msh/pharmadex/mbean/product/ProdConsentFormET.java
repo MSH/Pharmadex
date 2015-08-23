@@ -6,6 +6,7 @@ package org.msh.pharmadex.mbean.product;
 
 
 import org.msh.pharmadex.service.LicenseHolderService;
+import org.msh.pharmadex.service.ProdApplicationsServiceET;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -26,9 +27,12 @@ public class ProdConsentFormET extends ProdConsentForm implements Serializable {
     @ManagedProperty(value = "#{licenseHolderService}")
     private LicenseHolderService licenseHolderService;
 
+    @ManagedProperty(value = "#{prodApplicationsServiceET}")
+    private ProdApplicationsServiceET prodApplicationsServiceET;
+
     @Override
     public String submitApp() {
-        getProdApplications().setProdAppNo(getProdApplicationsService().generateAppNo(getProdApplications()));
+        getProdApplications().setProdAppNo(prodApplicationsServiceET.generateAppNo(getProdApplications()));
         return super.submitApp();
     }
 
@@ -38,5 +42,13 @@ public class ProdConsentFormET extends ProdConsentForm implements Serializable {
 
     public void setLicenseHolderService(LicenseHolderService licenseHolderService) {
         this.licenseHolderService = licenseHolderService;
+    }
+
+    public ProdApplicationsServiceET getProdApplicationsServiceET() {
+        return prodApplicationsServiceET;
+    }
+
+    public void setProdApplicationsServiceET(ProdApplicationsServiceET prodApplicationsServiceET) {
+        this.prodApplicationsServiceET = prodApplicationsServiceET;
     }
 }

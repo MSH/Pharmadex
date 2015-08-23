@@ -38,6 +38,11 @@
                 <p:tab title="#{msgs.sampletest_detail}">
                     <p:panel value="Sample Test Detail">
                         <h:panelGrid columns="2" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <h:outputText value="#{msgs.global_curr_status}" styleClass="label"/>
+                            <h:outputText value="#{msgs[sampleDetailBn.sampleTest.sampleTestStatus.key]}"
+                                          styleClass="label"/>
+
+
                             <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
                             <p:dataList id="itm_req" value="#{sampleDetailBn.sampleTest.sampleTypes}" var="type">
                                 #{type}
@@ -45,9 +50,6 @@
 
                             <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
                             <p:outputLabel value="#{sampleDetailBn.sampleTest.quantity}" id="quantity"/>
-
-                            <h:outputText value="#{msgs.global_curr_status}"/>
-                            <h:outputText value="#{msgs[sampleDetailBn.sampleTest.sampleTestStatus.key]}"/>
 
                             <p:outputLabel value="#{msgs.created_by}"/>
                             <p:outputLabel value="#{sampleDetailBn.sampleTest.createdBy.name}"/>

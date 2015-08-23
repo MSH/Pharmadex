@@ -8,6 +8,21 @@ import java.util.Locale;
  */
 public class RegistrationUtil {
 
+    public static String formatString(String dosForm) {
+        String value = dosForm.trim();
+        value = value.toUpperCase();
+        value = value.replaceAll(", ", "_");
+        value = value.replaceAll(" / ", "_");
+        value = value.replaceAll("/ ", "_");
+        value = value.replaceAll("/", "_");
+        value = value.replaceAll("\\(", "_");
+        value = value.replaceAll("\\)", "_");
+        value = value.replaceAll("'", "_");
+        value = value.replaceAll("\\.", "_");
+        value = value.replaceAll("\\s", "_");
+        return value;
+    }
+
     public String generateAppNo(Long prodAppID) {
         String prodAppNo = "";
         Calendar calendar = Calendar.getInstance(Locale.US);
@@ -16,7 +31,7 @@ public class RegistrationUtil {
         String month = String.format("%02d", m);
         String no = String.format("%04d", prodAppID);
 
-        prodAppNo = year + month + "/" + no;
+        prodAppNo = no + "/" + month + "/" + year;
         return prodAppNo;
     }
 
@@ -28,22 +43,5 @@ public class RegistrationUtil {
 
         String prodAppNo = no + "/" + appType + "/" + year;
         return prodAppNo;
-    }
-
-
-
-    public static String formatString(String dosForm) {
-        String value = dosForm.trim();
-        value = value.toUpperCase();
-        value = value.replaceAll(", ","_");
-        value = value.replaceAll(" / ","_");
-        value = value.replaceAll("/ ","_");
-        value = value.replaceAll("/","_");
-        value = value.replaceAll("\\(","_");
-        value = value.replaceAll("\\)","_");
-        value = value.replaceAll("'","_");
-        value = value.replaceAll("\\.","_");
-        value = value.replaceAll("\\s","_");
-        return value;
     }
 }

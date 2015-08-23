@@ -1,0 +1,328 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reviewHome" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showDetail="true" showSummary="true" id="messages"/>
+
+            <div style="width:1054px">
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="prodApp" value="#{suspendDetailBn.prodApplications}"/>
+                </ui:decorate>
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <div align="right">
+                <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('reviewDlg').show()"
+                                 ajax="true"
+                                 rendered="#{userSession.reviewer}"/>
+                <p:commandButton value="#{msgs.global_suspend}" oncomplete="PF('regDlg').show()"
+                                 ajax="true"
+                                 rendered="#{userSession.head and (suspendDetailBn.showSuspend)}"/>
+                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}" ajax="false"
+                                 rendered="#{userSession.head||userSession.moderator}"/>
+                <p:commandButton value="#{msgs.product_details}" immediate="true"
+                                 action="#{suspendDetailBn.cancelSuspendDetail}"
+                                 ajax="false"/>
+
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
+                <p:tab title="#{msgs.sampletest_detail}">
+                    <p:panel value="Sample Test Detail">
+                        <p:commandButton value="#{msgs.assignmoderator}" icon="ui-icon-gear"
+                                         onclick="PF('moderatordlg').show()"
+                                         rendered="#{userSession.admin||userSession.head}" id="assignModMI"/>
+
+                        <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+                                         oncomplete="PF('assignreviewdlg').show()"
+                                         action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
+                                         rendered="#{userSession.moderator||userSession.admin}"
+                                         update=":assignreviewDlg"/>
+
+
+                        <h:panelGrid columns="2" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <h:outputText value="#{msgs.global_curr_status}" styleClass="label"/>
+                            <h:outputText value="#{msgs[suspendDetailBn.suspDetail.suspensionStatus.key]}"
+                                          styleClass="hint"/>
+
+                            <p:outputLabel value="#{msgs.moderator_name}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.moderator.name}"/>
+
+                            <p:outputLabel value="#{msgs.processor}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.reviewer.name}"/>
+
+                            <p:outputLabel value="#{msgs.created_by}"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.createdBy.name}"/>
+
+                            <p:outputLabel value="#{msgs.updated_date}"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.updatedDate}"/>
+
+                            <p:outputLabel value="#{msgs.global_duedate}"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.dueDate}"
+                                           converter="javax.faces.DateTime"
+                                           rendered="#{not empty suspendDetailBn.suspDetail.dueDate}"/>
+                            <p:calendar id="suspduedt" value="#{suspendDetailBn.suspDetail.dueDate}"
+                                        rendered="#{empty suspendDetailBn.suspDetail.dueDate}"
+                                        style="width:100%" showButtonPanel="true"/>
+
+                            <p:outputLabel value="#{msgs.decision_date}"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.decisionDate}"
+                                           converter="javax.faces.DateTime"
+                                           rendered="#{not empty suspendDetailBn.suspDetail.decisionDate}"/>
+                            <p:calendar id="samplerecdt" value="#{suspendDetailBn.suspDetail.decisionDate}"
+                                        rendered="#{empty suspendDetailBn.suspDetail.decisionDate}"
+                                        style="width:100%" showButtonPanel="true"/>
+
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="#{msgs.global_summary}">
+                        <h:panelGrid columns="2" cellspacing="5" cellpadding="5">
+                            <p:outputLabel value="#{msgs.recommendation}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.decision}" styleClass="label"/>
+
+                            <p:outputLabel value="#{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.finalSumm}" escape="false"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+
+                </p:tab>
+                <p:tab title="#{msgs.global_comment}">
+                    <p:commandButton value="#{msgs.add_comment}" icon="ui-icon-document"
+                                     action="#{suspendDetailBn.initComment}"
+                                     oncomplete="PF('addcommentDlg').show()" id="reviewcomment"/>
+
+                    <p:dataTable id="commenttable" value="#{suspendDetailBn.suspComments}" var="it">
+                        <p:column style="width:200px;">
+                            <p:outputLabel styleClass="ui-icon ui-icon-comment"
+                                           style="display:inline-block;"/>
+                            <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+                            <div style="font-size: smaller;">
+                                <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                            </div>
+                        </p:column>
+
+                        <p:column>
+                            <div style="padding-left:10px;padding-top:10px;">
+                                <h:outputText value="#{it.comment}"
+                                              escape="false"
+                                              styleClass="text"/>
+                            </div>
+                        </p:column>
+                        <!--                        <p:column style="width:200px;">
+                                                    #{it.sampleTestStatus}
+                                                </p:column>
+                        -->
+                    </p:dataTable>
+                </p:tab>
+
+                <p:tab title="#{msgs.attachments}">
+                    <!--
+                                        <p:commandButton icon="ui-icon-document" value="#{msgs.generate_report}"
+                                                         oncomplete="PF('attachDlg').show()" action="#{suspendDetailBn.initComment}"/>
+                    -->
+
+                    <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                     oncomplete="PF('attachdlg').show()" action="#{suspendDetailBn.prepareUpload}"
+                                     update=":attachdlg" id="addDocBtn"
+                                     rendered="#{userSession.head||userSession.moderator||userSession.reviewer}"/>
+
+                    <p:dataTable id="attachtable" value="#{suspendDetailBn.prodAppLetters}" var="doc">
+                        <p:column headerText="#{msgs.title}">
+                            <h:outputText value="#{doc.title}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.filename}">
+                            <h:outputText value="#{doc.fileName}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploaddate}">
+                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploadedby}">
+                            <h:outputText value="#{doc.uploadedBy.name}"/>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                             icon="ui-icon-arrowthichk-n">
+                                <p:fileDownload value="#{suspendDetailBn.fileDownload(doc)}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <!--
+                                                <p:column>
+                                                    <p:commandButton id="revdefdetails"
+                                                                     action="#{suspendDetailBn.findRevDef(doc)}" ajax="true" rendered="#{!doc.resolved}"
+                                                                     icon="ui-icon-search" oncomplete="PF('revDefDlg').show()"/>
+                                                </p:column>
+                        -->
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+
+        </h:form>
+
+        <p:dialog header="#{msgs.add_comment}" widgetVar="addcommentDlg" id="addcommentDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.global_comment}" for="addcomment" styleClass="label"/>
+                    <p:editor value="#{suspendDetailBn.suspComment.comment}" id="addcomment" required="true"
+                              width="700"/>
+                    <p:message for="addcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitComment}"
+                                 oncomplete="PF('addcommentDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="2" style="margin-bottom:10px" columnClasses="label value">
+                    <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                    <p:inputText id="attachtitle" value="#{suspendDetailBn.prodAppLetter.title}"/>
+                    <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="attachcomment" value="#{suspendDetailBn.prodAppLetter.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{suspendDetailBn.handleFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reviewHome:growl :reviewHome:messages"
+                              multiple="false"
+                              sizeLimit="10000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBn.addDocument}"
+                                 oncomplete="PF('attachdlg').hide()" update=":reviewHome"/>
+            </h:form>
+        </p:dialog>
+        <p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false"
+                  id="moderatordlg" modal="true" dynamic="true"
+                  rendered="#{userSession.head||userSession.admin}">
+            <h:form>
+
+                <p:panelGrid columns="2" columnClasses="label value">
+                    <h:outputText value="#{msgs.moderator_name}: "
+                                  escape="false"
+                                  styleClass="text"/>
+
+                    <p:autoComplete id="mod" value="#{suspendDetailBn.moderator}"
+                                    completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
+
+                </p:panelGrid>
+
+
+                <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBn.assignModerator}"
+                                 oncomplete="moderatordlg.hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" id="reviewDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb" styleClass="label"/>
+                    <p:selectOneMenu id="recomcb" value="#{suspendDetailBn.suspDetail.decision}" required="true"
+                                     requiredMessage="#{msgs.recommendation_valid}">
+                        <f:selectItem itemLabel="-"/>
+                        <f:selectItems value="#{suspendDetailBn.decisionType}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
+                    </p:selectOneMenu>
+                    <p:message for="recomcb"/>
+
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
+                    <p:editor value="#{suspendDetailBn.suspDetail.finalSumm}" id="revsummary" required="true"
+                              width="700"/>
+                    <p:message for="revsummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}"
+                                 oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"
+                  id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}">
+            <h:form prependId="false">
+                <p:panel>
+                    <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
+
+                        <h:outputText value="#{msgs.processor}"
+                                      escape="false"
+                                      styleClass="label"/>
+
+                        <p:autoComplete id="module3" value="#{suspendDetailBn.reviewer}"
+                                        completeMethod="#{globalEntityLists.completeProcessorList}"
+                                        dropdown="true"
+                                        var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                        forceSelection="true"
+                                        converter="#{userConverter}">
+                        </p:autoComplete>
+
+
+                        <p:outputLabel value="#{msgs.global_duedate}" for="duedt" styleClass="label"/>
+                        <p:calendar value="#{suspendDetailBn.suspDetail.dueDate}" id="duedt" showOn="button"
+                                    pattern="#{userAccessMBean.workspace.datePattern}">
+                            <f:validator validatorId="futureDateValidator"/>
+                        </p:calendar>
+
+                    </h:panelGrid>
+
+
+                    <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+                                     action="#{suspendDetailBn.assignReviewer}" ajax="false"/>
+                </p:panel>
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="#{msgs.suspend_info}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
+                  dynamic="true">
+            <h:form id="regdatedlg">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.registration_date}"/>
+                    <p:calendar value="#{suspendDetailBn.suspDetail.suspStDate}" id="regDate" showOn="button"
+                                required="true" pattern="#{userAccessMBean.workspace.datePattern}">
+                    </p:calendar>
+                    <p:outputLabel value="#{msgs.expiry_date}"/>
+                    <p:calendar value="#{suspendDetailBn.suspDetail.suspEndDate}" id="expiryDate" showOn="button"
+                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+
+                </h:panelGrid>
+
+                <p:commandButton id="regBtn" value="#{msgs.global_suspend}" action="#{suspendDetailBn.suspendProduct}"
+                                 oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"/>
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>
