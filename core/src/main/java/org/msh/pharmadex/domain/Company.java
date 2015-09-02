@@ -1,11 +1,8 @@
 package org.msh.pharmadex.domain;
 
-import org.msh.pharmadex.domain.enums.CompanyType;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,8 +12,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "company", uniqueConstraints = @UniqueConstraint(columnNames = {"companyName",
-        "siteNumber"}))
+@Table(name = "company", uniqueConstraints = @UniqueConstraint(columnNames = {"companyName"}))
 public class Company extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -3707427898846181650L;
     @Id
@@ -38,8 +34,11 @@ public class Company extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String faxNo;
 
-    @Column(length = 255, unique = true)
+    @Column(length = 255)
     private String siteNumber;
+
+    @Column(length = 255)
+    private String email;
 
     private boolean gmpInsp;
 
@@ -135,6 +134,14 @@ public class Company extends CreationDetail implements Serializable {
 
     public void setGmpCertNo(String gmpCertNo) {
         this.gmpCertNo = gmpCertNo;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

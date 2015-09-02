@@ -38,7 +38,7 @@
         <p:outputLabel/>
 
         <p:outputLabel value="#{msgs.applicant_filenumber}" for="ref"/>
-        <p:inputText value="#{companydata.siteNumber}" rendered="#{input}" id="ref" required="true"/>
+        <p:inputText value="#{companydata.siteNumber}" rendered="#{input}" id="ref"/>
         <h:outputLabel value="#{companydata.siteNumber}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right;" for="cphoneno"/>
@@ -48,6 +48,10 @@
         <p:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno"/>
         <p:inputText value="#{companydata.faxNo}" rendered="#{input}" id="cfaxno"/>
         <h:outputLabel value="#{companydata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_email}" for="email"/>
+        <p:inputText value="#{companydata.email}" rendered="#{input}" id="email"/>
+        <h:outputLabel value="#{companydata.email}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <p:outputLabel value="#{msgs.company_type}" rendered="#{input}" for="grid"/>
         <p:selectManyCheckbox id="grid" value="#{companyMBean.companyTypes}" layout="grid" columns="3"
