@@ -16,17 +16,17 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.util.WebUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -35,36 +35,29 @@ import java.util.ResourceBundle;
  */
 public abstract class ProcessPOrderBn implements Serializable{
 
-    private Logger logger = LoggerFactory.getLogger(ProcessPOrderBn.class);
-    FacesContext facesContext = FacesContext.getCurrentInstance();
-    ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     protected POrderBase pOrderBase;
-
     @ManagedProperty(value = "#{userSession}")
     protected UserSession userSession;
-
     @ManagedProperty(value = "#{POrderService}")
     protected POrderService pOrderService;
-
     @ManagedProperty(value = "#{userService}")
     protected UserService userService;
-
     @ManagedProperty(value = "#{globalEntityLists}")
     protected GlobalEntityLists globalEntityLists;
-
     protected boolean displayReview;
     protected boolean displayReviewComment;
     protected List<POrderChecklist> pOrderChecklists;
-    private User applicantUser;
-    private Applicant applicant;
-    private UploadedFile file;
-    private POrderDoc pOrderDoc;
     protected ArrayList<POrderDoc> pOrderDocs;
     protected POrderComment pOrderComment;
     protected List<POrderComment> pOrderComments;
     protected boolean openAPP;
-
-
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+    private Logger logger = LoggerFactory.getLogger(ProcessPOrderBn.class);
+    private User applicantUser;
+    private Applicant applicant;
+    private UploadedFile file;
+    private POrderDoc pOrderDoc;
 
     public abstract void init();
 
@@ -379,11 +372,11 @@ public abstract class ProcessPOrderBn implements Serializable{
 
     public boolean isOpenAPP() {
         if(pOrderBase!=null&&pOrderBase.getState()!=null){
-            if(pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION)||pOrderBase.getState().equals(AmdmtState.REVIEW))
+            if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION) || pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK))
             openAPP = true;
-            else
-            openAPP = false;
-
+            else {
+                openAPP = false;
+            }
         }
         return openAPP;
     }

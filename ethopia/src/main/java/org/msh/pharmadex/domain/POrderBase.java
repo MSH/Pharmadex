@@ -32,6 +32,9 @@ public class POrderBase extends CreationDetail {
     private String paymentMethod;
 
     @Column(length = 255)
+    private String performa;
+
+    @Column(length = 255)
     private String entryPort;
 
     @Column(length = 500)
@@ -218,5 +221,13 @@ public class POrderBase extends CreationDetail {
 
     public void setPipNo(String pipNo) {
         this.pipNo = pipNo;
+    }
+
+    public String getPerforma() {
+        return performa;
+    }
+
+    public void setPerforma(String performa) {
+        this.performa = performa;
     }
 }

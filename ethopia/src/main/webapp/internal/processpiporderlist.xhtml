@@ -2,8 +2,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
-                template="../templates/registration_layout.xhtml">
-    <ui:define name="regcontent">
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
         <div class="post">
             <h1 class="title ui-widget-header ui-corner-all">#{msgs.submitted_pip}</h1>
         </div>
@@ -43,9 +43,14 @@
                         -->
                     </p:column>
 
-                    <p:column headerText="#{msgs.registration_status}" filterBy="#{eachprod.state}"
+                    <p:column headerText="#{msgs.global_curr_status}" filterBy="#{eachprod.state}"
                               sortBy="#{eachprod.state}">
                         <p:outputLabel value="#{msgs[eachprod.state.key]}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.review_status}" filterBy="#{eachprod.reviewState}"
+                              sortBy="#{eachprod.reviewState}">
+                        <p:outputLabel value="#{msgs[eachprod.reviewState.key]}"/>
                     </p:column>
 
                     <p:column headerText="#{msgs.submitted_by}" filterBy="#{eachprod.createdBy.username}"

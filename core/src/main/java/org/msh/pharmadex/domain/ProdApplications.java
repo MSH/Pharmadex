@@ -89,6 +89,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean dossierReceived;
 
+    @Temporal(TemporalType.DATE)
+    private Date dosRecDate;
+
     private boolean applicantVerified;
 
     private boolean productVerified;
@@ -506,6 +509,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setReviewStatus(ReviewStatus reviewStatus) {
         this.reviewStatus = reviewStatus;
+    }
+
+    public Date getDosRecDate() {
+        return dosRecDate;
+    }
+
+    public void setDosRecDate(Date dosRecDate) {
+        this.dosRecDate = dosRecDate;
     }
 
     @Override

@@ -31,7 +31,8 @@ public class PIPOrderBn extends POrderBn {
     private PIPOrder pipOrder;
     private List<POrderChecklist> pOrderChecklists;
     private PIPProd pipProd;
-
+    @ManagedProperty(value = "#{dosageFormService}")
+    private DosageFormService dosageFormService;
 
     @PostConstruct
     private void init() {
@@ -67,8 +68,8 @@ public class PIPOrderBn extends POrderBn {
 
     public void calculateTotalPrice() {
         if (pipProd.getUnitPrice() != null && pipProd.getQuantity() != null) {
-            int unitPrice = pipProd.getUnitPrice();
-            pipProd.setTotalPrice("" + (unitPrice * pipProd.getQuantity()));
+            double unitPrice = pipProd.getUnitPrice();
+            pipProd.setTotalPrice(unitPrice * pipProd.getQuantity() + pipProd.getFreight());
         }
     }
 
@@ -94,10 +95,6 @@ public class PIPOrderBn extends POrderBn {
         setPipProd(new PIPProd(new DosageForm(), new DosUom(), pipOrder));
 
     }
-
-    @ManagedProperty(value = "#{dosageFormService}")
-    private DosageFormService dosageFormService;
-
 
     @Override
     public void addProd() {
@@ -148,6 +145,11 @@ public class PIPOrderBn extends POrderBn {
         if (getUserSession().isCompany())
             pipOrder.setApplicant(getApplicantUser().getApplicant());
 
+        if (pipOrder.getApplicantUser() == null) {
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, bundle.getString("global_fail"), "Please specify User for Local Agent"));
+            return "";
+        }
+
         RetObject retValue = getpOrderService().saveOrder(pipOrder);
         if (retValue.getMsg().equals("persist")) {
             pipOrder = (PIPOrder) retValue.getObj();
@@ -155,7 +157,11 @@ public class PIPOrderBn extends POrderBn {
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
             return "piporderlist";
         } else {
-            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), retValue.getMsg()));
+            if (retValue.getMsg().equals("missing_doc"))
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Please make sure all the required documents in the checklsit are enclosed"));
+            if (retValue.getMsg().equals("no_prod"))
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "No product specified to be imported"));
+
             return "";
         }
     }

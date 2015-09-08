@@ -3,14 +3,14 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
-                template="../templates/process_reg_layout.xhtml">
+                template="../templates/admin_layout.xhtml">
     <ui:define name="content">
 
         <h:form id="reghome">
 
             <h:panelGrid columns="2" columnClasses="menu,content" cellpadding="10px">
                 <p:menu style="width:198px">
-                    <p:submenu label="#{msgs.Registration}">
+                    <p:submenu label="#{msgs.pur_order}">
                         <p:menuitem value="#{msgs.global_save}" icon="ui-icon-gear"
                                     action="#{processPurOrderBn.saveApp}" ajax="false"
                                     rendered="#{!userSession.company and empty processPurOrderBn.pOrderBase.approvalDate}"/>
@@ -108,6 +108,14 @@
 
                                 <p:column headerText="#{msgs.prod_presentation}">
                                     <h:outputText value="#{order.productDesc}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.manuf_name}">
+                                    <h:outputText value="#{order.manufName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_country}">
+                                    <h:outputText value="#{order.country.countryName}"/>
                                 </p:column>
 
                                 <p:column headerText="#{msgs.global_quantity}">
@@ -216,15 +224,18 @@
                                     </p:column>
                                     <p:column rendered="#{!checkList.pipOrderLookUp.header}" headerText="#{msgs.staff_value}">
                                         <p:selectOneButton id="console" value="#{checkList.staffValue}"
-                                                           rendered="#{checkList.pipOrderLookUp.optional}">
+                                                           rendered="#{checkList.pipOrderLookUp.optional and !userSession.csd}">
                                             <f:selectItems value="#{globalLists.yesNoNA}" var="value"
                                                            itemLabel="#{msgs[value.key]}"/>
                                         </p:selectOneButton>
                                         <p:selectOneButton id="console2" value="#{checkList.staffValue}"
-                                                           rendered="#{!checkList.pipOrderLookUp.optional}">
+                                                           rendered="#{!checkList.pipOrderLookUp.optional and !userSession.csd}">
                                             <f:selectItems value="#{globalLists.yesNo}" var="value"
                                                            itemLabel="#{msgs[value.key]}"/>
                                         </p:selectOneButton>
+                                        <h:outputLabel value="#{msgs[checkList.staffValue.key]}"
+                                                       rendered="#{userSession.csd}"/>
+
                                     </p:column>
                                     <p:column headerText="Comments" rendered="#{!checkList.pipOrderLookUp.header}">
                                         <p:inputText value="#{checkList.staffComment}" rendered="#{processPurOrderBn.displayReviewComment}"/>

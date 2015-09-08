@@ -2,6 +2,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
                 template="../templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post" style="width: 1024px">
@@ -33,12 +34,18 @@
                     <p:message for="port" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
-                    <p:inputText id="delivery" required="true" value="#{pIPOrderBn.pipOrder.delivery}" readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
+                    <p:inputText id="delivery" value="#{pIPOrderBn.pipOrder.delivery}"
+                                 readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
                     <p:message for="delivery" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
                     <p:inputText id="payinfo" required="true" value="#{pIPOrderBn.pipOrder.paymentMethod}" readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
                     <p:message for="payinfo" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.performa}" for="proforma"/>
+                    <p:inputText id="proforma" value="#{pIPOrderBn.pipOrder.performa}"
+                                 readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
+                    <p:message for="proforma" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                     <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}" readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
@@ -285,6 +292,15 @@
                     <p:inputText id="manufSite" value="#{pIPOrderBn.pipProd.manufSite}"/>
                     <p:message for="manufSite" showSummary="true" showDetail="false"/>
 
+                    <o:outputLabel value="#{msgs.applicant_country}" for="cntry"/>
+                    <p:autoComplete value="#{pIPOrderBn.pipProd.country}" id="cntry"
+                                    completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
+                                    var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
+                                    required="true">
+                        <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+                    </p:autoComplete>
+                    <p:message for="cntry" showSummary="true"/>
+
                     <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
                     <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipProd.quantity}" >
                         <p:ajax event="blur" update =":orderdetailfrm:total" process="@form" listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
@@ -296,6 +312,13 @@
                         <p:ajax event="blur" update =":orderdetailfrm:total" process="@form" listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
                     </p:inputText>
                     <p:message for="price" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
+                    <p:inputText id="freight" required="true" value="#{pIPOrderBn.pipProd.freight}">
+                        <p:ajax event="blur" update=":orderdetailfrm:total" process="@form"
+                                listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
+                    </p:inputText>
+                    <p:message for="freight" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
                     <p:outputLabel id="total" value="#{pIPOrderBn.pipProd.totalPrice}"  styleClass="label"/>

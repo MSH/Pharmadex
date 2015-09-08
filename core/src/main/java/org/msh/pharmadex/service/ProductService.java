@@ -91,6 +91,22 @@ public class ProductService implements Serializable {
                 issues.add("no_inns");
                 issue = true;
             }
+            if (product.getShelfLife().equals(null) || product.getShelfLife().equals("")) {
+                issues.add("no_shelflife");
+                issue = true;
+            }
+            if (product.getPosology().equals(null) || product.getPosology().equals("")) {
+                issues.add("no_posology");
+                issue = true;
+            }
+            if (product.getIndications().equals(null) || product.getIndications().equals("")) {
+                issues.add("no_indications");
+                issue = true;
+            }
+            if (product.getIngrdStatment().equals(null) || product.getIngrdStatment().equals("")) {
+                issues.add("no_ingrdStatment");
+                issue = true;
+            }
             if (product.getProdCompanies() == null || product.getProdCompanies().size() < 1) {
                 issues.add("no_manufacturer");
                 issue = true;

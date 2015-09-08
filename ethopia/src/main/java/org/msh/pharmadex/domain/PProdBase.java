@@ -31,6 +31,9 @@ public class PProdBase extends CreationDetail implements Serializable {
     @Column(length = 500, nullable = true)
     private String manufSite;
 
+    @ManyToOne
+    private Country country;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOSFORM_ID")
     private DosageForm dosForm;
@@ -45,13 +48,16 @@ public class PProdBase extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String shelfLife;
 
-    private Integer quantity;
+    private Long quantity;
 
     @Column(nullable = false)
-    private Integer unitPrice;
+    private Double unitPrice;
+
+    @Column(nullable = false)
+    private Double freight;
 
     @Column(length = 255)
-    private String totalPrice;
+    private Double totalPrice;
 
     public PProdBase(DosageForm dosForm, DosUom dosUnit) {
         this.dosForm = dosForm;
@@ -94,14 +100,6 @@ public class PProdBase extends CreationDetail implements Serializable {
         this.productDesc = productDesc;
     }
 
-    public String getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(String totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
     public DosageForm getDosForm() {
         return dosForm;
     }
@@ -134,20 +132,12 @@ public class PProdBase extends CreationDetail implements Serializable {
         this.shelfLife = shelfLife;
     }
 
-    public Integer getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
-    }
-
-    public Integer getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(Integer unitPrice) {
-        this.unitPrice = unitPrice;
     }
 
     public String getManufName() {
@@ -165,4 +155,38 @@ public class PProdBase extends CreationDetail implements Serializable {
     public void setManufSite(String manufSite) {
         this.manufSite = manufSite;
     }
+
+    public Double getFreight() {
+        return freight;
+    }
+
+    public void setFreight(Double freight) {
+        this.freight = freight;
+    }
+
+    public Double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+
 }
