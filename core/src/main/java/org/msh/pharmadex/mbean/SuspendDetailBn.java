@@ -159,6 +159,12 @@ public class SuspendDetailBn implements Serializable {
         }
     }
 
+    public String reviewFeedback() {
+        suspDetail.setSuspensionStatus(SuspensionStatus.FEEDBACK);
+        suspendService.saveSuspend(suspDetail);
+        return "";
+    }
+
     public void assignReviewer() {
         try {
             facesContext = FacesContext.getCurrentInstance();
@@ -228,7 +234,7 @@ public class SuspendDetailBn implements Serializable {
             }
         }
         saveSuspend();
-        return "processprodlist";
+        return "processcancellist";
     }
 
     public List<RegState> getDecisionType() {

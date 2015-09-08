@@ -30,6 +30,8 @@
                 <p:commandButton value="#{msgs.global_suspend}" oncomplete="PF('regDlg').show()"
                                  ajax="true"
                                  rendered="#{userSession.head and (suspendDetailBn.showSuspend)}"/>
+                <p:commandButton value="#{msgs.review_feedback}" action="#{suspendDetailBn.reviewFeedback}" ajax="false"
+                                 rendered="#{userSession.moderator}"/>
                 <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}" ajax="false"
                                  rendered="#{userSession.head||userSession.moderator}"/>
                 <p:commandButton value="#{msgs.product_details}" immediate="true"

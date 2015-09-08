@@ -21,6 +21,8 @@ public enum RegState {
     DEFAULTED,
     NOT_RECOMMENDED,
     ARCHIVE,
+    SUSPEND,
+    CANCEL,
     RENEWED;
 
     public String getKey() {

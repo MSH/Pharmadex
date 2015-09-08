@@ -5,6 +5,7 @@ package org.msh.pharmadex.domain.enums;
  */
 public enum UseCategory {
     SCH_NARCOTIC,
+    PSYCHOTROPIC,
     PRESCRIPTION,
     HOSPITAL,
     PHARMACY,

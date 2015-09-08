@@ -2,10 +2,12 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.mbean.product.ProdTable;
+import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.SelectEvent;
@@ -39,8 +41,8 @@ public class PurOrderBn extends POrderBn {
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
-    @ManagedProperty(value = "#{productService}")
-    private ProductService productService;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    private ProdApplicationsService prodApplicationsService;
 
     private List<PurProd> purProds;
     private PurOrder purOrder;
@@ -49,6 +51,8 @@ public class PurOrderBn extends POrderBn {
     private ProdTable product;
     @ManagedProperty(value = "#{dosageFormService}")
     private DosageFormService dosageFormService;
+    @ManagedProperty(value = "#{companyService}")
+    private CompanyService companyService;
 
     @PostConstruct
     private void init() {
@@ -92,8 +96,8 @@ public class PurOrderBn extends POrderBn {
 
     public void calculateTotalPrice() {
         if (purProd.getUnitPrice() != null && purProd.getQuantity() != null) {
-            int unitPrice = purProd.getUnitPrice();
-            purProd.setTotalPrice("" + (unitPrice * purProd.getQuantity()));
+            double unitPrice = purProd.getUnitPrice();
+            purProd.setTotalPrice(unitPrice * purProd.getQuantity() + purProd.getFreight());
         }
     }
 
@@ -140,7 +144,6 @@ public class PurOrderBn extends POrderBn {
         return null;
     }
 
-
     @Override
     public void cancelAddProd() {
         purProd = new PurProd();
@@ -150,8 +153,7 @@ public class PurOrderBn extends POrderBn {
         System.out.println("Inside saveorder");
 
         context = FacesContext.getCurrentInstance();
-        purOrder.setSubmitDate(new Date());
-        purOrder.setCreatedBy(getApplicantUser());
+//        purOrder.setCreatedBy(getApplicantUser());
         purOrder.setState(AmdmtState.NEW_APPLICATION);
         purOrder.setpOrderChecklists(pOrderChecklists);
         purOrder.setPurProds(purProds);
@@ -169,7 +171,10 @@ public class PurOrderBn extends POrderBn {
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
             return "purorderlist";
         } else {
-            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+            if (retValue.getMsg().equals("missing_doc"))
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Please make sure all the required documents in the checklsit are enclosed"));
+            if (retValue.getMsg().equals("no_prod"))
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "No product specified to be imported"));
             return "";
         }
     }
@@ -189,7 +194,6 @@ public class PurOrderBn extends POrderBn {
     protected ArrayList<POrderDoc> findPOrdersDocs() {
         return (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(purOrder);
     }
-
 
     public void appChangeListenener(SelectEvent event) {
         logger.error("inside appChangeListenener");
@@ -211,14 +215,33 @@ public class PurOrderBn extends POrderBn {
     public void gmpChangeListener() {
         logger.error("inside gmpChangeListener");
         if (product != null && product.getId() != null) {
-            Product prod = productService.findProduct(product.getId());
+            List<ProdApplications> prodApplicationsList = prodApplicationsService.findProdApplicationByProduct(product.getId());
+            ProdApplications prodApplications = null;
+            for (ProdApplications pa : prodApplicationsList) {
+                if (pa.isActive())
+                    prodApplications = pa;
+            }
+            Product prod = prodApplications.getProduct();
+            List<ProdCompany> prodCompanies = prod.getProdCompanies();
+            Company c = null;
+            for (ProdCompany pc : prodCompanies) {
+                if (pc.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
+                    c = pc.getCompany();
+                    c = companyService.findCompanyById(c.getId());
+
+                }
+            }
             purProd.setProduct(prod);
             purProd.setProductName(prod.getProdName());
             purProd.setDosUnit(prod.getDosUnit());
             purProd.setDosForm(prod.getDosForm());
             purProd.setProductDesc(prod.getProdDesc());
             purProd.setShelfLife(prod.getShelfLife());
-            purProd.setProductNo(product.getRegNo());
+            purProd.setProductNo(prodApplications.getProdRegNo());
+            purProd.setDosStrength(prod.getDosStrength());
+            purProd.setManufName(c.getCompanyName());
+            purProd.setManufSite(c.getAddress().getAddress1() + ", " + c.getAddress().getAddress2());
+            purProd.setCountry(c.getAddress().getCountry());
         }
 
     }
@@ -266,12 +289,12 @@ public class PurOrderBn extends POrderBn {
         this.globalEntityLists = globalEntityLists;
     }
 
-    public ProductService getProductService() {
-        return productService;
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
     }
 
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
     }
 
     public List<POrderChecklist> getpOrderChecklists() {
@@ -292,5 +315,13 @@ public class PurOrderBn extends POrderBn {
 
     public void setDosageFormService(DosageFormService dosageFormService) {
         this.dosageFormService = dosageFormService;
+    }
+
+    public CompanyService getCompanyService() {
+        return companyService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
     }
 }

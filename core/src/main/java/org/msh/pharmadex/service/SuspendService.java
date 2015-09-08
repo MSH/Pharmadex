@@ -184,7 +184,7 @@ public class SuspendService implements Serializable {
 
         TimeLine timeLine = new TimeLine();
         timeLine.setRegState(suspDetail.getDecision());
-        timeLine.setComment("The application is being renewed");
+        timeLine.setComment("The application is suspended with Suspension number " + suspDetail.getSuspNo());
         timeLine.setUser(loggedInUser);
         timeLine.setStatusDate(new Date());
         timeLine.setProdApplications(prodApplications);

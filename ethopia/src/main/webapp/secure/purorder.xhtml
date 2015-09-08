@@ -2,6 +2,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
                 template="../templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post" style="width: 1024px">
@@ -33,12 +34,18 @@
                     <p:message for="port" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
-                    <p:inputText id="delivery" required="true" value="#{purOrderBn.purOrder.delivery}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:inputText id="delivery" value="#{purOrderBn.purOrder.delivery}"
+                                 readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
                     <p:message for="delivery" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
                     <p:inputText id="payinfo" required="true" value="#{purOrderBn.purOrder.paymentMethod}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
                     <p:message for="payinfo" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.performa}" for="proforma"/>
+                    <p:inputText id="proforma" value="#{purOrderBn.purOrder.performa}"
+                                 readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:message for="proforma" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                     <p:inputText id="comment" value="#{purOrderBn.purOrder.comment}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
@@ -62,6 +69,10 @@
                                              rendered="#{empty purOrderBn.purOrder.submitDate}"
                                              action="#{purOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                         </f:facet>
+
+                        <p:column headerText="#{msgs.prod_name}">
+                            <h:outputText value="#{order.id}"/>
+                        </p:column>
 
                         <p:column headerText="#{msgs.prod_name}">
                             <h:outputText value="#{order.productName}"/>
@@ -184,6 +195,7 @@
             </p:panel>
 
 
+
             <div align="center" style="height: 60px">
                 <p:commandButton value="#{msgs.global_submit}" rendered="#{empty purOrderBn.purOrder.submitDate}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
@@ -266,10 +278,6 @@
 
                 <h:panelGrid columns="3" cellspacing="10" columnClasses="col1, col2, col3" id="order_detail">
 
-                    <p:outputLabel value="#{msgs.reg_number}" for="prodnum"/>
-                    <p:outputLabel id="prodnum" required="true" value="#{purOrderBn.product.regNo}" />
-                    <p:message for="prodnum" showSummary="true"/>
-
                     <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
                     <p:outputLabel id="prodname" required="true" value="#{purOrderBn.purProd.productName}" />
                     <p:message for="prodname" showSummary="true"/>
@@ -291,18 +299,29 @@
                     <p:message for="shelflife" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
-                    <p:inputText id="dosStrength" value="#{purOrderBn.purProd.dosStrength}" title="DosStrength"
+                    <p:outputLabel id="dosStrength" value="#{purOrderBn.purProd.dosStrength}" title="DosStrength"
                                  required="true" requiredMessage="#{msgs.dos_strength}: Value required">
-                    </p:inputText>
+                    </p:outputLabel>
                     <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.manuf_name}" for="manufName"/>
-                    <p:inputText id="manufName" value="#{purOrderBn.purProd.manufName}"/>
+                    <p:outputLabel id="manufName" value="#{purOrderBn.purProd.manufName}"/>
                     <p:message for="manufName" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.pharmacy_address}" for="manufSite"/>
-                    <p:inputText id="manufSite" value="#{purOrderBn.purProd.manufSite}"/>
+                    <p:outputLabel id="manufSite" value="#{purOrderBn.purProd.manufSite}"/>
                     <p:message for="manufSite" showSummary="true" showDetail="false"/>
+
+                    <o:outputLabel value="#{msgs.applicant_country}" for="cntry"/>
+                    <!--                    <p:autoComplete value="#{purOrderBn.purProd.country}" id="cntry"
+                                                        completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
+                                                        var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
+                                                        required="true" >
+                                            <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+                                        </p:autoComplete>
+                        -->
+                    <p:outputLabel value="#{purOrderBn.purProd.country.countryName}" id="cntry"/>
+                    <p:message for="cntry" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
                     <p:inputText id="quant" required="true" value="#{purOrderBn.purProd.quantity}" >
@@ -315,6 +334,13 @@
                         <p:ajax event="blur" update =":orderdetailfrm:total" process="@form" listener="#{purOrderBn.calculateTotalPrice}"></p:ajax>
                     </p:inputText>
                     <p:message for="price" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
+                    <p:inputText id="freight" required="true" value="#{purOrderBn.purProd.freight}">
+                        <p:ajax event="blur" update=":orderdetailfrm:total" process="@form"
+                                listener="#{purOrderBn.calculateTotalPrice}"></p:ajax>
+                    </p:inputText>
+                    <p:message for="freight" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
                     <p:outputLabel id="total" value="#{purOrderBn.purProd.totalPrice}"  styleClass="label"/>
