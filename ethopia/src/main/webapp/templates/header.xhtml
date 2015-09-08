@@ -19,7 +19,7 @@
         <h:form>
             <div id="logo">
                 <h:panelGrid columns="3" width="100%">
-                    <a href="${request.contextPath}/home.faces">
+                    <a href="http://www.fmhaca.gov.et/">
                         <img src="${request.contextPath}/resources/images/Logo.png"/>
                     </a>
                     <h:panelGrid columns="1" cellspacing="5">
@@ -104,7 +104,7 @@
                         <p:submenu label="#{msgs.current_applications}"
                                    rendered="#{userSession.company||userSession.staff}">
                             <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
-                                        url="/secure/submittedproducts.faces"/>
+                                        url="/secure/submittedproducts.faces" rendered="#{!userSession.staff}"/>
                             <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
                                         url="/secure/savedproducts.faces"/>
                             <!--
@@ -140,6 +140,8 @@
                                         url="/internal/processprodlist.faces"/>
                             <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
                                         url="/internal/processapplist.faces"/>
+                            <p:menuitem value="#{msgs.process_suspension}" icon="ui-icon-document"
+                                        url="/internal/processcancellist.faces"/>
                             <!--
                                                 <p:menuitem value="#{msgs.rxsite_reg_process}" icon="ui-icon-document"
                                                             url="/internal/processrxsitelist.faces"/>
