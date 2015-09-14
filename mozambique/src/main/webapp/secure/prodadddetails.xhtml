@@ -5,6 +5,13 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
+        <p:outputLabel value="#{msgs.prod_indications}" for="indication"/>
+        <p:inputTextarea id="indication" value="#{prodRegAppMbean.product.indications}" cols="100"/>
+        <p:outputLabel/>
+
+        <p:outputLabel value="#{msgs.prod_posology}" for="posology"/>
+        <p:inputTextarea id="posology" value="#{prodRegAppMbean.product.posology}" cols="100"/>
+        <p:outputLabel/>
 
         <p:outputLabel value="#{msgs.prod_fnm}" for="fnm"/>
         <p:inputText id="fnm" value="#{prodRegAppMbean.product.fnm}"/>

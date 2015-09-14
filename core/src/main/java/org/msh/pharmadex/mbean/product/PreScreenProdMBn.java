@@ -31,22 +31,20 @@ import java.util.ResourceBundle;
 @ViewScoped
 public class PreScreenProdMBn {
 
+    @ManagedProperty(value = "#{processProdBn}")
+    protected ProcessProdBn processProdBn;
+    protected boolean displayScreenAction;
     @ManagedProperty(value = "#{prodAppChecklistService}")
     ProdAppChecklistService prodAppChecklistService;
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
-    @ManagedProperty(value = "#{processProdBn}")
-    private ProcessProdBn processProdBn;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
-
-
     private FacesContext facesContext;
     private ResourceBundle resourceBundle;
     private TimeLine timeLine = new TimeLine();
-    private boolean displayScreenAction;
     private User moderator;
     private List<ProdAppChecklist> prodAppChecklists;
     private ProdAppChecklist prodAppChecklist;
@@ -219,7 +217,8 @@ public class PreScreenProdMBn {
 
     public boolean isDisplayScreenAction() {
         if (processProdBn != null && processProdBn.getProdApplications() != null) {
-            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP))
+            if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP)
+                    || processProdBn.getProdApplications().getRegState().equals(RegState.FEE) || processProdBn.getProdApplications().getRegState().equals(RegState.VERIFY))
                 displayScreenAction = true;
             else
                 displayScreenAction = false;

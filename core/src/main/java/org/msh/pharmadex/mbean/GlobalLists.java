@@ -47,6 +47,9 @@ public class GlobalLists {
     }
 
     public List<ProdAppType> getProdAppType() {
+        List<ProdAppType> prodAppTypes = new ArrayList<ProdAppType>();
+        prodAppTypes.add(ProdAppType.GENERIC);
+        prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
         return Arrays.asList(ProdAppType.values());
     }
 

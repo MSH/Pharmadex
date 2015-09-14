@@ -109,8 +109,10 @@ public class ProdReviewBn implements Serializable {
 
                 } else
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-            } else
+            } else {
                 reviews.add(review);
+                updateRegState();
+            }
             review = new Review();
         } else {
             if (reviewInfo == null) {
@@ -133,18 +135,22 @@ public class ProdReviewBn implements Serializable {
                         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
                 } else {
                     reviewInfos.add(reviewInfo);
-                    if (!processProdBn.getProdApplications().getRegState().equals(RegState.REVIEW_BOARD)) {
-                        TimeLine timeLine = new TimeLine();
-                        timeLine.setRegState(RegState.REVIEW_BOARD);
-                        timeLine.setComment("Sent to the Review team for further review");
-                        processProdBn.setTimeLine(timeLine);
-                        processProdBn.addTimeline();
-                    }
+                    updateRegState();
                 }
                 reviewInfo = new ReviewInfo();
             } else {
                 facesContext.addMessage(null, new FacesMessage("Due date must be in the future."));
             }
+        }
+    }
+
+    private void updateRegState() {
+        if (!processProdBn.getProdApplications().getRegState().equals(RegState.REVIEW_BOARD)) {
+            TimeLine timeLine = new TimeLine();
+            timeLine.setRegState(RegState.REVIEW_BOARD);
+            timeLine.setComment("Sent to the Review team for further review");
+            processProdBn.setTimeLine(timeLine);
+            processProdBn.addTimeline();
         }
     }
 

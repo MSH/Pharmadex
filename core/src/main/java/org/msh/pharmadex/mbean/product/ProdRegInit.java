@@ -74,7 +74,7 @@ public class ProdRegInit implements Serializable {
     public void populateChecklist() {
         ProdApplications prodApplications = new ProdApplications();
         prodApplications.setProdAppType(prodAppType);
-        if (selSRA.length > 0)
+        if (selSRA != null && selSRA.length > 0)
             prodApplications.setSra(true);
         else
             prodApplications.setSra(false);
@@ -95,7 +95,10 @@ public class ProdRegInit implements Serializable {
         prodAppInit.setFee(fee);
         prodAppInit.setPrescreenfee(prescreenfee);
         prodAppInit.setTotalfee(totalfee);
-        prodAppInit.setSRA(selSRA.length > 0);
+        if (selSRA != null)
+            prodAppInit.setSRA(selSRA.length > 0);
+        else
+            prodAppInit.setSRA(false);
 
         userSession.setProdAppInit(prodAppInit);
         return "/secure/prodreghome";

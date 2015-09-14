@@ -2,84 +2,58 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="140"/>
 	<parameter name="subject" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="appName" class="java.lang.String"/>
-	<parameter name="appNumber" class="java.lang.String"/>
 	<parameter name="address1" class="java.lang.String"/>
 	<parameter name="address2" class="java.lang.String"/>
-	<parameter name="country" class="java.lang.String"/>
 	<parameter name="body" class="java.lang.String"/>
 	<parameter name="footer" class="java.lang.String"/>
-	<parameter name="id" class="java.lang.Integer">
+	<parameter name="id" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
 	</parameter>
 	<parameter name="registrar" class="java.lang.String"/>
+	<parameter name="manufName" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from product where id = $P{id}]]>
+		<![CDATA[select a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, d.dosageform, p.id, p.prodAppType,
+concat(prod.dosage_strength, ' ', u.uom) as dosstrength
+from `ProdApplications` p, product prod, applicant a, country c, dosform d, `DosUom` u
+where prod.id = p.prod_id
+and a.`applcntId` = p.app_id
+and a.`CNTRY_ID` = c.id
+and d.uid = prod.`DOSFORM_ID`
+and u.id = prod.`DOSUNIT_ID`
+and p.id = $P{id}]]>
 	</queryString>
-	<field name="id" class="java.lang.Long">
+	<field name="appName" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="createdDate" class="java.sql.Timestamp">
+	<field name="address1" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="updatedDate" class="java.sql.Timestamp">
+	<field name="address2" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="adminRoute" class="java.lang.Integer">
+	<field name="countryName" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="apprvd_name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="dosage_strength" class="java.lang.Double">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="gen_name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="lic_no" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="noAtc" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="prod_desc" class="java.lang.String">
+	<field name="prodAppNo" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="prod_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="prod_type" class="java.lang.Integer">
+	<field name="dosageform" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="reg_no" class="java.lang.String">
+	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="APP_ID" class="java.lang.Long">
+	<field name="prodAppType" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="userId" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="DOSFORM_ID" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="DOSUNIT_ID" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="PHARM_CLASSIF_ID" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="PROD_APP_ID" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="regstate" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="dosstrength" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -116,34 +90,34 @@
 		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="320" splitType="Stretch">
+		<band height="491" splitType="Stretch">
 			<textField>
 				<reportElement x="22" y="27" width="236" height="20" uuid="6b43134a-46d0-4c5e-a185-c3d7204ca5af"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="22" y="47" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{address1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="22" y="67" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{address2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="22" y="87" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{country}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="117" width="572" height="20" uuid="90df44ba-fda0-408e-a417-cbe38290996e"/>
@@ -153,7 +127,7 @@
 				<textFieldExpression><![CDATA[$P{subject}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="148" width="572" height="72" uuid="2cad77db-1ed1-44d7-ae91-b6c05a09bc7b"/>
+				<reportElement x="0" y="148" width="572" height="33" uuid="2cad77db-1ed1-44d7-ae91-b6c05a09bc7b"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -167,11 +141,109 @@
 				<text><![CDATA[To,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="282" width="572" height="31" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
+				<reportElement x="0" y="460" width="572" height="31" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="309" width="134" height="20" uuid="b1154b46-dfcf-4c95-bd52-37d4403bbd5b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Type of Application:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="289" width="134" height="20" uuid="5604dbb8-0078-4870-9977-36f323cbe307"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Manufacturer:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="149" y="309" width="361" height="20" uuid="f1b88c65-e191-4d61-a4a4-a01af46dea02"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodAppType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="149" y="289" width="361" height="20" uuid="2df6fd95-6398-41cf-9cfd-aa78ba6fd6f0"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="13" y="229" width="134" height="20" uuid="58b9d50a-a922-47d0-ad79-183188d4bef3"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product Name:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="249" width="134" height="20" uuid="2e5be4b1-3ca3-4012-98ac-6b22dcafe71f"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product Strength:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="149" y="269" width="361" height="20" uuid="f73f06ac-06f7-47de-8d1a-08937cd7f28c"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="147" y="196" width="361" height="20" uuid="318989b5-7bcb-42dd-8d9d-0a177b3bc9ad"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodAppNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="149" y="249" width="361" height="20" uuid="10eb287a-58c8-4f1e-b1c7-bbcf0a37d6ec"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosstrength}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="149" y="229" width="361" height="20" uuid="1bd8bd4b-0db5-4d09-a377-491b40acf8b9"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="196" width="134" height="20" uuid="aa4c00c9-4ce8-430a-9ec6-ff62253181d1"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Application Number:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="269" width="134" height="20" uuid="72e6799a-2837-4460-b3bd-f06da8ae078d"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dosage Form:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="341" width="572" height="48" uuid="6d43e0a3-db2e-4858-a069-d85b5d2c9ce2"/>
+				<textElement textAlignment="Justified">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Your application has been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 1 year from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="401" width="572" height="28" uuid="f9606908-70bb-4ce6-b566-8eb01cb786bf"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[If you have any queries as to the meaning of this letter, you should contact the undersigned immediately. ]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

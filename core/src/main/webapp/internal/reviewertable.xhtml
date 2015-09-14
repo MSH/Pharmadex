@@ -17,7 +17,7 @@
 
     <p:commandButton value="#{msgs.execsummary}" icon="ui-icon-gear" ajax="false"
                      action="#{prodReviewBn.sendToExecSumm(processProdBn.prodApplications.id)}" id="execsumm"
-                     rendered="#{userSession.moderator||userSession.admin||userSession.head}"/>
+                     rendered="#{(userSession.moderator||userSession.admin||userSession.head)and userAccessMBean.detailReview}"/>
 
     <div style="height:10px"/>
 
@@ -166,9 +166,10 @@
 
                     <h:outputText value="#{msgs.sec_processor}"
                                   escape="false"
-                                  styleClass="label"/>
+                                  styleClass="label" rendered="#{userAccessMBean.detailReview}"/>
 
                     <p:autoComplete id="sec_reviewer" value="#{prodReviewBn.secReviewer}"
+                                    rendered="#{userAccessMBean.detailReview}"
                                     completeMethod="#{globalEntityLists.completeProcessorList}"
                                     dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
@@ -189,6 +190,14 @@
                                    rendered="#{userAccessMBean.detailReview}"/>
                     <p:calendar value="#{prodReviewBn.reviewInfo.dueDate}" id="duedt" showOn="button"
                                 rendered="#{userAccessMBean.detailReview}"
+                                pattern="#{userAccessMBean.workspace.datePattern}">
+                        <f:validator validatorId="futureDateValidator"/>
+                    </p:calendar>
+
+                    <p:outputLabel value="#{msgs.global_duedate}" for="duedt2" styleClass="label"
+                                   rendered="#{!userAccessMBean.detailReview}"/>
+                    <p:calendar value="#{prodReviewBn.review.dueDate}" id="duedt2" showOn="button"
+                                rendered="#{!userAccessMBean.detailReview}"
                                 pattern="#{userAccessMBean.workspace.datePattern}">
                         <f:validator validatorId="futureDateValidator"/>
                     </p:calendar>

@@ -24,8 +24,10 @@ public class ProdAppChecklist extends CreationDetail implements Serializable {
     @JoinColumn(name = "prod_app_id", nullable = false)
     private ProdApplications prodApplications;
 
+    @Enumerated(EnumType.STRING)
     private YesNoNA value;
 
+    @Enumerated(EnumType.STRING)
     private YesNoNA staffValue;
 
     @Column(length = 500)

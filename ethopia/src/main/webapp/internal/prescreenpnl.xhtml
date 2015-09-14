@@ -8,16 +8,16 @@
     <h:panelGrid cellspacing="10" cellpadding="10" columns="3">
 
         <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}"/>
+                         rendered="#{preScreenProdMBnET.displayScreenAction}"/>
         <!--
                 <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{processProdBnET.initTimeLine}" update=":reghome:processtab:sendtoapplicant"
                                  rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('sendtoappdlg').show()"/>
         -->
-        <p:commandButton id="sendtoapp2" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false">
+        <p:commandButton id="sendtoapp2" value="#{msgs.send_to_app}" action="#{preScreenProdMBnET.sendToApplicant}"
+                         rendered="#{preScreenProdMBnET.displayScreenAction}" ajax="false">
         </p:commandButton>
         <p:commandButton id="feedback" value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
+                         rendered="#{preScreenProdMBnET.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
     </h:panelGrid>
 
     <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
@@ -36,8 +36,7 @@
     </h:panelGrid>
 
 
-
-    <p:dataTable var="checkList" value="#{preScreenProdMBn.prodAppChecklists}"
+    <p:dataTable var="checkList" value="#{preScreenProdMBnET.prodAppChecklists}"
                  style="width:100%;" id="checkListTbl">
         <p:column headerText="">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
@@ -60,7 +59,7 @@
         </p:column>
         <p:column>
             <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
-                             action="#{preScreenProdMBn.setProdAppChecklist(checkList)}"
+                             action="#{preScreenProdMBnET.setProdAppChecklist(checkList)}"
                              rendered="#{!checkList.fileUploaded}"/>
 
             <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
@@ -85,7 +84,7 @@
                           escape="false"
                           styleClass="text"/>
 
-            <p:autoComplete id="mod" value="#{preScreenProdMBn.moderator}"
+            <p:autoComplete id="mod" value="#{preScreenProdMBnET.moderator}"
                             completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
                             var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
                             forceSelection="true"
@@ -100,7 +99,7 @@
 
 
         <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
-                         action="#{preScreenProdMBn.completeScreen}"
+                         action="#{preScreenProdMBnET.completeScreen}"
                          oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form"/>
 
     </p:dialog>
@@ -113,13 +112,13 @@
             <p:panelGrid columns="2" columnClasses="label value">
 
                 <p:outputLabel value="#{msgs.global_remark}" for="remarkarchive"/>
-                <p:inputText value="#{preScreenProdMBn.timeLine.comment}" id="remarkarchive"/>
+                <p:inputText value="#{preScreenProdMBnET.timeLine.comment}" id="remarkarchive"/>
 
             </p:panelGrid>
 
 
             <p:commandButton id="archiveappbtn" value="#{msgs.global_submit}"
-                             action="#{preScreenProdMBn.archiveApp}"
+                             action="#{preScreenProdMBnET.archiveApp}"
                              oncomplete="PF('archiveappdlg').hide()" update=":reghome @form" process="@form"/>
         </h:form>
     </p:dialog>
@@ -128,9 +127,9 @@
               appendTo=":reghome">
         <h:form>
 
-            <p:fileUpload value="#{preScreenProdMBn.file}" mode="simple"/>
+            <p:fileUpload value="#{preScreenProdMBnET.file}" mode="simple"/>
             <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
-                             actionListener="#{preScreenProdMBn.addModuleDoc}"
+                             actionListener="#{preScreenProdMBnET.addModuleDoc}"
                              oncomplete="PF('moduledlg').hide()" ajax="false"
                     />
         </h:form>

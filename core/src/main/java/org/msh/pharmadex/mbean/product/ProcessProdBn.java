@@ -723,7 +723,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplaySample() {
-        if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+        if (prodApplications != null && prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
             displaySample = false;
         } else {
             if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {

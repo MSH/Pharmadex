@@ -385,24 +385,29 @@ public class ProdRegAppMbean implements Serializable {
 
     public String validateApp() {
         context = FacesContext.getCurrentInstance();
-        prodApplications.setApplicant(applicant);
-        prodApplications.setCreatedBy(applicantUser);
+        try {
+            prodApplications.setApplicant(applicant);
+            prodApplications.setCreatedBy(applicantUser);
 //        prodApplications.setForeignAppStatus(foreignAppStatuses);
-        prodApplications.setProduct(product);
-        if (product.getId() == null) {
-            product.setCreatedBy(getLoggedInUser());
-        }
-
-        RetObject retObject = productService.validateProduct(prodApplications);
-
-        if (retObject.getMsg().equals("persist")) {
-            userSession.setProdAppID(prodApplications.getId());
-            return "/secure/consentform.faces";
-        } else {
-            ArrayList<String> erroMsgs = (ArrayList<String>) retObject.getObj();
-            for (String msg : erroMsgs) {
-                context.addMessage(null, new FacesMessage(bundle.getString(msg)));
+            prodApplications.setProduct(product);
+            if (product.getId() == null) {
+                product.setCreatedBy(getLoggedInUser());
             }
+
+            RetObject retObject = productService.validateProduct(prodApplications);
+
+            if (retObject.getMsg().equals("persist")) {
+                userSession.setProdAppID(prodApplications.getId());
+                return "/secure/consentform.faces";
+            } else {
+                ArrayList<String> erroMsgs = (ArrayList<String>) retObject.getObj();
+                for (String msg : erroMsgs) {
+                    context.addMessage(null, new FacesMessage(bundle.getString(msg)));
+                }
+                return "";
+            }
+        } catch (Exception ex) {
+            context.addMessage(null, new FacesMessage(bundle.getString("save_error")));
             return "";
         }
 
@@ -463,18 +468,20 @@ public class ProdRegAppMbean implements Serializable {
     //used to set all the field values after insert/update operation
     private void setFieldValues() {
 //        prodApplications = product.getProdApplications();
-        product = productService.findProduct(prodApplications.getProduct().getId());
-        selectedInns = product.getInns();
-        selectedExipients = product.getExcipients();
-        selectedAtcs = product.getAtcs();
-        companies = product.getProdCompanies();
+        if (prodApplications != null && prodApplications.getProduct() != null) {
+            product = productService.findProduct(prodApplications.getProduct().getId());
+            selectedInns = product.getInns();
+            selectedExipients = product.getExcipients();
+            selectedAtcs = product.getAtcs();
+            companies = product.getProdCompanies();
 //        prodAppChecklists = prodApplications.getProdAppChecklists();
-        applicant = prodApplications.getApplicant();
-        applicantUser = prodApplications.getCreatedBy();
-        pricing = product.getPricing();
-        drugPrices = pricing != null ? pricing.getDrugPrices() : null;
+            applicant = prodApplications.getApplicant();
+            applicantUser = prodApplications.getCreatedBy();
+            pricing = product.getPricing();
+            drugPrices = pricing != null ? pricing.getDrugPrices() : null;
 //        foreignAppStatuses = prodApplications.getForeignAppStatus();
-        useCategories = product.getUseCategories();
+            useCategories = product.getUseCategories();
+        }
     }
 
     public Applicant getApplicant() {

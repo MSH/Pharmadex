@@ -35,8 +35,10 @@
             <p:outputLabel value="#{checkList.value}" rendered="#{checkList.checklist.header}"/>
         </p:column>
         <p:column headerText="#{msgs.UserType_STAFF}">
-            <p:selectBooleanCheckbox value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}"/>
-            <p:selectOneButton id="console" value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}" >
+            <!--            <p:selectBooleanCheckbox value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}"/> -->
+            <p:outputLabel value="#{checkList.staffValue}" rendered="#{!processProdBn.prescreened}"/>
+            <p:selectOneButton id="console" value="#{checkList.staffValue}"
+                               rendered="#{checkList.checklist.header and processProdBn.prescreened}">
                 <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
             </p:selectOneButton>
         </p:column>

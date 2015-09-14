@@ -40,6 +40,9 @@ public class Review implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date submitDate;
 
+    @Temporal(TemporalType.DATE)
+    private Date dueDate;
+
     @Lob
     @Column(nullable = true)
     private byte[] file;
@@ -161,11 +164,19 @@ public class Review implements Serializable {
         this.moderatorSummary = moderatorSummary;
     }
 
+    public String getModComment() {
+        return modComment;
+    }
+
     public void setModComment(String modComment) {
         this.modComment = modComment;
     }
 
-    public String getModComment() {
-        return modComment;
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 }
