@@ -141,7 +141,7 @@ public class UserDAO implements Serializable {
 
     public boolean isUsernameDuplicated(String username) {
         username = username.trim();
-        Long i = (Long) entityManager.createQuery("select count(userId) from User u where upper(u.name) = upper(:username)")
+        Long i = (Long) entityManager.createQuery("select count(userId) from User u where upper(u.username) = upper(:username)")
                 .setParameter("username", username)
                 .getSingleResult();
         if (i > 0)

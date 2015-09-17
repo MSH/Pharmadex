@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -32,7 +32,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class UserMBean implements Serializable {
     @ManagedProperty(value = "#{userService}")
     UserService userService;
@@ -92,6 +92,7 @@ public class UserMBean implements Serializable {
     }
 
     public String saveUser() {
+        facesContext = FacesContext.getCurrentInstance();
         if (selectedUser.getUserId() == 0)
             selectedUser.setUserId(null);
         selectedUser.setRoles(roles.getTarget());
@@ -103,6 +104,25 @@ public class UserMBean implements Serializable {
             updateuser();
             return "";
         }
+
+        if (userService.isUsernameDuplicated(selectedUser.getUsername())) {
+            FacesMessage msg = new FacesMessage(selectedUser.getUsername() + " "
+                    + bundle.getString("valid_user_exist"));
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            facesContext.addMessage(null, msg);
+            facesContext.validationFailed();
+            return "";
+        }
+
+        if (userService.isEmailDuplicated(selectedUser.getEmail())) {
+            FacesMessage msg = new FacesMessage(selectedUser.getEmail() + " "
+                    + bundle.getString("valid_email_exist"));
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            facesContext.addMessage(null, msg);
+            facesContext.validationFailed();
+            return "";
+        }
+
         String password = PassPhrase.getNext();
         selectedUser.setPassword(password);
         selectedUser.setRegistrationDate(new Date());
@@ -114,7 +134,6 @@ public class UserMBean implements Serializable {
         mail.setUser(selectedUser);
         mail.setDate(new Date());
         mail.setMessage(bundle.getString("email_user_reg1") + selectedUser.getUsername() + bundle.getString("email_user_reg2") + password + bundle.getString("email_user_reg3"));
-        FacesContext facesContext = FacesContext.getCurrentInstance();
         String retvalue;
         try {
             retvalue = userService.createUser(selectedUser);
@@ -188,10 +207,11 @@ public class UserMBean implements Serializable {
         selectedUser.setUpdatedDate(new Date());
         Mail mail = new Mail();
         mail.setMailto(selectedUser.getEmail());
-        mail.setSubject("Your Pharmadex password");
+        mail.setSubject("Password Reset");
+//        mail.setSubject(bundle.getString("reset_pwd_sub"));
         mail.setUser(selectedUser);
         mail.setDate(new Date());
-        mail.setMessage("Your Pharmadex password has been successfully reset In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
+        mail.setMessage("Your password has been successfully reset In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             selectedUser = userService.updateUser(userService.passwordGenerator(selectedUser));

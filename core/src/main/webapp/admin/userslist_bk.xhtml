@@ -44,9 +44,9 @@
             </h:panelGroup>
         </h:form>
 
-        <p:dialog widgetVar="adduser" modal="true" resizable="false" header="Add User" dynamic="true">
+        <p:dialog widgetVar="adduser" modal="true" resizable="false" header="#{msgs.add_user}" dynamic="true">
             <h:form id="adduserfrm">
-                <p:messages showDetail="true" showSummary="true"/>
+                <p:messages showSummary="true"/>
 
                 <ui:decorate template="/templates/userdetailtmpl.xhtml">
                     <ui:param name="userdata" value="#{userMBean.selectedUser}"/>
@@ -80,7 +80,7 @@
                     </p:selectBooleanButton>
 
                     <p:commandButton action="#{userMBean.resetPassword}" value="#{msgs.reset_password}"
-                                     oncomplete="adduser.hide()"
+                                     oncomplete="PF('adduser').hide()"
                                      update=":userlist:users :userlist:messages :adduserfrm"
                                      rendered="#{userMBean.edit}"/>
                 </h:panelGrid>

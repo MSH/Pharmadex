@@ -8,7 +8,6 @@
         <p:outputLabel value="#{msgs.User_name}*" />
         <h:outputText value="#{userdata.name}"  style="font-weight: bold;" rendered="#{!input}"/>
         <p:inputText value="#{userdata.name}" rendered="#{input}"  required="true" requiredMessage="#{msgs.valid_namereq}">
-            <f:validator binding="#{userNameValidator}"/>
                 </p:inputText>
 
         <h:outputLabel/>
