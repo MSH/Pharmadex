@@ -1,7 +1,6 @@
 package org.msh.pharmadex.domain;
 
 
-
 import org.msh.pharmadex.util.RegistrationUtil;
 
 import javax.persistence.*;
