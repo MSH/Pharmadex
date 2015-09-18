@@ -18,10 +18,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jetty.version>6.1.4</jetty.version>
-        <spring.version>3.1.2.RELEASE</spring.version>
+        <spring.version>4.2.1.RELEASE</spring.version>
         <slf4j.version>1.7.2</slf4j.version>
         <java.version>1.6</java.version>
-        <junit.version>4.8.2</junit.version>
+        <junit.version>4.12</junit.version>
         <jasperreports.version>4.8.0</jasperreports.version>
         <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.3.0.Final</version>
+            <version>4.3.1.Final</version>
             <scope>compile</scope>
         </dependency>
 
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.6.10.Final</version>
+            <version>4.3.11.Final</version>
             <scope>compile</scope>
         </dependency>
 
@@ -89,14 +89,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.21</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.1.Final</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Spring Dependencies -->
@@ -138,7 +130,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.7.1.RELEASE</version>
+            <version>1.9.0.RELEASE</version>
         </dependency>
 
         <!-- Spring security -->
@@ -163,14 +155,14 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>20030825.184428</version>
+            <version>1.4</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
-            <version>20030825.183949</version>
+            <version>1.6</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

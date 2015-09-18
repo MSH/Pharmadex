@@ -1,11 +1,10 @@
 package org.msh.pharmadex.service;
 
-import junit.framework.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.springframework.beans.factory.annotation.Autowired;

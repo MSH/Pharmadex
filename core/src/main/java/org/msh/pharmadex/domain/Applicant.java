@@ -1,5 +1,6 @@
 package org.msh.pharmadex.domain;
 
+import org.hibernate.envers.NotAudited;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "applicant")
+//@Audited
 public class Applicant extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -9020561842927501066L;
     @Id
@@ -30,6 +32,7 @@ public class Applicant extends CreationDetail implements Serializable {
     private Address address = new Address();
 
     @OneToOne(fetch = FetchType.LAZY)
+    @NotAudited
     private ApplicantType applicantType;
 
     @Column(length = 500)

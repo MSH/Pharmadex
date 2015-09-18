@@ -1,6 +1,8 @@
 package org.msh.pharmadex.domain;
 
 
+import org.hibernate.envers.NotAudited;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -21,7 +23,8 @@ public class Address implements Serializable{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CNTRY_ID")
-   	private Country country;
+    @NotAudited
+    private Country country;
 
     public String getAddress1() {
         return address1;

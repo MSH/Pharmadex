@@ -10,7 +10,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.impl.SessionImpl;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
@@ -21,6 +20,7 @@ import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +29,7 @@ import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -99,16 +100,18 @@ public class SampleTestService implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return new RetObject("error");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new RetObject("error");
         }
     }
 
-    public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException {
+    public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException, SQLException {
         String emailBody = sampleComment.getComment();
         Product product = prodApplications.getProduct();
         URL resource = getClass().getResource("/reports/sample_request.jasper");
         Session hibernateSession = entityManager.unwrap(Session.class);
-        SessionImpl session = (SessionImpl) hibernateSession;
-        Connection conn = session.connection();
+        Connection conn = SessionFactoryUtils.getDataSource(hibernateSession.getSessionFactory()).getConnection();
         HashMap param = new HashMap();
         List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
         prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
@@ -128,7 +131,9 @@ public class SampleTestService implements Serializable {
         param.put("date", new Date());
         param.put("appNumber", prodApplications.getProdAppNo());
 
-        return JasperFillManager.fillReport(resource.getFile(), param, conn);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+        conn.close();
+        return jasperPrint;
     }
 
 

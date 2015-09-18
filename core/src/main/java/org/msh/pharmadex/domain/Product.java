@@ -1,6 +1,7 @@
 package org.msh.pharmadex.domain;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.msh.pharmadex.domain.enums.*;
 
 import javax.persistence.*;
@@ -43,6 +44,7 @@ public class Product extends CreationDetail implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DOSFORM_ID")
+    @NotAudited
     private DosageForm dosForm;
 
     @Column(name = "dosage_strength")
@@ -50,10 +52,12 @@ public class Product extends CreationDetail implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DOSUNIT_ID")
+    @NotAudited
     private DosUom dosUnit;
 
     @Column(name = "prod_type")
     @Enumerated(EnumType.STRING)
+    @NotAudited
     private ProdType prodType;
 
     @Column(name = "age_group")
@@ -65,29 +69,36 @@ public class Product extends CreationDetail implements Serializable {
     private ProdCategory prodCategory;
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @NotAudited
     private List<ProdInn> inns;
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @NotAudited
     private List<ProdExcipient> excipients;
 
     @ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY)
     @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "atc_id"))
+    @NotAudited
     private List<Atc> atcs;
 
     private boolean noAtc = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ADMIN_ROUTE_ID")
+    @NotAudited
     private AdminRoute adminRoute;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PHARM_CLASSIF_ID")
+    @NotAudited
     private PharmClassif pharmClassif;
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @NotAudited
     private List<ProdCompany> prodCompanies;
 
     @OneToMany(mappedBy = "product")
+    @NotAudited
     private List<ProdApplications> prodApplicationses;
 
     @Transient
@@ -97,6 +108,7 @@ public class Product extends CreationDetail implements Serializable {
     private String ingrdStatment;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @NotAudited
     private Pricing pricing;
 
     @Enumerated(EnumType.STRING)

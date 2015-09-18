@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-
-
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
        default-autowire="byName">
 
     <!-- Scans within the base package of the application for @Components to configure as beans -->
@@ -21,8 +17,16 @@
                 <property name="showSql" value="true"/>
                 <property name="generateDdl" value="true"/>
                 <property name="databasePlatform" value="${db.dialect}"/>
-
             </bean>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">${db.dialect}</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="org.hibernate.envers.auditTablePrefix">AUD_</prop>
+                <prop key="org.hibernate.envers.auditTableSuffix"></prop>
+                <prop key="org.hibernate.envers.storeDataAtDelete">true</prop>
+            </props>
         </property>
     </bean>
 

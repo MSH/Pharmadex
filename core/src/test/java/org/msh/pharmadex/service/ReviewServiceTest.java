@@ -1,22 +1,15 @@
 package org.msh.pharmadex.service;
 
-import junit.framework.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.msh.pharmadex.dao.AmdmtDAO;
 import org.msh.pharmadex.dao.ReviewQDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,7 +46,7 @@ public class ReviewServiceTest {
 
 
     @Test
-    public void testGetReviewHeader1List(){
+    public void testGetReviewHeader1List() {
         Assert.assertEquals(true, true);
 //        List<DisplayReviewQ> header2 = reviewService.getDisplayReviewSum(new ReviewInfo());
 //        Assert.assertNotNull(header2);

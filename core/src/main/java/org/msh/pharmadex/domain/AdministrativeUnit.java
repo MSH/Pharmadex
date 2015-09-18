@@ -1,6 +1,5 @@
 package org.msh.pharmadex.domain;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OrderBy;
 
 import javax.persistence.*;
@@ -41,8 +40,40 @@ public class AdministrativeUnit extends CreationDetail implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="COUNTRYSTRUCTURE_ID")
 	private CountryStructure countryStructure;
-	
 
+	/**
+	 * Static method that return the parent code of a given code
+	 *
+	 * @param code
+	 * @return
+	 */
+	public static String getParentCode(String code) {
+		if ((code == null) || (code.length() <= 3))
+			return null;
+
+		if (code.length() <= 6)
+			return code.substring(0, 3);
+		if (code.length() <= 9)
+			return code.substring(0, 6);
+		if (code.length() <= 12)
+			return code.substring(0, 9);
+		return code.substring(0, 12);
+	}
+
+	/**
+	 * Static method to check if a code is equals of a child of the code given by the parentCode param
+	 *
+	 * @param parentCode
+	 * @param code
+	 * @return
+	 */
+	public static boolean isSameOrChildCode(String parentCode, String code) {
+		int len = parentCode.length();
+		if (len > code.length())
+			return false;
+		return (parentCode.equals(code.substring(0, parentCode.length())));
+	}
+	
 	/**
 	 * Return the parent list including the own object
 	 * @return List of {@link org.msh.pharmadex.domain.AdministrativeUnit} instance
@@ -50,8 +81,7 @@ public class AdministrativeUnit extends CreationDetail implements Serializable {
 	public List<AdministrativeUnit> getParents() {
 		return getParentsTreeList(true);
 	}
-
-
+	
 	/**
 	 * Return the display name of the administrative unit concatenated with its parent units
 	 * @return
@@ -62,10 +92,10 @@ public class AdministrativeUnit extends CreationDetail implements Serializable {
 		for (AdministrativeUnit adm: getParentsTreeList(false)) {
 			s += ", " + adm.getName().toString();
 		}
-		
+
 		return s;
 	}
-	
+
 	/**
 	 * Return the parent units display name with the name of this instance only on the end.
 	 * @return
@@ -79,7 +109,7 @@ public class AdministrativeUnit extends CreationDetail implements Serializable {
 			else
 				s += ", " + adm.getName().toString();
 		}
-		
+
 		return s;
 	}
 	
@@ -102,25 +132,6 @@ public class AdministrativeUnit extends CreationDetail implements Serializable {
 		}
 		return lst;
 	}
-
-
-	/**
-	 * Static method that return the parent code of a given code
-	 * @param code
-	 * @return
-	 */
-	public static String getParentCode(String code) {
-		if ((code == null) || (code.length() <= 3))
-			return null;
-
-		if (code.length() <= 6)
-			return code.substring(0, 3);
-		if (code.length() <= 9)
-			return code.substring(0, 6);
-		if (code.length() <= 12)
-			return code.substring(0, 9);
-		return code.substring(0, 12);
-	}
 	
 	/**
 	 * Check if an administrative unit code (passed as the code parameter) is a child of the current administrative unit
@@ -134,21 +145,6 @@ public class AdministrativeUnit extends CreationDetail implements Serializable {
 			return false;
 		return (this.code.equals(code.substring(0, this.code.length())));
 */	}
-	
-	
-	/**
-	 * Static method to check if a code is equals of a child of the code given by the parentCode param
-	 * @param parentCode
-	 * @param code
-	 * @return
-	 */
-	public static boolean isSameOrChildCode(String parentCode, String code) {
-		int len = parentCode.length();
-		if (len > code.length())
-			return false;
-		return (parentCode.equals(code.substring(0, parentCode.length())));
-	}
-
 
 	/**
 	 * Return the parent administrative unit based on its level. If level is the same of this unit, it returns itself.
@@ -326,19 +322,18 @@ public class AdministrativeUnit extends CreationDetail implements Serializable {
 		this.countryStructure = countryStructure;
 	}
 
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
 
 	/**
 	 * @param code the code to set
 	 */
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	/**
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
 	}
 
 	public int getLevel() {

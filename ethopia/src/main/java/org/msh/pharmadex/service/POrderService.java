@@ -6,7 +6,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.impl.SessionImpl;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
 import org.msh.pharmadex.dao.CustomPurOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderDAO;
@@ -20,6 +19,7 @@ import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +28,7 @@ import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -121,17 +122,17 @@ public class POrderService implements Serializable {
 
     }
 
-    public byte[] generateLetter(Long piporderid, String path, File pdfFile) throws JRException, IOException {
+    public byte[] generateLetter(Long piporderid, String path, File pdfFile) throws JRException, IOException, SQLException {
         JasperPrint jasperPrint;
         Session hibernateSession = entityManager.unwrap(Session.class);
-        SessionImpl session = (SessionImpl) hibernateSession;
-        Connection conn = session.connection();
+        Connection conn = SessionFactoryUtils.getDataSource(hibernateSession.getSessionFactory()).getConnection();
         HashMap<String, Object> param = new HashMap<String, Object>();
         param.put("piporderid", piporderid);
         URL resource = getClass().getResource(path);
         jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(pdfFile));
         byte[] file = IOUtils.toByteArray(new FileInputStream(pdfFile));
+        conn.close();
         return file;
     }
 
@@ -163,6 +164,9 @@ public class POrderService implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return new RetObject("error");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new RetObject("error");
         }
     }
 
@@ -185,6 +189,9 @@ public class POrderService implements Serializable {
             return new RetObject("error");
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        } catch (SQLException e) {
+            e.printStackTrace();
             return new RetObject("error");
         }
     }
@@ -209,6 +216,9 @@ public class POrderService implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return new RetObject("error");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new RetObject("error");
         }
     }
 
@@ -232,6 +242,10 @@ public class POrderService implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return new RetObject("error");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new RetObject("error");
+
         }
     }
 
@@ -254,6 +268,9 @@ public class POrderService implements Serializable {
             return new RetObject("error");
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        } catch (SQLException e) {
+            e.printStackTrace();
             return new RetObject("error");
         }
     }

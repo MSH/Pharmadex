@@ -4,12 +4,12 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.hibernate.Session;
-import org.hibernate.impl.SessionImpl;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -141,7 +142,8 @@ public class ReportService implements Serializable {
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
-    public JasperPrint reportinit() throws JRException {
+
+    public JasperPrint reportinit() throws JRException, SQLException {
 //        Letter letter = letterService.findByLetterType(LetterType.ACK_SUBMITTED);
 //        String body = letter.getBody();
 //        MessageFormat mf = new Message        Format(body);
@@ -150,12 +152,14 @@ public class ReportService implements Serializable {
 
         JasperPrint jasperPrint;
         Session hibernateSession = entityManager.unwrap(Session.class);
-        SessionImpl session = (SessionImpl) hibernateSession;
-        Connection conn = session.connection();
+        Connection conn = SessionFactoryUtils.getDataSource(hibernateSession.getSessionFactory()).getConnection();
+
+
         HashMap param = new HashMap();
-        param.put("piporderid", new Long(4));
-        URL resource = getClass().getResource("/reports/pip_ack.jasper");
+        param.put("id", new Long(4));
+        URL resource = getClass().getResource("/reports/letter.jasper");
         jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+        conn.close();
         return jasperPrint;
     }
 }

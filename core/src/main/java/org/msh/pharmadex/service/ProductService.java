@@ -5,6 +5,7 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.CompanyType;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class ProductService implements Serializable {
     private DrugPriceDAO drugPriceDAO;
 
     public List<ProdTable> findAllRegisteredProduct() {
-        return productDAO.findRegProducts();
+        return productDAO.findProductsByState(RegState.REGISTERED);
     }
 
     @Transactional
@@ -194,5 +195,14 @@ public class ProductService implements Serializable {
 
     public Pricing savePricing(Pricing pricing) {
         return pricingDAO.save(pricing);
+    }
+
+    public List<ProdTable> findSuspendedProducts() {
+        return productDAO.findProductsByState(RegState.SUSPEND);
+    }
+
+    public List<ProdTable> findRevokedProds() {
+        return productDAO.findProductsByState(RegState.CANCEL);
+
     }
 }
