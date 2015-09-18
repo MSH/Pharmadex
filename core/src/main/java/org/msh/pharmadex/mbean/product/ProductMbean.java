@@ -22,6 +22,8 @@ public class ProductMbean implements Serializable {
     private ProductService productService;
     private List<ProdTable> products;
     private List<ProdTable> filteredProducts;
+    private List<ProdTable> suspendedProds;
+    private List<ProdTable> revokedProds;
 
     public String sentToDetail(Long id) {
         Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
@@ -60,5 +62,27 @@ public class ProductMbean implements Serializable {
 
     public void setProductService(ProductService productService) {
         this.productService = productService;
+    }
+
+    public List<ProdTable> getSuspendedProds() {
+        if (suspendedProds == null) {
+            suspendedProds = productService.findSuspendedProducts();
+        }
+        return suspendedProds;
+    }
+
+    public void setSuspendedProds(List<ProdTable> suspendedProds) {
+        this.suspendedProds = suspendedProds;
+    }
+
+    public List<ProdTable> getRevokedProds() {
+        if (revokedProds == null) {
+            revokedProds = productService.findRevokedProds();
+        }
+        return revokedProds;
+    }
+
+    public void setRevokedProds(List<ProdTable> revokedProds) {
+        this.revokedProds = revokedProds;
     }
 }

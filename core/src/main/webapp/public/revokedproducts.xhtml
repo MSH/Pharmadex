@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post" style="width: 1054px;">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.revoke_prod}</h1>
+        </div>
+
+        <h:form prependId="false">
+            <p:growl/>
+            <p:dataTable id="products" var="prodApps" value="#{productMbean.revokedProds}" tableStyle="width: auto"
+                         widgetVar="prodTable"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,40,100">
+                <p:column filterBy="#{prodApps.prodName}" sortBy="#{prodApps.prodName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prod_name}"/>
+                    </f:facet>
+                    <p:commandLink id="viewLink" value="#{prodApps.prodName}"
+                                   action="#{productMbean.goToDetails(prodApps.prodAppID)}"
+                                   ajax="false">
+                    </p:commandLink>
+
+                </p:column>
+
+                <p:column filterBy="#{prodApps.genName}"
+                          sortBy="#{prodApps.genName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prodgenname}"/>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.genName}"/>
+                </p:column>
+
+                <!--
+                                <p:column filterBy="#{product.regNo}"
+                                          sortBy="#{product.regNo}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.reg_number}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{product.regNo}"/>
+                                </p:column>
+                -->
+                <!--                <p:column filterBy="#{product.dosForm.dosForm}"
+                                          sortBy="#{product.dosForm.dosForm}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.dos_form}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{product.dosForm.dosForm}"/>
+                                </p:column>
+
+                                <p:column filterBy="#{product.dosStrength}"
+                                          sortBy="#{product.dosStrength}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.dos_strength}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{product.dosStrength}"/>
+                                </p:column>
+                -->
+
+                <p:column filterBy="#{prodApps.prodCategory}" filterMatchMode="exact" headerText="#{msgs.prod_cat}"
+                          sortBy="#{prodApps.prodCategory}">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('prodTable').filter()">
+                            <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{globalLists.prodCategories}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.prodCategory}"/>
+                </p:column>
+
+
+                <p:column filterBy="#{prodApps.appName}"
+                          sortBy="#{prodApps.appName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.registration_applicant}"/>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.appName}"/>
+                </p:column>
+
+                <p:column filterBy="#{prodApps.regDate}"
+                          sortBy="#{prodApps.regDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.registration_date}"/>
+                    </f:facet>
+                    <h:outputLabel converter="javax.faces.DateTime"
+                                   value="#{prodApps.regDate}"/>
+                </p:column>
+
+                <p:column filterBy="#{prodApps.regExpiryDate}"
+                          sortBy="#{prodApps.regExpiryDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.expiry_date}"/>
+                    </f:facet>
+                    <h:outputLabel converter="javax.faces.DateTime"
+                                   value="#{prodApps.regExpiryDate}"/>
+                </p:column>
+
+                <p:column filterBy="#{prodApps.manufName}"
+                          sortBy="#{prodApps.manufName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.manuf_name}"/>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.manufName}"/>
+                </p:column>
+            </p:dataTable>
+
+            <h:panelGrid columns="2" width="100%">
+                <p:panel>
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/pdf.png"/>
+                        <p:dataExporter type="pdf" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+                </p:panel>
+            </h:panelGrid>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

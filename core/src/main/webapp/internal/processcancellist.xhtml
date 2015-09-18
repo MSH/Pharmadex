@@ -40,6 +40,10 @@
                         <h:outputText value="#{susp.reviewer.name}"/>
                     </p:column>
 
+                    <p:column headerText="#{msgs.global_curr_status}">
+                        <h:outputText value="#{susp.suspensionStatus}"/>
+                    </p:column>
+
                     <p:column headerText="#{msgs.requested_date}">
                         <h:outputText value="#{susp.reqDate}"/>
                     </p:column>

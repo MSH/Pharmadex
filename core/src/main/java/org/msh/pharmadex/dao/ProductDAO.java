@@ -86,7 +86,7 @@ public class ProductDAO implements Serializable {
 
     }
 
-    public List<ProdTable> findRegProducts() {
+    public List<ProdTable> findProductsByState(RegState regState) {
         List<Object[]> products = entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID " +
                 "from prodApplications pa, product p, applicant a, prod_company pc, company c " +
                 "where pa.PROD_ID = p.id " +
@@ -97,7 +97,7 @@ public class ProductDAO implements Serializable {
                 "and pa.active = :active " +
                 "and pc.companyType = :companyType ; ")
                 .setParameter("active", true)
-                .setParameter("regState", "" + RegState.REGISTERED)
+                .setParameter("regState", "" + regState)
                 .setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
                 .getResultList();
 //        List<Product> products =  entityManager.createQuery("select pa from ProdApplications pa where pa.active = :active and pa.regState = :regstate ")
