@@ -2,22 +2,14 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<parameter name="subject" class="java.lang.String">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<parameter name="address1" class="java.lang.String"/>
-	<parameter name="address2" class="java.lang.String"/>
-	<parameter name="body" class="java.lang.String"/>
-	<parameter name="footer" class="java.lang.String"/>
+	<property name="ireport.y" value="258"/>
 	<parameter name="id" class="java.lang.Long">
-		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
 	</parameter>
-	<parameter name="registrar" class="java.lang.String"/>
 	<parameter name="manufName" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, d.dosageform, p.id, p.prodAppType,
-concat(prod.dosage_strength, ' ', u.uom) as dosstrength
+		<![CDATA[select a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, prod.gen_name, d.dosageform, p.id, p.prodAppType,
+concat(prod.dosage_strength, ' ', u.uom) as dosstrength, p.submitDate
 from `ProdApplications` p, product prod, applicant a, country c, dosform d, `DosUom` u
 where prod.id = p.prod_id
 and a.`applcntId` = p.app_id
@@ -44,6 +36,9 @@ and p.id = $P{id}]]>
 	<field name="prod_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="gen_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="dosageform" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -54,31 +49,34 @@ and p.id = $P{id}]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="dosstrength" class="java.lang.String"/>
+	<field name="submitDate" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="87" splitType="Stretch">
+		<band height="127" splitType="Stretch">
 			<image>
-				<reportElement x="0" y="0" width="123" height="86" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
+				<reportElement x="244" y="0" width="97" height="65" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="123" y="1" width="449" height="37" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
+				<reportElement x="0" y="65" width="572" height="20" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
 				<textElement textAlignment="Center">
-					<font size="20" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[REPÚBLICA DE MOÇAMBIQUE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="123" y="38" width="449" height="24" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
+				<reportElement x="0" y="85" width="572" height="20" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MINISTÉRIO DA SAÚDE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="123" y="62" width="449" height="24" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
+				<reportElement x="0" y="107" width="572" height="20" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -87,7 +85,15 @@ and p.id = $P{id}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="572" height="35" uuid="2d32598c-332c-4fc9-9af1-564b036f05df"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aviso de Recepção dos Processos de Registo ]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="491" splitType="Stretch">
@@ -119,20 +125,6 @@ and p.id = $P{id}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="0" y="117" width="572" height="20" uuid="90df44ba-fda0-408e-a417-cbe38290996e"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{subject}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="148" width="572" height="33" uuid="2cad77db-1ed1-44d7-ae91-b6c05a09bc7b"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{body}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="0" y="6" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
@@ -141,120 +133,176 @@ and p.id = $P{id}]]>
 				<text><![CDATA[To,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="460" width="572" height="31" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="13" y="309" width="134" height="20" uuid="b1154b46-dfcf-4c95-bd52-37d4403bbd5b"/>
+				<reportElement x="13" y="342" width="134" height="20" uuid="b1154b46-dfcf-4c95-bd52-37d4403bbd5b"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Type of Application:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="289" width="134" height="20" uuid="5604dbb8-0078-4870-9977-36f323cbe307"/>
+				<reportElement x="13" y="322" width="134" height="20" uuid="5604dbb8-0078-4870-9977-36f323cbe307"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Manufacturer:]]></text>
+				<text><![CDATA[Fabricante:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="149" y="309" width="361" height="20" uuid="f1b88c65-e191-4d61-a4a4-a01af46dea02"/>
+				<reportElement x="149" y="342" width="361" height="20" uuid="f1b88c65-e191-4d61-a4a4-a01af46dea02"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prodAppType}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="149" y="289" width="361" height="20" uuid="2df6fd95-6398-41cf-9cfd-aa78ba6fd6f0"/>
+				<reportElement x="149" y="322" width="361" height="20" uuid="2df6fd95-6398-41cf-9cfd-aa78ba6fd6f0"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="13" y="229" width="134" height="20" uuid="58b9d50a-a922-47d0-ad79-183188d4bef3"/>
+				<reportElement x="13" y="262" width="134" height="20" uuid="58b9d50a-a922-47d0-ad79-183188d4bef3"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Product Name:]]></text>
+				<text><![CDATA[Nome Genérico:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="249" width="134" height="20" uuid="2e5be4b1-3ca3-4012-98ac-6b22dcafe71f"/>
+				<reportElement x="13" y="282" width="134" height="20" uuid="2e5be4b1-3ca3-4012-98ac-6b22dcafe71f"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Product Strength:]]></text>
+				<text><![CDATA[Dosagem:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="149" y="269" width="361" height="20" uuid="f73f06ac-06f7-47de-8d1a-08937cd7f28c"/>
+				<reportElement x="149" y="302" width="361" height="20" uuid="f73f06ac-06f7-47de-8d1a-08937cd7f28c"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="147" y="196" width="361" height="20" uuid="318989b5-7bcb-42dd-8d9d-0a177b3bc9ad"/>
+				<reportElement x="147" y="212" width="361" height="20" uuid="318989b5-7bcb-42dd-8d9d-0a177b3bc9ad"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prodAppNo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="149" y="249" width="361" height="20" uuid="10eb287a-58c8-4f1e-b1c7-bbcf0a37d6ec"/>
+				<reportElement x="149" y="282" width="361" height="20" uuid="10eb287a-58c8-4f1e-b1c7-bbcf0a37d6ec"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dosstrength}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="149" y="229" width="361" height="20" uuid="1bd8bd4b-0db5-4d09-a377-491b40acf8b9"/>
+				<reportElement x="149" y="262" width="361" height="20" uuid="1bd8bd4b-0db5-4d09-a377-491b40acf8b9"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{gen_name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="11" y="196" width="134" height="20" uuid="aa4c00c9-4ce8-430a-9ec6-ff62253181d1"/>
+				<reportElement x="11" y="212" width="134" height="20" uuid="aa4c00c9-4ce8-430a-9ec6-ff62253181d1"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Application Number:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="269" width="134" height="20" uuid="72e6799a-2837-4460-b3bd-f06da8ae078d"/>
+				<reportElement x="13" y="302" width="134" height="20" uuid="72e6799a-2837-4460-b3bd-f06da8ae078d"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Dosage Form:]]></text>
+				<text><![CDATA[Forma Farmacêutica:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="341" width="572" height="48" uuid="6d43e0a3-db2e-4858-a069-d85b5d2c9ce2"/>
-				<textElement textAlignment="Justified">
-					<font fontName="SansSerif" size="12"/>
+				<reportElement x="0" y="134" width="572" height="20" uuid="9af94879-98bb-40f0-a45a-3ba964d38027"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Your application has been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 1 year from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only. ]]></text>
+				<text><![CDATA[ Exmo Senhor,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="401" width="572" height="28" uuid="f9606908-70bb-4ce6-b566-8eb01cb786bf"/>
+				<reportElement x="0" y="154" width="352" height="19" uuid="dab4b25b-10bb-4e91-846a-15dff009ac76"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Serve a presente para confirmar que foi recebido no dia: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="352" y="153" width="220" height="20" uuid="607bfb5f-5181-4105-a497-02f9a4d135ee"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{submitDate})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="173" width="572" height="39" uuid="0e99d267-4ebe-4345-92e2-b5010bf139e8"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[If you have any queries as to the meaning of this letter, you should contact the undersigned immediately. ]]></text>
+				<text><![CDATA[dossiers do medicamento com as características que abaixo se segue:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="13" y="242" width="132" height="20" uuid="22b8baad-2327-41ca-800b-7e10fba3e889"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome Medicamento]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="149" y="242" width="359" height="20" uuid="972a5d4f-1e2b-49df-90dd-b00e39899272"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="13" y="382" width="221" height="20" uuid="8443c21c-7dd3-46c0-bf46-a4f326888074"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[A Chefe do Departamento ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="444" width="221" height="20" uuid="455f4911-30ba-46a5-ab7d-7cd9edeba8d7"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dra. Tânia Vuyeya Sitoie ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="464" width="221" height="20" uuid="9577fd85-86a9-45f0-ba52-76646bd04252"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(Farmacêutica MSc, SN)]]></text>
+			</staticText>
+			<line>
+				<reportElement x="11" y="440" width="223" height="1" uuid="66df41eb-588a-49b7-b0ab-f859cc71174c"/>
+			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="9" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="76" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="572" height="2" uuid="557d0146-13a6-4abc-a0a9-6b6867e4d9f6"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="5" width="572" height="71" uuid="4f3358e4-5eaa-4362-af95-137ada0bd0bc"/>
+				<text><![CDATA[DEPARTAMENTO FARMACÊUTICO
+C. Postal
+Av. Agostinho Neto/Salvador Allende                                                                                        TEL: 00258 21 303473
+MAPUTO-MOÇAMBIQUE                                                                                                            FAX: 00258 21 326547
+
+]]></text>
+			</staticText>
+		</band>
 	</pageFooter>
 	<summary>
 		<band height="42" splitType="Stretch"/>
