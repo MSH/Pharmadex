@@ -15,12 +15,18 @@ import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
@@ -54,7 +60,8 @@ public class ReviewDetailBn implements Serializable {
     private String revType;
     private boolean priReviewer;
     private boolean secReviewer;
-
+    private UploadedFile file;
+    private StreamedContent chart;
 
     public void saveReview() {
         FacesMessage msg;
@@ -68,6 +75,12 @@ public class ReviewDetailBn implements Serializable {
         reviewDetail = reviewService.saveReviewDetail(reviewDetail);
         msg = new FacesMessage(bundle.getString("app_save_success"));
         facesContext.addMessage(null, msg);
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        FacesMessage message = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        reviewDetail.setFile(event.getFile().getContents());
     }
 
     public String back() {
@@ -197,5 +210,27 @@ public class ReviewDetailBn implements Serializable {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public StreamedContent getChart() {
+        if(chart==null) {
+            if (reviewDetail != null) {
+                InputStream ist = new ByteArrayInputStream(reviewDetail.getFile());
+                chart = new DefaultStreamedContent(ist);
+            }
+        }
+        return chart;
+    }
+
+    public void setChart(StreamedContent chart) {
+        this.chart = chart;
     }
 }

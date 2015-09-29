@@ -311,3 +311,31 @@ body {
 
 .ui-inputfield {
 }
+
+.fy-required-field{
+    background: url(../images/iconRequired.gif) no-repeat scroll left top transparent;
+    padding-left:15px;
+}
+
+.review_question_inactive {
+    background-color: rgb(160,160,160);
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.row_inactive {
+    background-color: rgb(160,160,160);
+}
+.row_inactive {
+    background-color: #FFFFFF;
+}
+
+.ui-datatable.borderless thead th,
+.ui-datatable.borderless tbody,
+.ui-datatable.borderless tbody tr,
+.ui-datatable.borderless tbody td {
+    border-style: none;
+}

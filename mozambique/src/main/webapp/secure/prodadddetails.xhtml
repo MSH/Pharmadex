@@ -2,7 +2,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
         <p:outputLabel value="#{msgs.prod_indications}" for="indication"/>
@@ -34,6 +34,14 @@
         <p:inputText id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}"/>
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
+        <p:outputLabel value="#{msgs.use_category}" for="grid"/>
+        <p:selectManyCheckbox id="grid" value="#{prodRegAppMbean.useCategories}" layout="grid" columns="1"
+                              converter="omnifaces.GenericEnumConverter">
+            <f:selectItems value="#{globalLists.useCategory}" var="type" itemLabel="#{msgs[type.key]}"
+                           itemValue="#{type}"/>
+            <f:attribute name="collectionType" value="java.util.ArrayList"/>
+        </p:selectManyCheckbox>
+        <p:message for="grid" showSummary="true" showDetail="false"/>
     </h:panelGrid>
 
 </ui:composition>

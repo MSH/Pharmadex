@@ -65,6 +65,11 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date feeSubmittedDt;
 
+    @Lob
+    @Column(nullable = true)
+    private byte[] feeReceipt;
+
+
     @Enumerated(EnumType.STRING)
     private RegState regState;
 
@@ -516,6 +521,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setDosRecDate(Date dosRecDate) {
         this.dosRecDate = dosRecDate;
+    }
+
+    public byte[] getFeeReceipt() {
+        return feeReceipt;
+    }
+
+    public void setFeeReceipt(byte[] feeReceipt) {
+        this.feeReceipt = feeReceipt;
     }
 
     @Override

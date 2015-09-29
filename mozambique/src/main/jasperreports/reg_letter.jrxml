@@ -2,202 +2,477 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<parameter name="currDay" class="java.lang.String"/>
-	<parameter name="currMnthYr" class="java.lang.String"/>
-	<parameter name="regName" class="java.lang.String"/>
-	<parameter name="regNumber" class="java.lang.String"/>
-	<parameter name="activeIngredient" class="java.lang.String"/>
-	<parameter name="appName" class="java.lang.String"/>
-	<parameter name="manufName" class="java.lang.String"/>
-	<parameter name="regDate" class="java.lang.String"/>
-	<parameter name="issueDate" class="java.lang.String"/>
-	<parameter name="dosform" class="java.lang.String"/>
-	<parameter name="fprcName" class="java.lang.String"/>
-	<parameter name="frrName" class="java.lang.String"/>
-	<parameter name="conditions" class="java.lang.String"/>
+	<property name="ireport.y" value="250"/>
+	<parameter name="id" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.appName, concat(a.address1,', ', a.address2,', ', c.countryName) as address, p.prodAppNo, prod.prod_name, prod.gen_name,
+d.dosageform, prod.id, p.prodAppType, concat(prod.dosage_strength, ' ', u.uom) as dosstrength, p.submitDate,
+  group_concat(distinct concat (i.name) SEPARATOR '; ') as inn,
+  group_concat(distinct concat (e.name) SEPARATOR '; ') as excipient,
+  group_concat(distinct concat (comp.companyName) separator ', ') as manuf,
+  case WHEN prod.new_chemical_entity THEN 'Substância Activa Conhecida'
+    ELSE 'Substância Activa Nova'
+  END as nce,
+  prod.prod_desc, prod.shelfLife, prod.fnm, prod.drugType, p.registrationDate, p.regExpiryDate
+from product prod,`ProdApplications` p,  applicant a, country c, dosform d, `DosUom` u,
+company comp,prod_company pc, inn i, prodinn pi, excipient e, prodexcipient pe
+where prod.id = p.prod_id
+and a.`applcntId` = p.app_id
+and a.`CNTRY_ID` = c.id
+and d.uid = prod.`DOSFORM_ID`
+and u.id = prod.`DOSUNIT_ID`
+and comp.id = pc.company_id
+and pc.companyType = 'FIN_PROD_MANUF'
+and pc.prod_id = p.PROD_ID
+and i.id = pi.INN_ID
+and pi.prod_id = p.PROD_ID
+and e.id = pe.EXPNT_ID
+and pe.prod_id = p.PROD_ID
+and p.id = $P{id}
+group by p.id]]>
+	</queryString>
+	<field name="appName" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="address" class="java.lang.String"/>
+	<field name="prodAppNo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="gen_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dosageform" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prodAppType" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dosstrength" class="java.lang.String"/>
+	<field name="submitDate" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="inn" class="java.lang.String"/>
+	<field name="excipient" class="java.lang.String"/>
+	<field name="manuf" class="java.lang.String"/>
+	<field name="nce" class="java.lang.String"/>
+	<field name="prod_desc" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="shelfLife" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fnm" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="drugType" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="registrationDate" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="regExpiryDate" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="738" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="572" height="26" uuid="4896a306-cb0b-437f-be45-ebca3bcbb0c9"/>
+				<reportElement x="0" y="102" width="572" height="15" uuid="4896a306-cb0b-437f-be45-ebca3bcbb0c9"/>
 				<textElement textAlignment="Center">
-					<font size="20" isBold="true"/>
+					<font fontName="SansSerif" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[REPÚBLICA DE MOÇAMBIQUE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="26" width="572" height="26" uuid="82138211-28f7-4623-8738-759b7065c68f"/>
+				<reportElement x="0" y="117" width="572" height="15" uuid="82138211-28f7-4623-8738-759b7065c68f"/>
 				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MINISTÉRIO DA SAÚDE]]></text>
 			</staticText>
-			<image>
-				<reportElement x="219" y="52" width="137" height="125" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="238" y="2" width="100" height="100" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="177" width="572" height="26" uuid="72df8617-6275-409e-acfc-328219996595"/>
+				<reportElement x="0" y="132" width="572" height="15" uuid="72df8617-6275-409e-acfc-328219996595"/>
 				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Departamento Farmacêutico]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="203" width="572" height="26" uuid="ab25f915-c494-4bec-8838-e31fd0ac24fc"/>
+				<reportElement x="0" y="154" width="572" height="21" uuid="ab25f915-c494-4bec-8838-e31fd0ac24fc"/>
 				<textElement textAlignment="Center">
-					<font size="18" isBold="true"/>
+					<font size="14" isBold="true" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[MEDICINE REGISTRATION CERTIFICATE]]></text>
+				<text><![CDATA[CERTIFICADO DE REGISTO DO MEDICAMENTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="239" width="572" height="66" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
+				<reportElement x="0" y="177" width="572" height="43" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
 				<textElement textAlignment="Justified">
-					<font size="14"/>
+					<font size="10"/>
 				</textElement>
-				<text><![CDATA[It is hereby certified that the Mozaqmbique Medicines Regulatory Council has approved in terms section 19(4) of the Medicines and Related Substances Control Act, 2003 (Act No. 13 of 2003), the registration of the medicine described below subject to the conditions set out below:]]></text>
+				<text><![CDATA[O Departamento Farmacêutico do Ministério da Saúde da República de Moçambique certifica que, ao abrigo do artigo 8 da Lei 4/98 de 14 de Janeiro, foi concedida por despacho de Sua Excelência o Ministro da Saúde a Autorização de Introdução no Mercado (AIM) do seguinte medicamento:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="307" width="265" height="20" uuid="7a15fa2a-c444-48c9-a03e-6a6bf81bb77d"/>
-				<textElement>
-					<font size="12"/>
+				<reportElement x="0" y="227" width="189" height="20" uuid="7a15fa2a-c444-48c9-a03e-6a6bf81bb77d"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[1.	Registration name:            ]]></text>
+				<text><![CDATA[Nome Medicamento:
+]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="327" width="265" height="20" uuid="c973897a-d359-4b40-a158-4314d697c547"/>
-				<textElement>
-					<font size="12"/>
+				<reportElement x="0" y="247" width="189" height="20" uuid="c973897a-d359-4b40-a158-4314d697c547"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[2.	Registration number:       ]]></text>
+				<text><![CDATA[Importador:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="347" width="265" height="20" uuid="bbf50eef-cea9-46d7-9c68-970b1277e2a3"/>
-				<textElement>
-					<font size="12"/>
+				<reportElement x="0" y="267" width="189" height="20" uuid="bbf50eef-cea9-46d7-9c68-970b1277e2a3"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[3.	Date of registration:         ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="367" width="572" height="43" uuid="86f046c0-3c1c-4a5a-a964-f4d517b08ed5"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[4.	Approved name of each active ingredient and quantities thereof per dosage unit or per suitable mass or volume or unit of medicine:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="444" width="265" height="20" uuid="b0c0d8fb-650c-4111-8880-f85b0f07e6d7"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[5.          Dosage form:  ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="464" width="265" height="20" uuid="d3e74a10-4216-4411-ae26-3ce61fdea898"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[6.	Registered in the name of the applicant:	]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="484" width="265" height="20" uuid="6aaebab1-ae2a-4fe9-bf27-785b3156ba5d"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[7.	Name of manufacturer:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="529" width="296" height="20" uuid="c587027c-dcbc-4bbd-8207-4818cd9823f1"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[8.	Name of the final product release controller:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="582" width="296" height="20" uuid="44c3512a-396e-4f58-9ab6-2f1b9a7ee539"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[9.	Name of the final release responsibility: ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="632" width="296" height="20" uuid="444b589f-0948-42bc-acc7-a7118ba7ac76"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[10.   Conditions under which medicine is registered]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="652" width="136" height="20" uuid="0df9b0b4-7f95-4502-926c-09aca188eb82"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[Issued at Windhoek on]]></text>
+				<text><![CDATA[Endereço:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="136" y="652" width="100" height="20" uuid="d79561d7-8390-4d5e-bb2f-9f692da6a7ef"/>
-				<textFieldExpression><![CDATA[$P{currDay}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="236" y="652" width="50" height="20" uuid="2b3ce198-f448-4068-b636-9bcb4bbe9ada"/>
+				<reportElement x="189" y="227" width="383" height="20" uuid="41032866-b59f-43fd-8cc8-b52d25b4d776"/>
 				<textElement>
-					<font size="12"/>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
 				</textElement>
-				<text><![CDATA[day of ]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="286" y="652" width="286" height="20" uuid="0b5ba879-db8a-4ee2-82ac-df9eb9c0aaf2"/>
-				<textFieldExpression><![CDATA[$P{currMnthYr}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="717" width="189" height="20" uuid="eb4c8c76-fd81-44bd-8cf8-35ac2c49250f"/>
-				<textElement>
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="265" y="307" width="307" height="20" uuid="41032866-b59f-43fd-8cc8-b52d25b4d776"/>
-				<textFieldExpression><![CDATA[$P{regName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="327" width="307" height="20" uuid="7ad2e76a-ed36-40a9-8fd9-8320a4cc0e7e"/>
-				<textFieldExpression><![CDATA[$P{regNumber}]]></textFieldExpression>
+				<reportElement x="189" y="247" width="383" height="20" uuid="7ad2e76a-ed36-40a9-8fd9-8320a4cc0e7e"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="347" width="307" height="20" uuid="9181d3fd-2141-48e4-8453-3493a39a2057"/>
-				<textFieldExpression><![CDATA[$P{regDate}]]></textFieldExpression>
+				<reportElement x="189" y="367" width="383" height="20" uuid="890cd6b5-3d38-4fcf-9a0b-d040da403182"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="410" width="572" height="34" uuid="412e9bda-b199-441a-a0b1-6f6adfa74519"/>
-				<textFieldExpression><![CDATA[$P{activeIngredient}]]></textFieldExpression>
+				<reportElement x="189" y="387" width="383" height="20" uuid="f0723acd-4c0b-4fe9-a43c-08940d870b31"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="444" width="307" height="20" uuid="890cd6b5-3d38-4fcf-9a0b-d040da403182"/>
-				<textFieldExpression><![CDATA[$P{dosform}]]></textFieldExpression>
+				<reportElement x="189" y="267" width="383" height="20" uuid="063cebf2-8bcb-4c05-a86f-a41673c8c105"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="287" width="189" height="20" uuid="29c13f58-d569-46c0-871c-64c76993dcd1"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fabricante:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="307" width="189" height="20" uuid="772e8647-ded8-4b82-90c8-9ed064851a46"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prazo de Validade:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="189" y="287" width="383" height="20" uuid="65706106-09f4-4bdb-a90a-7c02cf51b5c7"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{manuf}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="464" width="307" height="20" uuid="f0723acd-4c0b-4fe9-a43c-08940d870b31"/>
-				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+				<reportElement x="189" y="307" width="36" height="20" uuid="9446aafa-b4d4-444a-8f6d-3f0a4ac67101"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{shelfLife}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="225" y="307" width="42" height="20" uuid="cc1ee4cc-1b53-4fc6-b4f6-ac479733d909"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Meses]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="327" width="189" height="20" uuid="42c59bdb-96bc-4e71-ab74-8380035721cf"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subst Activa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="347" width="189" height="20" uuid="9eae64d8-9901-4aae-a865-da831662c09f"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dosagem:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="189" y="327" width="383" height="20" uuid="3b3ee4c4-5eaa-4349-a014-743e372756d5"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inn}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="504" width="572" height="25" uuid="b91bd911-7cb0-4fc3-b2ac-02f22ae717e5"/>
-				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
+				<reportElement x="189" y="347" width="383" height="20" uuid="6b7385e7-5bae-4729-a0ed-8ad11a62924b"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosstrength}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="367" width="189" height="20" uuid="9d1e23c4-c38f-42b0-a6db-121161859eb3"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Formulação:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="387" width="189" height="20" uuid="0ada4a20-68ea-44f9-a2df-85a84da62ecd"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Apresentação:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="407" width="189" height="20" uuid="f3f4389a-9c70-41cb-8297-cfe445b91c1f"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Conservação:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="189" y="407" width="383" height="20" uuid="aee1b0e0-372b-4ffa-bf27-a39446d01209"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="427" width="189" height="20" uuid="9af4ab53-fbf6-42a2-887c-9f0d56ffd961"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Excipiente (s):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="447" width="189" height="29" uuid="004456f6-5fe4-4cba-a8fb-88bfc45b4748"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Princípio (s)
+Farmacêutico (s) Activo (s):
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="189" y="427" width="383" height="20" uuid="04b95e80-1ba5-45e6-a381-beed66c080d8"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{excipient}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="549" width="572" height="33" uuid="59621f15-41b4-455b-9919-b5fb02383f08"/>
-				<textFieldExpression><![CDATA[$P{fprcName}]]></textFieldExpression>
+				<reportElement x="189" y="447" width="383" height="29" uuid="339522a7-781b-454b-89b6-d4c17f431b39"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="476" width="189" height="20" uuid="8a064639-b5aa-406f-9df9-841f01bbcfb4"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FNM:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="318" y="476" width="125" height="20" uuid="795cdcc0-2004-4775-8539-5e72bd0330e6"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Pedido:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="498" width="189" height="20" uuid="efe5ab2e-d4dc-422f-8abc-6aac015bf364"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Substância:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="318" y="498" width="125" height="20" uuid="266a332b-1ad1-4d7b-b322-993480f8604c"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Substância Activa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="518" width="189" height="20" uuid="bec1b213-c860-4fbc-822c-f187f436db44"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Classificação da Dispensa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="189" y="476" width="129" height="20" uuid="d9796b7f-f793-4263-9afa-f7ccd42cf5fe"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fnm}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="602" width="572" height="30" uuid="87e735dd-975d-4117-9f56-0fa4c7d21891"/>
-				<textFieldExpression><![CDATA[$P{frrName}]]></textFieldExpression>
+				<reportElement x="443" y="476" width="129" height="20" uuid="595983cb-b512-4f79-a81e-a9ed8a78b412"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodAppType}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="296" y="632" width="276" height="20" uuid="d5411fbe-0269-4e27-a4ba-8173e9d3cadd"/>
-				<textFieldExpression><![CDATA[$P{conditions}]]></textFieldExpression>
+				<reportElement x="189" y="498" width="129" height="20" uuid="283941e7-0793-4d5c-b900-adb8121cc339"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="443" y="498" width="129" height="20" uuid="614de37d-567d-450d-b53e-90974e700a3f"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nce}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="189" y="518" width="383" height="20" uuid="92a10581-8003-46b7-a0e9-57eb8ef7fcea"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="538" width="189" height="20" uuid="155baba2-6e06-4f34-aca9-2e49c0d25f8f"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Decreto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="558" width="189" height="20" uuid="7ff2d960-edce-48a1-be38-9727e1b76210"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[D.M. Taxa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="558" width="99" height="20" uuid="215d23a2-f4b4-4716-b174-c0849146d36f"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gestor CTRM:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="578" width="189" height="20" uuid="679c0dc1-f6e8-42d7-abff-a7e615eba684"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data Comercialização:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="578" width="99" height="20" uuid="cb557744-4c06-4f6d-974d-e35446a8e443"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Validade Registo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="603" width="572" height="60" uuid="81607768-18df-4d3f-bcef-f3bd4b9427c1"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[O titular da presente Autorização deverá cumprir as disposições da Lei 4/98 de 14 de Janeiro e do Decreto 22/99 de 4 de Maio, da respectiva legislação complementar e demais normas aplicáveis. A Autorização a que se refere o presente Certificado é válida por cinco anos, a contar da data acima referida, devendo ser solicitada a respectiva renovação com 180 dias antes do termo daquele.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="663" width="228" height="15" uuid="8db894e6-5a91-4f84-badb-b68cb39c9134"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[O DEPARTAMENTO FARMACÊUTICO DO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="678" width="228" height="15" uuid="f10ce6ba-0db3-4689-b847-ea8b74b8ccbb"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MINISTÉRIO DA SAÚDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="189" y="538" width="383" height="20" uuid="bbc3e148-16aa-40de-9e6d-91c5ecf68401"/>
+				<textElement>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[ARTIGO 31 DO REGULAMENTO DO REGISTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="189" y="558" width="155" height="20" uuid="4fb56f6b-2fa6-4e26-8286-251282fac098"/>
+				<textElement>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[DM 125/2008]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="189" y="578" width="155" height="20" uuid="41cdfc65-3c90-49f6-b0e0-41dbbd9f9908"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{registrationDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="443" y="578" width="129" height="20" uuid="5984029c-eee1-4c51-802c-f25b94f83744"/>
+				<textElement>
+					<font size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{regExpiryDate}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

@@ -46,6 +46,10 @@ public class ReviewDetail extends CreationDetail {
     @Column(name = "answered")
     private boolean answered;
 
+    @Lob
+    @Column(nullable = true)
+    private byte[] file;
+
     public ReviewDetail() {
     }
 
@@ -134,5 +138,13 @@ public class ReviewDetail extends CreationDetail {
 
     public void setSecComment(String secComment) {
         this.secComment = secComment;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 }

@@ -13,6 +13,8 @@ import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,6 +93,7 @@ public class ProdRegAppMbean implements Serializable {
     private Attachment attachment;
     private List<Attachment> attachments;
     private UploadedFile file;
+    private UploadedFile payReceipt;
 
     @PostConstruct
     private void init() {
@@ -191,6 +196,39 @@ public class ProdRegAppMbean implements Serializable {
 //        attachmentDAO.save(attachment);
 //        userSession.setFile(file);
     }
+
+    public void handlePayReceiptUpload() {
+        FacesMessage msg;
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+        if (payReceipt != null) {
+            msg = new FacesMessage(bundle.getString("global.success"), payReceipt.getFileName() + bundle.getString("upload_success"));
+            facesContext.addMessage(null, msg);
+            try {
+                prodApplications.setFeeReceipt(IOUtils.toByteArray(payReceipt.getInputstream()));
+
+            } catch (IOException e) {
+                msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        } else {
+            msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+    }
+
+    public StreamedContent fileDownload() {
+        byte[] file1 = prodApplications.getFeeReceipt();
+        InputStream ist = new ByteArrayInputStream(file1);
+        StreamedContent download = new DefaultStreamedContent(ist);
+//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+        return download;
+    }
+
+
 
     public void addDocument() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -763,5 +801,13 @@ public class ProdRegAppMbean implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public UploadedFile getPayReceipt() {
+        return payReceipt;
+    }
+
+    public void setPayReceipt(UploadedFile payReceipt) {
+        this.payReceipt = payReceipt;
     }
 }

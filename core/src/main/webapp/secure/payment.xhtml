@@ -17,6 +17,19 @@
         <p:calendar value="#{prodRegAppMbean.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"
                 pattern="#{userAccessMBean.workspace.datePattern}"/>
 
+        <h:outputText value="#{msgs.upload_pay_receipt}"/>
+        <p:fileUpload value="#{prodRegAppMbean.payReceipt}" mode="simple" rendered="true"/>
+
+        <h:outputText value=""/>
+        <p:commandLink value="#{msgs.global_upload}" ajax="false"
+                       actionListener="#{prodRegAppMbean.handlePayReceiptUpload}" rendered="true"/>
+
+        <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="true"
+                         onclick="PrimeFaces.monitorDownload(start, stop)" immediate="true"
+                         icon="ui-icon-arrowthichk-s" >
+            <p:fileDownload value="#{prodRegAppMbean.fileDownload()}"/>
+        </p:commandButton>
+
     </h:panelGrid>
 
 

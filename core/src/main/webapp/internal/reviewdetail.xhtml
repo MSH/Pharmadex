@@ -6,7 +6,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -50,6 +50,9 @@
                     <p:outputLabel value="#{msgs.reviewer_response}: " styleClass="label"/>
                     <p:outputLabel/>
 
+                    <p:outputLabel value="Upload Image:"/>
+                    <p:fileUpload fileUploadListener="#{reviewDetailBn.handleFileUpload}" mode="advanced" dragDropSupport="true"
+                                  update="growl" sizeLimit="10000000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
                     <!--
                                         <p:outputLabel
                                                 value="#{msgs.review_info_satisf}:"/>
@@ -83,6 +86,11 @@
                               rendered="#{userSession.reviewer and reviewDetailBn.secReviewer}"/>
                     <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.secComment}"
                                   rendered="#{!userSession.reviewer or !reviewDetailBn.secReviewer}"></h:outputText>
+
+                    <p:outputLabel value="Image"/>
+                    <p:graphicImage value="#{imageStreamer.image}">
+                        <f:param name="imageId" value="#{reviewDetailBn.reviewDetail.id}" />
+                    </p:graphicImage>
 
                 </h:panelGrid>
             </p:panel>
