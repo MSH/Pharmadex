@@ -42,7 +42,7 @@
         <p:selectOneMenu id="dosForm" value="#{prodRegAppMbean.product.dosForm.uid}"
                          requiredMessage="#{msgs.valid_dos_form}" required="true">
             <f:selectItem itemLabel="-" itemValue=""/>
-            <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{msgs[dosForm.key]}"
+            <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
                            itemValue="#{dosForm.uid}"/>
         </p:selectOneMenu>
         <p:message for="dosForm" showSummary="true" showDetail="false"/>
@@ -79,7 +79,7 @@
         </p:selectOneMenu>
         <p:message for="ageGroupcb" showSummary="true" showDetail="false"/>
 
-        <p:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
+<!--        <p:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
         <p:autoComplete id="pharmClassifcb" value="#{prodRegAppMbean.product.pharmClassif}"
                         completeMethod="#{globalEntityLists.completePharmClassif}" dropdown="true"
                         var="it" itemLabel="#{it.name}" itemValue="#{it}" forceSelection="true"
@@ -89,15 +89,16 @@
             <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.pharmClassifs}"/>
         </p:autoComplete>
         <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
-
+-->
         <p:outputLabel value="#{msgs.prod_desc}" for="prodDesc"/>
         <p:inputTextarea id="prodDesc" value="#{prodRegAppMbean.product.prodDesc}" rows="4" cols="50"
                          title="ProdDesc" required="true"/>
     </h:panelGrid>
 
     <div align="right">
-        <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
+<!--        <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
                          update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn"/>
+-->
         <p:commandButton value="#{msgs.global_cancel}" immediate="true"
                          action="#{prodRegAppMbean.cancel}"
                          ajax="false"/>

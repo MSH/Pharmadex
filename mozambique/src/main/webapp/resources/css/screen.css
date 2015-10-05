@@ -137,3 +137,7 @@ body {
 .property {
     margin-bottom: 12px;
 }
+
+.colored {
+    background: orangered;
+}
