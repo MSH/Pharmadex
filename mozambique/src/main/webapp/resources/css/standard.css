@@ -339,3 +339,7 @@ body {
 .ui-datatable.borderless tbody td {
     border-style: none;
 }
+
+.colored {
+    background: orangered;
+}
