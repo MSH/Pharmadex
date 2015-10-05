@@ -243,6 +243,11 @@ public class ProdApplicationsService implements Serializable {
 //            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         } else if (userSession.isReviewer()) {
             List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.NEW_APPL);
+            regState.add(RegState.FEE);
+            regState.add(RegState.VERIFY);
+            regState.add(RegState.SCREENING);
+            regState.add(RegState.FOLLOW_UP);
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
             if (workspaceDAO.findAll().get(0).isDetailReview()) {
@@ -388,7 +393,7 @@ public class ProdApplicationsService implements Serializable {
         return prodApplicationsDAO.findPendingRenew(params);
     }
 
-    public JasperPrint initRegCert() throws JRException {
+    public JasperPrint initRegCert() throws JRException, SQLException {
 //        Letter letter = letterService.findByLetterType(LetterType.INVOICE);
 //        String body = letter.getBody();
 //        MessageFormat mf = new MessageFormat(body);
@@ -400,61 +405,13 @@ public class ProdApplicationsService implements Serializable {
         String regDt = DateFormat.getDateInstance().format(prodApp.getRegistrationDate());
         String expDt = DateFormat.getDateInstance().format(prodApp.getRegExpiryDate());
 
+        Session hibernateSession = entityManager.unwrap(Session.class);
+        Connection conn = SessionFactoryUtils.getDataSource(hibernateSession.getSessionFactory()).getConnection();
+
         URL resource = getClass().getResource("/reports/reg_letter.jasper");
         HashMap param = new HashMap();
-        param.put("regName", product.getProdName());
-        param.put("regNumber", prodApp.getProdRegNo());
-        param.put("genName", product.getGenName());
-        param.put("adminRoute", product.getAdminRoute().getName());
-//        param.put("regType", product.getProdType());
-        param.put("shelfLife", product.getShelfLife());
-
-        String inns = "";
-        if (product.getInns().size() > 0) {
-            for (ProdInn prodinn : product.getInns()) {
-                inns += prodinn.getInn().getName() + ", ";
-            }
-            inns = inns.substring(0, inns.length() - 2);
-        }
-
-        param.put("activeIngredient", inns);
-        param.put("appName", prodApp.getApplicant().getAppName());
-
-        String companyName = "";
-        String fprcName = "";
-        String fprrName = "";
-//        for (Company c : product.getCompanies()) {
-//            if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF))
-//                companyName = c.getCompanyName();
-//            if (c.getCompanyType().equals(CompanyType.FPRC))
-//                fprcName = c.getCompanyName();
-//            if (c.getCompanyType().equals(CompanyType.FPRR))
-//                fprrName = c.getCompanyName();
-//        }
-
-        param.put("manufName", product.getManufName());
-        param.put("fprcName", fprcName);
-        param.put("frrName", fprrName);
-        param.put("regDate", regDt);
-        param.put("issueDate", regDt);
-        param.put("dosform", product.getDosForm().getDosForm());
-        param.put("conditions", "Attached");
-
-
-//        param.put("subject", "Subject: "+letter.getSubject()+" "+ prodApp.getProdName() + " ");
-//        param.put("body", body);
-//        param.put("body", "Thank you for applying to register " + prodApp.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()
-//                + ". Your application is successfully submitted and the application number is " + prodApp.getProdApplications().getId() + ". "
-//                +"Please use this application number for any future correspondence.");
-        param.put("footer", "Johannes");
-
-        Calendar calendar = Calendar.getInstance();
-        param.put("currDay", calendar.get(Calendar.DAY_OF_MONTH));
-        String currMnthYr = "";
-        currMnthYr = "" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
-        param.put("currDay", "" + calendar.get(Calendar.DAY_OF_MONTH));
-
-        return JasperFillManager.fillReport(resource.getFile(), param);
+        param.put("id", prodApp.getId());
+        return JasperFillManager.fillReport(resource.getFile(), param, conn);
     }
 
     public JasperPrint initRejCert() throws JRException {
@@ -540,6 +497,9 @@ public class ProdApplicationsService implements Serializable {
             return "error";
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return "error";
+        } catch (SQLException e) {
+            e.printStackTrace();
             return "error";
         }
 

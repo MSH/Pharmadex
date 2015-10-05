@@ -218,7 +218,7 @@ public class ProdReviewBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("comment_del_fail")));
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     public String deleteReviewInfo(ReviewInfo reviewInfo) {
@@ -232,7 +232,7 @@ public class ProdReviewBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("comment_del_fail")));
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     public List<ReviewInfo> getReviewInfos() {

@@ -258,14 +258,16 @@ public class ProdApplicationsDAO implements Serializable {
                 Join user = prodApp.join("applicant", JoinType.LEFT);
                 Expression appID = user.get("applcntId");
                 p = cb.equal(appID, param.getValue());
-            } else if (param.getKey().equals("reviewerId") && param.getValue() != null) {
+            } else if (param.getKey().equals(" ") && param.getValue() != null) {
                 Join<Review, ProdApplications> user = prodApp.join("reviews", JoinType.LEFT).join("user");
                 Expression reviewId = user.get("userId");
                 p = cb.equal(reviewId, param.getValue());
             } else if (param.getKey().equals("reviewerInfoId") && param.getValue() != null) {
                 Join<ReviewInfo, ProdApplications> user = prodApp.join("reviewInfos", JoinType.LEFT).join("reviewer");
                 Expression reviewId = user.get("userId");
-                p = cb.equal(reviewId, param.getValue());
+                Join user2 = prodApp.join("createdBy", JoinType.LEFT);
+                Expression userid2 = user2.get("userId");
+                p = cb.or((cb.equal(reviewId, param.getValue())),(cb.equal(userid2, param.getValue())));
             } else if (param.getKey().equals("regExpDate") && param.getValue() != null) {
                 p = cb.lessThan(prodApp.<Date>get("regExpiryDate"), (Date) param.getValue());
             }
@@ -291,7 +293,7 @@ public class ProdApplicationsDAO implements Serializable {
             return null;
 
         List<ProdApplications> prodApplicationses = entityManager.createQuery("select pa from ProdApplications pa left join pa.reviewInfos ri where pa.regState in (:regStates) " +
-                "and  (ri.reviewer.userId = :reviewer or ri.secReviewer.userId = :reviewer)")
+                "and  (pa.createdBy.userId = :reviewer )")
                 .setParameter("reviewer", reviewer)
                 .setParameter("regStates", regStates)
                 .getResultList();

@@ -56,7 +56,7 @@
 
             <div style="height:10px"/>
 
-
+<!--
             <p:dataTable var="each" value="#{prodRegInit.checklists}" id="checklisttable"
                          rendered="#{prodRegInit.displayfeepanel}">
                 <f:facet name="header">
@@ -68,6 +68,23 @@
                 </p:column>
                 <p:column headerText="#{msgs.checklist_name}">
                     <h:outputLabel value="#{each.name}"/>
+                </p:column>
+            </p:dataTable>
+-->
+            <p:dataTable var="checkList" value="#{prodRegInit.checklists}" style="width:100%;"
+                         rendered="#{prodRegInit.displayfeepanel}">
+                <p:column headerText="#{msgs.checklist_moduleno}" colspan="3" rendered="#{!checkList.header}" style="background-color: bisque;font-weight: bolder;">
+                    <h:outputLabel value="#{checkList.name}" />
+                </p:column>
+
+                <p:column headerText="#{msgs.checklist_moduleno}" rendered="#{checkList.header}">
+                    <h:outputLabel value="#{checkList.moduleNo}" />
+                </p:column>
+                <p:column headerText="#{msgs.checklist_name}" rendered="#{checkList.header}">
+                    <h:outputLabel value="#{checkList.name}"/>
+                </p:column>
+                <p:column headerText="#{msgs.checklist_module}" rendered="#{checkList.header}">
+                    <h:outputLabel value="#{checkList.module}"/>
                 </p:column>
             </p:dataTable>
 

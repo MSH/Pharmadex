@@ -380,6 +380,31 @@ public class ProcessProdBn implements Serializable {
         setSelectedTab(1);
     }
 
+    public void initOpenToApp(){
+        timeLine = new TimeLine();
+        timeLine.setProdApplications(prodApplications);
+        timeLine.setStatusDate(new Date());
+        timeLine.setUser(loggedInUser);
+        timeLine.setRegState(RegState.SAVED);
+    }
+
+    public String openToApplicant() {
+        facesContext = FacesContext.getCurrentInstance();
+        prodApplications.setRegState(timeLine.getRegState());
+        RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
+        if (retObject.getMsg().equals("persist")) {
+            prodApplications = (ProdApplications) retObject.getObj();
+            setFieldValues();
+            timeLine.setProdApplications(prodApplications);
+            timelineService.saveTimeLine(timeLine);
+            timeLineList.add(timeLine);
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
+        } else {
+            facesContext.addMessage(null, new FacesMessage(retObject.getMsg()));
+        }
+        return "/internal/processprodlist";
+    }
+
     public String addTimeline() {
         facesContext = FacesContext.getCurrentInstance();
 
@@ -462,7 +487,7 @@ public class ProcessProdBn implements Serializable {
 
         prodApplicationsService.createRegCert(prodApplications);
         timeLine = new TimeLine();
-        return "";
+        return null;
     }
 
     public List<Mail> getMails() {
@@ -803,7 +828,7 @@ public class ProcessProdBn implements Serializable {
 
     public boolean isPrescreened() {
         if (prodApplications != null && (prodApplications.getRegState().equals(RegState.NEW_APPL))
-                || prodApplications.getRegState().equals(RegState.FOLLOW_UP))
+                || prodApplications.getRegState().equals(RegState.FOLLOW_UP) || prodApplications.getRegState().equals(RegState.VERIFY))
             prescreened = true;
         else
             displayVerify = false;

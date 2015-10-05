@@ -110,7 +110,9 @@ public class ReportService implements Serializable {
             for (ProdAppChecklist papp : prodAppChecklists) {
                 if (papp.isSendToApp() && papp.getChecklist().isHeader()) {
                     emailBody += "<li>";
-                    emailBody += "<p><b>" + papp.getChecklist().getModuleNo() + ": " + papp.getChecklist().getName() + "</b>";
+                    if(papp.getChecklist()!=null&&papp.getChecklist().getModuleNo()!=null)
+                        emailBody += "<p><b>" + papp.getChecklist().getModuleNo() + ": ";
+                    emailBody += papp.getChecklist().getName() + "</b>";
                     emailBody += "<br>" + papp.getAppRemark() + "</p>";
                     emailBody += "</li>";
                 }

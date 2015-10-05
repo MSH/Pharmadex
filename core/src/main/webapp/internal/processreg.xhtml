@@ -403,7 +403,7 @@
                           mode="advanced" auto="true"
                           update=":reghome:growl :reghome:messages"
                           multiple="false"
-                          sizeLimit="10000000">
+                          sizeLimit="100000000">
 
             </p:fileUpload>
 
@@ -630,6 +630,21 @@
                 <p:commandButton id="submitButton" value="#{msgs.global_submit}" action="#{processProdBn.addComment}"
                                  oncomplete="PF('dlg').hide()"
                                  update=":reghome:processtab:commenttable :addCommentFrm :reghome:growl :reghome:messages"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.open_app}" widgetVar="openAppDlg" resizable="false" id="openAppDlg" modal="true" dynamic="true">
+            <h:form id="openAppFrm">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="openapptext" value="#{msgs.reason_for_edit}:"/>
+                    <p:inputTextarea id="openapptext" value="#{processProdBn.timeLine.comment}" rows="5"
+                                     cols="50" required="true"/>
+                    <p:message for="openapptext" showSummary="true" showDetail="false"/>
+                </h:panelGrid>
+
+                <p:commandButton id="submitopenapp" value="#{msgs.global_submit}"
+                                 action="#{processProdBn.openToApplicant}"
+                                 oncomplete="PF('openAppDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 

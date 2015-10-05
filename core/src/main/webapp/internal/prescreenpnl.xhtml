@@ -88,7 +88,7 @@
 
             <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
                              action="#{preScreenProdMBn.completeScreen}"
-                             oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form"/>
+                             oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form" ajax="false"/>
 
     </p:dialog>
 

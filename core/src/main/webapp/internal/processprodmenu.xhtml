@@ -21,6 +21,9 @@
                         rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
                         action="#{prodReviewBn.findReview}" ajax="false"/>
 
+            <p:menuitem value="#{msgs.open_app}" action="#{processProdBn.initOpenToApp()}"
+                        ajax="true" icon="ui-icon-extlink" oncomplete="PF('openAppDlg').show()" />
+
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
                         action="#{prodReviewBn.findReviewInfo}" ajax="false"/>

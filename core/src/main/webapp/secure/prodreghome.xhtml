@@ -177,7 +177,7 @@
 
                         <div align="right">
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
-                                             update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn"/>
+                                             update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn" rendered="false"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
                                              action="#{prodRegAppMbean.cancel}"
                                              ajax="false"/>
@@ -556,7 +556,7 @@
 
             </p:wizard>
 
-            <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
+            <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
                 :reghome:adddetailSaveBtn :reghome:adddetailBackBtn :reghome:adddetailNxtBtn :reghome:appStatusSaveBtn :reghome:appStatusBackBtn
                 :reghome:appStatusNxtBtn :reghome:manufSaveBtn :reghome:manufBackBtn :reghome:manufNextBtn :reghome:priceSaveBtn :reghome:priceBackBtn
                 :reghome:priceNxtBtn :reghome:sumSaveBtn
@@ -877,7 +877,7 @@
                               mode="advanced" process=":attachfrm" auto="true"
                               update=":reghome:growl :reghome:messages"
                               multiple="false"
-                              sizeLimit="10000000">
+                               sizeLimit="10000000000000">
 
                 </p:fileUpload>
 

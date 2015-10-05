@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
+import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ReviewQDAO;
 import org.msh.pharmadex.dao.iface.RevDeficiencyDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
@@ -18,6 +19,7 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.product.ReviewInfoTable;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,15 @@ public class ReviewService implements Serializable {
     private ProdApplicationsService prodApplicationsService;
     @Autowired
     private RevDeficiencyDAO revDeficiencyDAO;
+    @Autowired
+    private CustomReviewDAO customReviewDAO;
+
+    public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID){
+        if(reviewerID==null)
+            return null;
+        return customReviewDAO.findReviewInfoByReview(reviewerID);
+
+    }
 
     public Review findReview(Long reviewID) {
         Review review = reviewDAO.findOne(reviewID);
@@ -191,13 +202,13 @@ public class ReviewService implements Serializable {
         List<ReviewDetail> reviewDetails = new ArrayList<ReviewDetail>();
         List<ReviewQuestion> reviewQuestions = null;
 
-        if(prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+        if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
             reviewQuestions = reviewQDAO.findBySRA();
-        }else if (prodApplications.isSra()) {
+        } else if (prodApplications.isSra()) {
             reviewQuestions = reviewQDAO.findBySRA();
-        }else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+        } else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
             reviewQuestions = reviewQDAO.findByNewMolecule();
-        }else {
+        } else {
             reviewQuestions = reviewQDAO.findByGenMed();
         }
 
@@ -296,7 +307,7 @@ public class ReviewService implements Serializable {
         HashMap param = new HashMap();
         param.put("appName", prodApplications.getApplicant().getAppName());
         param.put("prodName", product.getProdName());
-        param.put("prodStrength", product.getDosStrength()+product.getDosUnit());
+        param.put("prodStrength", product.getDosStrength() + product.getDosUnit());
         param.put("dosForm", product.getDosForm().getDosForm());
         param.put("manufName", product.getManufName());
         param.put("appType", "New Medicine Registration");
@@ -314,53 +325,53 @@ public class ReviewService implements Serializable {
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
-    public RetObject createDefLetter(RevDeficiency reviewComment){
+    public RetObject createDefLetter(RevDeficiency reviewComment) {
         ProdApplications prodApp = prodApplicationsService.findProdApplications(reviewComment.getReviewInfo().getProdApplications().getId());
         Product product = prodApp.getProduct();
-            try {
+        try {
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
-                File invoicePDF = File.createTempFile("" + product.getProdName() + "_fir", ".pdf");
-                JasperPrint jasperPrint = initRegCert(prodApp, reviewComment);
-                net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
-                byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
-                ProdAppLetter attachment = new ProdAppLetter();
-                attachment.setRegState(prodApp.getRegState());
-                attachment.setComment(reviewComment.getSentComment().getComment());
-                attachment.setFile(file);
-                attachment.setProdApplications(prodApp);
-                attachment.setFileName(invoicePDF.getName());
-                attachment.setTitle("Further Information Request");
-                attachment.setUploadedBy(reviewComment.getUser());
-                attachment.setComment("Automatically generated Letter");
-                attachment.setContentType("application/pdf");
-                attachment.setReviewInfo(reviewComment.getReviewInfo());
-                reviewComment.setProdAppLetter(attachment);
-                revDeficiencyDAO.saveAndFlush(reviewComment);
+            File invoicePDF = File.createTempFile("" + product.getProdName() + "_fir", ".pdf");
+            JasperPrint jasperPrint = initRegCert(prodApp, reviewComment);
+            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+            byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
+            ProdAppLetter attachment = new ProdAppLetter();
+            attachment.setRegState(prodApp.getRegState());
+            attachment.setComment(reviewComment.getSentComment().getComment());
+            attachment.setFile(file);
+            attachment.setProdApplications(prodApp);
+            attachment.setFileName(invoicePDF.getName());
+            attachment.setTitle("Further Information Request");
+            attachment.setUploadedBy(reviewComment.getUser());
+            attachment.setComment("Automatically generated Letter");
+            attachment.setContentType("application/pdf");
+            attachment.setReviewInfo(reviewComment.getReviewInfo());
+            reviewComment.setProdAppLetter(attachment);
+            revDeficiencyDAO.saveAndFlush(reviewComment);
 
-                TimeLine timeLine = new TimeLine();
-                timeLine.setComment("Status changes due to further information request");
-                timeLine.setRegState(RegState.FOLLOW_UP);
-                timeLine.setProdApplications(prodApp);
-                timeLine.setStatusDate(new Date());
-                timeLine.setUser(reviewComment.getUser());
-                RetObject retObject = timelineService.saveTimeLine(timeLine);
-                if (retObject.getMsg().equals("persist")) {
-                    timeLine = (TimeLine) retObject.getObj();
-                    prodApp = timeLine.getProdApplications();
-                    reviewComment.getReviewInfo().setProdApplications(prodApp);
-                }
-                return saveReviewInfo(reviewComment.getReviewInfo());
+            TimeLine timeLine = new TimeLine();
+            timeLine.setComment("Status changes due to further information request");
+            timeLine.setRegState(RegState.FOLLOW_UP);
+            timeLine.setProdApplications(prodApp);
+            timeLine.setStatusDate(new Date());
+            timeLine.setUser(reviewComment.getUser());
+            RetObject retObject = timelineService.saveTimeLine(timeLine);
+            if (retObject.getMsg().equals("persist")) {
+                timeLine = (TimeLine) retObject.getObj();
+                prodApp = timeLine.getProdApplications();
+                reviewComment.getReviewInfo().setProdApplications(prodApp);
+            }
+            return saveReviewInfo(reviewComment.getReviewInfo());
 
 //                prodApplicationsDAO.updateApplication(prodApp);
 
 
-            } catch (JRException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                return new RetObject("error");
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                return new RetObject("error");
-            }
+        } catch (JRException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new RetObject("error");
+        }
     }
 
     @Transactional
@@ -394,13 +405,13 @@ public class ReviewService implements Serializable {
     }
 
     public ReviewDetail findReviewDetails(DisplayReviewInfo displayReview) {
-        if(displayReview.getReviewDetailID() !=null){
+        if (displayReview.getReviewDetailID() != null) {
             return reviewDetailDAO.findOne(displayReview.getReviewDetailID());
-        }else{
+        } else {
             ReviewDetail reviewDetail = new ReviewDetail();
             reviewDetail.setReviewQuestions(reviewQDAO.findOne(displayReview.getId()));
             reviewDetail.setReviewInfo(reviewInfoDAO.findOne(displayReview.getReviewInfoID()));
-            return  reviewDetail;
+            return reviewDetail;
         }
     }
 
@@ -437,6 +448,16 @@ public class ReviewService implements Serializable {
         return reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(id);
     }
 
+    public byte[] findReviewDetailImage(Long reviewDetailID) {
+        if (reviewDetailID == null)
+            return null;
+        ReviewDetail reviewDetail = reviewDetailDAO.findOne(reviewDetailID);
+        if (reviewDetail != null)
+            return reviewDetail.getFile();
+        else
+            return null;
+    }
+
     public List<Review> findReviews(Long prodAppId) {
         return reviewDAO.findByProdApplications_Id(prodAppId);
     }
@@ -470,14 +491,14 @@ public class ReviewService implements Serializable {
 
     public RetObject submitReviewInfo(ReviewInfo reviewInfo) {
         List<RevDeficiency> revDeficiencies = revDeficiencyDAO.findByReviewInfo_Id(reviewInfo.getId());
-        for(RevDeficiency revDeficiency : revDeficiencies){
-            if(!revDeficiency.isResolved()){
+        for (RevDeficiency revDeficiency : revDeficiencies) {
+            if (!revDeficiency.isResolved()) {
                 return new RetObject("close_def");
             }
         }
         List<ReviewComment> reviewComments = reviewInfo.getReviewComments();
-        for(ReviewComment reviewComment : reviewComments){
-            if(reviewComment.getRecomendType()!=null){
+        for (ReviewComment reviewComment : reviewComments) {
+            if (reviewComment.getRecomendType() != null) {
                 reviewInfo.setRecomendType(reviewComment.getRecomendType());
                 reviewInfo.setExecSummary(reviewComment.getComment());
             }

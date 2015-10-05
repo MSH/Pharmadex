@@ -15,17 +15,17 @@ import java.util.List;
 
 public interface ChecklistDAO extends JpaRepository<Checklist, Long> {
 
-    public List<Checklist> findByHeader(boolean header);
+    public List<Checklist> findByHeaderOrderByIdAsc(boolean header);
 
     //Used in Ethiopia
-    public List<Checklist> findByRecognizedMed(boolean sra);
+    public List<Checklist> findByRecognizedMedOrderByIdAsc(boolean sra);
 
     //Used in Ethiopia
-    public List<Checklist> findByNewMed(boolean newMed);
+    public List<Checklist> findByNewMedOrderByIdAsc(boolean newMed);
 
-    public List<Checklist> findByGenMed(boolean genMed);
+    public List<Checklist> findByGenMedOrderByIdAsc(boolean genMed);
 
-    public List<Checklist> findByRenewal(boolean renewal);
+    public List<Checklist> findByRenewalOrderByIdAsc(boolean renewal);
 
     public List<Checklist> findByHeaderAndRecognizedMed(boolean header, boolean recognizedMed);
 

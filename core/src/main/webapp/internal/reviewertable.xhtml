@@ -136,14 +136,12 @@
         </p:column>
 -->
 
-<!--
         <p:column>
             <p:commandButton id="deletereviewinfo" action="#{prodReviewBn.deleteReviewInfo(reviewInfo)}"
-                             icon="ui-icon-trash"
+                             icon="ui-icon-trash" process="@form"
                              update=":reghome:processtab:reviwerinfotbl :reghome:processtab:assignreviewDlg :reghome:messages"
                              rendered="#{empty reviewInfo.recomendType}"/>
         </p:column>
-        -->
     </p:dataTable>
 
     <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"

@@ -4,9 +4,10 @@ package org.msh.pharmadex.domain.enums;
  * Author: usrivastava
  */
 public enum ProdDrugType {
+    PHARMACEUTICAL,
     BIOLOGICAL,
     RADIO_PHARMA,
-    PHARMACEUTICAL,
+    VACCINE,
     MEDICAL_DEVICE,
     COMPLIMENTARY_MEDS;
 

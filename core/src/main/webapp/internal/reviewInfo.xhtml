@@ -27,6 +27,8 @@
             </div>
 
             <div align="right">
+                <p:commandButton value="#{msgs.product_details}" immediate="true" action="#{reviewInfoBn.cancelReview}"
+                                 ajax="false"/>
                 <p:commandButton value="#{msgs.approve_review}" action="#{reviewInfoBn.approveReview}"
                                  update=":reviewHome"
                                  ajax="false"
@@ -41,7 +43,7 @@
                 <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('reviewDlg').show()"
                                  ajax="true" action="#{reviewInfoBn.initComment}"
                                  rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted and reviewInfoBn.priReview}"/>
-                <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{reviewInfoBn.cancelReview}"
+                <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreviewlist"
                                  ajax="false"/>
             </div>
 
