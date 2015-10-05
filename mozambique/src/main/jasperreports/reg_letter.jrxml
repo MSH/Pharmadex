@@ -2,20 +2,32 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="250"/>
+	<property name="ireport.y" value="372"/>
 	<parameter name="id" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[select a.appName, concat(a.address1,', ', a.address2,', ', c.countryName) as address, p.prodAppNo, prod.prod_name, prod.gen_name,
-d.dosageform, prod.id, p.prodAppType, concat(prod.dosage_strength, ' ', u.uom) as dosstrength, p.submitDate,
+d.dosageform, prod.id,
+(select message_value from resource_message
+    where resource_message.key_bundle =1 and message_key = (concat('ProdAppType.',p.prodAppType))) as prodapptype
+    , concat(prod.dosage_strength, ' ', u.uom) as dosstrength, p.submitDate,
   group_concat(distinct concat (i.name) SEPARATOR '; ') as inn,
   group_concat(distinct concat (e.name) SEPARATOR '; ') as excipient,
   group_concat(distinct concat (comp.companyName) separator ', ') as manuf,
   case WHEN prod.new_chemical_entity THEN 'Substância Activa Conhecida'
     ELSE 'Substância Activa Nova'
   END as nce,
-  prod.prod_desc, prod.shelfLife, prod.fnm, prod.drugType, p.registrationDate, p.regExpiryDate
+  prod.prod_desc, prod.shelfLife,
+  (select message_value from resource_message
+    where resource_message.key_bundle =1 and message_key = (concat('ProdDrugType.',prod.drugType))) as proddrugtype,
+  p.registrationDate, p.regExpiryDate
+  ,prod.packSize, prod.storageCndtn, prod.new_chemical_entity
+  ,case WHEN prod.fnm is null
+    THEN 'Nao'
+    ELSE 'Sim'
+  END as fnm
+
 from product prod,`ProdApplications` p,  applicant a, country c, dosform d, `DosUom` u,
 company comp,prod_company pc, inn i, prodinn pi, excipient e, prodexcipient pe
 where prod.id = p.prod_id
@@ -52,7 +64,7 @@ group by p.id]]>
 	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="prodAppType" class="java.lang.String">
+	<field name="prodapptype" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="dosstrength" class="java.lang.String"/>
@@ -69,16 +81,23 @@ group by p.id]]>
 	<field name="shelfLife" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="fnm" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="drugType" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="proddrugtype" class="java.lang.String"/>
 	<field name="registrationDate" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="regExpiryDate" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="packSize" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="storageCndtn" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="new_chemical_entity" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fnm" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -177,7 +196,7 @@ group by p.id]]>
 					<font size="11"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{packSize}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="189" y="267" width="383" height="20" uuid="063cebf2-8bcb-4c05-a86f-a41673c8c105"/>
@@ -281,7 +300,7 @@ group by p.id]]>
 					<font size="11"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{storageCndtn}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="427" width="189" height="20" uuid="9af4ab53-fbf6-42a2-887c-9f0d56ffd961"/>
@@ -290,15 +309,6 @@ group by p.id]]>
 				</textElement>
 				<text><![CDATA[Excipiente (s):]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="447" width="189" height="29" uuid="004456f6-5fe4-4cba-a8fb-88bfc45b4748"/>
-				<textElement textAlignment="Right">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Princípio (s)
-Farmacêutico (s) Activo (s):
-]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="189" y="427" width="383" height="20" uuid="04b95e80-1ba5-45e6-a381-beed66c080d8"/>
 				<textElement>
@@ -306,14 +316,6 @@ Farmacêutico (s) Activo (s):
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{excipient}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="189" y="447" width="383" height="29" uuid="339522a7-781b-454b-89b6-d4c17f431b39"/>
-				<textElement>
-					<font size="11"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="476" width="189" height="20" uuid="8a064639-b5aa-406f-9df9-841f01bbcfb4"/>
@@ -364,7 +366,7 @@ Farmacêutico (s) Activo (s):
 					<font size="11"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{prodAppType}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{prodapptype}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="189" y="498" width="129" height="20" uuid="283941e7-0793-4d5c-b900-adb8121cc339"/>
@@ -372,7 +374,7 @@ Farmacêutico (s) Activo (s):
 					<font size="11"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{proddrugtype}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="443" y="498" width="129" height="20" uuid="614de37d-567d-450d-b53e-90974e700a3f"/>
@@ -381,14 +383,6 @@ Farmacêutico (s) Activo (s):
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nce}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="189" y="518" width="383" height="20" uuid="92a10581-8003-46b7-a0e9-57eb8ef7fcea"/>
-				<textElement>
-					<font size="11"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_desc}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="538" width="189" height="20" uuid="155baba2-6e06-4f34-aca9-2e49c0d25f8f"/>
@@ -403,13 +397,6 @@ Farmacêutico (s) Activo (s):
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[D.M. Taxa:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="344" y="558" width="99" height="20" uuid="215d23a2-f4b4-4716-b174-c0849146d36f"/>
-				<textElement textAlignment="Right">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Gestor CTRM:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="578" width="189" height="20" uuid="679c0dc1-f6e8-42d7-abff-a7e615eba684"/>

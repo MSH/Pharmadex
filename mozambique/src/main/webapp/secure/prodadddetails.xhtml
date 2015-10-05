@@ -13,6 +13,13 @@
         <p:inputTextarea id="posology" value="#{prodRegAppMbean.product.posology}" cols="100"/>
         <p:outputLabel/>
 
+        <p:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
+        <p:selectOneMenu id="cbdrugtype" value="#{prodRegAppMbean.product.drugType}">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalLists.drugTypes}" var="dt" itemLabel="#{msgs[dt.key]}"/>
+        </p:selectOneMenu>
+        <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
+
         <p:outputLabel value="#{msgs.prod_fnm}" for="fnm"/>
         <p:inputText id="fnm" value="#{prodRegAppMbean.product.fnm}"/>
         <p:message for="fnm" showSummary="true" showDetail="false"/>
