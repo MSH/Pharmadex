@@ -4,6 +4,7 @@ import org.msh.pharmadex.domain.enums.*;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @ManagedBean
 @ApplicationScoped
-public class GlobalLists {
+public class GlobalLists implements Serializable {
 
     public List<UserType> getUserTypes() {
         return Arrays.asList(UserType.values());

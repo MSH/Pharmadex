@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public class GalleriaBean {
+public class GalleriaBean implements Serializable {
 
     private List<ImagePack> images;
     private String[] imageDescArr;

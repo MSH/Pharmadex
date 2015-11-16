@@ -9,7 +9,6 @@ import org.msh.pharmadex.domain.Inn;
 import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ProdInn;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -51,7 +50,8 @@ public class InnService implements Serializable {
     }
 
     public Excipient saveExcipient(Excipient excipient) {
-        return excipientDAO.save(excipient);
+        excipient = excipientDAO.save(excipient);
+        return excipient;
     }
 
     public Inn findInnById(long id) {

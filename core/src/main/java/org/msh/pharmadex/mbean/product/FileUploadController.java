@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -29,7 +30,7 @@ import java.util.Calendar;
  */
 @ManagedBean
 @ViewScoped
-public class FileUploadController {
+public class FileUploadController implements Serializable {
 
     @ManagedProperty(value = "#{attachmentDAO}")
     AttachmentDAO attachmentDAO;

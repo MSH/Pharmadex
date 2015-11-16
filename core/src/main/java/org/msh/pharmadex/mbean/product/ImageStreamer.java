@@ -11,13 +11,14 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Created by usrivastava on 09/27/2015.
  */
 @ManagedBean
 @ApplicationScoped
-public class ImageStreamer {
+public class ImageStreamer implements Serializable {
 
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
