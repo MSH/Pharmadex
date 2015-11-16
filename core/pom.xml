@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jetty.version>6.1.4</jetty.version>
-        <spring.version>4.2.1.RELEASE</spring.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
         <slf4j.version>1.7.2</slf4j.version>
         <java.version>1.6</java.version>
         <junit.version>4.12</junit.version>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.omnifaces</groupId>
             <artifactId>omnifaces</artifactId>
-            <version>1.11</version>
+            <version>1.8.1</version>
         </dependency>
 
         <dependency>
@@ -97,17 +97,10 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- AOP dependency -->
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>2.2</version>
-        </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.3.1.Final</version>
+            <version>4.3.0.Final</version>
             <scope>compile</scope>
         </dependency>
 
@@ -138,8 +131,15 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.3.11.Final</version>
+            <version>3.6.10.Final</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>3.6.10.Final</version>
         </dependency>
 
         <dependency>
@@ -152,6 +152,14 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.21</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Spring Dependencies -->
@@ -193,13 +201,18 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.9.0.RELEASE</version>
+            <version>1.4.3.RELEASE</version>
         </dependency>
 
         <!-- Spring security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
+            <version>3.1.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
             <version>3.1.3.RELEASE</version>
         </dependency>
         <dependency>
@@ -218,11 +231,6 @@
             <artifactId>mail</artifactId>
             <version>1.4.7</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
 
 
         <!-- DB Dependencies -->
@@ -230,12 +238,16 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
+            <version>20030825.184428</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
-            <version>1.6</version>
+            <version>20030825.183949</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
 
         <!-- View Dependencies -->
@@ -344,6 +356,8 @@
             <artifactId>jasperreports</artifactId>
             <version>${jasperreports.version}</version>
         </dependency>
+
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>

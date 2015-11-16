@@ -18,7 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jetty.version>6.1.4</jetty.version>
-        <spring.version>4.2.1.RELEASE</spring.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
         <slf4j.version>1.7.2</slf4j.version>
         <java.version>1.6</java.version>
         <junit.version>4.12</junit.version>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.3.11.Final</version>
+            <version>3.6.10.Final</version>
             <scope>compile</scope>
         </dependency>
 
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.9.0.RELEASE</version>
+            <version>1.4.3.RELEASE</version>
         </dependency>
 
         <!-- Spring security -->
@@ -155,14 +155,14 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
+            <version>20030825.184428</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
-            <version>1.6</version>
+            <version>20030825.183949</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
