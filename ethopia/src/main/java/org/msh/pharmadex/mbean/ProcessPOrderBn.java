@@ -58,10 +58,11 @@ public abstract class ProcessPOrderBn implements Serializable{
     private Applicant applicant;
     private UploadedFile file;
     private POrderDoc pOrderDoc;
+    private boolean showWithdrawn;
 
     public abstract void init();
 
-    public abstract String saveApp() ;
+    public abstract String newApp();
 
     public void prepareUpload() {
         pOrderDoc = new POrderDoc();
@@ -69,6 +70,8 @@ public abstract class ProcessPOrderBn implements Serializable{
 
     public void initComment(){
         pOrderComment = new POrderComment();
+        pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
+        pOrderComment.setDate(new Date());
     }
 
     public StreamedContent fileDownload(POrderDoc doc) {
@@ -133,6 +136,23 @@ public abstract class ProcessPOrderBn implements Serializable{
 //        userSession.setFile(file);
     }
 
+    public String saveApp() {
+        facesContext = FacesContext.getCurrentInstance();
+        RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+        return "/public/processpiporderlist.faces";
+    }
+
+    public String withdraw() {
+        pOrderBase.setState(AmdmtState.FEEDBACK);
+        pOrderComment.setPurOrder((PurOrder) pOrderBase);
+        pOrderComment.setExternal(true);
+        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
+        if (pOrderComments == null)
+            pOrderComments = new ArrayList<POrderComment>();
+        pOrderComments.add(pOrderComment);
+        return saveApp();
+    }
+
     public abstract void addDocument();
 
     public void submitComment(){
@@ -145,7 +165,7 @@ public abstract class ProcessPOrderBn implements Serializable{
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderBase.setReviewState(pOrderComment.getRecomendType());
         pOrderComments.add(pOrderComment);
-        String retObject = saveApp();
+        String retObject = newApp();
     }
 
     public void addComment(){
@@ -161,14 +181,14 @@ public abstract class ProcessPOrderBn implements Serializable{
             pOrderBase.setReviewState(RecomendType.COMMENT);
         pOrderComment.setRecomendType(pOrderBase.getReviewState());
         pOrderComments.add(pOrderComment);
-        String retObject = saveApp();
+        String retObject = newApp();
     }
 
     protected abstract void setPOrderForComment();
 
     public void initApprove(){
         pOrderComment = new POrderComment();
-//        pOrderComment.setRecomendType(RecomendType.ACCEPTED);
+//        pOrderComment.set RecomendType(RecomendType.ACCEPTED);
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderComment.setDate(new Date());
         setPOrderForComment();
@@ -192,7 +212,7 @@ public abstract class ProcessPOrderBn implements Serializable{
             pOrderBase.setState(AmdmtState.APPROVED);
             pOrderBase.setApprovalDate(new Date());
             pOrderBase.setExpiryDate(JsfUtils.addDate(new Date(), globalEntityLists.getWorkspace().getPipRegDuration()));
-            return saveApp();
+            return newApp();
         }else{
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"),"Invalid Operation!!!" ));
             return "";
@@ -206,7 +226,7 @@ public abstract class ProcessPOrderBn implements Serializable{
 //            pOrderBase.setReviewState(RecomendType.ACCEPTED);
             pOrderBase.setState(AmdmtState.REJECTED);
             pOrderBase.setApprovalDate(new Date());
-            return saveApp();
+            return newApp();
         }else{
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Invalid Operation!!!"));
             return "";
@@ -383,5 +403,22 @@ public abstract class ProcessPOrderBn implements Serializable{
 
     public void setOpenAPP(boolean openAPP) {
         this.openAPP = openAPP;
+    }
+
+    public boolean isShowWithdrawn() {
+        if (pOrderBase != null && pOrderBase.getState() != null) {
+            if (pOrderBase.getState().equals(AmdmtState.WITHDRAWN) || pOrderBase.getState().equals(AmdmtState.APPROVED)
+                    || pOrderBase.getState().equals(AmdmtState.REJECTED))
+                showWithdrawn = false;
+            else
+                showWithdrawn = true;
+        } else {
+            showWithdrawn = false;
+        }
+        return showWithdrawn;
+    }
+
+    public void setShowWithdrawn(boolean showWithdrawn) {
+        this.showWithdrawn = showWithdrawn;
     }
 }

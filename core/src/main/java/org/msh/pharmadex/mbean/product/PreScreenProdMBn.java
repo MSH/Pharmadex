@@ -20,6 +20,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -29,7 +30,7 @@ import java.util.ResourceBundle;
  */
 @ManagedBean
 @ViewScoped
-public class PreScreenProdMBn {
+public class PreScreenProdMBn implements Serializable {
 
     @ManagedProperty(value = "#{processProdBn}")
     protected ProcessProdBn processProdBn;

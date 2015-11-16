@@ -39,6 +39,8 @@ public class POrderComment implements Serializable
     @Enumerated(EnumType.STRING)
     private RecomendType recomendType;
 
+    @Column(name = "external")
+    private boolean external;
 
     public Long getId() {
         return id;
@@ -94,5 +96,13 @@ public class POrderComment implements Serializable
 
     public void setRecomendType(RecomendType recomendType) {
         this.recomendType = recomendType;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 }

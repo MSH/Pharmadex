@@ -33,6 +33,8 @@ public class PIPOrderBn extends POrderBn {
     private PIPProd pipProd;
     @ManagedProperty(value = "#{dosageFormService}")
     private DosageFormService dosageFormService;
+    private boolean showWithdrawn;
+    private boolean showSubmit;
 
     @PostConstruct
     private void init() {
@@ -113,7 +115,7 @@ public class PIPOrderBn extends POrderBn {
     }
 
     public String cancelOrder() {
-        if(userSession.isCompany())
+        if (userSession.isCompany())
             return "/secure/piporderlist";
         else
             return "/internal/processpiporderlist";
@@ -150,7 +152,7 @@ public class PIPOrderBn extends POrderBn {
             return "";
         }
 
-        RetObject retValue = getpOrderService().saveOrder(pipOrder);
+        RetObject retValue = getpOrderService().newOrder(pipOrder);
         if (retValue.getMsg().equals("persist")) {
             pipOrder = (PIPOrder) retValue.getObj();
             String retMsg = super.saveOrder();
@@ -164,6 +166,15 @@ public class PIPOrderBn extends POrderBn {
 
             return "";
         }
+    }
+
+    public String withdraw() {
+        context = FacesContext.getCurrentInstance();
+        pipOrder.setState(AmdmtState.WITHDRAWN);
+        pipOrder = (PIPOrder) pOrderService.saveOrder(pipOrder);
+        context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+        return "piporderlist";
+
     }
 
 
@@ -220,5 +231,38 @@ public class PIPOrderBn extends POrderBn {
 
     public void setDosageFormService(DosageFormService dosageFormService) {
         this.dosageFormService = dosageFormService;
+    }
+
+    public boolean isShowWithdrawn() {
+        if (pipOrder != null && pipOrder.getState() != null) {
+            if (pipOrder.getState().equals(AmdmtState.WITHDRAWN) || pipOrder.getState().equals(AmdmtState.APPROVED)
+                    || pipOrder.getState().equals(AmdmtState.REJECTED) || pipOrder.getState().equals(AmdmtState.FEEDBACK))
+                showWithdrawn = false;
+            else
+                showWithdrawn = true;
+        } else {
+            showWithdrawn = false;
+        }
+        return showWithdrawn;
+    }
+
+    public void setShowWithdrawn(boolean showWithdrawn) {
+        this.showWithdrawn = showWithdrawn;
+    }
+
+    public boolean isShowSubmit() {
+        if (pipOrder != null && pipOrder.getState() != null) {
+            if (pipOrder.getState().equals(AmdmtState.WITHDRAWN) || pipOrder.getState().equals(AmdmtState.FEEDBACK))
+                showSubmit = true;
+            else
+                showSubmit = false;
+        } else {
+            showSubmit = true;
+        }
+        return showSubmit;
+    }
+
+    public void setShowSubmit(boolean showSubmit) {
+        this.showSubmit = showSubmit;
     }
 }

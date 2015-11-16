@@ -47,7 +47,7 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         setpOrderDocs(null);
     }
 
-    public String saveApp() {
+    public String newApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
             if (pipProds == null || pipProds.size() == 0) {
@@ -108,4 +108,5 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
     public void setPipProds(List<PIPProd> pipProds) {
         this.pipProds = pipProds;
     }
+
 }

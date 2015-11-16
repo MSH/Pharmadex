@@ -44,15 +44,20 @@ public class PurOrderBn extends POrderBn {
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
 
+    @ManagedProperty(value = "#{dosageFormService}")
+    private DosageFormService dosageFormService;
+
+    @ManagedProperty(value = "#{companyService}")
+    private CompanyService companyService;
+
     private List<PurProd> purProds;
     private PurOrder purOrder;
     private List<POrderChecklist> pOrderChecklists;
     private PurProd purProd;
     private ProdTable product;
-    @ManagedProperty(value = "#{dosageFormService}")
-    private DosageFormService dosageFormService;
-    @ManagedProperty(value = "#{companyService}")
-    private CompanyService companyService;
+    private boolean showWithdrawn;
+    private boolean showSubmit;
+
 
     @PostConstruct
     private void init() {
@@ -164,7 +169,7 @@ public class PurOrderBn extends POrderBn {
         if (getUserSession().isCompany())
             purOrder.setApplicant(purOrder.getApplicant());
 
-        RetObject retValue = getpOrderService().saveOrder(purOrder);
+        RetObject retValue = getpOrderService().newOrder(purOrder);
         if (retValue.getMsg().equals("persist")) {
             purOrder = (PurOrder) retValue.getObj();
             String retMsg = super.saveOrder();
@@ -178,6 +183,17 @@ public class PurOrderBn extends POrderBn {
             return "";
         }
     }
+
+    public String withdraw() {
+        context = FacesContext.getCurrentInstance();
+        purOrder.setState(AmdmtState.WITHDRAWN);
+        purOrder = (PurOrder) pOrderService.saveOrder(purOrder);
+        context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+        return "piporderlist";
+
+    }
+
+
 
     public String cancelOrder() {
         if(userSession.isCompany())
@@ -324,4 +340,38 @@ public class PurOrderBn extends POrderBn {
     public void setCompanyService(CompanyService companyService) {
         this.companyService = companyService;
     }
+
+    public boolean isShowWithdrawn() {
+        if (purOrder != null && purOrder.getState() != null) {
+            if (purOrder.getState().equals(AmdmtState.WITHDRAWN) || purOrder.getState().equals(AmdmtState.APPROVED)
+                    || purOrder.getState().equals(AmdmtState.REJECTED) || purOrder.getState().equals(AmdmtState.FEEDBACK))
+                showWithdrawn = false;
+            else
+                showWithdrawn = true;
+        } else {
+            showWithdrawn = false;
+        }
+        return showWithdrawn;
+    }
+
+    public void setShowWithdrawn(boolean showWithdrawn) {
+        this.showWithdrawn = showWithdrawn;
+    }
+
+    public boolean isShowSubmit() {
+        if (purOrder != null && purOrder.getState() != null) {
+            if (purOrder.getState().equals(AmdmtState.WITHDRAWN) || purOrder.getState().equals(AmdmtState.FEEDBACK))
+                showSubmit = true;
+            else
+                showSubmit = false;
+        } else {
+            showSubmit = true;
+        }
+        return showSubmit;
+    }
+
+    public void setShowSubmit(boolean showSubmit) {
+        this.showSubmit = showSubmit;
+    }
+
 }

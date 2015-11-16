@@ -22,6 +22,10 @@
                                     action="#{processPurOrderBn.initComment}"
                                     oncomplete="PF('commentDlg').show()" id="reviewcomment"
                                     rendered="#{processPurOrderBn.displayReviewComment}"/>
+                        <p:menuitem value="#{msgs.open_app}" icon="ui-icon-document"
+                                    action="#{processPurOrderBn.initComment}"
+                                    oncomplete="PF('withdrawDlg').show()" id="withdraw"
+                                    rendered="#{processPurOrderBn.showWithdrawn}"/>
                         <p:menuitem value="#{msgs.global_cancel}" immediate="true"
                                     icon="ui-icon ui-icon-circle-triangle-w"
                                     action="#{processPurOrderBn.cancel}" ajax="false"/>
@@ -426,6 +430,19 @@
             </h:form>
         </p:dialog>
 
+        <p:dialog header="#{msgs.open_app}" widgetVar="withdrawDlg" id="withdrawdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
 
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="withdrawcomment" styleClass="label"/>
+                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="withdrawcomment" required="true"
+                              width="700"/>
+                    <p:message for="withdrawcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.withdraw}"
+                                 oncomplete="PF('withdrawDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
     </ui:define>
 </ui:composition>

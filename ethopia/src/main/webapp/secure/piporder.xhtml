@@ -5,13 +5,28 @@
                 xmlns:o="http://omnifaces.org/ui"
                 template="../templates/admin_layout.xhtml">
     <ui:define name="content">
-        <div class="post" style="width: 1024px">
+        <div class="post">
             <h1 class="title ui-widget-header ui-corner-all"> #{msgs.piporder}</h1>
         </div>
 
         <h:form prependId="false" id="reghome">
             <p:growl id="growl"/>
             <p:messages id="messages" showDetail="true"/>
+
+            <div align="right">
+                <p:commandButton value="#{msgs.global_withdraw}" rendered="#{pIPOrderBn.showWithdrawn}"
+                                 actionListener="#{pIPOrderBn.withdraw}"
+                                 update="@form">
+                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                </p:commandButton>
+                <p:commandButton value="#{msgs.global_submit}" rendered="#{pIPOrderBn.showSubmit}"
+                                 oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
+                                 process="@form"/>
+                <p:commandButton action="#{pIPOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
+                                 immediate="true"/>
+            </div>
+
+            <div style="height:10px"/>
 
             <ui:decorate template="appinfosub.xhtml">
                 <ui:param name="regHomeData" value="#{pIPOrderBn}"/>
@@ -24,31 +39,34 @@
             <p:panel header="#{msgs.general_info}">
                 <h:panelGrid columns="3" cellspacing="10" columnClasses="col1, col2, col3">
                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
-                    <p:inputText id="shipinst" required="true" value="#{pIPOrderBn.pipOrder.shippingInstruction}" readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
+                    <p:inputText id="shipinst" required="true" value="#{pIPOrderBn.pipOrder.shippingInstruction}"
+                                 readonly="#{!pIPOrderBn.showSubmit}"/>
                     <p:message for="shipinst" showSummary="true"/>
 
 
                     <p:outputLabel value="#{msgs.portof_entry}" for="port"/>
-                    <p:inputText id="port" required="true" readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"
+                    <p:inputText id="port" required="true" readonly="#{!pIPOrderBn.showSubmit}"
                                    value="#{pIPOrderBn.pipOrder.entryPort}"/>
                     <p:message for="port" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
                     <p:inputText id="delivery" value="#{pIPOrderBn.pipOrder.delivery}"
-                                 readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
+                                 readonly="#{!pIPOrderBn.showSubmit}"/>
                     <p:message for="delivery" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
-                    <p:inputText id="payinfo" required="true" value="#{pIPOrderBn.pipOrder.paymentMethod}" readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
+                    <p:inputText id="payinfo" required="true" value="#{pIPOrderBn.pipOrder.paymentMethod}"
+                                 readonly="#{!pIPOrderBn.showSubmit}"/>
                     <p:message for="payinfo" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.performa}" for="proforma"/>
                     <p:inputText id="proforma" value="#{pIPOrderBn.pipOrder.performa}"
-                                 readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
+                                 readonly="#{!pIPOrderBn.showSubmit}"/>
                     <p:message for="proforma" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
-                    <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}" readonly="#{not empty pIPOrderBn.pipOrder.submitDate}"/>
+                    <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}"
+                                 readonly="#{!pIPOrderBn.showSubmit}"/>
                     <p:message for="comment" showSummary="true"/>
 
                 </h:panelGrid>
@@ -58,17 +76,16 @@
             <div style="height:10px"/>
 
             <p:panel header="#{msgs.product_details}">
-                <h:panelGrid columns="1" cellspacing="10px">
+                <h:panelGrid columns="1">
                     <p:outputLabel
                             value="Please specify all the products that will imported as part of this order by clicking the add button"
                             styleClass="hint"/>
 
+                    <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
+                                     rendered="#{pIPOrderBn.showSubmit}"
+                                     action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm"/>
 
                         <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;">
-                            <f:facet name="header">
-                                <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()" rendered="#{empty pIPOrderBn.pipOrder.submitDate}"
-                                                 action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
-                            </f:facet>
 
                             <p:column headerText="#{msgs.prod_name}">
                                 <h:outputText value="#{order.productName}"/>
@@ -118,9 +135,44 @@
 
             <div style="height:10px"/>
 
+            <p:panel header="#{msgs.global_comment}"
+                     rendered="#{not empty pIPOrderBn.pipOrder and not empty pIPOrderBn.pipOrder.pOrderComments}">
+                <p:dataTable id="commenttable" value="#{pIPOrderBn.pipOrder.pOrderComments}" var="it">
+                    <p:column style="width:120px;" rendered="#{it.external}">
+                        <p:outputLabel styleClass="ui-icon ui-icon-comment"
+                                       style="display:inline-block;"/>
+                        <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+                        <div style="font-size: smaller;">
+                            <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                        </div>
+                    </p:column>
+
+                    <p:column rendered="#{it.external}">
+                        <div style="padding-left:10px;padding-top:10px;">
+                            <h:outputText value="#{it.comment}"
+                                          escape="false"
+                                          styleClass="text"/>
+                        </div>
+                    </p:column>
+                    <p:column rendered="#{it.external}">
+                        #{it.recomendType}
+                    </p:column>
+                </p:dataTable>
+
+
+            </p:panel>
+
+            <div style="height:10px"/>
+
             <p:panel header="#{msgs.attachments}">
+                <h:panelGrid columns="1">
+                    <p:commandLink
+                            value="Click here to see what documents need to be uploaded"
+                            onclick="window.open('uploaddochint.xhtml')"
+                            style="color: firebrick;"/>
                 <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
-                                 oncomplete="PF('attachdlg').show()" rendered="#{empty pIPOrderBn.pipOrder.submitDate}"
+                                 oncomplete="PF('attachdlg').show()" rendered="#{pIPOrderBn.showSubmit}"
                                  action="#{pIPOrderBn.prepareUpload}"
                                  update=":attachdlg" id="addDocBtn"/>
 
@@ -154,14 +206,14 @@
                         </p:commandButton>
                     </p:column>
 
-                    <p:column rendered="#{empty pIPOrderBn.pipOrder.submitDate}">
+                    <p:column rendered="#{pIPOrderBn.showSubmit}">
                         <p:commandButton id="deleteattach"
                                          action="#{pIPOrderBn.deleteDoc(doc)}" ajax="false"
                                          icon="ui-icon-trash"
                                          update=":reghome:attachtab:attachtable"/>
                     </p:column>
                 </p:dataTable>
-
+                </h:panelGrid>
             </p:panel>
 
             <p:panel header="#{msgs.checklist}">
@@ -175,7 +227,7 @@
                     <p:column rendered="#{!checkList.pipOrderLookUp.header}">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
-                    <p:column rendered="#{!checkList.pipOrderLookUp.header and empty checkList.pipOrder.submitDate}">
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header and pIPOrderBn.showSubmit}">
                         <p:selectOneButton id="console" value="#{checkList.value}" rendered="#{checkList.pipOrderLookUp.optional}">
                             <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
                         </p:selectOneButton>
@@ -183,7 +235,7 @@
                             <f:selectItems value="#{globalLists.yesNo}" var="value" itemLabel="#{msgs[value.key]}" />
                         </p:selectOneButton>
                     </p:column>
-                    <p:column rendered="#{!checkList.pipOrderLookUp.header and not empty checkList.pipOrder.submitDate}">
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header and !pIPOrderBn.showSubmit}">
                         <h:outputLabel value="#{msgs[checkList.value.key]}"/>
                     </p:column>
                 </p:dataTable>
@@ -191,7 +243,7 @@
 
 
             <div align="center" style="height: 60px">
-                <p:commandButton value="#{msgs.global_submit}" rendered="#{empty pIPOrderBn.pipOrder.submitDate}"
+                <p:commandButton value="#{msgs.global_submit}" rendered="#{pIPOrderBn.showSubmit}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
                                  process="@form"/>
                 <p:commandButton action="#{pIPOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
@@ -200,13 +252,25 @@
 
         </h:form>
 
+        <p:confirmDialog header="#{msgs.global_agreement}" global="true">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+        </p:confirmDialog>
+
+
         <p:dialog header="#{msgs.global_agreement}" widgetVar="confirmDlg" id="confirmdlg" resizable="true" dynamic="true"
                   modal="true">
             <h:form>
                 <div>
                     <p>
                         <ol>
-                            <li>Products should have minimum 75% of its shelf life on arrival at Addis Ababa/port of entry.</li>
+                            <li>For a medicine to have port clearance permission by the authority
+                                <ul>
+                                    <li>If the medicine has three years or more shelf life, when it arrives in the port of entry it should have 60% or more of its shelf life.</li>
+                                    <li>If the medicine has two years or less shelf life, when it arrives in the port of entry it should have 50% or more of its shelf life.</li>
+                                    <li>For emergency cases, the medicine should have a shelf life of more than 50% of its shelf life on arrival at port entry of the country</li>
+                                </ul>
+                            </li>
                             <li>Language used for writing label, leaflet and other documents shall be in English</li>
                             <li>All packing should be suitable for road, air and sea transport under tropical conditions</li>
                             <li>
@@ -322,7 +386,11 @@
 
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
                     <p:outputLabel id="total" value="#{pIPOrderBn.pipProd.totalPrice}"  styleClass="label"/>
+                    <p:outputLabel/>
 
+                    <p:outputLabel value="#{msgs.currency}" for="curr"/>
+                    <p:inputText id="curr" value="#{pIPOrderBn.pipProd.currency}"/>
+                    <p:message for="curr" showSummary="true" showDetail="false"/>
                 </h:panelGrid>
 
                 <h:panelGroup>
@@ -362,5 +430,218 @@
             </h:form>
         </p:dialog>
 
+        <p:dialog header="#{msgs.upload_document_msg}" widgetVar="uploaddocdlg" resizable="false" id="uploaddocdlg"
+                  modal="true" dynamic="true">
+            <table border="1" cellspacing="0" cellpadding="0">
+                <thead>
+                <tr>
+                    <td valign="top"><p><b>Sr. No.</b></p></td>
+                    <td valign="top"><p><b>PIP/PO checklist type</b></p></td>
+                    <td valign="top"><p><b>Documents to be uploaded</b></p></td>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr>
+                    <td rowspan="6" valign="top"><p><b>1.</b></p></td>
+                    <td rowspan="6" valign="top"><p><b>UN Agency Checklist</b></p></td>
+                    <td valign="top"><p>Official application letter</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Authorized UN Agency </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Support letter </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>An agreement between the UN agency and FMoH, RHB or Recipient </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Donation certificate </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Performa Invoice</p></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="8" valign="top"><p><b>2.</b></p></td>
+                    <td rowspan="8" valign="top"><p><b>NGO checklist</b></p></td>
+                    <td valign="top"><p>Official application letter</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Valid License of the NGO from ministry of justice</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Support letter from FMoH or RHBs,</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>An agreement between the donor and FMoH or RHBs or Recipient</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Donation certificate </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Performa invoice</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>Certificate of origin or at least manufacturers name and address, as appropriate</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>Commitment letter that describes the product will not be sold to other institutions</p></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="5" valign="top"><p><b>3.</b></p></td>
+                    <td rowspan="5" valign="top"><p><b>Health professional donation </b></p></td>
+                    <td valign="top"><p>Official application letter </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>A support letter from health institution or RHB or FMoH or Recipient</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Agreement (memorandum of understanding)</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Donation certificate</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Registration status of the products in the country of origin</p></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="7" valign="top"><p><b>4.</b></p></td>
+                    <td rowspan="7" valign="top"><p><b>Public institution donation</b></p></td>
+                    <td valign="top"><p>Official application letter </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>A valid copy of license (certificate of competence) issued to the institution</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>A valid copy of License issued by ministry of justice (if application for procurement is by NGO’s)</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Donation certificate</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Letter of commitment that the products will not be sold</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>A confirmatory letter that the products mentioned in the purchase orders are not available in the local market or confirmed out of stock by importers</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Performa invoice</p></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="6" valign="top"><p><b>5.</b></p></td>
+                    <td rowspan="6" valign="top"><p><b>Universities/research institute importation checklist</b></p>
+                    </td>
+                    <td valign="top"><p>Official application letter </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>An approval letter issued by FMHACA, if the study is a trial involving human subjects</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Letter of commitment that the products will not be sold</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Donation certificate</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>Supporting letters from the universities or the research institution stating that such procurement is only for research purposes</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Performa invoice</p></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="4" valign="top"><p><b>6.</b></p></td>
+                    <td rowspan="4" valign="top"><p><b>Importation for special condition </b></p></td>
+                    <td valign="top"><p>Official application letter addressed to FMHACA higher official</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top">
+                        <p>Supporting letter from FMoH for natural or manmade disaster or emergency aids</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Donation certificate</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Supporting letter from Foreign Affairs for diplomatic missions</p></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="4" valign="top"><p><b>7.</b></p></td>
+                    <td rowspan="4" valign="top"><p><b>Raw material importation</b></p></td>
+                    <td valign="top"><p>Official application letter addressed to FMHACA </p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Certificate of competence for the manufacturer issued by FMHACA</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>Performa invoice</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"><p>GMP Certificate</p></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="2" valign="top"><p><b>8.</b></p></td>
+                    <td rowspan="2" valign="top"><p><b>PO checklist</b></p></td>
+                    <td valign="top"><p>Performa invoices</p></td>
+                </tr>
+
+                <tr>
+                    <td valign="top"></td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </p:dialog>
     </ui:define>
 </ui:composition>

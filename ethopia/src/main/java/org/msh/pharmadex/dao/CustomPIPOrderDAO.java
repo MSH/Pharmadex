@@ -3,6 +3,7 @@ package org.msh.pharmadex.dao;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.domain.PIPOrderLookUp;
+import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -39,7 +40,8 @@ public class CustomPIPOrderDAO {
 
 
     public List<PIPOrder> findAllPIPOrder() {
-        List<PIPOrder> pipOrders = entityManager.createQuery("select porder from PIPOrder porder")
+        List<PIPOrder> pipOrders = entityManager.createQuery("select porder from PIPOrder porder where porder.state not in (:state) ")
+                .setParameter("state", AmdmtState.WITHDRAWN)
                 .getResultList();
         initializePIPOrder(pipOrders);
         return pipOrders;

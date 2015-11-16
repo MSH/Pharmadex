@@ -2,8 +2,10 @@ package org.msh.pharmadex.mbean;
 
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.dao.iface.POrderDocDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.PIPOrderLookUp;
+import org.msh.pharmadex.domain.POrderDoc;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.POrderService;
@@ -32,22 +34,16 @@ import java.util.List;
  */
 public abstract class POrderBn implements Serializable {
 
-    FacesContext context = FacesContext.getCurrentInstance();
-    java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
-
     @ManagedProperty(value = "#{POrderService}")
     protected POrderService pOrderService;
-
     @ManagedProperty(value = "#{userSession}")
     protected UserSession userSession;
-
     @ManagedProperty(value = "#{userService}")
     protected UserService userService;
-
     @ManagedProperty(value = "#{globalEntityLists}")
     protected GlobalEntityLists globalEntityLists;
-
-
+    FacesContext context = FacesContext.getCurrentInstance();
+    java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
     //    private POrderBase pOrderBase;
     private User applicantUser;
     private Applicant applicant;
@@ -165,12 +161,11 @@ public abstract class POrderBn implements Serializable {
         return pOrderDocs;
     }
 
-    protected abstract ArrayList<POrderDoc> findPOrdersDocs();
-
-
     public void setpOrderDocs(ArrayList<POrderDoc> pOrderDocs) {
         this.pOrderDocs = pOrderDocs;
     }
+
+    protected abstract ArrayList<POrderDoc> findPOrdersDocs();
 
     public POrderService getpOrderService() {
         return pOrderService;
@@ -195,4 +190,5 @@ public abstract class POrderBn implements Serializable {
     public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
         this.globalEntityLists = globalEntityLists;
     }
+
 }

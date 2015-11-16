@@ -13,6 +13,20 @@
             <p:growl id="growl"/>
             <p:messages id="messages" showDetail="true"/>
 
+            <div align="right">
+                <p:commandButton value="#{msgs.global_withdraw}" rendered="#{purOrderBn.showWithdrawn}"
+                                 actionListener="#{purOrderBn.withdraw}"
+                                 update="@form">
+                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                </p:commandButton>
+                <p:commandButton value="#{msgs.global_submit}" rendered="#{purOrderBn.showSubmit}"
+                                 oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
+                                 update="messages growl"/>
+                <p:commandButton action="#{purOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
+                                 immediate="true"/>
+            </div>
+            <div style="height:10px"/>
+
             <ui:decorate template="appinfosub.xhtml">
                 <ui:param name="regHomeData" value="#{purOrderBn}"/>
                 <ui:param name="appSelectData" value="#{pOAppSelectBn}"/>
@@ -24,31 +38,34 @@
             <p:panel header="#{msgs.general_info}">
                 <h:panelGrid columns="3" cellspacing="10" columnClasses="col1, col2, col3">
                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
-                    <p:inputText id="shipinst" required="true" value="#{purOrderBn.purOrder.shippingInstruction}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:inputText id="shipinst" required="true" value="#{purOrderBn.purOrder.shippingInstruction}"
+                                 readonly="#{purOrderBn.showWithdrawn}"/>
                     <p:message for="shipinst" showSummary="true"/>
 
 
                     <p:outputLabel value="#{msgs.portof_entry}" for="port"/>
-                    <p:inputText id="port" required="true" readonly="#{not empty purOrderBn.purOrder.submitDate}"
+                    <p:inputText id="port" required="true" readonly="#{purOrderBn.showWithdrawn}"
                                  value="#{purOrderBn.purOrder.entryPort}"/>
                     <p:message for="port" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
                     <p:inputText id="delivery" value="#{purOrderBn.purOrder.delivery}"
-                                 readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                                 readonly="#{purOrderBn.showWithdrawn}"/>
                     <p:message for="delivery" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
-                    <p:inputText id="payinfo" required="true" value="#{purOrderBn.purOrder.paymentMethod}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:inputText id="payinfo" required="true" value="#{purOrderBn.purOrder.paymentMethod}"
+                                 readonly="#{purOrderBn.showWithdrawn}"/>
                     <p:message for="payinfo" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.performa}" for="proforma"/>
                     <p:inputText id="proforma" value="#{purOrderBn.purOrder.performa}"
-                                 readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                                 readonly="#{purOrderBn.showWithdrawn}"/>
                     <p:message for="proforma" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
-                    <p:inputText id="comment" value="#{purOrderBn.purOrder.comment}" readonly="#{not empty purOrderBn.purOrder.submitDate}"/>
+                    <p:inputText id="comment" value="#{purOrderBn.purOrder.comment}"
+                                 readonly="#{purOrderBn.showWithdrawn}"/>
                     <p:message for="comment" showSummary="true"/>
 
                 </h:panelGrid>
@@ -65,8 +82,8 @@
 
                     <p:dataTable id="ordertable" var="order" value="#{purOrderBn.purProds}" style="width:100%;">
                         <f:facet name="header">
-                            <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()" 
-                                             rendered="#{empty purOrderBn.purOrder.submitDate}"
+                            <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
+                                             rendered="#{!purOrderBn.showWithdrawn}"
                                              action="#{purOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                         </f:facet>
 
@@ -107,7 +124,7 @@
                             <h:outputText value="#{order.totalPrice}"/>
                         </p:column>
 
-                        <p:column rendered="#{empty order.purOrder.submitDate}">
+                        <p:column rendered="#{!purOrderBn.showWithdrawn}">
                             <p:commandButton action="#{purOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
                                              update=":reghome:ordertable :reghome:growl" immediate="true">
                             </p:commandButton>
@@ -123,9 +140,39 @@
 
             <div style="height:10px"/>
 
+            <p:panel header="#{msgs.global_comment}"
+                     rendered="#{not empty purOrderBn.purOrder and not empty purOrderBn.purOrder.pOrderComments}">
+                <p:dataTable id="commenttable" value="#{purOrderBn.purOrder.pOrderComments}" var="it">
+                    <p:column style="width:120px;" rendered="#{it.external}">
+                        <p:outputLabel styleClass="ui-icon ui-icon-comment"
+                                       style="display:inline-block;"/>
+                        <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+                        <div style="font-size: smaller;">
+                            <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                        </div>
+                    </p:column>
+
+                    <p:column rendered="#{it.external}">
+                        <div style="padding-left:10px;padding-top:10px;">
+                            <h:outputText value="#{it.comment}"
+                                          escape="false"
+                                          styleClass="text"/>
+                        </div>
+                    </p:column>
+                    <p:column rendered="#{it.external}">
+                        #{it.recomendType}
+                    </p:column>
+                </p:dataTable>
+
+
+            </p:panel>
+
+            <div style="height:10px"/>
+
             <p:panel header="#{msgs.attachments}">
                 <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
-                                 oncomplete="PF('attachdlg').show()" rendered="#{empty purOrderBn.purOrder.submitDate}"
+                                 oncomplete="PF('attachdlg').show()" rendered="#{!purOrderBn.showWithdrawn}"
                                  action="#{purOrderBn.prepareUpload}"
                                  update=":attachdlg" id="addDocBtn"/>
 
@@ -159,7 +206,7 @@
                         </p:commandButton>
                     </p:column>
 
-                    <p:column rendered="#{empty purOrderBn.purOrder.submitDate}">
+                    <p:column rendered="#{!purOrderBn.showWithdrawn}">
                         <p:commandButton id="deleteattach"
                                          action="#{purOrderBn.deleteDoc(doc)}" ajax="false"
                                          icon="ui-icon-trash"
@@ -180,7 +227,7 @@
                     <p:column rendered="#{!checkList.pipOrderLookUp.header}">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
-                    <p:column rendered="#{!checkList.pipOrderLookUp.header and empty checkList.purOrder.submitDate}">
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header and !purOrderBn.showWithdrawn}">
                         <p:selectOneButton id="console" value="#{checkList.value}" rendered="#{checkList.pipOrderLookUp.optional}">
                             <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
                         </p:selectOneButton>
@@ -188,7 +235,7 @@
                             <f:selectItems value="#{globalLists.yesNo}" var="value" itemLabel="#{msgs[value.key]}" />
                         </p:selectOneButton>
                     </p:column>
-                    <p:column rendered="#{!checkList.pipOrderLookUp.header and not empty checkList.purOrder.submitDate}">
+                    <p:column rendered="#{!checkList.pipOrderLookUp.header and purOrderBn.showWithdrawn}">
                         <h:outputLabel value="#{msgs[checkList.value.key]}"/>
                     </p:column>
                 </p:dataTable>
@@ -197,7 +244,7 @@
 
 
             <div align="center" style="height: 60px">
-                <p:commandButton value="#{msgs.global_submit}" rendered="#{empty purOrderBn.purOrder.submitDate}"
+                <p:commandButton value="#{msgs.global_submit}" rendered="#{purOrderBn.showWithdrawn}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
                                  update="messages growl"/>
                 <p:commandButton action="#{purOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"
@@ -212,7 +259,13 @@
                 <div>
                     <p>
                         <ol>
-                            <li>Products should have minimum 75% of its shelf life on arrival at Addis Ababa/port of entry.</li>
+                            <li>For a medicine to have port clearance permission by the authority
+                                <ul>
+                                    <li>If the medicine has three years or more shelf life, when it arrives in the port of entry it should have 60% or more of its shelf life.</li>
+                                    <li>If the medicine has two years or less shelf life, when it arrives in the port of entry it should have 50% or more of its shelf life.</li>
+                                    <li>For emergency cases, the medicine should have a shelf life of more than 50% of its shelf life on arrival at port entry of the country</li>
+                                </ul>
+                            </li>
                             <li>Language used for writing label, leaflet and other documents shall be in English</li>
                             <li>All packing should be suitable for road, air and sea transport under tropical conditions</li>
                             <li>
@@ -344,6 +397,11 @@
 
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
                     <p:outputLabel id="total" value="#{purOrderBn.purProd.totalPrice}"  styleClass="label"/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.currency}" for="curr"/>
+                    <p:inputText id="curr" value="#{purOrderBn.purProd.currency}"/>
+                    <p:message for="curr" showSummary="true" showDetail="false"/>
 
                 </h:panelGrid>
 
@@ -384,5 +442,9 @@
             </h:form>
         </p:dialog>
 
+        <p:confirmDialog header="#{msgs.global_agreement}" global="true">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+        </p:confirmDialog>
     </ui:define>
 </ui:composition>

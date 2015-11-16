@@ -19,7 +19,6 @@ import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +65,22 @@ public class POrderService implements Serializable {
         return customPIPOrderDAO.findAllPIPOrderLookUp(applicantType.getId(), pip);
     }
 
-    public RetObject saveOrder(POrderBase pipOrderBase) {
+    public POrderBase saveOrder(POrderBase pOrderBase) {
+        if (pOrderBase instanceof PIPOrder) {
+            PIPOrder pipOrder = (PIPOrder) pOrderBase;
+            pipOrder = pipOrderDAO.save(pipOrder);
+            return pipOrder;
+        }
+        if (pOrderBase instanceof PurOrder) {
+            PurOrder purOrder = (PurOrder) pOrderBase;
+            purOrder = purOrderDAO.save(purOrder);
+            return purOrder;
+
+        }
+        return pOrderBase;
+    }
+
+    public RetObject newOrder(POrderBase pipOrderBase) {
         RetObject retObject = new RetObject();
         RegistrationUtil registrationUtil = new RegistrationUtil();
         try {
@@ -124,15 +138,14 @@ public class POrderService implements Serializable {
 
     public byte[] generateLetter(Long piporderid, String path, File pdfFile) throws JRException, IOException, SQLException {
         JasperPrint jasperPrint;
-        Session hibernateSession = entityManager.unwrap(Session.class);
-        Connection conn = SessionFactoryUtils.getDataSource(hibernateSession.getSessionFactory()).getConnection();
+        Connection conn = entityManager.unwrap(Session.class).connection();
         HashMap<String, Object> param = new HashMap<String, Object>();
         param.put("piporderid", piporderid);
         URL resource = getClass().getResource(path);
         jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(pdfFile));
         byte[] file = IOUtils.toByteArray(new FileInputStream(pdfFile));
-        conn.close();
+//        conn.close();
         return file;
     }
 

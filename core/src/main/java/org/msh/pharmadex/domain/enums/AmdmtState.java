@@ -11,7 +11,9 @@ public enum AmdmtState {
     RECOMMENDED,
     NOT_RECOMMENDED,
     APPROVED,
-    REJECTED;
+    REJECTED,
+    WITHDRAWN,
+    CANCELLED;
 
 
     public String getKey() {

@@ -1,24 +1,17 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.PurOrderService;
+import org.msh.pharmadex.domain.POrderBase;
+import org.msh.pharmadex.domain.PurOrder;
+import org.msh.pharmadex.domain.PurProd;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
-import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
@@ -54,7 +47,7 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
         setpOrderDocs(null);
     }
 
-    public String saveApp() {
+    public String newApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
             if (purProds == null || purProds.size() == 0) {
@@ -115,4 +108,6 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
     public void setPurProds(List<PurProd> purProds) {
         this.purProds = purProds;
     }
+
+
 }

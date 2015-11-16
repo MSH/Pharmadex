@@ -54,6 +54,9 @@ public class PProdBase extends CreationDetail implements Serializable {
     private Double unitPrice;
 
     @Column(nullable = false)
+    private String currency;
+
+    @Column(nullable = false)
     private Double freight;
 
     @Column(length = 255)
@@ -188,5 +191,11 @@ public class PProdBase extends CreationDetail implements Serializable {
         this.country = country;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
 
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }

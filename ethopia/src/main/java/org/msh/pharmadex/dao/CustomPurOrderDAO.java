@@ -3,6 +3,7 @@ package org.msh.pharmadex.dao;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.PIPOrderLookUp;
 import org.msh.pharmadex.domain.PurOrder;
+import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -43,7 +44,8 @@ public class CustomPurOrderDAO {
     }
 
     public List<PurOrder> findAllPIPOrder() {
-        List<PurOrder> purOrders = entityManager.createQuery("select porder from PurOrder porder")
+        List<PurOrder> purOrders = entityManager.createQuery("select porder from PurOrder porder where porder.state not in (:state)")
+                .setParameter("state", AmdmtState.WITHDRAWN)
                 .getResultList();
         initializePurOrder(purOrders);
         return purOrders;

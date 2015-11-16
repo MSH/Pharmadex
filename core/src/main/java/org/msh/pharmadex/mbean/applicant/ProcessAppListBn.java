@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -20,7 +21,7 @@ import java.util.ResourceBundle;
  */
 @ManagedBean
 @RequestScoped
-public class ProcessAppListBn {
+public class ProcessAppListBn implements Serializable {
 
     FacesContext context = FacesContext.getCurrentInstance();
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
