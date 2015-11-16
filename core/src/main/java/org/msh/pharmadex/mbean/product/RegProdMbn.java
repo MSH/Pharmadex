@@ -1,17 +1,15 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.util.JsfUtils;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -21,7 +19,7 @@ import java.util.ResourceBundle;
  */
 @ManagedBean
 @RequestScoped
-public class RegProdMbn {
+public class RegProdMbn implements Serializable {
 
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;

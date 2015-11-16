@@ -1,6 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.domain.enums.ProdCategory;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 
@@ -15,6 +15,7 @@ public class ReviewInfoTable implements Serializable {
     private Long id;
     private String revType;
     private String prodName;
+    private String revName;
     private ReviewStatus reviewStatus;
     private Date assignDate;
     private Date dueDate;
@@ -22,6 +23,9 @@ public class ReviewInfoTable implements Serializable {
     private RecomendType recomendType;
     private Date submittedDate;
     private boolean pastDue;
+    private ProdAppType prodAppType;
+    private String prodAppNo;
+
 
     public Long getId() {
         return id;
@@ -71,20 +75,20 @@ public class ReviewInfoTable implements Serializable {
         this.dueDate = dueDate;
     }
 
-    public void setCtdModule(String ctdModule) {
-        this.ctdModule = ctdModule;
-    }
-
     public String getCtdModule() {
         return ctdModule;
     }
 
-    public void setRecomendType(RecomendType recomendType) {
-        this.recomendType = recomendType;
+    public void setCtdModule(String ctdModule) {
+        this.ctdModule = ctdModule;
     }
 
     public RecomendType getRecomendType() {
         return recomendType;
+    }
+
+    public void setRecomendType(RecomendType recomendType) {
+        this.recomendType = recomendType;
     }
 
     public Date getSubmittedDate() {
@@ -110,5 +114,29 @@ public class ReviewInfoTable implements Serializable {
 
     public void setPastDue(boolean pastDue) {
         this.pastDue = pastDue;
+    }
+
+    public String getRevName() {
+        return revName;
+    }
+
+    public void setRevName(String revName) {
+        this.revName = revName;
+    }
+
+    public ProdAppType getProdAppType() {
+        return prodAppType;
+    }
+
+    public void setProdAppType(ProdAppType prodAppType) {
+        this.prodAppType = prodAppType;
+    }
+
+    public String getProdAppNo() {
+        return prodAppNo;
+    }
+
+    public void setProdAppNo(String prodAppNo) {
+        this.prodAppNo = prodAppNo;
     }
 }

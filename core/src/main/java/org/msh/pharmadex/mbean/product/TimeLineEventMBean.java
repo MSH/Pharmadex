@@ -4,6 +4,7 @@ package org.msh.pharmadex.mbean.product;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public class TimeLineEventMBean {
+public class TimeLineEventMBean implements Serializable {
     private List<Timeline> timelines;
 
     private String eventStyle = "box";

@@ -1,15 +1,12 @@
 package org.msh.pharmadex.service;
 
 import org.msh.pharmadex.domain.Applicant;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 /**
  * Author: usrivastava
  */
-@Component
 public class ProductFilter {
     String prodName;
     String manufName;

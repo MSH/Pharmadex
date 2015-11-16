@@ -5,6 +5,8 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.AtcService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.InnService;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -14,10 +16,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -29,24 +29,18 @@ import java.util.ResourceBundle;
 @RequestScoped
 public class ProdAddDetailMBean implements Serializable{
     private static final Logger logger = LoggerFactory.getLogger(CompanyMBean.class);
-
-    @ManagedProperty(value = "#{innService}")
-    private InnService innService;
-
-    @ManagedProperty(value = "#{dosUomDAO}")
-    private DosUomDAO dosUomDAO;
-
-    @ManagedProperty(value = "#{prodRegAppMbean}")
-    private ProdRegAppMbean prodRegAppMbean;
-
-    @ManagedProperty(value = "#{atcService}")
-    private AtcService atcService;
-
-    @ManagedProperty(value = "#{globalEntityLists}")
-    private GlobalEntityLists globalEntityLists;
-
     FacesContext context;
     ResourceBundle bundle;
+    @ManagedProperty(value = "#{innService}")
+    private InnService innService;
+    @ManagedProperty(value = "#{dosUomDAO}")
+    private DosUomDAO dosUomDAO;
+    @ManagedProperty(value = "#{prodRegAppMbean}")
+    private ProdRegAppMbean prodRegAppMbean;
+    @ManagedProperty(value = "#{atcService}")
+    private AtcService atcService;
+    @ManagedProperty(value = "#{globalEntityLists}")
+    private GlobalEntityLists globalEntityLists;
     private Atc atc;
     private TreeNode selAtcTree;
     private ProdInn prodInn = new ProdInn();
@@ -77,6 +71,7 @@ public class ProdAddDetailMBean implements Serializable{
             prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
 
         prodInn.setProduct(prodRegAppMbean.getProduct());
+        prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
         prodRegAppMbean.getSelectedInns().add(prodInn);
 //        product.setInns(selectedInns);
 
@@ -109,6 +104,7 @@ public class ProdAddDetailMBean implements Serializable{
 
         List<ProdExcipient> selectedExipients = prodRegAppMbean.getSelectedExipients();
         prodExcipient.setProduct(prodRegAppMbean.getProduct());
+        prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
         selectedExipients.add(prodExcipient);
 //        product.setExcipients(selectedExipients);
 
@@ -116,6 +112,36 @@ public class ProdAddDetailMBean implements Serializable{
         prodExcipient = new ProdExcipient();
         prodExcipient.setDosUnit(new DosUom());
         return null;
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+        ProdExcipient prodExcipient;
+        ProdInn prodInn;
+        FacesMessage msg = null;
+        if (event.getObject() instanceof ProdExcipient) {
+            prodExcipient = (ProdExcipient) event.getObject();
+            msg = new FacesMessage(prodExcipient.getExcipient().getName() + " updated");
+        } else if (event.getObject() instanceof ProdInn) {
+            prodInn = (ProdInn) event.getObject();
+            msg = new FacesMessage(prodInn.getInn().getName() + " updated");
+        }
+
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage(((ProdExcipient) event.getObject()).getExcipient().getName() + " updated");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+
+        if (newValue != null && !newValue.equals(oldValue)) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
 
     public String cancelAddInn() {
@@ -151,6 +177,10 @@ public class ProdAddDetailMBean implements Serializable{
             populateSelAtcTree();
         }
         return selAtcTree;
+    }
+
+    public void setSelAtcTree(TreeNode selAtcTree) {
+        this.selAtcTree = selAtcTree;
     }
 
     private void populateSelAtcTree() {
@@ -237,9 +267,5 @@ public class ProdAddDetailMBean implements Serializable{
 
     public void setAtc(Atc atc) {
         this.atc = atc;
-    }
-
-    public void setSelAtcTree(TreeNode selAtcTree) {
-        this.selAtcTree = selAtcTree;
     }
 }

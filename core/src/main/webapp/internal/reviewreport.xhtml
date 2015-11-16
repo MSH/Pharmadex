@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post" style="width: 1054px;">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.reviewers_report}</h1>
+        </div>
+
+        <p:messages id="messages" showDetail="true"/>
+        <h:form prependId="false">
+            <p:dataTable id="reviews" var="eachprod" value="#{reviewListMBean.allReviews}"
+                         filteredValue="#{reviewListMBean.filteredReviewInfos}"
+                         rowStyleClass="#{eachprod.pastDue?'colored':null}">
+
+                <p:column filterBy="#{eachprod.revName}"
+                          sortBy="#{eachprod.revName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.global_name}"/>
+                    </f:facet>
+                    <p:commandLink id="viewLink" value="#{eachprod.revName}"
+                                   action="#{reviewListMBean.sentToDetail(eachprod.id)}"
+                                   ajax="false">
+                    </p:commandLink>
+                </p:column>
+
+
+                <p:column filterBy="#{eachprod.prodName}"
+                          sortBy="#{eachprod.prodName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prod_name}"/>
+                    </f:facet>
+                    <h:outputText value="#{eachprod.prodName}"/>
+
+                </p:column>
+
+                <p:column filterBy="#{eachprod.revType}"
+                          sortBy="#{eachprod.revType}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.review_type}"/>
+                    </f:facet>
+                    <h:outputText value="#{eachprod.revType}"/>
+                </p:column>
+
+                <p:column filterBy="#{msgs[eachprod.reviewStatus.key]}"
+                          sortBy="#{msgs[eachprod.reviewStatus.key]}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.review_status}"/>
+                    </f:facet>
+                    <h:outputText value="#{msgs[eachprod.reviewStatus.key]}"/>
+                </p:column>
+
+                <p:column filterBy="#{eachprod.prodAppNo}"
+                          sortBy="#{eachprod.prodAppNo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prod_app_no}"/>
+                    </f:facet>
+                    <h:outputText value="#{eachprod.prodAppNo}"/>
+                </p:column>
+                <p:column filterBy="#{eachprod.prodAppType}"
+                          sortBy="#{eachprod.prodAppType}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prod_app_type}"/>
+                    </f:facet>
+                    <h:outputText value="#{eachprod.prodAppType}"/>
+                </p:column>
+
+                <!--
+                <p:column filterBy="#{eachprod.ctdModule}"
+                          sortBy="#{eachprod.ctdModule}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.module}"/>
+                    </f:facet>
+                    <h:outputText value="#{eachprod.ctdModule}"/>
+                </p:column>
+-->
+                <p:column sortBy="#{eachprod.assignDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.assigndate}"/>
+                    </f:facet>
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.assignDate}"/>
+                </p:column>
+
+                <p:column sortBy="#{eachprod.dueDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.global_duedate}"/>
+                    </f:facet>
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.dueDate}"/>
+                </p:column>
+
+                <p:column sortBy="#{eachprod.submittedDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.submitted_date}"/>
+                    </f:facet>
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submittedDate}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -10,13 +10,14 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Author: usrivastava
  */
 @ManagedBean
 @RequestScoped
-public class UserAuthHandler {
+public class UserAuthHandler implements Serializable {
 
     @ManagedProperty(value = "#{userSession}")
     UserSession userSession;

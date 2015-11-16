@@ -17,7 +17,6 @@ import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,8 +111,8 @@ public class SuspendService implements Serializable {
         String emailBody = suspComment.getComment();
         Product product = prodApplications.getProduct();
         URL resource = getClass().getResource("/reports/suspend_request.jasper");
-        Session hibernateSession = entityManager.unwrap(Session.class);
-        Connection conn = SessionFactoryUtils.getDataSource(hibernateSession.getSessionFactory()).getConnection();
+//        Session hibernateSession = entityManager.unwrap(Session.class);
+        Connection conn = entityManager.unwrap(Session.class).connection();
         HashMap param = new HashMap();
         List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
         prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;

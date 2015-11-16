@@ -67,6 +67,11 @@ public class ReviewService implements Serializable {
 
     }
 
+    public List<ReviewInfoTable> findAllPriSecReview() {
+        return customReviewDAO.findAllPriSecReview();
+    }
+
+
     public Review findReview(Long reviewID) {
         Review review = reviewDAO.findOne(reviewID);
 //        List<ReviewChecklist> reviewChecklists = review.getReviewChecklists();

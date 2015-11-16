@@ -9,7 +9,6 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -153,8 +152,8 @@ public class ReportService implements Serializable {
 //        body = mf.format(args);
 
         JasperPrint jasperPrint;
-        Session hibernateSession = entityManager.unwrap(Session.class);
-        Connection conn = SessionFactoryUtils.getDataSource(hibernateSession.getSessionFactory()).getConnection();
+//        Session hibernateSession = entityManager.unwrap(Session.class);
+        Connection conn = entityManager.unwrap(Session.class).connection();
 
 
         HashMap param = new HashMap();
