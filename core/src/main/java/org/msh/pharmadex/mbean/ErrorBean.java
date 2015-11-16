@@ -3,13 +3,14 @@ package org.msh.pharmadex.mbean;
 import org.springframework.stereotype.Component;
 
 import javax.faces.context.FacesContext;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Author: usrivastava
  */
 @Component
-public class ErrorBean {
+public class ErrorBean implements Serializable {
     private static final String BR = "n";
 
     public String getStackTrace()
