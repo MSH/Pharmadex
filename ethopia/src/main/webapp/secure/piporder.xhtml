@@ -87,6 +87,14 @@
 
                         <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;">
 
+                            <p:column headerText="#{msgs.prod_no}">
+                                <h:outputText value="#{order.productNo}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.prod_name}">
+                                <h:outputText value="#{order.productName}"/>
+                            </p:column>
+
                             <p:column headerText="#{msgs.prod_name}">
                                 <h:outputText value="#{order.productName}"/>
                             </p:column>
@@ -367,19 +375,21 @@
 
                     <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
                     <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipProd.quantity}" >
-                        <p:ajax event="blur" update =":orderdetailfrm:total" process="@form" listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
+                        <p:ajax event="keyup" update=":orderdetailfrm:total" process="@form"
+                                listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
                     </p:inputText>
                     <p:message for="quant" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.product_pricing}" for="price"/>
                     <p:inputText id="price" required="true" value="#{pIPOrderBn.pipProd.unitPrice}" >
-                        <p:ajax event="blur" update =":orderdetailfrm:total" process="@form" listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
+                        <p:ajax event="keyup" update=":orderdetailfrm:total" process="@form"
+                                listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
                     </p:inputText>
                     <p:message for="price" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
                     <p:inputText id="freight" required="true" value="#{pIPOrderBn.pipProd.freight}">
-                        <p:ajax event="blur" update=":orderdetailfrm:total" process="@form"
+                        <p:ajax event="keyup" update=":orderdetailfrm:total" process="@form"
                                 listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
                     </p:inputText>
                     <p:message for="freight" showSummary="true"/>

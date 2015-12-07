@@ -580,6 +580,11 @@ public class ProdApplicationsService implements Serializable {
                 }
             }
 
+            if (!prodApplications.isClinicalRevReceived() || !prodApplications.isClinicalRevVerified() || prodApplications.getcRevAttach() == null) {
+                complete = false;
+                return "clinical_review";
+            }
+
             if (complete) {
                 saveApplication(prodApplications, user.getUserId());
                 return "persist";

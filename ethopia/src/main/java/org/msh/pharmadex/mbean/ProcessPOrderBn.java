@@ -228,7 +228,8 @@ public abstract class ProcessPOrderBn implements Serializable{
             pOrderBase.setApprovalDate(new Date());
             return newApp();
         }else{
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Invalid Operation!!!"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "You cannot reject an application that was recommended." +
+                    " Please send it back to the person who recommended it explaining the rejection reason by adding a comment."));
             return "";
         }
 

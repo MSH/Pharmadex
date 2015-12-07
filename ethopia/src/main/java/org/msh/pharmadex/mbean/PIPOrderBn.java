@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,10 +69,11 @@ public class PIPOrderBn extends POrderBn {
         }
     }
 
-    public void calculateTotalPrice() {
+    public void calculateTotalPrice(AjaxBehaviorEvent event) {
         if (pipProd.getUnitPrice() != null && pipProd.getQuantity() != null) {
             double unitPrice = pipProd.getUnitPrice();
-            pipProd.setTotalPrice(unitPrice * pipProd.getQuantity() + pipProd.getFreight());
+            double totalPrice = Math.round((unitPrice * pipProd.getQuantity() + pipProd.getFreight()) * 100) / 100.0;
+            pipProd.setTotalPrice(totalPrice);
         }
     }
 
@@ -79,6 +81,7 @@ public class PIPOrderBn extends POrderBn {
     public void addDocument() {
 //        file = userSession.getFile();
         getpOrderDoc().setPipOrder(pipOrder);
+        getpOrderDoc().setCreatedDate(new Date());
 //        getpOrderDocDAO().save(getpOrderDoc());
         getpOrderDocs().add(getpOrderDoc());
 //        userSession.setFile(null);
@@ -110,6 +113,7 @@ public class PIPOrderBn extends POrderBn {
         pipProd.setDosUnit(dosageFormService.findDosUom(pipProd.getDosUnit().getId()));
         pipProd.setPipOrder(pipOrder);
         pipProd.setCreatedDate(new Date());
+        pipProd.setProductNo("" + (pipProds.size() + 1));
         pipProds.add(pipProd);
         initAddProd();
     }
@@ -181,6 +185,10 @@ public class PIPOrderBn extends POrderBn {
     public String removeProd(PIPProd pipProd) {
         context = FacesContext.getCurrentInstance();
         pipProds.remove(pipProd);
+        for (int i = 1; i <= pipProds.size(); i++) {
+            pipProds.get(i).setProductNo("" + i);
+        }
+
         context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
         return null;
     }

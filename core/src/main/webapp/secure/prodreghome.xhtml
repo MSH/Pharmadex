@@ -658,7 +658,7 @@
 
                     <h:panelGroup>
                         <p:commandButton action="#{prodAddDetailMBean.addProdInn}" value="#{msgs.global_add}"
-                                         oncomplete="!if(args.validationFailed) addInnDlg.hide()"
+                                         oncomplete="if(!args.validationFailed) PF('addInnDlg').hide()"
                                          update=":reghome:atctable :reghome:inntable :addInnFrm :reghome:growl"/>
                         <p:commandButton action="#{prodAddDetailMBean.cancelAddInn}" immediate="true"
                                          value="#{msgs.global_cancel}"

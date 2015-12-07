@@ -156,8 +156,7 @@ and p.DOSUNIT_ID = u.id]]>
 		<![CDATA[select * from pur_order pip, applicant a, country c
 where pip.applicant_applcntid = a.`applcntId`
 and c.id = a.`CNTRY_ID`
-and pip.id = $P{piporderid}
-]]>
+and pip.id = $P{piporderid}]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -317,7 +316,7 @@ and pip.id = $P{piporderid}
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PRE IMPORT PERMIT REJECTION LETTER]]></text>
+				<text><![CDATA[PURCHASE ORDER REJECTION LETTER]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -375,7 +374,7 @@ and pip.id = $P{piporderid}
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
 				</textElement>
-				<text><![CDATA[Your application for pre import permit of the below products have been substantively evaluated and found to be not acceptable at this time and hence you wont be able to import these products. Please refer the below comments for detail reasons. ]]></text>
+				<text><![CDATA[Your application for purchase order of the below products have been substantively evaluated and found to be not acceptable at this time and hence you wont be able to import these products. Please refer the below comments for detail reasons. ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="1" y="53" width="178" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>

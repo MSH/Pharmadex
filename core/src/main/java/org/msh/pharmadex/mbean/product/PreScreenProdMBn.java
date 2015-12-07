@@ -11,6 +11,7 @@ import org.msh.pharmadex.service.ProdAppChecklistService;
 import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import javax.faces.application.FacesMessage;
@@ -72,6 +73,13 @@ public class PreScreenProdMBn implements Serializable {
 
         ProdApplications prodApplications = processProdBn.getProdApplications();
         prodApplications.setModerator(moderator);
+
+        if (!prodApplications.isPrescreenfeeReceived()) {
+            facesContext.addMessage(null, new FacesMessage("Pre-screen fees not received"));
+            return "";
+
+        }
+
 //        prodApplications.setProdAppChecklists(prodAppChecklists);
         if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)
                 || prodApplications.getRegState().equals(RegState.VERIFY)) {
@@ -166,19 +174,17 @@ public class PreScreenProdMBn implements Serializable {
 
     }
 
-    public void addModuleDoc() {
+    public void handleFileUpload(FileUploadEvent event) {
+        file = event.getFile();
+        FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
         try {
-            facesContext = FacesContext.getCurrentInstance();
-            resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
             if (file != null) {
                 prodAppChecklist.setFile(IOUtils.toByteArray(file.getInputstream()));
                 prodAppChecklist.setFileName(file.getFileName());
                 prodAppChecklist.setContentType(file.getContentType());
                 prodAppChecklist.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
                 prodAppChecklist.setFileUploaded(true);
-                RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
-                prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
-//                setChecklists(null);
             } else {
                 FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), resourceBundle.getString("upload_fail"));
                 facesContext.addMessage(null, msg);
@@ -189,6 +195,14 @@ public class PreScreenProdMBn implements Serializable {
             facesContext.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    public void addModuleDoc() {
+        facesContext = FacesContext.getCurrentInstance();
+        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
+        prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
+//                setChecklists(null);
 
     }
 

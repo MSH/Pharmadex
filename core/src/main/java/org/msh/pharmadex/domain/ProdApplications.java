@@ -69,6 +69,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(nullable = true)
     private byte[] feeReceipt;
 
+    @OneToOne
+    private Attachment cRevAttach;
+
+    @Lob
+    @Column(nullable = true)
+    private byte[] clinicalReview;
 
     @Enumerated(EnumType.STRING)
     private RegState regState;
@@ -89,6 +95,8 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean feeReceived;
 
+    private boolean clinicalRevReceived;
+
     private boolean prescreenfeeReceived;
 
     private boolean dossierReceived;
@@ -99,6 +107,8 @@ public class ProdApplications extends CreationDetail implements Serializable {
     private boolean applicantVerified;
 
     private boolean productVerified;
+
+    private boolean clinicalRevVerified;
 
     private boolean sra;
 
@@ -149,6 +159,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @Transient
     private ReviewStatus reviewStatus;
+
+    @Column(length = 255, name = "priorityNo")
+    private String priorityNo;
 
 
     public ProdApplications(Product prod, Applicant applicant) {
@@ -531,9 +544,49 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.feeReceipt = feeReceipt;
     }
 
+    public Attachment getcRevAttach() {
+        return cRevAttach;
+    }
+
+    public void setcRevAttach(Attachment cRevAttach) {
+        this.cRevAttach = cRevAttach;
+    }
+
+    public byte[] getClinicalReview() {
+        return clinicalReview;
+    }
+
+    public void setClinicalReview(byte[] clinicalReview) {
+        this.clinicalReview = clinicalReview;
+    }
+
+    public boolean isClinicalRevReceived() {
+        return clinicalRevReceived;
+    }
+
+    public void setClinicalRevReceived(boolean clinicalRevReceived) {
+        this.clinicalRevReceived = clinicalRevReceived;
+    }
+
+    public boolean isClinicalRevVerified() {
+        return clinicalRevVerified;
+    }
+
+    public void setClinicalRevVerified(boolean clinicalRevVerified) {
+        this.clinicalRevVerified = clinicalRevVerified;
+    }
+
     @Override
     public String toString() {
         return "" + id;
+    }
+
+    public String getPriorityNo() {
+        return priorityNo;
+    }
+
+    public void setPriorityNo(String priorityNo) {
+        this.priorityNo = priorityNo;
     }
 }
 

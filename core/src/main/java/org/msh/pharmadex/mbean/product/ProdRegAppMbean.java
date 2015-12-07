@@ -94,6 +94,7 @@ public class ProdRegAppMbean implements Serializable {
     private List<Attachment> attachments;
     private UploadedFile file;
     private UploadedFile payReceipt;
+    private UploadedFile clinicalReview;
 
     @PostConstruct
     private void init() {
@@ -215,6 +216,30 @@ public class ProdRegAppMbean implements Serializable {
             }
         } else {
             msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+    }
+
+    public void handleClinicalReviewUpload() {
+        FacesMessage msg;
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+        if (clinicalReview != null) {
+            msg = new FacesMessage(bundle.getString("global.success"), clinicalReview.getFileName() + bundle.getString("upload_success"));
+            facesContext.addMessage(null, msg);
+            try {
+                prodApplications.setClinicalReview(IOUtils.toByteArray(clinicalReview.getInputstream()));
+                saveApp();
+
+            } catch (IOException e) {
+                msg = new FacesMessage(bundle.getString("global_fail"), clinicalReview.getFileName() + bundle.getString("upload_fail"));
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        } else {
+            msg = new FacesMessage(bundle.getString("global_fail"), clinicalReview.getFileName() + bundle.getString("upload_fail"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -809,5 +834,13 @@ public class ProdRegAppMbean implements Serializable {
 
     public void setPayReceipt(UploadedFile payReceipt) {
         this.payReceipt = payReceipt;
+    }
+
+    public UploadedFile getClinicalReview() {
+        return clinicalReview;
+    }
+
+    public void setClinicalReview(UploadedFile clinicalReview) {
+        this.clinicalReview = clinicalReview;
     }
 }

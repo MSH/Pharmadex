@@ -14,7 +14,7 @@
 
                     <ui:include src="processprodmenu.xhtml"/>
 
-                    <h:panelGroup styleClass="ui-widget">
+                    <h:panelGroup styleClass="ui-widget" id="banner">
                         <ui:decorate template="/templates/prodbannertempl.xhtml">
                             <ui:param name="prodApp" value="#{processProdBn.prodApplications}"/>
                         </ui:decorate>
@@ -80,11 +80,15 @@
                             <!-- Include workspace specific sequence of tabs. -->
                             <ui:include src="prodscreenverify.xhtml"/>
 
+                            <p:tab title="#{msgs.clinical_review}" id="clinicaltab"
+                                   rendered="#{userSession.head||userSession.moderator||userSession.admin}">
+                                <ui:include src="clinicalreview.xhtml"/>
+                            </p:tab>
+
                             <p:tab title="Sample Request" id="sampletab"
                                    rendered="#{processProdBn.displaySample}">
                                 <ui:include src="samplerequestpnl.xhtml"/>
                             </p:tab>
-
 
                             <p:tab title="#{msgs.prod_comments}"
                                    rendered="#{!userSession.company and !userSession.lab}">
@@ -219,7 +223,8 @@
                                     </p:column>
 
                                     <p:column>
-                                        <p:commandButton id="downloadletter" value="#{msgs.global_download}" ajax="false"
+                                        <p:commandButton id="downloadletter" value="#{msgs.global_download}"
+                                                         ajax="false"
                                                          onclick="PrimeFaces.monitorDownload(start, stop)"
                                                          icon="ui-icon-arrowthichk-n">
                                             <p:fileDownload value="#{processProdBn.fileDownload(letter)}"/>
@@ -268,13 +273,15 @@
 
                             <p:tab title="#{msgs.reg_cert}" id="regcerttab" rendered="#{processProdBn.showCert}">
 
-                                <p:commandButton id="regdownload" value="#{msgs.reg_cert}" rendered="#{processProdBn.registered}"
+                                <p:commandButton id="regdownload" value="#{msgs.reg_cert}"
+                                                 rendered="#{processProdBn.registered}"
                                                  onclick="PrimeFaces.monitorDownload(start, stop)"
                                                  icon="ui-icon-arrowthichk-n">
                                     <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
                                 </p:commandButton>
 
-                                <p:commandButton id="rejectdownload" value="#{msgs.reg_cert}" rendered="#{!processProdBn.registered}"
+                                <p:commandButton id="rejectdownload" value="#{msgs.reg_cert}"
+                                                 rendered="#{!processProdBn.registered}"
                                                  onclick="PrimeFaces.monitorDownload(start, stop)"
                                                  icon="ui-icon-arrowthichk-n">
                                     <p:fileDownload value="#{fileUploadController.rejCertDownload()}"/>
@@ -356,7 +363,6 @@
                         </p:blockUI>
 
 
-
                     </h:panelGroup>
                 </h:panelGrid>
             </h:panelGrid>
@@ -367,52 +373,79 @@
                   rendered="#{userSession.head||userSession.admin||userSession.staff}">
             <h:form>
 
-            <p:panelGrid columns="2" columnClasses="label value">
-                <h:outputText value="#{msgs.moderator_name}: "
-                              escape="false"
-                              styleClass="text"/>
+                <p:panelGrid columns="2" columnClasses="label value">
+                    <h:outputText value="#{msgs.moderator_name}: "
+                                  escape="false"
+                                  styleClass="text"/>
 
-                <p:autoComplete id="mod" value="#{processProdBn.moderator}"
-                                completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
+                    <p:autoComplete id="mod" value="#{processProdBn.moderator}"
+                                    completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
 
-            </p:panelGrid>
+                </p:panelGrid>
 
 
-            <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
-                             action="#{processProdBn.assignModerator}"
-                             oncomplete="moderatordlg.hide()" ajax="false"/>
+                <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
+                                 action="#{processProdBn.assignModerator}"
+                                 oncomplete="moderatordlg.hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 
         <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
                   modal="true" dynamic="true">
             <h:form prependId="false">
-            <h:panelGrid columns="2" style="margin-bottom:10px">
-                <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
-                <p:inputText id="attachtitle" value="#{fileUploadController.attach.title}"/>
-                <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
-                <p:inputTextarea id="attachcomment" value="#{fileUploadController.attach.comment}"
-                                 rows="5" cols="50"/>
-            </h:panelGrid>
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                    <p:inputText id="attachtitle" value="#{fileUploadController.attach.title}"/>
+                    <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="attachcomment" value="#{fileUploadController.attach.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
 
-            <p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}"
-                          mode="advanced" auto="true"
-                          update=":reghome:growl :reghome:messages"
-                          multiple="false"
-                          sizeLimit="100000000">
+                <p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reghome:growl :reghome:messages"
+                              multiple="false"
+                              sizeLimit="100000000">
 
-            </p:fileUpload>
+                </p:fileUpload>
 
-            <p:commandButton id="adddoc" value="#{msgs.global_submit}"
-                             action="#{fileUploadController.addDocument}"
-                             oncomplete="PF('attachdlg').hide()" update=":reghome:growl :reghome:messages :reghome"/>
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{fileUploadController.addDocument}"
+                                 oncomplete="PF('attachdlg').hide()"
+                                 update=":reghome:growl :reghome:messages :reghome"/>
             </h:form>
         </p:dialog>
 
+        <p:dialog header="#{msgs.upload_clinical_review}" widgetVar="clinicalrevdlg" resizable="false"
+                  id="clinicalrevdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel for="crtitle" value="#{msgs.title}"/>
+                    <p:inputText id="crtitle" value="#{fileUploadController.attach.title}"/>
+                    <h:outputLabel for="crcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="crcomment" value="#{fileUploadController.attach.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reghome:growl :reghome:messages"
+                              multiple="false"
+                              sizeLimit="100000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="addcr" value="#{msgs.global_submit}"
+                                 action="#{fileUploadController.addClinicalReview}"
+                                 oncomplete="PF('clinicalrevdlg').hide()"
+                                 update=":reghome:growl :reghome:messages :reghome"/>
+            </h:form>
+        </p:dialog>
 
         <p:dialog header="#{msgs.next_step}" widgetVar="stepDlg" resizable="false" modal="true" dynamic="true"
                   rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.head||userSession.staff||userSession.moderator}">
@@ -422,176 +455,176 @@
         <p:dialog header="#{msgs.issue_invoice}" widgetVar="invoicedlg" resizable="true" id="invoicedlg"
                   modal="true" rendered="false" dynamic="true">
             <h:form>
-            <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
-                         cellspacing="10">
-                <p:outputLabel value="#{msgs.reg_number}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
+                <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
+                             cellspacing="10">
+                    <p:outputLabel value="#{msgs.reg_number}"/>
+                    <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
 
-                <p:outputLabel value="#{msgs.prodName}"/>
-                <h:outputText value="#{renewalMbn.selProd.prodName}"/>
+                    <p:outputLabel value="#{msgs.prodName}"/>
+                    <h:outputText value="#{renewalMbn.selProd.prodName}"/>
 
-                <p:outputLabel value="#{msgs.prodgenname}"/>
-                <h:outputText value="#{renewalMbn.selProd.genName}"/>
+                    <p:outputLabel value="#{msgs.prodgenname}"/>
+                    <h:outputText value="#{renewalMbn.selProd.genName}"/>
 
-                <p:outputLabel value="#{msgs.applicant_name}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
+                    <p:outputLabel value="#{msgs.applicant_name}"/>
+                    <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
 
-                <p:outputLabel value="#{msgs.expiry_date}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
+                    <p:outputLabel value="#{msgs.expiry_date}"/>
+                    <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
 
-                <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
-                <p:calendar value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"
-                            showOn="button" pattern="#{userAccessMBean.workspace.
+                    <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
+                    <p:calendar value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"
+                                showOn="button" pattern="#{userAccessMBean.workspace.
                             datePattern}"/>
 
-                <p:outputLabel value="#{msgs.invoice_amt}" for="invamt"/>
-                <p:inputText value="#{renewalMbn.invoice.invoiceAmt}" id="invamt"/>
+                    <p:outputLabel value="#{msgs.invoice_amt}" for="invamt"/>
+                    <p:inputText value="#{renewalMbn.invoice.invoiceAmt}" id="invamt"/>
 
-                <p:outputLabel value="#{msgs.invoice_no}" for="invno"/>
-                <p:inputText value="#{renewalMbn.invoice.invoiceNumber}" id="invno"/>
+                    <p:outputLabel value="#{msgs.invoice_no}" for="invno"/>
+                    <p:inputText value="#{renewalMbn.invoice.invoiceNumber}" id="invno"/>
 
-            </h:panelGrid>
+                </h:panelGrid>
 
-            <h:panelGrid columns="2" style="margin-top:10px">
-                <p:commandButton id="createinvoice" value="#{msgs.global_submit}"
-                                 oncomplete="invoicedlg.hide()"
-                                 icon="ui-icon-disk" ajax="true" action="#{renewalMbn.createInvoice}"/>
-                <p:commandButton id="cnclinvoice" type="button" value="Clear"
-                                 onclick="PF('invoicedlg').hide()"
-                                 icon="ui-icon-close" ajax="false"/>
-            </h:panelGrid>
+                <h:panelGrid columns="2" style="margin-top:10px">
+                    <p:commandButton id="createinvoice" value="#{msgs.global_submit}"
+                                     oncomplete="invoicedlg.hide()"
+                                     icon="ui-icon-disk" ajax="true" action="#{renewalMbn.createInvoice}"/>
+                    <p:commandButton id="cnclinvoice" type="button" value="Clear"
+                                     onclick="PF('invoicedlg').hide()"
+                                     icon="ui-icon-close" ajax="false"/>
+                </h:panelGrid>
             </h:form>
         </p:dialog>
 
         <p:dialog header="#{msgs.report_payment}" widgetVar="reportpaymentdlg" resizable="true"
                   id="reportpaymentdlg" dynamic="true"
                   modal="true">
-        <h:form>
-            <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
-                         cellspacing="10">
-                <p:outputLabel value="#{msgs.reg_number}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
+            <h:form>
+                <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
+                             cellspacing="10">
+                    <p:outputLabel value="#{msgs.reg_number}"/>
+                    <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
 
-                <p:outputLabel value="#{msgs.prodName}"/>
-                <h:outputText value="#{renewalMbn.selProd.prodName}"/>
+                    <p:outputLabel value="#{msgs.prodName}"/>
+                    <h:outputText value="#{renewalMbn.selProd.prodName}"/>
 
-                <p:outputLabel value="#{msgs.prodgenname}"/>
-                <h:outputText value="#{renewalMbn.selProd.genName}"/>
+                    <p:outputLabel value="#{msgs.prodgenname}"/>
+                    <h:outputText value="#{renewalMbn.selProd.genName}"/>
 
-                <p:outputLabel value="#{msgs.applicant_name}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
+                    <p:outputLabel value="#{msgs.applicant_name}"/>
+                    <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
 
-                <p:outputLabel value="#{msgs.expiry_date}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
+                    <p:outputLabel value="#{msgs.expiry_date}"/>
+                    <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
 
-                <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
-                <h:outputText value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"/>
+                    <p:outputLabel value="#{msgs.new_ecpiry_date}" for="newexpiryDate"/>
+                    <h:outputText value="#{renewalMbn.invoice.newExpDate}" id="newexpiryDate"/>
 
-                <p:outputLabel value="#{msgs.invoice_amt}" for="payinvamt"/>
-                <h:outputText value="#{renewalMbn.invoice.invoiceAmt}" id="payinvamt"/>
+                    <p:outputLabel value="#{msgs.invoice_amt}" for="payinvamt"/>
+                    <h:outputText value="#{renewalMbn.invoice.invoiceAmt}" id="payinvamt"/>
 
-                <p:outputLabel value="#{msgs.invoice_no}" for="payinvno"/>
-                <h:outputText value="#{renewalMbn.invoice.invoiceNumber}" id="payinvno"/>
+                    <p:outputLabel value="#{msgs.invoice_no}" for="payinvno"/>
+                    <h:outputText value="#{renewalMbn.invoice.invoiceNumber}" id="payinvno"/>
 
-                <p:outputLabel value="#{msgs.payment_amt}" for="payamt"/>
-                <p:inputText value="#{renewalMbn.payment.paymentAmt}" id="payamt"/>
+                    <p:outputLabel value="#{msgs.payment_amt}" for="payamt"/>
+                    <p:inputText value="#{renewalMbn.payment.paymentAmt}" id="payamt"/>
 
-                <p:outputLabel value="#{msgs.reciept_no}" for="receiptNo"/>
-                <p:inputText value="#{renewalMbn.payment.receiptNo}" id="receiptNo"/>
+                    <p:outputLabel value="#{msgs.reciept_no}" for="receiptNo"/>
+                    <p:inputText value="#{renewalMbn.payment.receiptNo}" id="receiptNo"/>
 
-                <p:outputLabel value="#{msgs.tracking_no}" for="trackingNo"/>
-                <p:inputText value="#{renewalMbn.payment.trackingNo}" id="trackingNo"/>
+                    <p:outputLabel value="#{msgs.tracking_no}" for="trackingNo"/>
+                    <p:inputText value="#{renewalMbn.payment.trackingNo}" id="trackingNo"/>
 
-            </h:panelGrid>
+                </h:panelGrid>
 
-            <h:panelGrid columns="2" style="margin-top:10px">
-                <p:commandButton id="reportpayment" value="#{msgs.global_submit}"
-                                 oncomplete="reportpaymentdlg.hide()"
-                                 icon="ui-icon-disk" ajax="true" action="#{renewalMbn.reportPayment}"/>
-                <p:commandButton id="cnclpayment" type="button" value="Clear"
-                                 onclick="PF('reportpaymentdlg').hide()"
-                                 icon="ui-icon-close" ajax="false"/>
-            </h:panelGrid>
-        </h:form>
+                <h:panelGrid columns="2" style="margin-top:10px">
+                    <p:commandButton id="reportpayment" value="#{msgs.global_submit}"
+                                     oncomplete="reportpaymentdlg.hide()"
+                                     icon="ui-icon-disk" ajax="true" action="#{renewalMbn.reportPayment}"/>
+                    <p:commandButton id="cnclpayment" type="button" value="Clear"
+                                     onclick="PF('reportpaymentdlg').hide()"
+                                     icon="ui-icon-close" ajax="false"/>
+                </h:panelGrid>
+            </h:form>
         </p:dialog>
 
-<!--
-        <p:dialog header="#{msgs.renew}" widgetVar="renewdlg" resizable="true" id="renewdlg"
-                  modal="true" dynamic="true">
-        <h:form>
-            <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
-                         cellspacing="10">
-                <p:outputLabel value="#{msgs.reg_number}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
+        <!--
+                <p:dialog header="#{msgs.renew}" widgetVar="renewdlg" resizable="true" id="renewdlg"
+                          modal="true" dynamic="true">
+                <h:form>
+                    <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
+                                 cellspacing="10">
+                        <p:outputLabel value="#{msgs.reg_number}"/>
+                        <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
 
-                <p:outputLabel value="#{msgs.prodName}"/>
-                <h:outputText value="#{renewalMbn.selProd.prodName}"/>
+                        <p:outputLabel value="#{msgs.prodName}"/>
+                        <h:outputText value="#{renewalMbn.selProd.prodName}"/>
 
-                <p:outputLabel value="#{msgs.prodgenname}"/>
-                <h:outputText value="#{renewalMbn.selProd.genName}"/>
+                        <p:outputLabel value="#{msgs.prodgenname}"/>
+                        <h:outputText value="#{renewalMbn.selProd.genName}"/>
 
-                <p:outputLabel value="#{msgs.applicant_name}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
+                        <p:outputLabel value="#{msgs.applicant_name}"/>
+                        <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
 
-                <p:outputLabel value="#{msgs.expiry_date}"/>
-                <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
+                        <p:outputLabel value="#{msgs.expiry_date}"/>
+                        <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
 
-                <p:outputLabel value="#{msgs.new_ecpiry_date}"/>
-                <h:outputText value="#{renewalMbn.invoice.newExpDate}"/>
+                        <p:outputLabel value="#{msgs.new_ecpiry_date}"/>
+                        <h:outputText value="#{renewalMbn.invoice.newExpDate}"/>
 
-                <p:outputLabel value="#{msgs.invoice_amt}"/>
-                <h:outputText value="#{renewalMbn.invoice.invoiceAmt}"/>
+                        <p:outputLabel value="#{msgs.invoice_amt}"/>
+                        <h:outputText value="#{renewalMbn.invoice.invoiceAmt}"/>
 
-                <p:outputLabel value="#{msgs.invoice_no}"/>
-                <h:outputText value="#{renewalMbn.invoice.invoiceNumber}"/>
+                        <p:outputLabel value="#{msgs.invoice_no}"/>
+                        <h:outputText value="#{renewalMbn.invoice.invoiceNumber}"/>
 
-                <p:outputLabel value="#{msgs.payment_amt}"/>
-                <h:outputText value="#{renewalMbn.payment.paymentAmt}"/>
+                        <p:outputLabel value="#{msgs.payment_amt}"/>
+                        <h:outputText value="#{renewalMbn.payment.paymentAmt}"/>
 
-                <p:outputLabel value="#{msgs.reciept_no}"/>
-                <h:outputText value="#{renewalMbn.payment.receiptNo}"/>
+                        <p:outputLabel value="#{msgs.reciept_no}"/>
+                        <h:outputText value="#{renewalMbn.payment.receiptNo}"/>
 
-                <p:outputLabel value="#{msgs.tracking_no}"/>
-                <h:outputText value="#{renewalMbn.payment.trackingNo}"/>
+                        <p:outputLabel value="#{msgs.tracking_no}"/>
+                        <h:outputText value="#{renewalMbn.payment.trackingNo}"/>
 
-            </h:panelGrid>
+                    </h:panelGrid>
 
-            <h:panelGrid columns="2" style="margin-top:10px">
-                <p:commandButton value="#{msgs.global_submit}" oncomplete="renewdlg.hide()"
-                                 icon="ui-icon-disk" ajax="false" action="#{renewalMbn.renew}"/>
-                <p:commandButton type="button" value="Clear" onclick="('renewdlg').hide()"
-                                 icon="ui-icon-close" ajax="false"/>
-            </h:panelGrid>
-        </h:form>
-        </p:dialog>
--->
+                    <h:panelGrid columns="2" style="margin-top:10px">
+                        <p:commandButton value="#{msgs.global_submit}" oncomplete="renewdlg.hide()"
+                                         icon="ui-icon-disk" ajax="false" action="#{renewalMbn.renew}"/>
+                        <p:commandButton type="button" value="Clear" onclick="('renewdlg').hide()"
+                                         icon="ui-icon-close" ajax="false"/>
+                    </h:panelGrid>
+                </h:form>
+                </p:dialog>
+        -->
 
         <p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment" showEffect="fade" hideEffect="fade"
                   modal="true" dynamic="true"
                   id="dlgAmdment" width="800px" height="500px">
-        <h:form id="amdmtCatFrm">
-            <ui:include src="amdmtCategoryDlg.xhtml"/>
-        </h:form>
+            <h:form id="amdmtCatFrm">
+                <ui:include src="amdmtCategoryDlg.xhtml"/>
+            </h:form>
         </p:dialog>
 
 
         <p:dialog header="#{msgs.send_mail}" widgetVar="maildlg" resizable="false" modal="true" dynamic="true">
-        <h:form>
-            <h:panelGrid columns="2" style="margin-bottom:10px">
-                <h:outputLabel for="tomail" value="#{msgs.mail_to}"/>
-                <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
-                <h:outputLabel for="subject" value="#{msgs.letter_subject}: "/>
-                <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
-                <h:outputLabel for="message" value="#{msgs.message}:"/>
-                <p:inputTextarea id="message" value="#{processProdBn.mail.message}" rows="10"
-                                 cols="50"/>
-            </h:panelGrid>
+            <h:form>
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <h:outputLabel for="tomail" value="#{msgs.mail_to}"/>
+                    <h:inputText id="tomail" value="#{processProdBn.mail.mailto}"/>
+                    <h:outputLabel for="subject" value="#{msgs.letter_subject}: "/>
+                    <h:inputText id="subject" value="#{processProdBn.mail.subject}"/>
+                    <h:outputLabel for="message" value="#{msgs.message}:"/>
+                    <p:inputTextarea id="message" value="#{processProdBn.mail.message}" rows="10"
+                                     cols="50"/>
+                </h:panelGrid>
 
-            <p:commandButton id="sendmessage" value="#{msgs.global_submit}"
-                             action="#{processProdBn.sendMessage}"
-                             oncomplete="mailDlg.hide()" update="@form"/>
+                <p:commandButton id="sendmessage" value="#{msgs.global_submit}"
+                                 action="#{processProdBn.sendMessage}"
+                                 oncomplete="mailDlg.hide()" update="@form"/>
 
-        </h:form>
+            </h:form>
         </p:dialog>
 
 
@@ -617,14 +650,15 @@
 
         </p:dialog>
 
-        <p:dialog header="#{msgs.add_comment}" widgetVar="dlg" resizable="false" id="commentdlg" modal="true" dynamic="true">
+        <p:dialog header="#{msgs.add_comment}" widgetVar="dlg" resizable="false" id="commentdlg" modal="true"
+                  dynamic="true">
             <h:form id="addCommentFrm">
                 <h:panelGrid columns="2" style="margin-bottom:10px">
                     <h:outputLabel for="commenttext" value="Enter Comment:"/>
                     <p:inputTextarea id="commenttext" value="#{processProdBn.selComment.comment}" rows="5" cols="50"/>
-<!--                    <h:outputLabel value="Internal Comment"/>
-                    <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
-                    -->
+                    <!--                    <h:outputLabel value="Internal Comment"/>
+                                        <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
+                                        -->
                 </h:panelGrid>
 
                 <p:commandButton id="submitButton" value="#{msgs.global_submit}" action="#{processProdBn.addComment}"
@@ -633,7 +667,8 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{msgs.open_app}" widgetVar="openAppDlg" resizable="false" id="openAppDlg" modal="true" dynamic="true">
+        <p:dialog header="#{msgs.open_app}" widgetVar="openAppDlg" resizable="false" id="openAppDlg" modal="true"
+                  dynamic="true">
             <h:form id="openAppFrm">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="openapptext" value="#{msgs.reason_for_edit}:"/>

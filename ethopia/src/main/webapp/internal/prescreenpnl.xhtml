@@ -5,7 +5,11 @@
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 
-    <h:panelGrid cellspacing="10" cellpadding="10" columns="3">
+    <h:panelGrid cellspacing="10" cellpadding="10" columns="4">
+
+        <p:commandButton value="Print" type="button" icon="ui-icon-print">
+            <p:printer target="checkListTbl"/>
+        </p:commandButton>
 
         <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
                          rendered="#{preScreenProdMBnET.displayScreenAction}"/>
@@ -18,6 +22,7 @@
         </p:commandButton>
         <p:commandButton id="feedback" value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp"
                          rendered="#{preScreenProdMBnET.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
+
     </h:panelGrid>
 
     <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
@@ -124,15 +129,19 @@
     </p:dialog>
 
     <p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true"
-              appendTo=":reghome">
-        <h:form>
+            >
 
-            <p:fileUpload value="#{preScreenProdMBnET.file}" mode="simple"/>
+        <p:fileUpload fileUploadListener="#{preScreenProdMBnET.handleFileUpload}"
+                      mode="advanced" auto="true"
+                      update=":reghome:growl :reghome:messages"
+                      multiple="false"
+                      sizeLimit="100000000">
+
+        </p:fileUpload>
             <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
-                             actionListener="#{preScreenProdMBnET.addModuleDoc}"
-                             oncomplete="PF('moduledlg').hide()" ajax="false"
+                             action="#{preScreenProdMBnET.addModuleDoc}"
+                             oncomplete="PF('moduledlg').hide()" update=":reghome:growl :reghome:messages :reghome"
                     />
-        </h:form>
     </p:dialog>
 
 </ui:composition>

@@ -48,19 +48,19 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>5.2</version>
+            <version>5.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>all-themes</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.10</version>
         </dependency>
 
         <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>south-street</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.10</version>
         </dependency>
 
         <dependency>

@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
@@ -85,6 +86,8 @@ public class ProcessProdBn implements Serializable {
     private SampleTestService sampleTestService;
     @ManagedProperty(value = "#{suspendService}")
     private SuspendService suspendService;
+    @ManagedProperty(value = "#{attachmentDAO}")
+    private AttachmentDAO attachmentDAO;
 
     private Applicant applicant;
     private List<Comment> comments;
@@ -117,6 +120,7 @@ public class ProcessProdBn implements Serializable {
     private boolean prescreened;
     private List<ProdApplications> prevProdApps;
     private List<SuspDetail> suspDetails;
+    private List<Attachment> clinicalRevs;
 
     @PostConstruct
     private void init() {
@@ -380,7 +384,14 @@ public class ProcessProdBn implements Serializable {
         setSelectedTab(1);
     }
 
-    public void initOpenToApp(){
+    public void changeClinicalReviewStatus() {
+        logger.error("Inside changeStatusListener");
+        if (prodApplications.isClinicalRevReceived() || prodApplications.isClinicalRevVerified()) {
+            save();
+        }
+    }
+
+    public void initOpenToApp() {
         timeLine = new TimeLine();
         timeLine.setProdApplications(prodApplications);
         timeLine.setStatusDate(new Date());
@@ -873,5 +884,25 @@ public class ProcessProdBn implements Serializable {
 
     public void setSuspendService(SuspendService suspendService) {
         this.suspendService = suspendService;
+    }
+
+    public List<Attachment> getClinicalRevs() {
+        if (null != prodApplications && prodApplications.getcRevAttach() != null) {
+            clinicalRevs = new ArrayList<Attachment>();
+            clinicalRevs.add(attachmentDAO.findOne(prodApplications.getcRevAttach().getId()));
+        }
+        return clinicalRevs;
+    }
+
+    public void setClinicalRevs(List<Attachment> clinicalRevs) {
+        this.clinicalRevs = clinicalRevs;
+    }
+
+    public AttachmentDAO getAttachmentDAO() {
+        return attachmentDAO;
+    }
+
+    public void setAttachmentDAO(AttachmentDAO attachmentDAO) {
+        this.attachmentDAO = attachmentDAO;
     }
 }

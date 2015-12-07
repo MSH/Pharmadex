@@ -93,6 +93,10 @@
                                 <!--                                            <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()" rendered="#{empty pIPOrderBn.pipOrder.submitDate}"
                                                                                              action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                                 -->
+                                <p:column headerText="#{msgs.prod_no}">
+                                    <h:outputText value="#{order.id}"/>
+                                </p:column>
+
                                 <p:column headerText="#{msgs.prod_name}">
                                     <h:outputText value="#{order.productName}"/>
                                 </p:column>
