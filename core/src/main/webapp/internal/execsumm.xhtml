@@ -10,7 +10,7 @@
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
-        <h:form id="reviewHome" enctype="multipart/form-data">
+        <h:form id="reviewHome">
             <p:growl id="growl" showSummary="true"/>
             <p:messages showDetail="true" showSummary="true"/>
 
@@ -26,6 +26,7 @@
                 <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{execSummaryBn.cancelReview}"
                                  ajax="false"/>
                 <p:commandButton value="#{msgs.global_submit}" action="#{execSummaryBn.submit}"
+                                 rendered="#{!execSummaryBn.readOnly}"
                                  ajax="false"/>
             </div>
 
@@ -81,29 +82,37 @@
 
                 <div style="height: 10px;"/>
             </ui:repeat>
+
             <p:panel header="#{msgs.executive_summary}">
-                <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid">
+                <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="inputgrid"
+                             rendered="#{!execSummaryBn.readOnly}">
                     <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
 
                     <p:selectOneMenu id="recomcb" value="#{execSummaryBn.prodApplications.regState}"
-                                     requiredMessage="#{msgs.recommendation_valid}" disabled="#{execSummaryBn.readOnly}">
+                                     requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
                         <f:selectItems value="#{execSummaryBn.nextSteps}" var="type"
                                        itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
 
                     <p:outputLabel value="Summary"/>
-                    <p:editor value="#{execSummaryBn.prodApplications.execSummary}"
-                              rendered="#{!execSummaryBn.readOnly}"/>
-                    <h:outputText value="#{execSummaryBn.prodApplications.execSummary}" escape="false"
-                                  rendered="#{execSummaryBn.readOnly}"/>
+                    <p:editor value="#{execSummaryBn.prodApplications.execSummary}"/>
 
+                </h:panelGrid>
+                <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid"
+                             rendered="#{execSummaryBn.readOnly}">
+                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
+                    <p:outputLabel value="#{execSummaryBn.prodApplications.regState}"/>
+                    <p:outputLabel value="Summary"/>
+                    <p:outputLabel value="#{execSummaryBn.prodApplications.execSummary}" escape="false"
+                                   rendered="#{execSummaryBn.readOnly}"/>
                 </h:panelGrid>
             </p:panel>
 
         </h:form>
 
         <div style="height: 10px;"/>
+
 
     </ui:define>
 </ui:composition>

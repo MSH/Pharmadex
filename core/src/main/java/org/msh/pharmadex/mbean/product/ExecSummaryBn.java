@@ -56,6 +56,7 @@ public class ExecSummaryBn implements Serializable {
     private List<ReviewInfo> reviewInfos;
     private boolean readOnly;
     private List<RegState> nextSteps;
+    private String execSummary;
 
     @PostConstruct
     private void init(){
@@ -73,7 +74,7 @@ public class ExecSummaryBn implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
-
+//        prodApplications.setExecSummary(execSummary);
         String result = prodApplicationsService.submitExecSummary(prodApplications, user, reviewInfos);
         if(result.equals("persist")) {
             JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
@@ -81,6 +82,9 @@ public class ExecSummaryBn implements Serializable {
             return "processreg";
         }else if(result.equals("state_error")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please accept the reviews before submitting the executive summary",""));
+            return null;
+        } else if (result.equals("clinical_review")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clinical review not received or verified.", ""));
             return null;
         }
 
@@ -190,5 +194,13 @@ public class ExecSummaryBn implements Serializable {
 
     public void setNextSteps(List<RegState> nextSteps) {
         this.nextSteps = nextSteps;
+    }
+
+    public String getExecSummary() {
+        return execSummary;
+    }
+
+    public void setExecSummary(String execSummary) {
+        this.execSummary = execSummary;
     }
 }

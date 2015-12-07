@@ -1,5 +1,9 @@
 package org.msh.pharmadex.dao;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.hibernate.Session;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
@@ -10,8 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
+import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -59,6 +66,24 @@ public class CustomReviewDAO implements Serializable {
             prodTables.add(reviewInfoTable);
         }
         return prodTables;
+    }
+
+    public JasperPrint getReviewReport(Long id) throws Exception {
+        JasperPrint jasperPrint = null;
+        try {
+//        Session hibernateSession = entityManager.unwrap(Session.class);
+            Connection conn = entityManager.unwrap(Session.class).connection();
+
+            HashMap param = new HashMap();
+            param.put("reviewInfoID", id);
+            URL resource = getClass().getResource("/reports/review_detail_report.jasper");
+            jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+            conn.close();
+        } catch (JRException e) {
+            e.printStackTrace();
+        }
+        return jasperPrint;
+
     }
 
     /**

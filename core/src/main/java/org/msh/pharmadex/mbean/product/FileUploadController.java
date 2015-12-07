@@ -74,12 +74,18 @@ public class FileUploadController implements Serializable {
         attach = new Attachment();
     }
 
+    public void addClinicalReview() {
+        addDocument();
+        processProdBn.getProdApplications().setcRevAttach(attach);
+        processProdBn.save();
+    }
+
     public void addDocument() {
         facesContext = FacesContext.getCurrentInstance();
         ProdApplications prodApplications = processProdBn.getProdApplications();
 //        file = userSession.getFile();
         FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-        attachmentDAO.save(attach);
+        attach = attachmentDAO.save(attach);
         setAttachments(null);
 //        userSession.setFile(null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -94,9 +100,9 @@ public class FileUploadController implements Serializable {
             attachments = null;
             facesContext.addMessage(null, msg);
         } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("cannot_delte"));
             facesContext.addMessage(null, msg);
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
 

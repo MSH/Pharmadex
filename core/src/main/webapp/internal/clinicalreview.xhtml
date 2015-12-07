@@ -1,0 +1,78 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <p:commandButton icon="ui-icon-document" value="#{msgs.upload_clinical_review}"
+                     oncomplete="PF('clinicalrevdlg').show()" rendered="#{!processProdBn.registered}"
+                     action="#{fileUploadController.prepareUpload}"
+                     update=":attachdlg" id="addAttachBtn"/>
+
+    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+        <p:outputLabel value="#{msgs.clinical_rev_recieved}" styleClass="label" for="crevrecieved"/>
+        <p:selectBooleanButton id="crevrecieved" disabled="#{processProdBn.registered}"
+                               value="#{processProdBn.prodApplications.clinicalRevReceived}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                               onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome"
+                    listener="#{processProdBn.changeClinicalReviewStatus}"/>
+        </p:selectBooleanButton>
+
+
+        <p:outputLabel value="#{msgs.clinical_rev_verified}" styleClass="label"
+                       for="revverify"/>
+        <p:selectBooleanButton id="revverify" disabled="#{processProdBn.registered}"
+                               value="#{processProdBn.prodApplications.clinicalRevVerified}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                               onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome"
+                    listener="#{processProdBn.changeClinicalReviewStatus}"/>
+        </p:selectBooleanButton>
+    </h:panelGrid>
+
+
+    <p:dataTable id="crevtable" value="#{processProdBn.clinicalRevs}" var="doc"
+                 rendered="#{not empty processProdBn.clinicalRevs}">
+
+        <p:column headerText="#{msgs.title}">
+            <h:outputText value="#{doc.title}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.filename}">
+            <h:outputText value="#{doc.fileName}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.uploaddate}">
+            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.uploadedby}">
+            <h:outputText value="#{doc.uploadedBy.name}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.registration_status}">
+            <h:outputText value="#{msgs[doc.regState.key]}"/>
+        </p:column>
+
+        <p:column>
+            <p:commandButton id="downloadLink" value="Download" ajax="false"
+                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                             icon="ui-icon-arrowthichk-s">
+                <p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
+            </p:commandButton>
+        </p:column>
+
+        <p:column>
+            <p:commandButton id="deleteattach"
+                             action="#{fileUploadController.deleteDoc(doc)}" ajax="false"
+                             icon="ui-icon-trash"
+                             update=":reghome:attachtab:attachtable"/>
+        </p:column>
+    </p:dataTable>
+
+
+</ui:composition>
