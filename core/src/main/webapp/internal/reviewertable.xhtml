@@ -148,28 +148,40 @@
               id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" >
         <p:messages id="messages"/>
             <p:panel>
-                <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
+                <h:panelGrid id="reviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
+                    <p:outputLabel value="Will there be a secondary reviewer?" for="secreviewbb"/>
+                    <p:selectBooleanButton id="secreviewbb" value="#{prodReviewBn.reviewInfo.secreview}" onLabel="Yes"
+                                           offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close"
+                                           style="width:60px">
+                        <p:ajax update=":reghome:processtab:reviewPG" listener="#{prodReviewBn.secreviewListener}"/>
+                    </p:selectBooleanButton>
 
-                    <h:outputText value="#{msgs.processor}"
+                    <p:outputLabel/>
+                    <p:outputLabel
+                            value="You will not be able to change the selection of using or not using a seconday user after the assignment is done."
+                            styleClass="hint"/>
+
+                    <p:outputLabel value="#{msgs.processor}" for="prireviewac"
                                   escape="false"
                                   styleClass="label"/>
 
-                    <p:autoComplete id="module3" value="#{prodReviewBn.reviewer}"
+                    <p:autoComplete id="prireviewac" value="#{prodReviewBn.reviewer}"
                                     completeMethod="#{globalEntityLists.completeProcessorList}"
-                                    dropdown="true"
+                                    dropdown="true" required="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
                                     forceSelection="true"
                                     converter="#{userConverter}">
                     </p:autoComplete>
 
-                    <h:outputText value="#{msgs.sec_processor}"
+                    <p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewer"
                                   escape="false"
-                                  styleClass="label" rendered="#{userAccessMBean.detailReview}"/>
+                                   styleClass="label"
+                                   rendered="#{userAccessMBean.detailReview and prodReviewBn.displaySecReview}"/>
 
                     <p:autoComplete id="sec_reviewer" value="#{prodReviewBn.secReviewer}"
-                                    rendered="#{userAccessMBean.detailReview}"
+                                    rendered="#{userAccessMBean.detailReview and prodReviewBn.displaySecReview}"
                                     completeMethod="#{globalEntityLists.completeProcessorList}"
-                                    dropdown="true"
+                                    dropdown="true" required="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
                                     forceSelection="true"
                                     converter="#{userConverter}">
@@ -187,7 +199,7 @@
                     <p:outputLabel value="#{msgs.global_duedate}" for="duedt" styleClass="label"
                                    rendered="#{userAccessMBean.detailReview}"/>
                     <p:calendar value="#{prodReviewBn.reviewInfo.dueDate}" id="duedt" showOn="button"
-                                rendered="#{userAccessMBean.detailReview}"
+                                rendered="#{userAccessMBean.detailReview}" required="true"
                                 pattern="#{userAccessMBean.workspace.datePattern}">
                         <f:validator validatorId="futureDateValidator"/>
                     </p:calendar>
@@ -195,7 +207,7 @@
                     <p:outputLabel value="#{msgs.global_duedate}" for="duedt2" styleClass="label"
                                    rendered="#{!userAccessMBean.detailReview}"/>
                     <p:calendar value="#{prodReviewBn.review.dueDate}" id="duedt2" showOn="button"
-                                rendered="#{!userAccessMBean.detailReview}"
+                                rendered="#{!userAccessMBean.detailReview}" required="true"
                                 pattern="#{userAccessMBean.workspace.datePattern}">
                         <f:validator validatorId="futureDateValidator"/>
                     </p:calendar>
@@ -206,8 +218,7 @@
                 <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
                                  action="#{prodReviewBn.assignReviewer}"
                                  oncomplete="if (!args.validationFailed) PF('assignreviewdlg').hide()" ajax="true"
-                                 process="@form"
-                                 update=":reghome:processtab:reviwertbl :reghome:processtab:reviwerinfotbl reghome:processtab:messages :reghome"/>
+                                 update="@form"/>
             </p:panel>
 
     </p:dialog>

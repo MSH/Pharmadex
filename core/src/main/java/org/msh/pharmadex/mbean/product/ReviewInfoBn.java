@@ -4,6 +4,8 @@
 
 package org.msh.pharmadex.mbean.product;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
@@ -23,6 +25,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,7 +92,7 @@ public class ReviewInfoBn implements Serializable {
                 if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
                     readOnly = true;
                 }
-                reviewComments = reviewInfo.getReviewComments();
+                reviewComments = getReviewComments();
             }
             loggedInUser = userService.findUser(userSession.getLoggedINUserID());
         }
@@ -133,7 +137,7 @@ public class ReviewInfoBn implements Serializable {
 
     public void initComment() {
         reviewComment = new ReviewComment();
-        if (reviewInfo.getReviewComments() == null) {
+        if (getReviewComments() == null) {
             reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
         }
 
@@ -148,6 +152,14 @@ public class ReviewInfoBn implements Serializable {
         revDeficiency.setUser(loggedInUser);
         revDeficiency.setReviewInfo(reviewInfo);
         revDeficiency.setCreatedDate(new Date());
+        for (ReviewComment rc : getReviewComments()) {
+            if (rc.getRecomendType() != null && rc.getRecomendType().equals(RecomendType.FIR)) {
+                if (rc.isFinalSummary()) {
+                    reviewComment.setComment(rc.getComment());
+                }
+            }
+
+        }
     }
 
     public void findRevDef(RevDeficiency revDeficiency) {
@@ -175,7 +187,7 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String reviewerFeedback() {
-        reviewInfo.getReviewComments().add(reviewComment);
+        getReviewComments().add(reviewComment);
         reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
         RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
         reviewInfo = (ReviewInfo) retObject.getObj();
@@ -192,7 +204,7 @@ public class ReviewInfoBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
         }
 
-        reviewComment = reviewInfo.getReviewComments().get(reviewInfo.getReviewComments().size() - 1);
+        reviewComment = getReviewComments().get(getReviewComments().size() - 1);
         reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
         reviewInfo.setComment(reviewComment.getComment());
         saveReview();
@@ -246,32 +258,7 @@ public class ReviewInfoBn implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
-            if (reviewComment.getRecomendType() == null) {
-                reviewInfo.setReviewStatus(ReviewStatus.IN_PROGRESS);
-                reviewComment.setFinalSummary(false);
-            } else {
-                if (reviewComment.getRecomendType().equals(RecomendType.RECOMENDED) || reviewComment.getRecomendType().equals(RecomendType.NOT_RECOMENDED)
-                        || reviewComment.getRecomendType().equals(RecomendType.FIR)) {
-                    if (userAccessMBean.getWorkspace().isSecReview()) {
-                        if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId()))
-                            reviewInfo.setReviewStatus(ReviewStatus.SEC_REVIEW);
-                        else if (userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
-                            reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
-                    } else {
-                        reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
-                    }
-                    reviewComment.setFinalSummary(true);
-                }
-//                } else if (reviewComment.getRecomendType().equals(RecomendType.FEEDBACK)) {
-//                    reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
-//                    reviewComment.setFinalSummary(false);
-//                }
-            }
-            reviewInfo.setSubmitDate(new Date());
-
-            reviewInfo.getReviewComments().add(reviewComment);
-            reviewInfo.setRevDeficiencies(revDeficiencies);
-            RetObject retObject = reviewService.submitReviewInfo(reviewInfo);
+            RetObject retObject = reviewService.submitReviewInfo(reviewInfo, reviewComment, userSession.getLoggedINUserID());
             if (retObject.getMsg().equals("success")) {
                 reviewInfo = (ReviewInfo) retObject.getObj();
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
@@ -286,6 +273,35 @@ public class ReviewInfoBn implements Serializable {
         }
     }
 
+    public void printReview() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            JasperPrint jasperPrint = reviewService.getReviewReport(reviewInfo.getId());
+            javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            httpServletResponse.addHeader("Content-disposition", "attachment; filename=letter.pdf");
+            httpServletResponse.setContentType("application/pdf");
+            javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+        } catch (JRException e) {
+            e.printStackTrace();
+            FacesMessage msg = new FacesMessage(bundle.getString("global_fail"));
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            context.addMessage(null, msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+            FacesMessage msg = new FacesMessage(bundle.getString("global_fail"));
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            context.addMessage(null, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesMessage msg = new FacesMessage(bundle.getString("global_fail"));
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            context.addMessage(null, msg);
+        }
+        javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+    }
+
     public String revDefAck() {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -297,7 +313,7 @@ public class ReviewInfoBn implements Serializable {
             revDeficiency.setAckComment(reviewComment);
             revDeficiency.setResolved(true);
             revDeficiency.setUser(reviewComment.getUser());
-            reviewInfo.getReviewComments().add(reviewComment);
+            getReviewComments().add(reviewComment);
             RetObject retObject = reviewService.saveRevDeficiency(revDeficiency);
 
             if (retObject.getMsg().equals("success")) {
@@ -321,7 +337,7 @@ public class ReviewInfoBn implements Serializable {
             revDeficiency.setSentComment(reviewComment);
             revDeficiency.setUser(reviewComment.getUser());
             reviewInfo.setSubmitDate(new Date());
-            reviewInfo.getReviewComments().add(reviewComment);
+            getReviewComments().add(reviewComment);
             reviewInfo.setReviewStatus(ReviewStatus.RFI_SUBMIT);
             revDeficiency.setReviewInfo(reviewInfo);
             revDeficiency.setCreatedDate(new Date());
@@ -330,7 +346,7 @@ public class ReviewInfoBn implements Serializable {
             if (retObject.getMsg().equals("success")) {
                 reviewInfo = (ReviewInfo) retObject.getObj();
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
-                reviewComments = reviewInfo.getReviewComments();
+                reviewComments = getReviewComments();
                 revDeficiencies = null;
             }
         } catch (Exception ex) {
@@ -445,6 +461,8 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public List<ReviewComment> getReviewComments() {
+        if (reviewInfo != null && reviewInfo.getReviewComments() != null)
+            reviewComments = reviewInfo.getReviewComments();
         return reviewComments;
     }
 
@@ -505,9 +523,9 @@ public class ReviewInfoBn implements Serializable {
 
     public String getRevType() {
         if (reviewInfo != null) {
-            if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
+            if (reviewInfo.getReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
                 revType = bundle.getString("pri_processor");
-            } else if (userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
+            } else if (reviewInfo.getSecReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
                 revType = bundle.getString("sec_processor");
         }
         return revType;
@@ -518,14 +536,22 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public boolean isPriReview() {
-        if (reviewInfo != null && reviewInfo.getReviewer() != null) {
-            if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
-                if (reviewInfo.getReviewStatus().equals(ReviewStatus.SEC_REVIEW))
-                    priReview = false;
-                else
+        if (reviewInfo != null) {
+            if (reviewInfo.getReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
+                if (reviewInfo.getReviewStatus().equals(ReviewStatus.ASSIGNED) || reviewInfo.getReviewStatus().equals(ReviewStatus.IN_PROGRESS))
                     priReview = true;
-            } else {
-                priReview = true;
+                else {
+                    if (!reviewInfo.isSecreview() && (reviewInfo.getReviewStatus().equals(ReviewStatus.FEEDBACK) || reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED)))
+                        priReview = true;
+                    else
+                        priReview = false;
+                }
+            }
+            if (reviewInfo.getSecReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId())) {
+                if (reviewInfo.getReviewStatus().equals(ReviewStatus.SEC_REVIEW))
+                    priReview = true;
+                else
+                    priReview = false;
             }
         }
 

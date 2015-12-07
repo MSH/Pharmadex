@@ -13,7 +13,10 @@
 
         <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
             <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
-            <p:outputLabel value="#{processProdBn.moderator.username}"/>
+            <p:outputLabel value="#{processProdBn.moderator.username}" styleClass="label"/>
+
+            <p:outputLabel value="#{msgs.priority_no}" for="priorityno" styleClass="label"/>
+            <p:inputText id="priorityno" value="#{processProdBn.prodApplications.priorityNo}" style="width: 400px;"/>
 
             <p:outputLabel value="#{msgs.application_fee}" styleClass="label" for="feerecieved"/>
             <p:selectBooleanButton id="feerecieved"

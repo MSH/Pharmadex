@@ -80,6 +80,8 @@ public class ReviewInfo extends CreationDetail implements Serializable {
 
     private boolean submitted;
 
+    private boolean secreview;
+
 
     public Long getId() {
         return id;
@@ -235,5 +237,13 @@ public class ReviewInfo extends CreationDetail implements Serializable {
 
     public void setSecReviewer(User secReviewer) {
         this.secReviewer = secReviewer;
+    }
+
+    public boolean isSecreview() {
+        return secreview;
+    }
+
+    public void setSecreview(boolean secreview) {
+        this.secreview = secreview;
     }
 }

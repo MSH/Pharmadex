@@ -87,8 +87,8 @@
                                              action="#{purOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                         </f:facet>
 
-                        <p:column headerText="#{msgs.prod_name}">
-                            <h:outputText value="#{order.id}"/>
+                        <p:column headerText="#{msgs.prod_no}">
+                            <h:outputText value="#{order.productNo}"/>
                         </p:column>
 
                         <p:column headerText="#{msgs.prod_name}">
@@ -244,7 +244,7 @@
 
 
             <div align="center" style="height: 60px">
-                <p:commandButton value="#{msgs.global_submit}" rendered="#{purOrderBn.showWithdrawn}"
+                <p:commandButton value="#{msgs.global_submit}" rendered="#{purOrderBn.showSubmit}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
                                  update="messages growl"/>
                 <p:commandButton action="#{purOrderBn.cancelOrder}" value="#{msgs.global_cancel}" ajax="false"

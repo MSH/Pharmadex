@@ -133,7 +133,7 @@ public class ReviewDetailBn implements Serializable {
                 if (reviewDetail.getReviewInfo().getReviewer().getUserId().equals(userSession.getLoggedINUserID())) {
                     setPriReviewer(true);
                     setSecReviewer(false);
-                } else if (reviewDetail.getReviewInfo().getSecReviewer().getUserId().equals(userSession.getLoggedINUserID())) {
+                } else if (reviewDetail.getReviewInfo().getSecReviewer() != null && reviewDetail.getReviewInfo().getSecReviewer().getUserId().equals(userSession.getLoggedINUserID())) {
                     setSecReviewer(true);
                     setPriReviewer(false);
 
@@ -176,9 +176,9 @@ public class ReviewDetailBn implements Serializable {
     public String getRevType() {
         ReviewInfo reviewInfo = getReviewDetail().getReviewInfo();
         if (reviewInfo != null) {
-            if (userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
+            if (reviewInfo.getReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
                 revType = bundle.getString("pri_processor");
-            } else if (userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
+            } else if (reviewInfo.getSecReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId()))
                 revType = bundle.getString("sec_processor");
         }
         return revType;

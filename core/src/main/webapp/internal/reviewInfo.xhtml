@@ -29,6 +29,8 @@
             <div align="right">
                 <p:commandButton value="#{msgs.product_details}" immediate="true" action="#{reviewInfoBn.cancelReview}"
                                  ajax="false"/>
+                <p:commandButton value="#{msgs.global_print}" action="#{reviewInfoBn.printReview}" ajax="false"
+                                 immediate="true" icon="ui-icon-print"/>
                 <p:commandButton value="#{msgs.approve_review}" action="#{reviewInfoBn.approveReview}"
                                  update=":reviewHome"
                                  ajax="false"
@@ -192,7 +194,8 @@
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitComment}"
-                                 oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+                                 update="@form :reviewHome"
+                                 oncomplete="if(!args.validationFailed) PF('reviewDlg').hide()" ajax="true"/>
             </h:form>
         </p:dialog>
 

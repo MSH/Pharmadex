@@ -138,6 +138,7 @@ public class PurOrderBn extends POrderBn {
         purProd.setDosUnit(dosageFormService.findDosUom(purProd.getDosUnit().getId()));
         purProd.setPurOrder(purOrder);
         purProd.setCreatedDate(new Date());
+        purProd.setProductNo("" + (purProds.size() + 1));
         purProds.add(purProd);
         initAddProd();
     }
@@ -145,6 +146,10 @@ public class PurOrderBn extends POrderBn {
     public String removeProd(PurProd purProd) {
         context = FacesContext.getCurrentInstance();
         purProds.remove(purProd);
+
+        for (int i = 1; i <= purProds.size(); i++) {
+            purProds.get(i).setProductNo("" + i);
+        }
         context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
         return null;
     }

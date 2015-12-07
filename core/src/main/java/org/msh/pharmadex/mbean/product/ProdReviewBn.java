@@ -55,6 +55,7 @@ public class ProdReviewBn implements Serializable {
     private boolean checkReviewStatus;
     private User reviewer;
     private User secReviewer;
+    private boolean displaySecReview = false;
 
 
     private Review review;
@@ -87,6 +88,14 @@ public class ProdReviewBn implements Serializable {
     public String sendToExecSumm(Long id){
         JsfUtils.flashScope().put("prodAppID", id);
         return "/internal/execsumm.faces";
+    }
+
+    public void secreviewListener() {
+        if (reviewInfo.isSecreview()) {
+            setDisplaySecReview(true);
+        } else {
+            setDisplaySecReview(false);
+        }
     }
 
     public void assignReviewer() {
@@ -334,5 +343,13 @@ public class ProdReviewBn implements Serializable {
 
     public void setSecReviewer(User secReviewer) {
         this.secReviewer = secReviewer;
+    }
+
+    public boolean isDisplaySecReview() {
+        return displaySecReview;
+    }
+
+    public void setDisplaySecReview(boolean displaySecReview) {
+        this.displaySecReview = displaySecReview;
     }
 }

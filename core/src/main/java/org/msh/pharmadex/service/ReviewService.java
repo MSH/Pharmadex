@@ -17,6 +17,7 @@ import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.product.ReviewInfoTable;
@@ -59,6 +60,8 @@ public class ReviewService implements Serializable {
     private RevDeficiencyDAO revDeficiencyDAO;
     @Autowired
     private CustomReviewDAO customReviewDAO;
+    @Autowired
+    private UserAccessService userAccessService;
 
     public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID){
         if(reviewerID==null)
@@ -494,7 +497,37 @@ public class ReviewService implements Serializable {
         return new RetObject("success", revDeficiency);
     }
 
-    public RetObject submitReviewInfo(ReviewInfo reviewInfo) {
+    public RetObject submitReviewInfo(ReviewInfo reviewInfo, ReviewComment reviewComment, Long userID) {
+        if (reviewComment.getRecomendType() == null) {
+//            reviewInfo.setReviewStatus(ReviewStatus.IN_PROGRESS);
+            reviewComment.setFinalSummary(false);
+        } else {
+            if (reviewComment.getRecomendType().equals(RecomendType.RECOMENDED) || reviewComment.getRecomendType().equals(RecomendType.NOT_RECOMENDED)
+                    || reviewComment.getRecomendType().equals(RecomendType.FIR)) {
+                if (userAccessService.getWorkspace().isSecReview()) {
+                    if (userID.equals(reviewInfo.getReviewer().getUserId()))
+                        if (reviewInfo.isSecreview()) {
+                            reviewInfo.setReviewStatus(ReviewStatus.SEC_REVIEW);
+                        } else {
+                            reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
+                        }
+                    else if (userID.equals(reviewInfo.getSecReviewer().getUserId()))
+                        reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
+                } else {
+                    reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
+                }
+                reviewComment.setFinalSummary(true);
+            }
+//                } else if (reviewComment.getRecomendType().equals(RecomendType.FEEDBACK)) {
+//                    reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
+//                    reviewComment.setFinalSummary(false);
+//                }
+        }
+        reviewInfo.setSubmitDate(new Date());
+        reviewInfo.getReviewComments().add(reviewComment);
+//        reviewInfo.setRevDeficiencies(revDeficiencies);
+
+
         List<RevDeficiency> revDeficiencies = revDeficiencyDAO.findByReviewInfo_Id(reviewInfo.getId());
         for (RevDeficiency revDeficiency : revDeficiencies) {
             if (!revDeficiency.isResolved()) {
@@ -502,12 +535,21 @@ public class ReviewService implements Serializable {
             }
         }
         List<ReviewComment> reviewComments = reviewInfo.getReviewComments();
-        for (ReviewComment reviewComment : reviewComments) {
-            if (reviewComment.getRecomendType() != null) {
-                reviewInfo.setRecomendType(reviewComment.getRecomendType());
-                reviewInfo.setExecSummary(reviewComment.getComment());
+        for (ReviewComment rc : reviewComments) {
+            if (rc.getRecomendType() != null) {
+                reviewInfo.setRecomendType(rc.getRecomendType());
+                reviewInfo.setExecSummary(rc.getComment());
             }
         }
         return saveReviewInfo(reviewInfo);
+    }
+
+    public JasperPrint getReviewReport(Long id) throws Exception {
+        JasperPrint jasperPrint;
+
+        jasperPrint = customReviewDAO.getReviewReport(id);
+        return jasperPrint;
+
+
     }
 }
