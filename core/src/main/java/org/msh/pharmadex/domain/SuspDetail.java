@@ -76,6 +76,12 @@ public class SuspDetail extends CreationDetail {
     @ManyToOne
     private ProdApplications prodApplications;
 
+    @Column(name = "reason", length = 500)
+    private String reason;
+
+    @Column(name = "batchNo", length = 500)
+    private String batchNo;
+
     public SuspDetail() {
     }
 
@@ -222,5 +228,21 @@ public class SuspDetail extends CreationDetail {
 
     public void setComplete(boolean complete) {
         this.complete = complete;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getBatchNo() {
+        return batchNo;
+    }
+
+    public void setBatchNo(String batchNo) {
+        this.batchNo = batchNo;
     }
 }

@@ -64,13 +64,15 @@ public class PurOrderBn extends POrderBn {
         Long purOrderID = (Long) JsfUtils.flashScope().get("purOrderID");
         if (purOrderID != null) {
             purOrder = getpOrderService().findPurOrderEager(purOrderID);
+            if (purOrder.getCurrency() == null)
+                purOrder.setCurrency(new Currency());
             pOrderChecklists = purOrder.getpOrderChecklists();
             purProds = purOrder.getPurProds();
             setApplicantUser(purOrder.getApplicantUser());
             setApplicant(purOrder.getApplicantUser().getApplicant());
             JsfUtils.flashScope().keep("purOrderID");
         } else {
-            purOrder = new PurOrder();
+            purOrder = new PurOrder(new Currency());
             if (getUserSession().isCompany()) {
                 User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
                 setApplicantUser(applicantUser);
@@ -93,17 +95,25 @@ public class PurOrderBn extends POrderBn {
 
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
-        if(getApplicant()!=null) {
+        if (getApplicant() != null) {
             suggestions = pOrderService.findProdByLH(getApplicant().getApplcntId());
         }
         return suggestions;
     }
 
-    public void calculateTotalPrice() {
+    public void calculateTotalPrice(AjaxBehaviorEvent event) {
         if (purProd.getUnitPrice() != null && purProd.getQuantity() != null) {
             double unitPrice = purProd.getUnitPrice();
-            purProd.setTotalPrice(unitPrice * purProd.getQuantity() + purProd.getFreight());
+            purProd.setTotalPrice(unitPrice * purProd.getQuantity());
         }
+    }
+
+    @Override
+    public void currChangeListener() {
+        if (purOrder != null && purOrder.getCurrency() != null)
+            purOrder.setCurrency(currencyService.findCurrency(purOrder.getCurrency().getId()));
+
+
     }
 
     @Override
@@ -122,7 +132,7 @@ public class PurOrderBn extends POrderBn {
 
     @Override
     public void initAddProd() {
-        setPurProd(new PurProd(new DosageForm(), new DosUom(), purOrder));
+        setPurProd(new PurProd(new DosageForm(), new DosUom(), purOrder, purOrder.getCurrency().getCurrCD()));
 
     }
 
@@ -130,8 +140,11 @@ public class PurOrderBn extends POrderBn {
     public void addProd() {
         if (purProds == null) {
             purProds = purOrder.getPurProds();
-            if (purProds == null)
+            if (purProds == null) {
                 purProds = new ArrayList<PurProd>();
+                purOrder.setTotalPrice(purOrder.getFreight());
+
+            }
         }
 
         purProd.setDosForm(dosageFormService.findDosagedForm(purProd.getDosForm().getUid()));
@@ -139,16 +152,18 @@ public class PurOrderBn extends POrderBn {
         purProd.setPurOrder(purOrder);
         purProd.setCreatedDate(new Date());
         purProd.setProductNo("" + (purProds.size() + 1));
+        purOrder.setTotalPrice((purOrder.getTotalPrice() != null ? purOrder.getTotalPrice() : 0) + purProd.getTotalPrice());
         purProds.add(purProd);
         initAddProd();
     }
 
     public String removeProd(PurProd purProd) {
         context = FacesContext.getCurrentInstance();
+        purOrder.setTotalPrice(purOrder.getTotalPrice() - purProd.getTotalPrice());
         purProds.remove(purProd);
 
-        for (int i = 1; i <= purProds.size(); i++) {
-            purProds.get(i).setProductNo("" + i);
+        for (int i = 0; i < purProds.size(); i++) {
+            purProds.get(i).setProductNo("" + (i + 1));
         }
         context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
         return null;
@@ -185,6 +200,9 @@ public class PurOrderBn extends POrderBn {
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Please make sure all the required documents in the checklsit are enclosed"));
             if (retValue.getMsg().equals("no_prod"))
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "No product specified to be imported"));
+            if (retValue.getMsg().equals("error"))
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Unable to create the order"));
+
             return "";
         }
     }
@@ -199,9 +217,8 @@ public class PurOrderBn extends POrderBn {
     }
 
 
-
     public String cancelOrder() {
-        if(userSession.isCompany())
+        if (userSession.isCompany())
             return "/secure/purorderlist";
         else
             return "/internal/processpurorderlist";

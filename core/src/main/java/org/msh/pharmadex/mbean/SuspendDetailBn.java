@@ -4,15 +4,15 @@
 
 package org.msh.pharmadex.mbean;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.SuspensionStatus;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.SuspendService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FileUploadEvent;
@@ -33,6 +33,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +63,12 @@ public class SuspendDetailBn implements Serializable {
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
 
+    @ManagedProperty(value = "#{prodAppLetterDAO}")
+    private ProdAppLetterDAO prodAppLetterDAO;
+
+    @ManagedProperty(value = "#{timelineService}")
+    private TimelineService timelineService;
+
     private Logger logger = LoggerFactory.getLogger(SuspendDetailBn.class);
     private UploadedFile file;
     private SuspDetail suspDetail;
@@ -77,6 +84,7 @@ public class SuspendDetailBn implements Serializable {
     private User reviewer;
     private User loggedInUser;
     private boolean showSuspend;
+    private JasperPrint jasperPrint;
 
     @PostConstruct
     private void init() {
@@ -120,20 +128,79 @@ public class SuspendDetailBn implements Serializable {
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(userService.findUser(userSession.getLoggedINUserID()));
 
-            RetObject retObject = suspendService.saveSuspend(suspDetail);
-            if (retObject.getMsg().equals("success")) {
-                suspDetail = (SuspDetail) retObject.getObj();
-                facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
-
-            } else if (retObject.getMsg().equals("close_def")) {
-                facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
-
-            }
+//            RetObject retObject = suspendService.saveSuspend(suspDetail);
+//            if (retObject.getMsg().equals("success")) {
+//                suspDetail = (SuspDetail) retObject.getObj();
+//                facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
+//
+//            } else if (retObject.getMsg().equals("close_def")) {
+//                facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
+//
+//            }
         } catch (Exception ex) {
             ex.printStackTrace();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
         }
     }
+
+//    public void downloadSuspLetter(){
+//        File invoicePDF = null;
+//        Flash flash = JsfUtils.flashScope();
+//        flash.put("prodAppID", prodApplications.getId());
+//        flash.put("suspDetailID", suspDetail.getId());
+//        facesContext = FacesContext.getCurrentInstance();
+//        try {
+//            invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_susp", ".pdf");
+//        User user = userService.findUser(userSession.getLoggedINUserID());
+//        jasperPrint = suspendService.generateSuspLetter(suspDetail);
+//
+//        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+//        byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
+//
+//        ProdAppLetter attachment = new ProdAppLetter();
+//        attachment.setRegState(prodApplications.getRegState());
+//        attachment.setFile(file);
+//        attachment.setProdApplications(prodApplications);
+//        attachment.setFileName(invoicePDF.getName());
+//        attachment.setTitle("Suspension Letter");
+//        attachment.setUploadedBy(prodApplications.getCreatedBy());
+//        attachment.setComment("Automatically generated Letter");
+//        attachment.setContentType("application/pdf");
+//        attachment.setLetterType(LetterType.SUSP_NOTIF_LETTER);
+//        prodAppLetterDAO.save(attachment);
+//
+//        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+//        httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
+//        httpServletResponse.setContentType("application/pdf");
+//        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+//        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+//        facesContext.responseComplete();
+////        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+////        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
+//
+//        TimeLine timeLine = new TimeLine();
+//        timeLine.setRegState(RegState.FOLLOW_UP);
+//        timeLine.setStatusDate(new Date());
+//        timeLine.setUser(user);
+//        timeLine.setComment(suspComment.getComment());
+//        timeLine.setProdApplications(prodApplications);
+//        prodApplications.setRegState(timeLine.getRegState());
+//        RetObject retObject = timelineService.saveTimeLine(timeLine);
+//        if (!retObject.getMsg().equals("persist")) {
+//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+//        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
+//        } catch (JRException e) {
+//            e.printStackTrace();
+//            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
+//        }
+//
+//    }
 
     private User getLoggedInUser() {
         if (loggedInUser == null) {
@@ -148,11 +215,11 @@ public class SuspendDetailBn implements Serializable {
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(getLoggedInUser());
             suspDetail.setModerator(moderator);
-            RetObject retObject = suspendService.saveSuspend(suspDetail);
-            if (retObject.getMsg().equals("persist")) {
-                suspDetail = (SuspDetail) retObject.getObj();
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("moderator_add_success")));
-            }
+//            RetObject retObject = suspendService.saveSuspend(suspDetail);
+//            if (retObject.getMsg().equals("persist")) {
+//                suspDetail = (SuspDetail) retObject.getObj();
+//                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("moderator_add_success")));
+//            }
         } catch (Exception e) {
             logger.error("Problems saving moderator {}", "suspendetailbn", e);
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("processor_add_error")));
@@ -208,6 +275,12 @@ public class SuspendDetailBn implements Serializable {
                 facesContext.addMessage(null, fm);
                 return "";
             }
+            RetObject retObject = suspendService.submitHead(suspDetail, userSession.getLoggedINUserID());
+            if (retObject.getMsg().equals("error")) {
+                FacesMessage fm = new FacesMessage("Error");
+                fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+                facesContext.addMessage(null, fm);
+            }
         }
 
         if (userSession.isModerator()) {
@@ -217,10 +290,18 @@ public class SuspendDetailBn implements Serializable {
                 facesContext.addMessage(null, fm);
                 return "";
             }
-            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.REQUESTED)) {
-                suspDetail.setSuspensionStatus(SuspensionStatus.ASSIGNED);
-            } else if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT)) {
-                suspDetail.setSuspensionStatus(SuspensionStatus.RESULT);
+            try {
+                RetObject retObject = suspendService.submitModeratorComment(suspDetail, userSession.getLoggedINUserID());
+            } catch (SQLException e) {
+                FacesMessage fm = new FacesMessage(e.getMessage());
+                fm.setSeverity(FacesMessage.SEVERITY_WARN);
+                facesContext.addMessage(null, fm);
+                e.printStackTrace();
+            } catch (JRException e) {
+                FacesMessage fm = new FacesMessage(e.getMessage());
+                fm.setSeverity(FacesMessage.SEVERITY_WARN);
+                facesContext.addMessage(null, fm);
+                e.printStackTrace();
             }
         }
 
@@ -229,11 +310,16 @@ public class SuspendDetailBn implements Serializable {
                 FacesMessage fm = new FacesMessage("Please provide final comment.");
                 fm.setSeverity(FacesMessage.SEVERITY_WARN);
                 facesContext.addMessage(null, fm);
+            }
+            RetObject retObject = suspendService.submitReview(suspDetail, userSession.getLoggedINUserID());
+            if (retObject.getMsg().equals("error")) {
+                FacesMessage fm = new FacesMessage("Error");
+                fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+                facesContext.addMessage(null, fm);
             } else {
-                suspDetail.setSuspensionStatus(SuspensionStatus.SUBMIT);
+                suspDetail = (SuspDetail) retObject.getObj();
             }
         }
-        saveSuspend();
         return "processcancellist";
     }
 
@@ -253,10 +339,13 @@ public class SuspendDetailBn implements Serializable {
     }
 
     public String suspendProduct() {
+        facesContext = FacesContext.getCurrentInstance();
         if (suspDetail.getSuspStDate() == null && suspDetail.getDecisionDate() == null && suspDetail.getDecision() == null)
             return "";
 
-        RetObject retObject = suspendService.suspendProduct(suspDetail, getLoggedInUser());
+        RetObject retObject = null;
+        try {
+            retObject = suspendService.suspendProduct(suspDetail, getLoggedInUser());
         globalEntityLists.setRegProducts(null);
 
         if (retObject.getMsg().equals("persist")) {
@@ -268,6 +357,14 @@ public class SuspendDetailBn implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, fm);
             return null;
         }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
+        } catch (JRException e) {
+            e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
+        }
+        return null;
 
     }
 
@@ -452,5 +549,21 @@ public class SuspendDetailBn implements Serializable {
 
     public void setShowSuspend(boolean showSuspend) {
         this.showSuspend = showSuspend;
+    }
+
+    public ProdAppLetterDAO getProdAppLetterDAO() {
+        return prodAppLetterDAO;
+    }
+
+    public void setProdAppLetterDAO(ProdAppLetterDAO prodAppLetterDAO) {
+        this.prodAppLetterDAO = prodAppLetterDAO;
+    }
+
+    public TimelineService getTimelineService() {
+        return timelineService;
+    }
+
+    public void setTimelineService(TimelineService timelineService) {
+        this.timelineService = timelineService;
     }
 }

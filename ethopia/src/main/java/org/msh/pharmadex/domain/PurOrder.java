@@ -1,10 +1,6 @@
 package org.msh.pharmadex.domain;
 
-import org.msh.pharmadex.domain.enums.AmdmtState;
-
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +23,12 @@ public class PurOrder extends POrderBase{
     @OneToMany(mappedBy = "purOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<POrderChecklist> pOrderChecklists;
 
+    public PurOrder(Currency currency) {
+        this.setCurrency(currency);
+    }
+
+    public PurOrder() {
+    }
 
     public List<POrderChecklist> getpOrderChecklists() {
         return pOrderChecklists;

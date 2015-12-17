@@ -3,6 +3,8 @@ package org.msh.pharmadex.mbean;
 import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.domain.PIPProd;
 import org.msh.pharmadex.domain.POrderBase;
+import org.msh.pharmadex.domain.POrderComment;
+import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
@@ -11,6 +13,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
@@ -45,6 +48,18 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         setApplicantUser(pOrderBase.getApplicantUser());
         setApplicant(pOrderBase.getApplicantUser().getApplicant());
         setpOrderDocs(null);
+    }
+
+    @Override
+    public String withdraw() {
+        pOrderBase.setState(AmdmtState.FEEDBACK);
+        pOrderComment.setPipOrder((PIPOrder) pOrderBase);
+        pOrderComment.setExternal(true);
+        pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
+        if (pOrderComments == null)
+            pOrderComments = new ArrayList<POrderComment>();
+        pOrderComments.add(pOrderComment);
+        return saveApp();
     }
 
     public String newApp() {

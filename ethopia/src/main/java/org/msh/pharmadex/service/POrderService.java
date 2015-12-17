@@ -60,9 +60,16 @@ public class POrderService implements Serializable {
     private EntityManager entityManager;
 
     public List<PIPOrderLookUp> findPIPCheckList(ApplicantType applicantType, boolean pip) {
-        if (applicantType.getId() < 5)
-            applicantType.setId((long) 2);
-        return customPIPOrderDAO.findAllPIPOrderLookUp(applicantType.getId(), pip);
+        Long appID = null;
+        if (applicantType.getId() < 5) {
+            if (pip)
+                appID = (long) 1;
+            else
+                appID = (long) 2;
+        } else {
+            appID = applicantType.getId();
+        }
+        return customPIPOrderDAO.findAllPIPOrderLookUp(appID, pip);
     }
 
     public POrderBase saveOrder(POrderBase pOrderBase) {
@@ -91,7 +98,7 @@ public class POrderService implements Serializable {
                     pipOrder.setSubmitDate(new Date());
                     pipOrder = pipOrderDAO.save(pipOrder);
                     pipOrder.setPipNo(registrationUtil.generateAppNo(pipOrder.getId(), "PIP"));
-                    pipOrder = pipOrderDAO.save(pipOrder);
+                    pipOrder = pipOrderDAO.saveAndFlush(pipOrder);
                     retObject = createAckLetter(pipOrder);
                     if (!retObject.getMsg().equals("error")) {
                         retObject = new RetObject("persist", pipOrder);
@@ -136,11 +143,13 @@ public class POrderService implements Serializable {
 
     }
 
-    public byte[] generateLetter(Long piporderid, String path, File pdfFile) throws JRException, IOException, SQLException {
+    public byte[] generateLetter(POrderBase pipOrder, String path, File pdfFile) throws JRException, IOException, SQLException {
         JasperPrint jasperPrint;
         Connection conn = entityManager.unwrap(Session.class).connection();
         HashMap<String, Object> param = new HashMap<String, Object>();
-        param.put("piporderid", piporderid);
+        param.put("piporderid", pipOrder.getId());
+        param.put("pattern", pipOrder.getCurrency().getCurrSym() + "#,##0.00");
+        param.put("comment", pipOrder.getComment());
         URL resource = getClass().getResource(path);
         jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(pdfFile));
@@ -155,12 +164,12 @@ public class POrderService implements Serializable {
             byte[] file = new byte[0];
             if(pipOrderBase instanceof PIPOrder) {
                 File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_ack", ".pdf");
-                file = generateLetter(pipOrderBase.getId(), "/reports/pip_ack.jasper", invoicePDF);
+                file = generateLetter(pipOrderBase, "/reports/pip_ack.jasper", invoicePDF);
                 pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
                 pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
             }else if(pipOrderBase instanceof PurOrder) {
                 File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_ack", ".pdf");
-                file = generateLetter(pipOrderBase.getId(), "/reports/po_ack.jasper", invoicePDF);
+                file = generateLetter(pipOrderBase, "/reports/po_ack.jasper", invoicePDF);
                 pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
                 pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
             }
@@ -186,7 +195,7 @@ public class POrderService implements Serializable {
     public RetObject createApprovalLetter(POrderBase pipOrderBase) {
         try {
             File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_cert", ".pdf");
-            byte[] file = generateLetter(pipOrderBase.getId(), "/reports/pip_cert.jasper", invoicePDF);
+            byte[] file = generateLetter(pipOrderBase, "/reports/pip_cert.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
             pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_cert.pdf");
             pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
@@ -212,7 +221,7 @@ public class POrderService implements Serializable {
     public RetObject createPOApprovalLetter(POrderBase pipOrderBase) {
         try {
             File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_cert", ".pdf");
-            byte[] file = generateLetter(pipOrderBase.getId(), "/reports/po_cert.jasper", invoicePDF);
+            byte[] file = generateLetter(pipOrderBase, "/reports/po_cert.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
             pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_cert.pdf");
             pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
@@ -238,7 +247,7 @@ public class POrderService implements Serializable {
     public RetObject createRejectionLetter(POrderBase pipOrderBase) {
         try {
             File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_reject", ".pdf");
-            byte[] file = generateLetter(pipOrderBase.getId(), "/reports/pip_reject.jasper", invoicePDF);
+            byte[] file = generateLetter(pipOrderBase, "/reports/pip_reject.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
             pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf");
             pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
@@ -265,7 +274,7 @@ public class POrderService implements Serializable {
     public RetObject createPORejectionLetter(POrderBase pipOrderBase) {
         try {
             File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_reject", ".pdf");
-            byte[] file = generateLetter(pipOrderBase.getId(), "/reports/po_reject.jasper", invoicePDF);
+            byte[] file = generateLetter(pipOrderBase, "/reports/po_reject.jasper", invoicePDF);
             POrderDoc pOrderDoc = new POrderDoc();
             pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf");
             pOrderDoc.setPurOrder((PurOrder) pipOrderBase);

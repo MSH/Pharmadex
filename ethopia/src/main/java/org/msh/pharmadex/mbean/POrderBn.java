@@ -7,6 +7,7 @@ import org.msh.pharmadex.domain.PIPOrderLookUp;
 import org.msh.pharmadex.domain.POrderDoc;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.service.CurrencyService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.service.UserService;
@@ -42,6 +43,9 @@ public abstract class POrderBn implements Serializable {
     protected UserService userService;
     @ManagedProperty(value = "#{globalEntityLists}")
     protected GlobalEntityLists globalEntityLists;
+    @ManagedProperty(value = "#{currencyService}")
+    protected CurrencyService currencyService;
+
     FacesContext context = FacesContext.getCurrentInstance();
     java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
     //    private POrderBase pOrderBase;
@@ -77,6 +81,8 @@ public abstract class POrderBn implements Serializable {
 
 
     }
+
+    public abstract void currChangeListener();
 
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
@@ -190,5 +196,15 @@ public abstract class POrderBn implements Serializable {
     public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
         this.globalEntityLists = globalEntityLists;
     }
+
+    public CurrencyService getCurrencyService() {
+        return currencyService;
+    }
+
+    public void setCurrencyService(CurrencyService currencyService) {
+        this.currencyService = currencyService;
+    }
+
+
 
 }

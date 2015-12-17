@@ -43,7 +43,7 @@
             <div style="height: 10px;"/>
 
             <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
-                <p:tab title="#{msgs.sampletest_detail}">
+                <p:tab title="#{msgs.susp_detail}">
                     <p:panel value="Sample Test Detail">
                         <p:commandButton value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                                          onclick="PF('moderatordlg').show()"
@@ -67,8 +67,11 @@
                             <p:outputLabel value="#{msgs.processor}" styleClass="label"/>
                             <p:outputLabel value="#{suspendDetailBn.suspDetail.reviewer.name}"/>
 
-                            <p:outputLabel value="#{msgs.created_by}"/>
-                            <p:outputLabel value="#{suspendDetailBn.suspDetail.createdBy.name}"/>
+                            <p:outputLabel value="#{msgs.susp_reason}"/>
+                            <p:inputText value="#{suspendDetailBn.suspDetail.reason}"/>
+
+                            <p:outputLabel value="#{msgs.batch_no}"/>
+                            <p:inputTextarea value="#{suspendDetailBn.suspDetail.batchNo}"/>
 
                             <p:outputLabel value="#{msgs.updated_date}"/>
                             <p:outputLabel value="#{suspendDetailBn.suspDetail.updatedDate}"/>
@@ -88,6 +91,8 @@
                             <p:calendar id="samplerecdt" value="#{suspendDetailBn.suspDetail.decisionDate}"
                                         rendered="#{empty suspendDetailBn.suspDetail.decisionDate}"
                                         style="width:100%" showButtonPanel="true"/>
+                            <p:outputLabel value="#{msgs.created_by}"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.createdBy.name}"/>
 
                         </h:panelGrid>
                     </p:panel>
@@ -243,8 +248,8 @@
 
 
                 <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
-                                 action="#{suspendDetailBn.assignModerator}"
-                                 oncomplete="moderatordlg.hide()" ajax="false"/>
+                                 action="#{suspendDetailBn.assignModerator}" update=":reviewHome"
+                                 oncomplete="PF('moderatordlg').hide()"/>
             </h:form>
         </p:dialog>
 
@@ -299,8 +304,8 @@
                     </h:panelGrid>
 
 
-                    <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
-                                     action="#{suspendDetailBn.assignReviewer}" ajax="false"/>
+                    <p:commandButton id="submitButton1" value="#{msgs.global_submit}" update="@form"
+                                     action="#{suspendDetailBn.assignReviewer}" ajax="true"/>
                 </p:panel>
             </h:form>
 

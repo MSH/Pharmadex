@@ -95,7 +95,7 @@
                                                                                              action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                                 -->
                                 <p:column headerText="#{msgs.prod_no}">
-                                    <h:outputText value="#{order.id}"/>
+                                    <h:outputText value="#{order.productNo}"/>
                                 </p:column>
 
                                 <p:column headerText="#{msgs.prod_name}">
@@ -132,12 +132,33 @@
                                 </p:column>
 
                                 <p:column headerText="#{msgs.product_pricing}">
-                                    <h:outputText value="#{order.unitPrice}"/>
+                                    <h:outputText value="#{order.unitPrice}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPIPOrderBn.pOrderBase.currency.currSym}"/>
+                                    </h:outputText>
+
                                 </p:column>
 
                                 <p:column headerText="#{msgs.total_price}">
-                                    <h:outputText value="#{order.totalPrice}"/>
+                                    <h:outputText value="#{order.totalPrice}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPIPOrderBn.pOrderBase.currency.currSym}"/>
+                                    </h:outputText>
+
                                 </p:column>
+
+                                <p:summaryRow>
+                                    <p:column colspan="8" style="text-align:right">
+                                        <h:outputText value="Grand Total(including Freight):"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{processPIPOrderBn.pipOrder.totalPrice}">
+                                            <f:convertNumber type="currency"
+                                                             currencySymbol="#{processPIPOrderBn.pOrderBase.currency.currSym}"/>
+                                        </h:outputText>
+                                    </p:column>
+                                </p:summaryRow>
+
 
                             </p:dataTable>
                         </h:panelGrid>
@@ -151,6 +172,10 @@
 
                             <p:panel header="#{msgs.general_info}">
                                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                                    <p:outputLabel value="#{msgs.currency}" for="curr"/>
+                                    <p:outputLabel id="curr" required="true"
+                                                   value="#{processPIPOrderBn.pOrderBase.currency.currName}"/>
+
                                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
                                     <p:outputLabel id="shipinst" required="true"
                                                    value="#{processPIPOrderBn.pOrderBase.shippingInstruction}"/>
@@ -166,6 +191,14 @@
                                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
                                     <p:outputLabel id="payinfo" required="true"
                                                    value="#{processPIPOrderBn.pOrderBase.paymentMethod}"/>
+
+                                    <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
+                                    <p:outputLabel id="freight" required="true"
+                                                   value="#{processPIPOrderBn.pOrderBase.freight}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPIPOrderBn.pOrderBase.currency.currSym}"/>
+                                    </p:outputLabel>
+
 
                                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                                     <p:outputLabel id="comment" value="#{processPIPOrderBn.pOrderBase.comment}"/>
@@ -224,13 +257,15 @@
                                               style="background-color: bisque;font-weight: bolder;">
                                         <h:outputLabel value="#{checkList.pipOrderLookUp.id}"/>
                                     </p:column>
-                                    <p:column rendered="#{!checkList.pipOrderLookUp.header}" headerText="#{msgs.global_document}">
+                                    <p:column rendered="#{!checkList.pipOrderLookUp.header}"
+                                              headerText="#{msgs.global_document}">
                                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                                     </p:column>
                                     <p:column headerText="#{msgs.applicant_value}">
                                         <h:outputLabel value="#{msgs[checkList.value.key]}"/>
                                     </p:column>
-                                    <p:column rendered="#{!checkList.pipOrderLookUp.header}" headerText="#{msgs.staff_value}">
+                                    <p:column rendered="#{!checkList.pipOrderLookUp.header}"
+                                              headerText="#{msgs.staff_value}">
                                         <p:selectOneButton id="console" value="#{checkList.staffValue}"
                                                            rendered="#{checkList.pipOrderLookUp.optional and !userSession.csd}">
                                             <f:selectItems value="#{globalLists.yesNoNA}" var="value"
@@ -245,8 +280,10 @@
                                                        rendered="#{userSession.csd}"/>
                                     </p:column>
                                     <p:column headerText="Comments" rendered="#{!checkList.pipOrderLookUp.header}">
-                                        <p:inputText value="#{checkList.staffComment}" rendered="#{processPurOrderBn.displayReviewComment}"/>
-                                        <p:outputLabel value="#{checkList.staffComment}" rendered="#{!processPurOrderBn.displayReviewComment}"/>
+                                        <p:inputText value="#{checkList.staffComment}"
+                                                     rendered="#{processPurOrderBn.displayReviewComment}"/>
+                                        <p:outputLabel value="#{checkList.staffComment}"
+                                                       rendered="#{!processPurOrderBn.displayReviewComment}"/>
                                     </p:column>
                                 </p:dataTable>
                             </p:panel>
@@ -281,7 +318,7 @@
                                         <h:outputText value="#{doc.uploadedBy.name}"/>
                                     </p:column>
 
-                                    <p:column headerText="#{msgs.registration_status}">
+                                    <p:column headerText="#{msgs.application_status}">
                                         <h:outputText value="#{msgs[doc.regState.key]}"/>
                                     </p:column>
 
@@ -372,7 +409,8 @@
                                      required="true"
                                      requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
-                        <f:selectItems value="#{globalLists.recomendType}" var="type" itemLabel="#{msgs[type.key]}"/>
+                        <f:selectItems value="#{processPIPOrderBn.recommendTypes}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
                     <p:message for="recomcb"/>
 
@@ -435,7 +473,7 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
 
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="withdrawcomment" styleClass="label"/>
+                    <p:outputLabel value="#{msgs.feedback_summary}" for="withdrawcomment" styleClass="label"/>
                     <p:editor value="#{processPIPOrderBn.pOrderComment.comment}" id="withdrawcomment" required="true"
                               width="700"/>
                     <p:message for="withdrawcomment"/>

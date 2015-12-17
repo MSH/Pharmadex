@@ -40,6 +40,15 @@ public class POrderBase extends CreationDetail {
     @Column(length = 500)
     private String comment;
 
+    @Column(length = 255)
+    private Double totalPrice;
+
+    @Column(nullable = false)
+    private Double freight;
+
+    @ManyToOne
+    private Currency currency;
+
     @Temporal(TemporalType.DATE)
     private Date submitDate;
 
@@ -229,5 +238,29 @@ public class POrderBase extends CreationDetail {
 
     public void setPerforma(String performa) {
         this.performa = performa;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Double getFreight() {
+        return freight;
+    }
+
+    public void setFreight(Double freight) {
+        this.freight = freight;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }

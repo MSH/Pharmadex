@@ -94,7 +94,7 @@
                                                                                              action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
                                 -->
                                 <p:column headerText="#{msgs.prod_no}">
-                                    <h:outputText value="#{order.id}"/>
+                                    <h:outputText value="#{order.productNo}"/>
                                 </p:column>
 
                                 <p:column headerText="#{msgs.prod_name}">
@@ -131,12 +131,32 @@
                                 </p:column>
 
                                 <p:column headerText="#{msgs.product_pricing}">
-                                    <h:outputText value="#{order.unitPrice}"/>
+                                    <h:outputText value="#{order.unitPrice}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                    </h:outputText>
+
                                 </p:column>
 
                                 <p:column headerText="#{msgs.total_price}">
-                                    <h:outputText value="#{order.totalPrice}"/>
+                                    <h:outputText value="#{order.totalPrice}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                    </h:outputText>
+
                                 </p:column>
+
+                                <p:summaryRow>
+                                    <p:column colspan="8" style="text-align:right">
+                                        <h:outputText value="Grand Total(including Freight):"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{processPurOrderBn.purOrder.totalPrice}">
+                                            <f:convertNumber type="currency"
+                                                             currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                        </h:outputText>
+                                    </p:column>
+                                </p:summaryRow>
 
                             </p:dataTable>
                         </h:panelGrid>
@@ -151,6 +171,11 @@
 
                             <p:panel header="#{msgs.general_info}">
                                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                                    <p:outputLabel value="#{msgs.currency}" for="curr"/>
+                                    <p:outputLabel id="curr" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.currency.currName}"/>
+
+
                                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
                                     <p:outputLabel id="shipinst" required="true"
                                                    value="#{processPurOrderBn.pOrderBase.shippingInstruction}"/>
@@ -166,6 +191,14 @@
                                     <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
                                     <p:outputLabel id="payinfo" required="true"
                                                    value="#{processPurOrderBn.pOrderBase.paymentMethod}"/>
+
+                                    <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
+                                    <p:outputLabel id="freight" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.freight}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                    </p:outputLabel>
+
 
                                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                                     <p:outputLabel id="comment" value="#{processPurOrderBn.pOrderBase.comment}"/>
@@ -259,6 +292,11 @@
                         <p:tab title="#{msgs.attachments}">
 
                             <p:panel header="#{msgs.attachments}">
+                                <h:panelGrid columns="1">
+                                    <p:commandLink
+                                            value="Click here to see what documents need to be uploaded"
+                                            onclick="window.open('uploaddochint.xhtml')"
+                                            style="color: firebrick;"/>
                                 <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                                  oncomplete="PF('attachdlg').show()"
                                                  action="#{processPurOrderBn.prepareUpload}"
@@ -283,7 +321,7 @@
                                         <h:outputText value="#{doc.uploadedBy.name}"/>
                                     </p:column>
 
-                                    <p:column headerText="#{msgs.registration_status}">
+                                    <p:column headerText="#{msgs.application_status}">
                                         <h:outputText value="#{msgs[doc.regState.key]}"/>
                                     </p:column>
 
@@ -302,6 +340,7 @@
                                                          update=":reghome:attachtab:attachtable"/>
                                     </p:column>
                                 </p:dataTable>
+                                </h:panelGrid>
 
                             </p:panel>
 
@@ -376,7 +415,8 @@
                                      required="true"
                                      requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
-                        <f:selectItems value="#{globalLists.recomendType}" var="type" itemLabel="#{msgs[type.key]}"/>
+                        <f:selectItems value="#{processPurOrderBn.recommendTypes}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
                     <p:message for="recomcb"/>
 

@@ -1,7 +1,6 @@
 package org.msh.pharmadex.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,13 +20,13 @@ public class PurProd extends PProdBase {
     @JoinColumn(name = "purorder_id")
     private PurOrder purOrder;
 
-    public PurProd(DosageForm dosForm, DosUom dosUnit, PurOrder purOrder) {
-        super(dosForm, dosUnit);
-        this.purOrder = purOrder;
+    public PurProd() {
     }
 
-    public PurProd() {
-        super();
+    public PurProd(DosageForm dosForm, DosUom dosUnit, PurOrder purOrder, String currCD) {
+        super(dosForm, dosUnit);
+        this.purOrder = purOrder;
+        this.setCurrency(currCD);
     }
 
     public PurOrder getPurOrder() {
