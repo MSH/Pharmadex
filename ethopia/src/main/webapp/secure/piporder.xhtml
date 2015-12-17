@@ -37,7 +37,26 @@
             <div style="height:10px"/>
 
             <p:panel header="#{msgs.general_info}">
+                <h:panelGrid columns="1">
+                    <p:outputLabel value="Please select the currency to be used for this order." styleClass="hint"/>
+                    <p:outputLabel/>
+                    <p:outputLabel value="Note: The currency you select will be used for the entire transactions including freight charges and product unit price.
+                You can only use one currency per order. You cannot mix currencies" styleClass="hint"/>
+                </h:panelGrid>
+
                 <h:panelGrid columns="3" cellspacing="10" columnClasses="col1, col2, col3">
+                    <p:outputLabel value="#{msgs.currency}" for="currdd"/>
+                    <p:selectOneMenu id="currdd" value="#{pIPOrderBn.pipOrder.currency.id}"
+                                     requiredMessage="#{msgs.valid_dos_form}" required="true"
+                                     disabled="#{!pIPOrderBn.showSubmit}">
+                        <p:ajax event="change" listener="#{pIPOrderBn.currChangeListener}"/>
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.currencies}" var="curr"
+                                       itemLabel="#{curr.currName}"
+                                       itemValue="#{curr.id}"/>
+                    </p:selectOneMenu>
+                    <p:message for="currdd" showSummary="true" showDetail="false"/>
+
                     <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
                     <p:inputText id="shipinst" required="true" value="#{pIPOrderBn.pipOrder.shippingInstruction}"
                                  readonly="#{!pIPOrderBn.showSubmit}"/>
@@ -46,7 +65,7 @@
 
                     <p:outputLabel value="#{msgs.portof_entry}" for="port"/>
                     <p:inputText id="port" required="true" readonly="#{!pIPOrderBn.showSubmit}"
-                                   value="#{pIPOrderBn.pipOrder.entryPort}"/>
+                                 value="#{pIPOrderBn.pipOrder.entryPort}"/>
                     <p:message for="port" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
@@ -63,6 +82,11 @@
                     <p:inputText id="proforma" value="#{pIPOrderBn.pipOrder.performa}"
                                  readonly="#{!pIPOrderBn.showSubmit}"/>
                     <p:message for="proforma" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
+                    <p:inputText id="freight" required="true" value="#{pIPOrderBn.pipOrder.freight}"
+                                 readonly="#{!pIPOrderBn.showSubmit}"/>
+                    <p:message for="freight" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                     <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}"
@@ -83,60 +107,89 @@
 
                     <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()"
                                      rendered="#{pIPOrderBn.showSubmit}"
-                                     action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm"/>
+                                     action="#{pIPOrderBn.initAddProd}" process="@form" update=":orderdetailfrm"/>
 
-                        <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;">
+                    <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;"
+                                 sortBy="#{order.pipOrder.freight}">
 
-                            <p:column headerText="#{msgs.prod_no}">
-                                <h:outputText value="#{order.productNo}"/>
+                        <p:column headerText="#{msgs.prod_no}">
+                            <h:outputText value="#{order.productNo}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.prod_name}">
+                            <h:outputText value="#{order.productName}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.dos_strength}">
+                            <h:outputText value="#{order.dosStrength}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.dos_unit}">
+                            <h:outputText value="#{order.dosUnit.uom}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.dos_form}">
+                            <h:outputText value="#{order.dosForm.dosForm}"/>
+                        </p:column>
+
+
+                        <p:column headerText="#{msgs.prod_presentation}">
+                            <h:outputText value="#{order.productDesc}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.global_quantity}">
+                            <h:outputText value="#{order.quantity}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.product_pricing}">
+                            <h:outputText value="#{order.unitPrice}">
+                                <f:convertNumber type="currency"
+                                                 currencySymbol="#{pIPOrderBn.pipOrder.currency.currSym}"/>
+                            </h:outputText>
+
+                        </p:column>
+
+                        <p:column headerText="#{msgs.total_price}">
+                            <h:outputText value="#{order.totalPrice}">
+                                <f:convertNumber type="currency"
+                                                 currencySymbol="#{pIPOrderBn.pipOrder.currency.currSym}"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column rendered="#{empty order.pipOrder.submitDate}">
+                            <p:commandButton action="#{pIPOrderBn.removeProd(order)}" icon="ui-icon-trash"
+                                             update=":reghome :reghome:growl" immediate="true">
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:summaryRow>
+                            <p:column colspan="8" style="text-align:right">
+                                <h:outputText value="Grand Total(includes Freight):"/>
                             </p:column>
-
-                            <p:column headerText="#{msgs.prod_name}">
-                                <h:outputText value="#{order.productName}"/>
+                            <p:column>
+                                <h:outputText value="#{pIPOrderBn.pipOrder.totalPrice}">
+                                    <f:convertNumber type="currency"
+                                                     currencySymbol="#{pIPOrderBn.pipOrder.currency.currSym}"/>
+                                </h:outputText>
                             </p:column>
+                        </p:summaryRow>
 
-                            <p:column headerText="#{msgs.prod_name}">
-                                <h:outputText value="#{order.productName}"/>
+                        <!--
+                                                    <f:facet name="footer">
+                            <p:row>
+                            <p:column colspan="8" style="text-align:right">
+                                <h:outputText value="Grand Total:" />
                             </p:column>
-
-                            <p:column headerText="#{msgs.dos_strength}">
-                                <h:outputText value="#{order.dosStrength}"/>
+                            <p:column style="text-align:right">
+                                <h:outputText value="#{pIPOrderBn.pipOrder.totalPrice}">
+                                </h:outputText>
                             </p:column>
+                        </p:row>
+                        </f:facet>
+                        -->
 
-                            <p:column headerText="#{msgs.dos_unit}">
-                                <h:outputText value="#{order.dosUnit.uom}"/>
-                            </p:column>
-
-                            <p:column headerText="#{msgs.dos_form}">
-                                <h:outputText value="#{order.dosForm.dosForm}"/>
-                            </p:column>
-
-
-                            <p:column headerText="#{msgs.prod_presentation}">
-                                <h:outputText value="#{order.productDesc}"/>
-                            </p:column>
-
-                            <p:column headerText="#{msgs.global_quantity}">
-                                <h:outputText value="#{order.quantity}"/>
-                            </p:column>
-
-                            <p:column headerText="#{msgs.product_pricing}">
-                                <h:outputText value="#{order.unitPrice}"/>
-                            </p:column>
-
-                            <p:column headerText="#{msgs.total_price}">
-                                <h:outputText value="#{order.totalPrice}"/>
-                            </p:column>
-
-                            <p:column rendered="#{empty order.pipOrder.submitDate}">
-                                <p:commandButton action="#{pIPOrderBn.removeProd(order)}" value="#{msgs.global_delete}"
-                                                 update=":reghome:ordertable :reghome:growl" immediate="true">
-                                </p:commandButton>
-                            </p:column>
-
-                        </p:dataTable>
+                    </p:dataTable>
                 </h:panelGrid>
-
 
 
             </p:panel>
@@ -178,55 +231,57 @@
                     <p:commandLink
                             value="Click here to see what documents need to be uploaded"
                             onclick="window.open('uploaddochint.xhtml')"
-                            style="color: firebrick;"/>
-                <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
-                                 oncomplete="PF('attachdlg').show()" rendered="#{pIPOrderBn.showSubmit}"
-                                 action="#{pIPOrderBn.prepareUpload}"
-                                 update=":attachdlg" id="addDocBtn"/>
+                            styleClass="hint"/>
 
-                <p:dataTable id="attachtable" value="#{pIPOrderBn.pOrderDocs}" var="doc">
+                    <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                     oncomplete="PF('attachdlg').show()" rendered="#{pIPOrderBn.showSubmit}"
+                                     action="#{pIPOrderBn.prepareUpload}"
+                                     update=":attachdlg" id="addDocBtn"/>
 
-                    <p:column headerText="#{msgs.title}">
-                        <h:outputText value="#{doc.title}"/>
-                    </p:column>
+                    <p:dataTable id="attachtable" value="#{pIPOrderBn.pOrderDocs}" var="doc">
 
-                    <p:column headerText="#{msgs.filename}">
-                        <h:outputText value="#{doc.fileName}"/>
-                    </p:column>
+                        <p:column headerText="#{msgs.title}">
+                            <h:outputText value="#{doc.title}"/>
+                        </p:column>
 
-                    <p:column headerText="#{msgs.uploaddate}">
-                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
-                    </p:column>
+                        <p:column headerText="#{msgs.filename}">
+                            <h:outputText value="#{doc.fileName}"/>
+                        </p:column>
 
-                    <p:column headerText="#{msgs.uploadedby}">
-                        <h:outputText value="#{doc.uploadedBy.name}"/>
-                    </p:column>
+                        <p:column headerText="#{msgs.uploaddate}">
+                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                        </p:column>
 
-                    <p:column headerText="#{msgs.registration_status}">
-                        <h:outputText value="#{msgs[doc.regState.key]}"/>
-                    </p:column>
+                        <p:column headerText="#{msgs.uploadedby}">
+                            <h:outputText value="#{doc.uploadedBy.name}"/>
+                        </p:column>
 
-                    <p:column>
-                        <p:commandButton id="downloadLink" value="Download" ajax="false"
-                                         onclick="PrimeFaces.monitorDownload(start, stop)"
-                                         icon="ui-icon-arrowthichk-s">
-                            <p:fileDownload value="#{pIPOrderBn.fileDownload(doc)}"/>
-                        </p:commandButton>
-                    </p:column>
+                        <p:column headerText="#{msgs.application_status}">
+                            <h:outputText value="#{msgs[doc.regState.key]}"/>
+                        </p:column>
 
-                    <p:column rendered="#{pIPOrderBn.showSubmit}">
-                        <p:commandButton id="deleteattach"
-                                         action="#{pIPOrderBn.deleteDoc(doc)}" ajax="false"
-                                         icon="ui-icon-trash"
-                                         update=":reghome:attachtab:attachtable"/>
-                    </p:column>
-                </p:dataTable>
+                        <p:column>
+                            <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                             icon="ui-icon-arrowthichk-s">
+                                <p:fileDownload value="#{pIPOrderBn.fileDownload(doc)}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column rendered="#{pIPOrderBn.showSubmit}">
+                            <p:commandButton id="deleteattach"
+                                             action="#{pIPOrderBn.deleteDoc(doc)}" ajax="false"
+                                             icon="ui-icon-trash"
+                                             update=":reghome:attachtab:attachtable"/>
+                        </p:column>
+                    </p:dataTable>
                 </h:panelGrid>
             </p:panel>
 
             <p:panel header="#{msgs.checklist}">
                 <p:dataTable var="checkList" value="#{pIPOrderBn.pOrderChecklists}" style="width:100%;">
-                    <p:column headerText="" colspan="3" rendered="#{checkList.pipOrderLookUp.header}" style="background-color: bisque;font-weight: bolder;">
+                    <p:column headerText="" colspan="3" rendered="#{checkList.pipOrderLookUp.header}"
+                              style="background-color: bisque;font-weight: bolder;">
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
                     <p:column rendered="#{!checkList.pipOrderLookUp.header}">
@@ -236,11 +291,13 @@
                         <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
                     </p:column>
                     <p:column rendered="#{!checkList.pipOrderLookUp.header and pIPOrderBn.showSubmit}">
-                        <p:selectOneButton id="console" value="#{checkList.value}" rendered="#{checkList.pipOrderLookUp.optional}">
-                            <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
+                        <p:selectOneButton id="console" value="#{checkList.value}"
+                                           rendered="#{checkList.pipOrderLookUp.optional}">
+                            <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}"/>
                         </p:selectOneButton>
-                        <p:selectOneButton id="console2" value="#{checkList.value}" rendered="#{!checkList.pipOrderLookUp.optional}">
-                            <f:selectItems value="#{globalLists.yesNo}" var="value" itemLabel="#{msgs[value.key]}" />
+                        <p:selectOneButton id="console2" value="#{checkList.value}"
+                                           rendered="#{!checkList.pipOrderLookUp.optional}">
+                            <f:selectItems value="#{globalLists.yesNo}" var="value" itemLabel="#{msgs[value.key]}"/>
                         </p:selectOneButton>
                     </p:column>
                     <p:column rendered="#{!checkList.pipOrderLookUp.header and !pIPOrderBn.showSubmit}">
@@ -266,7 +323,8 @@
         </p:confirmDialog>
 
 
-        <p:dialog header="#{msgs.global_agreement}" widgetVar="confirmDlg" id="confirmdlg" resizable="true" dynamic="true"
+        <p:dialog header="#{msgs.global_agreement}" widgetVar="confirmDlg" id="confirmdlg" resizable="true"
+                  dynamic="true"
                   modal="true">
             <h:form>
                 <div>
@@ -316,19 +374,21 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{msgs.order_detail}" widgetVar="orderdetailDlg" id="orderdetaildlg" resizable="true" modal="true" dynamic="true">
+        <p:dialog header="#{msgs.order_detail}" widgetVar="orderdetailDlg" id="orderdetaildlg" resizable="true"
+                  modal="true" dynamic="true">
             <h:form id="orderdetailfrm">
                 <h:panelGrid columns="3" cellspacing="10" columnClasses="col1, col2, col3" id="order_detail">
 
                     <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
-                    <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipProd.productName}" />
+                    <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipProd.productName}"/>
                     <p:message for="prodname" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
                     <p:selectOneMenu id="dosForm" value="#{pIPOrderBn.pipProd.dosForm.uid}"
-                                     requiredMessage="#{msgs.valid_dos_form}" required="true" >
+                                     requiredMessage="#{msgs.valid_dos_form}" required="true">
                         <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{msgs[dosForm.key]}"
+                        <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm"
+                                       itemLabel="#{msgs[dosForm.key]}"
                                        itemValue="#{dosForm.uid}"/>
                     </p:selectOneMenu>
                     <p:message for="dosForm" showSummary="true" showDetail="false"/>
@@ -349,15 +409,18 @@
                     <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.prod_presentation}" for="proddesc"/>
-                    <p:inputText id="proddesc" required="true" value="#{pIPOrderBn.pipProd.productDesc}" />
+                    <p:inputText id="proddesc" required="true" value="#{pIPOrderBn.pipProd.productDesc}"/>
                     <p:message for="proddesc" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.product_shelflife}" for="shelflife"/>
-                    <p:inputText id="shelflife" value="#{pIPOrderBn.pipProd.shelfLife}"/>
+                    <p:inputText id="shelflife" value="#{pIPOrderBn.pipProd.shelfLife}"
+                                 required="true" requiredMessage="#{msgs.product_shelflife}: Value required"/>
+
                     <p:message for="shelflife" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.manuf_name}" for="manufName"/>
-                    <p:inputText id="manufName" value="#{pIPOrderBn.pipProd.manufName}"/>
+                    <p:inputText id="manufName" value="#{pIPOrderBn.pipProd.manufName}"
+                                 required="true" requiredMessage="#{msgs.manuf_name}: Value required"/>
                     <p:message for="manufName" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.pharmacy_address}" for="manufSite"/>
@@ -374,33 +437,28 @@
                     <p:message for="cntry" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.global_quantity}" for="quant"/>
-                    <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipProd.quantity}" >
+                    <p:inputText id="quant" required="true" value="#{pIPOrderBn.pipProd.quantity}">
                         <p:ajax event="keyup" update=":orderdetailfrm:total" process="@form"
                                 listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
                     </p:inputText>
                     <p:message for="quant" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.product_pricing}" for="price"/>
-                    <p:inputText id="price" required="true" value="#{pIPOrderBn.pipProd.unitPrice}" >
+                    <p:inputText id="price" required="true" value="#{pIPOrderBn.pipProd.unitPrice}">
                         <p:ajax event="keyup" update=":orderdetailfrm:total" process="@form"
                                 listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
                     </p:inputText>
                     <p:message for="price" showSummary="true"/>
 
-                    <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
-                    <p:inputText id="freight" required="true" value="#{pIPOrderBn.pipProd.freight}">
-                        <p:ajax event="keyup" update=":orderdetailfrm:total" process="@form"
-                                listener="#{pIPOrderBn.calculateTotalPrice}"></p:ajax>
-                    </p:inputText>
-                    <p:message for="freight" showSummary="true"/>
-
                     <p:outputLabel value="#{msgs.total_price}" for="total"/>
-                    <p:outputLabel id="total" value="#{pIPOrderBn.pipProd.totalPrice}"  styleClass="label"/>
+                    <p:outputLabel id="total" value="#{pIPOrderBn.pipProd.totalPrice}" styleClass="label"
+                                   style="width: 140px;">
+                        <f:convertNumber type="currency" currencySymbol="#{pIPOrderBn.pipOrder.currency.currSym}"/>
+                    </p:outputLabel>
                     <p:outputLabel/>
 
-                    <p:outputLabel value="#{msgs.currency}" for="curr"/>
-                    <p:inputText id="curr" value="#{pIPOrderBn.pipProd.currency}"/>
-                    <p:message for="curr" showSummary="true" showDetail="false"/>
+                    <p:outputLabel value="#{msgs.currency}"/>
+                    <p:outputLabel id="curr" value="#{pIPOrderBn.pipProd.currency}"/>
                 </h:panelGrid>
 
                 <h:panelGroup>
@@ -436,7 +494,8 @@
 
                 <p:commandButton id="adddoc" value="#{msgs.global_submit}"
                                  action="#{pIPOrderBn.addDocument}"
-                                 oncomplete="PF('attachdlg').hide()" update=":reghome:growl :reghome:messages :reghome"/>
+                                 oncomplete="PF('attachdlg').hide()"
+                                 update=":reghome:growl :reghome:messages :reghome"/>
             </h:form>
         </p:dialog>
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="120"/>
-	<property name="ireport.y" value="552"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="133"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -130,6 +130,9 @@
 		<parameter name="piporderid" class="java.lang.Long">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="pattern" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
 			<![CDATA[select * from pip_prod p, dosform d, dosuom u, country c where piporder_id = $P{piporderid}
 and d.uid = p.DOSFORM_ID
@@ -190,9 +193,6 @@ and c.id = p.country_id]]>
 		<field name="piporder_id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="freight" class="java.lang.Double">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
 		<field name="country_id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
@@ -228,6 +228,7 @@ and c.id = p.country_id]]>
 		<defaultValueExpression><![CDATA["/Users/utkarsh/Workspace/Idea/Pharmadex_04262015/ethopia/src/main/jasperreports/"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="comment" class="java.lang.String"/>
+	<parameter name="pattern" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from pip_order pip, applicant a, country c
 where pip.applicant_applcntid = a.`applcntId`
@@ -306,6 +307,15 @@ and pip.id = $P{piporderid}]]>
 	<field name="performa" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="freight" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="totalPrice" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="currency_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="applcntId" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -364,7 +374,7 @@ and pip.id = $P{piporderid}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="447" splitType="Stretch">
+		<band height="479" splitType="Stretch">
 			<image>
 				<reportElement x="334" y="3" width="100" height="100" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
@@ -440,7 +450,7 @@ and pip.id = $P{piporderid}]]>
 				</jr:Code128>
 			</componentElement>
 			<staticText>
-				<reportElement x="2" y="315" width="750" height="56" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<reportElement x="2" y="315" width="750" height="50" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -448,16 +458,16 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Your application for pre import permit of the below products have been substantively evaluated and found to be not acceptable at this time and hence you wont be able to import these products. Please refer the below comments for detail reasons. ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="391" width="178" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
-				<textElement textAlignment="Justified">
+				<reportElement x="1" y="365" width="178" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
 				</textElement>
 				<text><![CDATA[Your application number is ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="180" y="391" width="394" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
-				<textElement>
+				<reportElement x="180" y="365" width="179" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
+				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 					<paragraph rightIndent="10"/>
 				</textElement>
@@ -472,20 +482,51 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Please use the above application number for any future correspondence with FMHACA.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3" y="371" width="176" height="20" uuid="479e232d-74c4-47e8-9504-1ed34b3fd9bc"/>
-				<textElement>
+				<reportElement x="2" y="384" width="176" height="20" uuid="479e232d-74c4-47e8-9504-1ed34b3fd9bc"/>
+				<textElement verticalAlignment="Middle">
 					<font isBold="false"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<text><![CDATA[Submission Date]]></text>
 			</staticText>
 			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="180" y="371" width="180" height="20" uuid="c71cf7f8-cb65-44db-b2df-f5f6b73d8b01"/>
-				<textElement>
+				<reportElement x="179" y="384" width="180" height="20" uuid="c71cf7f8-cb65-44db-b2df-f5f6b73d8b01"/>
+				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{submitDate}]]></textFieldExpression>
 			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="561" y="384" width="191" height="20" uuid="ea74bb7e-adb8-47b1-b435-ad7bf5fc2c7d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{approvalDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="385" y="384" width="176" height="20" uuid="923b3a92-26f2-465b-ac57-acba90cfade7"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Rejection Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="561" y="364" width="191" height="20" uuid="befe2e95-2af4-4487-9cca-e4591ef8339b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalPrice}]]></textFieldExpression>
+				<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
+			</textField>
+			<staticText>
+				<reportElement x="385" y="365" width="176" height="20" uuid="f3416664-2ced-468e-84d9-3c9e7cd04f35"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Total Price]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -507,9 +548,12 @@ and pip.id = $P{piporderid}]]>
 			<componentElement>
 				<reportElement key="table 4" style="table 4" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="26" width="752" height="182" uuid="02589f62-247f-4246-b7b5-8f330d8013a2"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="pip_prod" uuid="f38f5591-d186-42c5-84e4-2a76973e6d30">
+					<datasetRun subDataset="pip_prod" uuid="d58cba29-90df-4d12-a8c9-3fc84e57537d">
 						<datasetParameter name="piporderid">
 							<datasetParameterExpression><![CDATA[$P{piporderid}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="pattern">
+							<datasetParameterExpression><![CDATA[$P{pattern}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
@@ -681,7 +725,6 @@ and pip.id = $P{piporderid}]]>
 						<jr:detailCell style="table 4_TD" height="23" rowSpan="1">
 							<textField isStretchWithOverflow="true">
 								<reportElement x="0" y="0" width="63" height="20" uuid="c296aff9-b77c-45a6-ba9d-5f27b530e65a"/>
-								<textElement textAlignment="Justified"/>
 								<textFieldExpression><![CDATA[$F{productDesc}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -719,6 +762,7 @@ and pip.id = $P{piporderid}]]>
 								<reportElement x="0" y="0" width="46" height="20" uuid="587ee4a6-47c8-4d85-8cdb-7a78f71b0168"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
+								<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -732,11 +776,12 @@ and pip.id = $P{piporderid}]]>
 								<text><![CDATA[Total Price]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell height="23" rowSpan="1">
+						<jr:detailCell style="table 4_TD" height="23" rowSpan="1">
 							<textField>
 								<reportElement x="0" y="0" width="53" height="20" uuid="29ab4702-e94f-4b53-a9b9-8e2107e1d27a"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{totalPrice}]]></textFieldExpression>
+								<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -750,7 +795,7 @@ and pip.id = $P{piporderid}]]>
 								<text><![CDATA[Currency]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell height="23" rowSpan="1">
+						<jr:detailCell style="table 4_TD" height="23" rowSpan="1">
 							<textField>
 								<reportElement x="0" y="0" width="54" height="20" uuid="ce6d9017-6911-46cc-b3a0-0843dc30a406"/>
 								<textElement textAlignment="Right"/>
@@ -761,7 +806,7 @@ and pip.id = $P{piporderid}]]>
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="90">
+		<band height="121">
 			<frame>
 				<reportElement x="0" y="0" width="752" height="20" uuid="9eac0177-89f7-43c5-8e87-298721f6f4b8"/>
 				<staticText>
@@ -804,7 +849,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Evidence of Payment]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="60" width="132" height="20" uuid="8b1580cd-735e-4c37-8978-78efb6d212f3"/>
+				<reportElement x="2" y="80" width="132" height="20" uuid="8b1580cd-735e-4c37-8978-78efb6d212f3"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 					<paragraph leftIndent="10"/>
@@ -828,7 +873,7 @@ and pip.id = $P{piporderid}]]>
 				<textFieldExpression><![CDATA[$F{paymentMethod}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="134" y="60" width="268" height="30" uuid="b5359a71-01cc-4712-a1fc-0da7db9d0065"/>
+				<reportElement x="134" y="80" width="618" height="30" uuid="b5359a71-01cc-4712-a1fc-0da7db9d0065"/>
 				<textFieldExpression><![CDATA[$F{comment}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -836,11 +881,23 @@ and pip.id = $P{piporderid}]]>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Performa Invoice Number]]></text>
+				<text><![CDATA[Proforma Invoice Number]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="540" y="60" width="212" height="20" uuid="905b09fd-375b-4462-bcd5-f5feb6f3dca4"/>
 				<textFieldExpression><![CDATA[$F{performa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="60" width="131" height="20" uuid="89e9904d-3ee7-42ed-99eb-23459f1ce3c7"/>
+				<textElement>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Freight]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="134" y="60" width="200" height="20" uuid="23c4e867-ca3a-45ff-9056-314913c639eb"/>
+				<textFieldExpression><![CDATA[$F{freight}]]></textFieldExpression>
+				<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 			</textField>
 		</band>
 	</detail>

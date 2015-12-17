@@ -42,13 +42,15 @@ public class PIPOrderBn extends POrderBn {
         Long pipOrderID = (Long) JsfUtils.flashScope().get("pipOrderID");
         if (pipOrderID != null) {
             pipOrder = getpOrderService().findPIPOrderEager(pipOrderID);
+            if (pipOrder.getCurrency() == null)
+                pipOrder.setCurrency(new Currency());
             pOrderChecklists = pipOrder.getpOrderChecklists();
             pipProds = pipOrder.getPipProds();
             setApplicantUser(pipOrder.getApplicantUser());
             setApplicant(pipOrder.getApplicantUser().getApplicant());
             JsfUtils.flashScope().keep("pipOrderID");
         } else {
-            pipOrder = new PIPOrder();
+            pipOrder = new PIPOrder(new Currency());
             if (getUserSession().isCompany()) {
                 User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
                 setApplicantUser(applicantUser);
@@ -72,9 +74,16 @@ public class PIPOrderBn extends POrderBn {
     public void calculateTotalPrice(AjaxBehaviorEvent event) {
         if (pipProd.getUnitPrice() != null && pipProd.getQuantity() != null) {
             double unitPrice = pipProd.getUnitPrice();
-            double totalPrice = Math.round((unitPrice * pipProd.getQuantity() + pipProd.getFreight()) * 100) / 100.0;
+            double totalPrice = Math.round((unitPrice * pipProd.getQuantity()) * 100) / 100.0;
             pipProd.setTotalPrice(totalPrice);
         }
+    }
+
+    @Override
+    public void currChangeListener() {
+        if (pipOrder != null && pipOrder.getCurrency() != null)
+            pipOrder.setCurrency(currencyService.findCurrency(pipOrder.getCurrency().getId()));
+
     }
 
     @Override
@@ -97,7 +106,8 @@ public class PIPOrderBn extends POrderBn {
 
     @Override
     public void initAddProd() {
-        setPipProd(new PIPProd(new DosageForm(), new DosUom(), pipOrder));
+//        Currency curr = currencyService.findCurrency(pipOrder.getCurrency().getId());
+        setPipProd(new PIPProd(new DosageForm(), new DosUom(), pipOrder, pipOrder.getCurrency().getCurrCD()));
 
     }
 
@@ -105,8 +115,10 @@ public class PIPOrderBn extends POrderBn {
     public void addProd() {
         if (pipProds == null) {
             pipProds = pipOrder.getPipProds();
-            if (pipProds == null)
+            if (pipProds == null) {
                 pipProds = new ArrayList<PIPProd>();
+                pipOrder.setTotalPrice(pipOrder.getFreight());
+            }
         }
 
         pipProd.setDosForm(dosageFormService.findDosagedForm(pipProd.getDosForm().getUid()));
@@ -114,6 +126,7 @@ public class PIPOrderBn extends POrderBn {
         pipProd.setPipOrder(pipOrder);
         pipProd.setCreatedDate(new Date());
         pipProd.setProductNo("" + (pipProds.size() + 1));
+        pipOrder.setTotalPrice((pipOrder.getTotalPrice() != null ? pipOrder.getTotalPrice() : 0) + pipProd.getTotalPrice());
         pipProds.add(pipProd);
         initAddProd();
     }
@@ -167,6 +180,8 @@ public class PIPOrderBn extends POrderBn {
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Please make sure all the required documents in the checklsit are enclosed"));
             if (retValue.getMsg().equals("no_prod"))
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "No product specified to be imported"));
+            if (retValue.getMsg().equals("error"))
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Unable to create the order"));
 
             return "";
         }
@@ -184,9 +199,10 @@ public class PIPOrderBn extends POrderBn {
 
     public String removeProd(PIPProd pipProd) {
         context = FacesContext.getCurrentInstance();
+        pipOrder.setTotalPrice(pipOrder.getTotalPrice() - pipProd.getTotalPrice());
         pipProds.remove(pipProd);
-        for (int i = 1; i <= pipProds.size(); i++) {
-            pipProds.get(i).setProductNo("" + i);
+        for (int i = 0; i < pipProds.size(); i++) {
+            pipProds.get(i).setProductNo("" + i + 1);
         }
 
         context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));

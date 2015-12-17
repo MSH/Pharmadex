@@ -1,7 +1,6 @@
 package org.msh.pharmadex.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,9 +17,10 @@ public class PIPProd extends PProdBase {
     @JoinColumn(name = "piporder_id")
     private PIPOrder pipOrder;
 
-    public PIPProd(DosageForm dosForm, DosUom dosUnit, PIPOrder pipOrder) {
+    public PIPProd(DosageForm dosForm, DosUom dosUnit, PIPOrder pipOrder, String curr) {
         super(dosForm, dosUnit);
         this.pipOrder = pipOrder;
+        this.setCurrency(curr);
     }
 
     public PIPProd() {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="764"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -85,10 +85,14 @@
 	</style>
 	<subDataset name="pip_prod" uuid="4254ef9d-8b7d-498d-91f6-158edfc3ef2e">
 		<parameter name="piporderid" class="java.lang.String"/>
+		<parameter name="pattern" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
-			<![CDATA[select * from pur_prod p, dosform d, dosuom u where purorder_id = $P{piporderid}
+			<![CDATA[select * from pur_prod p, dosform d, dosuom u, country c where purorder_id = $P{piporderid}
 and d.uid = p.DOSFORM_ID
-and p.DOSUNIT_ID = u.id]]>
+and p.DOSUNIT_ID = u.id
+and p.country_id = c.id]]>
 		</queryString>
 		<field name="id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
@@ -129,6 +133,12 @@ and p.DOSUNIT_ID = u.id]]>
 		<field name="unitPrice" class="java.lang.Integer">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
+		<field name="createdBy_userId" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="updatedBy_userId" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
 		<field name="DOSFORM_ID" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
@@ -139,6 +149,12 @@ and p.DOSUNIT_ID = u.id]]>
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="purorder_id" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="country_id" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="currency" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="uid" class="java.lang.Long">
@@ -153,6 +169,12 @@ and p.DOSUNIT_ID = u.id]]>
 		<field name="UOM" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
+		<field name="countryCD" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="countryName" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
 		<group name="id">
 			<groupExpression><![CDATA[$F{id}]]></groupExpression>
 		</group>
@@ -163,6 +185,7 @@ and p.DOSUNIT_ID = u.id]]>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["/Users/utkarsh/Workspace/Idea/Pharmadex_04262015/ethopia/src/main/jasperreports/"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="pattern" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from pur_order pip, applicant a, country c
 where pip.applicant_applcntid = a.`applcntId`
@@ -223,19 +246,31 @@ and pip.id = $P{piporderid}]]>
 	<field name="submitDate" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="createdBy_userId" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="updatedBy_userId" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="applicant_applcntId" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="applicantUser_userId" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="createdBy_userId" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="processor_userId" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="updatedBy_userId" class="java.lang.Long">
+	<field name="performa" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="freight" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="totalPrice" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="currency_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="applcntId" class="java.lang.Long">
@@ -296,66 +331,62 @@ and pip.id = $P{piporderid}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="142" splitType="Stretch">
+		<band height="419" splitType="Stretch">
 			<image>
 				<reportElement x="247" y="0" width="75" height="70" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement mode="Transparent" x="0" y="70" width="572" height="24" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
+				<reportElement mode="Transparent" x="0" y="70" width="752" height="24" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
 				<textElement textAlignment="Center">
 					<font size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FOOD, MEDICINE AND HEALTH CARE ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="94" width="572" height="24" forecolor="#006666" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
+				<reportElement x="0" y="94" width="752" height="24" forecolor="#006666" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
 				<textElement textAlignment="Center">
 					<font size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ADMINISTRATION AND CONTROL AUTHORITY OF ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="118" width="572" height="24" forecolor="#006666" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
+				<reportElement x="0" y="118" width="752" height="24" forecolor="#006666" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
 				<textElement textAlignment="Center">
 					<font size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ETHIOPIA]]></text>
 			</staticText>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="126" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="572" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
+				<reportElement x="2" y="142" width="752" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PURCHASE ORDER CERTIFICATE]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="32" y="65" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="34" y="207" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="32" y="85" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="34" y="227" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="32" y="105" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="34" y="247" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="25" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement x="3" y="167" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10"/>
@@ -363,35 +394,20 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[To,]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="32" y="45" width="236" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
+				<reportElement x="34" y="187" width="236" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="373" y="45" width="200" height="50" uuid="e7c5466d-317c-4791-b497-ae5134a061d9"/>
+				<reportElement positionType="Float" x="375" y="187" width="200" height="50" uuid="e7c5466d-317c-4791-b497-ae5134a061d9"/>
 				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
 					<jr:codeExpression><![CDATA[$F{pipNo}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
-		</band>
-	</pageHeader>
-	<columnHeader>
-		<band splitType="Stretch"/>
-	</columnHeader>
-	<detail>
-		<band height="345">
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="109" width="572" height="20" backcolor="#99CCFF" uuid="fd5e38ef-8d07-4469-8c08-e1212c966bc1"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Product Detail]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="572" height="46" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<reportElement x="1" y="267" width="751" height="46" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -399,7 +415,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[It is hereby certified that the Food Medicine and Health Care Administration and Control authority of Ehtiopia (FMHACA) has approved your Purchase Order of the below products subject to the general terms and conditions of the attached contract. ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="68" width="178" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
+				<reportElement x="1" y="313" width="181" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -407,7 +423,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Your application number is ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="179" y="68" width="394" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
+				<reportElement x="182" y="313" width="181" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -415,127 +431,176 @@ and pip.id = $P{piporderid}]]>
 				<textFieldExpression><![CDATA[$F{pipNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="2" y="87" width="572" height="19" uuid="371a8efc-87fe-49dd-a03a-5e4fa2680ede"/>
+				<reportElement x="1" y="380" width="751" height="27" uuid="371a8efc-87fe-49dd-a03a-5e4fa2680ede"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
 				</textElement>
 				<text><![CDATA[Please use the above application number for any future correspondence with FMHACA.]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="3" y="332" width="180" height="20" uuid="be7f4be6-3e57-4f59-9830-d1199c040e0f"/>
+				<textElement>
+					<font isBold="false"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Approval Date]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="183" y="332" width="180" height="20" uuid="33cd60b4-ea68-4499-b14c-03956433e055"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{approvalDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="363" y="332" width="180" height="20" uuid="395f23fe-8ade-4565-b7c3-48e248f0a620"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Expiry Date]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="543" y="332" width="208" height="20" uuid="c69aea80-dadc-470e-ba26-faaf9a252fd8"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{expiryDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="543" y="312" width="180" height="20" uuid="a1dfed6a-d639-4999-bfd9-eb91abafad72"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalPrice}]]></textFieldExpression>
+				<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
+			</textField>
+			<staticText>
+				<reportElement x="363" y="313" width="180" height="20" uuid="89684b83-fa3d-4e84-bbb1-4dd50acbcce0"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Total Price]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="244">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="4" width="751" height="20" backcolor="#99CCFF" uuid="fd5e38ef-8d07-4469-8c08-e1212c966bc1"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Product Detail]]></text>
+			</staticText>
 			<componentElement>
-				<reportElement key="table 3" style="table 3" x="0" y="129" width="572" height="216" uuid="094fcea5-e4a3-48f8-8b0e-575e0a163087"/>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="pip_prod" uuid="b0a02973-4236-4539-8117-bfd1e1edb591">
+				<reportElement key="table 3" style="table 3" positionType="Float" stretchType="RelativeToTallestObject" x="1" y="24" width="750" height="220" uuid="6e34be2e-6308-44b5-ae30-410eeda61dfb"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="pip_prod" uuid="d3f384bc-3c6b-4abd-9cf1-d6ffd9178ed4">
 						<datasetParameter name="piporderid">
 							<datasetParameterExpression><![CDATA[$P{piporderid}]]></datasetParameterExpression>
 						</datasetParameter>
+						<datasetParameter name="pattern">
+							<datasetParameterExpression><![CDATA[$P{pattern}]]></datasetParameterExpression>
+						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="21" uuid="0bf1771d-732e-44b1-87e3-36d050cb222b">
+					<jr:column width="25" uuid="de189242-927d-49a2-9ef4-4d4f69433f8f">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="20" height="30" uuid="d0acd5ed-f234-4d73-8f64-4bed058f170c"/>
+								<reportElement x="0" y="0" width="25" height="30" uuid="c415755c-873f-430b-8ee4-234c756ca818"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
 								<text><![CDATA[Sr. No]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="20" height="20" uuid="61b4e649-608a-45a6-adfa-08a4d32681d0"/>
-								<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="25" height="20" uuid="f5d9e7b8-4410-45b4-b802-69232d5cbe58"/>
+								<textFieldExpression><![CDATA[$F{productNo}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="63" uuid="07a5a043-0cad-4327-b73d-a7463323014c">
+					<jr:column width="85" uuid="096a55a0-4a62-42f1-a5d8-bcef85b21c82">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="62" height="30" uuid="4b90f937-cc2f-4c6c-9c24-6fff77d9b7ce"/>
-								<textElement>
+								<reportElement x="0" y="0" width="85" height="30" uuid="4912caf4-cde4-42be-8830-757d893a60bb"/>
+								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
 								<text><![CDATA[Product Name]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="62" height="20" uuid="bd031517-4fe1-486a-94a7-7433ca78dc72"/>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="85" height="20" uuid="738f2292-9b91-409a-97d0-1446c1af3278"/>
 								<textFieldExpression><![CDATA[$F{productName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="61" uuid="089613c2-7e7f-45c0-8993-35f9f1c7496d">
+					<jr:column width="88" uuid="9d5c5291-29cb-4675-91f0-decadcd3b30f">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="61" height="30" uuid="bf8f6686-c0dd-408b-98a7-28bdf1b6bd67"/>
-								<textElement>
+								<reportElement x="0" y="0" width="88" height="30" uuid="7e8cbe5f-0015-4c30-adfb-93c47581a63c"/>
+								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
 								<text><![CDATA[Manufacturer]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="61" height="20" uuid="f1f10380-cce1-4797-8bf0-9cffc0374e50"/>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="88" height="20" uuid="837e804a-00c8-4d51-8e6d-902ca053dee1"/>
 								<textFieldExpression><![CDATA[$F{manufName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="64" uuid="37e35341-1a25-4583-8769-30a58d30ba3b">
+					<jr:column width="78" uuid="5607ad12-1ea8-4a59-a9f7-28015f7f2e7f">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="62" height="30" uuid="68138cec-5d6a-44f5-b726-d00c12c353f1"/>
-								<textElement>
+								<reportElement x="0" y="0" width="78" height="30" uuid="8504974c-82a3-4b5d-8a21-14d30e7046fe"/>
+								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
 								<text><![CDATA[Site]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="62" height="20" uuid="7449ea07-d915-4e79-8afd-afc9d7c99fe0"/>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="78" height="20" uuid="f3fc503f-ea37-477c-bc28-fc0d64dea4ea"/>
 								<textFieldExpression><![CDATA[$F{manufSite}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="43" uuid="c8e4075d-31b2-45e1-9388-739c64726a2f">
+					<jr:column width="49" uuid="833b7a82-af05-498d-9cce-f25fa4d7e521">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="42" height="30" uuid="d5ed67e2-bfe4-4a15-a875-4e42872400fe"/>
+								<reportElement x="0" y="0" width="49" height="30" uuid="a20e7b3c-9065-44ae-8955-0d68b7faed09"/>
 								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
-								<text><![CDATA[Dosage Strengthh]]></text>
+								<text><![CDATA[Country]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="42" height="20" uuid="48c7d8e7-8d1a-4ef8-9646-02fb8053e48d"/>
-								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{dosage_strength}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="49" height="20" uuid="f4355627-ac45-45a2-88ec-f418c524b4f4"/>
+								<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="33" uuid="98c3cdbe-af50-4731-a7c9-ad4996bf625e">
+					<jr:column width="48" uuid="1df293e1-f0b5-439b-b1c8-6ac329c9745a">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="31" height="30" uuid="1eccbebb-5932-480b-88c4-dee38d8adadd"/>
-								<textElement textAlignment="Center">
-									<font isBold="true"/>
-								</textElement>
-								<text><![CDATA[Unit]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="31" height="20" uuid="c9e0ea08-fecb-41cb-9dd6-1c447b0f51b4"/>
-								<textElement textAlignment="Center"/>
-								<textFieldExpression><![CDATA[$F{UOM}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="65" uuid="fdf6f4fe-36f8-4b74-a64a-422dc9e1c109">
-						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="63" height="30" uuid="9cd1289b-b873-4253-af79-a55fa228c74d"/>
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="48" height="30" uuid="8a2b25ba-5fd2-4602-a138-0efdd43fa673"/>
 								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
@@ -543,16 +608,52 @@ and pip.id = $P{piporderid}]]>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="63" height="20" uuid="281e418b-ed1a-45ef-bf79-c14df4f89132"/>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="48" height="20" uuid="6e6d3f15-a88e-4ad6-af7c-3877337e54d5"/>
 								<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="32" uuid="95d68cc4-807e-4ab5-8b25-233eea662a94">
+					<jr:column width="30" uuid="c954c41f-64b3-43cc-a5c6-76a7840045ad">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="30" height="30" uuid="cc041d14-5aa5-4e71-a0a9-b5befc5e3dd5"/>
+								<reportElement x="0" y="0" width="30" height="30" uuid="014a8ab8-76ea-4f75-84d9-4ec8452b90f3"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Dosage Strength]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="30" height="20" uuid="d430b0fb-07d7-4519-806d-4178788e6f38"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{dosage_strength}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="30" uuid="65d50f5d-cf1d-44ff-9f47-848f190d817c">
+						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="30" height="30" uuid="5c03e9d3-a624-4e23-ab41-99d35c84287b"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Unit]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="30" height="20" uuid="305a33d0-5d9a-4be5-b82a-37119f33671a"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{UOM}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="57" uuid="509cfff6-d7aa-4b5f-876d-b58584024d40">
+						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="1" y="0" width="56" height="30" uuid="741e0247-e58b-40d7-8f32-5f5d5d470ba0"/>
 								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
@@ -560,17 +661,17 @@ and pip.id = $P{piporderid}]]>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="30" height="20" uuid="a1e69eee-8dce-408a-b638-80c10bd8ed17"/>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="2" y="0" width="55" height="20" uuid="1614595d-0ea4-4448-87ac-9cee32c04d9a"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{shelfLife}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="45" uuid="f077ab59-1aa8-43b5-897c-c3a654ab1c57">
+					<jr:column width="56" uuid="266d9c5e-c48a-4a9b-8fb0-71f73f4e864c">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="45" height="30" uuid="76e3b22c-0f56-4d80-bc56-613fd4aa3084"/>
+								<reportElement x="0" y="0" width="56" height="30" uuid="1f5f2e79-2676-427f-86c3-39946da4c5cf"/>
 								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
@@ -578,16 +679,17 @@ and pip.id = $P{piporderid}]]>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="45" height="20" uuid="0554f1a8-57aa-4079-b1fd-45ef998d05c0"/>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="56" height="20" uuid="82fbde82-664f-4aa5-8fcb-04998be918a7"/>
+								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{productDesc}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="46" uuid="8d12c314-832b-4e60-bca3-3571a57e2682">
+					<jr:column width="43" uuid="552d17fc-d94f-4172-b919-91d8a3b6bf31">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="45" height="30" uuid="e8a3d688-356c-4780-b29b-be3df590e007"/>
+								<reportElement x="0" y="0" width="42" height="30" uuid="770807c9-a8f6-421c-a92d-f06f95f1d483"/>
 								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
@@ -595,17 +697,17 @@ and pip.id = $P{piporderid}]]>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="45" height="20" uuid="2d9feb17-b26b-416b-b214-55b4a07935fc"/>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="42" height="20" uuid="7fa5f3d4-8d71-4eb5-9b55-1f5c095d3908"/>
 								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="40" uuid="5d8cdabc-85f5-4633-9d80-ad8443ae8de4">
+					<jr:column width="52" uuid="9bd308b6-f405-496a-8afd-ac2228a26c69">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="39" height="30" uuid="ccae898b-d59a-4558-abd8-c2c1a02e698b"/>
+								<reportElement x="0" y="0" width="52" height="30" uuid="cc61b25a-b6a5-46ff-a8c3-218802044bc8"/>
 								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
@@ -614,16 +716,17 @@ and pip.id = $P{piporderid}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="39" height="20" uuid="0d6e4c11-8805-4c8a-9cbe-8d49a66e151b"/>
+								<reportElement x="0" y="0" width="52" height="20" uuid="3e516693-d573-4233-826c-d303e557c08f"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
+								<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="74" uuid="8653cdd6-e06f-4fb6-a486-86e4a7359364">
+					<jr:column width="64" uuid="ae2b8cb1-9afd-4a60-aaa7-6cfef91c4d24">
 						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="72" height="30" uuid="09f00ce9-c301-4210-93be-c793701e92e3"/>
+								<reportElement x="0" y="0" width="64" height="30" uuid="c84402a6-16af-4683-9c99-255acf903d82"/>
 								<textElement textAlignment="Center">
 									<font isBold="true"/>
 								</textElement>
@@ -632,48 +735,39 @@ and pip.id = $P{piporderid}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="72" height="20" uuid="f27e1d21-1266-4e85-a198-46b10b93f216"/>
+								<reportElement x="0" y="0" width="64" height="20" uuid="3adfac1d-8696-48fd-a837-2cce85d04ec0"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{totalPrice}]]></textFieldExpression>
+								<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="64" uuid="aa4c9ca5-d231-41c8-ad3a-e68960f56bdf">
+						<jr:columnHeader style="table 3_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="64" height="30" uuid="4dd99e81-cf94-44ef-962a-57006e675094"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Currency]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 3_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="64" height="20" uuid="ac646994-fd4f-4f57-884a-ad638487a218"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{currency}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 				</jr:table>
 			</componentElement>
-			<staticText>
-				<reportElement x="2" y="46" width="132" height="20" uuid="be7f4be6-3e57-4f59-9830-d1199c040e0f"/>
-				<textElement>
-					<font isBold="false"/>
-				</textElement>
-				<text><![CDATA[Approval Date]]></text>
-			</staticText>
-			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="134" y="46" width="148" height="20" uuid="33cd60b4-ea68-4499-b14c-03956433e055"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{approvalDate}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="283" y="46" width="129" height="20" uuid="395f23fe-8ade-4565-b7c3-48e248f0a620"/>
-				<textElement>
-					<font isBold="false"/>
-				</textElement>
-				<text><![CDATA[Expiry Date]]></text>
-			</staticText>
-			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="412" y="46" width="160" height="20" uuid="c69aea80-dadc-470e-ba26-faaf9a252fd8"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{expiryDate}]]></textFieldExpression>
-			</textField>
 		</band>
-		<band height="90">
+		<band height="112">
 			<frame>
-				<reportElement x="0" y="0" width="572" height="20" uuid="9eac0177-89f7-43c5-8e87-298721f6f4b8"/>
+				<reportElement x="0" y="0" width="751" height="20" uuid="9eac0177-89f7-43c5-8e87-298721f6f4b8"/>
 				<staticText>
-					<reportElement mode="Opaque" x="0" y="0" width="572" height="20" backcolor="#99CCFF" uuid="282cb34f-ecd9-4ae1-b76f-cdb867509d97"/>
+					<reportElement mode="Opaque" x="0" y="0" width="751" height="20" backcolor="#99CCFF" uuid="282cb34f-ecd9-4ae1-b76f-cdb867509d97"/>
 					<textElement>
 						<font size="12" isBold="true"/>
 						<paragraph leftIndent="10"/>
@@ -682,7 +776,7 @@ and pip.id = $P{piporderid}]]>
 				</staticText>
 			</frame>
 			<staticText>
-				<reportElement x="2" y="20" width="132" height="20" uuid="cd17dc91-6b38-449a-ba1d-0977de8221d9"/>
+				<reportElement x="2" y="20" width="180" height="20" uuid="cd17dc91-6b38-449a-ba1d-0977de8221d9"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 					<paragraph leftIndent="10"/>
@@ -690,7 +784,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Shipping Instruction]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="40" width="132" height="20" uuid="3265dd49-9722-4546-92ed-b4c67bfff9f8"/>
+				<reportElement x="2" y="40" width="180" height="20" uuid="3265dd49-9722-4546-92ed-b4c67bfff9f8"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 					<paragraph leftIndent="10"/>
@@ -698,21 +792,21 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Delivery]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="293" y="20" width="138" height="20" uuid="90e23f15-f57f-47cd-8eae-1f1a8b0c2ceb"/>
+				<reportElement x="391" y="20" width="180" height="20" uuid="90e23f15-f57f-47cd-8eae-1f1a8b0c2ceb"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Port of Entry]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="293" y="40" width="138" height="20" uuid="b7039042-2abb-4ecf-a7f1-cc9a2dcfdbb9"/>
+				<reportElement x="391" y="40" width="180" height="20" uuid="b7039042-2abb-4ecf-a7f1-cc9a2dcfdbb9"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Evidence of Payment]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="60" width="132" height="20" uuid="8b1580cd-735e-4c37-8978-78efb6d212f3"/>
+				<reportElement x="2" y="80" width="180" height="20" uuid="8b1580cd-735e-4c37-8978-78efb6d212f3"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 					<paragraph leftIndent="10"/>
@@ -720,24 +814,48 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Comment]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="134" y="20" width="148" height="20" uuid="83ec1a05-ac50-4600-a9c4-cd56f532b6b5"/>
+				<reportElement x="183" y="20" width="180" height="20" uuid="83ec1a05-ac50-4600-a9c4-cd56f532b6b5"/>
 				<textFieldExpression><![CDATA[$F{shippingInstruction}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="134" y="40" width="148" height="20" uuid="35b31104-9247-4374-8fd8-27f48746190b"/>
+				<reportElement x="183" y="40" width="180" height="20" uuid="35b31104-9247-4374-8fd8-27f48746190b"/>
 				<textFieldExpression><![CDATA[$F{delivery}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="431" y="20" width="141" height="20" uuid="f1b66984-dc5c-4d30-b23f-d8eb60353a3a"/>
+				<reportElement x="571" y="20" width="180" height="20" uuid="f1b66984-dc5c-4d30-b23f-d8eb60353a3a"/>
 				<textFieldExpression><![CDATA[$F{entryPort}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="431" y="40" width="141" height="20" uuid="1febf108-ff8e-462f-a147-b8010d2d2994"/>
+				<reportElement x="571" y="40" width="180" height="20" uuid="1febf108-ff8e-462f-a147-b8010d2d2994"/>
 				<textFieldExpression><![CDATA[$F{paymentMethod}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="134" y="60" width="438" height="30" uuid="b5359a71-01cc-4712-a1fc-0da7db9d0065"/>
+				<reportElement x="183" y="80" width="568" height="30" uuid="b5359a71-01cc-4712-a1fc-0da7db9d0065"/>
 				<textFieldExpression><![CDATA[$F{comment}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="391" y="60" width="180" height="20" uuid="24c61358-260e-4c6d-aa1d-04db3b92973e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Performa Invoice Number]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="571" y="60" width="180" height="20" uuid="611ad9bd-c48e-47f4-b771-d8bcab01d0cf"/>
+				<textFieldExpression><![CDATA[$F{performa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="60" width="179" height="20" uuid="8f7934ef-e294-46ea-95d1-e6901d76655b"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Freight]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="183" y="60" width="180" height="20" uuid="d3657d89-b60a-4f5b-960d-0c018eac0442"/>
+				<textFieldExpression><![CDATA[$F{freight}]]></textFieldExpression>
+				<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 			</textField>
 		</band>
 	</detail>
@@ -778,26 +896,31 @@ and pip.id = $P{piporderid}]]>
 				<reportElement x="1" y="46" width="571" height="334" uuid="3fd87b28-3679-4265-b929-136ef5f8a6be"/>
 				<textElement>
 					<font size="10"/>
+					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
 				</textElement>
-				<text><![CDATA[1.	Products should have minimum 75% of its shelf life on arrival at Addis Ababa/port of entry.
-2.	Language used  for writing label, leaflet and other documents shall be in English
-3.	All packing should be suitable for road, air and sea transport under tropical conditions
-4.	The label of immediate container:-
-•	The name of the product, brand and generic/INN
-•	Pharmaceutical dosage form and route of administration
-•	Qualitative and quantitative composition of active ingredient(s)
-•	Quantity in container, technical directions for use
-•	Handling and storage requirements
-•	Batch number, manufacturing and expiry date
-•	Name and address of the company
-5.	Accompanying invoices should be as per the purchase order including  Batch number, manufacturing and expiry date of each item
-6.	Every product should be accompanied by a leaflet in its immediate container. A leaflet must bear adequate information for use and it should at least include:
-•	The name of the product: brand and generic/INN
-•	Description appearance, pharmaceutical  dosage form and route of administration
-•	Qualitative and quantitative composition of active ingredients
-•	Clinical pharmacology, indication(s), warning, precautions, contraindications, adverse reactions/side effects
-•	Dosage and administration (direction for use)
-•	Over dosage, storage instruction, package quantity, name and address of manufacturer.
+				<text><![CDATA[	1.  For a medicine to have port clearance permission by the authority
+		a. If the medicine has three years or more shelf life, when it arrives in the port of entry it should have 60% or more of its shelf life.
+		b. If the medicine has two years or less shelf life, when it arrives in the port of entry it should have 50% or more of its shelf life.
+		c. For emergency cases, the medicine should have a shelf life of more than 50% of its shelf life on arrival at port entry of the country
+	2.  Language used  for writing label, leaflet and other documents shall be in English
+	3.  All packing should be suitable for road, air and sea transport under tropical conditions
+	4.  The label of immediate container:-
+		• The name of the product, brand and generic/INN
+		• Pharmaceutical dosage form and route of administration
+		• Qualitative and quantitative composition of active ingredient(s)
+		• Quantity in container, technical directions for use
+		• Handling and storage requirements
+		• Batch number, manufacturing and expiry date
+		• Name and address of the company
+	5.  Accompanying invoices should be as per the purchase order including  Batch number, manufacturing and expiry date of each item
+	6.  Every product should be accompanied by a leaflet in its immediate container. A leaflet must bear adequate information for use and it should at least include:
+		• The name of the product: brand and generic/INN
+		• Description appearance, pharmaceutical  dosage form and route of administration
+		• Qualitative and quantitative composition of active ingredients
+		• Clinical pharmacology, indication(s), warning, precautions, contraindications, adverse reactions/side effects
+		• Dosage and administration (direction for use)
+		• Over dosage, storage instruction, package quantity, name and address of manufacturer.
+
 ]]></text>
 			</staticText>
 		</band>

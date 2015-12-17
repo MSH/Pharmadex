@@ -1,10 +1,6 @@
 package org.msh.pharmadex.domain;
 
-import org.msh.pharmadex.domain.enums.AmdmtState;
-
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,15 +13,19 @@ import java.util.List;
 @Entity
 @Table(name = "pip_order")
 public class PIPOrder extends POrderBase {
-
     @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PIPProd> pipProds;
-
     @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<POrderComment> pOrderComments;
-
     @OneToMany(mappedBy = "pipOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<POrderChecklist> pOrderChecklists;
+
+    public PIPOrder(Currency currency) {
+        this.setCurrency(currency);
+    }
+
+    public PIPOrder() {
+    }
 
     public List<POrderChecklist> getpOrderChecklists() {
         return pOrderChecklists;
