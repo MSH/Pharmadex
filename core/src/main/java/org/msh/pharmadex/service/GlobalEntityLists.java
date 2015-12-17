@@ -39,6 +39,7 @@ public class GlobalEntityLists implements Serializable {
     private List<FeeSchedule> feeSchedules;
     private Workspace workspace;
     private List<SRA> sras;
+    private List<Currency> currencies;
 
 
     @Autowired
@@ -88,6 +89,9 @@ public class GlobalEntityLists implements Serializable {
 
     @Autowired
     private SraService sraService;
+
+    @Autowired
+    private CurrencyService currencyService;
 
     public List<Atc> getAtcs() {
         if (atcs == null)
@@ -200,6 +204,12 @@ public class GlobalEntityLists implements Serializable {
         if (adminRoutes == null)
             adminRoutes = adminRouteService.getAdminRoutes();
         return adminRoutes;
+    }
+
+    public List<Currency> getCurrencies() {
+        if (currencies == null)
+            currencies = currencyService.findAllCurrency();
+        return currencies;
     }
 
     public List<Excipient> getExcipients() {
