@@ -24,8 +24,11 @@
             <div style="height: 10px;"/>
 
             <div align="right">
+                <p:commandButton value="#{msgs.notif_recieving}"
+                                 action="#{sampleDetailBn.sendToRecieving}"
+                                 ajax="false"/>
                 <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"
-                                 update=":reviewHome" process="@form" rendered="#{userSession.lab}"/>
+                                 update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
                                  action="#{sampleDetailBn.cancelSampleTestDetail}"
                                  ajax="false"/>

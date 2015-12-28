@@ -63,7 +63,6 @@ public class PreScreenProdMBn implements Serializable {
 //            return null;
 //        }
 
-
         RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
         prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
         if (!retObject.getMsg().equals("persist")) {
