@@ -1,0 +1,459 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions" xmlns:o="http://omnifaces.org/ui"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+
+        <h:form id="reviewHome" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true"/>
+
+
+            <ui:decorate template="/templates/prodbannertempl.xhtml">
+                <ui:param name="prodApp" value="#{sampleRecBn.prodApplications}"/>
+            </ui:decorate>
+
+            <div align="right">
+
+                <p:commandButton value="#{msgs.global_save}"
+                                 ajax="false" action="#{sampleRecBn.saveSampleTest}"/>
+                <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('submitDlg').show()"
+                        />
+                <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{sampleRecBn.sendToHome}"
+                                 ajax="false"/>
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <p:panel id="sampledetail" header="#{msgs.sample_header}">
+                <p:fieldset legend="#{msgs.sample_meds}" style="margin-bottom:20px">
+
+                    <p:dataTable id="inntable" var="prodInn" value="#{sampleRecBn.sampleMeds}"
+                                 style="width:100%;" editable="true"
+                                 emptyMessage="No Medicines present"
+                            >
+                        <f:facet name="header">
+                            <p:commandLink value="#{msgs.global_add}" action="#{sampleRecBn.initAddSampleMed}"
+                                           id="addMedBtn"
+                                           oncomplete="PF('addMedsDlg').show()" update=":addMedFrm"/>
+
+                        </f:facet>
+
+                        <p:ajax event="rowEdit" listener="#{sampleRecBn.onRowEdit}"
+                                update=":reviewHome:growl"/>
+                        <p:ajax event="rowEditCancel" listener="#{sampleRecBn.onRowCancel}"
+                                update=":reviewHome:growl"/>
+
+                        <p:column headerText="#{msgs.prodName}">
+                            <h:outputText value="#{prodInn.product.prodName}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.dos_form}">
+                            <h:outputText value="#{prodInn.product.dosForm}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.dos_form}">
+                            <h:outputText value="#{prodInn.product.dosStrength} - #{prodInn.product.dosUnit}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.batch_no}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{prodInn.batchNo}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{prodInn.batchNo}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.manuf_date}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{prodInn.manufDate}">
+                                        <f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar value="#{prodInn.manufDate}"
+                                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.expiry_date}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{prodInn.expDate}">
+                                        <f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar value="#{prodInn.expDate}"
+                                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.manuf_name}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{prodInn.manufName}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{prodInn.manufName}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.applicant_country}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{prodInn.country.countryName}">
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{prodInn.country.countryName}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.global_quantity}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{prodInn.quantity}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{prodInn.quantity}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column style="width:32px">
+                            <p:rowEditor/>
+                        </p:column>
+
+                        <p:column style="width:32px">
+                            <p:commandLink action="#{sampleRecBn.removeMedSample(prodInn)}"
+                                           styleClass="ui-icon ui-icon-trash"
+                                           update=":reviewHome"
+                                           immediate="true">
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:fieldset>
+
+                <div style="height: 10px;"/>
+
+                <p:fieldset legend="#{msgs.sample_stds}" style="margin-bottom:20px">
+
+                    <p:dataTable id="stdtable" var="std" value="#{sampleRecBn.sampleStds}"
+                                 style="width:100%;" editable="true"
+                                 emptyMessage="No Standards present"
+                            >
+                        <f:facet name="header">
+                            <p:commandLink value="#{msgs.global_add}" action="#{sampleRecBn.initAddSampleStd}"
+                                           id="addStdBtn"
+                                           oncomplete="PF('addStdDlg').show()" update=":addStdFrm"/>
+
+                        </f:facet>
+
+                        <p:ajax event="rowEdit" listener="#{sampleRecBn.onRowEdit}"
+                                update=":reviewHome:growl"/>
+                        <p:ajax event="rowEditCancel" listener="#{sampleRecBn.onRowCancel}"
+                                update=":reviewHome:growl"/>
+
+                        <p:column headerText="#{msgs.std_name}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.stdName}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{std.stdName}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.std_type}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.stdType}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{std.stdType}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.sample_potency}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.potency}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{std.potency}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.batch_no}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.batchNo}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{std.batchNo}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.manuf_date}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.manufDate}">
+                                        <f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar value="#{std.manufDate}"
+                                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.expiry_date}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.expDate}">
+                                        <f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar value="#{std.expDate}"
+                                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.manuf_name}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.manufName}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{std.manufName}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.applicant_country}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.country.countryName}">
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{std.country.countryName}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.global_quantity}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{std.quantity}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{std.quantity}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column style="width:32px">
+                            <p:rowEditor/>
+                        </p:column>
+
+                        <p:column style="width:32px">
+                            <p:commandLink action="#{sampleRecBn.removeStdSample(std)}"
+                                           styleClass="ui-icon ui-icon-trash"
+                                           update=":reviewHome"
+                                           immediate="true">
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:fieldset>
+
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="#{msgs.sample_meds}" widgetVar="addMedsDlg" id="addMedsDlg" resizable="true"
+                  modal="true" dynamic="true">
+            <h:form id="addMedFrm">
+                <pe:ajaxErrorHandler/>
+                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+                    <p:outputLabel value="#{msgs.prodName}"/>
+                    <p:outputLabel value="#{sampleRecBn.sampleMed.product.prodName}"/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.prodgenname}"/>
+                    <p:outputLabel value="#{sampleRecBn.sampleMed.product.genName}"/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.dos_form}"/>
+                    <p:outputLabel value="#{sampleRecBn.sampleMed.product.dosForm}"/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.dos_strength}"/>
+                    <p:outputLabel
+                            value="#{sampleRecBn.sampleMed.product.dosStrength} - #{sampleRecBn.sampleMed.product.dosUnit}"/>
+                    <p:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.batch_no}" for="batchno"/>
+                    <p:inputText id="batchno" value="#{sampleRecBn.sampleMed.batchNo}" required="true"/>
+                    <p:message for="batchno" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.manuf_date}" for="manufdate"/>
+                    <p:calendar value="#{sampleRecBn.sampleMed.manufDate}" id="manufdate"
+                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                    <p:message for="manufdate" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.expiry_date}" for="expdate"/>
+                    <p:calendar value="#{sampleRecBn.sampleMed.expDate}" id="expdate"
+                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                    <p:message for="expdate" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.manuf_name}" for="manufname"/>
+                    <p:inputText id="manufname" value="#{sampleRecBn.sampleMed.manufName}" required="true"/>
+                    <p:message for="manufname" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.applicant_country}" for="country"/>
+                    <p:autoComplete value="#{sampleRecBn.sampleMed.country}" id="country"
+                                    completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
+                                    var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
+                                    required="true">
+                        <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+                    </p:autoComplete>
+                    <p:message for="country" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.global_quantity}" for="quantity"/>
+                    <p:inputText id="quantity" value="#{sampleRecBn.sampleMed.quantity}"/>
+                    <p:message for="quantity" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
+                    <p:inputText id="comment" value="#{sampleRecBn.sampleMed.comment}"/>
+                    <p:message for="comment" showSummary="true"/>
+
+                    <h:panelGroup>
+                        <p:commandButton action="#{sampleRecBn.addSampleMed}" value="#{msgs.global_add}"
+                                         oncomplete="if(!args.validationFailed) PF('addMedsDlg').hide()"
+                                         update=":reviewHome :addMedsDlg"/>
+                        <p:commandButton action="#{sampleRecBn.cancelAddSampleMed}" immediate="true"
+                                         value="#{msgs.global_cancel}"
+                                         ajax="true"
+                                         oncomplete="PF('addMedsDlg').hide()" update=":addMedFrm"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.sample_stds}" widgetVar="addStdDlg" id="addStdDlg" resizable="true"
+                  modal="true" dynamic="true">
+            <h:form id="addStdFrm">
+                <pe:ajaxErrorHandler/>
+                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+                    <p:outputLabel value="#{msgs.std_name}" for="stdname"/>
+                    <p:inputText value="#{sampleRecBn.sampleStd.stdName}" id="stdname"/>
+                    <p:message for="stdname" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.std_type}" for="stdtype"/>
+                    <p:inputText value="#{sampleRecBn.sampleStd.stdType}" id="stdtype"/>
+                    <p:message for="stdtype" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.sample_potency}" for="potency"/>
+                    <p:inputText value="#{sampleRecBn.sampleStd.potency}" id="potency"/>
+                    <p:message for="potency" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.batch_no}" for="batchnostd"/>
+                    <p:inputText id="batchnostd" value="#{sampleRecBn.sampleStd.batchNo}" required="true"/>
+                    <p:message for="batchnostd" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.manuf_date}" for="manufdatestd"/>
+                    <p:calendar value="#{sampleRecBn.sampleStd.manufDate}" id="manufdatestd"
+                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                    <p:message for="manufdatestd" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.expiry_date}" for="expdatestd"/>
+                    <p:calendar value="#{sampleRecBn.sampleStd.expDate}" id="expdatestd"
+                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+                    <p:message for="expdatestd" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.manuf_name}" for="manufnamestd"/>
+                    <p:inputText id="manufnamestd" value="#{sampleRecBn.sampleStd.manufName}" required="true"/>
+                    <p:message for="manufnamestd" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.applicant_country}" for="countrystd"/>
+                    <p:autoComplete value="#{sampleRecBn.sampleStd.country}" id="countrystd"
+                                    completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
+                                    var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
+                                    required="true">
+                        <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+                    </p:autoComplete>
+                    <p:message for="countrystd" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.global_quantity}" for="quantitystd"/>
+                    <p:inputText id="quantitystd" value="#{sampleRecBn.sampleStd.quantity}"/>
+                    <p:message for="quantitystd" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.global_comment}" for="commentstd"/>
+                    <p:inputText id="commentstd" value="#{sampleRecBn.sampleStd.comment}"/>
+                    <p:message for="commentstd" showSummary="true"/>
+
+                    <h:panelGroup>
+                        <p:commandButton action="#{sampleRecBn.addSampleStd}" value="#{msgs.global_add}"
+                                         oncomplete="if(!args.validationFailed) PF('addStdDlg').hide()"
+                                         update=":reviewHome :addStdDlg"/>
+                        <p:commandButton action="#{sampleRecBn.cancelAddSampleMed}" immediate="true"
+                                         value="#{msgs.global_cancel}"
+                                         ajax="true"
+                                         oncomplete="PF('addStdDlg').hide()" update=":addStdFrm"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.sample_stds}" widgetVar="submitDlg" id="submitDlg" resizable="true"
+                  modal="true" dynamic="true">
+            <h:form id="submitFrm">
+
+                <h:panelGrid columns="3" columnClasses="label value">
+                    <p:outputLabel value="#{msgs.sampletest_recieved}" for="recDate"/>
+                    <p:calendar id="recDate" value="#{sampleRecBn.sampleTest.recievedDt}"
+                                pattern="#{userAccessMBean.workspace.datePattern}"
+                                required="true"/>
+                    <p:message for="recDate" showSummary="true"/>
+                </h:panelGrid>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{sampleRecBn.submitSample}" value="#{msgs.global_submit}"
+                                     oncomplete="if(!args.validationFailed) PF('submitDlg').hide()"
+                                     update=":reviewHome :addStdDlg"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

@@ -11,12 +11,14 @@ import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
+import org.msh.pharmadex.domain.DosageForm;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
+import org.msh.pharmadex.domain.lab.SampleMed;
 import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,8 @@ public class SampleTestService implements Serializable {
     private GlobalEntityLists globalEntityLists;
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private DosageFormService dosageFormService;
 
     @Transactional
     public SampleTest findSampleTest(Long sampleTestID) {
@@ -86,7 +90,7 @@ public class SampleTestService implements Serializable {
             attachment.setComment("System generated Letter");
             attachment.setLetterType(LetterType.SAMPLE_REQUEST_LETTER);
             attachment.setContentType("application/pdf");
-            attachment.setSampleTest(sampleTest);
+//            attachment.setSampleTest(sampleTest);
 
             if(sampleTest.getProdAppLetters()==null)
                 sampleTest.setProdAppLetters(new ArrayList<ProdAppLetter>());
@@ -135,7 +139,6 @@ public class SampleTestService implements Serializable {
         return jasperPrint;
     }
 
-
     public RetObject saveSample(SampleTest sampleTest) {
 
         RetObject retObject = new RetObject();
@@ -162,5 +165,19 @@ public class SampleTestService implements Serializable {
 
         return saveSample(sampleTest);
 
+    }
+
+    @Transactional
+    public DosageForm findDosQuantity(Long dosFormID) {
+        DosageForm dosageForm = null;
+        if(dosFormID!=null) {
+            ProdApplications prodApplications = prodApplicationsService.findProdApplications(dosFormID);
+            dosageForm = prodApplications.getProduct().getDosForm();
+        }
+        return dosageForm;
+    }
+
+    public RetObject addSampleMed(SampleMed sampleMed) {
+        return null;
     }
 }

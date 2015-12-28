@@ -60,7 +60,7 @@
 
 
                             <p:dataTable id="inntable" var="prodInn" value="#{prodRegAppMbean.selectedInns}"
-                                         style="width:100%;"
+                                         style="width:100%;" editable="true"
                                          emptyMessage="No Inns selected"
                                     >
                                 <f:facet name="header">
@@ -69,12 +69,33 @@
                                                    oncomplete="PF('addInnDlg').show()" update=":addInnFrm"/>
 
                                 </f:facet>
+
+                                <p:ajax event="rowEdit" listener="#{prodAddDetailMBean.onRowEdit}"
+                                        update=":reghome:messages :reghome:growl"/>
+                                <p:ajax event="rowEditCancel" listener="#{prodAddDetailMBean.onRowCancel}"
+                                        update=":reghome:messages"/>
+
                                 <p:column headerText="#{msgs.product_innname}">
-                                    <h:outputText value="#{prodInn.inn.name}"/>
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{prodInn.inn.name}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{prodInn.inn.name}" style="width:100%"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+
                                 </p:column>
 
                                 <p:column headerText="#{msgs.dos_strength}">
-                                    <h:outputText value="#{prodInn.dosStrength}"/>
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{prodInn.dosStrength}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{prodInn.dosStrength}" style="width:100%"/>
+                                        </f:facet>
+                                    </p:cellEditor>
                                 </p:column>
 
                                 <p:column headerText="#{msgs.dos_unit}">
@@ -82,15 +103,26 @@
                                 </p:column>
 
                                 <p:column headerText="#{msgs.inn_ref}">
-                                    <h:outputText value="#{prodInn.refStd}"/>
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{prodInn.refStd}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{prodInn.refStd}" style="width:100%"/>
+                                        </f:facet>
+                                    </p:cellEditor>
                                 </p:column>
 
-                                <p:column>
-                                    <p:commandButton action="#{prodRegAppMbean.removeInn(prodInn)}"
-                                                     value="#{msgs.global_delete}"
-                                                     update=":reghome:atctable :reghome:inntable :reghome:growl"
-                                                     immediate="true">
-                                    </p:commandButton>
+                                <p:column style="width:32px">
+                                    <p:rowEditor/>
+                                </p:column>
+
+                                <p:column style="width:32px">
+                                    <p:commandLink action="#{prodRegAppMbean.removeInn(prodInn)}"
+                                                   styleClass="ui-icon ui-icon-trash"
+                                                   update=":reghome:atctable :reghome:inntable :reghome:growl"
+                                                   immediate="true">
+                                    </p:commandLink>
                                 </p:column>
 
                             </p:dataTable>
@@ -215,7 +247,8 @@
 
                         <div align="right">
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
-                                             update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn" rendered="false"/>
+                                             update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn"
+                                             rendered="false"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
                                              action="#{prodRegAppMbean.cancel}"
                                              ajax="false"/>
@@ -915,7 +948,7 @@
                               mode="advanced" process=":attachfrm" auto="true"
                               update=":reghome:growl :reghome:messages"
                               multiple="false"
-                               sizeLimit="10000000000000">
+                              sizeLimit="10000000000000">
 
                 </p:fileUpload>
 

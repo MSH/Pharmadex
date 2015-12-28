@@ -401,7 +401,7 @@ public class SuspendDetailBn implements Serializable {
             prodAppLetters = new ArrayList<ProdAppLetter>();
 
 //        file = userSession.getFile();
-        prodAppLetter.setSuspDetail(suspDetail);
+//        prodAppLetter.setSuspDetail(suspDetail);q
 //        getpOrderDocDAO().save(getpOrderDoc());
         prodAppLetters.add(prodAppLetter);
         suspDetail.setProdAppLetters(prodAppLetters);

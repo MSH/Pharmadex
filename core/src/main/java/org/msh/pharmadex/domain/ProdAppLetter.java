@@ -36,10 +36,10 @@ public class ProdAppLetter extends CreationDetail {
     @OneToOne
     private ReviewInfo reviewInfo;
 
-    @OneToOne
+    @ManyToOne
     private SampleTest sampleTest;
 
-    @OneToOne
+    @ManyToOne
     private SuspDetail suspDetail;
 
     @OneToOne
@@ -158,4 +158,6 @@ public class ProdAppLetter extends CreationDetail {
     public void setSuspDetail(SuspDetail suspDetail) {
         this.suspDetail = suspDetail;
     }
+
+
 }

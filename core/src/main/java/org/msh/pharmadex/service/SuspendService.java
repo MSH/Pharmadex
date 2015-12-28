@@ -132,7 +132,7 @@ public class SuspendService implements Serializable {
         attachment.setComment("System generated Letter");
         attachment.setLetterType(letterType);
         attachment.setContentType("application/pdf");
-        attachment.setSuspDetail(suspDetail);
+//        attachment.setSuspDetail(suspDetail);
         if (suspDetail.getProdAppLetters() == null)
             suspDetail.setProdAppLetters(new ArrayList<ProdAppLetter>());
         suspDetail.getProdAppLetters().add(attachment);

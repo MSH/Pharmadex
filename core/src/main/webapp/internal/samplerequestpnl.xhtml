@@ -17,9 +17,12 @@
 -->
 
         <p:column headerText="#{msgs.requested_date}">
-            <p:commandLink id="viewLink2" value="#{sample.reqDt}" converter="javax.faces.DateTime"
+            <p:commandLink id="viewLink2"
                            action="#{sampleTestBn.sendToDetail(sample.id)}"
                            ajax="false" immediate="true">
+                <p:outputLabel value="#{sample.reqDt}">
+                    <f:convertDateTime pattern="MMM dd, yyyy"/>
+                </p:outputLabel>
             </p:commandLink>
         </p:column>
 

@@ -10,17 +10,17 @@
         <p:inputTextarea id="ingrdStatment" value="#{prodRegAppMbean.product.ingrdStatment}" cols="100"/>
         <p:outputLabel/>
 
-        <p:outputLabel value="#{msgs.prod_indications}" for="indication" />
+        <p:outputLabel value="#{msgs.prod_indications}*" for="indication" />
         <p:inputTextarea id="indication" value="#{prodRegAppMbean.product.indications}" cols="100"/>
         <p:outputLabel/>
 
-        <p:outputLabel value="#{msgs.prod_posology}" for="posology"/>
+        <p:outputLabel value="#{msgs.prod_posology}*" for="posology"/>
         <p:inputTextarea id="posology" value="#{prodRegAppMbean.product.posology}" cols="100"/>
         <p:outputLabel/>
 
 
 
-        <p:outputLabel value="#{msgs.product_shelflife}" for="shelflife"/>
+        <p:outputLabel value="#{msgs.product_shelflife}*" for="shelflife"/>
         <p:inputText id="shelflife" value="#{prodRegAppMbean.product.shelfLife}"/>
         <p:message for="shelflife" showSummary="true" showDetail="false"/>
 
@@ -31,20 +31,20 @@
         </p:selectOneMenu>
         <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
 
-        <p:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
+        <p:outputLabel value="#{msgs.product_packsize}*" for="inpacksize"/>
         <p:inputText id="inpacksize" value="#{prodRegAppMbean.product.packSize}" style="width: 300px"/>
         <p:message for="inpacksize" showSummary="true" showDetail="false"/>
 
 
-        <p:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
+        <p:outputLabel value="#{msgs.product_conttype}*" for="inconttype"/>
         <p:inputTextarea id="inconttype" value="#{prodRegAppMbean.product.contType}" style="width: 300px"/>
         <p:message for="inconttype" showSummary="true" showDetail="false"/>
 
-        <p:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
+        <p:outputLabel value="#{msgs.product_storcndtn}*" for="instorecndtn"/>
         <p:inputText id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}" style="width: 300px"/>
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
-        <p:outputLabel value="#{msgs.use_category}" for="grid"/>
+        <p:outputLabel value="#{msgs.use_category}*" for="grid"/>
         <p:selectManyCheckbox id="grid" value="#{prodRegAppMbean.useCategories}" layout="grid" columns="1"
                               converter="omnifaces.GenericEnumConverter">
             <f:selectItems value="#{globalLists.useCategory}" var="type" itemLabel="#{msgs[type.key]}"

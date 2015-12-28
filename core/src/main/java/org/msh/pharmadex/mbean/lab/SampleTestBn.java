@@ -5,6 +5,7 @@
 package org.msh.pharmadex.mbean.lab;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.DosageForm;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
@@ -67,7 +68,7 @@ public class SampleTestBn implements Serializable {
         if(sampleTests==null){
             if(processProdBn.getProdApplications()!=null){
                 sampleTests = sampleTestService.findSampleForProd(processProdBn.getProdApplications().getId());
-                sampleTest = new SampleTest();
+                sampleTest = new SampleTest(processProdBn.getProdApplications());
             }
         }
     }
@@ -85,7 +86,6 @@ public class SampleTestBn implements Serializable {
         }
 
         sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
-        sampleTest.setProdApplications(processProdBn.getProdApplications());
         sampleTest.setSampleTestStatus(SampleTestStatus.REQUESTED);
         sampleTest.setReqDt(new Date());
         sampleComment.setSampleTestStatus(SampleTestStatus.REQUESTED);
@@ -112,7 +112,9 @@ public class SampleTestBn implements Serializable {
 
 
     public void initSampleAdd() {
-        sampleTest = new SampleTest(new ArrayList<SampleComment>());
+        sampleTest.setSampleComments(new ArrayList<SampleComment>());
+        DosageForm dosForm = sampleTestService.findDosQuantity(sampleTest.getProdApplications().getId());
+        sampleTest.setQuantity(""+dosForm.getSampleSize());
         sampleComment = new SampleComment(sampleTest);
     }
 

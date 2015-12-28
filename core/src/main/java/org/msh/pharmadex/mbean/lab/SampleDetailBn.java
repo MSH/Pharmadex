@@ -177,7 +177,7 @@ public class SampleDetailBn implements Serializable {
 
     public void addDocument() {
 //        file = userSession.getFile();
-        prodAppLetter.setSampleTest(sampleTest);
+//        prodAppLetter.setSampleTest(sampleTest);
 //        getpOrderDocDAO().save(getpOrderDoc());
         prodAppLetters.add(prodAppLetter);
         sampleTest.setProdAppLetters(prodAppLetters);
@@ -194,7 +194,10 @@ public class SampleDetailBn implements Serializable {
         return "/internal/processreg";
     }
 
-
+    public String sendToRecieving() {
+        JsfUtils.flashScope().put("sampleTestID", sampleTest.getId());
+        return "/secure/samplerecieving";
+    }
     public UploadedFile getFile() {
         return file;
     }

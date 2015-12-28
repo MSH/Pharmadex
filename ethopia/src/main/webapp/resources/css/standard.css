@@ -332,3 +332,7 @@ body {
 .row_inactive {
     background-color: #FFFFFF;
 }
+
+.colored {
+    background: orangered;
+}

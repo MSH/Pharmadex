@@ -2,18 +2,11 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="426"/>
-	<parameter name="subject" class="java.lang.String">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<parameter name="body" class="java.lang.String"/>
-	<parameter name="footer" class="java.lang.String"/>
+	<property name="ireport.y" value="300"/>
 	<parameter name="id" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
 	</parameter>
-	<parameter name="registrar" class="java.lang.String"/>
 	<parameter name="manufName" class="java.lang.String"/>
-	<parameter name="summary" class="java.lang.String"/>
 	<parameter name="sampleQty" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, d.dosageform, p.id, p.prodAppType,
@@ -100,7 +93,7 @@ and p.id = $P{id}]]>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Sample Request Letter]]></text>
+				<text><![CDATA[Medicine Sample Requisition Form]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -134,13 +127,6 @@ and p.id = $P{id}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="75" y="100" width="497" height="20" uuid="90df44ba-fda0-408e-a417-cbe38290996e"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{subject}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="0" y="0" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
@@ -149,11 +135,11 @@ and p.id = $P{id}]]>
 				<text><![CDATA[	To,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="132" width="497" height="29" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<reportElement x="75" y="121" width="497" height="40" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Document prescreening is complete & your dossier is ready for detail evaluation.  ]]></text>
+				<text><![CDATA[Your application for registration of the below product is prescreened and found to be complete and ready to detail assessment.  ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="75" y="161" width="134" height="20" uuid="070c98c8-0c88-49c4-b39c-41bfc80ee466"/>
@@ -241,17 +227,22 @@ and p.id = $P{id}]]>
 			</textField>
 			<staticText>
 				<reportElement x="75" y="362" width="497" height="125" uuid="1c0da996-2737-4d10-b588-00aee870123e"/>
-				<textElement textAlignment="Justified">
+				<textElement textAlignment="Justified" markup="html">
 					<font size="12"/>
+					<paragraph rightIndent="10"/>
 				</textElement>
-				<text><![CDATA[with primary reference substance (BP or USP or EP) not less than 100mg and secondary reference substance not less than 500mg, specification and method of analysis of finished product and based on test method/specific monograph for your product, all reference standards (related substances, internal standards, references, chemicals used for system suitability solution, resolution solutions) for the purpose of laboratory analysis.]]></text>
+				<text><![CDATA[with primary reference substance (BP or USP or EP) not less than 100mg and secondary reference substance not less than 500mg, specification, certificate of analysis(COA) and method of analysis (test method) of finished product. In addition, based on the test methods/specific monograph for your product, all reference standards (related substances, internal standards, references, chemicals used for system suitability solution, resolution solutions) should be submitted for the purpose of laboratory analysis. <br/><br/>
+Using the enclosed template please also complete the detail information of the actual sample and the standards to be submitted <br/> <br/>
+This letter can only be  used for one time import of the product samples.
+]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="75" y="294" width="497" height="34" uuid="cdb92248-1abe-463e-b943-a6e288585186"/>
 				<textElement>
 					<font size="12"/>
+					<paragraph rightIndent="10"/>
 				</textElement>
-				<text><![CDATA[Therefore, you are requested to submit the below mentioned number of sample of actual product]]></text>
+				<text><![CDATA[Hence, the authority is requesting your company to submit the below sample of actual product]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="75" y="334" width="497" height="20" uuid="acc68d4a-67c4-4d26-88ab-683ddba26bc7"/>

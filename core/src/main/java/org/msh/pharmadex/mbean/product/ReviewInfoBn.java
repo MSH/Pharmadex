@@ -538,10 +538,12 @@ public class ReviewInfoBn implements Serializable {
     public boolean isPriReview() {
         if (reviewInfo != null) {
             if (reviewInfo.getReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
-                if (reviewInfo.getReviewStatus().equals(ReviewStatus.ASSIGNED) || reviewInfo.getReviewStatus().equals(ReviewStatus.IN_PROGRESS))
+                if (reviewInfo.getReviewStatus().equals(ReviewStatus.ASSIGNED) || reviewInfo.getReviewStatus().equals(ReviewStatus.IN_PROGRESS)
+                        ||reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED))
                     priReview = true;
                 else {
-                    if (!reviewInfo.isSecreview() && (reviewInfo.getReviewStatus().equals(ReviewStatus.FEEDBACK) || reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED)))
+                    if (!reviewInfo.isSecreview() && (reviewInfo.getReviewStatus().equals(ReviewStatus.FEEDBACK) ||
+                            reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED)))
                         priReview = true;
                     else
                         priReview = false;

@@ -34,6 +34,12 @@ public class SampleTest extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "sampleTest", cascade = {CascadeType.ALL})
     private List<SampleComment> sampleComments;
 
+    @OneToMany(mappedBy = "sampleTest", cascade = {CascadeType.ALL})
+    private List<SampleMed> sampleMeds;
+
+    @OneToMany(mappedBy = "sampleTest", cascade = {CascadeType.ALL})
+    private List<SampleStd> sampleStds;
+
     @Enumerated(EnumType.STRING)
     private SampleTestStatus sampleTestStatus;
 
@@ -72,6 +78,10 @@ public class SampleTest extends CreationDetail implements Serializable {
 
     public SampleTest(List<SampleComment> sampleComments) {
         this.sampleComments = sampleComments;
+    }
+
+    public SampleTest(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
     }
 
     public Long getId() {
@@ -184,5 +194,21 @@ public class SampleTest extends CreationDetail implements Serializable {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public List<SampleMed> getSampleMeds() {
+        return sampleMeds;
+    }
+
+    public void setSampleMeds(List<SampleMed> sampleMeds) {
+        this.sampleMeds = sampleMeds;
+    }
+
+    public List<SampleStd> getSampleStds() {
+        return sampleStds;
+    }
+
+    public void setSampleStds(List<SampleStd> sampleStds) {
+        this.sampleStds = sampleStds;
     }
 }
