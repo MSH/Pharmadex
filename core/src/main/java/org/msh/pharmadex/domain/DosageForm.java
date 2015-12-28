@@ -23,6 +23,9 @@ public class DosageForm implements Serializable {
     @Column(name = "Discontinued")
     private boolean inactive;
 
+    @Column(name = "sampleSize")
+    private Integer sampleSize;
+
     @Transient
     private String key;
 
@@ -54,6 +57,14 @@ public class DosageForm implements Serializable {
 
     public void setInactive(boolean inactive) {
         this.inactive = inactive;
+    }
+
+    public Integer getSampleSize() {
+        return sampleSize;
+    }
+
+    public void setSampleSize(Integer sampleSize) {
+        this.sampleSize = sampleSize;
     }
 
     @Override

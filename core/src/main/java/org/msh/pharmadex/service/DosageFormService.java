@@ -5,7 +5,6 @@ import org.msh.pharmadex.dao.iface.DosageFormDAO;
 import org.msh.pharmadex.domain.DosUom;
 import org.msh.pharmadex.domain.DosageForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,4 +52,5 @@ public class DosageFormService implements Serializable {
         return dosUomDAO.findOne(id);
 
     }
+
 }

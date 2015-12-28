@@ -130,9 +130,10 @@ public class ProdAddDetailMBean implements Serializable{
     }
 
     public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage(((ProdExcipient) event.getObject()).getExcipient().getName() + " updated");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+//        FacesMessage msg = new FacesMessage(((ProdExcipient) event.getObject()).getExcipient().getName() + " updated");
+//        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
+
 
     public void onCellEdit(CellEditEvent event) {
         Object oldValue = event.getOldValue();

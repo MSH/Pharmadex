@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="288"/>
+	<property name="ireport.y" value="694"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -467,7 +467,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Submission Date]]></text>
 			</staticText>
 			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="179" y="313" width="392" height="20" uuid="2297ce1c-2eb9-4625-9fa3-b4b1d171b561"/>
+				<reportElement x="179" y="313" width="193" height="20" uuid="2297ce1c-2eb9-4625-9fa3-b4b1d171b561"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -512,6 +512,21 @@ and pip.id = $P{piporderid}]]>
 					<paragraph leftIndent="10" rightIndent="10"/>
 				</textElement>
 				<text><![CDATA[Total Price]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="514" y="313" width="236" height="20" uuid="6116b76f-93e4-4bb2-96c7-d7ce146f2e9e"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{approvalDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="372" y="313" width="125" height="20" uuid="67d44f54-945c-4304-88a1-e0bd69a99832"/>
+				<textElement>
+					<font isBold="false"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Rejection Date]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -916,10 +931,13 @@ and pip.id = $P{piporderid}]]>
 		<band height="174" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement x="1" y="32" width="750" height="130" uuid="27a93d0c-3281-4694-bbeb-3b3d72305202"/>
+				<textElement markup="html">
+					<paragraph leftIndent="20" rightIndent="20" spacingBefore="10" spacingAfter="10"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{comment}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="750" height="32" backcolor="#99CCFF" uuid="99ca97b6-f9d2-4a20-bf6e-5734c5dfc7ab"/>
+				<reportElement mode="Opaque" x="0" y="0" width="752" height="32" backcolor="#99CCFF" uuid="99ca97b6-f9d2-4a20-bf6e-5734c5dfc7ab"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>

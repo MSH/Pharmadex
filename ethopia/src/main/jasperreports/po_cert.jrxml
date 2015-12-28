@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="764"/>
+	<property name="ireport.y" value="909"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -885,7 +885,7 @@ and pip.id = $P{piporderid}]]>
 	<summary>
 		<band height="380" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="2" width="572" height="36" uuid="049e7d21-4ea7-401d-a814-83c0f529e4bb"/>
+				<reportElement x="0" y="2" width="751" height="36" uuid="049e7d21-4ea7-401d-a814-83c0f529e4bb"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true" isUnderline="true"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -893,7 +893,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[TERMS AND CONDITIONS OF CONTRACT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="46" width="571" height="334" uuid="3fd87b28-3679-4265-b929-136ef5f8a6be"/>
+				<reportElement x="1" y="46" width="750" height="334" uuid="3fd87b28-3679-4265-b929-136ef5f8a6be"/>
 				<textElement>
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
