@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,15 @@ public class UserDAO implements Serializable {
 
     @Transactional
     public List<User> allUsers() {
-        return entityManager.createQuery("select u from User u").getResultList();
+        List<Object> objs = entityManager.createNativeQuery("select * from user left join applicant ON applicant.applcntId = user.applcntId").getResultList();
+        ArrayList<User> users = new ArrayList<User>();
+        User user;
+        for (Object obj : objs) {
+            Object[] o = (Object[]) obj;
+            user = new User();
+
+        }
+        return users;
     }
 
     @Transactional

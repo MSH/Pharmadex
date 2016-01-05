@@ -37,8 +37,12 @@
                         #{user.email}
                     </p:column>
 
-                    <p:column headerText="#{msgs.User_applicant}">
-                        #{user.companyName}
+                    <p:column headerText="#{msgs.User_type}">
+                        #{user.type}
+                    </p:column>
+
+                    <p:column headerText="#{msgs.global_enable}">
+                        #{user.enabled}
                     </p:column>
                 </p:dataTable>
             </h:panelGroup>
