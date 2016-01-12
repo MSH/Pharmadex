@@ -1,203 +1,466 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<parameter name="currDay" class="java.lang.String"/>
-	<parameter name="currMnthYr" class="java.lang.String"/>
-	<parameter name="regName" class="java.lang.String"/>
-	<parameter name="regNumber" class="java.lang.String"/>
-	<parameter name="activeIngredient" class="java.lang.String"/>
-	<parameter name="appName" class="java.lang.String"/>
-	<parameter name="manufName" class="java.lang.String"/>
-	<parameter name="regDate" class="java.lang.String"/>
-	<parameter name="issueDate" class="java.lang.String"/>
-	<parameter name="dosform" class="java.lang.String"/>
-	<parameter name="fprcName" class="java.lang.String"/>
-	<parameter name="frrName" class="java.lang.String"/>
-	<parameter name="conditions" class="java.lang.String"/>
+	<property name="ireport.y" value="1049"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="INN" uuid="920ea6f0-60d6-4a21-8c40-4bd0bb1ae3b5">
+		<parameter name="prod_id" class="java.lang.Long"/>
+		<queryString>
+			<![CDATA[select i.name as inn, pi.RefStd  from prodInn pi, inn i
+where pi.INN_ID = i.id
+and pi.prod_id = $P{prod_id};]]>
+		</queryString>
+		<field name="inn" class="java.lang.String"/>
+		<field name="RefStd" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="Manuf" uuid="3b0f7742-8135-4664-9b74-c7efb539cb96">
+		<parameter name="prod_id" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[select * from prod_company pc, company c, country cntry where pc.company_id = c.id
+and c.CNTRY_ID = cntry.id
+and  pc.prod_id = $P{prod_id}]]>
+		</queryString>
+		<field name="id" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="createdDate" class="java.sql.Timestamp">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="updatedDate" class="java.sql.Timestamp">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="companyType" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="company_id" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="prod_id" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="createdBy_userId" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="updatedBy_userId" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="address1" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="address2" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="zipcode" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="companyName" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="contactName" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="faxNo" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="gmp_cert_no" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="gmpInsp" class="java.lang.Boolean">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="gmp_insp_date" class="java.sql.Timestamp">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="phoneNo" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="siteNumber" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="CNTRY_ID" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="email" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="countryCD" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="countryName" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<parameter name="prodappid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select p.id as prodapp_id, prod.id as prod_id, a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, prod.gen_name,
+d.dosageform, p.id, p.prodAppType, concat(prod.dosage_strength, ' ', u.uom) as dosstrength,
+prod.contType, prod.indications, prod.packSize, prod.shelfLife, ar.name ,
+p.prodRegNo, p.registrationDate, p.regExpiryDate, ar.name as adminroute, p.prodAppType
+from `ProdApplications` p, product prod, applicant a, country c, dosform d, `DosUom` u,
+admin_route ar
+where prod.id = p.prod_id
+and a.`applcntId` = p.app_id
+and a.`CNTRY_ID` = c.id
+and d.uid = prod.`DOSFORM_ID`
+and u.id = prod.`DOSUNIT_ID`
+and ar.id = prod.ADMIN_ROUTE_ID
+and p.id = $P{prodappid}]]>
+	</queryString>
+	<field name="prodapp_id" class="java.lang.Long"/>
+	<field name="prod_id" class="java.lang.Long"/>
+	<field name="appName" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="countryName" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prodAppNo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prod_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="gen_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dosageform" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prodAppType" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dosstrength" class="java.lang.String"/>
+	<field name="contType" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="indications" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="packSize" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="shelfLife" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prodRegNo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="registrationDate" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="regExpiryDate" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="adminroute" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="738" splitType="Stretch">
+		<band height="752" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="26" width="572" height="26" uuid="82138211-28f7-4623-8738-759b7065c68f"/>
+				<reportElement x="0" y="129" width="572" height="17" uuid="82138211-28f7-4623-8738-759b7065c68f"/>
 				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Ministry of Health and Family Welfare]]></text>
+				<text><![CDATA[105-106 Motijheel Commercial Area, Dhaka-1000]]></text>
 			</staticText>
 			<image>
-				<reportElement x="222" y="78" width="137" height="125" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
+				<reportElement x="247" y="0" width="80" height="80" uuid="c79b4715-c96f-4811-b344-77bb79944dad"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="52" width="572" height="26" uuid="72df8617-6275-409e-acfc-328219996595"/>
+				<reportElement x="0" y="82" width="572" height="26" uuid="72df8617-6275-409e-acfc-328219996595"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Government of the People's Republic of Bangladesh]]></text>
+				<text><![CDATA[PEOPLE'S REPUBLIC OF BANGLADESH]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="203" width="572" height="26" uuid="ab25f915-c494-4bec-8838-e31fd0ac24fc"/>
-				<textElement textAlignment="Center">
-					<font size="18" isBold="true"/>
-				</textElement>
-				<text><![CDATA[MEDICINE REGISTRATION CERTIFICATE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="239" width="572" height="66" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
+				<reportElement x="0" y="321" width="572" height="39" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
 				<textElement textAlignment="Justified">
-					<font size="14"/>
+					<font size="12"/>
+					<paragraph leftIndent="20" rightIndent="20"/>
 				</textElement>
-				<text><![CDATA[It is hereby certified that the Directorate general of Drug Administration (DGDA) has approved in terms section 19(4) of the Medicines and Related Substances Control Act, 2003 (Act No. 13 of 2003), the registration of the medicine described below subject to the conditions set out below:]]></text>
+				<text><![CDATA[In response to your application as per the above mentioned reference number for registration of the following product; hereby inform you that the evaluation of the application has been completed.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="307" width="265" height="20" uuid="7a15fa2a-c444-48c9-a03e-6a6bf81bb77d"/>
+				<reportElement x="0" y="361" width="265" height="20" uuid="7a15fa2a-c444-48c9-a03e-6a6bf81bb77d"/>
 				<textElement>
 					<font size="12"/>
+					<paragraph leftIndent="20"/>
 				</textElement>
-				<text><![CDATA[1.	Registration name:            ]]></text>
+				<text><![CDATA[Registration Name:            ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="327" width="265" height="20" uuid="c973897a-d359-4b40-a158-4314d697c547"/>
+				<reportElement x="0" y="511" width="265" height="20" uuid="c973897a-d359-4b40-a158-4314d697c547"/>
 				<textElement>
 					<font size="12"/>
+					<paragraph leftIndent="20"/>
 				</textElement>
-				<text><![CDATA[2.	Registration number:       ]]></text>
+				<text><![CDATA[Registration number:       ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="347" width="265" height="20" uuid="bbf50eef-cea9-46d7-9c68-970b1277e2a3"/>
+				<reportElement x="0" y="401" width="265" height="20" uuid="b0c0d8fb-650c-4111-8880-f85b0f07e6d7"/>
 				<textElement>
 					<font size="12"/>
+					<paragraph leftIndent="20"/>
 				</textElement>
-				<text><![CDATA[3.	Date of registration:         ]]></text>
+				<text><![CDATA[Dosage form:  ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="367" width="572" height="43" uuid="86f046c0-3c1c-4a5a-a964-f4d517b08ed5"/>
+				<reportElement x="0" y="421" width="265" height="20" uuid="d3e74a10-4216-4411-ae26-3ce61fdea898"/>
 				<textElement>
 					<font size="12"/>
+					<paragraph leftIndent="20"/>
 				</textElement>
-				<text><![CDATA[4.	Approved name of each active ingredient and quantities thereof per dosage unit or per suitable mass or volume or unit of medicine:]]></text>
+				<text><![CDATA[Dosage Strength:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="444" width="265" height="20" uuid="b0c0d8fb-650c-4111-8880-f85b0f07e6d7"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[5.          Dosage form:  ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="464" width="265" height="20" uuid="d3e74a10-4216-4411-ae26-3ce61fdea898"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[6.	Registered in the name of the applicant:	]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="484" width="265" height="20" uuid="6aaebab1-ae2a-4fe9-bf27-785b3156ba5d"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[7.	Name of manufacturer:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="529" width="296" height="20" uuid="c587027c-dcbc-4bbd-8207-4818cd9823f1"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[8.	Name of the final product release controller:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="582" width="296" height="20" uuid="44c3512a-396e-4f58-9ab6-2f1b9a7ee539"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[9.	Name of the final release responsibility: ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="632" width="296" height="20" uuid="444b589f-0948-42bc-acc7-a7118ba7ac76"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[10.   Conditions under which medicine is registered]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="652" width="136" height="20" uuid="0df9b0b4-7f95-4502-926c-09aca188eb82"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[Issued at Windhoek on]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="136" y="652" width="100" height="20" uuid="d79561d7-8390-4d5e-bb2f-9f692da6a7ef"/>
-				<textFieldExpression><![CDATA[$P{currDay}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="236" y="652" width="50" height="20" uuid="2b3ce198-f448-4068-b636-9bcb4bbe9ada"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[day of ]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="286" y="652" width="286" height="20" uuid="0b5ba879-db8a-4ee2-82ac-df9eb9c0aaf2"/>
-				<textFieldExpression><![CDATA[$P{currMnthYr}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="717" width="189" height="20" uuid="eb4c8c76-fd81-44bd-8cf8-35ac2c49250f"/>
-				<textElement>
+				<reportElement x="0" y="108" width="572" height="21" forecolor="#006666" uuid="130d9b46-40e1-4492-8341-9328b9856ede"/>
+				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[REGISTRAR OF MEDICINES]]></text>
+				<text><![CDATA[DIRECTORATE GENERAL OF DRUG ADMINISTRATION OF BANGLADESH]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="265" y="307" width="307" height="20" uuid="41032866-b59f-43fd-8cc8-b52d25b4d776"/>
-				<textFieldExpression><![CDATA[$P{regName}]]></textFieldExpression>
+				<reportElement x="265" y="361" width="307" height="20" uuid="3f170c97-5d42-4bc3-8c71-c7beb30f430a"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="327" width="307" height="20" uuid="7ad2e76a-ed36-40a9-8fd9-8320a4cc0e7e"/>
-				<textFieldExpression><![CDATA[$P{regNumber}]]></textFieldExpression>
+				<reportElement x="265" y="511" width="307" height="20" uuid="fdccea4b-5f61-4331-8069-efb6668f9234"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodRegNo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="265" y="531" width="307" height="20" uuid="d165b74e-e8c2-410e-b2b9-657bc35ef86a"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{registrationDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="347" width="307" height="20" uuid="9181d3fd-2141-48e4-8453-3493a39a2057"/>
-				<textFieldExpression><![CDATA[$P{regDate}]]></textFieldExpression>
+				<reportElement x="265" y="401" width="307" height="20" uuid="b15a0ca4-150a-480e-8d0a-6454155a3274"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="410" width="572" height="34" uuid="412e9bda-b199-441a-a0b1-6f6adfa74519"/>
-				<textFieldExpression><![CDATA[$P{activeIngredient}]]></textFieldExpression>
+				<reportElement x="0" y="244" width="235" height="20" uuid="0529a5e0-1bd7-49e8-8930-b8f3b3c1a030"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="444" width="307" height="20" uuid="890cd6b5-3d38-4fcf-9a0b-d040da403182"/>
-				<textFieldExpression><![CDATA[$P{dosform}]]></textFieldExpression>
+				<reportElement x="0" y="224" width="235" height="20" uuid="eda6dcab-1078-4ddd-9b31-e63022561ce9"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="265" y="464" width="307" height="20" uuid="f0723acd-4c0b-4fe9-a43c-08940d870b31"/>
-				<textFieldExpression><![CDATA[$P{appName}]]></textFieldExpression>
+				<reportElement x="0" y="184" width="235" height="20" uuid="049506bf-3629-4558-8c63-b3e809df8b2f"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="504" width="572" height="25" uuid="b91bd911-7cb0-4fc3-b2ac-02f22ae717e5"/>
-				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
+				<reportElement x="0" y="204" width="235" height="20" uuid="d43b7dc5-318e-43fa-9ebb-7b93f4019290"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="0" y="549" width="572" height="33" uuid="59621f15-41b4-455b-9919-b5fb02383f08"/>
-				<textFieldExpression><![CDATA[$P{fprcName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="602" width="572" height="30" uuid="87e735dd-975d-4117-9f56-0fa4c7d21891"/>
-				<textFieldExpression><![CDATA[$P{frrName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="296" y="632" width="276" height="20" uuid="d5411fbe-0269-4e27-a4ba-8173e9d3cadd"/>
-				<textFieldExpression><![CDATA[$P{conditions}]]></textFieldExpression>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="432" y="157" width="140" height="20" uuid="6e4ad271-6b10-44b7-9641-abd157f69c7e"/>
+				<textElement>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="572" height="26" forecolor="#006666" uuid="130d9b46-40e1-4492-8341-9328b9856ede"/>
-				<textElement textAlignment="Center">
-					<font size="20" isBold="true"/>
+				<reportElement x="332" y="157" width="100" height="20" uuid="81b23e69-2ce2-4c59-acf1-282c0482dac6"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="157" width="254" height="20" uuid="1edafa63-bed4-46ab-b3e9-1e2e91d07eca"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
 				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration (DGDA)]]></text>
+				<text><![CDATA[Memo No: ________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="271" width="572" height="20" uuid="1e9c7b7d-772d-47e2-96f4-8ed2040fcc9b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<text><![CDATA[Subject: Approval Letter for the Registration of Drug]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="296" width="235" height="20" uuid="148b7de1-6400-4e98-b13e-e9a9110ad75b"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<text><![CDATA[Application Reference Number: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="235" y="296" width="337" height="20" uuid="01e64e48-2064-47f9-a4ca-7acded194eb7"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodAppNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="421" width="307" height="20" uuid="5285e22a-04a8-4360-a69d-0de3c1acd20c"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosstrength}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="451" width="572" height="49" uuid="dad7bbe4-f9e7-4c64-96f4-f922c3717bac"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+					<paragraph leftIndent="20" rightIndent="20"/>
+				</textElement>
+				<text><![CDATA[Hence, the product has been registered with the DIRECTORATE GENERAL OF DRUG ADMINISTRATION of Bangladesh and REGISTRATION has been granted, subject to the conditions in this letter and its attachments. The details of this registration are as follows. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="531" width="265" height="20" uuid="56430fa2-81f7-418a-9f4f-77e3e757ea32"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<text><![CDATA[Date from which registration is authorized:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="265" y="381" width="307" height="20" uuid="6ffe87f0-0ff6-4e8f-83b1-d5472c0bb819"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gen_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="381" width="265" height="20" uuid="68ce3a7a-66e5-4df7-bc6b-c0f0e0b30d82"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<text><![CDATA[Generic Name:            ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="551" width="265" height="20" uuid="5bd6305e-2092-4d32-86f3-54f369e5442c"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<text><![CDATA[Date from which registration is authorized:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="265" y="551" width="307" height="20" uuid="73e00999-7efc-4db7-9938-aa1cdcd74a1c"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{regExpiryDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="574" width="572" height="178" uuid="9fa2eb71-6477-4dd6-8bcf-89d2c5132aa9"/>
+				<textElement>
+					<font size="12"/>
+					<paragraph leftIndent="20"/>
+				</textElement>
+				<text><![CDATA[Conditions which apply to this approval are as follows.
+A. General conditions applying to all registered products:
+	• The product(s) must conform with all the details provided in your application and as modified in subsequent correspondence.
+	• No changes may be made to the product without prior approval of the DIRECTORATE GENERAL OF DRUG ADMINISTRATION.
+	• The approved sites of manufacturer and shelf-life are stated in Attachment 1.
+	• The only Product Information (PI) that may be supplied with or for this product must be the PI that is approved. Attachment 2 is a copy of the approved PI.
+	• Attachment 3 is the Licence to Manufacture drugs (Form -13 or -16), as applicable.
+	• Attachment 4 is the Licence to Sell, Stock, and Exhibit for Sale and Distribute Drugs (Form -8 or -9), as applicable.
+	• The Product Information (PI) may not be altered without prior approval of DGDA.
+	• The product information must include the registration number and the date from which registration is authorized. This information should appear in the top right hand corner of the first page of the product information.
+Yours Faithfully,
+
+
+
+ [Insert signature]
+Director General,
+Directorate General of Drug Administration
+&
+Licencing Authority (Drugs)
+Government of the People’s Republic of Bangladesh
+]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -205,10 +468,338 @@
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="14" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band splitType="Stretch"/>
+		<band height="752" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="57" width="265" height="20" uuid="2eec5fa1-0d43-4bdc-a157-6da3d6e40b33"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Generic name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="156" width="265" height="20" uuid="387bacaa-1a31-4c0b-b0d9-960795cac02d"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Presentation (Pack size)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="268" y="156" width="303" height="20" uuid="0525fa36-fe74-4865-908e-115c8c019e5e"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{packSize}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="176" width="265" height="20" uuid="48300c59-8e64-46d8-aa8a-44f54efaeaff"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Primary container]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="268" y="116" width="303" height="20" uuid="2ba0ca31-8e22-4f0c-99f7-282b712830be"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{shelfLife}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="97" width="303" height="20" uuid="d262f24c-ee23-492a-b566-49c1bddf9ccb"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="77" width="265" height="20" uuid="f24589bd-aa84-42e4-b30d-57d523112ade"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Dosage form:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="209" width="570" height="20" uuid="e10a1384-e1c6-4c07-8bb6-1a85cbffc195"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPOSITION AND STRENGTH]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="268" y="57" width="303" height="20" uuid="31608170-a0b7-42f6-a52b-45a33141b96b"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gen_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="77" width="303" height="20" uuid="e4e7e3fb-d554-4b6d-9844-bac8356e0d15"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="136" width="265" height="20" uuid="4d0936e9-8fc8-495b-b1ba-7494947393dc"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Indication]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="268" y="136" width="303" height="20" uuid="0b7539f1-c748-432b-badf-53b7af8c4d16"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indications}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="97" width="265" height="20" uuid="35d4da38-759f-4845-a836-2586f0a010d7"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Route of Administration]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="37" width="265" height="20" uuid="8491abb4-e10e-41c8-8870-f93179dbf7bc"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Name of the Product]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="268" y="176" width="303" height="20" uuid="2b158cc3-316b-455e-9349-6c123bb4ac06"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="37" width="303" height="20" uuid="276f72b0-ecac-42a4-bf0c-c8f4d2eef961"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="117" width="265" height="20" uuid="7c891989-f51a-4456-b326-21dd35294c03"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Shelf Life]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="17" width="571" height="20" uuid="2ee72c8e-28d3-4cc5-aee2-aa672d034ad7"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SCHEDULE FOR PHARMACEUTICAL PRODUCT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="229" width="265" height="31" uuid="10e181d5-cb03-4868-b551-04befb0eab1f"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[	Active Ingredient(s)]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement key="table" style="table" positionType="Float" stretchType="RelativeToTallestObject" x="268" y="229" width="303" height="87" uuid="ccd2c6a4-604a-443d-9d1d-ec2b36faaefc"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="INN" uuid="c7867a30-0a93-4c44-ae17-0f0fbb90fec3">
+						<datasetParameter name="prod_id">
+							<datasetParameterExpression><![CDATA[$F{prod_id}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="186" uuid="53225d74-ea9a-482d-a008-11349587f902">
+						<jr:tableHeader style="table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="186" height="30" uuid="0eb87788-e3b7-4756-825e-804d55b8bb57"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<text><![CDATA[Substance]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="186" height="20" uuid="c4a1ea20-8d7b-4390-a240-64c67a916522"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{inn}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="116" uuid="19935ba6-96ba-4449-b1ce-f796968bc6cd">
+						<jr:tableHeader style="table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="116" height="30" uuid="a1a2c7c4-a642-4931-8ddf-a78d2a8fa117"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<text><![CDATA[Reference Std]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="116" height="20" uuid="cdb8c929-9ae4-452d-b9a3-6ca7455dfcc8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{RefStd}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement x="0" y="330" width="570" height="20" uuid="4f7df191-5010-448d-a822-60bdd42365eb"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[The approved manufacturers are as follows.  ]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement key="table 1" style="table 1" x="3" y="350" width="567" height="50" uuid="1c34f8b1-9b99-4739-8524-31cd8565e79a"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Manuf" uuid="506b1999-cc81-469f-b1bc-26d440a396f0">
+						<datasetParameter name="prod_id">
+							<datasetParameterExpression><![CDATA[$F{prod_id}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="112" uuid="b295f4dc-a6a8-4665-a462-a0b15cf5966b">
+						<jr:tableHeader style="table 1_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="112" height="30" uuid="5c9a885a-93d3-49fd-b0a8-2b4b18644eca"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Name]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="112" height="20" uuid="60d1b23e-2ca7-4ca7-af78-b0f32fde4a5b"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="503e2805-46be-4ddc-a664-749a2836d48f">
+						<jr:tableHeader style="table 1_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="a46f74cc-b717-4373-8874-59dd64991839"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Address 1]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="20" uuid="eb1c9931-22fc-4d7c-ad47-3464a289d971"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="6003ca00-d432-4ac9-9fa0-2058f1b7794b">
+						<jr:tableHeader style="table 1_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="12c0e0f3-a6c7-41dc-ba9d-03c1d734aa24"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Address 2]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="20" uuid="98ee8938-356d-4b83-8411-c972851b338e"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="932ec9f6-5b58-446c-8de1-5d2dace71fab">
+						<jr:tableHeader style="table 1_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="dfa56a3d-ed98-451f-bfca-7a411206c7d4"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Zip Code]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="20" uuid="6f9ed98e-1115-4ca2-a40d-fdd0cef830c3"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{zipcode}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="0c817f28-931a-4f6e-b963-3837d35d4512">
+						<jr:tableHeader style="table 1_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="1a1bd13c-7396-4982-9b23-68ab4d85a798"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Country]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="20" uuid="c732bc48-bcc1-44db-95d2-560b959c8c76"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="59b30d31-762a-4837-bde1-d066f2f576e3">
+						<jr:tableHeader style="table 1_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="2791e5f3-5a67-4437-adf6-c001a205179c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Type]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="20" uuid="77088b63-997e-41ba-8c3a-240477372320"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{companyType}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>

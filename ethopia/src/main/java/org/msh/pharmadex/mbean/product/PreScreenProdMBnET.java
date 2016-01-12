@@ -1,9 +1,12 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.RegState;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  * Created by utkarsh on 2/23/15.
@@ -23,5 +26,18 @@ public class PreScreenProdMBnET extends PreScreenProdMBn {
         return displayScreenAction;
     }
 
+    @Override
+    public String completeScreen() {
+        facesContext = FacesContext.getCurrentInstance();
+        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        ProdApplications prodApplications = processProdBn.getProdApplications();
 
+        if (!prodApplications.isPrescreenfeeReceived()) {
+            facesContext.addMessage(null, new FacesMessage("Pre-screen fees not received"));
+            return "";
+
+        }
+
+        return super.completeScreen();
+    }
 }

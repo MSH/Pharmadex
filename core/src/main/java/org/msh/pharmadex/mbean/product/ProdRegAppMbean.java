@@ -449,6 +449,7 @@ public class ProdRegAppMbean implements Serializable {
     public String validateApp() {
         context = FacesContext.getCurrentInstance();
         try {
+            saveApp();
             prodApplications.setApplicant(applicant);
             prodApplications.setCreatedBy(applicantUser);
 //        prodApplications.setForeignAppStatus(foreignAppStatuses);

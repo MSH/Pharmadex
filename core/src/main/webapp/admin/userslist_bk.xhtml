@@ -41,8 +41,13 @@
                         #{user.type}
                     </p:column>
 
+                    <p:column headerText="#{msgs.applicant}">
+                        #{user.companyName}
+                    </p:column>
+
                     <p:column headerText="#{msgs.global_enable}">
-                        #{user.enabled}
+                        <p:outputLabel value="#{msgs.global_yes}" rendered="#{user.enabled}"/>
+                        <p:outputLabel value="#{msgs.global_yes}" rendered="#{!user.enabled}"/>
                     </p:column>
                 </p:dataTable>
             </h:panelGroup>

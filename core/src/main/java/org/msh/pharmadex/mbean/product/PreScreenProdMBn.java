@@ -36,6 +36,8 @@ public class PreScreenProdMBn implements Serializable {
     @ManagedProperty(value = "#{processProdBn}")
     protected ProcessProdBn processProdBn;
     protected boolean displayScreenAction;
+    protected FacesContext facesContext;
+    protected ResourceBundle resourceBundle;
     @ManagedProperty(value = "#{prodAppChecklistService}")
     ProdAppChecklistService prodAppChecklistService;
     @ManagedProperty(value = "#{timelineService}")
@@ -44,8 +46,6 @@ public class PreScreenProdMBn implements Serializable {
     private UserSession userSession;
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
-    private FacesContext facesContext;
-    private ResourceBundle resourceBundle;
     private TimeLine timeLine = new TimeLine();
     private User moderator;
     private List<ProdAppChecklist> prodAppChecklists;
@@ -72,12 +72,6 @@ public class PreScreenProdMBn implements Serializable {
 
         ProdApplications prodApplications = processProdBn.getProdApplications();
         prodApplications.setModerator(moderator);
-
-        if (!prodApplications.isPrescreenfeeReceived()) {
-            facesContext.addMessage(null, new FacesMessage("Pre-screen fees not received"));
-            return "";
-
-        }
 
 //        prodApplications.setProdAppChecklists(prodAppChecklists);
         if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)

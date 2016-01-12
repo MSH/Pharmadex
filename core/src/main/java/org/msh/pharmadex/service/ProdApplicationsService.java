@@ -580,9 +580,11 @@ public class ProdApplicationsService implements Serializable {
                 }
             }
 
-            if (!prodApplications.isClinicalRevReceived() || !prodApplications.isClinicalRevVerified() || prodApplications.getcRevAttach() == null) {
-                complete = false;
-                return "clinical_review";
+            if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+                if (!prodApplications.isClinicalRevReceived() || !prodApplications.isClinicalRevVerified() || prodApplications.getcRevAttach() == null) {
+                    complete = false;
+                    return "clinical_review";
+                }
             }
 
             if (complete) {

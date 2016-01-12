@@ -45,13 +45,22 @@ public class UserDAO implements Serializable {
 
     @Transactional
     public List<User> allUsers() {
-        List<Object> objs = entityManager.createNativeQuery("select * from user left join applicant ON applicant.applcntId = user.applcntId").getResultList();
+        List<Object> objs = entityManager.createNativeQuery("select u.userId, u.name, u.username, u.email, u.type, u.enabled, a.appName " +
+                "from user u left join applicant a ON a.applcntId = u.applcntId;").getResultList();
         ArrayList<User> users = new ArrayList<User>();
         User user;
         for (Object obj : objs) {
             Object[] o = (Object[]) obj;
             user = new User();
-
+            user.setUserId(Long.valueOf("" + o[0]));
+            user.setName("" + o[1]);
+            user.setUsername("" + o[2]);
+            user.setEmail("" + o[3]);
+            user.setType(UserType.valueOf((String) o[4]));
+            user.setEnabled((Boolean) o[5]);
+            String companyName = (String) o[6];
+            user.setCompanyName(companyName);
+            users.add(user);
         }
         return users;
     }

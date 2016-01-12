@@ -1,11 +1,18 @@
 <!-- Creates the table with passed in values of product -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
     <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+        <p:outputLabel value="#{msgs.dcc_approval}" styleClass="label" for="dccapproval"/>
+        <p:selectBooleanButton id="dccapproval"
+                               value="#{processProdBn.prodApplications.dccApproval}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                               onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+        </p:selectBooleanButton>
+
         <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
         <p:selectBooleanButton id="feerecieved"
                                value="#{processProdBn.prodApplications.feeReceived}"

@@ -95,6 +95,8 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean feeReceived;
 
+    private boolean dccApproval;
+
     private boolean clinicalRevReceived;
 
     private boolean prescreenfeeReceived;
@@ -587,6 +589,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setPriorityNo(String priorityNo) {
         this.priorityNo = priorityNo;
+    }
+
+    public boolean isDccApproval() {
+        return dccApproval;
+    }
+
+    public void setDccApproval(boolean dccApproval) {
+        this.dccApproval = dccApproval;
     }
 }
 
