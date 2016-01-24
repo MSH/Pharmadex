@@ -11,9 +11,70 @@
 
             <p:panel header="#{msgs.process_review_list}">
 
+                <p:dataTable id="revs" var="eachrev" value="#{reviewListMBean.reviewTables}"
+                             filteredValue="#{reviewListMBean.filteredReviewInfos}"
+                             rowStyleClass="#{eachrev.pastDue?'colored':null}" rendered="#{!reviewListMBean.workspace.detailReview}">
+
+
+                    <p:column filterBy="#{eachrev.prodName}"
+                              sortBy="#{eachrev.prodName}" >
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.prod_name}"/>
+                        </f:facet>
+                        <p:commandLink id="viewLink1" value="#{eachrev.prodName}" action="#{reviewListMBean.sentToReviewDetail(eachrev.id)}"
+                                       ajax="false" >
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column filterBy="#{eachrev.revType}"
+                              sortBy="#{eachrev.revType}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.review_type}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachrev.revType}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{msgs[eachrev.reviewStatus.key]}"
+                              sortBy="#{msgs[eachrev.reviewStatus.key]}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.review_status}"/>
+                        </f:facet>
+                        <h:outputText value="#{msgs[eachrev.reviewStatus.key]}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{eachrev.assignDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.assigndate}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachrev.assignDate}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{eachrev.dueDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_duedate}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachrev.dueDate}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{eachrev.submittedDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.submitted_date}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachrev.submittedDate}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{msgs[eachrev.recomendType.key]}"
+                              sortBy="#{msgs[eachrev.recomendType.key]}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.review_status}"/>
+                        </f:facet>
+                        <h:outputText value="#{msgs[eachrev.recomendType.key]}"/>
+                    </p:column>
+                </p:dataTable>
+
                 <p:dataTable id="reviews" var="eachprod" value="#{reviewListMBean.reviewInfoTables}"
                              filteredValue="#{reviewListMBean.filteredReviewInfos}"
-                        rowStyleClass="#{eachprod.pastDue?'colored':null}">
+                        rowStyleClass="#{eachprod.pastDue?'colored':null}" rendered="#{reviewListMBean.workspace.detailReview}">
 
 
                     <p:column filterBy="#{eachprod.prodName}"

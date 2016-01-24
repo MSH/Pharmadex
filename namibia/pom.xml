@@ -11,6 +11,10 @@
     <name>Namibia Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
+    <properties>
+        <junit.version>4.12</junit.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.msh.pharmadex</groupId>
@@ -26,40 +30,13 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>redmond</artifactId>
-            <version>1.0.10</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-bridge</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-svg-dom</artifactId>
-            <version>1.7</version>
-        </dependency>
-
     </dependencies>
 
     <repositories>
         <repository>
             <id>core</id>
             <name>Core Maven Webapp</name>
-            <url>file:C:/Users/usrivastava/.m2/repository/</url>
+            <url>file:/Users/utkarsh/.m2/repository/</url>
         </repository>
     </repositories>
 
@@ -83,6 +60,7 @@
                     </overlays>
                 </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>

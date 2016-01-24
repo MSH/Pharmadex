@@ -78,8 +78,21 @@ public class ProductService implements Serializable {
         RetObject retObject = new RetObject();
         List<String> issues = new ArrayList<String>();
         Product product = prodApplications.getProduct();
+        boolean issue = false;
         try {
-            boolean issue = false;
+            Workspace workspace = workspaceDAO.findAll().get(0);
+            if(workspace.getName().equals("Ethiopia")){
+                if (prodApplications.getPrescreenBankName().equalsIgnoreCase("") || prodApplications.getPrescreenfeeSubmittedDt() == null) {
+                    issues.add("no_fee");
+                    issue = true;
+                }
+            }else {
+                if (prodApplications.getBankName().equalsIgnoreCase("") || prodApplications.getFeeSubmittedDt() == null) {
+                    issues.add("no_fee");
+                    issue = true;
+                }
+            }
+
             if (prodApplications.getApplicant() == null) {
                 issues.add("no_applicant");
                 issue = true;
@@ -129,18 +142,6 @@ public class ProductService implements Serializable {
 
             }
 
-            Workspace workspace = workspaceDAO.findAll().get(0);
-            if(workspace.getName().equals("Ethiopia")){
-                if (prodApplications.getPrescreenBankName().equalsIgnoreCase("") || prodApplications.getPrescreenfeeSubmittedDt() == null) {
-                    issues.add("no_fee");
-                    issue = true;
-                }
-            }else {
-                if (prodApplications.getBankName().equalsIgnoreCase("") || prodApplications.getFeeSubmittedDt() == null) {
-                    issues.add("no_fee");
-                    issue = true;
-                }
-            }
 //            List<ProdAppChecklist> prodAppChkLst = prodApplications.getProdAppChecklists();
 //            if (prodAppChkLst != null) {
 //                for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {

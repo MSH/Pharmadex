@@ -8,8 +8,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>bangladesh</artifactId>
     <packaging>war</packaging>
-    <name>bangladesh Maven Webapp</name>
+    <name>Bangladesh Maven Webapp</name>
     <url>http://maven.apache.org</url>
+
+    <properties>
+        <junit.version>4.12</junit.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -17,33 +21,15 @@
             <artifactId>core</artifactId>
             <version>1.0</version>
             <type>war</type>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.msh.pharmadex</groupId>
             <artifactId>core</artifactId>
             <version>1.0</version>
             <type>jar</type>
-            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>south-street</artifactId>
-            <version>1.0.10</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
     </dependencies>
+
     <repositories>
         <repository>
             <id>core</id>
@@ -54,33 +40,6 @@
 
     <build>
         <plugins>
-            <!-- Jasper reports plugin to compile the jrxml report -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jasperreports-maven-plugin</artifactId>
-                <version>1.0-beta-2</version>
-                <configuration>
-                    <outputDirectory>${project.build.outputDirectory}/reports</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile-reports</goal>
-                        </goals>
-                    </execution>
-
-                </executions>
-
-                <dependencies>
-                    <!--note this must be repeated here to pick up correct xml validation -->
-                    <dependency>
-                        <groupId>net.sf.jasperreports</groupId>
-                        <artifactId>jasperreports</artifactId>
-                        <version>${jasperreports.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -123,6 +82,47 @@
                 </executions>
             </plugin>
 
+            <!-- Jasper reports plugin to compile the jrxml report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jasperreports-maven-plugin</artifactId>
+                <version>1.0-beta-2</version>
+                <configuration>
+                    <outputDirectory>${project.build.outputDirectory}/reports</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile-reports</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+
+                <dependencies>
+                    <!--note this must be repeated here to pick up correct xml validation -->
+                    <dependency>
+                        <groupId>net.sf.jasperreports</groupId>
+                        <artifactId>jasperreports</artifactId>
+                        <version>${jasperreports.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sf.barcode4j</groupId>
+                        <artifactId>barcode4j</artifactId>
+                        <version>2.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.xmlgraphics</groupId>
+                        <artifactId>batik-bridge</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.xmlgraphics</groupId>
+                        <artifactId>batik-svg-dom</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
         <finalName>bangladesh</finalName>
     </build>

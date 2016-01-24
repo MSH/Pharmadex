@@ -15,10 +15,7 @@
         <junit.version>4.12</junit.version>
     </properties>
 
-
     <dependencies>
-
-
         <dependency>
             <groupId>org.msh.pharmadex</groupId>
             <artifactId>core</artifactId>
@@ -33,10 +30,8 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-
-
-
     </dependencies>
+
     <repositories>
         <repository>
             <id>core</id>

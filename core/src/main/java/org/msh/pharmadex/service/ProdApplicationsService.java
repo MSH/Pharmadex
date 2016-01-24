@@ -624,6 +624,7 @@ public class ProdApplicationsService implements Serializable {
 
     public String createAckLetter() {
         Product prod = prodApp.getProduct();
+        Workspace workspace = workspaceDAO.findAll().get(0);
         try {
             File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
 
@@ -639,11 +640,12 @@ public class ProdApplicationsService implements Serializable {
             param.put("subject", "Product Registration for  " + prod.getProdName() + " recieved");
 //                + letter.getSubject() + " " + product.getProdName() + " ");
 //        param.put("body", body);
-            param.put("body", "Thank you for applying to register " + prod.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()
-                    + ". The application number is " + prodApp.getProdAppNo() + ". "
-                    + "Please use this application number for any future correspondence.");
+//            param.put("body", "Thank you for applying to register " + prod.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()
+//                    + ". The application number is " + prodApp.getProdAppNo() + ". "
+//                    + "Please use this application number for any future correspondence.");
             param.put("manufName", prod.getManufName());
             param.put("subject", "Product application deficiency letter for  " + prod.getProdName());
+            param.put("registrar", workspace.getRegistrarName());
 
             URL resource = getClass().getResource("/reports/letter.jasper");
             jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
