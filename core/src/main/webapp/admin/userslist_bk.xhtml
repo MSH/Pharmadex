@@ -14,7 +14,9 @@
 
                 <p:growl id="growl" showDetail="true"/>
                 <p:messages id="messages" showDetail="true" showSummary="true"/>
-                <p:dataTable id="users" var="user" value="#{userMBean.allUsers}">
+                <p:dataTable id="users" var="user" value="#{userMBean.allUsers}" paginator="true" rows="50"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}">>
                     <f:facet name="header">
                         <p:commandButton value="#{msgs.global_add}" action="#{userMBean.addUser}"
                                          oncomplete="PF('adduser').show();"

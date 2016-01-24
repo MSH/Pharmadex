@@ -42,7 +42,8 @@
 
     <tx:annotation-driven proxy-target-class="true"/>
 
-    <bean
-		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+
 
 </beans>

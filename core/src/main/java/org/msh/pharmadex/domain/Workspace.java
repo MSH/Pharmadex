@@ -42,6 +42,9 @@ public class Workspace extends CreationDetail implements Serializable {
     @Column
     private String datePattern;
 
+    @Column(length = 255)
+    private String registrarName;
+
     public String getName() {
         return name;
     }
@@ -112,5 +115,13 @@ public class Workspace extends CreationDetail implements Serializable {
 
     public void setSecReview(boolean secReview) {
         this.secReview = secReview;
+    }
+
+    public String getRegistrarName() {
+        return registrarName;
+    }
+
+    public void setRegistrarName(String registrarName) {
+        this.registrarName = registrarName;
     }
 }

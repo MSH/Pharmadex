@@ -70,6 +70,13 @@ public class ReviewService implements Serializable {
 
     }
 
+    public List<ReviewInfoTable> findReviewByReviewer(Long reviewerID){
+        if(reviewerID==null)
+            return null;
+        return customReviewDAO.findReviewByReviewer(reviewerID);
+
+    }
+
     public List<ReviewInfoTable> findAllPriSecReview() {
         return customReviewDAO.findAllPriSecReview();
     }
