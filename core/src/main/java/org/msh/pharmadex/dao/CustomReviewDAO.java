@@ -35,6 +35,11 @@ public class CustomReviewDAO implements Serializable {
     @PersistenceContext
     EntityManager entityManager;
 
+    /**
+     * Method to fetch review info when the workspace configuration is set for detail review
+     * @param reviewID
+     * @return
+     */
     public List<ReviewInfoTable> findReviewInfoByReview(Long reviewID) {
         List<Object[]> ris = entityManager.createNativeQuery("select ri.id, " +
                 "CASE " +
@@ -63,6 +68,38 @@ public class CustomReviewDAO implements Serializable {
             if (objArr[7] != null)
                 reviewInfoTable.setRecomendType(RecomendType.valueOf((String) objArr[7]));
             reviewInfoTable.setProdName((String) objArr[8]);
+            prodTables.add(reviewInfoTable);
+        }
+        return prodTables;
+    }
+
+    /**
+     * Method to fetch the review details from the Review table when the workspace configuration is for review detail false.
+     * @param reviewID
+     * @return
+     */
+    public List<ReviewInfoTable> findReviewByReviewer(Long reviewID) {
+        List<Object[]> ris = entityManager.createNativeQuery("select ri.id, ri.reviewStatus, ri.assignDate, ri.submitDate, ri.dueDate, " +
+                "ri.recomendType,p.prod_name " +
+                "                from review ri, prodapplications pa, product p " +
+                "                where ri.prod_app_id = pa.id " +
+                "                and pa.PROD_ID = p.id " +
+                "and ri.user_id = :reviewID ")
+                .setParameter("reviewID", reviewID)
+                .getResultList();
+
+        List<ReviewInfoTable> prodTables = new ArrayList<ReviewInfoTable>();
+        ReviewInfoTable reviewInfoTable = null;
+        for (Object[] objArr : ris) {
+            reviewInfoTable = new ReviewInfoTable();
+            reviewInfoTable.setId(Long.valueOf("" + objArr[0]));
+            reviewInfoTable.setReviewStatus((ReviewStatus.valueOf((String) objArr[1])));
+            reviewInfoTable.setAssignDate((Date) objArr[2]);
+            reviewInfoTable.setSubmittedDate((Date) objArr[3]);
+            reviewInfoTable.setDueDate((Date) objArr[4]);
+            if (objArr[5] != null)
+                reviewInfoTable.setRecomendType(RecomendType.valueOf((String) objArr[5]));
+            reviewInfoTable.setProdName((String) objArr[6]);
             prodTables.add(reviewInfoTable);
         }
         return prodTables;

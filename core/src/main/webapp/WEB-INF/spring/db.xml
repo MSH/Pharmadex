@@ -29,6 +29,8 @@
         <property name="username" value="${db.username}"/>
         <property name="defaultAutoCommit" value="true"/>
         <property name="password" value="${db.password}"/>
+        <property name="testOnBorrow" value="true" />
+        <property name="validationQuery" value="SELECT 1" />
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -36,7 +38,6 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <bean
-            class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
 </beans>
