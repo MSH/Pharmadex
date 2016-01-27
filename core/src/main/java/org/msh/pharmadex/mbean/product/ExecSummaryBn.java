@@ -8,7 +8,6 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
@@ -70,12 +69,11 @@ public class ExecSummaryBn implements Serializable {
     }
 
     public String submit(){
-        User user = userService.findUser(userSession.getLoggedINUserID());
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
 //        prodApplications.setExecSummary(execSummary);
-        String result = prodApplicationsService.submitExecSummary(prodApplications, user, reviewInfos);
+        String result = prodApplicationsService.submitExecSummary(prodApplications, userSession.getLoggedINUserID(), reviewInfos);
         if(result.equals("persist")) {
             JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
@@ -85,6 +83,9 @@ public class ExecSummaryBn implements Serializable {
             return null;
         } else if (result.equals("clinical_review")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clinical review not received or verified.", ""));
+            return null;
+        } else if (result.equals("lab_status")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Lab result not verified.", ""));
             return null;
         }
 

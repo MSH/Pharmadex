@@ -58,6 +58,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private boolean head = false;
     private boolean csd = false;
     private boolean lab = false;
+    private boolean clinical = false;
     private boolean labModerator = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
@@ -197,6 +198,9 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
                     setStaff(true);
                     setDisplayAppReg(true);
                     setCsd(true);
+                }
+                if (role.getRolename().equalsIgnoreCase("ROLE_CLINICAL")) {
+                    setClinical(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_COMPANY")) {
                     setCompany(true);
@@ -520,5 +524,13 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
     public void setLabModerator(boolean labModerator) {
         this.labModerator = labModerator;
+    }
+
+    public boolean isClinical() {
+        return clinical;
+    }
+
+    public void setClinical(boolean clinical) {
+        this.clinical = clinical;
     }
 }

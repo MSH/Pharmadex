@@ -22,7 +22,8 @@
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
                         <p:commandLink id="viewLink1" value="#{eachrev.prodName}" action="#{reviewListMBean.sentToReviewDetail(eachrev.id)}"
-                                       ajax="false" >
+                                       ajax="false"
+                                       style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
                         </p:commandLink>
                     </p:column>
 

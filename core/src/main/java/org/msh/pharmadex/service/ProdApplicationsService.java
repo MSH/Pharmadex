@@ -13,6 +13,7 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 @Service
+@Transactional
 public class ProdApplicationsService implements Serializable {
 
     private static final long serialVersionUID = 5061629028904167436L;
@@ -86,6 +88,8 @@ public class ProdApplicationsService implements Serializable {
     private EntityManager entityManager;
     @Autowired
     private TimelineService timelineService;
+    @Autowired
+    private SampleTestDAO sampleTestDAO;
 
     @Transactional
     public ProdApplications findProdApplications(Long id) {
@@ -565,16 +569,17 @@ public class ProdApplicationsService implements Serializable {
 
     }
 
-    public String submitExecSummary(ProdApplications prodApplications, User user, List<ReviewInfo> reviewInfos) {
+    @Transactional
+    public String submitExecSummary(ProdApplications prodApplications, Long loggedInUser, List<ReviewInfo> reviewInfos) {
         try {
-            if (reviewInfos == null || prodApplications == null || user == null)
+            if (reviewInfos == null || prodApplications == null || loggedInUser == null)
                 return "empty";
 
             boolean complete = false;
             for (ReviewInfo reviewInfo : reviewInfos) {
                 if (!reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
                     complete = false;
-                    break;
+                    return "state_error";
                 } else {
                     complete = true;
                 }
@@ -587,8 +592,20 @@ public class ProdApplicationsService implements Serializable {
                 }
             }
 
+            ArrayList<SampleTest> sampleTests = (ArrayList<SampleTest>) sampleTestDAO.findByProdApplications_Id(prodApplications.getId());
+            if (sampleTests.size() > 0) {
+                for (SampleTest sampleTest : sampleTests) {
+                    if (sampleTest.getResultDt() == null || sampleTest.getResultDt().after(new Date())) {
+                        return "lab_status";
+
+                    }
+                }
+            }
+
+
+
             if (complete) {
-                saveApplication(prodApplications, user.getUserId());
+                saveApplication(prodApplications, loggedInUser);
                 return "persist";
             } else {
                 return "state_error";

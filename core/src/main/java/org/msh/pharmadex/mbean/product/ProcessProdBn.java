@@ -105,6 +105,7 @@ public class ProcessProdBn implements Serializable {
     private int selectedTab;
     private User moderator;
     private boolean displaySample = false;
+    private boolean displayClinical = false;
     private boolean displayReviewStatus = false;
     //    private ReviewInfo reviewInfo;
     private SampleTest sampleTest;
@@ -198,7 +199,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isShowCert() {
-        if (prodApplications != null && prodApplications.getRegState() != null) {
+        if (prodApplications != null && prodApplications.getRegState() != null && !userSession.isCompany()) {
             if (prodApplications.getRegState().equals(RegState.REGISTERED) || prodApplications.getRegState().equals(RegState.REJECTED))
                 showCert = true;
             else
@@ -904,5 +905,19 @@ public class ProcessProdBn implements Serializable {
 
     public void setAttachmentDAO(AttachmentDAO attachmentDAO) {
         this.attachmentDAO = attachmentDAO;
+    }
+
+    public boolean isDisplayClinical() {
+        if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+            if (userSession.isHead() || userSession.isModerator() || userSession.isAdmin() || userSession.isClinical())
+                displayClinical = true;
+        } else {
+            displayClinical = false;
+        }
+        return displayClinical;
+    }
+
+    public void setDisplayClinical(boolean displayClinical) {
+        this.displayClinical = displayClinical;
     }
 }

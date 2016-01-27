@@ -25,6 +25,9 @@ public class ReviewInfoTable implements Serializable {
     private boolean pastDue;
     private ProdAppType prodAppType;
     private String prodAppNo;
+    private boolean sra;
+    private boolean fastrack;
+
 
 
     public Long getId() {
@@ -138,5 +141,21 @@ public class ReviewInfoTable implements Serializable {
 
     public void setProdAppNo(String prodAppNo) {
         this.prodAppNo = prodAppNo;
+    }
+
+    public boolean isSra() {
+        return sra;
+    }
+
+    public void setSra(boolean sra) {
+        this.sra = sra;
+    }
+
+    public boolean isFastrack() {
+        return fastrack;
+    }
+
+    public void setFastrack(boolean fastrack) {
+        this.fastrack = fastrack;
     }
 }

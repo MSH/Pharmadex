@@ -22,7 +22,7 @@ public class TimeLine implements Serializable {
     @Enumerated(EnumType.STRING)
     private RegState regState;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date statusDate;
 

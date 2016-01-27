@@ -81,17 +81,16 @@
                             <ui:include src="prodscreenverify.xhtml"/>
 
                             <p:tab title="#{msgs.clinical_review}" id="clinicaltab"
-                                   rendered="#{userSession.head||userSession.moderator||userSession.admin}">
+                                   rendered="#{processProdBn.displayClinical}">
                                 <ui:include src="clinicalreview.xhtml"/>
                             </p:tab>
 
-                            <p:tab title="Sample Request" id="sampletab"
-                                   rendered="#{processProdBn.displaySample}">
+                            <p:tab title="Sample Request" id="sampletab" rendered="#{processProdBn.displaySample}">
                                 <ui:include src="samplerequestpnl.xhtml"/>
                             </p:tab>
 
                             <p:tab title="#{msgs.prod_comments}"
-                                   rendered="#{!userSession.company and !userSession.lab}">
+                                   rendered="#{!userSession.company and !userSession.lab and !userSession.clinical}">
                                 <p:commandButton icon="ui-icon-document" value="#{msgs.add_comment}"
                                                  onclick="PF('dlg').show()"/>
 

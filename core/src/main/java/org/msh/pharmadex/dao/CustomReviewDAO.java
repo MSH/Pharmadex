@@ -46,7 +46,7 @@ public class CustomReviewDAO implements Serializable {
                 "        WHEN ri.reviewer_id = :reviewID THEN 'PRIMARY' " +
                 "        ELSE 'SECONDARY' " +
                 "    END AS rev_type, " +
-                "    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType,p.prod_name " +
+                "    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType,p.prod_name, pa.sra, pa.fastrack " +
                 "from review_info ri, prodapplications pa, product p " +
                 "where ri.prod_app_id = pa.id " +
                 "and pa.PROD_ID = p.id " +
@@ -68,6 +68,8 @@ public class CustomReviewDAO implements Serializable {
             if (objArr[7] != null)
                 reviewInfoTable.setRecomendType(RecomendType.valueOf((String) objArr[7]));
             reviewInfoTable.setProdName((String) objArr[8]);
+            reviewInfoTable.setSra((Boolean) objArr[9]);
+            reviewInfoTable.setFastrack((Boolean) objArr[10]);
             prodTables.add(reviewInfoTable);
         }
         return prodTables;
@@ -80,7 +82,7 @@ public class CustomReviewDAO implements Serializable {
      */
     public List<ReviewInfoTable> findReviewByReviewer(Long reviewID) {
         List<Object[]> ris = entityManager.createNativeQuery("select ri.id, ri.reviewStatus, ri.assignDate, ri.submitDate, ri.dueDate, " +
-                "ri.recomendType,p.prod_name " +
+                "ri.recomendType,p.prod_name, pa.sra, pa.fastrack " +
                 "                from review ri, prodapplications pa, product p " +
                 "                where ri.prod_app_id = pa.id " +
                 "                and pa.PROD_ID = p.id " +
@@ -100,6 +102,8 @@ public class CustomReviewDAO implements Serializable {
             if (objArr[5] != null)
                 reviewInfoTable.setRecomendType(RecomendType.valueOf((String) objArr[5]));
             reviewInfoTable.setProdName((String) objArr[6]);
+            reviewInfoTable.setSra((Boolean) objArr[7]);
+            reviewInfoTable.setFastrack((Boolean) objArr[8]);
             prodTables.add(reviewInfoTable);
         }
         return prodTables;
