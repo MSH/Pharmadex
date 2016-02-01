@@ -304,13 +304,21 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.NOT_RECOMMENDED);
             params.put("regState", regState);
 
+        } else if (userSession.isClinical()){
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.VERIFY);
+            regState.add(RegState.REVIEW_BOARD);
+            regState.add(RegState.FOLLOW_UP);
+            params.put("regState", regState);
+            params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         }
         prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         return prodApplicationses;
     }
 
     @Transactional
-    public ProdApplications saveApplication(ProdApplications prodApplications, Long loggedInUserID) {
+    public ProdApplications     saveApplication(ProdApplications prodApplications, Long loggedInUserID) {
         if (prodApplications == null || loggedInUserID == null)
             return null;
         User loggedInUserObj = userService.findUser(loggedInUserID);
@@ -601,8 +609,9 @@ public class ProdApplicationsService implements Serializable {
                     }
                 }
             }
-
-
+            if(prodApplications.getSampleTestRecieved()==null||!prodApplications.getSampleTestRecieved()) {
+                return "lab_status";
+            }
 
             if (complete) {
                 saveApplication(prodApplications, loggedInUser);

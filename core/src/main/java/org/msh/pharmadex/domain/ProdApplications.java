@@ -103,6 +103,8 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     private boolean dossierReceived;
 
+    private Boolean sampleTestRecieved;
+
     @Temporal(TemporalType.DATE)
     private Date dosRecDate;
 
@@ -597,6 +599,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setDccApproval(boolean dccApproval) {
         this.dccApproval = dccApproval;
+    }
+
+    public Boolean getSampleTestRecieved() {
+        return sampleTestRecieved;
+    }
+
+    public void setSampleTestRecieved(Boolean sampleTestRecieved) {
+        this.sampleTestRecieved = sampleTestRecieved;
     }
 }
 

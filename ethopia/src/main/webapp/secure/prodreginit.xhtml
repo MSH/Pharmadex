@@ -67,26 +67,26 @@
 
                     <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
-                    <p:outputLabel value="#{prodRegInit.prescreenfee}" styleClass="value"
+                    <h:outputText value="#{prodRegInit.prescreenfee}" styleClass="value"
                                    rendered="#{prodRegInit.displayfeepanel}">
                         <f:convertNumber type="currency" currencySymbol="$"/>
-                    </p:outputLabel>
+                    </h:outputText>
                     <p:outputLabel/>
 
                     <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
-                    <p:outputLabel value="#{prodRegInit.fee}" styleClass="value"
+                    <h:outputText value="#{prodRegInit.fee}" styleClass="value"
                                    rendered="#{prodRegInit.displayfeepanel}">
                         <f:convertNumber type="currency" currencySymbol="$"/>
-                    </p:outputLabel>
+                    </h:outputText>
                     <p:outputLabel/>
 
                     <p:outputLabel value="#{msgs.total_fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
-                    <p:outputLabel value="#{prodRegInit.totalfee}" styleClass="label"
+                    <h:outputText value="#{prodRegInit.totalfee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}">
                         <f:convertNumber type="currency" currencySymbol="$"/>
-                    </p:outputLabel>
+                    </h:outputText>
                     <p:outputLabel/>
 
 

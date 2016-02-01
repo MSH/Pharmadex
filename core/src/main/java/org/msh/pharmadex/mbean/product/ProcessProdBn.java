@@ -392,6 +392,13 @@ public class ProcessProdBn implements Serializable {
         }
     }
 
+    public void changeSampleRecieved() {
+        logger.error("Inside changeSampleRecieved");
+        if (prodApplications.getSampleTestRecieved()!=null&&!prodApplications.getSampleTestRecieved()) {
+            save();
+        }
+    }
+
     public void initOpenToApp() {
         timeLine = new TimeLine();
         timeLine.setProdApplications(prodApplications);
@@ -463,7 +470,6 @@ public class ProcessProdBn implements Serializable {
         return "";  //To change body of created methods use File | Settings | File Templates.
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public void save() {
         try {
             prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedINUserID());

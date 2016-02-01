@@ -2,272 +2,282 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
-<p:accordionPanel value="Product Information" activeIndex="0" multiple="true">
-    <p:tab title="#{msgs.applicant_detail}"
-           rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
-    <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-        <ui:param name="applicantdata" value="#{prodAppData.applicant}"/>
-        <ui:param name="input" value="#{false}"/>
-    </ui:decorate>
-</p:tab>
-
-    <p:tab title="#{msgs.person_responsible}"
-           rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
-    <ui:decorate template="/templates/userdetailtmpl.xhtml">
-        <ui:param name="userdata" value="#{prodAppData.applicantUser}"/>
-        <ui:param name="input" value="#{false}"/>
-    </ui:decorate>
-</p:tab>
-
-<p:tab title="#{msgs.product_details}">
-    <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
-
-        <h:outputLabel value="#{msgs.prodName}:"/>
-        <h:outputLabel value="#{prodAppData.product.prodName}"/>
-
-        <h:outputLabel value="#{msgs.prod_cat}:"/>
-        <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
-
-        <h:outputLabel value="#{msgs.prodgenname}:"/>
-        <h:outputLabel value="#{prodAppData.product.genName}"/>
-
-        <h:outputLabel value="#{msgs.prod_app_type}:"/>
-        <h:outputLabel value="#{msgs[prodAppData.prodAppType.key]}"/>
-
-        <h:outputLabel value="#{msgs.dos_form}"/>
-        <h:outputLabel value="#{prodAppData.product.dosForm.dosForm}"/>
-
-        <h:outputLabel value="Dosage Strength:" style="font-weight: bold;"/>
-        <h:outputLabel value="#{prodAppData.product.dosStrength}"/>
-
-        <h:outputLabel value="#{msgs.dos_unit}"/>
-        <h:outputLabel value="#{prodAppData.product.dosUnit.uom}"/>
-
-        <h:outputLabel value="#{msgs.prod_cat}"/>
-        <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
-
-        <h:outputLabel value="#{msgs.admin_route}"/>
-        <h:outputLabel value="#{msgs[prodAppData.product.adminRoute.key]}"/>
-
-        <h:outputLabel value="#{msgs.age_group}"/>
-        <h:outputLabel value="#{msgs[prodAppData.product.ageGroup.key]}"/>
-
-        <h:outputLabel value="#{msgs.product_pharmclassif}"/>
-        <h:outputLabel value="#{prodAppData.product.pharmClassif.displayName}"/>
-
-        <h:outputLabel value="#{msgs.prod_desc}"/>
-        <h:outputLabel value="#{prodAppData.product.prodDesc}"/>
-    </h:panelGrid>
-</p:tab>
-
-    <p:tab title="#{msgs.inn_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
-    <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
-        <h:outputLabel value="#{msgs.inn_header}:"/>
-        <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}" style="width:100%;">
-            <p:column headerText="#{msgs.active_substance}">
-                <h:outputText value="#{prodInn.inn.name}"/>
-            </p:column>
-
-            <p:column headerText="#{msgs.dos_strength}">
-                <h:outputText value="#{prodInn.dosStrength}"/>
-            </p:column>
-
-            <p:column headerText="#{msgs.dos_unit}">
-                <h:outputText value="#{prodInn.dosUnit.uom}"/>
-            </p:column>
-
-            <p:column headerText="#{msgs.inn_ref}">
-                <h:outputText value="#{prodInn.refStd}"/>
-            </p:column>
-        </p:dataTable>
-
-    </h:panelGrid>
-
-    <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
-        <h:outputLabel value="#{msgs.product_active}:"/>
-        <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodAppData.product.excipients}" style="width:100%;">
-            <p:column headerText="#{msgs.active_substance}">
-                <h:outputText value="#{prodExp.excipient.name}"/>
-            </p:column>
-
-            <p:column headerText="#{msgs.dos_strength}">
-                <h:outputText value="#{prodExp.dosStrength}"/>
-            </p:column>
-
-            <p:column headerText="#{msgs.dos_unit}">
-                <h:outputText value="#{prodExp.dosUnit.uom}"/>
-            </p:column>
-
-            <p:column headerText="#{msgs.inn_ref}">
-                <h:outputText value="#{prodExp.refStd}"/>
-            </p:column>
-        </p:dataTable>
-
-    </h:panelGrid>
-
-</p:tab>
-
-    <p:tab title="#{msgs.atc_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
-    <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
-        <h:outputLabel value="#{msgs.atc_header}" style="font-weight: bold;"/>
-        <p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.product.atcs}" style="width:100%;">
-            <p:column headerText="#{msgs.atc_code}">
-                <h:outputText value="#{atc.atcCode}"/>
-            </p:column>
 
-            <p:column headerText="#{msgs.atc_name}">
-                <h:outputText value="#{atc.atcName}"/>
-            </p:column>
-        </p:dataTable>
+    <div align="right">
+        <p:commandButton value="#{msgs.global_print}" type="button" icon="ui-icon-print">
+            <p:printer target="prodsummaccpnl"/>
+        </p:commandButton>
+    </div>
+
+    <p:accordionPanel value="Product Information" activeIndex="0,1,2,3,4,5,6,7,8,9,10" multiple="true" id="prodsummaccpnl">
+        <p:tab title="#{msgs.applicant_detail}"
+               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                <ui:param name="applicantdata" value="#{prodAppData.applicant}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+        </p:tab>
+
+        <p:tab title="#{msgs.person_responsible}"
+               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+            <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                <ui:param name="userdata" value="#{prodAppData.applicantUser}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+        </p:tab>
+
+        <p:tab title="#{msgs.product_details}">
+            <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+
+                <h:outputLabel value="#{msgs.prodName}:"/>
+                <h:outputLabel value="#{prodAppData.product.prodName}"/>
+
+                <h:outputLabel value="#{msgs.prod_cat}:"/>
+                <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
+
+                <h:outputLabel value="#{msgs.prodgenname}:"/>
+                <h:outputLabel value="#{prodAppData.product.genName}"/>
+
+                <h:outputLabel value="#{msgs.prod_app_type}:"/>
+                <h:outputLabel value="#{msgs[prodAppData.prodAppType.key]}"/>
+
+                <h:outputLabel value="#{msgs.dos_form}"/>
+                <h:outputLabel value="#{prodAppData.product.dosForm.dosForm}"/>
+
+                <h:outputLabel value="Dosage Strength:" style="font-weight: bold;"/>
+                <h:outputLabel value="#{prodAppData.product.dosStrength}"/>
+
+                <h:outputLabel value="#{msgs.dos_unit}"/>
+                <h:outputLabel value="#{prodAppData.product.dosUnit.uom}"/>
+
+                <h:outputLabel value="#{msgs.prod_cat}"/>
+                <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
+
+                <h:outputLabel value="#{msgs.admin_route}"/>
+                <h:outputLabel value="#{msgs[prodAppData.product.adminRoute.key]}"/>
+
+                <h:outputLabel value="#{msgs.age_group}"/>
+                <h:outputLabel value="#{msgs[prodAppData.product.ageGroup.key]}"/>
+
+                <h:outputLabel value="#{msgs.product_pharmclassif}"/>
+                <h:outputLabel value="#{prodAppData.product.pharmClassif.displayName}"/>
+
+                <h:outputLabel value="#{msgs.prod_desc}"/>
+                <h:outputLabel value="#{prodAppData.product.prodDesc}"/>
+            </h:panelGrid>
+        </p:tab>
+
+        <p:tab title="#{msgs.inn_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+            <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
+                <h:outputLabel value="#{msgs.inn_header}:"/>
+                <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}" style="width:100%;">
+                    <p:column headerText="#{msgs.active_substance}">
+                        <h:outputText value="#{prodInn.inn.name}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.dos_strength}">
+                        <h:outputText value="#{prodInn.dosStrength}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.dos_unit}">
+                        <h:outputText value="#{prodInn.dosUnit.uom}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.inn_ref}">
+                        <h:outputText value="#{prodInn.refStd}"/>
+                    </p:column>
+                </p:dataTable>
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
+                <h:outputLabel value="#{msgs.product_active}:"/>
+                <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodAppData.product.excipients}"
+                             style="width:100%;">
+                    <p:column headerText="#{msgs.active_substance}">
+                        <h:outputText value="#{prodExp.excipient.name}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.dos_strength}">
+                        <h:outputText value="#{prodExp.dosStrength}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.dos_unit}">
+                        <h:outputText value="#{prodExp.dosUnit.uom}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.inn_ref}">
+                        <h:outputText value="#{prodExp.refStd}"/>
+                    </p:column>
+                </p:dataTable>
+
+            </h:panelGrid>
+
+        </p:tab>
+
+        <p:tab title="#{msgs.atc_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+            <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
+                <h:outputLabel value="#{msgs.atc_header}" style="font-weight: bold;"/>
+                <p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.product.atcs}" style="width:100%;">
+                    <p:column headerText="#{msgs.atc_code}">
+                        <h:outputText value="#{atc.atcCode}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.atc_name}">
+                        <h:outputText value="#{atc.atcName}"/>
+                    </p:column>
+                </p:dataTable>
+
+            </h:panelGrid>
+        </p:tab>
+
+        <p:tab title="#{msgs.application_detail}">
+            <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                <!--
+                <h:outputLabel value="#{msgs.product_drug_type}"/>
+                <h:outputLabel value="#{msgs[prodAppData.drugType.key]}"/>
+                -->
+                <h:outputLabel value="#{msgs.product_shelflife}:" style="font-weight: bold;"/>
+                <h:outputLabel value="#{prodAppData.product.shelfLife}"/>
+
+                <h:outputLabel value="#{msgs.product_packsize}:" style="font-weight: bold;"/>
+                <h:outputLabel value="#{prodAppData.product.packSize}"/>
 
-    </h:panelGrid>
-</p:tab>
+                <h:outputLabel value="#{msgs.product_conttype}"/>
+                <h:outputLabel value="#{prodAppData.product.contType}"/>
 
-<p:tab title="#{msgs.application_detail}">
-    <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
-        <!--
-        <h:outputLabel value="#{msgs.product_drug_type}"/>
-        <h:outputLabel value="#{msgs[prodAppData.drugType.key]}"/>
-        -->
-        <h:outputLabel value="#{msgs.product_shelflife}:" style="font-weight: bold;"/>
-        <h:outputLabel value="#{prodAppData.product.shelfLife}"/>
+                <h:outputLabel value="#{msgs.product_storcndtn}"/>
+                <h:outputLabel value="#{prodAppData.product.storageCndtn}"/>
 
-        <h:outputLabel value="#{msgs.product_packsize}:" style="font-weight: bold;"/>
-        <h:outputLabel value="#{prodAppData.product.packSize}"/>
+                <h:outputLabel value="#{msgs.prod_indications}"/>
+                <h:outputLabel value="#{prodAppData.product.indications}"/>
 
-        <h:outputLabel value="#{msgs.product_conttype}"/>
-        <h:outputLabel value="#{prodAppData.product.contType}"/>
+                <h:outputLabel value="#{msgs.prod_posology}"/>
+                <h:outputLabel value="#{prodAppData.product.posology}"/>
+            </h:panelGrid>
+        </p:tab>
 
-        <h:outputLabel value="#{msgs.product_storcndtn}"/>
-        <h:outputLabel value="#{prodAppData.product.storageCndtn}"/>
+        <p:tab title="#{msgs.appl_status_country}"
+               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+            <p:dataTable id="foreignStatusTable" var="appstatus" value="#{foreignAppStatus}"
+                         style="width:100%;">
+                <p:column headerText="#{msgs.applicant_country}">
+                    <h:outputText value="#{appstatus.country.countryName}"/>
+                </p:column>
 
-        <h:outputLabel value="#{msgs.prod_indications}"/>
-        <h:outputLabel value="#{prodAppData.product.indications}"/>
+                <p:column headerText="#{msgs.foreign_country_status_type}">
+                    <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
+                </p:column>
 
-        <h:outputLabel value="#{msgs.prod_posology}"/>
-        <h:outputLabel value="#{prodAppData.product.posology}"/>
-    </h:panelGrid>
-</p:tab>
-
-    <p:tab title="#{msgs.appl_status_country}"
-           rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
-    <p:dataTable id="foreignStatusTable" var="appstatus" value="#{foreignAppStatus}"
-                 style="width:100%;">
-        <p:column headerText="#{msgs.applicant_country}">
-            <h:outputText value="#{appstatus.country.countryName}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.foreign_country_status_type}">
-            <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.prod_name}">
-            <h:outputText value="#{appstatus.prodName}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.mkt_auth_holder}">
-            <h:outputText value="#{appstatus.mktAuthHolder}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.mkt_auth_date}">
-            <h:outputText value="#{appstatus.mktAuthDate}">
-                <f:convertDateTime pattern="MMM dd, yyyy"/>
-            </h:outputText>
-        </p:column>
-
-    </p:dataTable>
-
-</p:tab>
-
-<p:tab title="#{msgs.manufacturer_detail}">
-    <p:dataTable id="companyTable" var="company" value="#{prodAppData.product.prodCompanies}" style="width:100%;">
-        <p:column headerText="#{msgs.applicant_name}">
-            <h:outputText value="#{company.company.companyName}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.applicant_country}">
-            <h:outputText value="#{company.company.address.country.countryName}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.applicant_type}">
-            <h:outputText value="#{msgs[company.companyType.key]}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.applicant_phone}">
-            <h:outputText value="#{company.company.phoneNo}"/>
-        </p:column>
-
-    </p:dataTable>
-
-</p:tab>
-
-    <p:tab title="#{msgs.product_pricing_comparison}"
-           rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer)}">
-    <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2">
-        <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
-        <p:outputLabel id="msrp" value="#{prodAppData.product.pricing.msrp}"/>
-
-        <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
-        <p:outputLabel id="priceperdose" value="#{prodAppData.product.pricing.pricePerDose}"/>
-
-        <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
-        <p:outputLabel id="priceperday" value="#{prodAppData.product.pricing.pricePerDay}"/>
-
-        <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
-        <p:outputLabel id="treatcost" value="#{prodAppData.product.pricing.treatCost}"/>
-    </h:panelGrid>
-
-
-    <p:dataTable id="pricetable" var="price" value="#{prodAppData.product.pricing.drugPrices}"
-                 style="width:100%;">
-        <p:column headerText="#{msgs.drug_price_name}">
-            <h:outputText value="#{price.drugName}"/>
-        </p:column>
-
-        <p:column headerText="#{msgs.drug_price_msrp}">
-            <h:outputText value="#{price.msrp}"/>
-        </p:column>
-
-    </p:dataTable>
-
-</p:tab>
-
-    <p:tab title="#{msgs.payment_info}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
-    <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
-
-        <h:outputLabel value="#{msgs.bank_name}" for="bankname"/>
-        <h:outputLabel id="bankname" value="#{prodAppData.bankName}"/>
-
-        <h:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
-        <h:outputLabel id="receiptno" value="#{prodAppData.receiptNo}"/>
-
-        <h:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"/>
-        <h:outputLabel id="feesubmitdt" value="#{prodAppData.feeSubmittedDt}">
-            <f:convertDateTime pattern="MMM dd, yyyy"/>
-        </h:outputLabel>
-
-
-    </h:panelGrid>
-
-</p:tab>
-
-    <p:tab title="#{msgs.checklist}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
-    <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;">
-        <p:column>
-            <h:outputLabel value="#{checkList.checklist.module}"/>
-        </p:column>
-        <p:column>
-            <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
-        </p:column>
-        <p:column>
-            <h:outputLabel value="#{checkList.checklist.name}"/>
-        </p:column>
-        <p:column>
-            <p:outputLabel value="#{checkList.value}" />
-        </p:column>
-    </p:dataTable>
-</p:tab>
-</p:accordionPanel>
+                <p:column headerText="#{msgs.prod_name}">
+                    <h:outputText value="#{appstatus.prodName}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.mkt_auth_holder}">
+                    <h:outputText value="#{appstatus.mktAuthHolder}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.mkt_auth_date}">
+                    <h:outputText value="#{appstatus.mktAuthDate}">
+                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                    </h:outputText>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:tab>
+
+        <p:tab title="#{msgs.manufacturer_detail}">
+            <p:dataTable id="companyTable" var="company" value="#{prodAppData.product.prodCompanies}"
+                         style="width:100%;">
+                <p:column headerText="#{msgs.applicant_name}">
+                    <h:outputText value="#{company.company.companyName}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.applicant_country}">
+                    <h:outputText value="#{company.company.address.country.countryName}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.applicant_type}">
+                    <h:outputText value="#{msgs[company.companyType.key]}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.applicant_phone}">
+                    <h:outputText value="#{company.company.phoneNo}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:tab>
+
+        <p:tab title="#{msgs.product_pricing_comparison}"
+               rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer)}">
+            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2">
+                <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
+                <p:outputLabel id="msrp" value="#{prodAppData.product.pricing.msrp}"/>
+
+                <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
+                <p:outputLabel id="priceperdose" value="#{prodAppData.product.pricing.pricePerDose}"/>
+
+                <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
+                <p:outputLabel id="priceperday" value="#{prodAppData.product.pricing.pricePerDay}"/>
+
+                <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
+                <p:outputLabel id="treatcost" value="#{prodAppData.product.pricing.treatCost}"/>
+            </h:panelGrid>
+
+
+            <p:dataTable id="pricetable" var="price" value="#{prodAppData.product.pricing.drugPrices}"
+                         style="width:100%;">
+                <p:column headerText="#{msgs.drug_price_name}">
+                    <h:outputText value="#{price.drugName}"/>
+                </p:column>
+
+                <p:column headerText="#{msgs.drug_price_msrp}">
+                    <h:outputText value="#{price.msrp}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:tab>
+
+        <p:tab title="#{msgs.payment_info}"
+               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+            <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
+
+                <h:outputLabel value="#{msgs.bank_name}" for="bankname"/>
+                <h:outputLabel id="bankname" value="#{prodAppData.bankName}"/>
+
+                <h:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
+                <h:outputLabel id="receiptno" value="#{prodAppData.receiptNo}"/>
+
+                <h:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"/>
+                <h:outputLabel id="feesubmitdt" value="#{prodAppData.feeSubmittedDt}">
+                    <f:convertDateTime pattern="MMM dd, yyyy"/>
+                </h:outputLabel>
+
+
+            </h:panelGrid>
+
+        </p:tab>
+
+        <p:tab title="#{msgs.checklist}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+            <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;">
+                <p:column>
+                    <h:outputLabel value="#{checkList.checklist.module}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{checkList.checklist.name}"/>
+                </p:column>
+                <p:column>
+                    <p:outputLabel value="#{checkList.value}"/>
+                </p:column>
+            </p:dataTable>
+        </p:tab>
+    </p:accordionPanel>
 
 
 </ui:composition>

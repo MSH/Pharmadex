@@ -21,7 +21,9 @@
             </ui:decorate>
 
             <div align="right">
-
+                <p:commandButton value="#{msgs.global_print}" type="button" icon="ui-icon-print">
+                    <p:printer target="sampledetail" />
+                </p:commandButton>
                 <p:commandButton value="#{msgs.global_save}"
                                  ajax="false" action="#{sampleRecBn.saveSampleTest}"/>
                 <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('submitDlg').show()"

@@ -4,17 +4,30 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" rendered="#{userSession.moderator||userSession.head||userSession.admin}">
+        <p:outputLabel value="#{msgs.sample_test_result_rec}" styleClass="label" for="sampletestrecieved"/>
+        <p:selectBooleanButton id="sampletestrecieved" disabled="#{processProdBn.registered}"
+                               value="#{processProdBn.prodApplications.sampleTestRecieved}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                               onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome"
+                    listener="#{processProdBn.changeSampleRecieved}"/>
+        </p:selectBooleanButton>
+    </h:panelGrid>
 
-    <p:commandButton action="#{sampleTestBn.initSampleAdd}" value="#{msgs.request_sampletest}" oncomplete="PF('addSampleTestDlg').show()"/>
+    <p:commandButton action="#{sampleTestBn.initSampleAdd}" value="#{msgs.request_sampletest}"
+                     oncomplete="PF('addSampleTestDlg').show()"/>
 
-    <p:dataTable id="sampletable" var="sample" value="#{sampleTestBn.sampleTests}" editable="true" style="margin-bottom:20px">
+    <p:dataTable id="sampletable" var="sample" value="#{sampleTestBn.sampleTests}" editable="true"
+                 style="margin-bottom:20px">
         <f:facet name="header">
             #{msgs.sample_test_result}
         </f:facet>
 
-<!--        <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form:msgs" />
-        <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form:msgs" />
--->
+        <!--        <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form:msgs" />
+                <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form:msgs" />
+        -->
 
         <p:column headerText="#{msgs.requested_date}">
             <p:commandLink id="viewLink2"
@@ -45,7 +58,8 @@
             <p:cellEditor>
                 <f:facet name="output"><p:outputLabel value="#{sample.recievedDt}"
                                                       converter="javax.faces.DateTime"/></f:facet>
-                <f:facet name="input"><p:calendar id="samplerecdt" value="#{sample.recievedDt}" style="width:100%" showButtonPanel="true"/></f:facet>
+                <f:facet name="input"><p:calendar id="samplerecdt" value="#{sample.recievedDt}" style="width:100%"
+                                                  showButtonPanel="true"/></f:facet>
             </p:cellEditor>
         </p:column>
 
@@ -53,11 +67,10 @@
             <p:cellEditor>
                 <f:facet name="output"><p:outputLabel value="#{sample.resultDt}"
                                                       converter="javax.faces.DateTime"/></f:facet>
-                <f:facet name="input"><p:calendar id="samplesubdt" value="#{sample.resultDt}" style="width:100%"/></f:facet>
+                <f:facet name="input"><p:calendar id="samplesubdt" value="#{sample.resultDt}"
+                                                  style="width:100%"/></f:facet>
             </p:cellEditor>
         </p:column>
-
-
 
 
     </p:dataTable>
@@ -92,30 +105,30 @@
 
     <p:dialog header="#{msgs.sample_test_result}" widgetVar="addSampleTestDlg" id="addSampleTestDlg"
               modal="true" dynamic="true">
-            <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
-                <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
-                <p:selectManyCheckbox id="itm_req" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
-                                      columns="1"
-                                      converter="omnifaces.GenericEnumConverter">
-                    <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
-                                   itemValue="#{type}"/>
-                    <f:attribute name="collectionType" value="java.util.ArrayList"/>
-                </p:selectManyCheckbox>
-                <p:message for="itm_req" showSummary="true" showDetail="false"/>
+        <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+            <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
+            <p:selectManyCheckbox id="itm_req" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
+                                  columns="1"
+                                  converter="omnifaces.GenericEnumConverter">
+                <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
+                               itemValue="#{type}"/>
+                <f:attribute name="collectionType" value="java.util.ArrayList"/>
+            </p:selectManyCheckbox>
+            <p:message for="itm_req" showSummary="true" showDetail="false"/>
 
-                <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
-                <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity"/>
-                <p:message for="quantity" showSummary="true" showDetail="false"/>
+            <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
+            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity"/>
+            <p:message for="quantity" showSummary="true" showDetail="false"/>
 
 
-                <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
-                <p:editor value="#{sampleTestBn.sampleComment.comment}" id="revsummary" required="true"
-                          width="700"/>
-                <p:message for="revsummary"/>
+            <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
+            <p:editor value="#{sampleTestBn.sampleComment.comment}" id="revsummary" required="true"
+                      width="700"/>
+            <p:message for="revsummary"/>
 
-            </h:panelGrid>
-            <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBn.addSample}"
-                             oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+        </h:panelGrid>
+        <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBn.addSample}"
+                         oncomplete="PF('reviewDlg').hide()" ajax="false"/>
     </p:dialog>
 
 
