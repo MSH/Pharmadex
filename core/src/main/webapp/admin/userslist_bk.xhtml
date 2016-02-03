@@ -14,16 +14,21 @@
 
                 <p:growl id="growl" showDetail="true"/>
                 <p:messages id="messages" showDetail="true" showSummary="true"/>
-                <p:dataTable id="users" var="user" value="#{userMBean.allUsers}" paginator="true" rows="50"
+                <p:dataTable id="users" var="user" value="#{userMBean.allUsers}" rows="25" paginator="true"
                              paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
-                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}">>
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}" rowsPerPageTemplate="25,50,100,200">
                     <f:facet name="header">
                         <p:commandButton value="#{msgs.global_add}" action="#{userMBean.addUser}"
                                          oncomplete="PF('adduser').show();"
-                                         update=":adduserfrm"/>
+                                         update=":adduserfrm :adduserfrm:rolepicklist"/>
                     </f:facet>
 
-                    <p:column headerText="#{msgs.User_name}">
+                    <p:column filterBy="#{user.name}"
+                              sortBy="#{user.name}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_name}"/>
+                        </f:facet>
+
                         <p:commandLink value=" #{user.name}" oncomplete="PF('adduser').show();" update=":adduserfrm"
                                        ajax="true">
                             <f:setPropertyActionListener value="#{user}" target="#{userMBean.selectedUser}"/>
@@ -31,25 +36,46 @@
                         </p:commandLink>
                     </p:column>
 
-                    <p:column headerText="#{msgs.User_username}">
+                    <p:column filterBy="#{user.username}"
+                              sortBy="#{user.username}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_username}"/>
+                        </f:facet>
+
                         #{user.username}
                     </p:column>
 
-                    <p:column headerText="#{msgs.User_email}">
+                    <p:column filterBy="#{user.email}"
+                              sortBy="#{user.email}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_email}"/>
+                        </f:facet>
                         #{user.email}
                     </p:column>
 
-                    <p:column headerText="#{msgs.User_type}">
+                    <p:column filterBy="#{user.type}"
+                              sortBy="#{user.type}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_type}"/>
+                        </f:facet>
                         #{user.type}
                     </p:column>
 
-                    <p:column headerText="#{msgs.applicant}">
+                    <p:column filterBy="#{user.companyName}"
+                              sortBy="#{user.companyName}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.applicant}"/>
+                        </f:facet>
                         #{user.companyName}
                     </p:column>
 
-                    <p:column headerText="#{msgs.global_enable}">
+                    <p:column filterBy="#{user.enabled}"
+                              sortBy="#{user.enabled}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_enable}(true or false)"/>
+                        </f:facet>
                         <p:outputLabel value="#{msgs.global_yes}" rendered="#{user.enabled}"/>
-                        <p:outputLabel value="#{msgs.global_yes}" rendered="#{!user.enabled}"/>
+                        <p:outputLabel value="#{msgs.global_no}" rendered="#{!user.enabled}"/>
                     </p:column>
                 </p:dataTable>
             </h:panelGroup>
@@ -107,7 +133,6 @@
                 <p:blockUI block="adduserfrm" trigger=":adduserfrm:saveuserbtn :adduserfrm:updateuserbtn">
                     <p:graphicImage value="/resources/images/ajax-loader.gif"/>
                 </p:blockUI>
-
 
 
                 <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" id="saveuserbtn"

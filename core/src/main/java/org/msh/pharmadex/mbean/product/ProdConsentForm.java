@@ -116,6 +116,7 @@ public class ProdConsentForm implements Serializable {
         RetObject retObject = prodApplicationsService.submitProdApp(prodApplications, userSession.getLoggedINUserID());
         if (retObject.getMsg().equals("persist")) {
             prodApplications = (ProdApplications) retObject.getObj();
+            prodApplicationsService.createAckLetter(prodApplications);
             timeLine.setProdApplications(prodApplications);
             timeLineService.saveTimeLine(timeLine);
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));

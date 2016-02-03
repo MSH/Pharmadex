@@ -11,6 +11,8 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl"
+                    listener="#{processProdBn.changeDCC}"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>

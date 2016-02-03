@@ -25,9 +25,8 @@ public class UserAccessMBean implements Serializable {
     @ManagedProperty(value = "#{userAccessService}")
     UserAccessService userAccessService;
     private List<UserAccess> allUserAccess;
-
+    private List<UserAccess> filteredAllUserAccess;
     private Workspace workspace;
-
     private boolean detailReview;
 
 
@@ -39,7 +38,8 @@ public class UserAccessMBean implements Serializable {
 //    }
 
     public List<UserAccess> getAllUserAccess() {
-        allUserAccess = userAccessService.getUserAccessList();
+        if(allUserAccess==null)
+            allUserAccess = userAccessService.getUserAccessList();
         return allUserAccess;
     }
 
@@ -73,5 +73,13 @@ public class UserAccessMBean implements Serializable {
 
     public void setDetailReview(boolean detailReview) {
         this.detailReview = detailReview;
+    }
+
+    public List<UserAccess> getFilteredAllUserAccess() {
+        return filteredAllUserAccess;
+    }
+
+    public void setFilteredAllUserAccess(List<UserAccess> filteredAllUserAccess) {
+        this.filteredAllUserAccess = filteredAllUserAccess;
     }
 }

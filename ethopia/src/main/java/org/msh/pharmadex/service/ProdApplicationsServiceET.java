@@ -182,6 +182,14 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             regState.add(RegState.NOT_RECOMMENDED);
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+        } else if (userSession.isClinical()){
+            List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.VERIFY);
+            regState.add(RegState.REVIEW_BOARD);
+            regState.add(RegState.FOLLOW_UP);
+            params.put("regState", regState);
+            params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
+            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         }
 
         return prodApplicationses;

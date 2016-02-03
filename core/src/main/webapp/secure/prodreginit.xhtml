@@ -73,7 +73,11 @@
 -->
             <p:dataTable var="checkList" value="#{prodRegInit.checklists}" style="width:100%;"
                          rendered="#{prodRegInit.displayfeepanel}">
-                <p:column headerText="#{msgs.checklist_moduleno}" colspan="3" rendered="#{!checkList.header}" style="background-color: bisque;font-weight: bolder;">
+                <f:facet name="header">
+                    Required Documents
+                </f:facet>
+
+                <p:column headerText="#{msgs.checklist_moduleno}" colspan="2" rendered="#{!checkList.header}" style="background-color: bisque;font-weight: bolder;">
                     <h:outputLabel value="#{checkList.name}" />
                 </p:column>
 
@@ -82,9 +86,6 @@
                 </p:column>
                 <p:column headerText="#{msgs.checklist_name}" rendered="#{checkList.header}">
                     <h:outputLabel value="#{checkList.name}"/>
-                </p:column>
-                <p:column headerText="#{msgs.checklist_module}" rendered="#{checkList.header}">
-                    <h:outputLabel value="#{checkList.module}"/>
                 </p:column>
             </p:dataTable>
 

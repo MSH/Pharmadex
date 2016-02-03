@@ -258,7 +258,7 @@ public class ProdApplicationsDAO implements Serializable {
                 Join user = prodApp.join("applicant", JoinType.LEFT);
                 Expression appID = user.get("applcntId");
                 p = cb.equal(appID, param.getValue());
-            } else if (param.getKey().equals(" ") && param.getValue() != null) {
+            } else if (param.getKey().equals("reviewerId") && param.getValue() != null) {
                 Join<Review, ProdApplications> user = prodApp.join("reviews", JoinType.LEFT).join("user");
                 Expression reviewId = user.get("userId");
                 p = cb.equal(reviewId, param.getValue());
@@ -270,7 +270,10 @@ public class ProdApplicationsDAO implements Serializable {
                 p = cb.or((cb.equal(reviewId, param.getValue())),(cb.equal(userid2, param.getValue())));
             } else if (param.getKey().equals("regExpDate") && param.getValue() != null) {
                 p = cb.lessThan(prodApp.<Date>get("regExpiryDate"), (Date) param.getValue());
+            } else if (param.getKey().equals("prodAppType") && param.getValue() != null) {
+                p = cb.equal(prodApp.<Date>get("prodAppType"), param.getValue());
             }
+
 
             predicateList.add(p);
         }

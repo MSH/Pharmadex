@@ -137,6 +137,7 @@ public class UserMBean implements Serializable {
         String retvalue;
         try {
             retvalue = userService.createUser(selectedUser);
+            allUsers = null;
         } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
             return "";
@@ -174,6 +175,7 @@ public class UserMBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             selectedUser = userService.updateUser(selectedUser);
+            allUsers = null;
         } catch (ConstraintViolationException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
         } catch (Exception e) {
@@ -194,6 +196,9 @@ public class UserMBean implements Serializable {
     }
 
     public void addUser() {
+        selectedRoles = new ArrayList<Role>();
+        allRoles = roleDAO.findAll();
+        roles = new DualListModel<Role>(allRoles, selectedRoles);
         selectedUser = new User();
         selectedUser.setAddress(new Address());
         selectedUser.setApplicant(new Applicant());
@@ -262,7 +267,9 @@ public class UserMBean implements Serializable {
     }
 
     public List<User> getAllUsers() {
-        return userService.findAllUsers();
+        if(allUsers==null)
+            allUsers = userService.findAllUsers();
+        return allUsers;
     }
 
     public void setAllUsers(List<User> allUsers) {

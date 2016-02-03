@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import com.mysql.jdbc.PacketTooBigException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
@@ -99,7 +100,7 @@ public class ProdRegAppMbean implements Serializable {
     @PostConstruct
     private void init() {
         Long prodAppID = userSession.getProdAppID();
-            if (prodAppID == null) {
+        if (prodAppID == null) {
             ProdAppInit prodApp = userSession.getProdAppInit();
             if (prodApp != null) {
                 product = new Product();
@@ -199,23 +200,32 @@ public class ProdRegAppMbean implements Serializable {
     }
 
     public void handlePayReceiptUpload() {
-        FacesMessage msg;
+        FacesMessage msg = null;
         FacesContext facesContext = FacesContext.getCurrentInstance();
         java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
-        if (payReceipt != null) {
-            msg = new FacesMessage(bundle.getString("global.success"), payReceipt.getFileName() + bundle.getString("upload_success"));
-            facesContext.addMessage(null, msg);
-            try {
-                prodApplications.setFeeReceipt(IOUtils.toByteArray(payReceipt.getInputstream()));
+        try {
+            if (payReceipt != null) {
+                msg = new FacesMessage(bundle.getString("global.success"), payReceipt.getFileName() + bundle.getString("upload_success"));
+                facesContext.addMessage(null, msg);
+                try {
+                    prodApplications.setFeeReceipt(IOUtils.toByteArray(payReceipt.getInputstream()));
 
-            } catch (IOException e) {
+                } catch (IOException e) {
+                    msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            } else {
                 msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-        } else {
-            msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
+        } catch (Exception ex) {
+            if (ex instanceof PacketTooBigException) {
+                msg = new FacesMessage("Upload file size is too big!!");
+            } else {
+                msg = new FacesMessage("Error uploading file");
+            }
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -246,26 +256,43 @@ public class ProdRegAppMbean implements Serializable {
     }
 
     public StreamedContent fileDownload() {
-        byte[] file1 = prodApplications.getFeeReceipt();
-        InputStream ist = new ByteArrayInputStream(file1);
-        StreamedContent download = new DefaultStreamedContent(ist);
+        FacesMessage msg;
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        try {
+            byte[] file1 = prodApplications.getFeeReceipt();
+            InputStream ist = new ByteArrayInputStream(file1);
+            StreamedContent download = new DefaultStreamedContent(ist);
 //        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
-        return download;
+            return download;
+        } catch (Exception ex) {
+            msg = new FacesMessage("Error downloading the file");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return null;
+        }
     }
 
 
-
     public void addDocument() {
+        FacesMessage msg;
         FacesContext facesContext = FacesContext.getCurrentInstance();
         java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-        facesContext = FacesContext.getCurrentInstance();
+        try {
 //        file = userSession.getFile();
 //        attachment.setFile(file.getContents());
-        attachmentDAO.save(attachment);
-        setAttachments(null);
+            attachmentDAO.save(attachment);
+            setAttachments(null);
 //        userSession.setFile(null);
-        FacesMessage msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-        facesContext.addMessage(null, msg);
+            msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+            facesContext.addMessage(null, msg);
+        } catch (Exception ex) {
+            if (ex instanceof PacketTooBigException) {
+                msg = new FacesMessage("Upload file size is too big!!");
+            } else {
+                msg = new FacesMessage("Error uploading file");
+            }
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
 
     }
 
@@ -338,21 +365,21 @@ public class ProdRegAppMbean implements Serializable {
 
         } else if (currentWizardStep.equals("pricing")) {
             RetObject retObject = productService.findDrugPriceByProd(product.getId());
-            if(retObject.getMsg().equals("persist")) {
+            if (retObject.getMsg().equals("persist")) {
                 pricing = (Pricing) retObject.getObj();
-                if(pricing==null)
+                if (pricing == null)
                     pricing = new Pricing(drugPrices, product);
                 product.setPricing(pricing);
-            }else{
+            } else {
                 FacesMessage msg = new FacesMessage(bundle.getString("global_fail"), retObject.getMsg());
                 context.addMessage(null, msg);
             }
         } else if (currentWizardStep.equals("attach")) {
-            if(prodAppChecklists!=null&&prodAppChecklists.size()>0)
+            if (prodAppChecklists != null && prodAppChecklists.size() > 0)
                 prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
         } else if (currentWizardStep.equals("prodAppChecklist")) {
             prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
-            if(prodAppChecklists!=null&&prodAppChecklists.size()<1) {
+            if (prodAppChecklists != null && prodAppChecklists.size() < 1) {
                 prodAppChecklists = new ArrayList<ProdAppChecklist>();
                 List<Checklist> allChecklist = checklistService.getChecklists(prodApplications, true);
                 ProdAppChecklist eachProdAppCheck;
@@ -382,11 +409,11 @@ public class ProdRegAppMbean implements Serializable {
         try {
 //            prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
             RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
-            if(retObject.getMsg().equals("persist")) {
+            if (retObject.getMsg().equals("persist")) {
                 prodApplications = (ProdApplications) retObject.getObj();
                 setFieldValues();
                 context.addMessage(null, new FacesMessage(bundle.getString("app_save_success")));
-            }else{
+            } else {
                 context.addMessage(null, new FacesMessage(bundle.getString("save_app_error")));
             }
         } catch (Exception e) {
@@ -565,7 +592,7 @@ public class ProdRegAppMbean implements Serializable {
     }
 
     public List<ProdInn> getSelectedInns() {
-            return selectedInns;
+        return selectedInns;
     }
 
     public void setSelectedInns(List<ProdInn> selectedInns) {
@@ -645,9 +672,9 @@ public class ProdRegAppMbean implements Serializable {
     }
 
     public List<ForeignAppStatus> getForeignAppStatuses() {
-        if(foreignAppStatuses==null){
+        if (foreignAppStatuses == null) {
             foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
-            if(foreignAppStatuses==null)
+            if (foreignAppStatuses == null)
                 foreignAppStatuses = new ArrayList<ForeignAppStatus>();
         }
         return foreignAppStatuses;

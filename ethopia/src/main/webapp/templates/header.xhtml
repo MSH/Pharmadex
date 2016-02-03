@@ -139,7 +139,7 @@
                         <p:separator/>
 
                         <p:submenu label="#{msgs.reg_processing}"
-                                   rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator||userSession.lab}">
+                                   rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator||userSession.lab||userSession.clinical}">
                             <p:menuitem value="#{msgs.process_review_list}" icon="ui-icon-document"
                                         url="/internal/processreviewlist.faces" rendered="#{userSession.reviewer}"/>
                             <p:menuitem value="#{msgs.reviewers_report}" icon="ui-icon-document"
@@ -148,9 +148,9 @@
                             <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document" rendered="#{!userSession.reviewer}"
                                         url="/internal/processprodlist.faces"/>
                             <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
-                                        url="/internal/processapplist.faces"/>
+                                        url="/internal/processapplist.faces" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}"/>
                             <p:menuitem value="#{msgs.process_suspension}" icon="ui-icon-document"
-                                        url="/internal/processcancellist.faces"/>
+                                        url="/internal/processcancellist.faces" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}"/>
                             <!--
                                                 <p:menuitem value="#{msgs.rxsite_reg_process}" icon="ui-icon-document"
                                                             url="/internal/processrxsitelist.faces"/>

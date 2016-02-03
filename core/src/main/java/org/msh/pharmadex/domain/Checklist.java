@@ -13,6 +13,7 @@ public class Checklist extends CreationDetail implements Serializable {
     @Column(unique = true)
     private Long id;
 
+    @Column(name = "name", length = 500)
     private String name;
 
     private String module;
