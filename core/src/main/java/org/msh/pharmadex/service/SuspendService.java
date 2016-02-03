@@ -152,9 +152,6 @@ public class SuspendService implements Serializable {
 
         prodApplications.setRegState(regState);
         prodApplicationsService.saveApplication(prodApplications, suspDetail.getUpdatedBy().getUserId());
-        globalEntityLists.setRegProducts(null);
-
-
     }
 
     public JasperPrint initRegCert(SuspComment suspComment, URL resource) throws JRException, SQLException {

@@ -212,7 +212,9 @@ public class ApplicantMBean implements Serializable {
     }
 
     public List<Applicant> getAllApplicant() {
-        return globalEntityLists.getRegApplicants();
+        if(allApplicant==null)
+            allApplicant = applicantService.getRegApplicants();
+        return allApplicant;
     }
 
     public void setAllApplicant(List<Applicant> allApplicant) {

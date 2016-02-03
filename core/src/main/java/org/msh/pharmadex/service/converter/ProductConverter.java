@@ -3,6 +3,7 @@ package org.msh.pharmadex.service.converter;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,13 +25,13 @@ public class ProductConverter implements Converter, Serializable {
     private static final long serialVersionUID = -1976549120206232303L;
 
     @Autowired
-    private GlobalEntityLists globalEntityLists;
+    private ProductService productService;
 
     private List<ProdTable> products;
 
     public List<ProdTable> getProducts() {
         if(products == null)
-            products = globalEntityLists.getRegProducts();
+            products = productService.findAllRegisteredProduct();
         return products;
     }
 

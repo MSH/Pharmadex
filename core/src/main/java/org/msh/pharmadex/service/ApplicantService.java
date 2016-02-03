@@ -106,7 +106,7 @@ public class ApplicantService implements Serializable {
         }
         Applicant a = applicantDAO.updateApplicant(applicant);
         System.out.println("applicant id = " + applicant.getApplcntId());
-        globalEntityLists.setRegApplicants(null);
+//        globalEntityLists.setRegApplicants(null);
         applicantConverter.setApplicantList(null);
         applicants = null;
         return a;

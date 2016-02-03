@@ -9,6 +9,8 @@
 <f:view locale="#{localeBean.locale}" contentType="text/html" encoding="UTF-8">
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <ui:include src="session_timeout.xhtml" />
+
         <ui:insert name="header">
             <ui:include src="header.xhtml"/>
         </ui:insert>

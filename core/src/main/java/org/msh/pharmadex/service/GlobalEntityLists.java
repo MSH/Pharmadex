@@ -24,8 +24,6 @@ public class GlobalEntityLists implements Serializable {
     private List<DosageForm> dosageForms;
     private List<DosUom> dosUoms;
     private List<Country> countries;
-    private List<ProdTable> regProducts;
-    private List<Applicant> regApplicants;
     private List<PharmacySite> pharmacySites;
     private List<AmdmtCategory> amdmtCategories;
     private List<ApplicantType> applicantTypes;
@@ -151,26 +149,6 @@ public class GlobalEntityLists implements Serializable {
         if (dosUoms == null)
             dosUoms = dosageFormService.findAllDosUom();
         return dosUoms;
-    }
-
-    public List<ProdTable> getRegProducts() {
-        if (regProducts == null)
-            regProducts = productService.findAllRegisteredProduct();
-        return regProducts;
-    }
-
-    public void setRegProducts(List<ProdTable> regProducts) {
-        this.regProducts = regProducts;
-    }
-
-    public List<Applicant> getRegApplicants() {
-        if (regApplicants == null)
-            regApplicants = applicantService.getRegApplicants();
-        return regApplicants;
-    }
-
-    public void setRegApplicants(List<Applicant> regApplicants) {
-        this.regApplicants = regApplicants;
     }
 
     public List<PharmacySite> getPharmacySites() {

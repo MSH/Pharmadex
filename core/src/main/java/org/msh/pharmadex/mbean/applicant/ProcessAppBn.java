@@ -93,7 +93,7 @@ public class ProcessAppBn implements Serializable {
             HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
-            globalEntityLists.setRegApplicants(null);
+//            globalEntityLists.setRegApplicants(null);
             return "/public/applicantlist.faces";
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,7 +129,7 @@ public class ProcessAppBn implements Serializable {
     public String registerApplicant() {
         applicant.setState(ApplicantState.REGISTERED);
         applicantService.updateApp(applicant, null);
-        globalEntityLists.setRegApplicants(null);
+//        globalEntityLists.setRegApplicants(null);
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processAppBn", null);

@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.util.JsfUtils;
 
 import javax.faces.bean.ManagedBean;
@@ -21,8 +22,8 @@ import java.util.ResourceBundle;
 @RequestScoped
 public class RegProdMbn implements Serializable {
 
-    @ManagedProperty(value = "#{globalEntityLists}")
-    GlobalEntityLists globalEntityLists;
+    @ManagedProperty(value = "#{productService}")
+    ProductService productService;
 
     @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
@@ -41,7 +42,7 @@ public class RegProdMbn implements Serializable {
 
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
-        for (ProdTable p : globalEntityLists.getRegProducts()) {
+        for (ProdTable p :  productService.findAllRegisteredProduct()) {
             if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
                     || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
 //                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
@@ -57,14 +58,6 @@ public class RegProdMbn implements Serializable {
 
         JsfUtils.flashScope().put("prodAppID", prodTable.getProdAppID());
         return "/internal/processreg.faces";
-    }
-
-    public GlobalEntityLists getGlobalEntityLists() {
-        return globalEntityLists;
-    }
-
-    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
-        this.globalEntityLists = globalEntityLists;
     }
 
     public ProdApplicationsService getProdApplicationsService() {

@@ -346,7 +346,7 @@ public class SuspendDetailBn implements Serializable {
         RetObject retObject = null;
         try {
             retObject = suspendService.suspendProduct(suspDetail, getLoggedInUser());
-        globalEntityLists.setRegProducts(null);
+//        globalEntityLists.setRegProducts(null);
 
         if (retObject.getMsg().equals("persist")) {
             return cancelSuspendDetail();

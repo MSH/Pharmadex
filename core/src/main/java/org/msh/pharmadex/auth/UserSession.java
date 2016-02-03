@@ -119,8 +119,13 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         // It's OK to return null here because Faces is just going to exit.
 
         return null;
+    }
 
-
+    public void keepSessionAlive(){
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+        request.getSession();
+        getLoggedINUserID();
     }
 
     /**

@@ -497,7 +497,7 @@ public class ProcessProdBn implements Serializable {
         timeLine.setRegState(RegState.REGISTERED);
 //        prodApplications.setRegistrationDate(new Date());
         prodApplications.setProdRegNo("" + (Math.random() * 100000));
-        globalEntityLists.setRegProducts(null);
+//        globalEntityLists.setRegProducts(null);
 
         timeLine.setProdApplications(prodApplications);
         timeLine.setStatusDate(new Date());
