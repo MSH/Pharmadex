@@ -385,6 +385,11 @@ public class ProcessProdBn implements Serializable {
         setSelectedTab(1);
     }
 
+    public void changeDCC() {
+        logger.error("Inside changeDCC");
+        save();
+    }
+
     public void changeClinicalReviewStatus() {
         logger.error("Inside changeStatusListener");
         if (prodApplications.isClinicalRevReceived() || prodApplications.isClinicalRevVerified()) {
@@ -772,7 +777,7 @@ public class ProcessProdBn implements Serializable {
             if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
                 RegState regState = prodApplications.getRegState();
                 if ((prodApplications != null && regState != null)) {
-                    if (regState.equals(RegState.SCREENING) || regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {
+                    if (regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {
                         displaySample = false;
                     } else {
                         displaySample = true;

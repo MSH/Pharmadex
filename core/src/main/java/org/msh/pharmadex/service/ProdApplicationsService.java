@@ -18,6 +18,7 @@ import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -639,7 +640,6 @@ public class ProdApplicationsService implements Serializable {
         try {
             retObject = updateProdApp(prodApplications, loggedINUserID);
             this.prodApp = (ProdApplications) retObject.getObj();
-            createAckLetter();
             return retObject;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -648,7 +648,8 @@ public class ProdApplicationsService implements Serializable {
         }
     }
 
-    public String createAckLetter() {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public String createAckLetter(ProdApplications prodApp) {
         Product prod = prodApp.getProduct();
         Workspace workspace = workspaceDAO.findAll().get(0);
         try {
@@ -661,7 +662,7 @@ public class ProdApplicationsService implements Serializable {
             Connection conn = entityManager.unwrap(Session.class).connection();
             HashMap param = new HashMap();
 
-            param.put("prodAppNo", prodApp.getProdAppNo());
+//            param.put("prodAppNo", prodApp.getProdAppNo());
             param.put("id", prodApp.getId());
             param.put("subject", "Product Registration for  " + prod.getProdName() + " recieved");
 //                + letter.getSubject() + " " + product.getProdName() + " ");
