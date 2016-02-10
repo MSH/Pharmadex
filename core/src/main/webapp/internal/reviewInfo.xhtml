@@ -27,14 +27,18 @@
             </div>
 
             <div align="right">
-                <p:commandButton value="#{msgs.product_details}" immediate="true" action="#{reviewInfoBn.cancelReview}"
-                                 ajax="false"/>
+                <p:commandButton value="#{msgs.product_details}" immediate="true" action="/internal/processreg"
+                                 ajax="false">
+                        <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
+                </p:commandButton>
                 <p:commandButton value="#{msgs.global_print}" action="#{reviewInfoBn.printReview}" ajax="false"
                                  immediate="true" icon="ui-icon-print"/>
                 <p:commandButton value="#{msgs.approve_review}" action="#{reviewInfoBn.approveReview}"
                                  update=":reviewHome"
                                  ajax="false"
-                                 rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}"/>
+                                 rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}">
+                        <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
+                </p:commandButton>
                 <p:commandButton value="#{msgs.send_to_review}" action="#{reviewInfoBn.initComment}"
                                  update=":reviewHome" oncomplete="PF('feedbackDlg').show()"
                                  ajax="true"
@@ -171,7 +175,9 @@
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.reviewerFeedback}"
-                                 oncomplete="PF('feedbackDlg').hide()" ajax="false"/>
+                                 oncomplete="PF('feedbackDlg').hide()" ajax="false">
+                        <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
+                </p:commandButton>
             </h:form>
         </p:dialog>
 

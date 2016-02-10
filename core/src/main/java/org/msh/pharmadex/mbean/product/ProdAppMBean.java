@@ -9,8 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,8 +29,6 @@ public class ProdAppMBean implements Serializable {
     protected List<ProdApplications> submmittedAppList;
     @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
-    @ManagedProperty(value = "#{processProdBn}")
-    ProcessProdBn processProdBn;
     @ManagedProperty(value = "#{invoiceService}")
     private InvoiceService invoiceService;
     private ProdApplications selectedApplication = new ProdApplications();
@@ -47,19 +43,16 @@ public class ProdAppMBean implements Serializable {
 //        setShowAdd(true);
 //        FacesContext facesContext = FacesContext.getCurrentInstance();
 //        facesContext.addMessage(null, new FacesMessage("Successful", "Selected " + selectedApplication.getProd().getProdName()));
-        processProdBn = null;
         return "/internal/processreg.faces";
-    }
-
-    public String sentToDetail(Long id){
-        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
-        flash.put("prodAppID", id);
-        return "/internal/processreg?faces-redirect=true";
     }
 
     @PostConstruct
     private void init() {
-
+        savedAppList = prodApplicationsService.findSavedApps(userSession.getLoggedINUserID());
+        pendingRenewals = invoiceService.findPendingByApplicant(userSession.getApplcantID());
+        prodApplicationsList = prodApplicationsService.getSubmittedApplications(userSession);
+        submmittedAppList = prodApplicationsService.getSubmittedApplications(userSession);
+        allApplicationForProcess = prodApplicationsService.getApplications();
     }
 
     public String cancelApp() {
@@ -70,8 +63,6 @@ public class ProdAppMBean implements Serializable {
     }
 
     public List<ProdApplications> getPendingRenewals() {
-        if (pendingRenewals == null)
-            pendingRenewals = invoiceService.findPendingByApplicant(userSession.getApplcantID());
         return pendingRenewals;
     }
 
@@ -88,8 +79,6 @@ public class ProdAppMBean implements Serializable {
     }
 
     public List<ProdApplications> getProdApplicationsList() {
-        if (prodApplicationsList == null)
-            prodApplicationsList = prodApplicationsService.getSubmittedApplications(userSession);
         return prodApplicationsList;
     }
 
@@ -98,8 +87,6 @@ public class ProdAppMBean implements Serializable {
     }
 
     public List<ProdApplications> getSavedAppList() {
-        if (savedAppList == null)
-            savedAppList = prodApplicationsService.findSavedApps(userSession.getLoggedINUserID());
         return savedAppList;
     }
 
@@ -108,8 +95,6 @@ public class ProdAppMBean implements Serializable {
     }
 
     public List<ProdApplications> getSubmmittedAppList() {
-        if (submmittedAppList == null)
-            submmittedAppList = prodApplicationsService.getSubmittedApplications(userSession);
         return submmittedAppList;
     }
 
@@ -118,7 +103,6 @@ public class ProdAppMBean implements Serializable {
     }
 
     public List<ProdApplications> getAllApplicationForProcess() {
-        allApplicationForProcess = prodApplicationsService.getApplications();
         return allApplicationForProcess;
     }
 
@@ -148,14 +132,6 @@ public class ProdAppMBean implements Serializable {
 
     public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
         this.prodApplicationsService = prodApplicationsService;
-    }
-
-    public ProcessProdBn getProcessProdBn() {
-        return processProdBn;
-    }
-
-    public void setProcessProdBn(ProcessProdBn processProdBn) {
-        this.processProdBn = processProdBn;
     }
 
     public UserSession getUserSession() {

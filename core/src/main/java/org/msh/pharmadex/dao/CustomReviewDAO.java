@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class CustomReviewDAO implements Serializable {
                 "        WHEN ri.reviewer_id = :reviewID THEN 'PRIMARY' " +
                 "        ELSE 'SECONDARY' " +
                 "    END AS rev_type, " +
-                "    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType,p.prod_name, pa.sra, pa.fastrack " +
+                "    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType,p.prod_name, pa.sra, pa.fastrack, pa.id " +
                 "from review_info ri, prodapplications pa, product p " +
                 "where ri.prod_app_id = pa.id " +
                 "and pa.PROD_ID = p.id " +
@@ -70,6 +71,7 @@ public class CustomReviewDAO implements Serializable {
             reviewInfoTable.setProdName((String) objArr[8]);
             reviewInfoTable.setSra((Boolean) objArr[9]);
             reviewInfoTable.setFastrack((Boolean) objArr[10]);
+            reviewInfoTable.setProdAppID(((BigInteger) objArr[11]).longValue());
             prodTables.add(reviewInfoTable);
         }
         return prodTables;
@@ -82,7 +84,7 @@ public class CustomReviewDAO implements Serializable {
      */
     public List<ReviewInfoTable> findReviewByReviewer(Long reviewID) {
         List<Object[]> ris = entityManager.createNativeQuery("select ri.id, ri.reviewStatus, ri.assignDate, ri.submitDate, ri.dueDate, " +
-                "ri.recomendType,p.prod_name, pa.sra, pa.fastrack " +
+                "ri.recomendType,p.prod_name, pa.sra, pa.fastrack, pa.id " +
                 "                from review ri, prodapplications pa, product p " +
                 "                where ri.prod_app_id = pa.id " +
                 "                and pa.PROD_ID = p.id " +
@@ -104,6 +106,7 @@ public class CustomReviewDAO implements Serializable {
             reviewInfoTable.setProdName((String) objArr[6]);
             reviewInfoTable.setSra((Boolean) objArr[7]);
             reviewInfoTable.setFastrack((Boolean) objArr[8]);
+            reviewInfoTable.setProdAppID(((BigInteger) objArr[9]).longValue());
             prodTables.add(reviewInfoTable);
         }
         return prodTables;
@@ -135,7 +138,7 @@ public class CustomReviewDAO implements Serializable {
     public List<ReviewInfoTable> findAllPriSecReview() {
         List<Object[]> ris = entityManager.createNativeQuery("select * \n" +
                 "from ((select u.name, p.prod_name, ri.reviewStatus, 'PRIMARY' as revType\n" +
-                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule\n" +
+                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule, pa.id as prodAppID " +
                 "from review_info ri, prodapplications pa, product p, user u\n" +
                 "where ri.prod_app_id = pa.id\n" +
                 "and pa.PROD_ID = p.id\n" +
@@ -144,7 +147,7 @@ public class CustomReviewDAO implements Serializable {
                 ")\n" +
                 "union \n" +
                 "(select u.name, p.prod_name, ri.reviewStatus, 'SECONDARY' as revType\n" +
-                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule\n" +
+                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule, pa.id  as prodAppID " +
                 "from review_info ri, prodapplications pa, product p, user u\n" +
                 "where ri.prod_app_id = pa.id\n" +
                 "and pa.PROD_ID = p.id\n" +
@@ -171,6 +174,7 @@ public class CustomReviewDAO implements Serializable {
             if (objArr[10] != null)
                 reviewInfoTable.setRecomendType(RecomendType.valueOf((String) objArr[10]));
             reviewInfoTable.setCtdModule((String) objArr[11]);
+            reviewInfoTable.setProdAppID(((BigInteger) objArr[12]).longValue());
             prodTables.add(reviewInfoTable);
         }
         return prodTables;

@@ -54,7 +54,6 @@ public class ForeignAppStatusMBean implements Serializable {
         selForeignAppStatus.setCountry(new Country());
     }
 
-    @Transactional
     public String addForStatus() {
         try {
             facesContext = FacesContext.getCurrentInstance();

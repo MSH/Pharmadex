@@ -25,7 +25,7 @@ public interface ReviewInfoDAO extends JpaRepository<ReviewInfo, Long> {
     public List<ReviewInfo> findByProdApplications_IdOrderByAssignDateAsc(Long id);
 
     @Query("select r from ReviewInfo r where r.prodApplications.id=?1 and (r.reviewer.userId = ?2 or r.secReviewer.userId = ?3)")
-    public List<ReviewInfo> findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(Long prodApplications_Id, Long reviewer_UserId, Long secReviewer_UserId);
+    public ReviewInfo findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(Long prodApplications_Id, Long reviewer_UserId, Long secReviewer_UserId);
 
 }
 

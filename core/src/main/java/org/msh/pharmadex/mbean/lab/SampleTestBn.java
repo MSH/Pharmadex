@@ -105,16 +105,10 @@ public class SampleTestBn implements Serializable {
         sampleTest = new SampleTest();
     }
 
-    public String sendToDetail(Long id) {
-        JsfUtils.flashScope().put("sampleTestID", id);
-        return "/internal/lab/sampletestdetail.faces";
-    }
-
-
     public void initSampleAdd() {
         sampleTest.setSampleComments(new ArrayList<SampleComment>());
         DosageForm dosForm = sampleTestService.findDosQuantity(sampleTest.getProdApplications().getId());
-        sampleTest.setQuantity(""+dosForm.getSampleSize());
+        sampleTest.setQuantity(""+dosForm.getSampleSize()+" "+dosForm.getDosForm());
         sampleComment = new SampleComment(sampleTest);
     }
 

@@ -51,9 +51,9 @@ public class JsfUtils {
         return c.getTime();
     }
 
-    public static Flash flashScope() {
-        return (FacesContext.getCurrentInstance().getExternalContext().getFlash());
-    }
+//    public static Flash flashScope() {
+//        return (FacesContext.getCurrentInstance().getExternalContext().getFlash());
+//    }
 
 
 }

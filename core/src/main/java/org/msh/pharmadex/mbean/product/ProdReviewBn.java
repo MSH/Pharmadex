@@ -10,6 +10,7 @@ import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
+import org.omnifaces.util.Faces;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -62,33 +63,6 @@ public class ProdReviewBn implements Serializable {
     private ReviewInfo reviewInfo;
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-
-    public String findReview() {
-        review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("reviewID",review.getId());
-        return "/internal/review";
-    }
-
-    public String findReviewInfo() {
-        reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), processProdBn.getProdApplications().getId());
-        JsfUtils.flashScope().put("reviewInfoID", reviewInfo.getId());
-        return "/internal/reviewInfo";
-    }
-
-    public String sendToDetail(Long id){
-        JsfUtils.flashScope().put("reviewID", id);
-        return "/internal/review.faces";
-    }
-
-    public String sendToReviewInfo(Long id){
-        JsfUtils.flashScope().put("reviewInfoID", id);
-        return "/internal/reviewInfo.faces";
-    }
-
-    public String sendToExecSumm(Long id){
-        JsfUtils.flashScope().put("prodAppID", id);
-        return "/internal/execsumm.faces";
-    }
 
     public void secreviewListener() {
         if (reviewInfo.isSecreview()) {

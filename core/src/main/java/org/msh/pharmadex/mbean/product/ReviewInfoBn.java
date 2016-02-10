@@ -83,18 +83,29 @@ public class ReviewInfoBn implements Serializable {
 
     @PostConstruct
     private void init() {
-        if (reviewInfo == null) {
-            Long reviewInfoID = (Long) JsfUtils.flashScope().get("reviewInfoID");
-            if (reviewInfoID != null) {
-                reviewInfo = reviewService.findReviewInfo(reviewInfoID);
-                ReviewStatus reviewStatus = reviewInfo.getReviewStatus();
-                JsfUtils.flashScope().keep("reviewInfoID");
-                if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
-                    readOnly = true;
+        try {
+            if (reviewInfo == null) {
+                String reviewInfoID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("reviewInfoID");
+                if(reviewInfoID!=null&&!reviewInfoID.equals("")) {
+                    reviewInfo = reviewService.findReviewInfo(Long.valueOf(reviewInfoID));
+                }else{
+                    String prodAppID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
+                    if(prodAppID!=null&&!prodAppID.equals("")) {
+                        reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), Long.valueOf(prodAppID));
+                    }
                 }
-                reviewComments = getReviewComments();
+
+                if(reviewInfo!=null) {
+                    ReviewStatus reviewStatus = reviewInfo.getReviewStatus();
+                    if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
+                        readOnly = true;
+                    }
+                    reviewComments = getReviewComments();
+                }
+                loggedInUser = userService.findUser(userSession.getLoggedINUserID());
             }
-            loggedInUser = userService.findUser(userSession.getLoggedINUserID());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -191,7 +202,6 @@ public class ReviewInfoBn implements Serializable {
         reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
         RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
         reviewInfo = (ReviewInfo) retObject.getObj();
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", reviewInfo.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -210,7 +220,6 @@ public class ReviewInfoBn implements Serializable {
         saveReview();
         userSession.setProdAppID(reviewInfo.getProdApplications().getId());
         userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", reviewInfo.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -244,14 +253,6 @@ public class ReviewInfoBn implements Serializable {
             return "processreg";
         }
         return "";
-    }
-
-    public String cancelReview() {
-//        userSession.setReview(null);
-        JsfUtils.flashScope().put("prodAppID", reviewInfo.getProdApplications().getId());
-//        userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
-        return "/internal/processreg";
-
     }
 
     public void submitComment() {
@@ -539,7 +540,7 @@ public class ReviewInfoBn implements Serializable {
         if (reviewInfo != null) {
             if (reviewInfo.getReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
                 if (reviewInfo.getReviewStatus().equals(ReviewStatus.ASSIGNED) || reviewInfo.getReviewStatus().equals(ReviewStatus.IN_PROGRESS)
-                        ||reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED))
+                        || reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED))
                     priReview = true;
                 else {
                     if (!reviewInfo.isSecreview() && (reviewInfo.getReviewStatus().equals(ReviewStatus.FEEDBACK) ||

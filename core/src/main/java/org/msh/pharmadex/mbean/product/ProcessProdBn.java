@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
@@ -34,8 +35,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -123,20 +126,20 @@ public class ProcessProdBn implements Serializable {
     private List<SuspDetail> suspDetails;
     private List<Attachment> clinicalRevs;
 
+    private boolean disableVerify;
+
     @PostConstruct
     private void init() {
-        loggedInUser = userService.findUser(userSession.getLoggedINUserID());
-        mail.setUser(loggedInUser);
-        timeLine.setUser(loggedInUser);
-        selComment.setUser(loggedInUser);
+        try {
+            loggedInUser = userService.findUser(userSession.getLoggedINUserID());
+            mail.setUser(loggedInUser);
+            timeLine.setUser(loggedInUser);
+            selComment.setUser(loggedInUser);
+            initProdApps();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
-
-    public String goProdDetails() {
-        System.out.println("Product ID ==" + prodApplications.getId());
-        JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
-        return "processproddetail";
-    }
-
 
     public List<RegState> getRegSate() {
         if (prodApplications != null)
@@ -225,11 +228,15 @@ public class ProcessProdBn implements Serializable {
     }
 
     private void initProdApps() {
-        Long prodAppID = (Long) JsfUtils.flashScope().get("prodAppID");
-        if (prodAppID != null) {
-            prodApplications = prodApplicationsService.findProdApplications(prodAppID);
-            setFieldValues();
-            JsfUtils.flashScope().keep("prodAppID");
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+            if (prodAppID != null) {
+                prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+                setFieldValues();
+            }
+        } catch (Exception ex) {
+            facesContext.addMessage(null, new FacesMessage("Use the link within the system to access this page."));
         }
     }
 
@@ -280,20 +287,9 @@ public class ProcessProdBn implements Serializable {
 
     public String sendToRenew() {
         save();
-        Flash flash = JsfUtils.flashScope();
-        flash.put("prodID", prodApplications.getProduct().getId());
-        flash.put("appID", prodApplications.getApplicant().getApplcntId());
         return "renew";
 
     }
-
-    public String sendToSuspend(Long suspID) {
-        Flash flash = JsfUtils.flashScope();
-        flash.put("prodAppID", prodApplications.getId());
-        flash.put("suspDetailID", suspID);
-        return "suspenddetail";
-    }
-
 
     public String sendMessage() {
         facesContext = FacesContext.getCurrentInstance();
@@ -370,37 +366,52 @@ public class ProcessProdBn implements Serializable {
 
     public void changeStatusListener() {
         logger.error("Inside changeStatusListener");
-        if (prodApplications.getRegState().equals(RegState.NEW_APPL)) {
-            if (prodApplications.isFeeReceived()) {
-                timeLine.setRegState(FEE);
-                addTimeline();
+        try {
+            if (prodApplications.getRegState().equals(RegState.NEW_APPL)) {
+                if (prodApplications.isFeeReceived()) {
+                    timeLine.setRegState(FEE);
+                    addTimeline();
+                }
             }
-        }
-        if (prodApplications.getRegState().equals(FEE)) {
-            if (prodApplications.isApplicantVerified() && prodApplications.isProductVerified() && prodApplications.isDossierReceived()) {
-                timeLine.setRegState(RegState.VERIFY);
-                addTimeline();
+            if (prodApplications.getRegState().equals(FEE)) {
+                if (prodApplications.isApplicantVerified() && prodApplications.isProductVerified() && prodApplications.isDossierReceived()) {
+                    timeLine.setRegState(RegState.VERIFY);
+                    addTimeline();
+                }
             }
+            setSelectedTab(1);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        setSelectedTab(1);
     }
 
     public void changeDCC() {
         logger.error("Inside changeDCC");
-        save();
+        try {
+            save();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
     }
 
     public void changeClinicalReviewStatus() {
         logger.error("Inside changeStatusListener");
-        if (prodApplications.isClinicalRevReceived() || prodApplications.isClinicalRevVerified()) {
-            save();
+        try {
+            if (prodApplications.isClinicalRevReceived() || prodApplications.isClinicalRevVerified()) {
+                save();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
     public void changeSampleRecieved() {
         logger.error("Inside changeSampleRecieved");
-        if (prodApplications.getSampleTestRecieved()!=null&&!prodApplications.getSampleTestRecieved()) {
+        try {
             save();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -476,39 +487,55 @@ public class ProcessProdBn implements Serializable {
     }
 
     public void save() {
+        facesContext = FacesContext.getCurrentInstance();
         try {
             prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedINUserID());
 //            product = productService.findProduct(product.getId());
             setFieldValues();
         } catch (Exception e) {
             e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
         }
     }
 
     public String registerProduct() {
         facesContext = FacesContext.getCurrentInstance();
-        if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
-            return "";
-        }
+        try {
+            if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
+                return "";
+            }
 
-
-        timeLine = new TimeLine();
-        timeLine.setRegState(RegState.REGISTERED);
 //        prodApplications.setRegistrationDate(new Date());
-        prodApplications.setProdRegNo("" + (Math.random() * 100000));
+            if(prodApplications.getProdRegNo()==null||prodApplications.getProdRegNo().equals(""))
+                prodApplications.setProdRegNo("" + (Math.random() * 100000));
 //        globalEntityLists.setRegProducts(null);
 
-        timeLine.setProdApplications(prodApplications);
-        timeLine.setStatusDate(new Date());
-        timeLine.setUser(loggedInUser);
-        timeLineList.add(timeLine);
-        prodApplications.setRegState(timeLine.getRegState());
-        prodApplications.setActive(true);
+            prodApplications.setActive(true);
+            prodApplications.setUpdatedBy(loggedInUser);
 //        prodApplications = prodApplicationsService.updateProdApp(prodApplications);
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
 
-        prodApplicationsService.createRegCert(prodApplications);
+            String retValue = prodApplicationsService.registerProd(prodApplications);
+            if(retValue.equals("created")) {
+                prodApplicationsService.createRegCert(prodApplications);
+                timeLineList = null;
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+            }else{
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Product registered but error generating certificate."));
+        } catch (JRException e) {
+            e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Product registered but error generating certificate."));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Product registered but error generating certificate."));
+        } catch (Exception ex){
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
+        }
         timeLine = new TimeLine();
         return null;
     }
@@ -771,22 +798,25 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplaySample() {
-        if (prodApplications != null && prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
-            displaySample = false;
-        } else {
-            if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
-                RegState regState = prodApplications.getRegState();
-                if ((prodApplications != null && regState != null)) {
-                    if (regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {
-                        displaySample = false;
+        displaySample = false;
+        if (prodApplications != null) {
+            if (prodApplications != null && prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+                displaySample = false;
+            } else {
+                if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
+                    RegState regState = prodApplications.getRegState();
+                    if ((prodApplications != null && regState != null)) {
+                        if (regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {
+                            displaySample = false;
+                        } else {
+                            displaySample = true;
+                        }
                     } else {
-                        displaySample = true;
+                        displaySample = false;
                     }
                 } else {
                     displaySample = false;
                 }
-            } else {
-                displaySample = false;
             }
         }
         return displaySample;
@@ -919,7 +949,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplayClinical() {
-        if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+        if (prodApplications != null && prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
             if (userSession.isHead() || userSession.isModerator() || userSession.isAdmin() || userSession.isClinical())
                 displayClinical = true;
         } else {
@@ -930,5 +960,21 @@ public class ProcessProdBn implements Serializable {
 
     public void setDisplayClinical(boolean displayClinical) {
         this.displayClinical = displayClinical;
+    }
+
+    public boolean isDisableVerify() {
+        if (prodApplications != null) {
+            if (prodApplications.getRegState().ordinal() > 3) {
+                disableVerify = true;
+
+            } else {
+                displayVerify = false;
+            }
+        }
+        return disableVerify;
+    }
+
+    public void setDisableVerify(boolean disableVerify) {
+        this.disableVerify = disableVerify;
     }
 }

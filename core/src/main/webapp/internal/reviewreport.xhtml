@@ -21,9 +21,10 @@
                         <h:outputText value="#{msgs.global_name}"/>
                     </f:facet>
                     <p:commandLink id="viewLink" value="#{eachprod.revName}"
-                                   action="#{reviewListMBean.sentToDetail(eachprod.id)}"
+                                   action="/internal/reviewInfo"
                                    ajax="false"
                                    style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
+                        <f:param name="reviewInfoID" value="#{eachprod.id}"/>
                     </p:commandLink>
                 </p:column>
 

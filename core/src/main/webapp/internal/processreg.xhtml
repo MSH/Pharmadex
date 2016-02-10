@@ -69,9 +69,10 @@
                                     <h:outputLabel value="#{processProdBn.product.prodDesc}"/>
 
                                     <h:outputLabel value="#{msgs.product_details}"/>
-                                    <p:commandButton id="viewLink" value="#{msgs.click_here}"
-                                                     action="#{processProdBn.goProdDetails}"
-                                                     ajax="false" target="_blank" icon="ui-icon-search"/>
+                                    <p:commandButton value="#{msgs.click_here}" action="processproddetail"
+                                                     ajax="false" target="_blank" icon="ui-icon-search">
+                                        <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                                    </p:commandButton>
                                 </h:panelGrid>
 
 
@@ -291,9 +292,9 @@
 
                                         <p:column headerText="#{msgs.application_no}">
                                             <p:commandLink id="viewLink" value="#{pa.prodAppNo}"
-                                                           action="#{prodAppMBean.sentToDetail(pa.id)}"
-                                                           ajax="false"
+                                                           action="processproddetail" ajax="false"
                                                            style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
+                                                <f:param name="prodAppID" value="#{pa.id}"/>
                                             </p:commandLink>
                                         </p:column>
 
@@ -329,8 +330,10 @@
 
                                     <p:column headerText="#{msgs.application_no}">
                                         <p:commandLink id="susplink" value="#{susp.suspNo}"
-                                                       action="#{processProdBn.sendToSuspend(susp.id)}"
+                                                       action="suspenddetail"
                                                        ajax="false">
+                                            <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                                            <f:param name="suspDetailID" value="#{processProdBn.prodApplications.id}"/>
                                         </p:commandLink>
                                     </p:column>
 
@@ -395,13 +398,16 @@
 
         <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
                   modal="true" dynamic="true">
+            <p:messages showSummary="true" showDetail="true"/>
             <h:form prependId="false">
-                <h:panelGrid columns="2" style="margin-bottom:10px">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
-                    <p:inputText id="attachtitle" value="#{fileUploadController.attach.title}"/>
+                    <p:inputText id="attachtitle" value="#{fileUploadController.attach.title}" required="true"/>
+                    <p:message for="attachtitle" showSummary="true"/>
                     <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
                     <p:inputTextarea id="attachcomment" value="#{fileUploadController.attach.comment}"
                                      rows="5" cols="50"/>
+                    <p:message for="attachcomment" showSummary="true"/>
                 </h:panelGrid>
 
                 <p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}"
@@ -414,8 +420,8 @@
 
                 <p:commandButton id="adddoc" value="#{msgs.global_submit}"
                                  action="#{fileUploadController.addDocument}"
-                                 oncomplete="PF('attachdlg').hide()"
-                                 update=":reghome:growl :reghome:messages :reghome"/>
+                                 oncomplete="if (!args.validationFailed) PF('attachdlg').hide()"
+                                 update=":reghome:growl :reghome:messages :reghome @form"/>
             </h:form>
         </p:dialog>
 
@@ -630,15 +636,20 @@
         <p:dialog header="#{msgs.register_product}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
                   dynamic="true">
             <h:form id="regdatedlg">
-                <h:panelGrid columns="2" style="margin-bottom:10px">
-                    <p:outputLabel value="#{msgs.registration_date}"/>
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.registration_date}" id="regstartdate" for="regDate"/>
                     <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
                                 required="true" pattern="#{userAccessMBean.workspace.datePattern}">
                         <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
                     </p:calendar>
-                    <p:outputLabel value="#{msgs.expiry_date}"/>
+                    <p:message for="regstartdate" />
+                    <p:outputLabel value="#{msgs.expiry_date}" for="expiryDate"/>
                     <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
                                 required="true" pattern="#{userAccessMBean.workspace.datePattern}"/>
+                    <p:message for="expiryDate" />
+                    <p:outputLabel for="regnumber" value="#{msgs.reg_number}"/>
+                    <p:inputText id="regnumber" value="#{processProdBn.prodApplications.prodRegNo}" required="true"/>
+                    <p:message for="regnumber" showSummary="true"/>
 
                 </h:panelGrid>
 

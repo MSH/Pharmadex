@@ -16,8 +16,11 @@
                                     completeMethod="#{regProdMbn.completeProduct}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}" forceSelection="true"
-                            />
-                    <p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">
+                            >
+                        <p:ajax event="itemSelect" listener="#{regProdMbn.onItemSelect}" update="@form" process="@form"/>
+                    </p:autoComplete>
+                    <p:commandButton value="#{msgs.global_submit}" action="/internal/processreg.faces" ajax="false">
+                        <f:param name="prodAppID" value="#{regProdMbn.prodTable.prodAppID}"/>
                     </p:commandButton>
                 </h:panelGrid>
 
@@ -28,16 +31,20 @@
             <p:panel header="#{msgs.recieved_applications}">
 
                 <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBean.submmittedAppList}"
-                             filteredValue="#{prodAppMBean.filteredApps}">
+                             filteredValue="#{prodAppMBean.filteredApps}"
+                              paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}" rows="50" rowsPerPageTemplate="25,50,100,200">
 
 
                     <p:column filterBy="#{eachprod.product.prodName}"
-                              sortBy="#{eachprod.product.prodName}" >
+                              sortBy="#{eachprod.product.prodName}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
-                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}" action="#{prodAppMBean.sentToDetail(eachprod.id)}"
+                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}" action="/internal/processreg"
                                        ajax="false" style="#{eachprod.fastrack?'color: #a52a2a;':''}">
+                            <f:param name="prodAppID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>
 

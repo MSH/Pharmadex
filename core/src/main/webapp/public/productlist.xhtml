@@ -21,8 +21,9 @@
                         <h:outputText value="#{msgs.prod_name}"/>
                     </f:facet>
                     <p:commandLink id="viewLink" value="#{prodApps.prodName}"
-                                   action="#{productMbean.goToDetails(prodApps.prodAppID)}"
+                                   action="productdetail"
                                    ajax="false">
+                        <f:param name="prodAppID" value="#{prodApps.prodAppID}"/>
                     </p:commandLink>
 
                 </p:column>

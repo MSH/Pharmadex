@@ -27,6 +27,7 @@ public class ReviewInfoTable implements Serializable {
     private String prodAppNo;
     private boolean sra;
     private boolean fastrack;
+    private Long prodAppID;
 
 
 
@@ -157,5 +158,13 @@ public class ReviewInfoTable implements Serializable {
 
     public void setFastrack(boolean fastrack) {
         this.fastrack = fastrack;
+    }
+
+    public Long getProdAppID() {
+        return prodAppID;
+    }
+
+    public void setProdAppID(Long prodAppID) {
+        this.prodAppID = prodAppID;
     }
 }

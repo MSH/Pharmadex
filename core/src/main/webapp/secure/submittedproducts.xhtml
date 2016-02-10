@@ -18,10 +18,9 @@
 
                     <p:column headerText="Product Name">
                         <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
-                                       action="/internal/processreg?faces-redirect=true"
+                                       action="/internal/processreg"
                                        ajax="false">
-                            <f:param name="id" value="#{eachprod.product.id}"/>
-                            <f:setPropertyActionListener value="#{eachprod.id}" target="#{userSession.prodAppID}"/>
+                            <f:param name="id" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>
 
@@ -62,14 +61,16 @@
                             rendered="#{empty prodAppMBean.prodApplicationsList}">
                 <f:param value="#{msgs.lable_products}"/>
             </h:outputFormat>
+
             <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBean.prodApplicationsList}"
                          rendered="#{not empty prodAppMBean.prodApplicationsList}">
 
                 <p:column headerText="Product Name">
                     <p:column headerText="Product Name">
-                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
-                                       action="#{prodAppMBean.sentToDetail(eachprod.id)}"
+                        <p:commandLink value="#{eachprod.product.prodName}"
+                                       action="/internal/processreg"
                                        ajax="false">
+                            <f:param name="prodAppID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>
                 </p:column>

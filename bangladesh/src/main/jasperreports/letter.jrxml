@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="542" leftMargin="50" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="176"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="id" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
 	</parameter>
@@ -51,31 +51,31 @@ and p.id = $P{id}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="87" splitType="Stretch">
+		<band height="148" splitType="Stretch">
 			<image>
-				<reportElement x="0" y="0" width="123" height="86" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
+				<reportElement x="248" y="1" width="80" height="80" uuid="4e6de708-9670-46c6-b7d7-570fdb57a817"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="123" y="1" width="449" height="37" forecolor="#006666" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b"/>
+				<reportElement x="0" y="129" width="542" height="17" uuid="2640ee82-ec94-43ff-b879-914fa7e9f835"/>
 				<textElement textAlignment="Center">
-					<font size="20" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration (DGDA)]]></text>
+				<text><![CDATA[105-106 Motijheel Commercial Area, Dhaka-1000]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="123" y="38" width="449" height="24" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13"/>
+				<reportElement x="0" y="108" width="542" height="21" forecolor="#006666" uuid="4bdfc758-0892-47e5-8bc0-f0a8fd9fa2ff"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Ministry of Health and Family Welfare]]></text>
+				<text><![CDATA[DIRECTORATE GENERAL OF DRUG ADMINISTRATION OF BANGLADESH]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="123" y="62" width="449" height="24" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46"/>
+				<reportElement x="0" y="82" width="542" height="26" uuid="4acf8c79-e358-4f28-a728-424ab50470ee"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Government of the People's Republic of Bangladesh]]></text>
+				<text><![CDATA[PEOPLE'S REPUBLIC OF BANGLADESH]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -93,7 +93,7 @@ and p.id = $P{id}]]>
 				<text><![CDATA[To,]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="498" width="572" height="20" uuid="f862559b-8b50-4802-a550-1df8d5af8aee"/>
+				<reportElement x="0" y="498" width="542" height="20" uuid="f862559b-8b50-4802-a550-1df8d5af8aee"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -101,7 +101,7 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA[$P{registrar}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="309" width="572" height="48" uuid="c6eeee1e-839c-47b8-95b5-4dc77706bf46"/>
+				<reportElement x="0" y="309" width="542" height="48" uuid="c6eeee1e-839c-47b8-95b5-4dc77706bf46"/>
 				<textElement textAlignment="Justified">
 					<font fontName="SansSerif" size="12"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -109,7 +109,7 @@ and p.id = $P{id}]]>
 				<text><![CDATA[Your application has been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 1 year from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only. ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="372" width="572" height="42" uuid="052043bf-8725-43ca-9434-d6f32858c914"/>
+				<reportElement x="0" y="372" width="542" height="42" uuid="052043bf-8725-43ca-9434-d6f32858c914"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -172,7 +172,7 @@ and p.id = $P{id}]]>
 				<text><![CDATA[Dosage Form:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="448" width="572" height="20" uuid="b65d652b-1337-4431-b97e-36bce3a44d57"/>
+				<reportElement x="0" y="448" width="542" height="20" uuid="b65d652b-1337-4431-b97e-36bce3a44d57"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -243,7 +243,7 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA[$F{prodAppType}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="124" width="572" height="20" uuid="1338e838-7e15-4cee-8b35-b86f63466d66"/>
+				<reportElement x="0" y="124" width="542" height="20" uuid="1338e838-7e15-4cee-8b35-b86f63466d66"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 					<paragraph leftIndent="10" rightIndent="10"/>

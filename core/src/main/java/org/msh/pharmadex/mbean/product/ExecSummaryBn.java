@@ -59,11 +59,15 @@ public class ExecSummaryBn implements Serializable {
 
     @PostConstruct
     private void init(){
-        Long prodAppID = (Long) JsfUtils.flashScope().get("prodAppID");
-        if(prodAppID!=null){
-            prodApplications = prodApplicationsService.findProdApplications(prodAppID);
-            product = prodApplications.getProduct();
-            reviewInfos = reviewService.findReviewInfos(prodAppID);
+        try {
+            Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+            if (prodAppID != null) {
+                prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+                product = prodApplications.getProduct();
+                reviewInfos = reviewService.findReviewInfos(prodAppID);
+
+            }
+        }catch (Exception ex){
 
         }
     }
@@ -75,7 +79,6 @@ public class ExecSummaryBn implements Serializable {
 //        prodApplications.setExecSummary(execSummary);
         String result = prodApplicationsService.submitExecSummary(prodApplications, userSession.getLoggedINUserID(), reviewInfos);
         if(result.equals("persist")) {
-            JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
             return "processreg";
         }else if(result.equals("state_error")) {
@@ -91,21 +94,6 @@ public class ExecSummaryBn implements Serializable {
 
         return "";
     }
-
-    public String sendToReviewInfo(Long id){
-        JsfUtils.flashScope().put("reviewInfoID", id);
-        return "/internal/reviewInfo.faces";
-    }
-
-
-    public String cancelReview() {
-//        userSession.setReview(null);
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", prodApplications.getId());
-        userSession.setProdID(prodApplications.getProduct().getId());
-        return "/internal/processreg";
-
-    }
-
 
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;

@@ -42,28 +42,17 @@ public class PurOrderListBn implements Serializable {
     private void init() {
     }
 
-    public String sendToDetails(Long purOrderID){
-        JsfUtils.flashScope().put("purOrderID", purOrderID);
-        return "/secure/purorder";
-
-    }
-
     public String searchPurOrder(){
             POrderBase pOrderBase = pOrderService.findPOrder(pipNo, true);
             if(pOrderBase!=null) {
-                return sendToProcess(pOrderBase.getId());
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("purOrderID", ""+pOrderBase.getId());
+                return "processpurorder";
             }else{
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Purchase order not found!!!"));
                 pipNo = null;
                 return null;
             }
         }
-
-    public String sendToProcess(Long pipOrderID){
-        JsfUtils.flashScope().put("purOrderID", pipOrderID);
-        return "processpurorder";
-
-    }
 
     public POrderService getpOrderService() {
         return pOrderService;

@@ -30,12 +30,6 @@ public class SuspAppMBean implements Serializable {
     SuspendService suspendService;
     private List<ProdApplications> filteredApps;
 
-    public String sendToSuspend(Long suspID) {
-        Flash flash = JsfUtils.flashScope();
-        flash.put("suspDetailID", suspID);
-        return "suspenddetail";
-    }
-
     public UserSession getUserSession() {
         return userSession;
     }

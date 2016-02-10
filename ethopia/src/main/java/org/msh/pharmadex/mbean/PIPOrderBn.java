@@ -39,7 +39,7 @@ public class PIPOrderBn extends POrderBn {
 
     @PostConstruct
     private void init() {
-        Long pipOrderID = (Long) JsfUtils.flashScope().get("pipOrderID");
+        Long pipOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID"));
         if (pipOrderID != null) {
             pipOrder = getpOrderService().findPIPOrderEager(pipOrderID);
             if (pipOrder.getCurrency() == null)
@@ -48,7 +48,6 @@ public class PIPOrderBn extends POrderBn {
             pipProds = pipOrder.getPipProds();
             setApplicantUser(pipOrder.getApplicantUser());
             setApplicant(pipOrder.getApplicantUser().getApplicant());
-            JsfUtils.flashScope().keep("pipOrderID");
         } else {
             pipOrder = new PIPOrder(new Currency());
             if (getUserSession().isCompany()) {

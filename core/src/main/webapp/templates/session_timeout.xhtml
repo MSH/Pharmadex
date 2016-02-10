@@ -8,7 +8,7 @@
 
 <ui:composition>
     <h:form prependId="false">
-        <p:idleMonitor timeout = "#{360000}"
+        <p:idleMonitor timeout = "#{session.maxInactiveInterval * 1000 - 125000}"
                 onidle="startIdleMonitor()"
                 onactive="PF('timeoutDialog').hide()"/>
 

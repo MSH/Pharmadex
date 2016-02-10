@@ -39,17 +39,6 @@ public class ReviewListMBean implements Serializable {
     private List<ReviewInfoTable> allReviews;
     private Workspace workspace;
 
-
-    public String sentToDetail(Long id){
-        JsfUtils.flashScope().put("reviewInfoID", id);
-        return "/internal/reviewInfo.faces";
-    }
-
-    public String sentToReviewDetail(Long id){
-        JsfUtils.flashScope().put("reviewID", id);
-        return "/internal/review.faces";
-    }
-
     public UserSession getUserSession() {
         return userSession;
     }

@@ -43,16 +43,20 @@ public class ProductDisplay implements Serializable {
 
     @PostConstruct
     private void init() {
-        Long prodAppID = (Long) JsfUtils.flashScope().get("prodAppID");
-        if (prodAppID != null) {
-            prodApplications = prodApplicationsService.findProdApplications(prodAppID);
-            product = productService.findProduct(prodApplications.getProduct().getId());
-            prodApplications.setProduct(product);
-            applicant = prodApplications.getApplicant();
-            timeLineList = timelineService.findTimelineByApp(prodApplications.getId());
-            prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
-            foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
+        try {
+            Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+            if (prodAppID != null) {
+                prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+                product = productService.findProduct(prodApplications.getProduct().getId());
+                prodApplications.setProduct(product);
+                applicant = prodApplications.getApplicant();
+                timeLineList = timelineService.findTimelineByApp(prodApplications.getId());
+                prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
+                foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 
@@ -61,14 +65,6 @@ public class ProductDisplay implements Serializable {
         flash.put("appID", applicant.getApplcntId());
         return "applicantdetail";
     }
-
-    public String sentToApp() {
-//        userSession.setReview(null);
-        JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
-        return "/internal/processreg";
-
-    }
-
 
     public Product getProduct() {
         return product;

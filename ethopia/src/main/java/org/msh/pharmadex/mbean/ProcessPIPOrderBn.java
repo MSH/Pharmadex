@@ -30,12 +30,15 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     @PostConstruct
     public void init() {
-        pOrderBase = new PIPOrder();
-        Long pipOrderID = (Long) JsfUtils.flashScope().get("pipOrderID");
-        if (pipOrderID != null) {
-            pOrderBase = pOrderService.findPIPOrderEager(pipOrderID);
-            initVariables();
-            JsfUtils.flashScope().keep("pipOrderID");
+        try {
+            pOrderBase = new PIPOrder();
+            Long pipOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID"));
+            if (pipOrderID != null) {
+                pOrderBase = pOrderService.findPIPOrderEager(pipOrderID);
+                initVariables();
+            }
+        }catch (Exception ec){
+
         }
 
     }

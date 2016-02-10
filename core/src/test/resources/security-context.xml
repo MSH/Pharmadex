@@ -7,9 +7,9 @@
 		<intercept-url pattern="/pages/login.faces"/>
         <intercept-url pattern="/src" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
 		<!--<intercept-url access="IS_AUTHENTICATED_REMEMBERED" pattern="/*"/>-->
-        <intercept-url pattern="/secure/**" access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF" />
+        <intercept-url pattern="/secure/**" access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF, ROLE_LAB_MODERATOR" />
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/internal/**" access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF" />
+        <intercept-url pattern="/internal/**" access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF, ROLE_LAB_MODERATOR" />
 		<form-login authentication-failure-url="/pages/login1.faces?login_error=true" login-page="/pages/login1.faces"
                      authentication-success-handler-ref="postSuccessfullAuthHandler" login-processing-url="/j_spring_security_check"/>
 		<logout success-handler-ref="postLogoutSuccessHandler" invalidate-session="true"/>

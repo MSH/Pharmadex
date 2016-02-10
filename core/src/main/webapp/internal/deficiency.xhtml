@@ -6,7 +6,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -23,8 +23,10 @@
 
                     <p:commandButton value="#{msgs.generate_report}"
                                      ajax="false" actionListener="#{prodDeficiencyBn.PDF}"/>
-                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{prodDeficiencyBn.sendToHome}"
-                                     ajax="false"/>
+                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                                     ajax="false">
+                            <f:param name="prodAppID" value="#{prodDeficiencyBn.prodApplications.id}"/>
+                    </p:commandButton>
                 </div>
 
                 <div style="height: 10px;"/>

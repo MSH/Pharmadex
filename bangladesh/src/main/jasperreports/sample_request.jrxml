@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="11"/>
+	<property name="ireport.y" value="229"/>
 	<parameter name="subject" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -23,6 +23,7 @@
 	<parameter name="manufName" class="java.lang.String"/>
 	<parameter name="appType" class="java.lang.String"/>
 	<parameter name="summary" class="java.lang.String"/>
+	<parameter name="sampleQty" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -290,12 +291,26 @@
 				<textFieldExpression><![CDATA[$P{dosForm}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="297" width="497" height="125" uuid="1c0da996-2737-4d10-b588-00aee870123e"/>
+				<reportElement x="75" y="321" width="497" height="125" uuid="1c0da996-2737-4d10-b588-00aee870123e"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Therefore, you are requested to submit sample of actual product (     ) with primary reference substance (BP or USP or EP) not less than 100mg and secondary reference substance not less than 500mg, specification and method of analysis of finished product and based on test method/specific monograph for your product, all reference standards (related substances, internal standards, references, chemicals used for system suitability solution, resolution solutions) for the purpose of laboratory analysis.]]></text>
+				<text><![CDATA[Therefore, you are requested to submit the above sample quantity of actual product with primary reference substance (BP or USP or EP) not less than 100mg and secondary reference substance not less than 500mg, specification and method of analysis of finished product and based on test method/specific monograph for your product, all reference standards (related substances, internal standards, references, chemicals used for system suitability solution, resolution solutions) for the purpose of laboratory analysis.]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="75" y="281" width="134" height="20" uuid="72bdb563-5031-4f00-800c-f7fca2dc7617"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sample Quantity ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="211" y="281" width="361" height="20" uuid="81c1a565-40f4-485f-8869-dcc2191f3e38"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sampleQty}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -318,7 +333,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Food Medicine and Health Care Administration and Control Authority ]]></text>
+				<text><![CDATA[DGDA]]></text>
 			</staticText>
 		</band>
 	</pageFooter>

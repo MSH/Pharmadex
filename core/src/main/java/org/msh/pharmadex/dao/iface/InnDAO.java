@@ -2,6 +2,11 @@ package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.Inn;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
+
+import javax.persistence.QueryHint;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +17,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 
 public interface InnDAO extends JpaRepository<Inn, Long> {
-
 
 }
 

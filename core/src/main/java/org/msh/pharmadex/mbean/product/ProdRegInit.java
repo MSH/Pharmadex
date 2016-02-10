@@ -53,25 +53,29 @@ public class ProdRegInit implements Serializable {
 
     public void calculate() {
         context = FacesContext.getCurrentInstance();
-        if (prodAppType == null) {
-            context.addMessage(null, new FacesMessage("prodapptype_null"));
-            displayfeepanel = false;
-        } else {
-            for (FeeSchedule feeSchedule : globalEntityLists.getFeeSchedules()) {
-                if (feeSchedule.getAppType().equals(prodAppType.name())) {
-                    totalfee = feeSchedule.getTotalFee();
-                    fee = feeSchedule.getFee();
-                    prescreenfee = feeSchedule.getPreScreenFee();
-                    break;
+        try {
+            if (prodAppType == null) {
+                context.addMessage(null, new FacesMessage("prodapptype_null"));
+                displayfeepanel = false;
+            } else {
+                for (FeeSchedule feeSchedule : globalEntityLists.getFeeSchedules()) {
+                    if (feeSchedule.getAppType().equals(prodAppType.name())) {
+                        totalfee = feeSchedule.getTotalFee();
+                        fee = feeSchedule.getFee();
+                        prescreenfee = feeSchedule.getPreScreenFee();
+                        break;
+                    }
                 }
+                populateChecklist();
+                displayfeepanel = true;
             }
-            populateChecklist();
-            displayfeepanel = true;
-        }
+        }catch (Exception ex){
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
 
+        }
     }
 
-    public void populateChecklist() {
+    private void populateChecklist() {
         ProdApplications prodApplications = new ProdApplications();
         prodApplications.setProdAppType(prodAppType);
         if (selSRA != null && selSRA.length > 0)
@@ -82,12 +86,6 @@ public class ProdRegInit implements Serializable {
     }
 
     public String regApp() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
-
-//        calculate();
-
         ProdAppInit prodAppInit = new ProdAppInit();
         prodAppInit.setEml(eml);
         prodAppInit.setProdAppType(prodAppType);

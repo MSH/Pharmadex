@@ -422,7 +422,7 @@ public class ProdApplicationsService implements Serializable {
 
         URL resource = getClass().getResource("/reports/reg_letter.jasper");
         HashMap param = new HashMap();
-        param.put("id", prodApp.getId());
+        param.put("prodappid", prodApp.getId());
         return JasperFillManager.fillReport(resource.getFile(), param, conn);
     }
 
@@ -466,9 +466,11 @@ public class ProdApplicationsService implements Serializable {
         return "created";
     }
 
-    public String createRegCert(ProdApplications prodApp) {
+    @Transactional
+    public String registerProd(ProdApplications prodApp) {
         this.prodApp = prodApp;
         this.product = prodApp.getProduct();
+
 
         List<ProdApplications> prodApps;
         ProdApplications proda = null;
@@ -492,31 +494,39 @@ public class ProdApplicationsService implements Serializable {
 
                 proda.setRegState(timeLine.getRegState());
                 prodApplicationsDAO.updateApplication(proda);
+                timelineService.saveTimeLine(timeLine);
+            }else{
+                TimeLine timeLine = new TimeLine();
+                timeLine.setRegState(RegState.REGISTERED);
+                timeLine.setProdApplications(prodApp);
+                timeLine.setStatusDate(new Date());
+                timeLine.setUser(prodApp.getUpdatedBy());
+                prodApp.setRegState(timeLine.getRegState());
 
-
+                prodApplicationsDAO.updateApplication(prodApp);
+                timelineService.saveTimeLine(timeLine);
             }
-
-
-//            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
-            File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
-            JasperPrint jasperPrint = initRegCert();
-            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
-            prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
-            prodApplicationsDAO.updateApplication(prodApp);
-
-        } catch (JRException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return "error";
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return "error";
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return "created";
+        }catch  (Exception ex){
+            ex.printStackTrace();
             return "error";
         }
+    }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public String createRegCert(ProdApplications prodApp) throws IOException, JRException, SQLException {
+        this.prodApp = prodApp;
+        this.product = prodApp.getProduct();
+        //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
+        File invoicePDF = null;
+            invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
+        JasperPrint jasperPrint = initRegCert();
+        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+        prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
+        prodApplicationsDAO.updateApplication(prodApp);
         return "created";
     }
+
 
     public String generateAppNo(ProdApplications prodApplications) {
         RegistrationUtil registrationUtil = new RegistrationUtil();

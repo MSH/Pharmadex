@@ -51,20 +51,23 @@ public class LicHolderBn implements Serializable {
 
     @PostConstruct
     public void init() {
-        if(licenseHolder == null){
-            Long licHolderID = (Long) JsfUtils.flashScope().get("licHolderID");
-            if (licHolderID != null) {
-                licenseHolder = licenseHolderService.findLicHolder(licHolderID);
-                agentInfos = licenseHolderService.findAllAgents(licenseHolder.getId());
-                products = licenseHolder.getProducts();
-                JsfUtils.flashScope().keep("licHolderID");
-            }else{
-                licenseHolder = new LicenseHolder();
-                licenseHolder.setAddress(new Address());
+        try {
+            if (licenseHolder == null) {
+                Long licHolderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("licHolderID"));
+                if (licHolderID != null) {
+                    licenseHolder = licenseHolderService.findLicHolder(licHolderID);
+                    agentInfos = licenseHolderService.findAllAgents(licenseHolder.getId());
+                    products = licenseHolder.getProducts();
+                } else {
+                    licenseHolder = new LicenseHolder();
+                    licenseHolder.setAddress(new Address());
+                }
             }
+            agentInfo = new AgentInfo();
+            user = userService.findUser(userSession.getLoggedINUserID());
+        } catch (Exception ex) {
+
         }
-        agentInfo = new AgentInfo();
-        user = userService.findUser(userSession.getLoggedINUserID());
     }
 
     public void initEdit(AgentInfo agentInfo) {
@@ -90,7 +93,6 @@ public class LicHolderBn implements Serializable {
 
     @Transactional
     public void addAgent() {
-        JsfUtils.flashScope().keep("licHolderID");
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         if (agentInfos == null)
@@ -114,15 +116,13 @@ public class LicHolderBn implements Serializable {
     }
 
     @Transactional
-    public String updateAgent(){
-        JsfUtils.flashScope().keep("licHolderID");
+    public String updateAgent() {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
         String ret = licenseHolderService.updateAgent(agentInfo);
         if (ret.equalsIgnoreCase("persist")) {
             agentInfo = new AgentInfo();
-            JsfUtils.flashScope().put("licHolderID", licenseHolder.getId());
             agentInfos = null;
             licenseHolder = null;
         } else if (ret.equalsIgnoreCase("error")) {
@@ -178,7 +178,7 @@ public class LicHolderBn implements Serializable {
         return "licenseholderlist";
     }
 
-    public String cancelAddLicHolder(){
+    public String cancelAddLicHolder() {
         licenseHolder = new LicenseHolder();
         return "licenseholderlist";
     }

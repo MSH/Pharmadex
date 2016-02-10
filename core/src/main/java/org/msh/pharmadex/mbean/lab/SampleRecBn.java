@@ -71,16 +71,19 @@ public class SampleRecBn implements Serializable {
 
     @PostConstruct
     private void init() {
-        if (sampleTest == null) {
-            Long sampleTestID = (Long) JsfUtils.flashScope().get("sampleTestID");
-            if (sampleTestID != null) {
-                sampleTest = sampleTestService.findSampleTest(sampleTestID);
-                sampleMeds = sampleTest.getSampleMeds();
-                sampleStds = sampleTest.getSampleStds();
-                prodApplications = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
-                JsfUtils.flashScope().keep("sampleTestID");
+        try {
+            if (sampleTest == null) {
+                Long sampleTestID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sampleTestID"));
+                if (sampleTestID != null) {
+                    sampleTest = sampleTestService.findSampleTest(sampleTestID);
+                    sampleMeds = sampleTest.getSampleMeds();
+                    sampleStds = sampleTest.getSampleStds();
+                    prodApplications = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
+                }
+                loggedInUser = userService.findUser(userSession.getLoggedINUserID());
             }
-            loggedInUser = userService.findUser(userSession.getLoggedINUserID());
+        }catch (Exception ex){
+
         }
     }
 
@@ -99,7 +102,7 @@ public class SampleRecBn implements Serializable {
         sampleTest.setUpdatedBy(loggedInUser);
         sampleTest.setUpdatedDate(new Date());
         saveSampleTest();
-        return sendToHome();
+        return "/internal/lab/sampletestdetail";
     }
 
 
@@ -150,11 +153,6 @@ public class SampleRecBn implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), null));
 
         }
-    }
-
-    public String sendToHome(){
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("sampleTestID", sampleTest.getId());
-        return "/internal/lab/sampletestdetail";
     }
 
     public void cancelAddSampleMed() {

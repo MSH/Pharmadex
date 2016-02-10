@@ -128,7 +128,7 @@
                     -->
 
                     <p:submenu label="#{msgs.reg_processing}"
-                               rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
+                               rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator||userSession.lab}">
                         <p:menuitem value="#{msgs.process_review_list}" icon="ui-icon-document"
                                     url="/internal/processreviewlist.faces" rendered="#{userSession.reviewer}"/>
                         <p:menuitem value="#{msgs.reviewers_report}" icon="ui-icon-document"

@@ -25,13 +25,17 @@
 
             <div align="right">
                 <p:commandButton value="#{msgs.notif_recieving}"
-                                 action="#{sampleDetailBn.sendToRecieving}"
-                                 ajax="false"/>
+                                 action="/secure/samplerecieving"
+                                 ajax="false">
+                    <f:param name="sampleTestID" value="#{sampleDetailBn.sampleTest.id}"/>
+                </p:commandButton>
                 <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"
-                                 update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin}"/>
+                                 update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin||userSession.labModerator}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
-                                 action="#{sampleDetailBn.cancelSampleTestDetail}"
-                                 ajax="false"/>
+                                 action="/internal/processreg"
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{sampleDetailBn.sampleTest.prodApplications.id}"/>
+                </p:commandButton>
 
             </div>
 

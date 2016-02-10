@@ -23,11 +23,15 @@
             <div style="height: 10px;"/>
 
             <div align="right">
-                <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{execSummaryBn.cancelReview}"
-                                 ajax="false"/>
+                <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{execSummaryBn.prodApplications.id}"/>
+                </p:commandButton>
                 <p:commandButton value="#{msgs.global_submit}" action="#{execSummaryBn.submit}"
                                  rendered="#{!execSummaryBn.readOnly}"
-                                 ajax="false"/>
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{execSummaryBn.prodApplications.id}"/>
+                </p:commandButton>
             </div>
 
             <div style="height: 10px;"/>
@@ -35,13 +39,13 @@
             <ui:repeat value="#{execSummaryBn.reviewInfos}" var="each">
                 <p:fieldset legend="#{each.reviewer.name}" style="margin-bottom:20px">
                     <h:panelGrid columns="4" cellpadding="10" cellspacing="10">
-<!--                        <p:outputLabel value="#{msgs.recommendation}: "
-                                       style="font-weight: bold;color: #a52a2a;"/>
-                        <p:outputLabel value="#{msgs[each.recomendType.key]}"
-                                       style="font-weight: bold;color: #a52a2a;"/>
-                        <p:outputLabel/>
-                        <p:outputLabel/>
--->
+                        <!--                        <p:outputLabel value="#{msgs.recommendation}: "
+                                                               style="font-weight: bold;color: #a52a2a;"/>
+                                                <p:outputLabel value="#{msgs[each.recomendType.key]}"
+                                                               style="font-weight: bold;color: #a52a2a;"/>
+                                                <p:outputLabel/>
+                                                <p:outputLabel/>
+                        -->
                         <p:outputLabel value="#{msgs.checklist_module}:" styleClass="label"/>
                         <p:outputLabel value="#{each.ctdModule}"/>
 
@@ -68,7 +72,9 @@
                         </p:outputLabel>
 
                         <p:commandLink value="#{msgs.detail_review}" ajax="false"
-                                       action="#{execSummaryBn.sendToReviewInfo(each.id)}"/>
+                                       action="/internal/reviewInfo.faces">
+                            <f:param name="reviewInfoID" value="#{each.id}"/>
+                        </p:commandLink>
                     </h:panelGrid>
                     <p:panel>
                         <h:panelGrid columns="2" cellspacing="10" cellpadding="10">

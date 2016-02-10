@@ -35,6 +35,9 @@ public class CompanyService implements Serializable {
     @Autowired
     GlobalEntityLists globalEntityLists;
 
+    @Autowired
+    ProductService productService;
+
     public List<Company> findAllManufacturers() {
         return companyDAO.findAll();
     }
@@ -73,11 +76,14 @@ public class CompanyService implements Serializable {
         }
 
         for (String ct : companyTypes) {
+            if(ct!=null&&ct!=""&&CompanyType.valueOf(ct).equals(CompanyType.FIN_PROD_MANUF))
+                prod.setManufName(selectedCompany.getCompanyName());
             ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
             prodCompanies.add(prodCompany);
         }
 
         prodCompanies = prodCompanyDAO.save(prodCompanies);
+        productService.updateProduct(prod);
         return prodCompanies;
     }
 

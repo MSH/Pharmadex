@@ -101,7 +101,7 @@ public class Product extends CreationDetail implements Serializable {
     @NotAudited
     private List<ProdApplications> prodApplicationses;
 
-    @Transient
+    @Column(name = "manuf_name", length = 1000)
     private String manufName;
 
     @Column(length = 500)
@@ -144,20 +144,6 @@ public class Product extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String pharmacopeiaStds;
 
-    public String getManufName() {
-        if (prodCompanies != null) {
-            for (ProdCompany c : getProdCompanies()) {
-                if (c.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)) {
-                    return c.getCompany().getCompanyName();
-                }
-            }
-        }
-        return manufName;
-    }
-
-    public void setManufName(String manufName) {
-        this.manufName = manufName;
-    }
 
     public Long getId() {
         return id;
@@ -421,6 +407,14 @@ public class Product extends CreationDetail implements Serializable {
 
     public void setPharmacopeiaStds(String pharmacopeiaStds) {
         this.pharmacopeiaStds = pharmacopeiaStds;
+    }
+
+    public String getManufName() {
+        return manufName;
+    }
+
+    public void setManufName(String manufName) {
+        this.manufName = manufName;
     }
 }
 

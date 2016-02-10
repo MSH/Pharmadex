@@ -5,29 +5,33 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
 
-    <h:panelGrid cellspacing="10" cellpadding="10" columns="3">
-
+    <h:panelGrid cellspacing="2" cellpadding="2" columns="4">
         <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}"/>
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"/>
         <!--
                 <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{processProdBnET.initTimeLine}" update=":reghome:processtab:sendtoapplicant"
                                  rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('sendtoappdlg').show()"/>
         -->
         <p:commandButton id="sendtoapp2" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false">
+                         rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
-        <p:commandButton id="feedback" value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp"
+        <p:commandButton id="feedback" value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp" icon="ui-icon-cancel"
                          rendered="#{preScreenProdMBn.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
-        <p:commandButton value="Print" type="button" icon="ui-icon-print" style="display:block;margin-bottom: 20px">
+        <p:commandButton value="Print" type="button" icon="ui-icon-print">
             <p:printer target="checkListTbl"/>
         </p:commandButton>
     </h:panelGrid>
 
-    <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
-    <p:outputLabel value="#{processProdBn.moderator.username}"/>
+    <h:panelGrid columns="2" columnClasses="label value" cellpadding="5" cellspacing="5">
+        <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
+        <p:outputLabel value="#{processProdBn.moderator.username}"/>
+    </h:panelGrid>
 
     <p:dataTable var="checkList" value="#{preScreenProdMBn.prodAppChecklists}"
                  style="width:100%;" id="checkListTbl">
+        <f:facet name="header">
+            <h:outputLink value="screening_template.docx" target="_blank">Download Dossier Screening Template </h:outputLink>
+        </f:facet>
         <p:column headerText="">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
         </p:column>
@@ -42,7 +46,7 @@
             <p:outputLabel value="#{checkList.staffValue}" rendered="#{!processProdBn.prescreened}"/>
             <p:selectOneButton id="console" value="#{checkList.staffValue}"
                                rendered="#{checkList.checklist.header and processProdBn.prescreened}">
-                <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
+                <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}"/>
             </p:selectOneButton>
         </p:column>
         <p:column headerText="#{msgs.global_remark}">
@@ -70,28 +74,28 @@
               id="completescreen" appendTo="@form"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
 
-            <p:panelGrid columns="2" columnClasses="label value">
-                <h:outputText value="#{msgs.moderator_name}: "
-                              escape="false"
-                              styleClass="text"/>
+        <p:panelGrid columns="2" columnClasses="label value">
+            <h:outputText value="#{msgs.moderator_name}: "
+                          escape="false"
+                          styleClass="text"/>
 
-                <p:autoComplete id="mod" value="#{preScreenProdMBn.moderator}"
-                                completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
+            <p:autoComplete id="mod" value="#{preScreenProdMBn.moderator}"
+                            completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
+                            var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                            forceSelection="true"
+                            converter="#{userConverter}">
+            </p:autoComplete>
 
-                <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"
-                        />
-                <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"/>
+            <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"
+                    />
+            <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"/>
 
-            </p:panelGrid>
+        </p:panelGrid>
 
 
-            <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
-                             action="#{preScreenProdMBn.completeScreen}"
-                             oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form" ajax="false"/>
+        <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
+                         action="#{preScreenProdMBn.completeScreen}"
+                         oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form" ajax="false"/>
 
     </p:dialog>
 

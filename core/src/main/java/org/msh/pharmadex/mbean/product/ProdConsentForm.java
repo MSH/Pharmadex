@@ -121,7 +121,6 @@ public class ProdConsentForm implements Serializable {
             timeLineService.saveTimeLine(timeLine);
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
             userSession.setProdAppID(prodApplications.getId());
-            JsfUtils.flashScope().put("prodAppID", prodApplications.getId());
             return "/internal/processreg.faces";
         } else {
             context.addMessage(null, new FacesMessage(bundle.getString("global_fail")));
@@ -144,9 +143,6 @@ public class ProdConsentForm implements Serializable {
     }
 
     public String cancel() {
-        context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
         return "/public/registrationhome.faces";
     }
 

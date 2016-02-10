@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -18,8 +18,10 @@
 
                 <p:growl id="growl" showDetail="true" showSummary="true"/>
 
-                <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{productDisplay.sentToApp}"
-                                 ajax="false" style="text-align: right;"/>
+                <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                                 ajax="false" style="text-align: right;">
+                        <f:param name="prodAppID" value="#{productDisplay.prodApplications.id}"/>
+                </p:commandButton>
 
 
                 <ui:decorate template="/templates/prodappsummarytmpl.xhtml">

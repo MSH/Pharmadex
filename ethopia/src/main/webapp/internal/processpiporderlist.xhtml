@@ -28,8 +28,8 @@
                     <p:column headerText="#{msgs.application_no}" filterBy="#{eachprod.pipNo}"
                               sortBy="#{eachprod.pipNo}">
                         <p:commandLink id="viewLink" value="#{eachprod.pipNo}"
-                                       action="#{pIPOrderListBn.sendToProcess(eachprod.id)}" ajax="false">
-
+                                       action="processpiporder" ajax="false">
+                            <f:param name="pipOrderID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>
 

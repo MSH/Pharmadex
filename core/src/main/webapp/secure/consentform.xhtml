@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post">
@@ -90,7 +90,9 @@
             </h:panelGrid>
 
             <h:panelGroup>
-                <p:commandButton action="#{prodConsentForm.submitApp}" value="#{msgs.global_yes}" ajax="false"/>
+                <p:commandButton action="#{prodConsentForm.submitApp}" value="#{msgs.global_yes}" ajax="false">
+                        <f:param name="prodAppID" value="#{prodConsentForm.prodApplications.id}"/>
+                </p:commandButton>
                 <p:commandButton action="#{prodConsentForm.cancel}" ajax="false" immediate="true"
                                  value="#{msgs.global_no}"/>
             </h:panelGroup>

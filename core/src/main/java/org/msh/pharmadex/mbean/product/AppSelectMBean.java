@@ -6,6 +6,7 @@ import org.msh.pharmadex.service.CountryService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
+import org.omnifaces.util.Faces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.slf4j.Logger;
@@ -60,12 +61,12 @@ public class AppSelectMBean implements Serializable {
     private UserDTO selectedUser;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         System.out.println("Initialize AppSelectMBean");
     }
 
     @PreDestroy
-    public void destroy(){
+    public void destroy() {
         System.out.println("Destroy bean");
     }
 
@@ -74,20 +75,25 @@ public class AppSelectMBean implements Serializable {
 //            showGMP = true;
 //        else
 //            showGMP = false;
-        if (selectedApplicant != null && selectedApplicant.getApplcntId() != null) {
-            selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
-            showApp = true;
-            convertUser(selectedApplicant.getUsers());
-            if (users.size() > 1) {
-                setShowUserSelect(true);
-            } else {
-                if (users.size() == 1) {
-                    selectedUser = users.get(0);
-                    showUser = true;
+        try {
+            if (selectedApplicant != null && selectedApplicant.getApplcntId() != null) {
+                selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
+                showApp = true;
+                convertUser(selectedApplicant.getUsers());
+                if (users.size() > 1) {
+                    setShowUserSelect(true);
+                } else {
+                    if (users.size() == 1) {
+                        selectedUser = users.get(0);
+                        showUser = true;
+                    }
                 }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Error", ex.getMessage()));
         }
-
     }
 
     private void convertUser(List<org.msh.pharmadex.domain.User> users) {
@@ -130,8 +136,10 @@ public class AppSelectMBean implements Serializable {
     }
 
     public String addApptoRegistration() {
+        try{
         selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
         if (selectedUser == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Person responsible cannot be empty."));
             FacesContext.getCurrentInstance().validationFailed();
         } else {
             applicantUser = userService.findUser(selectedUser.getUserId());
@@ -140,6 +148,11 @@ public class AppSelectMBean implements Serializable {
             prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
             prodRegAppMbean.getProdApplications().setApplicant(selectedApplicant);
         }
+        } catch (Exception ex){
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
+        }
+
         return "";
     }
 
@@ -150,8 +163,14 @@ public class AppSelectMBean implements Serializable {
 
 
     public List<Applicant> completeApplicantList(String query) {
-        List<Applicant> applicants = applicantService.findAllApplicants();
-        return JsfUtils.completeSuggestions(query, applicants);
+        try {
+            List<Applicant> applicants = applicantService.findAllApplicants();
+            return JsfUtils.completeSuggestions(query, applicants);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
+        }
+        return null;
     }
 
     public boolean isShowApp() {

@@ -17,7 +17,7 @@ public class ReviewComment implements Serializable
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(length = 500)
+	@Lob
 	private String comment;
 
 	@ManyToOne

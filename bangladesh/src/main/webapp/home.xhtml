@@ -33,7 +33,8 @@
                                             action="/public/productlist.faces"/>
                                 <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
                                             url="/public/applicantlist.faces"/>
-                                <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false"/>
+<!--                                <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false"/> -->
+                                <p:menuitem value="#{msgs.Home_download}" url="/public/downloads.faces" ajax="false"/>
                             </p:submenu>
 
                             <sec:isAuthenticated>
@@ -42,9 +43,6 @@
                                                 action="/secure/submittedproducts.faces" ajax="false" rendered="#{userSession.company}"/>
                                     <p:menuitem value="#{msgs.applicant_detail}" action="/internal/processapp.faces"
                                                 ajax="false" rendered="#{userSession.company}">
-                                        <f:setPropertyActionListener
-                                                value="#{userSession.loggedInUserObj.applicant}"
-                                                target="#{processAppBn.applicant}" />
                                     </p:menuitem>
                                     <p:menuitem value="#{msgs.usersettings_preferences}"
                                                 action="/secure/usersettings.faces"

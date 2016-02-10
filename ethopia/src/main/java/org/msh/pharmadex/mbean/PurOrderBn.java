@@ -58,10 +58,9 @@ public class PurOrderBn extends POrderBn {
     private boolean showWithdrawn;
     private boolean showSubmit;
 
-
     @PostConstruct
     private void init() {
-        Long purOrderID = (Long) JsfUtils.flashScope().get("purOrderID");
+        Long purOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID"));
         if (purOrderID != null) {
             purOrder = getpOrderService().findPurOrderEager(purOrderID);
             if (purOrder.getCurrency() == null)
@@ -70,7 +69,6 @@ public class PurOrderBn extends POrderBn {
             purProds = purOrder.getPurProds();
             setApplicantUser(purOrder.getApplicantUser());
             setApplicant(purOrder.getApplicantUser().getApplicant());
-            JsfUtils.flashScope().keep("purOrderID");
         } else {
             purOrder = new PurOrder(new Currency());
             if (getUserSession().isCompany()) {

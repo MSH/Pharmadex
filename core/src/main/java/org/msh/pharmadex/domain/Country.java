@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Cacheable
 @Table(name = "country")
 public class Country extends CreationDetail implements Serializable {
     private static final long serialVersionUID = 3189657829743194443L;

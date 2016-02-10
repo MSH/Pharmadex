@@ -16,6 +16,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -49,9 +50,6 @@ public class ReviewBn implements Serializable {
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
 
-    @ManagedProperty(value = "#{flash}")
-    private Flash flash;
-
     private Review review;
 
     private List<ReviewChecklist> reviewChecklists;
@@ -75,6 +73,16 @@ public class ReviewBn implements Serializable {
 
     public void setAttach(boolean attach) {
         this.attach = attach;
+    }
+
+    @PostConstruct
+    public void init(){
+        try {
+            Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+            review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedINUserID(), prodAppID);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     public void handleFileUpload() {
@@ -129,7 +137,6 @@ public class ReviewBn implements Serializable {
     public String reviewerFeedback() {
         review.setReviewStatus(ReviewStatus.FEEDBACK);
         saveReview();
-        flash.put("prodAppID", review.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -144,7 +151,6 @@ public class ReviewBn implements Serializable {
 
         review.setReviewStatus(ReviewStatus.ACCEPTED);
         saveReview();
-        flash.put("prodAppID", review.getProdApplications().getId());
         return "/internal/processreg";
     }
 
@@ -152,28 +158,19 @@ public class ReviewBn implements Serializable {
         if (review.getRecomendType() == null) {
             facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
         }
-
         review.setSubmitDate(new Date());
         review.setReviewStatus(ReviewStatus.SUBMITTED);
         saveReview();
-        flash.put("prodAppID", review.getProdApplications().getId());
         return "/internal/processreg";
-    }
-
-    public String cancelReview() {
-        flash.put("prodAppID", review.getProdApplications().getId());
-        return "/internal/processreg";
-
     }
 
     public Review getReview() {
         if (review == null) {
-            Long reviewID = (Long) flash.get("reviewID");
+            Long reviewID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("reviewID"));
             if(reviewID!=null) {
                 review = reviewService.findReview(reviewID);
             }
             reviewChecklists = review.getReviewChecklists();
-            flash.keep("reviewID");
         }
         return review;
     }
@@ -220,13 +217,5 @@ public class ReviewBn implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
-    }
-
-    public Flash getFlash() {
-        return flash;
-    }
-
-    public void setFlash(Flash flash) {
-        this.flash = flash;
     }
 }

@@ -15,6 +15,7 @@ import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
+import org.omnifaces.util.Faces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -88,27 +89,31 @@ public class SuspendDetailBn implements Serializable {
 
     @PostConstruct
     private void init() {
-        if (suspDetail == null) {
-            Long suspDetailID = (Long) JsfUtils.flashScope().get("suspDetailID");
-            if (suspDetailID != null && suspDetailID > 0) {
-                suspDetail = suspendService.findSuspendDetail(suspDetailID);
-                suspComments = suspDetail.getSuspComments();
-                prodAppLetters = suspDetail.getProdAppLetters();
-                prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
-                JsfUtils.flashScope().keep("suspDetailID");
+        try {
+            if (suspDetail == null) {
+                Long suspDetailID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("suspDetailID"));
+
+                if (suspDetailID != null && suspDetailID > 0) {
+                    suspDetail = suspendService.findSuspendDetail(suspDetailID);
+                    suspComments = suspDetail.getSuspComments();
+                    prodAppLetters = suspDetail.getProdAppLetters();
+                    prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
 //                if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
 //                    readOnly = true;
 //                }
-            } else {
-                Long prodAppID = (Long) JsfUtils.flashScope().get("prodAppID");
-                if (prodAppID != null) {
-                    prodApplications = prodApplicationsService.findProdApplications(prodAppID);
-                    suspComments = new ArrayList<SuspComment>();
-                    suspDetail = new SuspDetail(prodApplications, suspComments);
-                    suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
-                    suspDetail.setCreatedBy(getLoggedInUser());
+                } else {
+                    Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+                    if (prodAppID != null) {
+                        prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+                        suspComments = new ArrayList<SuspComment>();
+                        suspDetail = new SuspDetail(prodApplications, suspComments);
+                        suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
+                        suspDetail.setCreatedBy(getLoggedInUser());
+                    }
                 }
             }
+        } catch (Exception ex) {
+
         }
     }
 
@@ -348,15 +353,14 @@ public class SuspendDetailBn implements Serializable {
             retObject = suspendService.suspendProduct(suspDetail, getLoggedInUser());
 //        globalEntityLists.setRegProducts(null);
 
-        if (retObject.getMsg().equals("persist")) {
-            return cancelSuspendDetail();
-
-        } else {
-            FacesMessage fm = new FacesMessage(bundle.getString("global_fail"));
-            fm.setSeverity(FacesMessage.SEVERITY_ERROR);
-            FacesContext.getCurrentInstance().addMessage(null, fm);
-            return null;
-        }
+            if (retObject.getMsg().equals("persist")) {
+                return "/internal/processreg";
+            } else {
+                FacesMessage fm = new FacesMessage(bundle.getString("global_fail"));
+                fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+                FacesContext.getCurrentInstance().addMessage(null, fm);
+                return null;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             facesContext.addMessage(null, new FacesMessage(e.getMessage()));
@@ -410,14 +414,6 @@ public class SuspendDetailBn implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
     }
-
-    public String cancelSuspendDetail() {
-//        userSession.setReview(null);
-        JsfUtils.flashScope().put("prodAppID", suspDetail.getProdApplications().getId());
-        userSession.setProdID(suspDetail.getProdApplications().getProduct().getId());
-        return "/internal/processreg";
-    }
-
 
     public UploadedFile getFile() {
         return file;

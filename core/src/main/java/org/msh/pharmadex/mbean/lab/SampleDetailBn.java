@@ -76,18 +76,20 @@ public class SampleDetailBn implements Serializable {
 
     @PostConstruct
     private void init() {
-        if (sampleTest == null) {
-            Long sampleTestID = (Long) JsfUtils.flashScope().get("sampleTestID");
-            if (sampleTestID != null) {
-                sampleTest = sampleTestService.findSampleTest(sampleTestID);
-                sampleComments = sampleTest.getSampleComments();
-                prodAppLetters = sampleTest.getProdAppLetters();
-                prodApplications = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
-                JsfUtils.flashScope().keep("reviewInfoID");
+        try {
+            if (sampleTest == null) {
+                Long sampleTestID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sampleTestID"));
+                if (sampleTestID != null) {
+                    sampleTest = sampleTestService.findSampleTest(sampleTestID);
+                    sampleComments = sampleTest.getSampleComments();
+                    prodAppLetters = sampleTest.getProdAppLetters();
+                    prodApplications = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
 //                if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
 //                    readOnly = true;
 //                }
+                }
             }
+        }catch (Exception ex){
         }
     }
 
@@ -187,17 +189,6 @@ public class SampleDetailBn implements Serializable {
 
     }
 
-    public String cancelSampleTestDetail() {
-//        userSession.setReview(null);
-        JsfUtils.flashScope().put("prodAppID", sampleTest.getProdApplications().getId());
-        userSession.setProdID(sampleTest.getProdApplications().getProduct().getId());
-        return "/internal/processreg";
-    }
-
-    public String sendToRecieving() {
-        JsfUtils.flashScope().put("sampleTestID", sampleTest.getId());
-        return "/secure/samplerecieving";
-    }
     public UploadedFile getFile() {
         return file;
     }

@@ -1,14 +1,14 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
-import org.msh.pharmadex.util.JsfUtils;
+import org.primefaces.event.SelectEvent;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class RegProdMbn implements Serializable {
 
     @ManagedProperty(value = "#{productService}")
@@ -27,9 +27,6 @@ public class RegProdMbn implements Serializable {
 
     @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
-
-    @ManagedProperty(value = "#{processProdBn}")
-    ProcessProdBn processProdBn;
 
     @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
@@ -39,10 +36,16 @@ public class RegProdMbn implements Serializable {
 
     private ProdTable prodTable;
 
+    public void onItemSelect(SelectEvent event) {
+        if(event.getObject() instanceof ProdTable){
+            prodTable = (ProdTable) event.getObject();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
+        }
+    }
 
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
-        for (ProdTable p :  productService.findAllRegisteredProduct()) {
+        for (ProdTable p : productService.findAllRegisteredProduct()) {
             if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
                     || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
 //                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
@@ -55,8 +58,6 @@ public class RegProdMbn implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (prodTable == null)
             return null;
-
-        JsfUtils.flashScope().put("prodAppID", prodTable.getProdAppID());
         return "/internal/processreg.faces";
     }
 
@@ -66,14 +67,6 @@ public class RegProdMbn implements Serializable {
 
     public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
         this.prodApplicationsService = prodApplicationsService;
-    }
-
-    public ProcessProdBn getProcessProdBn() {
-        return processProdBn;
-    }
-
-    public void setProcessProdBn(ProcessProdBn processProdBn) {
-        this.processProdBn = processProdBn;
     }
 
     public UserSession getUserSession() {
@@ -90,5 +83,13 @@ public class RegProdMbn implements Serializable {
 
     public void setProdTable(ProdTable prodTable) {
         this.prodTable = prodTable;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
     }
 }

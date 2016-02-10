@@ -83,11 +83,6 @@ public class ReviewDetailBn implements Serializable {
         reviewDetail.setFile(event.getFile().getContents());
     }
 
-    public String back() {
-        JsfUtils.flashScope().put("reviewInfoID", reviewDetail.getReviewInfo().getId());
-        return "reviewInfo";
-    }
-
     public void satisAction() {
         if (reviewDetail.isSatifactory())
             satisfactory = true;
@@ -99,11 +94,9 @@ public class ReviewDetailBn implements Serializable {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
         saveReview();
-        JsfUtils.flashScope().put("reviewInfoID", reviewDetail.getReviewInfo().getId());
         msg = new FacesMessage(bundle.getString("app_submit_success"));
         facesContext.addMessage(null, msg);
         return "reviewInfo";
-
     }
 
 

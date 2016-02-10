@@ -35,8 +35,9 @@
                 <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}" ajax="false"
                                  rendered="#{userSession.head||userSession.moderator}"/>
                 <p:commandButton value="#{msgs.product_details}" immediate="true"
-                                 action="#{suspendDetailBn.cancelSuspendDetail}"
-                                 ajax="false"/>
+                                 action="/internal/processreg" ajax="false">
+                    <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
+                </p:commandButton>
 
             </div>
 
@@ -326,7 +327,9 @@
                 </h:panelGrid>
 
                 <p:commandButton id="regBtn" value="#{msgs.global_suspend}" action="#{suspendDetailBn.suspendProduct}"
-                                 oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"/>
+                                 oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false">
+                        <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
+                </p:commandButton>
             </h:form>
 
         </p:dialog>

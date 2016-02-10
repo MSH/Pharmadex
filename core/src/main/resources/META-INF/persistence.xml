@@ -18,6 +18,8 @@
                       value="true"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
+            <property name="hibernate.cache" value="true"/>
+
         </properties>
     </persistence-unit>
 

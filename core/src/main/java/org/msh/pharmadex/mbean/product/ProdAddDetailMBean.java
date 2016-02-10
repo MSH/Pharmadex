@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
  */
 @ManagedBean
 @RequestScoped
-public class ProdAddDetailMBean implements Serializable{
+public class ProdAddDetailMBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(CompanyMBean.class);
     FacesContext context;
     ResourceBundle bundle;
@@ -65,18 +65,18 @@ public class ProdAddDetailMBean implements Serializable{
         context = FacesContext.getCurrentInstance();
         bundle = context.getApplication().getResourceBundle(context, "msgs");
 
-        if (prodInn.getInn().getId() == null)
-            prodInn.setInn(innService.saveInn(prodInn.getInn()));
-        else
-            prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
+        try {
+            if (prodInn.getInn().getId() == null)
+                prodInn.setInn(innService.saveInn(prodInn.getInn()));
+            else
+                prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
 
-        prodInn.setProduct(prodRegAppMbean.getProduct());
-        prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
-        prodRegAppMbean.getSelectedInns().add(prodInn);
+            prodInn.setProduct(prodRegAppMbean.getProduct());
+            prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
+            prodRegAppMbean.getSelectedInns().add(prodInn);
 //        product.setInns(selectedInns);
 
 
-        try {
             List<Atc> selectedAtcs = prodRegAppMbean.getSelectedAtcs();
             List<Atc> a = atcService.findAtcByName(prodInn.getInn().getName());
             if (a != null) {
@@ -96,21 +96,27 @@ public class ProdAddDetailMBean implements Serializable{
     }
 
     public String addProdExcipient() {
-        context = FacesContext.getCurrentInstance();
-        if (prodExcipient.getExcipient().getId() == null)
-            prodExcipient.setExcipient(innService.saveExcipient(prodExcipient.getExcipient()));
-        else
-            prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
+        try {
+            context = FacesContext.getCurrentInstance();
+            if (prodExcipient.getExcipient().getId() == null)
+                prodExcipient.setExcipient(innService.saveExcipient(prodExcipient.getExcipient()));
+            else
+                prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
 
-        List<ProdExcipient> selectedExipients = prodRegAppMbean.getSelectedExipients();
-        prodExcipient.setProduct(prodRegAppMbean.getProduct());
-        prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
-        selectedExipients.add(prodExcipient);
+            List<ProdExcipient> selectedExipients = prodRegAppMbean.getSelectedExipients();
+            prodExcipient.setProduct(prodRegAppMbean.getProduct());
+            prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
+            selectedExipients.add(prodExcipient);
 //        product.setExcipients(selectedExipients);
 
 
-        prodExcipient = new ProdExcipient();
-        prodExcipient.setDosUnit(new DosUom());
+            prodExcipient = new ProdExcipient();
+            prodExcipient.setDosUnit(new DosUom());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+        }
+
         return null;
     }
 
@@ -118,15 +124,21 @@ public class ProdAddDetailMBean implements Serializable{
         ProdExcipient prodExcipient;
         ProdInn prodInn;
         FacesMessage msg = null;
-        if (event.getObject() instanceof ProdExcipient) {
-            prodExcipient = (ProdExcipient) event.getObject();
-            msg = new FacesMessage(prodExcipient.getExcipient().getName() + " updated");
-        } else if (event.getObject() instanceof ProdInn) {
-            prodInn = (ProdInn) event.getObject();
-            msg = new FacesMessage(prodInn.getInn().getName() + " updated");
+        try {
+            if (event.getObject() instanceof ProdExcipient) {
+                prodExcipient = (ProdExcipient) event.getObject();
+                msg = new FacesMessage(prodExcipient.getExcipient().getName() + " updated");
+            } else if (event.getObject() instanceof ProdInn) {
+                prodInn = (ProdInn) event.getObject();
+                msg = new FacesMessage(prodInn.getInn().getName() + " updated");
+            }
+
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
 
-        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void onRowCancel(RowEditEvent event) {
@@ -156,7 +168,6 @@ public class ProdAddDetailMBean implements Serializable{
         prodExcipient.setDosUnit(new DosUom());
         return null;
     }
-
 
 
     public void openAddATC() {

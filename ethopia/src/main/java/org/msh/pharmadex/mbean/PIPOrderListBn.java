@@ -41,29 +41,17 @@ public class PIPOrderListBn implements Serializable {
     private void init() {
     }
 
-    public String sendToDetails(Long pipOrderID){
-        JsfUtils.flashScope().put("pipOrderID", pipOrderID);
-        return "/secure/piporder";
-
-    }
-
     public String searchPIPOrder(){
         POrderBase pOrderBase = pOrderService.findPOrder(pipNo, false);
         if(pOrderBase!=null) {
-            return sendToProcess(pOrderBase.getId());
+            FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("processpiporder", ""+pOrderBase.getId());
+            return "processpiporder";
         }else{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Pre-Import permit not found!!!"));
             pipNo = null;
             return "";
         }
     }
-
-    public String sendToProcess(Long pipOrderID){
-        JsfUtils.flashScope().put("pipOrderID", pipOrderID);
-        return "processpiporder";
-
-    }
-
 
     public UserSession getUserSession() {
         return userSession;

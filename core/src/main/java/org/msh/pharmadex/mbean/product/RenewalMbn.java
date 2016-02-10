@@ -69,37 +69,39 @@ public class RenewalMbn implements Serializable {
 
     @PostConstruct
     private void init() {
-        Long prodID = (Long) JsfUtils.flashScope().get("prodID");
-        if (prodID != null) {
-            product = productService.findProduct(prodID);
-            prodApplications = new ProdApplications(product);
-            prodApplications.setProdAppType(ProdAppType.RENEW);
+        try {
+            Long prodID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodID"));
+            if (prodID != null) {
+                product = productService.findProduct(prodID);
+                prodApplications = new ProdApplications(product);
+                prodApplications.setProdAppType(ProdAppType.RENEW);
 //                prodApplications.setSra(prodApp.isSRA());
 //                prodApplications.setFastrack(prodApp.isEml());
 //                prodApplications.setFeeAmt(prodApp.getFee());
 //                prodApplications.setPrescreenfeeAmt(prodApp.getPrescreenfee());
 
 
-            //being a new application. set regstate as saved
-            prodApplications.setRegState(RegState.SAVED);
+                //being a new application. set regstate as saved
+                prodApplications.setRegState(RegState.SAVED);
 
 
-            //Set logged in user company as the company.
-            if (userSession.isCompany()) {
-                applicantUser = userService.findUser(userSession.getLoggedINUserID());
-                prodApplications.setApplicant(applicantUser.getApplicant());
-                prodApplications.setApplicantUser(applicantUser);
-            }else{
-                Long appID = (Long) JsfUtils.flashScope().get("appID");
-                JsfUtils.flashScope().keep("appID");
-                applicant = applicantService.findApplicant(appID);
-                applicantUser = (applicant.getUsers()!=null&&applicant.getUsers().size()>0)?applicant.getUsers().get(0):null;
-                prodApplications.setApplicant(applicant);
-                prodApplications.setApplicantUser(applicantUser);
+                //Set logged in user company as the company.
+                if (userSession.isCompany()) {
+                    applicantUser = userService.findUser(userSession.getLoggedINUserID());
+                    prodApplications.setApplicant(applicantUser.getApplicant());
+                    prodApplications.setApplicantUser(applicantUser);
+                } else {
+                    Long appID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("appID"));
+                    applicant = applicantService.findApplicant(appID);
+                    applicantUser = (applicant.getUsers() != null && applicant.getUsers().size() > 0) ? applicant.getUsers().get(0) : null;
+                    prodApplications.setApplicant(applicant);
+                    prodApplications.setApplicantUser(applicantUser);
 
+                }
+                prodApplications.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
             }
-            prodApplications.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
-            JsfUtils.flashScope().keep("prodID");
+        }catch (Exception ex){
+
         }
     }
 

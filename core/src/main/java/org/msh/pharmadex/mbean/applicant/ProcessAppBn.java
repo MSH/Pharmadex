@@ -142,7 +142,11 @@ public class ProcessAppBn implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processAppBn", null);
-        return "/internal/processapplist.faces";
+        if(userSession.isCompany()){
+            return "/home.faces";
+        }else {
+            return "/internal/processapplist.faces";
+        }
     }
 
 
@@ -159,7 +163,6 @@ public class ProcessAppBn implements Serializable {
         if (applicant == null) {
             if (userSession.getApplcantID() != null) {
                 applicant = applicantService.findApplicant(userSession.getApplcantID());
-                userSession.setApplcantID(null);
                 if (applicant.getAddress() == null)
                     applicant.setAddress(new Address());
                 if (applicant.getAddress().getCountry() == null)

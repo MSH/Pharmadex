@@ -29,7 +29,6 @@ public class GlobalEntityLists implements Serializable {
     private List<ApplicantType> applicantTypes;
     private List<Company> manufacturers;
     private List<PharmClassif> pharmClassifs;
-    private List<Inn> inns;
     private List<Atc> atcs;
     private List<AdminRoute> adminRoutes;
     private List<Excipient> excipients;
@@ -95,12 +94,6 @@ public class GlobalEntityLists implements Serializable {
         if (atcs == null)
             atcs = atcService.getAtcList();
         return atcs;
-    }
-
-    public List<Inn> getInns() {
-        if (inns == null)
-            inns = innService.getInnList();
-        return inns;
     }
 
     public List<Company> getManufacturers() {
@@ -208,7 +201,7 @@ public class GlobalEntityLists implements Serializable {
     }
 
     public List<Inn> completeInnCodes(String query) {
-        return JsfUtils.completeSuggestions(query, getInns());
+        return JsfUtils.completeSuggestions(query, innService.getInnList());
     }
 
     public List<Excipient> completeExcipients(String query) {

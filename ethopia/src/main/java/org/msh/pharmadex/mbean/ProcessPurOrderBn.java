@@ -31,11 +31,10 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
     @PostConstruct
     public void init() {
         pOrderBase = new PurOrder();
-        Long purOrderID = (Long) JsfUtils.flashScope().get("purOrderID");
+        Long purOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID"));
         if (purOrderID != null) {
             pOrderBase = pOrderService.findPurOrderEager(purOrderID);
             initVariables();
-            JsfUtils.flashScope().keep("purOrderID");
         }
 
     }

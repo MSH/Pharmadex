@@ -11,7 +11,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
+            <p:ajax update=":reghome:growl :reghome" process=":reghome"
                     listener="#{processProdBn.changeSampleRecieved}"/>
         </p:selectBooleanButton>
     </h:panelGrid>
@@ -31,8 +31,9 @@
 
         <p:column headerText="#{msgs.requested_date}">
             <p:commandLink id="viewLink2"
-                           action="#{sampleTestBn.sendToDetail(sample.id)}"
+                           action="/internal/lab/sampletestdetail.faces"
                            ajax="false" immediate="true">
+                <f:param name="sampleTestID" value="#{sample.id}"/>
                 <p:outputLabel value="#{sample.reqDt}">
                     <f:convertDateTime pattern="MMM dd, yyyy"/>
                 </p:outputLabel>
