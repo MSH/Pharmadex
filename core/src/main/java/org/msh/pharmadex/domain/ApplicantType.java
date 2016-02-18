@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Cacheable
 @Table(name = "applicant_type")
 public class ApplicantType extends CreationDetail implements Serializable {
 

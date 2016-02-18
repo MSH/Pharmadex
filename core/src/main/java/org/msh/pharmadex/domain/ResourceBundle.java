@@ -12,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "resource_bundle")
+@Cacheable
 @NamedQueries({
         @NamedQuery(name = ResourceBundle.QUERYNAME_FIND_ALL,
                 query = ResourceBundle.QUERY_FIND_ALL),

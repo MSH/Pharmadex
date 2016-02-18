@@ -7,6 +7,7 @@ import java.io.Serializable;
  * Author: usrivastava
  */
 @Entity
+@Cacheable
 public class DosUom implements Serializable {
     private int id;
 

@@ -8,6 +8,7 @@ import java.io.Serializable;
  */
 
 @Entity
+@Cacheable
 @Table(name = "review_question")
 public class ReviewQuestion extends CreationDetail implements Serializable {
 

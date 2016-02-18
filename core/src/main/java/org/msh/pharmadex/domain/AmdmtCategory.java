@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 
 @Entity
+@Cacheable
 @Table(name = "amdmt_category")
 public class AmdmtCategory extends CreationDetail implements Serializable {
 

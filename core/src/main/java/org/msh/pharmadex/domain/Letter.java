@@ -9,6 +9,7 @@ import java.io.Serializable;
  * Author: usrivastava
  */
 @Entity
+@Cacheable
 @Table(name = "letter")
 public class Letter extends CreationDetail implements Serializable {
 

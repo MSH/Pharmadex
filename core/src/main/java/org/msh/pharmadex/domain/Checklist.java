@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Cacheable
 @Table(name = "checklist")
 public class Checklist extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -6121362181619288650L;

@@ -7,6 +7,7 @@ import java.io.Serializable;
  * Author: usrivastava
  */
 @Entity
+@Cacheable
 @Table(name = "resource_message")
 @NamedQueries({
         @NamedQuery(name = ResourceMessage.QUERYNAME_FIND_ALL,

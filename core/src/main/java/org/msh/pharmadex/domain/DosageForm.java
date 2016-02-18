@@ -9,6 +9,7 @@ import java.io.Serializable;
  * Author: usrivastava
  */
 @Entity
+@Cacheable
 @Table(name = "dosform")
 public class DosageForm implements Serializable {
 

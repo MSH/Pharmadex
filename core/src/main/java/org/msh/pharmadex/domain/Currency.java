@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Cacheable
 @Table(name = "currency")
 public class Currency extends CreationDetail implements Serializable {
     @Id

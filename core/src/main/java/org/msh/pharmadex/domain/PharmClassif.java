@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 
 @Entity
+@Cacheable
 public class PharmClassif extends CreationDetail implements Serializable {
 
 

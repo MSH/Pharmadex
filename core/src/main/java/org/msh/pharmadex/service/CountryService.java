@@ -22,7 +22,6 @@ public class CountryService implements Serializable {
     private List<Country> countries;
 
     public List<Country> getCountries() {
-        if (countries == null)
             countries = countryDAO.allCountry();
         return countries;
     }

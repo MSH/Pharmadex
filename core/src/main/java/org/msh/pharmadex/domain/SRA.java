@@ -13,6 +13,7 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
+@Cacheable
 @Table(name = "sra")
 public class SRA extends CreationDetail implements Serializable {
 

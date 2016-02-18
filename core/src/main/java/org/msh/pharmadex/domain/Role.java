@@ -12,6 +12,7 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
+@Cacheable
 @Table(name = "role", uniqueConstraints = @UniqueConstraint(columnNames = {"rolename"}))
 public class Role extends CreationDetail implements Serializable {
     private static final long serialVersionUID = -5806096133693830945L;

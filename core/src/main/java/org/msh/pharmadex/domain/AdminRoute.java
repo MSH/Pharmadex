@@ -9,6 +9,7 @@ import java.io.Serializable;
  * Author: usrivastava
  */
 @Entity
+@Cacheable
 @Table(name = "admin_route")
 public class AdminRoute implements Serializable {
     private static final long serialVersionUID = 900102986584083067L;

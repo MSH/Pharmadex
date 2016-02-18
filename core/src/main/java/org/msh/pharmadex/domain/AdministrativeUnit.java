@@ -9,6 +9,7 @@ import java.util.List;
 
 
 @Entity
+@Cacheable
 @Table(name = "administrativeunit", uniqueConstraints =  @UniqueConstraint(columnNames = {"id", "code"}))
 public class AdministrativeUnit extends CreationDetail implements Serializable {
 

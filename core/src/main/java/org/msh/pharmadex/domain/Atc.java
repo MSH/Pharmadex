@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Cacheable
 @Table(name = "atc")
 public class Atc extends CreationDetail implements Serializable
 {

@@ -12,6 +12,7 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
+@Cacheable
 @Table(name = "workspace")
 public class Workspace extends CreationDetail implements Serializable {
     @Id
