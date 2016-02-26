@@ -98,8 +98,8 @@ public class SampleDetailBn implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
-            SampleTest sampleTestFrmDB = sampleTestService.findSampleTest(sampleTest.getId());
-            sampleComments = sampleTestFrmDB.getSampleComments();
+//            SampleTest sampleTestFrmDB = sampleTestService.findSampleTest(sampleTest.getId());
+            sampleComments = sampleTest.getSampleComments();
             if (sampleComments == null) {
                 sampleComments = new ArrayList<SampleComment>();
                 sampleTest.setSampleComments(sampleComments);
@@ -146,6 +146,19 @@ public class SampleDetailBn implements Serializable {
     public String saveReview() {
         RetObject retObject = sampleTestService.saveSample(sampleTest);
         sampleTest = (SampleTest) retObject.getObj();
+        return "";
+    }
+
+    public String submitResult() {
+        sampleTest.setSampleTestStatus(SampleTestStatus.AVAILABLE);
+        submitComment();
+        return "";
+    }
+
+    public String approveResult() {
+        sampleTest.setSampleTestStatus(SampleTestStatus.RESULT);
+        sampleTest.setResultDt(new Date());
+        submitComment();
         return "";
     }
 

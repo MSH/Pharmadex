@@ -455,7 +455,7 @@
                 <h:panelGroup>
                     <p:commandButton action="#{sampleRecBn.submitSample}" value="#{msgs.global_submit}"
                                      oncomplete="if(!args.validationFailed) PF('submitDlg').hide()"
-                                     update=":reviewHome :addStdDlg">
+                                     update=":reviewHome :addStdDlg" ajax="false">
                             <f:param name="sampleTestID" value="#{sampleRecBn.sampleTest.id}"/>
                     </p:commandButton>
                 </h:panelGroup>

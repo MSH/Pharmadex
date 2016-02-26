@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="694"/>
+	<property name="ireport.y" value="238"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -146,6 +146,9 @@ and p.country_id = c.id]]>
 		<field name="updatedDate" class="java.sql.Timestamp">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
+		<field name="currency" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
 		<field name="dosage_strength" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
@@ -164,22 +167,25 @@ and p.country_id = c.id]]>
 		<field name="productNo" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="quantity" class="java.lang.Integer">
+		<field name="quantity" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="shelfLife" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="totalPrice" class="java.lang.String">
+		<field name="totalPrice" class="java.lang.Double">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="unitPrice" class="java.lang.Integer">
+		<field name="unitPrice" class="java.lang.Double">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="createdBy_userId" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="updatedBy_userId" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="country_id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="DOSFORM_ID" class="java.lang.Long">
@@ -194,12 +200,6 @@ and p.country_id = c.id]]>
 		<field name="purorder_id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="country_id" class="java.lang.Long">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
-		<field name="currency" class="java.lang.String">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
 		<field name="uid" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
@@ -207,6 +207,9 @@ and p.country_id = c.id]]>
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="Discontinued" class="java.lang.Boolean">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="sampleSize" class="java.lang.Integer">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="UOM" class="java.lang.String">
@@ -746,7 +749,7 @@ and pip.id = $P{piporderid}]]>
 							<textField isStretchWithOverflow="true">
 								<reportElement x="0" y="0" width="42" height="20" uuid="434c9041-9809-46ef-a5ae-9e0b25b437c5"/>
 								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

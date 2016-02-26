@@ -128,6 +128,7 @@ public class PIPAppSelectBn implements Serializable {
         pipOrderBn.setApplicantUser(applicantUser);
         pipOrderBn.getPipOrder().setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
         pipOrderBn.getPipOrder().setApplicantUser(applicantUser);
+        pipOrderBn.getPipOrder().setApplicant(selectedApplicant);
 
         List<POrderChecklist> pOrderChecklists = new ArrayList<POrderChecklist>();
         List<PIPOrderLookUp> allChecklist = pOrderService.findPIPCheckList(selectedApplicant.getApplicantType(), true);

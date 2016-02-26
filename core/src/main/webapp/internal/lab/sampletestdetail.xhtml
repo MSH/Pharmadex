@@ -26,9 +26,13 @@
             <div align="right">
                 <p:commandButton value="#{msgs.notif_recieving}"
                                  action="/secure/samplerecieving"
-                                 ajax="false">
+                                 ajax="false" rendered="#{userSession.lab}">
                     <f:param name="sampleTestID" value="#{sampleDetailBn.sampleTest.id}"/>
                 </p:commandButton>
+                <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.initComment}" ajax="true" oncomplete="PF('submitSampleDlg').show()"
+                                 update=":reviewHome :submitsamplefrm" process="@form" rendered="#{userSession.admin||userSession.labModerator}"/>
+                <p:commandButton value="#{msgs.global_approve}" action="#{sampleDetailBn.initComment}" oncomplete="PF('approveSampleDlg').show()" ajax="true"
+                                 update=":reviewHome :approvesamplefrm" process="@form" rendered="#{userSession.admin||userSession.labHead}"/>
                 <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"
                                  update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin||userSession.labModerator}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
@@ -62,24 +66,23 @@
                             <p:outputLabel value="#{sampleDetailBn.sampleTest.createdBy.name}"/>
 
                             <p:outputLabel value="#{msgs.updated_date}"/>
-                            <p:outputLabel value="#{sampleDetailBn.sampleTest.updatedDate}"/>
+                            <p:outputLabel value="#{sampleDetailBn.sampleTest.updatedDate}" converter="javax.faces.DateTime"/>
 
-                            <p:outputLabel value="#{msgs.sampletest_recieved}"/>
-                            <p:outputLabel value="#{sampleDetailBn.sampleTest.recievedDt}"
-                                           converter="javax.faces.DateTime"
-                                           rendered="#{not empty sampleDetailBn.sampleTest.recievedDt}"/>
-                            <p:calendar id="samplerecdt" value="#{sampleDetailBn.sampleTest.recievedDt}"
+                            <p:outputLabel value="#{msgs.sampletest_recieved}" rendered="#{not empty sampleDetailBn.sampleTest.recievedDt}"/>
+                            <p:outputLabel value="#{sampleDetailBn.sampleTest.recievedDt}" rendered="#{not empty sampleDetailBn.sampleTest.recievedDt}"
+                                           converter="javax.faces.DateTime"/>
+<!--                            <p:calendar id="samplerecdt" value="#{sampleDetailBn.sampleTest.recievedDt}"
                                         rendered="#{empty sampleDetailBn.sampleTest.recievedDt}"
                                         style="width:100%" showButtonPanel="true"/>
-
-                            <p:outputLabel value="#{msgs.sample_test_date}"/>
+-->
+                            <p:outputLabel value="#{msgs.sample_test_date}" rendered="#{not empty sampleDetailBn.sampleTest.resultDt}"/>
                             <p:outputLabel value="#{sampleDetailBn.sampleTest.resultDt}"
                                            rendered="#{not empty sampleDetailBn.sampleTest.resultDt}"
                                            converter="javax.faces.DateTime"/>
-                            <p:calendar id="samplesubdt" value="#{sampleDetailBn.sampleTest.resultDt}"
+<!--                            <p:calendar id="samplesubdt" value="#{sampleDetailBn.sampleTest.resultDt}"
                                         rendered="#{empty sampleDetailBn.sampleTest.resultDt}"
                                         style="width:100%"/>
-
+-->
                             <!--
                                                         <p:outputLabel value="#{msgs.global_download}"/>
                                                         <p:commandButton id="downloadletter" value="#{msgs.sample_req_letter}" ajax="false"
@@ -141,7 +144,7 @@
 
                     <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                      oncomplete="PF('attachdlg').show()" action="#{sampleDetailBn.prepareUpload}"
-                                     update=":attachdlg" id="addDocBtn" rendered="#{userSession.labModerator}"/>
+                                     update=":attachdlg" id="addDocBtn" rendered="#{userSession.labModerator||userSession.labHead}"/>
 
                     <p:dataTable id="attachtable" value="#{sampleDetailBn.prodAppLetters}" var="doc">
                         <p:column headerText="#{msgs.title}">
@@ -181,6 +184,35 @@
 
 
         </h:form>
+
+        <p:dialog header="#{msgs.submit_sample_result}" widgetVar="submitSampleDlg" id="submitSampleDlg"
+                  modal="true" dynamic="true">
+            <h:form id="submitsamplefrm">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
+                    <p:editor value="#{sampleDetailBn.sampleComment.comment}" id="revsummary" required="true"
+                              width="700"/>
+                    <p:message for="revsummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.submitResult}"
+                                 oncomplete="PF('submitSampleDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.global_approve}" widgetVar="approveSampleDlg" id="approveSampleDlg"
+                  modal="true" dynamic="true">
+            <h:form id="approvesamplefrm">
+                <p:outputLabel value="Please make sure that the sample result has been uploaded. If not, go to the attachments tab and upload it." styleClass="hint"/>
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.global_comment}" for="approvesummary" styleClass="label"/>
+                    <p:editor value="#{sampleDetailBn.sampleComment.comment}" id="approvesummary" required="true"
+                              width="700"/>
+                    <p:message for="approvesummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.approveResult}"
+                                 oncomplete="PF('approveSampleDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
 
         <p:dialog header="#{msgs.add_comment}" widgetVar="addcommentDlg" id="addcommentDlg"
                   modal="true" dynamic="true">

@@ -33,6 +33,7 @@ public class POAppSelectBn extends PIPAppSelectBn implements Serializable {
 
         purOrderBn.getPurOrder().setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
         purOrderBn.getPurOrder().setApplicantUser(applicantUser);
+        purOrderBn.getPurOrder().setApplicant(selectedApplicant);
 
         List<POrderChecklist> pOrderChecklists = new ArrayList<POrderChecklist>();
         List<PIPOrderLookUp> allChecklist = pOrderService.findPIPCheckList(selectedApplicant.getApplicantType(), false);

@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/registration_layout.xhtml">
     <ui:define name="regcontent">
         <p:messages id="messages" showDetail="true"/>
@@ -18,8 +18,9 @@
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,40,100">
                 <p:column headerText="#{msgs.license_holder}" filterBy="#{licHolder.name}" sortBy="#{licHolder.name}">
-                    <p:commandLink value="#{licHolder.name}" action="#{licHolderListBn.sentToDetail(licHolder.id)}"
+                    <p:commandLink value="#{licHolder.name}" action="licholderdetail"
                                    ajax="false" style="#{licHolder.state eq 'BLOCKED' ?'color: #a52a2a;':''}">
+                        <f:param name="licHolderID" value="#{licHolder.id}"/>
                     </p:commandLink>
                 </p:column>
 

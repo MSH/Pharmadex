@@ -4,6 +4,7 @@ package org.msh.pharmadex.domain.enums;
  * Author: usrivastava
  */
 public enum AmdmtState {
+    SAVED,
     NEW_APPLICATION,
     REVIEW,
     SUBMITTED,

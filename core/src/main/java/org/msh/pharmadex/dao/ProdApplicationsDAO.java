@@ -53,6 +53,13 @@ public class ProdApplicationsDAO implements Serializable {
             return prodApp;
     }
 
+    public ProdApplications findActiveProdAppByProd(Long prodID){
+        ProdApplications pa = (ProdApplications) entityManager.createQuery("select pa from ProdApplications pa where pa.product.id = :prodID and pa.active = true")
+                                .setParameter("prodID", prodID)
+                                .getSingleResult();
+        return pa;
+    }
+
     @Transactional
     public List<ProdApplications> findProdApplicationByProduct(Long prodId) {
         try {

@@ -15,9 +15,9 @@
 
             <div align="right">
                 <p:commandButton value="#{msgs.global_withdraw}" rendered="#{pIPOrderBn.showWithdrawn}"
-                                 actionListener="#{pIPOrderBn.withdraw}"
-                                 update="@form">
-                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                                 action="#{pIPOrderBn.initComment}"
+                                 oncomplete="PF('withdrawDlg').show()" id="withdraw"
+                                 >
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_submit}" rendered="#{pIPOrderBn.showSubmit}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
@@ -110,7 +110,7 @@
                                      action="#{pIPOrderBn.initAddProd}" process="@form" update=":orderdetailfrm"/>
 
                     <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;"
-                                 sortBy="#{order.pipOrder.freight}">
+                                 sortBy="#{order.pipOrder.applicant.applcntId}">
 
                         <p:column headerText="#{msgs.prod_no}">
                             <h:outputText value="#{order.productNo}"/>
@@ -156,7 +156,7 @@
                             </h:outputText>
                         </p:column>
 
-                        <p:column rendered="#{empty order.pipOrder.submitDate}">
+                        <p:column rendered="#{!pIPOrderBn.showWithdrawn}">
                             <p:commandButton action="#{pIPOrderBn.removeProd(order)}" icon="ui-icon-trash"
                                              update=":reghome :reghome:growl" immediate="true">
                             </p:commandButton>
@@ -232,6 +232,8 @@
                             value="Click here to see what documents need to be uploaded"
                             onclick="window.open('uploaddochint.xhtml')"
                             styleClass="hint"/>
+                    <p:outputLabel value="#{msgs.reg_form_attach_hint2}" styleClass="hint"/>
+
 
                     <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                      oncomplete="PF('attachdlg').show()" rendered="#{pIPOrderBn.showSubmit}"
@@ -316,12 +318,6 @@
             </div>
 
         </h:form>
-
-        <p:confirmDialog header="#{msgs.global_agreement}" global="true">
-            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
-            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
-        </p:confirmDialog>
-
 
         <p:dialog header="#{msgs.global_agreement}" widgetVar="confirmDlg" id="confirmdlg" resizable="true"
                   dynamic="true"
@@ -498,6 +494,22 @@
                                  update=":reghome:growl :reghome:messages :reghome"/>
             </h:form>
         </p:dialog>
+
+        <p:dialog header="#{msgs.global_withdraw}" widgetVar="withdrawDlg" id="withdrawdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+
+                    <p:outputLabel value="#{msgs.withdraw_reason}" for="withdrawcomment" styleClass="label"/>
+                    <p:editor value="#{pIPOrderBn.pOrderComment.comment}" id="withdrawcomment" required="true"
+                              width="700"/>
+                    <p:message for="withdrawcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{pIPOrderBn.withdraw}"
+                                 oncomplete="PF('withdrawDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
 
         <p:dialog header="#{msgs.upload_document_msg}" widgetVar="uploaddocdlg" resizable="false" id="uploaddocdlg"
                   modal="true" dynamic="true">

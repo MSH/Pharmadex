@@ -148,6 +148,9 @@ and c.id = p.country_id]]>
 		<field name="updatedDate" class="java.sql.Timestamp">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
+		<field name="currency" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
 		<field name="dosage_strength" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
@@ -166,22 +169,25 @@ and c.id = p.country_id]]>
 		<field name="productNo" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="quantity" class="java.lang.Integer">
+		<field name="quantity" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="shelfLife" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="totalPrice" class="java.lang.String">
+		<field name="totalPrice" class="java.lang.Double">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="unitPrice" class="java.lang.Integer">
+		<field name="unitPrice" class="java.lang.Double">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="createdBy_userId" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="updatedBy_userId" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="country_id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="DOSFORM_ID" class="java.lang.Long">
@@ -193,12 +199,6 @@ and c.id = p.country_id]]>
 		<field name="piporder_id" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
-		<field name="country_id" class="java.lang.Long">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
-		<field name="currency" class="java.lang.String">
-			<fieldDescription><![CDATA[]]></fieldDescription>
-		</field>
 		<field name="uid" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
@@ -206,6 +206,9 @@ and c.id = p.country_id]]>
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="Discontinued" class="java.lang.Boolean">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="sampleSize" class="java.lang.Integer">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
 		<field name="UOM" class="java.lang.String">

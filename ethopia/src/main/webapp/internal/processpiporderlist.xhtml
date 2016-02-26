@@ -11,15 +11,20 @@
         <h:form prependId="false">
             <p:growl id="growl"/>
             <p:focus context="searchpg"/>
-            <p:messages id="messages" />
+            <p:messages id="messages"/>
             <h:panelGrid columns="3" cellpadding="10" cellspacing="10" id="searchpg">
                 <p:outputLabel value="#{msgs.application_no}" for="searchpip" styleClass="label"></p:outputLabel>
                 <p:inputText value="#{pIPOrderListBn.pipNo}" id="searchpip"/>
-                <p:commandButton action="#{pIPOrderListBn.searchPIPOrder}" ajax="false" value="#{msgs.registration_search}"/>
+                <p:commandButton action="#{pIPOrderListBn.searchPIPOrder}" ajax="false"
+                                 value="#{msgs.registration_search}"/>
             </h:panelGrid>
             <h:panelGroup rendered="#{not empty pIPOrderListBn.pipOrders}">
                 <p:dataTable id="piptable" var="eachprod" value="#{pIPOrderListBn.pipOrders}"
-                             rendered="#{not empty pIPOrderListBn.pipOrders}">
+                             rendered="#{not empty pIPOrderListBn.pipOrders}"
+                             rows="25" paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}"
+                             rowsPerPageTemplate="25,50,100,200">
 
                     <p:column style="width:16px">
                         <p:rowToggler/>
@@ -36,11 +41,11 @@
                     <p:column headerText="#{msgs.applicant_name}" filterBy="#{eachprod.applicant.appName}"
                               sortBy="#{eachprod.applicant.appName}">
                         <p:outputLabel value="#{eachprod.applicant.appName}"/>
-<!--                        <p:commandLink id="viewLink" value="#{eachprod.applicant.appName}"
-                                       action="#{pIPOrderListBn.sendToProcess(eachprod.id)}" ajax="false">
+                        <!--                        <p:commandLink id="viewLink" value="#{eachprod.applicant.appName}"
+                                                               action="#{pIPOrderListBn.sendToProcess(eachprod.id)}" ajax="false">
 
-                        </p:commandLink>
-                        -->
+                                                </p:commandLink>
+                                                -->
                     </p:column>
 
                     <p:column headerText="#{msgs.global_curr_status}" filterBy="#{eachprod.state}"

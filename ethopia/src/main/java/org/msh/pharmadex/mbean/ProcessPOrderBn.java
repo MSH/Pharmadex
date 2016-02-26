@@ -7,10 +7,13 @@ import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
+import org.omnifaces.util.Faces;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -44,6 +47,9 @@ public abstract class ProcessPOrderBn implements Serializable {
     protected UserService userService;
     @ManagedProperty(value = "#{globalEntityLists}")
     protected GlobalEntityLists globalEntityLists;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    protected ProdApplicationsService prodApplicationsService;
+
     protected boolean displayReview;
     protected boolean displayReviewComment;
     protected List<POrderChecklist> pOrderChecklists;
@@ -81,19 +87,58 @@ public abstract class ProcessPOrderBn implements Serializable {
         return download;
     }
 
-    public void feeRecievedListener() {
-        logger.error("Inside feeRecievedListener");
-        User user = userService.findUser(userSession.getLoggedINUserID());
-        pOrderBase.setUpdatedBy(user);
-        pOrderBase.setProcessor(user);
-        RetObject retObject = pOrderService.NotifyFeeRecieved(pOrderBase);
-        if (!retObject.getMsg().equals("persist")) {
-            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), retObject.getMsg());
-        } else {
-            FacesMessage msg = new FacesMessage(resourceBundle.getString("global.success"), retObject.getMsg());
-            pOrderBase = (POrderBase) retObject.getObj();
-            initVariables();
 
+    private enum Tab {
+        home, screen, attach, commenttab;
+    }
+
+    public void onTabChange(TabChangeEvent event) {
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            String tabID = event.getTab().getId();
+            Tab selTab = null;
+            if (tabID != null && !tabID.equalsIgnoreCase("")) {
+                selTab = Tab.valueOf(tabID);
+            }
+
+            switch (selTab) {
+                case screen:
+                    if (pOrderChecklists == null)
+                        pOrderChecklists = pOrderService.findPOrderChecklists(pOrderBase);
+                    break;
+                case attach:
+                    if (pOrderDocs == null)
+                        pOrderDocs = (ArrayList<POrderDoc>) pOrderService.findPOrderDocs(pOrderBase);
+                    break;
+                case commenttab:
+                    if (pOrderComments == null)
+                        pOrderComments = pOrderService.findPOrderComments(pOrderBase);
+                    break;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail")));
+        }
+    }
+
+    public void feeRecievedListener() {
+        try {
+            logger.error("Inside feeRecievedListener");
+            User user = userService.findUser(userSession.getLoggedINUserID());
+            pOrderBase.setUpdatedBy(user);
+            pOrderBase.setProcessor(user);
+            RetObject retObject = pOrderService.NotifyFeeRecieved(pOrderBase);
+            if (!retObject.getMsg().equals("persist")) {
+                FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), retObject.getMsg());
+            } else {
+                FacesMessage msg = new FacesMessage(resourceBundle.getString("global.success"), retObject.getMsg());
+                pOrderBase = (POrderBase) retObject.getObj();
+                initVariables();
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), ex.getMessage()));
         }
 
     }
@@ -147,32 +192,32 @@ public abstract class ProcessPOrderBn implements Serializable {
     public abstract void addDocument();
 
     public void submitComment() {
-        if (pOrderComments == null) {
-            pOrderComments = new ArrayList<POrderComment>();
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            pOrderBase.setState(AmdmtState.SUBMITTED);
+            pOrderBase.setReviewState(pOrderComment.getRecomendType());
+            enterComment();
+            String retObject = newApp();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), ex.getMessage()));
         }
-        setPOrderForComment();
-        pOrderBase.setState(AmdmtState.SUBMITTED);
-        pOrderComment.setDate(new Date());
-        pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
-        pOrderBase.setReviewState(pOrderComment.getRecomendType());
-        pOrderComments.add(pOrderComment);
-        String retObject = newApp();
     }
 
     public void addComment() {
-        if (pOrderComments == null) {
-            pOrderComments = new ArrayList<POrderComment>();
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            if (userSession.isCsd())
+                pOrderBase.setReviewState(RecomendType.FEEDBACK);
+            else
+                pOrderBase.setReviewState(RecomendType.COMMENT);
+            pOrderComment.setRecomendType(pOrderBase.getReviewState());
+            enterComment();
+            String retObject = newApp();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), ex.getMessage()));
         }
-        setPOrderForComment();
-        pOrderComment.setDate(new Date());
-        pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
-        if (userSession.isCsd())
-            pOrderBase.setReviewState(RecomendType.FEEDBACK);
-        else
-            pOrderBase.setReviewState(RecomendType.COMMENT);
-        pOrderComment.setRecomendType(pOrderBase.getReviewState());
-        pOrderComments.add(pOrderComment);
-        String retObject = newApp();
     }
 
     protected abstract void setPOrderForComment();
@@ -183,6 +228,8 @@ public abstract class ProcessPOrderBn implements Serializable {
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderComment.setDate(new Date());
         setPOrderForComment();
+        if (pOrderComments == null)
+            pOrderComments = pOrderService.findPOrderComments(pOrderBase);
         pOrderComments.add(pOrderComment);
     }
 
@@ -191,40 +238,77 @@ public abstract class ProcessPOrderBn implements Serializable {
 //        pOrderComment.setRecomendType(RecomendType.ACCEPTED);
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderComment.setDate(new Date());
-        setPOrderForComment();
-        pOrderComments.add(pOrderComment);
     }
 
     public String approveOrder() {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-        if (pOrderBase.getReviewState().equals(RecomendType.RECOMENDED)) {
+        try {
+            if (pOrderBase.getReviewState().equals(RecomendType.RECOMENDED)) {
 //            pOrderBase.setReviewState(RecomendType.ACCEPTED);
-            pOrderBase.setState(AmdmtState.APPROVED);
-            pOrderBase.setApprovalDate(new Date());
-            pOrderBase.setExpiryDate(JsfUtils.addDate(new Date(), globalEntityLists.getWorkspace().getPipRegDuration()));
-            return newApp();
-        } else {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "You cannot approve an application that was not recommended." +
-                    " Please send it back to the person who did not recommended it explaining the reasons by adding a comment."));
+                pOrderBase.setState(AmdmtState.APPROVED);
+                pOrderBase.setApprovalDate(new Date());
+                Date expDate = JsfUtils.addDate(new Date(), globalEntityLists.getWorkspace().getPipRegDuration());
+
+                if(pOrderBase instanceof PurOrder) {
+                    for (PurProd pp : ((PurOrder) pOrderBase).getPurProds()) {
+                        ProdApplications pa = prodApplicationsService.findActiveProdAppByProd(pp.getProduct().getId());
+                        if (expDate.after(pa.getRegExpiryDate())) {
+                            expDate = pa.getRegExpiryDate();
+                        }
+                    }
+                }
+                pOrderBase.setExpiryDate(expDate);
+
+                enterComment();
+                return newApp();
+            } else {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "You cannot approve an application that was not recommended." +
+                        " Please send it back to the person who did not recommended it explaining the reasons by adding a comment."));
+                return "";
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), ex.getMessage()));
             return "";
+        }
+    }
+
+    private void enterComment() {
+        pOrderComments = pOrderService.findPOrderComments(pOrderBase);
+        if (pOrderComments == null)
+            pOrderComments = new ArrayList<POrderComment>();
+        pOrderComment.setExternal(false);
+        pOrderComments.add(pOrderComment);
+        if (pOrderBase instanceof PIPOrder) {
+            pOrderComment.setPipOrder((PIPOrder) pOrderBase);
+            ((PIPOrder) pOrderBase).setpOrderComments(pOrderComments);
+        } else if (pOrderBase instanceof PurOrder) {
+            pOrderComment.setPurOrder((PurOrder) pOrderBase);
+            ((PurOrder) pOrderBase).setpOrderComments(pOrderComments);
         }
     }
 
     public String rejectOrder() {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-        if (pOrderBase.getReviewState().equals(RecomendType.NOT_RECOMENDED)) {
+        try {
+            if (pOrderBase.getReviewState().equals(RecomendType.NOT_RECOMENDED)) {
 //            pOrderBase.setReviewState(RecomendType.ACCEPTED);
-            pOrderBase.setState(AmdmtState.REJECTED);
-            pOrderBase.setApprovalDate(new Date());
-            return newApp();
-        } else {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "You cannot reject an application that was recommended." +
-                    " Please send it back to the person who recommended it explaining the rejection reason by adding a comment."));
+                pOrderBase.setState(AmdmtState.REJECTED);
+                pOrderBase.setApprovalDate(new Date());
+                enterComment();
+                return newApp();
+            } else {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "You cannot reject an application that was recommended." +
+                        " Please send it back to the person who recommended it explaining the rejection reason by adding a comment."));
+                return "";
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), ex.getMessage()));
             return "";
         }
-
     }
 
 
@@ -303,9 +387,6 @@ public abstract class ProcessPOrderBn implements Serializable {
     }
 
     public ArrayList<POrderDoc> getpOrderDocs() {
-        if (pOrderDocs == null) {
-            pOrderDocs = (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(pOrderBase);
-        }
         return pOrderDocs;
     }
 
@@ -421,5 +502,13 @@ public abstract class ProcessPOrderBn implements Serializable {
         recomendTypes.add(RecomendType.NOT_RECOMENDED);
 
         return recomendTypes;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
     }
 }

@@ -31,7 +31,7 @@ public class Applicant extends CreationDetail implements Serializable {
     @Embedded
     private Address address = new Address();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @NotAudited
     private ApplicantType applicantType;
 

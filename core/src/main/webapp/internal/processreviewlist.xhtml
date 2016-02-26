@@ -23,7 +23,7 @@
                         </f:facet>
                         <p:commandLink id="viewLink1" value="#{eachrev.prodName}"
                                        ajax="false" action="/internal/review.faces"
-                                       style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
+                                       style="#{eachrev.fastrack?(eachrev.sra?'color:#a52a2a;':'color: green;'):(eachrev.sra?'color:blue;':'')}">
                             <f:param name="reviewID" value="#{eachrev.id}"/>
                         </p:commandLink>
                     </p:column>
@@ -85,7 +85,8 @@
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
                         <p:commandLink id="viewLink" value="#{eachprod.prodName}" action="/internal/reviewInfo.faces"
-                                       ajax="false" >
+                                       ajax="false"
+                                       style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
                             <f:param name="reviewInfoID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>

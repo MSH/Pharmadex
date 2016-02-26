@@ -39,12 +39,6 @@ public class LicHolderListBn implements Serializable {
     private List<LicenseHolder> licenseHolders;
     private List<LicenseHolder> filteredlicHolders;
 
-    public String sentToDetail(Long id) {
-        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
-        flash.put("licHolderID", id);
-        return "licholderdetail";
-    }
-
     public List<LicenseHolder> getLicenseHolders() {
         if(licenseHolders==null){
             licenseHolders = licenseHolderService.findAllLicenseHolder();

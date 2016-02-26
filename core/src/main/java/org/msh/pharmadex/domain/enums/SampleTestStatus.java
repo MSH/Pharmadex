@@ -8,6 +8,7 @@ public enum SampleTestStatus {
     REQUESTED,
     SAMPLE_RECIEVED,
     IN_PROGRESS,
+    AVAILABLE,
     RESULT;
 
     public String getKey() {

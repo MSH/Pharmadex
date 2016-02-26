@@ -390,6 +390,11 @@ public class ProdApplicationsService implements Serializable {
         return prodApplicationsDAO.findProdApplicationByProduct(id);
     }
 
+    @Transactional
+    public ProdApplications findActiveProdAppByProd(Long prodID){
+        return prodApplicationsDAO.findActiveProdAppByProd(prodID);
+    }
+
     public StatusUser findStatusUser(Long prodAppId) {
         return statusUserDAO.findByProdApplications_Id(prodAppId);
     }

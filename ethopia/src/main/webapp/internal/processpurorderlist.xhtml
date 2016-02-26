@@ -15,11 +15,17 @@
             <h:panelGrid columns="3" cellpadding="10" cellspacing="10" id="searchpg">
                 <p:outputLabel value="#{msgs.application_no}" for="searchpip" styleClass="label"></p:outputLabel>
                 <p:inputText value="#{purOrderListBn.pipNo}" id="searchpip"/>
-                <p:commandButton action="#{purOrderListBn.searchPurOrder}" ajax="false" value="#{msgs.registration_search}"/>
+                <p:commandButton action="#{purOrderListBn.searchPurOrder}" ajax="false"
+                                 value="#{msgs.registration_search}"/>
             </h:panelGrid>
             <h:panelGroup rendered="#{not empty purOrderListBn.purOrders}">
                 <p:dataTable id="purtable" var="eachprod" value="#{purOrderListBn.purOrders}"
-                             rendered="#{not empty purOrderListBn.purOrders}">
+                             rendered="#{not empty purOrderListBn.purOrders}"
+                             rows="25" paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}"
+                             rowsPerPageTemplate="25,50,100,200">
+
 
                     <p:column style="width:16px">
                         <p:rowToggler/>
@@ -79,7 +85,7 @@
                             </p:column>
 
                             <p:column headerText="#{msgs.inn_unit}">
-                                <h:outputText value="#{order.unit}"/>
+                                <h:outputText value="#{order.dosUnit.uom}"/>
                             </p:column>
 
                             <p:column headerText="#{msgs.global_quantity}">

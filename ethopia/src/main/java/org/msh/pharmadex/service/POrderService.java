@@ -8,10 +8,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
 import org.msh.pharmadex.dao.CustomPurOrderDAO;
-import org.msh.pharmadex.dao.iface.PIPOrderDAO;
-import org.msh.pharmadex.dao.iface.PIPOrderLookUpDAO;
-import org.msh.pharmadex.dao.iface.POrderDocDAO;
-import org.msh.pharmadex.dao.iface.PurOrderDAO;
+import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.YesNoNA;
@@ -55,6 +52,12 @@ public class POrderService implements Serializable {
     private POrderDocDAO pOrderDocDAO;
 
     @Autowired
+    private POrderChecklistDAO pOrderChecklistDAO;
+
+    @Autowired
+    private POrderCommentDAO pOrderCommentDAO;
+
+    @Autowired
     private UserService userService;
     @PersistenceContext
     private EntityManager entityManager;
@@ -93,6 +96,7 @@ public class POrderService implements Serializable {
         try {
             if (pipOrderBase instanceof PIPOrder) {
                 PIPOrder pipOrder = (PIPOrder) pipOrderBase;
+                pipOrder.setTotalPrice(calculateGrandTotal(pipOrder.getPipProds(), pipOrder.getFreight()));
                 String retValue = validate(pipOrder);
                 if (retValue.equals("persist")) {
                     pipOrder.setSubmitDate(new Date());
@@ -113,6 +117,7 @@ public class POrderService implements Serializable {
 
             if (pipOrderBase instanceof PurOrder) {
                 PurOrder purOrder = (PurOrder) pipOrderBase;
+                purOrder.setTotalPrice(calculateGrandTotal(purOrder.getPurProds(), purOrder.getFreight()));
                 String retValue = validate(purOrder);
                 if (retValue.equals("persist")) {
                     purOrder.setSubmitDate(new Date());
@@ -131,7 +136,6 @@ public class POrderService implements Serializable {
                     retObject.setMsg(retValue);
                 }
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
             retObject.setMsg("error");
@@ -139,8 +143,26 @@ public class POrderService implements Serializable {
             return retObject;
         }
         return retObject;
+    }
 
-
+    /**
+     * Calculates the total price of all the products
+     * @param pProdBaseList
+     * @param freight
+     * @return
+     */
+    public Double calculateGrandTotal(List pProdBaseList, Double freight){
+        if(pProdBaseList == null)
+            return 0.0;
+        Double grandTotal = freight;
+        for(Object obj : pProdBaseList){
+            if(obj!=null){
+                PProdBase pProdBase = (PProdBase) obj;
+                pProdBase.setTotalPrice(pProdBase.getUnitPrice()*pProdBase.getQuantity());
+                grandTotal += pProdBase.getTotalPrice();
+            }
+        }
+        return grandTotal;
     }
 
     public byte[] generateLetter(POrderBase pipOrder, String path, File pdfFile) throws JRException, IOException, SQLException {
@@ -162,12 +184,12 @@ public class POrderService implements Serializable {
         try {
             POrderDoc pOrderDoc = new POrderDoc();
             byte[] file = new byte[0];
-            if(pipOrderBase instanceof PIPOrder) {
+            if (pipOrderBase instanceof PIPOrder) {
                 File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_ack", ".pdf");
                 file = generateLetter(pipOrderBase, "/reports/pip_ack.jasper", invoicePDF);
                 pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
                 pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
-            }else if(pipOrderBase instanceof PurOrder) {
+            } else if (pipOrderBase instanceof PurOrder) {
                 File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_ack", ".pdf");
                 file = generateLetter(pipOrderBase, "/reports/po_ack.jasper", invoicePDF);
                 pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
@@ -376,7 +398,7 @@ public class POrderService implements Serializable {
             if (companyUser) {
                 purOrders = customPurOrderDAO.findPurOrderByUser(userID, applcntId);
             } else {
-                purOrders = customPurOrderDAO.findAllPIPOrder();
+                purOrders = customPurOrderDAO.findAllPurOrder();
             }
 
 
@@ -417,15 +439,10 @@ public class POrderService implements Serializable {
     }
 
     @Transactional
-    public PIPOrder findPIPOrderEager(Long pipOrderID) {
+    public PIPOrder findPIPOrderByID(Long pipOrderID) {
         PIPOrder pOrderBase;
         try {
-            pOrderBase = pipOrderDAO.findOne(pipOrderID);
-            Hibernate.initialize(pOrderBase.getPipProds());
-            Hibernate.initialize(pOrderBase.getpOrderChecklists());
-            Hibernate.initialize(pOrderBase.getApplicant());
-            Hibernate.initialize(pOrderBase.getCreatedBy());
-            Hibernate.initialize(pOrderBase.getpOrderComments());
+            pOrderBase = customPIPOrderDAO.findPIPOrder(pipOrderID);
         } catch (Exception ex) {
             ex.printStackTrace();
             pOrderBase = null;
@@ -437,11 +454,7 @@ public class POrderService implements Serializable {
     public PurOrder findPurOrderEager(Long purOrderID) {
         PurOrder purOrder;
         try {
-            purOrder = purOrderDAO.findOne(purOrderID);
-            Hibernate.initialize(purOrder.getPurProds());
-//            Hibernate.initialize(purOrder.getPurOrderChecklists());
-            Hibernate.initialize(purOrder.getApplicant());
-            Hibernate.initialize(purOrder.getCreatedBy());
+            purOrder = customPurOrderDAO.findPurOrder(purOrderID);
         } catch (Exception ex) {
             ex.printStackTrace();
             purOrder = null;
@@ -509,12 +522,12 @@ public class POrderService implements Serializable {
 
     public POrderBase findPOrder(String pipNo, boolean purOrder) {
         POrderBase pOrderBase;
-        try{
-            if(purOrder)
+        try {
+            if (purOrder)
                 pOrderBase = purOrderDAO.findByPipNo(pipNo);
             else
                 pOrderBase = pipOrderDAO.findByPipNo(pipNo);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             pOrderBase = null;
         }
@@ -529,5 +542,68 @@ public class POrderService implements Serializable {
         }
         return prodTables;
 
+    }
+
+    public List<POrderChecklist> findPOrderChecklists(POrderBase pOrderBase) {
+        List<POrderChecklist> pOrderDocs = null;
+        if (pOrderBase == null)
+            pOrderDocs = new ArrayList<POrderChecklist>();
+        if (pOrderBase instanceof PIPOrder) {
+            if (pOrderBase.getId() != null)
+                pOrderDocs = pOrderChecklistDAO.findByPipOrder_Id(pOrderBase.getId());
+            else
+                pOrderDocs = new ArrayList<POrderChecklist>();
+        }
+        if (pOrderBase instanceof PurOrder) {
+            if (pOrderBase.getId() != null)
+                pOrderDocs = pOrderChecklistDAO.findByPurOrder_Id(pOrderBase.getId());
+            else
+                pOrderDocs = new ArrayList<POrderChecklist>();
+
+        }
+        return pOrderDocs;
+    }
+
+    public List<POrderComment> findPOrderComments(POrderBase pOrderBase) {
+        List<POrderComment> pOrderDocs = null;
+        if (pOrderBase == null)
+            pOrderDocs = new ArrayList<POrderComment>();
+        if (pOrderBase instanceof PIPOrder) {
+            if (pOrderBase.getId() != null)
+                pOrderDocs = pOrderCommentDAO.findByPipOrder_Id(pOrderBase.getId());
+            else
+                pOrderDocs = new ArrayList<POrderComment>();
+        }
+        if (pOrderBase instanceof PurOrder) {
+            if (pOrderBase.getId() != null)
+                pOrderDocs = pOrderCommentDAO.findByPurOrder_Id(pOrderBase.getId());
+            else
+                pOrderDocs = new ArrayList<POrderComment>();
+
+        }
+        return pOrderDocs;
+    }
+
+    @Autowired
+    private PipProdDAO pipProdDAO;
+    @Autowired
+    private PurProdDAO purProdDAO;
+
+    public String removeProd(PProdBase purProd) {
+        try {
+            if (purProd == null)
+                return null;
+
+            if (purProd instanceof PIPProd) {
+                pipProdDAO.delete((PIPProd) purProd);
+            } else if (purProd instanceof PurProd) {
+                purProdDAO.delete((PurProd) purProd);
+            }
+
+            return "persist";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
 }

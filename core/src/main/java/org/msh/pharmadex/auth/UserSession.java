@@ -57,9 +57,11 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private boolean reviewer = false;
     private boolean head = false;
     private boolean csd = false;
+    private boolean cst = false;
     private boolean lab = false;
     private boolean clinical = false;
     private boolean labModerator = false;
+    private boolean labHead = true;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
     private DisplayReviewInfo displayReviewInfo;
@@ -191,6 +193,8 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
                     setDisplayAppReg(false);
                     setCsd(false);
                     setLab(true);
+                    setLabModerator(false);
+                    setLabHead(false);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_LAB_MODERATOR")) {
                     setStaff(false);
@@ -198,11 +202,27 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
                     setCsd(false);
                     setLab(true);
                     setLabModerator(true);
+                    setLabHead(false);
+                }
+                if (role.getRolename().equalsIgnoreCase("ROLE_LAB_HEAD")) {
+                    setStaff(false);
+                    setDisplayAppReg(false);
+                    setCsd(false);
+                    setLab(true);
+                    setLabModerator(false);
+                    setLabHead(true);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_CSD")) {
                     setStaff(true);
                     setDisplayAppReg(true);
                     setCsd(true);
+                    setCst(true);
+                }
+                if (role.getRolename().equalsIgnoreCase("ROLE_CST")) {
+                    setStaff(true);
+                    setDisplayAppReg(true);
+                    setCst(true);
+                    setCsd(false);
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_CLINICAL")) {
                     setClinical(true);
@@ -537,5 +557,21 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
     public void setClinical(boolean clinical) {
         this.clinical = clinical;
+    }
+
+    public boolean isCst() {
+        return cst;
+    }
+
+    public void setCst(boolean cst) {
+        this.cst = cst;
+    }
+
+    public boolean isLabHead() {
+        return labHead;
+    }
+
+    public void setLabHead(boolean labHead) {
+        this.labHead = labHead;
     }
 }

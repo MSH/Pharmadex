@@ -8,10 +8,10 @@
         <intercept-url pattern="/index.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <!--<intercept-url access="IS_AUTHENTICATED_REMEMBERED" pattern="/*"/>-->
         <intercept-url pattern="/secure/**"
-                       access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD, ROLE_EXT, ROLE_CSD, ROLE_LAB, ROLE_LAB_MODERATOR, ROLE_CLINICAL"/>
+                       access="ROLE_COMPANY, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD, ROLE_EXT, ROLE_CSD, ROLE_CST, ROLE_LAB, ROLE_LAB_MODERATOR, ROLE_CLINICAL, ROLE_LAB_HEAD"/>
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
         <intercept-url pattern="/internal/**"
-                       access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD, ROLE_COMPANY, ROLE_CSD, ROLE_LAB, ROLE_LAB_MODERATOR, ROLE_CLINICAL"/>
+                       access="ROLE_INTERNAL, ROLE_ADMIN, ROLE_STAFF, ROLE_MODERATOR, ROLE_REVIEWER, ROLE_HEAD, ROLE_COMPANY, ROLE_CSD, ROLE_CST, ROLE_LAB, ROLE_LAB_MODERATOR, ROLE_CLINICAL, ROLE_LAB_HEAD"/>
         <form-login authentication-failure-url="/pages/login1.faces?login_error=true" login-page="/pages/login1.faces"
                     authentication-success-handler-ref="postSuccessfullAuthHandler"
                     login-processing-url="/j_spring_security_check"/>

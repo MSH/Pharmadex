@@ -31,19 +31,23 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
     @PostConstruct
     public void init() {
         pOrderBase = new PurOrder();
-        Long purOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID"));
-        if (purOrderID != null) {
-            pOrderBase = pOrderService.findPurOrderEager(purOrderID);
-            initVariables();
+        try {
+            Long purOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID"));
+            if (purOrderID != null) {
+                pOrderBase = pOrderService.findPurOrderEager(purOrderID);
+                initVariables();
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
 
     }
 
     @Override
     public void initVariables() {
-        pOrderChecklists = ((PurOrder) pOrderBase).getpOrderChecklists();
+//        pOrderChecklists = ((PurOrder) pOrderBase).getpOrderChecklists();
         purProds = ((PurOrder) pOrderBase).getPurProds();
-        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
+//        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
         setApplicantUser(pOrderBase.getApplicantUser());
         setApplicant(pOrderBase.getApplicantUser().getApplicant());
         setpOrderDocs(null);
@@ -54,12 +58,15 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
         pOrderBase.setState(AmdmtState.FEEDBACK);
         pOrderComment.setPurOrder((PurOrder) pOrderBase);
         pOrderComment.setExternal(true);
-        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
+//        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
+        pOrderComments = pOrderService.findPOrderComments(pOrderBase);
         if (pOrderComments == null)
             pOrderComments = new ArrayList<POrderComment>();
         pOrderComments.add(pOrderComment);
+        ((PurOrder) pOrderBase).setpOrderComments(pOrderComments);
         return saveApp();
     }
+
     public String newApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {

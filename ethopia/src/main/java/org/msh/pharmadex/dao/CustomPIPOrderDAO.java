@@ -20,13 +20,12 @@ public class CustomPIPOrderDAO {
     EntityManager entityManager;
 
     public List<PIPOrder> findPIPOrderByUser(Long userId, Long applcntId) {
-        List<PIPOrder> pipOrders = entityManager.createQuery("select porder from PIPOrder porder where porder.createdBy.userId = :userId and porder.applicant.applcntId = :applcntId ")
-                .setParameter("userId", userId)
+        List<PIPOrder> pipOrders = entityManager.createQuery("select distinct porder from PIPOrder porder " +
+                "left join fetch porder.pipProds left join fetch porder.applicant left join fetch porder.applicantUser " +
+                "left join fetch porder.createdBy " +
+                "where porder.applicant.applcntId = :applcntId ")
                 .setParameter("applcntId", applcntId)
                 .getResultList();
-
-        initializePIPOrder(pipOrders);
-
 
         return pipOrders;
     }
@@ -38,12 +37,27 @@ public class CustomPIPOrderDAO {
                 .getResultList();
     }
 
+    public PIPOrder findPIPOrder(Long pipOrderID) {
+        PIPOrder pipOrder = (PIPOrder) entityManager.createQuery("select porder from PIPOrder porder " +
+                "inner join fetch porder.pipProds prod left join fetch prod.dosForm left join fetch prod.dosUnit left join fetch prod.country " +
+                "left join fetch porder.applicant app left join fetch app.applicantType left join fetch app.address.country " +
+                "left join fetch porder.applicantUser appUser left join fetch appUser.address.country " +
+                "left join fetch porder.createdBy user left join fetch user.address.country " +
+                "where porder.id = :pipOrderID ")
+                .setParameter("pipOrderID", pipOrderID)
+                .getSingleResult();
+        return pipOrder;
+    }
 
     public List<PIPOrder> findAllPIPOrder() {
-        List<PIPOrder> pipOrders = entityManager.createQuery("select porder from PIPOrder porder where porder.state not in (:state) ")
+        List<PIPOrder> pipOrders = entityManager.createQuery("select distinct porder from PIPOrder porder " +
+                "left join fetch porder.pipProds prod " +
+                "left join fetch porder.applicant app left join fetch app.applicantType left join fetch app.address.country " +
+                "left join fetch porder.applicantUser appUser left join fetch appUser.address.country " +
+                "left join fetch porder.createdBy user left join fetch user.address.country " +
+                "where porder.state not in (:state) ")
                 .setParameter("state", AmdmtState.WITHDRAWN)
                 .getResultList();
-        initializePIPOrder(pipOrders);
         return pipOrders;
     }
 

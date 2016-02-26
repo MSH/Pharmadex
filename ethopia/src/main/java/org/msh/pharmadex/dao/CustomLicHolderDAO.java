@@ -61,7 +61,7 @@ public class CustomLicHolderDAO {
     }
 
     public List<LicenseHolder> findAll() {
-        List<LicenseHolder> licenseHolders = entityManager.createQuery("select lh from LicenseHolder lh ")
+        List<LicenseHolder> licenseHolders = entityManager.createQuery("select lh from LicenseHolder lh left join fetch lh.address.country ")
                 .getResultList();
         return licenseHolders;
 

@@ -86,7 +86,7 @@
                                 <ui:include src="clinicalreview.xhtml"/>
                             </p:tab>
 
-                            <p:tab title="Sample Request" id="sampletab" rendered="#{processProdBn.displaySample}">
+                            <p:tab title="#{msgs.sample_request}" id="sampletab" rendered="#{processProdBn.displaySample}">
                                 <ui:include src="samplerequestpnl.xhtml"/>
                             </p:tab>
 
@@ -151,48 +151,54 @@
                             <p:tab title="#{msgs.attachments}" id="attachtab"
                                    rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer||userSession.lab}">
 
-                                <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
-                                                 oncomplete="PF('attachdlg').show()"
-                                                 action="#{fileUploadController.prepareUpload}"
-                                                 update=":attachdlg" id="addDocBtn"/>
+                                <h:panelGrid columns="1" cellpadding="5" cellspacing="5">
+                                    <p:outputLabel value="#{msgs.reg_form_attach_hint2}" styleClass="hint"/>
 
-                                <p:dataTable id="attachtable" value="#{fileUploadController.attachments}" var="doc">
 
-                                    <p:column headerText="#{msgs.title}">
-                                        <h:outputText value="#{doc.title}"/>
-                                    </p:column>
+                                    <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                                     oncomplete="PF('attachdlg').show()"
+                                                     action="#{fileUploadController.prepareUpload}"
+                                                     update=":attachdlg" id="addDocBtn"/>
 
-                                    <p:column headerText="#{msgs.filename}">
-                                        <h:outputText value="#{doc.fileName}"/>
-                                    </p:column>
+                                    <p:dataTable id="attachtable" value="#{fileUploadController.attachments}" var="doc">
 
-                                    <p:column headerText="#{msgs.uploaddate}">
-                                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
-                                    </p:column>
+                                        <p:column headerText="#{msgs.title}">
+                                            <h:outputText value="#{doc.title}"/>
+                                        </p:column>
 
-                                    <p:column headerText="#{msgs.uploadedby}">
-                                        <h:outputText value="#{doc.uploadedBy.name}"/>
-                                    </p:column>
+                                        <p:column headerText="#{msgs.filename}">
+                                            <h:outputText value="#{doc.fileName}"/>
+                                        </p:column>
 
-                                    <p:column headerText="#{msgs.registration_status}">
-                                        <h:outputText value="#{msgs[doc.regState.key]}"/>
-                                    </p:column>
+                                        <p:column headerText="#{msgs.uploaddate}">
+                                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                                        </p:column>
 
-                                    <p:column>
-                                        <p:commandButton id="downloadLink" value="Download" ajax="false"
-                                                         onclick="PrimeFaces.monitorDownload(start, stop)"
-                                                         icon="ui-icon-arrowthichk-s">
-                                            <p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
-                                        </p:commandButton>
-                                    </p:column>
+                                        <p:column headerText="#{msgs.uploadedby}">
+                                            <h:outputText value="#{doc.uploadedBy.name}"/>
+                                        </p:column>
 
-                                    <p:column>
-                                        <p:commandButton id="deleteattach"
-                                                         action="#{fileUploadController.deleteDoc(doc)}" ajax="false"
-                                                         icon="ui-icon-trash"
-                                                         update=":reghome:attachtab:attachtable"/>
-                                    </p:column>
-                                </p:dataTable>
+                                        <p:column headerText="#{msgs.registration_status}">
+                                            <h:outputText value="#{msgs[doc.regState.key]}"/>
+                                        </p:column>
+
+                                        <p:column>
+                                            <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                             icon="ui-icon-arrowthichk-s">
+                                                <p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
+                                            </p:commandButton>
+                                        </p:column>
+
+                                        <p:column>
+                                            <p:commandButton id="deleteattach"
+                                                             action="#{fileUploadController.deleteDoc(doc)}"
+                                                             ajax="false"
+                                                             icon="ui-icon-trash"
+                                                             update=":reghome:attachtab:attachtable"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
                             </p:tab>
 
                             <p:tab title="#{msgs.letters}" id="lettertab">
@@ -642,11 +648,11 @@
                                 required="true" pattern="#{userAccessMBean.workspace.datePattern}">
                         <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
                     </p:calendar>
-                    <p:message for="regstartdate" />
+                    <p:message for="regstartdate"/>
                     <p:outputLabel value="#{msgs.expiry_date}" for="expiryDate"/>
                     <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
                                 required="true" pattern="#{userAccessMBean.workspace.datePattern}"/>
-                    <p:message for="expiryDate" />
+                    <p:message for="expiryDate"/>
                     <p:outputLabel for="regnumber" value="#{msgs.reg_number}"/>
                     <p:inputText id="regnumber" value="#{processProdBn.prodApplications.prodRegNo}" required="true"/>
                     <p:message for="regnumber" showSummary="true"/>

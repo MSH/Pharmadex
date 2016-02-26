@@ -57,11 +57,13 @@ public class PurOrderBn extends POrderBn {
     private ProdTable product;
     private boolean showWithdrawn;
     private boolean showSubmit;
+    private POrderComment pOrderComment;
 
     @PostConstruct
     private void init() {
-        Long purOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID"));
-        if (purOrderID != null) {
+        String purOrderSt = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID");
+        if (purOrderSt != null && !purOrderSt.equals("")) {
+            Long purOrderID = Long.valueOf(purOrderSt);
             purOrder = getpOrderService().findPurOrderEager(purOrderID);
             if (purOrder.getCurrency() == null)
                 purOrder.setCurrency(new Currency());
@@ -77,6 +79,7 @@ public class PurOrderBn extends POrderBn {
                 setApplicant(applicantUser.getApplicant());
                 purOrder.setCreatedBy(applicantUser);
                 purOrder.setApplicantUser(applicantUser);
+                purOrder.setApplicant(getApplicant());
 
                 pOrderChecklists = new ArrayList<POrderChecklist>();
                 List<PIPOrderLookUp> allChecklist = findAllChecklists();
@@ -91,6 +94,12 @@ public class PurOrderBn extends POrderBn {
         }
     }
 
+    public void initComment() {
+        pOrderComment = new POrderComment();
+        pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
+        pOrderComment.setDate(new Date());
+    }
+
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
         if (getApplicant() != null) {
@@ -100,7 +109,7 @@ public class PurOrderBn extends POrderBn {
     }
 
     public void calculateTotalPrice(AjaxBehaviorEvent event) {
-        if (purProd.getUnitPrice() != null && purProd.getQuantity() != null) {
+        if (purProd != null && purProd.getUnitPrice() != null && purProd.getQuantity() != null) {
             double unitPrice = purProd.getUnitPrice();
             purProd.setTotalPrice(unitPrice * purProd.getQuantity());
         }
@@ -140,8 +149,6 @@ public class PurOrderBn extends POrderBn {
             purProds = purOrder.getPurProds();
             if (purProds == null) {
                 purProds = new ArrayList<PurProd>();
-                purOrder.setTotalPrice(purOrder.getFreight());
-
             }
         }
 
@@ -150,20 +157,45 @@ public class PurOrderBn extends POrderBn {
         purProd.setPurOrder(purOrder);
         purProd.setCreatedDate(new Date());
         purProd.setProductNo("" + (purProds.size() + 1));
-        purOrder.setTotalPrice((purOrder.getTotalPrice() != null ? purOrder.getTotalPrice() : 0) + purProd.getTotalPrice());
+        purProd.setTotalPrice(purProd.getQuantity() * purProd.getUnitPrice());
+
         purProds.add(purProd);
+        purOrder.setTotalPrice(pOrderService.calculateGrandTotal(purProds, purOrder.getFreight()));
         initAddProd();
     }
 
     public String removeProd(PurProd purProd) {
-        context = FacesContext.getCurrentInstance();
-        purOrder.setTotalPrice(purOrder.getTotalPrice() - purProd.getTotalPrice());
-        purProds.remove(purProd);
+        try {
+            context = FacesContext.getCurrentInstance();
+            purProds.remove(purProd);
 
-        for (int i = 0; i < purProds.size(); i++) {
-            purProds.get(i).setProductNo("" + (i + 1));
+            PurProd pp;
+            for (int i = 0; i < purProds.size(); i++) {
+                pp = purProds.get(i);
+                pp.setProductNo("" + (i + 1));
+                pp.setTotalPrice(pp.getQuantity() * pp.getUnitPrice());
+            }
+
+            purOrder.setTotalPrice(pOrderService.calculateGrandTotal(purProds, purOrder.getFreight()));
+
+            String result;
+            if(purOrder.getId()!=null) {
+                result = pOrderService.removeProd(purProd);
+                pOrderService.updatePIPOrder(purOrder);
+            }else{
+                result = "persist";
+            }
+
+            if (result.equals("persist"))
+                context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
+            else {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), result));
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
-        context.addMessage(null, new FacesMessage(bundle.getString("pipprod_removed")));
         return null;
     }
 
@@ -173,45 +205,65 @@ public class PurOrderBn extends POrderBn {
     }
 
     public String saveOrder() {
-        System.out.println("Inside saveorder");
-
-        context = FacesContext.getCurrentInstance();
+        try {
+            context = FacesContext.getCurrentInstance();
 //        purOrder.setCreatedBy(getApplicantUser());
-        purOrder.setState(AmdmtState.NEW_APPLICATION);
-        purOrder.setpOrderChecklists(pOrderChecklists);
-        purOrder.setPurProds(purProds);
-        purOrder.setApplicant(getApplicant());
-        purOrder.setApplicantUser(getApplicantUser());
+            purOrder.setState(AmdmtState.NEW_APPLICATION);
+            purOrder.setpOrderChecklists(pOrderChecklists);
+            purOrder.setPurProds(purProds);
+            purOrder.setApplicant(getApplicant());
+            purOrder.setApplicantUser(getApplicantUser());
 
 
-        if (getUserSession().isCompany())
-            purOrder.setApplicant(purOrder.getApplicant());
+            if (getUserSession().isCompany())
+                purOrder.setApplicant(purOrder.getApplicant());
 
-        RetObject retValue = getpOrderService().newOrder(purOrder);
-        if (retValue.getMsg().equals("persist")) {
-            purOrder = (PurOrder) retValue.getObj();
-            String retMsg = super.saveOrder();
-            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
-            return "purorderlist";
-        } else {
-            if (retValue.getMsg().equals("missing_doc"))
-                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Please make sure all the required documents in the checklsit are enclosed"));
-            if (retValue.getMsg().equals("no_prod"))
-                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "No product specified to be imported"));
-            if (retValue.getMsg().equals("error"))
-                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Unable to create the order"));
+            RetObject retValue = getpOrderService().newOrder(purOrder);
+            if (retValue.getMsg().equals("persist")) {
+                purOrder = (PurOrder) retValue.getObj();
+                String retMsg = super.saveOrder();
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+                return "purorderlist";
+            } else {
+                purOrder.setState(AmdmtState.SAVED);
+                if (retValue.getMsg().equals("missing_doc"))
+                    context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Please make sure all the required documents in the checklsit are enclosed"));
+                if (retValue.getMsg().equals("no_prod"))
+                    context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "No product specified to be imported"));
+                if (retValue.getMsg().equals("error"))
+                    context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Unable to create the order"));
 
+                return "";
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
             return "";
         }
     }
 
     public String withdraw() {
-        context = FacesContext.getCurrentInstance();
-        purOrder.setState(AmdmtState.WITHDRAWN);
-        purOrder = (PurOrder) pOrderService.saveOrder(purOrder);
-        context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
-        return "piporderlist";
+        try {
+            context = FacesContext.getCurrentInstance();
+            purOrder.setState(AmdmtState.WITHDRAWN);
 
+            pOrderComment.setPurOrder(purOrder);
+            pOrderComment.setExternal(true);
+//        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
+            List<POrderComment> pOrderComments = pOrderService.findPOrderComments(purOrder);
+            if (pOrderComments == null)
+                pOrderComments = new ArrayList<POrderComment>();
+            pOrderComments.add(pOrderComment);
+            purOrder.setpOrderComments(pOrderComments);
+
+            purOrder = (PurOrder) pOrderService.saveOrder(purOrder);
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+            return "purorderlist";
+        }catch (Exception ex){
+            ex.printStackTrace();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            return "";
+        }
     }
 
 
@@ -364,7 +416,9 @@ public class PurOrderBn extends POrderBn {
     public boolean isShowWithdrawn() {
         if (purOrder != null && purOrder.getState() != null) {
             if (purOrder.getState().equals(AmdmtState.WITHDRAWN) || purOrder.getState().equals(AmdmtState.APPROVED)
-                    || purOrder.getState().equals(AmdmtState.REJECTED) || purOrder.getState().equals(AmdmtState.FEEDBACK))
+                    || purOrder.getState().equals(AmdmtState.REJECTED) || purOrder.getState().equals(AmdmtState.FEEDBACK)
+                    || purOrder.getState().equals(AmdmtState.SAVED))
+
                 showWithdrawn = false;
             else
                 showWithdrawn = true;
@@ -380,7 +434,9 @@ public class PurOrderBn extends POrderBn {
 
     public boolean isShowSubmit() {
         if (purOrder != null && purOrder.getState() != null) {
-            if (purOrder.getState().equals(AmdmtState.WITHDRAWN) || purOrder.getState().equals(AmdmtState.FEEDBACK))
+            if (purOrder.getState().equals(AmdmtState.WITHDRAWN) || purOrder.getState().equals(AmdmtState.FEEDBACK)
+                    || purOrder.getState().equals(AmdmtState.SAVED))
+
                 showSubmit = true;
             else
                 showSubmit = false;
@@ -394,4 +450,11 @@ public class PurOrderBn extends POrderBn {
         this.showSubmit = showSubmit;
     }
 
+    public POrderComment getpOrderComment() {
+        return pOrderComment;
+    }
+
+    public void setpOrderComment(POrderComment pOrderComment) {
+        this.pOrderComment = pOrderComment;
+    }
 }

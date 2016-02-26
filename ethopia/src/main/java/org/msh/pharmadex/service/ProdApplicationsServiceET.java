@@ -192,6 +192,15 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         }
 
+        if(userSession.isModerator()||userSession.isReviewer()||userSession.isHead()||userSession.isLab()) {
+            Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
+                @Override
+                public int compare(ProdApplications o1, ProdApplications o2) {
+                    return o1.getPriorityDate().compareTo(o2.getPriorityDate());
+                }
+            });
+        }
+
         return prodApplicationses;
     }
 

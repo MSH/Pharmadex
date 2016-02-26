@@ -31,7 +31,7 @@ public class PProdBase extends CreationDetail implements Serializable {
     @Column(length = 500, nullable = true)
     private String manufSite;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private Country country;
 
     @ManyToOne(fetch = FetchType.LAZY)

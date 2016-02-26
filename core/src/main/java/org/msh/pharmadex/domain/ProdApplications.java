@@ -167,6 +167,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(length = 255, name = "priorityNo")
     private String priorityNo;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date priorityDate;
+
 
     public ProdApplications(Product prod, Applicant applicant) {
         this.product = prod;
@@ -607,6 +610,14 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setSampleTestRecieved(Boolean sampleTestRecieved) {
         this.sampleTestRecieved = sampleTestRecieved;
+    }
+
+    public Date getPriorityDate() {
+        return priorityDate;
+    }
+
+    public void setPriorityDate(Date priorityDate) {
+        this.priorityDate = priorityDate;
     }
 }
 

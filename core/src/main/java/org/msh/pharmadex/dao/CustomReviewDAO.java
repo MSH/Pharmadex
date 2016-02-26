@@ -138,7 +138,7 @@ public class CustomReviewDAO implements Serializable {
     public List<ReviewInfoTable> findAllPriSecReview() {
         List<Object[]> ris = entityManager.createNativeQuery("select * \n" +
                 "from ((select u.name, p.prod_name, ri.reviewStatus, 'PRIMARY' as revType\n" +
-                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule, pa.id as prodAppID " +
+                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule, pa.id as prodAppID, pa.fastrack, pa.sra " +
                 "from review_info ri, prodapplications pa, product p, user u\n" +
                 "where ri.prod_app_id = pa.id\n" +
                 "and pa.PROD_ID = p.id\n" +
@@ -147,7 +147,7 @@ public class CustomReviewDAO implements Serializable {
                 ")\n" +
                 "union \n" +
                 "(select u.name, p.prod_name, ri.reviewStatus, 'SECONDARY' as revType\n" +
-                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule, pa.id  as prodAppID " +
+                ",ri.assignDate, ri.dueDate, ri.submitDate, pa.prodAppType, pa.prodAppNo, ri.id, ri.recomendType, ri.ctdModule, pa.id  as prodAppID, pa.fastrack, pa.sra " +
                 "from review_info ri, prodapplications pa, product p, user u\n" +
                 "where ri.prod_app_id = pa.id\n" +
                 "and pa.PROD_ID = p.id\n" +

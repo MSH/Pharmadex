@@ -31,13 +31,13 @@
                                     action="#{processPurOrderBn.cancel}" ajax="false"/>
                     </p:submenu>
                     <p:submenu label="#{msgs.approve_review}"
-                               rendered="#{userSession.csd and empty processPurOrderBn.pOrderBase.approvalDate and not processPurOrderBn.displayReview}">
+                               rendered="#{userSession.cst and empty processPurOrderBn.pOrderBase.approvalDate and not processPurOrderBn.displayReview}">
                         <p:menuitem value="#{msgs.global_approve}" icon="ui-icon-gear"
                                     oncomplete="PF('approveDlg').show()" action="#{processPurOrderBn.initApprove}"
-                                    rendered="#{userSession.csd}"/>
+                                    rendered="#{userSession.cst}"/>
                         <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-gear"
                                     oncomplete="PF('rejectDlg').show()" action="#{processPurOrderBn.initReject}"
-                                    rendered="#{userSession.csd}"/>
+                                    rendered="#{userSession.cst}"/>
                     </p:submenu>
 
                 </p:menu>
@@ -166,8 +166,9 @@
 
                     <div style="height:10px"/>
 
-                    <p:tabView id="appDetails">
-                        <p:tab title="#{msgs.order_detail}">
+                    <p:tabView id="appDetails" dynamic="true" cache="true">
+                        <p:ajax event="tabChange" listener="#{processPurOrderBn.onTabChange}" />
+                        <p:tab title="#{msgs.order_detail}" id="home">
 
                             <p:panel header="#{msgs.general_info}">
                                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
@@ -231,7 +232,7 @@
                             <div style="height:10px"/>
                         </p:tab>
 
-                        <p:tab title="#{msgs.prod_screening}">
+                        <p:tab title="#{msgs.prod_screening}" id="screen">
 
                             <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
                                 <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
@@ -289,7 +290,7 @@
                             <div style="height:10px"/>
                         </p:tab>
 
-                        <p:tab title="#{msgs.attachments}">
+                        <p:tab title="#{msgs.attachments}" id="attach">
 
                             <p:panel header="#{msgs.attachments}">
                                 <h:panelGrid columns="1">
@@ -347,7 +348,7 @@
 
                             <div style="height:10px"/>
                         </p:tab>
-                        <p:tab title="#{msgs.global_comment}">
+                        <p:tab title="#{msgs.global_comment}" id="commenttab">
                             <p:dataTable id="commenttable" value="#{processPurOrderBn.pOrderComments}" var="it">
                                 <p:column style="width:120px;">
                                     <p:outputLabel styleClass="ui-icon ui-icon-comment"

@@ -65,7 +65,7 @@ public class PurOrderService implements Serializable{
             if (companyUser) {
                 pipOrders = customPurOrderDAO.findPurOrderByUser(userID, applcntId);
             } else {
-                pipOrders = customPurOrderDAO.findAllPIPOrder();
+                pipOrders = customPurOrderDAO.findAllPurOrder();
             }
 
 

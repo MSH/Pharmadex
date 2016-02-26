@@ -34,20 +34,20 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
             pOrderBase = new PIPOrder();
             Long pipOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID"));
             if (pipOrderID != null) {
-                pOrderBase = pOrderService.findPIPOrderEager(pipOrderID);
+                pOrderBase = pOrderService.findPIPOrderByID(pipOrderID);
                 initVariables();
             }
         }catch (Exception ec){
-
+            ec.printStackTrace();
         }
 
     }
 
     @Override
     public void initVariables() {
-        pOrderChecklists = ((PIPOrder) pOrderBase).getpOrderChecklists();
+//        pOrderChecklists = ((PIPOrder) pOrderBase).getpOrderChecklists();
         pipProds = ((PIPOrder) pOrderBase).getPipProds();
-        pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
+//        pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
         setApplicantUser(pOrderBase.getApplicantUser());
         setApplicant(pOrderBase.getApplicantUser().getApplicant());
         setpOrderDocs(null);
@@ -59,6 +59,7 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         pOrderComment.setPipOrder((PIPOrder) pOrderBase);
         pOrderComment.setExternal(true);
         pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
+        pOrderComments = pOrderService.findPOrderComments(pOrderBase);
         if (pOrderComments == null)
             pOrderComments = new ArrayList<POrderComment>();
         pOrderComments.add(pOrderComment);

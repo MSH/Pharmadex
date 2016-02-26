@@ -5,6 +5,7 @@ import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.enums.AgentType;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.RepositoryDefinition;
 
 import java.util.List;
@@ -14,8 +15,9 @@ import java.util.List;
  */
 public interface AgentInfoDAO extends JpaRepository<AgentInfo, Long> {
 
-    public List<AgentInfo> findByLicenseHolder_Id(Long id);
+    @Query("select ai from AgentInfo ai where ai.licenseHolder.id = ?1 ")
+    List<AgentInfo> findByLicenseHolder_Id(Long id);
 
-    public List<AgentInfo> findByApplicant_applcntIdAndAgentType(Long applicantId, AgentType agentType);
+    List<AgentInfo> findByApplicant_applcntIdAndAgentType(Long applicantId, AgentType agentType);
 
 }

@@ -505,8 +505,9 @@
                 <p:tab id="attach" title="#{msgs.attachments}">
                     <p:panel>
                         <h:panelGrid columns="1" cellpadding="5" cellspacing="5">
-                            <p:outputLabel
-                                    value="#{msgs.reg_form_attach_hint}" styleClass="hint"/>
+                            <p:outputLabel value="#{msgs.reg_form_attach_hint}" styleClass="hint"/>
+
+                            <p:outputLabel value="#{msgs.reg_form_attach_hint2}" styleClass="hint"/>
 
                             <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                              oncomplete="PF('attachDlg').show()"

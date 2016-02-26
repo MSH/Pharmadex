@@ -32,8 +32,7 @@ public class CustomPurOrderDAO {
     }
 
     public List<PurOrder> findPurOrderByUser(Long userId, Long applcntId) {
-        List<PurOrder> purOrders = entityManager.createQuery("select porder from PurOrder porder where porder.createdBy.userId = :userId and porder.applicant.applcntId = :applcntId ")
-                .setParameter("userId", userId)
+        List<PurOrder> purOrders = entityManager.createQuery("select porder from PurOrder porder where porder.applicant.applcntId = :applcntId ")
                 .setParameter("applcntId", applcntId)
                 .getResultList();
 
@@ -43,11 +42,34 @@ public class CustomPurOrderDAO {
         return purOrders;
     }
 
-    public List<PurOrder> findAllPIPOrder() {
-        List<PurOrder> purOrders = entityManager.createQuery("select porder from PurOrder porder where porder.state not in (:state)")
+    public PurOrder findPurOrder(Long pipOrderID) {
+        PurOrder pipOrder = (PurOrder) entityManager.createQuery("select porder from PurOrder porder " +
+                "left join fetch porder.purProds purprod left join fetch purprod.product prod " +
+                "left join fetch prod.adminRoute left join fetch prod.dosForm " +
+                "left join fetch prod.dosUnit left join fetch prod.pharmClassif " +
+                "left join fetch prod.pricing " +
+                "left join fetch porder.applicant app left join fetch app.applicantType left join fetch app.address.country " +
+                "left join fetch porder.applicantUser appUser left join fetch appUser.address.country " +
+                "left join fetch porder.createdBy user left join fetch user.address.country " +
+                "where porder.id = :pipOrderID ")
+                .setParameter("pipOrderID", pipOrderID)
+                .getSingleResult();
+        return pipOrder;
+    }
+
+
+    public List<PurOrder> findAllPurOrder() {
+        List<PurOrder> purOrders = entityManager.createQuery("select distinct porder from PurOrder porder " +
+                "left join fetch porder.purProds purprod left join fetch purprod.product prod " +
+                "left join fetch prod.adminRoute left join fetch prod.dosForm " +
+                "left join fetch prod.dosUnit left join fetch prod.pharmClassif " +
+                "left join fetch prod.pricing " +
+                "left join fetch porder.applicant app left join fetch app.applicantType left join fetch app.address.country " +
+                "left join fetch porder.applicantUser appUser left join fetch appUser.address.country " +
+                "left join fetch porder.createdBy user left join fetch user.address.country " +
+                "where porder.state not in (:state)")
                 .setParameter("state", AmdmtState.WITHDRAWN)
                 .getResultList();
-        initializePurOrder(purOrders);
         return purOrders;
     }
 
