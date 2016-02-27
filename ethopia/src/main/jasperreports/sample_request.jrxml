@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="300"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="id" class="java.lang.Long">
 		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
 	</parameter>
@@ -226,7 +226,7 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="362" width="497" height="125" uuid="1c0da996-2737-4d10-b588-00aee870123e"/>
+				<reportElement x="75" y="380" width="497" height="107" uuid="1c0da996-2737-4d10-b588-00aee870123e"/>
 				<textElement textAlignment="Justified" markup="html">
 					<font size="12"/>
 					<paragraph rightIndent="10"/>
@@ -237,7 +237,7 @@ This letter can only be  used for one time import of the product samples.
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="294" width="497" height="34" uuid="cdb92248-1abe-463e-b943-a6e288585186"/>
+				<reportElement x="75" y="311" width="497" height="34" uuid="cdb92248-1abe-463e-b943-a6e288585186"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph rightIndent="10"/>
@@ -245,7 +245,7 @@ This letter can only be  used for one time import of the product samples.
 				<text><![CDATA[Hence, the authority is requesting your company to submit the below sample of actual product]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="75" y="334" width="497" height="20" uuid="acc68d4a-67c4-4d26-88ab-683ddba26bc7"/>
+				<reportElement x="75" y="351" width="497" height="20" uuid="acc68d4a-67c4-4d26-88ab-683ddba26bc7"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -257,6 +257,20 @@ This letter can only be  used for one time import of the product samples.
 					<jr:codeExpression><![CDATA[$F{prodAppNo}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
+			<staticText>
+				<reportElement x="75" y="281" width="134" height="20" uuid="b7941b57-2be7-4b22-8788-d2624cd8d6ac"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="211" y="281" width="361" height="20" uuid="48a6709a-54b7-428e-96b4-01084a0b3be8"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
