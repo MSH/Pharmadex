@@ -55,6 +55,7 @@ public class ProdAppMBean implements Serializable {
         allApplicationForProcess = prodApplicationsService.getApplications();
     }
 
+
     public String cancelApp() {
         setShowAdd(false);
 //        selectedApplicant = new applicant();

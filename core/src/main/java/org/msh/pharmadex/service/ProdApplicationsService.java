@@ -731,4 +731,12 @@ public class ProdApplicationsService implements Serializable {
 
 
     }
+
+    public List<ProdApplications> findProdAppByAppNo(String prodAppNo) {
+        if(prodAppNo==null||prodAppNo.equals(""))
+            return null;
+
+        return prodApplicationsDAO.findProdAppByNo(prodAppNo);
+
+    }
 }

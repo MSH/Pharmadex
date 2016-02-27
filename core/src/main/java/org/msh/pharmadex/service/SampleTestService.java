@@ -10,6 +10,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.domain.DosageForm;
 import org.msh.pharmadex.domain.ProdAppLetter;
@@ -179,5 +180,11 @@ public class SampleTestService implements Serializable {
 
     public RetObject addSampleMed(SampleMed sampleMed) {
         return null;
+    }
+
+    @Autowired
+    private ProdAppLetterDAO prodAppLetterDAO;
+    public ProdAppLetter saveProdAppLetter(ProdAppLetter prodAppLetter) {
+         return prodAppLetterDAO.save(prodAppLetter);
     }
 }

@@ -24,13 +24,11 @@
             <div style="height: 10px;"/>
 
             <div align="right">
-                <p:commandButton value="#{msgs.notif_recieving}"
-                                 action="/secure/samplerecieving"
-                                 ajax="false" rendered="#{userSession.lab}">
+                <p:commandButton value="#{msgs.notif_recieving}" action="/secure/samplerecieving" ajax="false" rendered="#{sampleDetailBn.displayRec}">
                     <f:param name="sampleTestID" value="#{sampleDetailBn.sampleTest.id}"/>
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.initComment}" ajax="true" oncomplete="PF('submitSampleDlg').show()"
-                                 update=":reviewHome :submitsamplefrm" process="@form" rendered="#{userSession.admin||userSession.labModerator}"/>
+                                 update=":reviewHome :submitsamplefrm" process="@form" rendered="#{sampleDetailBn.displaySubmit}"/>
                 <p:commandButton value="#{msgs.global_approve}" action="#{sampleDetailBn.initComment}" oncomplete="PF('approveSampleDlg').show()" ajax="true"
                                  update=":reviewHome :approvesamplefrm" process="@form" rendered="#{userSession.admin||userSession.labHead}"/>
                 <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"

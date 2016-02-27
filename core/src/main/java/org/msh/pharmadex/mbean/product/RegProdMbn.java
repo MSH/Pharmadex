@@ -1,6 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.primefaces.event.SelectEvent;
@@ -35,6 +36,7 @@ public class RegProdMbn implements Serializable {
     ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
 
     private ProdTable prodTable;
+    private String prodAppNo;
 
     public void onItemSelect(SelectEvent event) {
         if(event.getObject() instanceof ProdTable){
@@ -58,6 +60,17 @@ public class RegProdMbn implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (prodTable == null)
             return null;
+        return "/internal/processreg.faces";
+    }
+
+    public String searchProdApp(){
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if(prodAppNo==null||prodAppNo.equals("")){
+            facesContext.addMessage(null, new FacesMessage("Product Application number not specified"));
+        }
+
+        List<ProdApplications> prodApplications = prodApplicationsService.findProdAppByAppNo(prodAppNo);
+
         return "/internal/processreg.faces";
     }
 
@@ -91,5 +104,13 @@ public class RegProdMbn implements Serializable {
 
     public void setProductService(ProductService productService) {
         this.productService = productService;
+    }
+
+    public String getProdAppNo() {
+        return prodAppNo;
+    }
+
+    public void setProdAppNo(String prodAppNo) {
+        this.prodAppNo = prodAppNo;
     }
 }

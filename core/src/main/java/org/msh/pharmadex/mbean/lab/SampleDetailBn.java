@@ -73,6 +73,8 @@ public class SampleDetailBn implements Serializable {
     private List<SampleComment> sampleComments;
     private List<ProdAppLetter> prodAppLetters;
     private ProdAppLetter prodAppLetter;
+    private boolean displayRec = false;
+    private boolean displaySubmit = false;
 
     @PostConstruct
     private void init() {
@@ -89,7 +91,7 @@ public class SampleDetailBn implements Serializable {
 //                }
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
         }
     }
 
@@ -140,7 +142,7 @@ public class SampleDetailBn implements Serializable {
     }
 
     public void initComment() {
-         sampleComment = new SampleComment();
+        sampleComment = new SampleComment();
     }
 
     public String saveReview() {
@@ -164,6 +166,10 @@ public class SampleDetailBn implements Serializable {
 
     public void prepareUpload() {
         prodAppLetter = new ProdAppLetter();
+        prodAppLetter.setSampleTest(sampleTest);
+        prodAppLetter.setRegState(sampleTest.getProdApplications().getRegState());
+        prodAppLetter.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
+        prodAppLetter.setUpdatedDate(new Date());
     }
 
 
@@ -191,15 +197,17 @@ public class SampleDetailBn implements Serializable {
     }
 
     public void addDocument() {
-//        file = userSession.getFile();
-//        prodAppLetter.setSampleTest(sampleTest);
-//        getpOrderDocDAO().save(getpOrderDoc());
-        prodAppLetters.add(prodAppLetter);
-        sampleTest.setProdAppLetters(prodAppLetters);
-//        userSession.setFile(null);
-        FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            prodAppLetter = sampleTestService.saveProdAppLetter(prodAppLetter);
+            prodAppLetters.add(prodAppLetter);
+            sampleTest.setProdAppLetters(prodAppLetters);
+            FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+        }
     }
 
     public UploadedFile getFile() {
@@ -304,5 +312,41 @@ public class SampleDetailBn implements Serializable {
 
     public void setProdAppLetter(ProdAppLetter prodAppLetter) {
         this.prodAppLetter = prodAppLetter;
+    }
+
+    public boolean isDisplayRec() {
+        if (userSession.isLab() || userSession.isStaff()) {
+            if (sampleTest != null) {
+                if (sampleTest.getSampleTestStatus().ordinal() < 2)
+                    displayRec = true;
+                else
+                    displayRec = false;
+            } else {
+                displayRec = false;
+            }
+        }
+        return displayRec;
+    }
+
+    public void setDisplayRec(boolean displayRec) {
+        this.displayRec = displayRec;
+    }
+
+    public boolean isDisplaySubmit() {
+        if(userSession.isAdmin()||userSession.isLabModerator()) {
+            if (sampleTest != null) {
+                if(sampleTest.getSampleTestStatus().equals(SampleTestStatus.SAMPLE_RECIEVED))
+                    displaySubmit = true;
+                else
+                    displaySubmit = false;
+            }
+        }else{
+            displaySubmit = false;
+        }
+        return displaySubmit;
+    }
+
+    public void setDisplaySubmit(boolean displaySubmit) {
+        this.displaySubmit = displaySubmit;
     }
 }

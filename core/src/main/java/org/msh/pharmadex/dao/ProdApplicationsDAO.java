@@ -314,4 +314,9 @@ public class ProdApplicationsDAO implements Serializable {
         return (Long) entityManager.createQuery("select count(pa.id) from ProdApplications pa ")
                 .getSingleResult();
     }
+
+    public List<ProdApplications> findProdAppByNo(String prodAppNo) {
+        return entityManager.createQuery("from ProdApplications pa where pa.prodAppNo = :prodAppNo ")
+                .getResultList();
+    }
 }

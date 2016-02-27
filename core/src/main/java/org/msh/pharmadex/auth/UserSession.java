@@ -240,6 +240,9 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
                 }
                 if (role.getRolename().equalsIgnoreCase("ROLE_MODERATOR")) {
                     setModerator(true);
+                    setLab(false);
+                    setLabModerator(false);
+                    setLabHead(false);
 //                    setStaff(true);
 //                    setDisplayAppReg(true);
                 }
