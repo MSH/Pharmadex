@@ -63,15 +63,15 @@ public class ReviewService implements Serializable {
     @Autowired
     private UserAccessService userAccessService;
 
-    public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID){
-        if(reviewerID==null)
+    public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID) {
+        if (reviewerID == null)
             return null;
         return customReviewDAO.findReviewInfoByReview(reviewerID);
 
     }
 
-    public List<ReviewInfoTable> findReviewByReviewer(Long reviewerID){
-        if(reviewerID==null)
+    public List<ReviewInfoTable> findReviewByReviewer(Long reviewerID) {
+        if (reviewerID == null)
             return null;
         return customReviewDAO.findReviewByReviewer(reviewerID);
 
@@ -117,8 +117,13 @@ public class ReviewService implements Serializable {
         return reviewDAO.findByUser_UserIdAndProdApplications_Id(userId, prodAppID);
     }
 
+    @Transactional
     public ReviewInfo findReviewInfoByUserAndProdApp(Long userId, Long prodAppID) {
         ReviewInfo reviewInfo = reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
+        Hibernate.initialize(reviewInfo.getReviewDetails());
+        Hibernate.initialize(reviewInfo.getReviewComments());
+        Hibernate.initialize(reviewInfo.getReviewer());
+        Hibernate.initialize(reviewInfo.getSecReviewer());
         return reviewInfo;
     }
 
@@ -126,15 +131,11 @@ public class ReviewService implements Serializable {
         reviewDAO.delete(review);
     }
 
+    @Transactional
     public ReviewInfo findReviewInfo(Long reviewInfoID) {
         if (reviewInfoID == null)
             return null;
-        ReviewInfo reviewInfo = reviewInfoDAO.findOne(reviewInfoID);
-        Hibernate.initialize(reviewInfo.getReviewDetails());
-        Hibernate.initialize(reviewInfo.getReviewComments());
-
-//        if (reviewInfo.getReviewDetails().size() < 1)
-//            initReviewDetail(reviewInfo);
+        ReviewInfo reviewInfo = reviewInfoDAO.findById(reviewInfoID);
         return reviewInfo;
     }
 
@@ -418,6 +419,13 @@ public class ReviewService implements Serializable {
         return retObject;
     }
 
+    public RetObject updateReviewInfo(ReviewInfo reviewInfo) {
+        RetObject retObject = new RetObject();
+        retObject.setObj(reviewInfoDAO.save(reviewInfo));
+        retObject.setMsg("success");
+        return retObject;
+    }
+
     public ReviewDetail findReviewDetails(DisplayReviewInfo displayReview) {
         if (displayReview.getReviewDetailID() != null) {
             return reviewDetailDAO.findOne(displayReview.getReviewDetailID());
@@ -556,6 +564,19 @@ public class ReviewService implements Serializable {
         jasperPrint = customReviewDAO.getReviewReport(id);
         return jasperPrint;
 
+
+    }
+
+    public List<ReviewComment> findReviewComments(Long id) {
+        try {
+            if (id == null)
+                return null;
+
+            return reviewInfoDAO.findReviewComments(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
 
     }
 }

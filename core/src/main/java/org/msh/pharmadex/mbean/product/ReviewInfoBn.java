@@ -13,7 +13,6 @@ import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -262,6 +261,7 @@ public class ReviewInfoBn implements Serializable {
             RetObject retObject = reviewService.submitReviewInfo(reviewInfo, reviewComment, userSession.getLoggedINUserID());
             if (retObject.getMsg().equals("success")) {
                 reviewInfo = (ReviewInfo) retObject.getObj();
+                reviewComments.add(reviewComment);
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
 
             } else if (retObject.getMsg().equals("close_def")) {
@@ -462,8 +462,8 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public List<ReviewComment> getReviewComments() {
-        if (reviewInfo != null && reviewInfo.getReviewComments() != null)
-            reviewComments = reviewInfo.getReviewComments();
+        if (reviewInfo != null && reviewComments == null)
+            reviewComments = reviewService.findReviewComments(reviewInfo.getId());
         return reviewComments;
     }
 

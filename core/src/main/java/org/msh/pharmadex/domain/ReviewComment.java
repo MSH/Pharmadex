@@ -37,6 +37,14 @@ public class ReviewComment implements Serializable
 
     private boolean finalSummary;
 
+    public ReviewComment() {
+    }
+
+    public ReviewComment(ReviewInfo reviewInfo, User user, RecomendType rType) {
+        this.reviewInfo = reviewInfo;
+        this.user = user;
+        this.recomendType = rType;
+    }
 
     public Long getId() {
         return id;

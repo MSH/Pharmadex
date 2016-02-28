@@ -2,15 +2,14 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
-import org.omnifaces.util.Faces;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -18,6 +17,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -51,13 +51,15 @@ public class ProdReviewBn implements Serializable {
 
     @ManagedProperty(value = "#{userAccessMBean}")
     private UserAccessMBean userAccessMBean;
+
     private List<Review> reviews;
     private List<ReviewInfo> reviewInfos;
     private boolean checkReviewStatus;
     private User reviewer;
     private User secReviewer;
     private boolean displaySecReview = false;
-
+    private List<ReviewComment> reviewComments;
+    private ReviewComment reviewComment;
 
     private Review review;
     private ReviewInfo reviewInfo;
@@ -127,6 +129,67 @@ public class ProdReviewBn implements Serializable {
         }
     }
 
+    public void changeReviewer() {
+        try {
+            facesContext = FacesContext.getCurrentInstance();
+            ProdApplications prodApplications = processProdBn.getProdApplications();
+
+//        if (!userAccessMBean.isDetailReview()) {
+//            if (review == null) {
+//                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+//            }
+//            review.setProdApplications(prodApplications);
+//            review.setReviewStatus(ReviewStatus.ASSIGNED);
+//            review.setAssignDate(new Date());
+//            review.setUser(reviewer);
+//
+//            RetObject retObject = reviewService.saveReviewers(review);
+//            if (!retObject.getMsg().equalsIgnoreCase("success")) {
+//                if (retObject.getMsg().equals("exist")) {
+//                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Reviewer has already been assigned"));
+//
+//                } else
+//                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+//            } else {
+//                reviews.add(review);
+//                updateRegState();
+//            }
+//            review = new Review();
+//        } else {
+            if (reviewInfo == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+            }
+            reviewInfo.setReviewer(reviewer);
+            reviewInfo.setAssignDate(new Date());
+            if (reviewInfo.getReviewComments() == null)
+                reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
+            reviewInfo.getReviewComments().add(reviewComment);
+//            reviewInfo.setProdApplications(prodApplications);
+//            reviewInfo.setReviewStatus(ReviewStatus.ASSIGNED);
+            if (userAccessMBean.getWorkspace().isSecReview())
+                reviewInfo.setSecReviewer(secReviewer);
+
+            if (reviewInfo.getDueDate().after(new Date())) {
+                RetObject riRetObj = reviewService.updateReviewInfo(reviewInfo);
+                if (!riRetObj.getMsg().equalsIgnoreCase("success")) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+                    reviewInfo = new ReviewInfo();
+                } else {
+                    facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
+                    reviewInfo = new ReviewInfo();
+
+                }
+            } else {
+                facesContext.addMessage(null, new FacesMessage("Due date must be in the future."));
+            }
+//        }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Due date must be in the future.", ex.getMessage()));
+        }
+    }
+
+
     private void updateRegState() {
         if (!processProdBn.getProdApplications().getRegState().equals(RegState.REVIEW_BOARD)) {
             TimeLine timeLine = new TimeLine();
@@ -148,6 +211,21 @@ public class ProdReviewBn implements Serializable {
         reviewInfo.setProdApplications(processProdBn.getProdApplications());
         reviewInfo.setAssignDate(new Date());
 
+    }
+
+    public void initProcessorChange(ReviewInfo ri) {
+        try {
+            reviewInfo = reviewService.findReviewInfo(ri.getId());
+            reviewInfo.setUpdatedDate(new Date());
+            reviewInfo.setUpdatedBy(processProdBn.getUser());
+//            reviewer = reviewInfo.getReviewer();
+//            secReviewer = reviewInfo.getSecReviewer();
+
+            reviewComment = new ReviewComment(reviewInfo, processProdBn.getUser(), RecomendType.COMMENT);
+            reviewComment.setDate(new Date());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
     }
 
@@ -180,7 +258,7 @@ public class ProdReviewBn implements Serializable {
     }
 
     public List<Review> getReviews() {
-        if (reviews == null && processProdBn.getProdApplications()!=null) {
+        if (reviews == null && processProdBn.getProdApplications() != null) {
             reviews = reviewService.findReviews(processProdBn.getProdApplications().getId());
         }
         return reviews;
@@ -294,7 +372,7 @@ public class ProdReviewBn implements Serializable {
     }
 
     public ReviewInfo getReviewInfo() {
-        if(reviewInfo==null)
+        if (reviewInfo == null)
             reviewInfo = new ReviewInfo();
         return reviewInfo;
     }
@@ -326,4 +404,21 @@ public class ProdReviewBn implements Serializable {
     public void setDisplaySecReview(boolean displaySecReview) {
         this.displaySecReview = displaySecReview;
     }
+
+    public List<ReviewComment> getReviewComments() {
+        return reviewComments;
+    }
+
+    public void setReviewComments(List<ReviewComment> reviewComments) {
+        this.reviewComments = reviewComments;
+    }
+
+    public ReviewComment getReviewComment() {
+        return reviewComment;
+    }
+
+    public void setReviewComment(ReviewComment reviewComment) {
+        this.reviewComment = reviewComment;
+    }
+
 }

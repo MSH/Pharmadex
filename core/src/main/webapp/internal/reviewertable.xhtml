@@ -91,8 +91,9 @@
                 <h:outputText value="#{msgs.sec_processor}"/>
             </f:facet>
             <p:commandLink id="viewLink2" value="#{reviewInfo.secReviewer.name}"
-                           action="#{prodReviewBn.sendToReviewInfo(reviewInfo.id)}"
+                           action="reviewInfo"
                            ajax="false" immediate="true">
+                <f:param name="reviewInfoID" value="#{reviewInfo.id}"/>
             </p:commandLink>
         </p:column>
 
@@ -141,6 +142,12 @@
 -->
 
         <p:column>
+            <p:commandButton value="#{msgs.change_reviewer}" icon="ui-icon-gear"
+                             oncomplete="PF('changereviewdlg').show()"
+                             action="#{prodReviewBn.initProcessorChange(reviewInfo)}" id="changeMI"
+                             rendered="#{(userSession.moderator||userSession.admin||userSession.head) and !(reviewInfo.reviewStatus eq 'ACCEPTED')}"
+                             update="reghome:processtab:changereviewDlg"/>
+
             <p:commandButton id="deletereviewinfo" action="#{prodReviewBn.deleteReviewInfo(reviewInfo)}"
                              icon="ui-icon-trash" process="@form"
                              update=":reghome:processtab:reviwerinfotbl :reghome:processtab:assignreviewDlg :reghome:messages"
@@ -227,5 +234,68 @@
 
     </p:dialog>
 
+    <p:dialog header="#{msgs.changereviewer}" widgetVar="changereviewdlg" dynamic="true"
+              id="changereviewDlg" modal="true" rendered="#{userSession.moderator}">
+        <p:messages id="messages2"/>
+        <p:panel>
+            <h:panelGrid id="changeReviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
+
+                <p:outputLabel value="#{msgs.processor}" for="prireviewac"
+                               escape="false"
+                               styleClass="label"/>
+
+                <p:autoComplete id="prireviewchange" value="#{prodReviewBn.reviewer}"
+                                completeMethod="#{globalEntityLists.completeProcessorList}"
+                                dropdown="true" required="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                forceSelection="true"
+                                converter="#{userConverter}">
+                </p:autoComplete>
+
+                <p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewer"
+                               escape="false" rendered="#{prodReviewBn.reviewInfo.secreview}"
+                               styleClass="label"
+                        />
+
+                <p:autoComplete id="sec_reviewerchange" value="#{prodReviewBn.secReviewer}"
+                                rendered="#{prodReviewBn.reviewInfo.secreview}"
+                                completeMethod="#{globalEntityLists.completeProcessorList}"
+                                dropdown="true" required="true"
+                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                forceSelection="true" converter="#{userConverter}">
+                </p:autoComplete>
+
+                <p:outputLabel value="#{msgs.global_duedate}" for="cduedt" styleClass="label"
+                               rendered="#{userAccessMBean.detailReview}"/>
+                <p:calendar value="#{prodReviewBn.reviewInfo.dueDate}" id="cduedt" showOn="button"
+                            rendered="#{userAccessMBean.detailReview}" required="true"
+                            pattern="#{userAccessMBean.workspace.datePattern}">
+                    <f:validator validatorId="futureDateValidator"/>
+                </p:calendar>
+
+                <p:outputLabel value="#{msgs.global_duedate}" for="cduedt2" styleClass="label"
+                               rendered="#{!userAccessMBean.detailReview}"/>
+                <p:calendar value="#{prodReviewBn.review.dueDate}" id="cduedt2" showOn="button"
+                            rendered="#{!userAccessMBean.detailReview}" required="true"
+                            pattern="#{userAccessMBean.workspace.datePattern}">
+                    <f:validator validatorId="futureDateValidator"/>
+                </p:calendar>
+
+                <p:outputLabel value="#{msgs.reviewer_change_reason}" for="changesummary" styleClass="label"/>
+                <p:editor value="#{prodReviewBn.reviewComment.comment}" id="changesummary" required="true"
+                          width="700"/>
+                <p:message for="changesummary"/>
+
+
+            </h:panelGrid>
+
+
+            <p:commandButton id="changeRevBtn" value="#{msgs.global_submit}"
+                             action="#{prodReviewBn.changeReviewer}"
+                             oncomplete="if (!args.validationFailed) PF('changereviewdlg').hide()" ajax="true"
+                             update="@form"/>
+        </p:panel>
+
+    </p:dialog>
 
 </ui:composition>

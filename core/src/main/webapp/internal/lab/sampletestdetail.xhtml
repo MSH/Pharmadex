@@ -31,8 +31,9 @@
                                  update=":reviewHome :submitsamplefrm" process="@form" rendered="#{sampleDetailBn.displaySubmit}"/>
                 <p:commandButton value="#{msgs.global_approve}" action="#{sampleDetailBn.initComment}" oncomplete="PF('approveSampleDlg').show()" ajax="true"
                                  update=":reviewHome :approvesamplefrm" process="@form" rendered="#{userSession.admin||userSession.labHead}"/>
-                <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"
-                                 update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin||userSession.labModerator}"/>
+                <!--                <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"
+                                                 update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin||userSession.labModerator}"/>
+                -->
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
                                  action="/internal/processreg"
                                  ajax="false">
