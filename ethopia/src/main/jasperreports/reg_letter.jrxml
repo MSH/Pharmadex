@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="969"/>
+	<property name="ireport.y" value="646"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -63,6 +63,46 @@
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
+	<style name="table 3">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
 	<subDataset name="INN" uuid="fc873add-3f35-4079-923d-75ad77fc1f11">
 		<parameter name="prod_id" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -90,6 +130,35 @@ and pe.prod_id = $P{prod_id};]]>
 		<field name="RefStd" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
+	</subDataset>
+	<subDataset name="Manuf" uuid="bc09e112-cce6-4c67-841e-2882ec3ea184">
+		<queryString>
+			<![CDATA[select c.companyName,
+concat(IFNULL(c.address1, '') , ifnull(concat(', ',c.address2),''), ifnull(concat(', ',c.zipcode), ''), concat(', ', cntry.countryName)) as addr,
+case pc.companyType WHEN 'API_MANUF' THEN 'API Manufacturer'
+ WHEN 'FIN_PROD_MANUF' THEN 'Final Product Manufacturer'
+ WHEN 'BULK_MANUF' THEN 'Bulk Manufacturer'
+ WHEN 'PRI_PACKAGER' THEN 'Primary Packager'
+ WHEN 'SEC_PACKAGER' THEN 'Secondary Packager'
+ WHEN 'FPRC' THEN 'Finish Product Release Controller'
+ WHEN 'FPRR' THEN 'Finish Product Release Responsibility'
+ELSE 'Manufacturer'
+END as companyType
+from prod_company pc
+left join company c ON c.id = pc.company_id
+left join country cntry on c.CNTRY_ID = cntry.id
+where pc.prod_id = 154;]]>
+		</queryString>
+		<field name="companyName" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="addr" class="java.lang.String"/>
+		<field name="companyType" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<group name="companyType">
+			<groupExpression><![CDATA[$F{companyType}]]></groupExpression>
+		</group>
 	</subDataset>
 	<parameter name="manufName" class="java.lang.String"/>
 	<parameter name="prodappid" class="java.lang.String"/>
@@ -201,7 +270,7 @@ and p.id = $P{prodappid}]]>
 				<text><![CDATA[MEDICINE REGISTRATION CERTIFICATE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="240" width="572" height="87" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
+				<reportElement x="0" y="240" width="572" height="75" uuid="f29652e3-24a4-4118-90b0-76177d001a9c"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -414,30 +483,6 @@ and p.id = $P{prodappid}]]>
 				<text><![CDATA[Address]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="279" width="265" height="20" uuid="4f3c9352-d37f-4260-89ae-23b71a728f4d"/>
-				<textElement textAlignment="Right">
-					<font size="12"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Manufacturer]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="299" width="265" height="20" uuid="da91f63f-a408-4496-9f10-d9baccf71ed3"/>
-				<textElement textAlignment="Right">
-					<font size="12"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Role of Manufacturer]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="319" width="265" height="20" uuid="d7c48a1e-3149-49c8-817a-e7cbd52b8ccf"/>
-				<textElement textAlignment="Right">
-					<font size="12"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Address]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="100" width="265" height="20" uuid="c25a5f7c-91cb-47f3-b04b-95f091dcfdaf"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
@@ -530,13 +575,6 @@ and p.id = $P{prodappid}]]>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{lh_address}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="267" y="279" width="305" height="20" uuid="ea130650-e5d5-4dba-bb64-65f739e85cee"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="264" y="582" width="308" height="20" uuid="e71fec66-563c-4040-8bc7-fbdf349ea454"/>
@@ -661,6 +699,63 @@ and p.id = $P{prodappid}]]>
 								<reportElement x="0" y="0" width="90" height="20" uuid="a2484d0d-b5f9-4090-88c4-7ca1d11e49e9"/>
 								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{RefStd}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement key="table 4" style="table 4" stretchType="RelativeToBandHeight" x="3" y="279" width="567" height="73" isPrintWhenDetailOverflows="true" uuid="8934c5b8-c219-4bf4-93ef-ceb0ee922aa8"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Manuf" uuid="8e37e7ce-bc92-4319-9cc8-8173db9ab8d6">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="148" uuid="1aac92c8-b38d-4a09-89a1-3b851ad673ff">
+						<jr:columnHeader style="table 4_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="148" height="30" uuid="abe89a45-9559-4976-9239-d19235a8ab5a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[companyName]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 4_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="148" height="20" uuid="be2be89c-97d1-4c52-baf6-9cd9816ffb77"/>
+								<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="119" uuid="16efe7e0-d29f-4ba4-b8f4-cfe3ff4f2285">
+						<jr:columnHeader style="table 4_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="118" height="30" uuid="fa711459-0d62-4e74-b98b-6215bf8c60d8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Address]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 4_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="118" height="20" uuid="6617e6dd-6da3-455b-b930-7d37486f8cca"/>
+								<textFieldExpression><![CDATA[$F{addr}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="92" uuid="65cb0faa-5ce0-4699-a22a-98a146d4da32">
+						<jr:columnHeader style="table 4_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="76b4fec0-bf0d-4d21-b921-00b1c4732cf9"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Role]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 4_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="20" uuid="c382844f-bd2b-4394-ade4-7045f3608615"/>
+								<textFieldExpression><![CDATA[$F{companyType}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
