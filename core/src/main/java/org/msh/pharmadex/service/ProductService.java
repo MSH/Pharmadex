@@ -97,10 +97,10 @@ public class ProductService implements Serializable {
                 issues.add("no_applicant");
                 issue = true;
             }
-            if (product.getExcipients() == null || product.getExcipients().size() < 1) {
-                issues.add("no_excipient");
-                issue = true;
-            }
+//            if (product.getExcipients() == null || product.getExcipients().size() < 1) {
+//                issues.add("no_excipient");
+//                issue = true;
+//            }
             if (product.getInns() == null || product.getInns().size() < 1) {
                 issues.add("no_inns");
                 issue = true;

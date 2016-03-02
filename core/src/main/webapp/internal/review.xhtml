@@ -46,26 +46,29 @@
                 <div style="height: 10px;"/>
 
                 <div align="right">
-                    <p:commandButton value="#{msgs.approve_review}" action="#{reviewBn.approveReview}" update=":reviewHome"
+                    <p:commandButton value="#{msgs.approve_review}" action="#{reviewBn.approveReview}"
+                                     update=":reviewHome"
                                      ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}">
                         <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
                     </p:commandButton>
 
-                    <p:commandButton value="#{msgs.send_to_review}" action="#{reviewBn.reviewerFeedback}" update=":reviewHome"
+                    <p:commandButton value="#{msgs.send_to_review}" action="#{reviewBn.reviewerFeedback}"
+                                     update=":reviewHome"
                                      ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}">
-                            <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
+                        <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
                     </p:commandButton>
                     <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
                                      update=":reviewHome" process=":reviewHome:reviewgrid @this"
                                      rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
-                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" update=":reviewHome"
+                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}"
+                                     update=":reviewHome"
                                      ajax="false" rendered="#{userSession.reviewer and !reviewBn.review.submitted}">
-                            <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
+                        <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
                     </p:commandButton>
                     <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
                                      ajax="false">
                         <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
-                            </p:commandButton>
+                    </p:commandButton>
                 </div>
 
                 <div style="height: 10px;"/>
@@ -81,6 +84,28 @@
                         <f:selectItems value="#{globalLists.recomendType}" var="type" itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
 
+                </h:panelGrid>
+
+                <div style="height: 10px;"/>
+
+
+                <h:panelGrid id="reviewgrid" columns="2" cellpadding="10" cellspacing="10" width="100%">
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary"/>
+                    <p:editor value="#{reviewBn.review.reviewerSummary}" id="revsummary" required="true"
+                              width="700" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
+                    <h:outputText value="#{reviewBn.review.reviewerSummary}" escape="false"
+                                  rendered="#{userSession.moderator||userSession.head}"/>
+
+                    <p:outputLabel value="#{msgs.mod_comment}" for="modcomment"/>
+                    <p:editor value="#{reviewBn.review.modComment}" id="modcomment"
+                              width="700" rendered="#{userSession.moderator}"/>
+                    <h:outputText value="#{reviewBn.review.modComment}" escape="false"
+                                  rendered="#{userSession.reviewer||userSession.head}"/>
+                </h:panelGrid>
+
+
+                <h:panelGrid columns="2" cellpadding="10" cellspacing="10"
+                             rendered="#{userSession.reviewer and !reviewBn.review.submitted}">
                     <h:outputText value="#{msgs.upload_file}"/>
                     <p:fileUpload value="#{reviewBn.file}" mode="simple" rendered="#{!reviewBn.attach}"/>
 
@@ -88,29 +113,14 @@
                     <p:commandLink value="#{msgs.global_upload}" ajax="false"
                                    actionListener="#{reviewBn.handleFileUpload}" rendered="#{!reviewBn.attach}"/>
 
-                </h:panelGrid>
+                    <div>
+                        <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="true"
+                                         onclick="PrimeFaces.monitorDownload(start, stop)" immediate="true"
+                                         icon="ui-icon-arrowthichk-s" rendered="#{reviewBn.attach}">
+                            <p:fileDownload value="#{reviewBn.fileDownload()}"/>
+                        </p:commandButton>
 
-                <div style="height: 10px;"/>
-
-                <div>
-                    <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="true"
-                                     onclick="PrimeFaces.monitorDownload(start, stop)" immediate="true"
-                                     icon="ui-icon-arrowthichk-s" rendered="#{reviewBn.attach}">
-                        <p:fileDownload value="#{reviewBn.fileDownload()}"/>
-                    </p:commandButton>
-
-                </div>
-
-                <h:panelGrid id="reviewgrid" columns="2" cellpadding="10" cellspacing="10" width="100%">
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary"/>
-                    <p:editor value="#{reviewBn.review.reviewerSummary}" id="revsummary" required="true"
-                              width="700" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
-                    <h:outputText value="#{reviewBn.review.reviewerSummary}" escape="false" rendered="#{userSession.moderator||userSession.head}"/>
-
-                    <p:outputLabel value="#{msgs.mod_comment}" for="modcomment"/>
-                    <p:editor value="#{reviewBn.review.modComment}" id="modcomment"
-                              width="700" rendered="#{userSession.moderator}"/>
-                    <h:outputText value="#{reviewBn.review.modComment}" escape="false" rendered="#{userSession.reviewer||userSession.head}"/>
+                    </div>
                 </h:panelGrid>
             </h:form>
         </div>
