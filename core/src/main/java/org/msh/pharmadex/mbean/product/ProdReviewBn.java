@@ -169,6 +169,11 @@ public class ProdReviewBn implements Serializable {
             if (userAccessMBean.getWorkspace().isSecReview())
                 reviewInfo.setSecReviewer(secReviewer);
 
+            if (secReviewer != null)
+                reviewInfo.setSecreview(true);
+            else
+                reviewInfo.setSecreview(false);
+
             if (reviewInfo.getDueDate().after(new Date())) {
                 RetObject riRetObj = reviewService.updateReviewInfo(reviewInfo);
                 if (!riRetObj.getMsg().equalsIgnoreCase("success")) {

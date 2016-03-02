@@ -142,8 +142,7 @@
 -->
 
         <p:column>
-            <p:commandButton value="#{msgs.change_reviewer}" icon="ui-icon-gear"
-                             oncomplete="PF('changereviewdlg').show()"
+            <p:commandButton icon="ui-icon-person" oncomplete="PF('changereviewdlg').show()"
                              action="#{prodReviewBn.initProcessorChange(reviewInfo)}" id="changeMI"
                              rendered="#{(userSession.moderator||userSession.admin||userSession.head) and !(reviewInfo.reviewStatus eq 'ACCEPTED')}"
                              update="reghome:processtab:changereviewDlg"/>
