@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="review_detail_report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ecd10e94-5bd5-48c4-9864-d88e8ef17d0d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.util.JRLoader"/>
+	<queryString>
+		<![CDATA[select rq.header1, rq.header2, rq.question, rd.other_comment, rd.answered, rd.sec_comment, rd.file
+from review_info ri, review_detail rd, review_question rq
+where ri.id = rd.review_info_id
+and rq.id = rd.reviewquest_id
+and ri.id = 18;]]>
+	</queryString>
+	<field name="header1" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="header2" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="question" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="other_comment" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="answered" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sec_comment" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="file" class="java.io.InputStream">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="header1">
+		<groupExpression><![CDATA[$F{header1}]]></groupExpression>
+		<groupHeader>
+			<band height="23">
+				<textField>
+					<reportElement mode="Opaque" x="-20" y="0" width="595" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="d23748c8-4bde-4d2f-9ccd-44410e4de941"/>
+					<textElement>
+						<font size="14" isBold="true"/>
+						<paragraph firstLineIndent="10" leftIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{header1}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="ed7e6040-d4c9-40fd-99e5-bf0a5a128c84"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="header2">
+		<groupExpression><![CDATA[$F{header2}]]></groupExpression>
+		<groupHeader>
+			<band height="26">
+				<textField>
+					<reportElement x="2" y="4" width="553" height="22" forecolor="#006699" uuid="f8bee060-3a30-40c9-80f2-33fa62fff826"/>
+					<textElement>
+						<font size="14" isBold="true"/>
+						<paragraph leftIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{header2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="94">
+			<frame>
+				<reportElement mode="Opaque" x="-19" y="0" width="594" height="92" backcolor="#FFFFFF" uuid="5930af02-052a-4624-a839-26f17f160927"/>
+				<image>
+					<reportElement x="475" y="1" width="100" height="68" uuid="c86f89a4-3fb5-4b97-a771-556309cd7759"/>
+					<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement mode="Transparent" x="1" y="0" width="474" height="24" forecolor="#006666" uuid="d8d47a8f-d69e-4ba2-ac61-5c4355b4db7c"/>
+					<textElement textAlignment="Center">
+						<font size="18" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FOOD, MEDICINE AND HEALTH CARE ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="1" y="48" width="474" height="24" forecolor="#006666" uuid="28612f0b-3c44-4f9f-8ac7-defe23aca6d5"/>
+					<textElement textAlignment="Center">
+						<font size="18" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ETHIOPIA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="1" y="24" width="474" height="24" forecolor="#006666" uuid="30e7a1e7-51b4-4ac5-9a37-418537f075d8"/>
+					<textElement textAlignment="Center">
+						<font size="18" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ADMINISTRATION AND CONTROL AUTHORITY OF ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="-1" y="72" width="595" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="2589c16e-9272-486e-92ac-80857c9b8ad0"/>
+					<box>
+						<topPen lineWidth="0.5" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="12" isBold="true"/>
+						<paragraph leftIndent="10"/>
+					</textElement>
+					<text><![CDATA[Review Report]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="5"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="5">
+			<line>
+				<reportElement x="-19" y="4" width="595" height="1" forecolor="#666666" uuid="e4b6f485-007d-47e3-954a-9a0d6d094747"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="321">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="319" width="555" height="1" uuid="1ed93dc6-ac39-4a68-977f-e58e7147d2e3"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="2" y="0" width="553" height="20" uuid="52da8197-9c73-47ed-bbc8-0c4771e1e43a"/>
+				<textElement markup="html">
+					<font size="12" isBold="true"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{question}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="147" y="41" width="408" height="20" uuid="f54bd70d-a6e3-435d-9cf2-fe71cd63d2e8"/>
+				<textElement markup="html">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{other_comment}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="147" y="20" width="408" height="20" uuid="3eba7d30-f55b-4e23-9603-160d1e1bc51f"/>
+				<textElement markup="html">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{answered}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="147" y="61" width="408" height="20" isPrintWhenDetailOverflows="true" uuid="3d4bb42e-b749-4a25-bac7-44af26fc56e9"/>
+				<textElement markup="html">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sec_comment}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="20" width="145" height="20" uuid="9eb38033-368d-40dd-92c0-6c65d1d96019"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Answered?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="2" y="41" width="145" height="20" isPrintWhenDetailOverflows="true" uuid="05a6e73c-cdd6-4551-a344-d252442494ee"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Primary Comment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="2" y="61" width="145" height="20" isPrintWhenDetailOverflows="true" uuid="b246e7c1-3067-499a-aa3c-9c6bdd2606b7"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[Secondary Comment]]></text>
+			</staticText>
+			<image>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="2" y="81" width="553" height="238" isRemoveLineWhenBlank="true" uuid="17feed44-e37f-4074-9505-973606c092e2"/>
+				<imageExpression><![CDATA[$F{file}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="7cf19011-b5d8-4c44-adb6-abb4396a47ae"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="482bb1ee-c301-45d7-8f10-5201493c9480"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="dafd210c-6bd0-4f6e-acdb-12e4e7133dc3"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
