@@ -85,13 +85,13 @@ public class FileUploadController implements Serializable {
         FacesMessage msg;
         ProdApplications prodApplications = processProdBn.getProdApplications();
 //        file = userSession.getFile();
-        if(file!=null) {
+        if (file != null) {
             msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
             attach = attachmentDAO.save(attach);
             setAttachments(null);
 //        userSession.setFile(null);
-        }else{
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error", "Select a file to upload.");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Select a file to upload.");
         }
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
@@ -157,7 +157,7 @@ public class FileUploadController implements Serializable {
         try {
             if (attachments == null)
                 attachments = (ArrayList<Attachment>) attachmentDAO.findByProdApplications_Id(processProdBn.getProdApplications().getId());
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return attachments;

@@ -15,13 +15,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jetty.version>6.1.4</jetty.version>
         <spring.version>3.1.2.RELEASE</spring.version>
         <slf4j.version>1.7.2</slf4j.version>
         <java.version>1.6</java.version>
         <junit.version>4.12</junit.version>
         <jasperreports.version>4.8.0</jasperreports.version>
-        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
 
     <dependencies>

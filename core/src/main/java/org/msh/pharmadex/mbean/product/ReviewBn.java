@@ -79,7 +79,8 @@ public class ReviewBn implements Serializable {
     public void init(){
         try {
             Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("reviewID"));
-            review = reviewService.findReviewByUserAndProdApp(userSession.getLoggedINUserID(), prodAppID);
+            review = reviewService.findReview(prodAppID);
+            reviewChecklists = review.getReviewChecklists();
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -165,13 +166,6 @@ public class ReviewBn implements Serializable {
     }
 
     public Review getReview() {
-        if (review == null) {
-            Long reviewID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("reviewID"));
-            if(reviewID!=null) {
-                review = reviewService.findReview(reviewID);
-            }
-            reviewChecklists = review.getReviewChecklists();
-        }
         return review;
     }
 

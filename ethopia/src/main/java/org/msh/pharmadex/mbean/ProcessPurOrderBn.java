@@ -1,9 +1,6 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.domain.POrderBase;
-import org.msh.pharmadex.domain.POrderComment;
-import org.msh.pharmadex.domain.PurOrder;
-import org.msh.pharmadex.domain.PurProd;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
@@ -41,6 +38,18 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
             ex.printStackTrace();
         }
 
+    }
+
+    @Override
+    public String saveApp() {
+        facesContext = FacesContext.getCurrentInstance();
+        PurOrder pipOrder = (PurOrder) pOrderBase;
+        pipOrder.setpOrderChecklists(pOrderChecklists);
+        pipOrder.setpOrderComments(pOrderComments);
+        pipOrder.setPurProds(purProds);
+
+        RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+        return "/public/processpurorderlist.faces";
     }
 
     @Override

@@ -49,7 +49,7 @@
                     <p:commandButton value="#{msgs.approve_review}" action="#{reviewBn.approveReview}"
                                      update=":reviewHome"
                                      ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}">
-                        <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
+                        <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
                     </p:commandButton>
 
                     <p:commandButton value="#{msgs.send_to_review}" action="#{reviewBn.reviewerFeedback}"

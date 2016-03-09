@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.*;
@@ -91,6 +92,8 @@ public class ProdApplicationsService implements Serializable {
     private TimelineService timelineService;
     @Autowired
     private SampleTestDAO sampleTestDAO;
+    @Autowired
+    private ReviewInfoDAO reviewInfoDAO;
 
     @Transactional
     public ProdApplications findProdApplications(Long id) {
@@ -616,15 +619,15 @@ public class ProdApplicationsService implements Serializable {
                 }
             }
 
-            ArrayList<SampleTest> sampleTests = (ArrayList<SampleTest>) sampleTestDAO.findByProdApplications_Id(prodApplications.getId());
-            if (sampleTests.size() > 0) {
-                for (SampleTest sampleTest : sampleTests) {
-                    if (sampleTest.getResultDt() == null || sampleTest.getResultDt().after(new Date())) {
-                        return "lab_status";
-
-                    }
-                }
-            }
+//            ArrayList<SampleTest> sampleTests = (ArrayList<SampleTest>) sampleTestDAO.findByProdApplications_Id(prodApplications.getId());
+//            if (sampleTests.size() > 0) {
+//                for (SampleTest sampleTest : sampleTests) {
+//                    if (sampleTest.getResultDt() == null || sampleTest.getResultDt().after(new Date())) {
+//                        return "lab_status";
+//
+//                    }
+//                }
+//            }
             if(prodApplications.getSampleTestRecieved()==null||!prodApplications.getSampleTestRecieved()) {
                 return "lab_status";
             }
@@ -644,6 +647,22 @@ public class ProdApplicationsService implements Serializable {
 
     public List<RevDeficiency> findRevDefByRI(ReviewInfo reviewInfo) {
         return revDeficiencyDAO.findByReviewInfo_Id(reviewInfo.getId());
+    }
+
+
+    public ArrayList<RevDeficiency> findOpenRevDefByPA(Long prodAppID){
+        List<ReviewInfo> revInfos =  reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(prodAppID);
+        ArrayList<RevDeficiency> activeDefs = new ArrayList<RevDeficiency>();
+
+        for(ReviewInfo ri : revInfos){
+            if(ri.getReviewStatus().equals(ReviewStatus.RFI_SUBMIT)){
+                for(RevDeficiency rd : ri.getRevDeficiencies()){
+                    if(rd.getAckDate()==null)
+                        activeDefs.add(rd);
+                }
+            }
+        }
+        return activeDefs;
     }
 
     public List<ProdAppLetter> findAllLettersByProdApp(Long id) {

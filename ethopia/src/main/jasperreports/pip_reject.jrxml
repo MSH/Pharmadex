@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="133"/>
+	<property name="ireport.y" value="574"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -931,6 +931,7 @@ and pip.id = $P{piporderid}]]>
 		<band height="170" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement x="3" y="42" width="749" height="128" uuid="5b45e82d-1b92-4ba1-863d-b13a4597a0a5"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{comment}]]></textFieldExpression>
 			</textField>
 			<staticText>

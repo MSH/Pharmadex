@@ -132,6 +132,7 @@ and pe.prod_id = $P{prod_id};]]>
 		</field>
 	</subDataset>
 	<subDataset name="Manuf" uuid="bc09e112-cce6-4c67-841e-2882ec3ea184">
+		<parameter name="prod_id" class="java.lang.String"/>
 		<queryString>
 			<![CDATA[select c.companyName,
 concat(IFNULL(c.address1, '') , ifnull(concat(', ',c.address2),''), ifnull(concat(', ',c.zipcode), ''), concat(', ', cntry.countryName)) as addr,
@@ -621,7 +622,7 @@ and p.id = $P{prodappid}]]>
 			<componentElement>
 				<reportElement key="table 1" style="table 1" x="267" y="372" width="306" height="85" uuid="de022f39-3afc-4933-8a2f-7032cbf3e667"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="INN" uuid="9608027b-20a4-4312-a4a9-7ffc2379d8bc">
+					<datasetRun subDataset="INN" uuid="91514356-9db4-4814-b3c0-ab1e14f1dac4">
 						<datasetParameter name="prod_id">
 							<datasetParameterExpression><![CDATA[$F{prod_id}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -705,9 +706,12 @@ and p.id = $P{prodappid}]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 4" style="table 4" stretchType="RelativeToBandHeight" x="3" y="279" width="567" height="73" isPrintWhenDetailOverflows="true" uuid="8934c5b8-c219-4bf4-93ef-ceb0ee922aa8"/>
+				<reportElement key="table 4" style="table 4" stretchType="RelativeToBandHeight" x="3" y="279" width="568" height="73" isPrintWhenDetailOverflows="true" uuid="8934c5b8-c219-4bf4-93ef-ceb0ee922aa8"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Manuf" uuid="8e37e7ce-bc92-4319-9cc8-8173db9ab8d6">
+					<datasetRun subDataset="Manuf" uuid="b2217162-fbf6-424f-8f89-d692ece983d5">
+						<datasetParameter name="prod_id">
+							<datasetParameterExpression><![CDATA[$F{prod_id}]]></datasetParameterExpression>
+						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="148" uuid="1aac92c8-b38d-4a09-89a1-3b851ad673ff">

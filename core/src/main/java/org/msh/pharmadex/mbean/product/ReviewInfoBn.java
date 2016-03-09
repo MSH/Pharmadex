@@ -197,7 +197,8 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String reviewerFeedback() {
-        getReviewComments().add(reviewComment);
+        reviewComments.add(reviewComment);
+        reviewInfo.setReviewComments(reviewComments);
         reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
         RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
         reviewInfo = (ReviewInfo) retObject.getObj();
@@ -551,7 +552,7 @@ public class ReviewInfoBn implements Serializable {
                 }
             }
             if (reviewInfo.getSecReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getSecReviewer().getUserId())) {
-                if (reviewInfo.getReviewStatus().equals(ReviewStatus.SEC_REVIEW))
+                if (reviewInfo.getReviewStatus().equals(ReviewStatus.SEC_REVIEW)||reviewInfo.getReviewStatus().equals(ReviewStatus.FEEDBACK))
                     priReview = true;
                 else
                     priReview = false;

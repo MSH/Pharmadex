@@ -121,7 +121,6 @@ public class ReviewService implements Serializable {
     public ReviewInfo findReviewInfoByUserAndProdApp(Long userId, Long prodAppID) {
         ReviewInfo reviewInfo = reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
         Hibernate.initialize(reviewInfo.getReviewDetails());
-        Hibernate.initialize(reviewInfo.getReviewComments());
         Hibernate.initialize(reviewInfo.getReviewer());
         Hibernate.initialize(reviewInfo.getSecReviewer());
         return reviewInfo;
@@ -340,46 +339,46 @@ public class ReviewService implements Serializable {
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
-    public RetObject createDefLetter(RevDeficiency reviewComment) {
-        ProdApplications prodApp = prodApplicationsService.findProdApplications(reviewComment.getReviewInfo().getProdApplications().getId());
+    @Transactional
+    public RetObject createDefLetter(RevDeficiency revDeficiency) {
+        ProdApplications prodApp = prodApplicationsService.findProdApplications(revDeficiency.getReviewInfo().getProdApplications().getId());
         Product product = prodApp.getProduct();
         try {
+            ReviewInfo ri = reviewInfoDAO.findOne(revDeficiency.getReviewInfo().getId());
+            ri.setReviewStatus  (ReviewStatus.RFI_SUBMIT);
 //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
             File invoicePDF = File.createTempFile("" + product.getProdName() + "_fir", ".pdf");
-            JasperPrint jasperPrint = initRegCert(prodApp, reviewComment);
+            JasperPrint jasperPrint = initRegCert(prodApp, revDeficiency);
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
             ProdAppLetter attachment = new ProdAppLetter();
             attachment.setRegState(prodApp.getRegState());
-            attachment.setComment(reviewComment.getSentComment().getComment());
+            attachment.setComment(revDeficiency.getSentComment().getComment());
             attachment.setFile(file);
             attachment.setProdApplications(prodApp);
             attachment.setFileName(invoicePDF.getName());
             attachment.setTitle("Further Information Request");
-            attachment.setUploadedBy(reviewComment.getUser());
+            attachment.setUploadedBy(revDeficiency.getUser());
             attachment.setComment("Automatically generated Letter");
             attachment.setContentType("application/pdf");
-            attachment.setReviewInfo(reviewComment.getReviewInfo());
-            reviewComment.setProdAppLetter(attachment);
-            revDeficiencyDAO.saveAndFlush(reviewComment);
+            attachment.setReviewInfo(ri);
+            revDeficiency.setProdAppLetter(attachment);
+            revDeficiency.setReviewInfo(ri);
+            revDeficiencyDAO.saveAndFlush(revDeficiency);
 
             TimeLine timeLine = new TimeLine();
             timeLine.setComment("Status changes due to further information request");
             timeLine.setRegState(RegState.FOLLOW_UP);
             timeLine.setProdApplications(prodApp);
             timeLine.setStatusDate(new Date());
-            timeLine.setUser(reviewComment.getUser());
+            timeLine.setUser(revDeficiency.getUser());
             RetObject retObject = timelineService.saveTimeLine(timeLine);
             if (retObject.getMsg().equals("persist")) {
                 timeLine = (TimeLine) retObject.getObj();
                 prodApp = timeLine.getProdApplications();
-                reviewComment.getReviewInfo().setProdApplications(prodApp);
+                revDeficiency.getReviewInfo().setProdApplications(prodApp);
             }
-            return saveReviewInfo(reviewComment.getReviewInfo());
-
-//                prodApplicationsDAO.updateApplication(prodApp);
-
-
+            return saveReviewInfo(revDeficiency.getReviewInfo());
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return new RetObject("error");
@@ -578,5 +577,37 @@ public class ReviewService implements Serializable {
             return null;
         }
 
+    }
+
+    public RevDeficiency findRevDef(Long revDefID) {
+        if(revDefID==null)
+            return null;
+        return revDeficiencyDAO.findOne(revDefID);
+
+    }
+
+    @Autowired
+    private UserService userService;
+
+    @Transactional
+    public String submitFir(RevDeficiency revDeficiency, ReviewComment reviewComment, Long loggedInUser) {
+        if(revDeficiency==null)
+            return "empty";
+
+        ReviewInfo reviewInfo = reviewInfoDAO.findById(revDeficiency.getReviewInfo().getId());
+        reviewInfo.setReviewStatus(ReviewStatus.RFI_APP_RESPONSE);
+        reviewInfo.setUpdatedDate(new Date());
+        if(reviewInfo.getReviewComments()==null){
+            reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
+        }
+        reviewComment.setReviewInfo(reviewInfo);
+        reviewComment.setUser(userService.findUser(loggedInUser));
+        reviewComment.setRecomendType(RecomendType.FIR);
+        reviewComment.setDate(new Date());
+        reviewInfo.getReviewComments().add(reviewComment);
+        revDeficiency.setReviewInfo(reviewInfo);
+
+        reviewInfo = reviewInfoDAO.save(reviewInfo);
+        return "persist";
     }
 }

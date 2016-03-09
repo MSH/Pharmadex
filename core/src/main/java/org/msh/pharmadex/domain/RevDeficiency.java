@@ -26,7 +26,7 @@ public class RevDeficiency implements Serializable
     @ManyToOne(cascade = CascadeType.ALL)
     private ProdAppLetter prodAppLetter;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name="reviewinfo_ID", nullable = true)
     private ReviewInfo reviewInfo;
 

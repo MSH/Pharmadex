@@ -1,9 +1,6 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.domain.PIPOrder;
-import org.msh.pharmadex.domain.PIPProd;
-import org.msh.pharmadex.domain.POrderBase;
-import org.msh.pharmadex.domain.POrderComment;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
@@ -45,7 +42,10 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     @Override
     public void initVariables() {
-//        pOrderChecklists = ((PIPOrder) pOrderBase).getpOrderChecklists();
+        pOrderChecklists = pOrderService.findPOrderChecklists(pOrderBase);
+        pOrderDocs = (ArrayList<POrderDoc>) pOrderService.findPOrderDocs(pOrderBase);
+        pOrderComments = pOrderService.findPOrderComments(pOrderBase);
+
         pipProds = ((PIPOrder) pOrderBase).getPipProds();
 //        pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
         setApplicantUser(pOrderBase.getApplicantUser());
@@ -64,6 +64,18 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
             pOrderComments = new ArrayList<POrderComment>();
         pOrderComments.add(pOrderComment);
         return saveApp();
+    }
+
+    @Override
+    public String saveApp() {
+        facesContext = FacesContext.getCurrentInstance();
+        PIPOrder pipOrder = (PIPOrder) pOrderBase;
+        pipOrder.setpOrderChecklists(pOrderChecklists);
+        pipOrder.setpOrderComments(pOrderComments);
+        pipOrder.setPipProds(pipProds);
+
+        RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+        return "/public/processpiporderlist.faces";
     }
 
     public String newApp() {

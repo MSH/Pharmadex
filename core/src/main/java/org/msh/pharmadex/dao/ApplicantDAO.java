@@ -43,12 +43,12 @@ public class ApplicantDAO implements Serializable {
 
     @Transactional(readOnly = true)
     public List<Applicant> findAllApplicants() {
-        return entityManager.createQuery(" select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype").getResultList();
+        return entityManager.createQuery(" select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype order by a.appName ").getResultList();
     }
 
     @Transactional(readOnly = true)
     public List<Applicant> findRegApplicants() {
-        return (List<Applicant>) entityManager.createQuery("from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype where a.state = :state ")
+        return (List<Applicant>) entityManager.createQuery("from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype where a.state = :state order by a.appName ")
                 .setParameter("state", ApplicantState.REGISTERED)
                 .getResultList();
     }

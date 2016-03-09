@@ -125,8 +125,10 @@ public class ProcessProdBn implements Serializable {
     private List<ProdApplications> prevProdApps;
     private List<SuspDetail> suspDetails;
     private List<Attachment> clinicalRevs;
+    private ArrayList<RevDeficiency> revDeficiencies;
 
     private boolean disableVerify;
+    private boolean displayFir;
 
     @PostConstruct
     private void init() {
@@ -245,6 +247,10 @@ public class ProcessProdBn implements Serializable {
         moderator = prodApplications.getModerator();
 //        prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
         timeLineList = timelineService.findTimelineByApp(prodApplications.getId());
+
+        revDeficiencies = prodApplicationsService.findOpenRevDefByPA(prodApplications.getId());
+        if(revDeficiencies.size()>0) displayFir = true;
+        else displayFir = false;
     }
 
     public void dateChange() {
@@ -976,5 +982,21 @@ public class ProcessProdBn implements Serializable {
 
     public void setDisableVerify(boolean disableVerify) {
         this.disableVerify = disableVerify;
+    }
+
+    public boolean isDisplayFir() {
+        return displayFir;
+    }
+
+    public void setDisplayFir(boolean displayFir) {
+        this.displayFir = displayFir;
+    }
+
+    public ArrayList<RevDeficiency> getRevDeficiencies() {
+        return revDeficiencies;
+    }
+
+    public void setRevDeficiencies(ArrayList<RevDeficiency> revDeficiencies) {
+        this.revDeficiencies = revDeficiencies;
     }
 }

@@ -86,7 +86,8 @@
                                 <ui:include src="clinicalreview.xhtml"/>
                             </p:tab>
 
-                            <p:tab title="#{msgs.sample_request}" id="sampletab" rendered="#{processProdBn.displaySample}">
+                            <p:tab title="#{msgs.sample_request}" id="sampletab"
+                                   rendered="#{processProdBn.displaySample}">
                                 <ui:include src="samplerequestpnl.xhtml"/>
                             </p:tab>
 
@@ -359,6 +360,46 @@
                                         <h:outputText value="#{susp.decisionDate}"/>
                                     </p:column>
 
+                                </p:dataTable>
+                            </p:tab>
+
+                            <p:tab title="#{msgs.deficiency_reports}" id="fir"
+                                   rendered="#{processProdBn.displayFir and userSession.company}">
+                                <p:dataTable id="deftable" value="#{processProdBn.revDeficiencies}" var="fir"
+                                             rowStyleClass="">
+
+                                    <p:column headerText="#{msgs.title}">
+                                        <h:outputText value="#{fir.prodAppLetter.title}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.filename}">
+                                        <h:outputText value="#{fir.prodAppLetter.fileName}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploaddate}">
+                                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploadedby}">
+                                        <h:outputText value="#{fir.prodAppLetter.uploadedBy.name}"/>
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandButton id="defdownLink" value="#{msgs.download_attach}" ajax="false"
+                                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                         icon="ui-icon-arrowthichk-n">
+                                            <p:fileDownload value="#{reviewInfoBn.fileDownload(fir.prodAppLetter.file)}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandButton id="revdefdetails"
+                                                         action="/secure/furtherinfo" ajax="false"
+                                                         rendered="#{empty fir.ackDate}"
+                                                         icon="ui-icon-search">
+                                            <f:param name="revDefID" value="#{fir.id}"/>
+                                        </p:commandButton>
+                                    </p:column>
                                 </p:dataTable>
                             </p:tab>
 

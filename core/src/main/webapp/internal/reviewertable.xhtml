@@ -66,10 +66,6 @@
         </p:column>
 
         <p:column>
-            <p:commandButton id="changerev" action="#{prodReviewBn.initProcessorChange(each)}"
-                             icon="ui-icon-trash" ajax="true"
-                             update=":reghome:processtab:reviwertbl :reghome:processtab:assignreviewDlg :reghome:messages"
-                             />
             <p:commandButton id="deletereview" action="#{prodReviewBn.deleteReview(each)}"
                              icon="ui-icon-trash" ajax="true" immediate="true"
                              update=":reghome:processtab:reviwertbl :reghome:processtab:assignreviewDlg :reghome:messages"

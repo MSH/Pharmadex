@@ -160,6 +160,7 @@ public class ProdRegInit implements Serializable {
     }
 
     public boolean isEligible() {
+        eligible = false;
         if (userSession.isAdmin() || userSession.isHead() || userSession.isStaff())
             eligible = true;
 

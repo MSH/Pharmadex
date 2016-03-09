@@ -336,3 +336,13 @@ body {
 .colored {
     background: orangered;
 }
+
+.quesbanner {
+    background-color: rgb(33, 145, 192);
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    border: 2px solid;
+    border-color: #015270;
+    border-radius: 5px;
+}

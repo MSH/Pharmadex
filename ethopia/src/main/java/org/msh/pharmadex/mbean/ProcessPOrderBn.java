@@ -194,6 +194,7 @@ public abstract class ProcessPOrderBn implements Serializable {
     public void submitComment() {
         facesContext = FacesContext.getCurrentInstance();
         try {
+            saveApp();
             pOrderBase.setState(AmdmtState.SUBMITTED);
             pOrderBase.setReviewState(pOrderComment.getRecomendType());
             enterComment();
@@ -440,6 +441,8 @@ public abstract class ProcessPOrderBn implements Serializable {
         if (pOrderBase.getState() != null) {
             if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION) ||
                     pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK))
+                displayReviewComment = true;
+            else if(pOrderBase.getReviewState().equals(RecomendType.FEEDBACK))
                 displayReviewComment = true;
             else
                 displayReviewComment = false;
