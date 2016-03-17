@@ -13,6 +13,7 @@ import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.primefaces.extensions.model.timeline.TimelineEvent;
@@ -22,8 +23,6 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
@@ -32,7 +31,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -217,7 +215,11 @@ public class ProcessProdBn implements Serializable {
         this.showCert = showCert;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    public void initRegistration() {
+        if (prodApplications.getProdRegNo() == null || prodApplications.getProdRegNo().equals(""))
+            prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + (productService.findAllRegisteredProduct().size() + 1), prodApplications.getProdAppNo()));
+    }
+
     public ProdApplications getProdApplications() {
         if (prodApplications == null) {
             initProdApps();
@@ -260,15 +262,23 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String addComment() {
-        facesContext = FacesContext.getCurrentInstance();
-        selComment.setDate(new Date());
-        selComment.setProdApplications(prodApplications);
-        selComment.setUser(loggedInUser);
-        selComment = commentService.saveComment(selComment);
-        comments.add(selComment);
-        selComment = new Comment();
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("comment_success")));
-        return "";
+        try {
+            if (comments == null)
+                comments = new ArrayList<Comment>();
+            facesContext = FacesContext.getCurrentInstance();
+            selComment.setDate(new Date());
+            selComment.setProdApplications(prodApplications);
+            selComment.setUser(loggedInUser);
+            selComment = commentService.saveComment(selComment);
+            comments.add(selComment);
+            selComment = new Comment();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("comment_success")));
+            return "";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Log out of the system and try again."));
+            return "";
+        }
     }
 
     public void assignModerator() {
@@ -514,7 +524,7 @@ public class ProcessProdBn implements Serializable {
 
 //        prodApplications.setRegistrationDate(new Date());
             if(prodApplications.getProdRegNo()==null||prodApplications.getProdRegNo().equals(""))
-                prodApplications.setProdRegNo("" + (Math.random() * 100000));
+                prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + 0, prodApplications.getProdAppNo()));
 //        globalEntityLists.setRegProducts(null);
 
             prodApplications.setActive(true);

@@ -18,7 +18,7 @@ import java.util.List;
 @Repository
 public class CustomLicHolderDAO {
 
-    @PersistenceContext(unitName = "acme-et", name = "acme-et")
+    @PersistenceContext
     EntityManager entityManager;
 
     public List<Applicant> findApplicantsByLicHolderAvailability() {
@@ -61,7 +61,7 @@ public class CustomLicHolderDAO {
     }
 
     public List<LicenseHolder> findAll() {
-        List<LicenseHolder> licenseHolders = entityManager.createQuery("select lh from LicenseHolder lh left join fetch lh.address.country left join fetch lh.agentInfos ")
+        List<LicenseHolder> licenseHolders = entityManager.createQuery("select distinct lh from LicenseHolder lh left join fetch lh.address.country left join fetch lh.agentInfos ")
                 .getResultList();
         return licenseHolders;
 

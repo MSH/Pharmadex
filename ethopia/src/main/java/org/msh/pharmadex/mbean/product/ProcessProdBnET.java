@@ -15,6 +15,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -83,6 +84,7 @@ public class ProcessProdBnET implements Serializable {
             timeLine.setRegState(RegState.FEE)  ;
             processProdBn.setTimeLine(timeLine);
             processProdBn.addTimeline();
+            prodApplications.setPriorityDate(new Date());
 
         }
 

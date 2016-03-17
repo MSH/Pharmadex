@@ -8,12 +8,12 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -73,25 +73,48 @@ public class ExecSummaryBn implements Serializable {
     }
 
     public String submit(){
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+            if (prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
+                for (ReviewInfo ri : reviewInfos) {
+                    if (!ri.getRecomendType().equals(RecomendType.RECOMENDED)) {
+                        facesContext.addMessage(null, new FacesMessage("Invalid operation!", "Cannot recommend a product which is not recommended by the assessors. Send feedback to assessor to change there recommendation."));
+                        return "";
+                    }
+                }
+            } else if (prodApplications.getRegState().equals(RegState.NOT_RECOMMENDED)) {
+                for (ReviewInfo ri : reviewInfos) {
+                    if (!ri.getRecomendType().equals(RecomendType.NOT_RECOMENDED)) {
+                        facesContext.addMessage(null, new FacesMessage("Invalid operation!", "Cannot recommend a product which is not recommended by the assessors. Send feedback to assessor to change there recommendation."));
+                        return "";
+                    }
+                }
+
+            }
+
 
 //        prodApplications.setExecSummary(execSummary);
-        String result = prodApplicationsService.submitExecSummary(prodApplications, userSession.getLoggedINUserID(), reviewInfos);
-        if(result.equals("persist")) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
-            return "processreg";
-        }else if(result.equals("state_error")) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please accept the reviews before submitting the executive summary",""));
-            return null;
-        } else if (result.equals("clinical_review")) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clinical review not received or verified.", ""));
-            return null;
-        } else if (result.equals("lab_status")) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Lab result not verified.", ""));
-            return null;
-        }
+            String result = prodApplicationsService.submitExecSummary(prodApplications, userSession.getLoggedINUserID(), reviewInfos);
+            if (result.equals("persist")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
+                return "processreg";
+            } else if (result.equals("state_error")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please accept the reviews before submitting the executive summary", ""));
+                return null;
+            } else if (result.equals("clinical_review")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clinical review not received or verified.", ""));
+                return null;
+            } else if (result.equals("lab_status")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Lab result not verified.", ""));
+                return null;
+            }
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
         return "";
     }
 

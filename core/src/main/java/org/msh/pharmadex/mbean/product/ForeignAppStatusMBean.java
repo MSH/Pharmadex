@@ -3,15 +3,12 @@ package org.msh.pharmadex.mbean.product;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ForeignAppStatus;
-import org.msh.pharmadex.service.CompanyService;
-import org.msh.pharmadex.service.CountryService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -43,6 +40,7 @@ public class ForeignAppStatusMBean implements Serializable {
 
     private ForeignAppStatus selForeignAppStatus;
     private List<ForeignAppStatus> foreignAppStatuses;
+    private String todayDate;
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -135,5 +133,11 @@ public class ForeignAppStatusMBean implements Serializable {
         this.prodApplicationsService = prodApplicationsService;
     }
 
+    public String getTodayDate() {
+        return todayDate;
+    }
 
+    public void setTodayDate(String todayDate) {
+        this.todayDate = todayDate;
+    }
 }

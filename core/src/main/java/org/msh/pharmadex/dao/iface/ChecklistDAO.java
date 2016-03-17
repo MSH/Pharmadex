@@ -2,6 +2,7 @@ package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.Checklist;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public interface ChecklistDAO extends JpaRepository<Checklist, Long> {
 
     //Used in Ethiopia
     public List<Checklist> findByRecognizedMedOrderByIdAsc(boolean sra);
+
+    @Query("select c from Checklist c where c.recognizedMed = ?1 or c.module = 'Clinical Review'")
+    public List<Checklist> findBySRANewMeds(boolean recognized);
 
     //Used in Ethiopia
     public List<Checklist> findByNewMedOrderByIdAsc(boolean newMed);

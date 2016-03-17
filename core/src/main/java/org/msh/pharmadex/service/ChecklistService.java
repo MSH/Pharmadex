@@ -34,12 +34,13 @@ public class ChecklistService implements Serializable {
 
         if(prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
             checklists = checklistDAO.findByRenewalOrderByIdAsc(true);
-        }else if (prodApplications.isSra())
+        } else if (prodApplications.isSra()) {
             checklists = checklistDAO.findByRecognizedMedOrderByIdAsc(true);
-        else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
+        } else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
             checklists = checklistDAO.findByNewMedOrderByIdAsc(true);
-        else
+        } else {
             checklists = checklistDAO.findByGenMedOrderByIdAsc(true);
+        }
 //        else if(prodAppType.equals(ProdAppType.RECOGNIZED))
 //            checklists = checklistDAO.findByHeaderAndRecognizedMed(true,true);
         return checklists;
@@ -53,7 +54,10 @@ public class ChecklistService implements Serializable {
         if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
             checklists = checklistDAO.findByRenewalOrderByIdAsc(true);
         } else if (prodApplications.isSra())
-            checklists = checklistDAO.findByRecognizedMedOrderByIdAsc(true);
+            if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
+                checklists = checklistDAO.findBySRANewMeds(true);
+            else
+                checklists = checklistDAO.findByRecognizedMedOrderByIdAsc(true);
         else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
             checklists = checklistDAO.findByNewMedOrderByIdAsc(true);
         else
