@@ -206,21 +206,28 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String approveReview() {
+        try {
+            facesContext = FacesContext.getCurrentInstance();
 //        if (reviewInfo.getRecomendType() == null) {
 //            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
 //        }
 
-        if (!reviewInfo.getReviewStatus().equals(ReviewStatus.SUBMITTED)) {
-            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
-        }
+            if (!reviewInfo.getReviewStatus().equals(ReviewStatus.SUBMITTED)) {
+                facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
+            }
 
-        reviewComment = getReviewComments().get(getReviewComments().size() - 1);
-        reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
-        reviewInfo.setComment(reviewComment.getComment());
-        saveReview();
-        userSession.setProdAppID(reviewInfo.getProdApplications().getId());
-        userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
-        return "/internal/processreg";
+            reviewComment = getReviewComments().get(getReviewComments().size() - 1);
+            reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
+            reviewInfo.setComment(reviewComment.getComment());
+            saveReview();
+            userSession.setProdAppID(reviewInfo.getProdApplications().getId());
+            userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
+            return "/internal/processreg";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage("Log out of the system and try again."));
+            return "";
+        }
     }
 
     public String updateReview(DisplayReviewInfo displayReviewInfo) {

@@ -239,7 +239,7 @@
         <p:panel>
             <h:panelGrid id="changeReviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
 
-                <p:outputLabel value="#{msgs.processor}" for="prireviewac"
+                <p:outputLabel value="#{msgs.processor}" for="prireviewchange"
                                escape="false"
                                styleClass="label"/>
 
@@ -251,13 +251,12 @@
                                 converter="#{userConverter}">
                 </p:autoComplete>
 
-                <p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewer"
-                               escape="false" rendered="#{prodReviewBn.reviewInfo.secreview}"
+                <p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewerchange"
+                               escape="false"
                                styleClass="label"
                         />
 
                 <p:autoComplete id="sec_reviewerchange" value="#{prodReviewBn.secReviewer}"
-                                rendered="#{prodReviewBn.reviewInfo.secreview}"
                                 completeMethod="#{globalEntityLists.completeProcessorList}"
                                 dropdown="true" required="true"
                                 var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
@@ -290,8 +289,8 @@
 
 
             <p:commandButton id="changeRevBtn" value="#{msgs.global_submit}"
-                             action="#{prodReviewBn.changeReviewer}"
-                             oncomplete="if (!args.validationFailed) PF('changereviewdlg').hide()" ajax="true"
+                             action="#{prodReviewBn.changeReviewer}" process="@form" ajax="false"
+                             oncomplete="if (!args.validationFailed) PF('changereviewdlg').hide()"
                              update="@form"/>
         </p:panel>
 

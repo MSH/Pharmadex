@@ -8,7 +8,6 @@ import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
@@ -66,6 +65,7 @@ public class RenewalMbn implements Serializable {
     private List<ForeignAppStatus> foreignAppStatuses;
     private List<ProdAppChecklist> prodAppChecklists;
     private UploadedFile file;
+    private boolean showfull;
 
     @PostConstruct
     private void init() {
@@ -548,5 +548,22 @@ public class RenewalMbn implements Serializable {
 
     public void setApplicantUser(User applicantUser) {
         this.applicantUser = applicantUser;
+    }
+
+    public boolean isShowfull() {
+        if (userSession.isStaff() || userSession.isModerator() || userSession.isReviewer() || userSession.isLab() || userSession.isClinical()) {
+            showfull = true;
+        } else if (userSession.isCompany()) {
+            if (prodApplications.getApplicant().getApplcntId().equals(userSession.getApplcantID())) {
+                showfull = true;
+            } else {
+                showfull = false;
+            }
+        }
+        return showfull;
+    }
+
+    public void setShowfull(boolean showfull) {
+        this.showfull = showfull;
     }
 }

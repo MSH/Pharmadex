@@ -1,17 +1,16 @@
 package org.msh.pharmadex.mbean.lab;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.Country;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.lab.SampleMed;
 import org.msh.pharmadex.domain.lab.SampleStd;
 import org.msh.pharmadex.domain.lab.SampleTest;
-import org.msh.pharmadex.mbean.product.ProdRegAppMbean;
 import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.RowEditEvent;
-import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +62,7 @@ public class SampleRecBn implements Serializable {
     private List<SampleMed> sampleMeds;
     private List<SampleStd> sampleStds;
     private User loggedInUser;
+    private boolean displaySubmit;
 
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -82,7 +80,7 @@ public class SampleRecBn implements Serializable {
                 }
                 loggedInUser = userService.findUser(userSession.getLoggedINUserID());
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
     }
@@ -98,7 +96,7 @@ public class SampleRecBn implements Serializable {
         facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
     }
 
-    public String submitSample(){
+    public String submitSample() {
         sampleTest.setUpdatedBy(loggedInUser);
         sampleTest.setUpdatedDate(new Date());
         saveSampleTest();
@@ -143,13 +141,14 @@ public class SampleRecBn implements Serializable {
         facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_delete")));
 
     }
-    public void saveSampleTest(){
+
+    public void saveSampleTest() {
         facesContext = FacesContext.getCurrentInstance();
         RetObject retObject = sampleTestService.saveSample(sampleTest);
-        if(!retObject.getMsg().equals("error")){
+        if (!retObject.getMsg().equals("error")) {
             sampleTest = (SampleTest) retObject.getObj();
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
-        }else{
+        } else {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), null));
 
         }
@@ -283,5 +282,20 @@ public class SampleRecBn implements Serializable {
         this.productService = productService;
     }
 
+    public boolean isDisplaySubmit() {
+        if (userSession.isLab() || userSession.isStaff()) {
+            if (sampleTest.getSampleTestStatus().ordinal() < 2)
+                displaySubmit = true;
+            else
+                displaySubmit = false;
+        } else {
+            displaySubmit = false;
+        }
 
+        return displaySubmit;
+    }
+
+    public void setDisplaySubmit(boolean displaySubmit) {
+        this.displaySubmit = displaySubmit;
+    }
 }

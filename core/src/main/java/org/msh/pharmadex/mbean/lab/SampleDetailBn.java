@@ -16,7 +16,6 @@ import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.SampleTestService;
 import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -317,10 +316,7 @@ public class SampleDetailBn implements Serializable {
     public boolean isDisplayRec() {
         if (userSession.isLab() || userSession.isStaff()) {
             if (sampleTest != null) {
-                if (sampleTest.getSampleTestStatus().ordinal() < 2)
-                    displayRec = true;
-                else
-                    displayRec = false;
+                displayRec = true;
             } else {
                 displayRec = false;
             }

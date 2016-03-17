@@ -21,10 +21,6 @@
             <p:inputText id="priorityno" value="#{processProdBn.prodApplications.priorityNo}" style="width: 400px;"/>
 -->
 
-            <p:outputLabel value="#{msgs.priority_no}" for="priordt" styleClass="label"/>
-            <p:calendar value="#{processProdBn.prodApplications.priorityDate}" id="priordt" showOn="button"/>
-
-
             <p:outputLabel value="#{msgs.application_fee}" styleClass="label" for="feerecieved"/>
             <p:selectBooleanButton id="feerecieved"
                                    value="#{processProdBn.prodApplications.feeReceived}"
@@ -35,7 +31,10 @@
                         listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
             </p:selectBooleanButton>
 
-            <p:outputLabel value="#{msgs.application_fee}" styleClass="label"/>
+            <p:outputLabel value="#{msgs.priority_no}" for="priordt" styleClass="label"/>
+            <p:calendar value="#{processProdBn.prodApplications.priorityDate}" id="priordt" showOn="button"/>
+
+            <p:outputLabel value="#{msgs.fee_amt}" styleClass="label"/>
             <h:outputText value="#{processProdBn.prodApplications.feeAmt}">
                 <f:convertNumber type="currency" currencySymbol="$"/>
             </h:outputText>

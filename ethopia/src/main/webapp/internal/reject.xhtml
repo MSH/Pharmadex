@@ -17,7 +17,7 @@
 
 
                 <ui:decorate template="/templates/prodbannertempl.xhtml">
-                    <ui:param name="product" value="#{processProdBn.product}"/>
+                    <ui:param name="product" value="#{prodRejectBn.prodApplications.product}"/>
                 </ui:decorate>
 
                 <h:panelGrid columns="2" cellspacing="10" cellpadding="10">
@@ -31,7 +31,9 @@
                     <p:commandButton value="#{msgs.global_reject}"
                                      ajax="false" actionListener="#{prodRejectBn.PDF}" />
                     <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
-                                     ajax="false"/>
+                                     ajax="false">
+                        <f:param name="prodAppID" value="#{prodRejectBn.prodApplications.id}"/>
+                    </p:commandButton>
                 </div>
             </h:form>
         </div>

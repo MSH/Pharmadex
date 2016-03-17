@@ -24,10 +24,10 @@
                 <p:commandButton value="#{msgs.global_print}" type="button" icon="ui-icon-print">
                     <p:printer target="sampledetail" />
                 </p:commandButton>
-                <p:commandButton value="#{msgs.global_save}"
+                <p:commandButton value="#{msgs.global_save}" rendered="#{sampleRecBn.displaySubmit}"
                                  ajax="false" action="#{sampleRecBn.saveSampleTest}"/>
                 <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('submitDlg').show()"
-                        />
+                                 rendered="#{sampleRecBn.displaySubmit}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/lab/sampletestdetail"
                                  ajax="false">
                         <f:param name="sampleTestID" value="#{sampleRecBn.sampleTest.id}"/>
@@ -45,7 +45,7 @@
                             >
                         <f:facet name="header">
                             <p:commandLink value="#{msgs.global_add}" action="#{sampleRecBn.initAddSampleMed}"
-                                           id="addMedBtn"
+                                           id="addMedBtn" rendered="#{sampleRecBn.displaySubmit}"
                                            oncomplete="PF('addMedsDlg').show()" update=":addMedFrm"/>
 
                         </f:facet>
@@ -166,7 +166,7 @@
                             >
                         <f:facet name="header">
                             <p:commandLink value="#{msgs.global_add}" action="#{sampleRecBn.initAddSampleStd}"
-                                           id="addStdBtn"
+                                           id="addStdBtn" rendered="#{sampleRecBn.displaySubmit}"
                                            oncomplete="PF('addStdDlg').show()" update=":addStdFrm"/>
 
                         </f:facet>

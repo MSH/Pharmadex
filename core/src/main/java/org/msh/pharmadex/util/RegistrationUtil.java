@@ -23,6 +23,11 @@ public class RegistrationUtil {
         return value;
     }
 
+    public static String generateRegNo(String count, String appType) {
+        String prodAppNo = count + "/" + appType;
+        return prodAppNo;
+    }
+
     public String generateAppNo(Long prodAppID) {
         String prodAppNo = "";
         Calendar calendar = Calendar.getInstance(Locale.US);

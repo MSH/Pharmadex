@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="646"/>
+	<property name="ireport.y" value="932"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -148,7 +148,7 @@ END as companyType
 from prod_company pc
 left join company c ON c.id = pc.company_id
 left join country cntry on c.CNTRY_ID = cntry.id
-where pc.prod_id = 154;]]>
+where pc.prod_id = $P{prod_id};]]>
 		</queryString>
 		<field name="companyName" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
@@ -708,16 +708,16 @@ and p.id = $P{prodappid}]]>
 			<componentElement>
 				<reportElement key="table 4" style="table 4" stretchType="RelativeToBandHeight" x="3" y="279" width="568" height="73" isPrintWhenDetailOverflows="true" uuid="8934c5b8-c219-4bf4-93ef-ceb0ee922aa8"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Manuf" uuid="b2217162-fbf6-424f-8f89-d692ece983d5">
+					<datasetRun subDataset="Manuf" uuid="a0677ded-ccd6-423f-9e05-0dd084ab9f97">
 						<datasetParameter name="prod_id">
 							<datasetParameterExpression><![CDATA[$F{prod_id}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="148" uuid="1aac92c8-b38d-4a09-89a1-3b851ad673ff">
+					<jr:column width="177" uuid="1aac92c8-b38d-4a09-89a1-3b851ad673ff">
 						<jr:columnHeader style="table 4_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="148" height="30" uuid="abe89a45-9559-4976-9239-d19235a8ab5a"/>
+								<reportElement x="0" y="0" width="177" height="30" uuid="abe89a45-9559-4976-9239-d19235a8ab5a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
@@ -726,15 +726,16 @@ and p.id = $P{prodappid}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 4_TD" height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="148" height="20" uuid="be2be89c-97d1-4c52-baf6-9cd9816ffb77"/>
+								<reportElement x="0" y="0" width="177" height="20" uuid="be2be89c-97d1-4c52-baf6-9cd9816ffb77"/>
+								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="119" uuid="16efe7e0-d29f-4ba4-b8f4-cfe3ff4f2285">
+					<jr:column width="214" uuid="16efe7e0-d29f-4ba4-b8f4-cfe3ff4f2285">
 						<jr:columnHeader style="table 4_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="118" height="30" uuid="fa711459-0d62-4e74-b98b-6215bf8c60d8"/>
+								<reportElement x="0" y="0" width="214" height="30" uuid="fa711459-0d62-4e74-b98b-6215bf8c60d8"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font isBold="true"/>
 								</textElement>
@@ -743,22 +744,23 @@ and p.id = $P{prodappid}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="table 4_TD" height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="118" height="20" uuid="6617e6dd-6da3-455b-b930-7d37486f8cca"/>
+								<reportElement x="0" y="0" width="214" height="20" uuid="6617e6dd-6da3-455b-b930-7d37486f8cca"/>
 								<textFieldExpression><![CDATA[$F{addr}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="92" uuid="65cb0faa-5ce0-4699-a22a-98a146d4da32">
+					<jr:column width="175" uuid="65cb0faa-5ce0-4699-a22a-98a146d4da32">
 						<jr:columnHeader style="table 4_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="90" height="30" uuid="76b4fec0-bf0d-4d21-b921-00b1c4732cf9"/>
+								<reportElement x="0" y="0" width="175" height="30" uuid="76b4fec0-bf0d-4d21-b921-00b1c4732cf9"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[Role]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 4_TD" height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="90" height="20" uuid="c382844f-bd2b-4394-ade4-7045f3608615"/>
+								<reportElement x="0" y="0" width="175" height="20" uuid="c382844f-bd2b-4394-ade4-7045f3608615"/>
+								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{companyType}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
