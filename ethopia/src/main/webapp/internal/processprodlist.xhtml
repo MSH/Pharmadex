@@ -16,16 +16,13 @@
                                     completeMethod="#{regProdMbn.completeProduct}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}" forceSelection="true"
-                            />
-                    <p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">
+                            >
+                        <p:ajax event="itemSelect" listener="#{regProdMbn.onItemSelect}" update="@form"
+                                process="@form"/>
+                    </p:autoComplete>
+                    <p:commandButton value="#{msgs.global_submit}" action="/internal/processreg.faces" ajax="false">
+                        <f:param name="prodAppID" value="#{regProdMbn.prodTable.prodAppID}"/>
                     </p:commandButton>
-<!--
-                    <p:outputLabel value="#{msgs.application_no}: " for="appno"/>
-                    <p:inputText value="#{regProdMbn.prodAppNo}" id="appno"/>
-                    <p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProdApp}" ajax="false">
-                    </p:commandButton>
--->
-
                 </h:panelGrid>
 
 

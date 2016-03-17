@@ -121,6 +121,7 @@ public class ProdReviewBn implements Serializable {
                 } else {
                     reviewInfos.add(reviewInfo);
                     updateRegState();
+                    initProcessorAdd();
                 }
                 reviewInfo = new ReviewInfo();
             } else {

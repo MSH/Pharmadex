@@ -5,27 +5,23 @@
 package org.msh.pharmadex.mbean;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProcessProdBn;
 import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.ReportService;
 import org.msh.pharmadex.service.UserService;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -33,7 +29,7 @@ import java.util.ResourceBundle;
  * Author: usrivastava
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ProdRejectBn implements Serializable {
 
     @ManagedProperty(value = "#{processProdBn}")
@@ -52,14 +48,35 @@ public class ProdRejectBn implements Serializable {
     private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     private String summary;
+    private ProdApplications prodApplications;
+
 
     public ProcessProdBn getProcessProdBn() {
         return processProdBn;
     }
 
+    public void setProcessProdBn(ProcessProdBn processProdBn) {
+        this.processProdBn = processProdBn;
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+            if (prodApplications == null) {
+                String prodAppID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
+                if (prodAppID != null && !prodAppID.equals("")) {
+                    prodApplications = prodApplicationsService.findProdApplications(Long.valueOf(prodAppID));
+
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     public void PDF() throws JRException, IOException {
         facesContext = FacesContext.getCurrentInstance();
-        ProdApplications prodApplications = processProdBn.getProdApplications();
         if (!prodApplications.getRegState().equals(RegState.NOT_RECOMMENDED)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("register_fail")));
 //            return "";
@@ -80,10 +97,6 @@ public class ProdRejectBn implements Serializable {
         prodApplicationsService.createRejectCert(prodApplications);
         timeLine = new TimeLine();
 //        return "";
-    }
-
-    public void setProcessProdBn(ProcessProdBn processProdBn) {
-        this.processProdBn = processProdBn;
     }
 
     public UserSession getUserSession() {
@@ -116,5 +129,13 @@ public class ProdRejectBn implements Serializable {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public ProdApplications getProdApplications() {
+        return prodApplications;
+    }
+
+    public void setProdApplications(ProdApplications prodApplications) {
+        this.prodApplications = prodApplications;
     }
 }

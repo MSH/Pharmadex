@@ -1,10 +1,10 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.TimelineService;
-import org.msh.pharmadex.util.JsfUtils;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.primefaces.extensions.model.timeline.TimelineEvent;
 import org.primefaces.extensions.model.timeline.TimelineModel;
@@ -33,12 +33,16 @@ public class ProductDisplay implements Serializable {
     ProductService productService;
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
+    @ManagedProperty(value = "#{userSession}")
+    private UserSession userSession;
+
     private Product product;
     private Applicant applicant;
     private ProdApplications prodApplications;
     private List<Timeline> timelinesChartData;
     private List<ProdAppChecklist> prodAppChecklists;
     private List<ForeignAppStatus> foreignAppStatuses;
+    private boolean showfull = false;
 
 
     @PostConstruct
@@ -55,7 +59,7 @@ public class ProductDisplay implements Serializable {
                 foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -97,7 +101,7 @@ public class ProductDisplay implements Serializable {
 
     private void initFields() {
         Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
-        if(prodAppID!=null) {
+        if (prodAppID != null) {
             List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
             prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
             product = prodApplications.getProduct();
@@ -170,5 +174,31 @@ public class ProductDisplay implements Serializable {
 
     public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
         this.foreignAppStatuses = foreignAppStatuses;
+    }
+
+    public boolean isShowfull() {
+        if (userSession.isStaff() || userSession.isModerator() || userSession.isReviewer() || userSession.isLab() || userSession.isClinical()) {
+            showfull = true;
+        } else if (userSession.isCompany()) {
+            if (prodApplications.getApplicant().getApplcntId().equals(userSession.getApplcantID())) {
+                showfull = true;
+            } else {
+                showfull = false;
+            }
+        }
+        return showfull;
+    }
+
+
+    public void setShowfull(boolean showfull) {
+        this.showfull = showfull;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 }

@@ -13,7 +13,6 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.*;
-import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.*;
@@ -280,6 +278,7 @@ public class ProdApplicationsService implements Serializable {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.NEW_APPL);
             regState.add(RegState.FEE);
+            regState.add(RegState.SCREENING);
             regState.add(RegState.VERIFY);
             regState.add(RegState.FOLLOW_UP);
             params.put("regState", regState);
@@ -527,7 +526,7 @@ public class ProdApplicationsService implements Serializable {
         this.product = prodApp.getProduct();
         //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
         File invoicePDF = null;
-            invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
+        invoicePDF = File.createTempFile("" + product.getProdName() + "_registration", ".pdf");
         JasperPrint jasperPrint = initRegCert();
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
         prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
@@ -698,7 +697,7 @@ public class ProdApplicationsService implements Serializable {
 
 //            param.put("prodAppNo", prodApp.getProdAppNo());
             param.put("id", prodApp.getId());
-            param.put("subject", "Product Registration for  " + prod.getProdName() + " recieved");
+            param.put("subject1", "Product Registration application for  " + prod.getProdName() + " recieved");
 //                + letter.getSubject() + " " + product.getProdName() + " ");
 //        param.put("body", body);
 //            param.put("body", "Thank you for applying to register " + prod.getProdName() + " manufactured by " + prodApp.getApplicant().getAppName()

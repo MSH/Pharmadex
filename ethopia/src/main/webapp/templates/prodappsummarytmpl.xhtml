@@ -11,7 +11,7 @@
 
     <p:accordionPanel value="Product Information" activeIndex="0,1,2,3,4,5,6,7,8,9,10" multiple="true" id="prodsummaccpnl">
         <p:tab title="#{msgs.applicant_detail}"
-               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+               rendered="#{showfull}">
             <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
                 <ui:param name="applicantdata" value="#{prodAppData.applicant}"/>
                 <ui:param name="input" value="#{false}"/>
@@ -19,7 +19,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.person_responsible}"
-               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+               rendered="#{showfull}">
             <ui:decorate template="/templates/userdetailtmpl.xhtml">
                 <ui:param name="userdata" value="#{prodAppData.applicantUser}"/>
                 <ui:param name="input" value="#{false}"/>
@@ -67,7 +67,7 @@
             </h:panelGrid>
         </p:tab>
 
-        <p:tab title="#{msgs.inn_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+        <p:tab title="#{msgs.inn_header}" rendered="#{showfull}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
                 <h:outputLabel value="#{msgs.inn_header}:"/>
                 <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}" style="width:100%;">
@@ -115,7 +115,7 @@
 
         </p:tab>
 
-        <p:tab title="#{msgs.atc_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+        <p:tab title="#{msgs.atc_header}" rendered="#{showfull}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
                 <h:outputLabel value="#{msgs.atc_header}" style="font-weight: bold;"/>
                 <p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.product.atcs}" style="width:100%;">
@@ -158,7 +158,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.appl_status_country}"
-               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+               rendered="#{showfull}">
             <p:dataTable id="foreignStatusTable" var="appstatus" value="#{foreignAppStatus}"
                          style="width:100%;">
                 <p:column headerText="#{msgs.applicant_country}">
@@ -211,7 +211,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.product_pricing_comparison}"
-               rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer)}">
+               rendered="#{userSession.displayPricing and showfull}">
             <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2">
                 <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
                 <p:outputLabel id="msrp" value="#{prodAppData.product.pricing.msrp}"/>
@@ -242,7 +242,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.payment_info}"
-               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+               rendered="#{showfull}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
                 <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"/>
                 <p:outputLabel value="#{prodAppData.prescreenfeeAmt}">
@@ -265,7 +265,7 @@
 
         </p:tab>
 
-        <p:tab title="#{msgs.checklist}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
+        <p:tab title="#{msgs.checklist}" rendered="#{showfull}">
             <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;">
                 <p:column>
                     <h:outputLabel value="#{checkList.checklist.module}"/>

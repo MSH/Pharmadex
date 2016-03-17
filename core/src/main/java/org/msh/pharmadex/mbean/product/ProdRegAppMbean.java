@@ -12,7 +12,6 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
-import org.omnifaces.util.Faces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -97,6 +96,7 @@ public class ProdRegAppMbean implements Serializable {
     private UploadedFile file;
     private UploadedFile payReceipt;
     private UploadedFile clinicalReview;
+    private boolean showfull;
 
     @PostConstruct
     private void init() {
@@ -985,5 +985,22 @@ public class ProdRegAppMbean implements Serializable {
 
     public void setClinicalReview(UploadedFile clinicalReview) {
         this.clinicalReview = clinicalReview;
+    }
+
+    public boolean isShowfull() {
+        if (userSession.isStaff() || userSession.isModerator() || userSession.isReviewer() || userSession.isLab() || userSession.isClinical()) {
+            showfull = true;
+        } else if (userSession.isCompany()) {
+            if (prodApplications.getApplicant().getApplcntId().equals(userSession.getApplcantID())) {
+                showfull = true;
+            } else {
+                showfull = false;
+            }
+        }
+        return showfull;
+    }
+
+    public void setShowfull(boolean showfull) {
+        this.showfull = showfull;
     }
 }

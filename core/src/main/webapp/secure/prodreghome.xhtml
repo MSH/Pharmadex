@@ -610,7 +610,7 @@
                             <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
                             <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
-
+                            <ui:param name="showfull" value="#{prodRegAppMbean.showfull}"/>
                         </ui:decorate>
 
                         <div align="right">
@@ -886,6 +886,7 @@
 
                     <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
                     <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate"
+                                navigator="true" maxdate="#{foreignAppStatusMBean.todayDate}"
                                 showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"/>
                 </h:panelGrid>
 

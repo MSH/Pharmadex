@@ -15,7 +15,9 @@
                         rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.moderator}"/>
             <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
                         action="/internal/reject.faces" ajax="false"
-                        rendered="#{processProdBn.canReject}"/>
+                        rendered="#{processProdBn.canReject}">
+                <f:param value="#{processProdBn.prodApplications.id}" name="prodAppID"/>
+            </p:menuitem>
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
                         action="/internal/review" ajax="false">
@@ -38,7 +40,7 @@
 
 
             <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
-                        onclick="PF('regDlg').show()" id="registerMI"
+                        oncomplete="PF('regDlg').show()" id="registerMI" action="#{processProdBn.initRegistration}"
                         rendered="#{processProdBn.canRegister}"/>
             <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                         onclick="PF('moderatordlg').show()"

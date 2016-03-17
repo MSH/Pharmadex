@@ -59,7 +59,6 @@ public class ProdAppMBean implements Serializable {
     public String cancelApp() {
         setShowAdd(false);
 //        selectedApplicant = new applicant();
-        System.out.print("inside cancelUser");
         return "/secure/applicantlist.faces";
     }
 
