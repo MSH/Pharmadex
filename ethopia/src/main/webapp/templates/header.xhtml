@@ -200,6 +200,13 @@
                         <p:menuitem value="#{msgs.process_purorder}" url="/internal/processpurorderlist.faces"
                                     icon="ui-icon-gear"
                                     rendered="#{userSession.admin||userSession.staff}"/>
+                        <p:separator rendered="#{userSession.admin||userSession.staff}"/>
+                        <p:menuitem value="#{msgs.pipreport}" url="/secure/pipreport.faces"
+                                    icon="ui-icon-folder-collapsed"
+                                    rendered="#{userSession.admin||userSession.staff}"/>
+                        <p:menuitem value="#{msgs.poreport}" url="/secure/pipreport.faces"
+                                    icon="ui-icon-folder-collapsed"
+                                    rendered="#{userSession.admin||userSession.staff}"/>
                     </p:submenu>
                 </sec:isAuthenticated>
 
