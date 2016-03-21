@@ -369,6 +369,7 @@ public class POrderService implements Serializable {
         return retValue;
     }
 
+
     public RetObject findAllSubmittedPIP(Long userID, Long applcntId, boolean companyUser) {
         RetObject retObject = new RetObject();
         List<PIPOrder> pipOrders;
@@ -616,5 +617,22 @@ public class POrderService implements Serializable {
             ex.printStackTrace();
             return ex.getMessage();
         }
+    }
+
+    @Transactional
+    public List<PIPProd> findAllPIPProds(Date startDate,Date endDate, Applicant applicant) {
+        RetObject retObject = new RetObject();
+        List<PIPProd> pipProds=new ArrayList<PIPProd>();
+        if ((startDate==null)||(endDate==null)) return pipProds;
+         try {
+            pipProds = customPIPOrderDAO.findAllPIPProds(startDate,endDate,applicant);
+            retObject.setObj(pipProds);
+            retObject.setMsg("persist");
+         } catch (Exception ex) {
+            ex.printStackTrace();
+            retObject.setMsg("error");
+            retObject.setObj(null);
+        }
+        return pipProds;
     }
 }
