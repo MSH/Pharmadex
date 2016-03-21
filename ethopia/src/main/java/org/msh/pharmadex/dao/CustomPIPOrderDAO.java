@@ -1,13 +1,18 @@
 package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.domain.PIPOrderLookUp;
+import org.msh.pharmadex.domain.PIPProd;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +64,32 @@ public class CustomPIPOrderDAO {
                 .setParameter("state", AmdmtState.WITHDRAWN)
                 .getResultList();
         return pipOrders;
+    }
+
+    public List<PIPProd> findAllPIPProds(Date startD, Date endD, Applicant applicant) {
+        if (applicant==null) {
+            List<PIPProd> pipProds = entityManager.createQuery("select distinct p from PIPProd p " +
+                    "left join fetch p.pipOrder prod " +
+                    "where (prod.state = :state) AND (prod.approvalDate BETWEEN :startD AND :endD) "
+                    )
+                    .setParameter("state", AmdmtState.APPROVED)
+                    .setParameter("startD", startD)
+                    .setParameter("endD", endD)
+                    .getResultList();
+            return pipProds;
+        }else{
+            List<PIPProd> pipProds = entityManager.createQuery("select distinct p from PIPProd p " +
+                    "left join fetch p.pipOrder prod " +
+                    "where (prod.state = :state)" +
+                    " AND (prod.approvalDate BETWEEN :startD AND :endD) AND prod.applicant.applcntId = :appId" +
+                    " order by p.productName" )
+                    .setParameter("state", AmdmtState.APPROVED)
+                    .setParameter("startD", startD)
+                    .setParameter("endD", endD)
+                    .setParameter("appId", applicant.getApplcntId())
+                    .getResultList();
+            return pipProds;
+        }
     }
 
     private void initializePIPOrder(List<PIPOrder> pipOrders) {
