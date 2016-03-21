@@ -28,6 +28,7 @@ public class GlobalEntityLists implements Serializable {
     private List<AmdmtCategory> amdmtCategories;
     private List<ApplicantType> applicantTypes;
     private List<Company> manufacturers;
+    private List<Applicant> applicants;
     private List<PharmClassif> pharmClassifs;
     private List<Atc> atcs;
     private List<AdminRoute> adminRoutes;
@@ -105,6 +106,16 @@ public class GlobalEntityLists implements Serializable {
     public void setManufacturers(List<Company> manufacturers) {
         this.manufacturers = manufacturers;
     }
+
+    //Odissey 16/03
+    public List<Applicant> getApplicants(){
+        if (applicants==null)
+            applicants = applicantService.findAllApplicants();
+        return applicants;
+    }
+
+    public void setApplicants(List<Applicant> applicants)  { this.applicants = applicants; }
+    // end of snipped Odissey
 
     public List<AmdmtCategory> getAmdmtCategories() {
         if (amdmtCategories == null)
