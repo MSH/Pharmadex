@@ -295,6 +295,11 @@ public class ProdApplicationsService implements Serializable {
             regState.add(RegState.SCREENING);
             regState.add(RegState.VERIFY);
             regState.add(RegState.REGISTERED);
+            regState.add(RegState.CANCEL);
+            regState.add(RegState.SUSPEND);
+            regState.add(RegState.DEFAULTED);
+            regState.add(RegState.NOT_RECOMMENDED);
+            regState.add(RegState.REJECTED);
             params.put("regState", regState);
             params.put("userId", userSession.getLoggedINUserID());
 //            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
@@ -433,7 +438,7 @@ public class ProdApplicationsService implements Serializable {
         return JasperFillManager.fillReport(resource.getFile(), param, conn);
     }
 
-    public JasperPrint initRejCert() throws JRException {
+    public JasperPrint initRejCert(String summary) throws JRException {
         URL resource = getClass().getResource("/reports/rejection_letter.jasper");
         HashMap param = new HashMap();
         param.put("appName", prodApp.getApplicant().getAppName());
@@ -442,24 +447,25 @@ public class ProdApplicationsService implements Serializable {
         param.put("dosForm", product.getDosForm().getDosForm());
         param.put("manufName", product.getManufName());
         param.put("appType", "New Medicine Registration");
-        param.put("subject", "Sample request letter for  " + product.getProdName());
+        param.put("subject", "Rejection Letter  " + product.getProdName());
         param.put("address1", prodApp.getApplicant().getAddress().getAddress1());
         param.put("address2", prodApp.getApplicant().getAddress().getAddress2());
         param.put("country", prodApp.getApplicant().getAddress().getCountry().getCountryName());
         //        param.put("cso",userS.getName()); 
         param.put("date", new Date());
         param.put("appNumber", prodApp.getProdAppNo());
+        param.put("body", summary);
 
         return JasperFillManager.fillReport(resource.getFile(), param);
     }
 
-    public String createRejectCert(ProdApplications prodApp) {
+    public String createRejectCert(ProdApplications prodApp, String summary) {
         this.prodApp = prodApp;
         this.product = prodApp.getProduct();
         try {
             //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED); 
             File invoicePDF = File.createTempFile("" + product.getProdName() + "_invoice", ".pdf");
-            JasperPrint jasperPrint = initRejCert();
+            JasperPrint jasperPrint = initRejCert(summary);
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             prodApp.setRejCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
             prodApplicationsDAO.updateApplication(prodApp);
