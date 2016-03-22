@@ -1,13 +1,17 @@
 package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
+import org.msh.pharmadex.dao.iface.PurProdDAO;
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.PIPOrderLookUp;
 import org.msh.pharmadex.domain.PurOrder;
+import org.msh.pharmadex.domain.PurProd;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProdTable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -123,5 +127,34 @@ public class CustomPurOrderDAO {
         }
         return prodTables;
 
+    }
+
+    @Autowired
+    private PurProdDAO purProdDAO;
+// call from popreport
+    public List<PurProd> findSelectedPurProds(Date startD, Date endD, Applicant applicant) {
+        if (applicant==null) {
+            List<PurProd> purProds = entityManager.createQuery("select distinct p from PurProd p " +
+                    "left join fetch p.purOrder prod " +
+                    "where (prod.state = :state) AND (prod.approvalDate BETWEEN :startD AND :endD) "
+            )
+                    .setParameter("state", AmdmtState.APPROVED)
+                    .setParameter("startD", startD)
+                    .setParameter("endD", endD)
+                    .getResultList();
+            return purProds;
+        }else{
+            List<PurProd> purProds = entityManager.createQuery("select distinct p from PurProd p " +
+                    "left join fetch p.purOrder prod " +
+                    "where (prod.state = :state)" +
+                    " AND (prod.approvalDate BETWEEN :startD AND :endD) AND prod.applicant.applcntId = :appId" +
+                    " order by p.productName" )
+                    .setParameter("state", AmdmtState.APPROVED)
+                    .setParameter("startD", startD)
+                    .setParameter("endD", endD)
+                    .setParameter("appId", applicant.getApplcntId())
+                    .getResultList();
+            return purProds;
+        }
     }
 }
