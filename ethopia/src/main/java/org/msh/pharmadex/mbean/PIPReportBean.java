@@ -3,8 +3,10 @@ package org.msh.pharmadex.mbean;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.DosageForm;
 import org.msh.pharmadex.domain.PIPProd;
+import org.msh.pharmadex.domain.PurProd;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.service.PurOrderService;
 import org.msh.pharmadex.util.JsfUtils;
 import javax.faces.bean.ManagedBean;
 import javax.faces.application.FacesMessage;
@@ -27,13 +29,18 @@ public class PIPReportBean implements Serializable{
     private Date dateEnd;
     private Applicant selectedApplicant;
     private List<PIPProd> pipProds;
+    private List<PurProd> purProds;
 
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
 
+    @ManagedProperty(value = "#{PurOrderService}")
+    protected PurOrderService purOrderService;
+
     @ManagedProperty(value = "#{POrderService}")
     protected POrderService pOrderService;
 
+    //for pipreport
     public String startReport(){
         Boolean errorFound = false;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -60,6 +67,35 @@ public class PIPReportBean implements Serializable{
         }
         if (!errorFound) return "error";
         getPipProds();
+        return "";
+    }
+    //for POreport
+    public String startReportPO(){
+        Boolean errorFound = false;
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (dateStart==null){
+            //TODO make i18n message
+            FacesMessage mes = new FacesMessage("Start date required");
+            mes.setSeverity(FacesMessage.SEVERITY_ERROR);
+            context.addMessage(null,mes);
+            errorFound = true;
+        }
+        if (dateEnd==null){
+            FacesMessage mes = new FacesMessage("End date required");
+            mes.setSeverity(FacesMessage.SEVERITY_ERROR);
+            context.addMessage(null,mes);
+            errorFound = true;
+        }
+        if (!errorFound){
+            if (dateStart.before(dateEnd)){
+                FacesMessage mes = new FacesMessage("End date should not before start date");
+                mes.setSeverity(FacesMessage.SEVERITY_ERROR);
+                context.addMessage(null,mes);
+                errorFound = true;
+            }
+        }
+        if (!errorFound) return "error";
+        getPurProds();
         return "";
     }
 
@@ -91,12 +127,20 @@ public class PIPReportBean implements Serializable{
     }
     public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) { this.globalEntityLists = globalEntityLists; }
 
+    public PurOrderService getPurOrderService() {
+        return purOrderService;
+    }
+
     public POrderService getpOrderService() {
         return pOrderService;
     }
 
     public void setpOrderService(POrderService pOrderService) {
         this.pOrderService = pOrderService;
+    }
+
+    public void setPurOrderService(PurOrderService purOrderService) {
+        this.purOrderService = purOrderService;
     }
 
     public List<PIPProd> getPipProds(){
@@ -107,6 +151,15 @@ public class PIPReportBean implements Serializable{
     }
     public void setPipProds(List<PIPProd> pipProds) {
         this.pipProds = pipProds;
+    }
+    public List<PurProd> getPurProds(){
+        if ((dateStart!=null && dateEnd!=null)) {
+            purProds = pOrderService.findSelectedPurProds(dateStart, dateEnd,selectedApplicant);
+        }
+        return purProds;
+    }
+    public void setPurProds(List<PurProd> purProds) {
+        this.purProds = purProds;
     }
 
     public void onSummaryRow(Object filter)
