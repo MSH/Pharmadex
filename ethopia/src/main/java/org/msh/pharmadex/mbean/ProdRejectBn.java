@@ -88,13 +88,14 @@ public class ProdRejectBn implements Serializable {
         timeLine.setProdApplications(prodApplications);
         timeLine.setStatusDate(new Date());
         timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
+        timeLine.setComment(summary);
         processProdBn.getTimeLineList().add(timeLine);
         prodApplications.setRegState(timeLine.getRegState());
         prodApplications.setRegState(timeLine.getRegState());
 //        prodApplications = prodApplicationsService.updateProdApp(prodApplications);
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("status_change_success")));
 
-        prodApplicationsService.createRejectCert(prodApplications);
+        prodApplicationsService.createRejectCert(prodApplications, summary);
         timeLine = new TimeLine();
 //        return "";
     }
