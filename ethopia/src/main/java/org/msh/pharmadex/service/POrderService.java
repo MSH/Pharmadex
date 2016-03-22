@@ -620,7 +620,7 @@ public class POrderService implements Serializable {
     }
 
     @Transactional
-    public List<PIPProd> findAllPIPProds(Date startDate,Date endDate, Applicant applicant) {
+    public List<PIPProd>  findAllPIPProds(Date startDate,Date endDate, Applicant applicant) {
         RetObject retObject = new RetObject();
         List<PIPProd> pipProds=new ArrayList<PIPProd>();
         if ((startDate==null)||(endDate==null)) return pipProds;
@@ -633,6 +633,23 @@ public class POrderService implements Serializable {
             retObject.setMsg("error");
             retObject.setObj(null);
         }
-        return pipProds;
+      return pipProds;
+    }
+
+    @Transactional
+    public List<PurProd>  findSelectedPurProds(Date startDate, Date endDate, Applicant applicant) {
+        RetObject retObject = new RetObject();
+        List<PurProd> purProds=new ArrayList<PurProd>();
+        if ((startDate==null)||(endDate==null)) return purProds;
+        try {
+            purProds = customPurOrderDAO.findSelectedPurProds(startDate,endDate,applicant);
+            retObject.setObj(purProds);
+            retObject.setMsg("persist");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            retObject.setMsg("error");
+            retObject.setObj(null);
+        }
+        return purProds;
     }
 }
