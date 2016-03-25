@@ -33,6 +33,10 @@
                         </p:commandLink>
                     </p:column>
 
+                    <p:column headerText="#{msgs.prod_name}">
+                        <h:outputText value="#{susp.prodApplications.product.prodName}"/>
+                    </p:column>
+
                     <p:column headerText="#{msgs.moderator_name}">
                         <h:outputText value="#{susp.moderator.name}"/>
                     </p:column>

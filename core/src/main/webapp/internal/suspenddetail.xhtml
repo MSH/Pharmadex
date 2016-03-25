@@ -45,7 +45,7 @@
 
             <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
                 <p:tab title="#{msgs.susp_detail}">
-                    <p:panel value="Sample Test Detail">
+                    <p:panel value="Processing information">
                         <p:commandButton value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                                          onclick="PF('moderatordlg').show()"
                                          rendered="#{userSession.admin||userSession.head}" id="assignModMI"/>
@@ -67,15 +67,34 @@
 
                             <p:outputLabel value="#{msgs.processor}" styleClass="label"/>
                             <p:outputLabel value="#{suspendDetailBn.suspDetail.reviewer.name}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel header="#{msgs.susp_detail}">
+                        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <p:outputLabel value="#{msgs.susp_report_org}" for="orgReported"/>
+                            <p:inputText value="#{suspendDetailBn.suspDetail.orgReported}" id="orgReported"
+                                         required="true"/>
+                            <p:message for="orgReported" showSummary="true"/>
 
-                            <p:outputLabel value="#{msgs.susp_reason}"/>
-                            <p:inputText value="#{suspendDetailBn.suspDetail.reason}"/>
+                            <p:outputLabel value="#{msgs.susp_notif_recievedt}" for="notifrecdt"/>
+                            <p:calendar id="notifrecdt" value="#{suspendDetailBn.suspDetail.notifRecieveDt}"
+                                        navigator="true"
+                                        style="width:100%" showButtonPanel="true" required="true"/>
+                            <p:message for="notifrecdt" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.susp_reason}" for="suspReason"/>
+                            <p:inputTextarea value="#{suspendDetailBn.suspDetail.reason}" id="suspReason"
+                                             required="true" cols="100" rows="4"/>
+                            <p:message for="suspReason" showSummary="true"/>
 
                             <p:outputLabel value="#{msgs.batch_no}"/>
-                            <p:inputTextarea value="#{suspendDetailBn.suspDetail.batchNo}"/>
+                            <p:inputTextarea value="#{suspendDetailBn.suspDetail.batchNo}" cols="100" rows="4"/>
+                            <p:outputLabel/>
 
                             <p:outputLabel value="#{msgs.updated_date}"/>
-                            <p:outputLabel value="#{suspendDetailBn.suspDetail.updatedDate}"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.updatedDate}"
+                                           converter="javax.faces.DateTime"/>
+                            <p:outputLabel/>
 
                             <p:outputLabel value="#{msgs.global_duedate}"/>
                             <p:outputLabel value="#{suspendDetailBn.suspDetail.dueDate}"
@@ -84,6 +103,7 @@
                             <p:calendar id="suspduedt" value="#{suspendDetailBn.suspDetail.dueDate}"
                                         rendered="#{empty suspendDetailBn.suspDetail.dueDate}"
                                         style="width:100%" showButtonPanel="true"/>
+                            <p:outputLabel/>
 
                             <p:outputLabel value="#{msgs.decision_date}"/>
                             <p:outputLabel value="#{suspendDetailBn.suspDetail.decisionDate}"
@@ -92,8 +112,11 @@
                             <p:calendar id="samplerecdt" value="#{suspendDetailBn.suspDetail.decisionDate}"
                                         rendered="#{empty suspendDetailBn.suspDetail.decisionDate}"
                                         style="width:100%" showButtonPanel="true"/>
+                            <p:outputLabel/>
+
                             <p:outputLabel value="#{msgs.created_by}"/>
                             <p:outputLabel value="#{suspendDetailBn.suspDetail.createdBy.name}"/>
+                            <p:outputLabel/>
 
                         </h:panelGrid>
                     </p:panel>
@@ -250,7 +273,7 @@
 
                 <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
                                  action="#{suspendDetailBn.assignModerator}" update=":reviewHome"
-                                 oncomplete="PF('moderatordlg').hide()"/>
+                                 oncomplete="if (!args.validationFailed) PF('moderatordlg').hide()"/>
             </h:form>
         </p:dialog>
 
@@ -273,7 +296,7 @@
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}"
-                                 oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+                                 oncomplete="if (!args.validationFailed) PF('reviewDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 
@@ -291,7 +314,7 @@
                                         completeMethod="#{globalEntityLists.completeProcessorList}"
                                         dropdown="true"
                                         var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                        forceSelection="true"
+                                        forceSelection="true" required="true"
                                         converter="#{userConverter}">
                         </p:autoComplete>
 
@@ -306,6 +329,7 @@
 
 
                     <p:commandButton id="submitButton1" value="#{msgs.global_submit}" update="@form"
+                                     oncomplete="if (!args.validationFailed) PF('reviewDlg').hide()"
                                      action="#{suspendDetailBn.assignReviewer}" ajax="true"/>
                 </p:panel>
             </h:form>
@@ -327,8 +351,9 @@
                 </h:panelGrid>
 
                 <p:commandButton id="regBtn" value="#{msgs.global_suspend}" action="#{suspendDetailBn.suspendProduct}"
-                                 oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false">
-                        <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
+                                 oncomplete="if (!args.validationFailed) regDlg.hide()" icon="ui-icon-gear"
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
                 </p:commandButton>
             </h:form>
 

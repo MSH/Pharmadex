@@ -29,6 +29,14 @@ public class SuspDetail extends CreationDetail {
     @Lob
     private String finalSumm;
 
+    @Column(name = "moderator_summ", nullable = true)
+    @Lob
+    private String moderatorSumm;
+
+    @Column(name = "head_summ", nullable = true)
+    @Lob
+    private String headSumm;
+
     @Enumerated(EnumType.STRING)
     private SuspensionStatus suspensionStatus;
 
@@ -81,6 +89,12 @@ public class SuspDetail extends CreationDetail {
 
     @Column(name = "batchNo", length = 500)
     private String batchNo;
+
+    @Column(name = "orgReported", length = 500)
+    private String orgReported;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date notifRecieveDt;
 
     public SuspDetail() {
     }
@@ -244,5 +258,21 @@ public class SuspDetail extends CreationDetail {
 
     public void setBatchNo(String batchNo) {
         this.batchNo = batchNo;
+    }
+
+    public String getOrgReported() {
+        return orgReported;
+    }
+
+    public void setOrgReported(String orgReported) {
+        this.orgReported = orgReported;
+    }
+
+    public Date getNotifRecieveDt() {
+        return notifRecieveDt;
+    }
+
+    public void setNotifRecieveDt(Date notifRecieveDt) {
+        this.notifRecieveDt = notifRecieveDt;
     }
 }

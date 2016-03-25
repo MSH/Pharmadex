@@ -170,6 +170,12 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             regState.add(RegState.SCREENING);
             regState.add(RegState.VERIFY);
             regState.add(RegState.REGISTERED);
+            regState.add(RegState.CANCEL);
+            regState.add(RegState.SUSPEND);
+            regState.add(RegState.DEFAULTED);
+            regState.add(RegState.NOT_RECOMMENDED);
+            regState.add(RegState.REJECTED);
+
             params.put("regState", regState);
             params.put("userId", userSession.getLoggedINUserID());
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);

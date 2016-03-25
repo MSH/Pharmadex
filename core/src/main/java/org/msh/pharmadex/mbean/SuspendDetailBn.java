@@ -13,9 +13,7 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
-import org.omnifaces.util.Faces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -90,21 +88,21 @@ public class SuspendDetailBn implements Serializable {
     @PostConstruct
     private void init() {
         try {
+            facesContext = FacesContext.getCurrentInstance();
             if (suspDetail == null) {
-                Long suspDetailID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("suspDetailID"));
-
-                if (suspDetailID != null && suspDetailID > 0) {
+                String suspID = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+                if (suspID != null && !suspID.equals("")) {
+                    Long suspDetailID = Long.valueOf(suspID);
                     suspDetail = suspendService.findSuspendDetail(suspDetailID);
                     suspComments = suspDetail.getSuspComments();
                     prodAppLetters = suspDetail.getProdAppLetters();
                     prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
-//                if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
-//                    readOnly = true;
-//                }
+                    product = prodApplications.getProduct();
                 } else {
-                    Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+                    Long prodAppID = Long.valueOf(facesContext.getExternalContext().getRequestParameterMap().get("prodAppID"));
                     if (prodAppID != null) {
                         prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+                        product = prodApplications.getProduct();
                         suspComments = new ArrayList<SuspComment>();
                         suspDetail = new SuspDetail(prodApplications, suspComments);
                         suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
@@ -113,7 +111,7 @@ public class SuspendDetailBn implements Serializable {
                 }
             }
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
     }
 
@@ -536,10 +534,11 @@ public class SuspendDetailBn implements Serializable {
     }
 
     public boolean isShowSuspend() {
-        if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT))
+        if (suspDetail != null && suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT))
             showSuspend = true;
         else
             showSuspend = false;
+
         return showSuspend;
     }
 

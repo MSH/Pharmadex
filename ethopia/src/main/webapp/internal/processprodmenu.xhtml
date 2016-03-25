@@ -53,8 +53,10 @@
         </p:submenu>
         <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
-                        action="#{processProdBn.sendToRenew}"
-                        ajax="false"/>
+                        action="#{processProdBn.sendToRenew}" ajax="false">
+                <f:param name="prodID" value="#{processProdBn.product.id}"/>
+                <f:param name="appID" value="#{processProdBn.prodApplications.applicant.applcntId}"/>
+            </p:menuitem>
             <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear"
                         oncomplete="PF('invoicedlg').show()"
                         rendered="false"
@@ -68,8 +70,10 @@
                         oncomplete="PF('reportpaymentdlg').show()"
                         rendered="false" update=":reghome:growl" ajax="true"/>
             <p:menuitem value="#{msgs.global_suspend}" icon="ui-icon-gear"
-                        action="#{processProdBn.sendToSuspend(null)}" ajax="false"
-                        rendered="#{userSession.admin||userSession.head}"/>
+                        action="suspenddetail" ajax="false"
+                        rendered="#{userSession.admin||userSession.head}">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+            </p:menuitem>
             <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
                         oncomplete="PF('dlgAmdment').show()" rendered="false"
                         update=":reghome:growl"/>
