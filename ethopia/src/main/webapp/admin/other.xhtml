@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="srafrm">
+            <h:panelGroup id="content">
+                    <h:outputLabel value="path" for="file"/>
+                    <p:inputText value="#{exportMBean.filename}" id="file" required="true"
+                                 style="width:200px;"/>
+                    <p:message for="file"/>
+
+                        <p:commandButton action="#{exportMBean.startExport}"
+                                         value="start" ajax="false">
+
+                        </p:commandButton>
+
+            </h:panelGroup>
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>
