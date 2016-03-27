@@ -1,10 +1,8 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.DosageForm;
-import org.msh.pharmadex.domain.PIPProd;
-import org.msh.pharmadex.domain.PurProd;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.service.PurOrderService;
 import org.msh.pharmadex.util.JsfUtils;
@@ -13,7 +11,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.SystemEvent;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -34,10 +31,19 @@ public class PIPReportBean implements Serializable{
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
 
-    @ManagedProperty(value = "#{PurOrderService}")
-    protected PurOrderService purOrderService;
+    @ManagedProperty(value = "#{licenseHolderService}")
+    LicenseHolderService licenseHolderService;
 
-    @ManagedProperty(value = "#{POrderService}")
+    public LicenseHolderService getLicenseHolderService() {
+        return licenseHolderService;
+    }
+
+    public void setLicenseHolderService(LicenseHolderService licenseHolderService) {
+        this.licenseHolderService = licenseHolderService;
+    }
+
+
+     @ManagedProperty(value = "#{POrderService}")
     protected POrderService pOrderService;
 
     //for pipreport
@@ -67,6 +73,7 @@ public class PIPReportBean implements Serializable{
         }
         if (!errorFound) return "error";
         getPipProds();
+        getTest();
         return "";
     }
     //for POreport
@@ -127,10 +134,6 @@ public class PIPReportBean implements Serializable{
     }
     public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) { this.globalEntityLists = globalEntityLists; }
 
-    public PurOrderService getPurOrderService() {
-        return purOrderService;
-    }
-
     public POrderService getpOrderService() {
         return pOrderService;
     }
@@ -139,9 +142,7 @@ public class PIPReportBean implements Serializable{
         this.pOrderService = pOrderService;
     }
 
-    public void setPurOrderService(PurOrderService purOrderService) {
-        this.purOrderService = purOrderService;
-    }
+
 
     public List<PIPProd> getPipProds(){
         if ((dateStart!=null && dateEnd!=null)) {
@@ -173,5 +174,22 @@ public class PIPReportBean implements Serializable{
         DosageForm form2 = (DosageForm) it1;
         String fn2 = form2.getDosForm();
         return fn2.compareTo(fn2);
+    }
+    private List<String> test;
+    public void setTest(List<String> t){
+        this.test=t;
+    };
+
+    public List<String> getTest(){
+        return test;
+    }
+    public String findLicHolderByApplicant(Long id){
+        List<LicenseHolder> res = licenseHolderService.findLicHolderByApplicant(id);
+        String s="";
+        if (res!=null)
+            if (res.size()!=0)
+           if (res.get(0)!=null ) s=res.get(0).getName();
+
+        return s;
     }
 }
