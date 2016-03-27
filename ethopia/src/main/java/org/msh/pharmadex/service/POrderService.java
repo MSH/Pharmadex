@@ -652,4 +652,17 @@ public class POrderService implements Serializable {
         }
         return purProds;
     }
+    @Transactional
+    public List<String>  testGet(){
+        List<String> reslist=new ArrayList<String>();
+        try {
+
+            reslist= customPIPOrderDAO.testGet();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
+
+        return reslist;
+        }
 }
