@@ -35,13 +35,21 @@
                                     minQueryLength="2" maxResults="10"/>
                     <p:message for="repoapp" showSummary="true"/>
                     <p:commandButton action="#{pIPReportBean.startReport}" value="#{msgs.piprepo_start}" ajax="false"/>
+
                 </h:panelGrid>
             </p:panel>
             <!--
             Medicine name( Brand ),PIP number,Registration No,Strength,Dosage Form,Total Price,
             Manufacturer,License Holder,Country of Manufacturer,First agent,Quantity,
             Total Number of PIP approved,Presentation
-            -->
+
+            <h:panelGroup rendered="#{not empty pIPReportBean.test}">
+            <p:dataTable id="tt" var="t" value="#{pIPReportBean.test}">
+                <p:outputLabel value="#{t}"/>
+            </p:dataTable>
+            </h:panelGroup>
+-->
+
             <h:panelGroup rendered="#{not empty pIPReportBean.pipProds}">
                 <p:dataTable id="pipprodtable" var="eachprod" value="#{pIPReportBean.pipProds}"
                              rendered="#{not empty pIPReportBean.pipProds}"
@@ -51,7 +59,7 @@
                              rowsPerPageTemplate="20,50,100">
 
                     <p:column headerText="#{msgs.dos_form}" sortBy="#{eachprod.dosFormName}">
-                        <p:outputLabel value="#{eachprod}"/>
+                        <p:outputLabel value="#{eachprod.dosForm.dosForm}"/>
                     </p:column>
                     <p:column headerText="#{msgs.prod_name}" >
                          <p:outputLabel value="#{eachprod.productName}"/>
@@ -78,7 +86,7 @@
                         <p:outputLabel value="#{eachprod.manufName}"/>
                     </p:column>
                     <p:column headerText="#{msgs.license_holder}">
-                        <p:outputLabel value="TBD"/>
+                        <p:outputLabel value="#{pIPReportBean.findLicHolderByApplicant(eachprod.pipOrder.applicant.applcntId) }"/>
                     </p:column>
                     <p:column headerText="#{msgs.manuf_country}">
                         <p:outputLabel value="#{eachprod.country}"/>
