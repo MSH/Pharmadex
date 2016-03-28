@@ -33,4 +33,5 @@ public class PIPProd extends PProdBase {
     public void setPipOrder(PIPOrder pipOrder) {
         this.pipOrder = pipOrder;
     }
+
 }

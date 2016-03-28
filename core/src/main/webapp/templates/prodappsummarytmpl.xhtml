@@ -212,7 +212,7 @@
 
         <p:tab title="#{msgs.product_pricing_comparison}"
                rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer)}">
-            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2">
+            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2" var="prodAppData">
                 <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
                 <p:outputLabel id="msrp" value="#{prodAppData.product.pricing.msrp}"/>
 

@@ -173,7 +173,7 @@ public class ExcelTools {
 		Workbook wb = cell.getSheet().getWorkbook();
 		CellStyle style = wb.createCellStyle();
 		style.setFillForegroundColor(color);
-		style.setFillBackgroundColor(IndexedColors.DARK_GREEN.getIndex());
+		//style.setFillBackgroundColor(IndexedColors.DARK_GREEN.getIndex());
 		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		cell.setCellStyle(style);
 	}

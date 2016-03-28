@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.PIPOrder;
+import org.msh.pharmadex.domain.PIPProd;
 import org.msh.pharmadex.domain.POrderBase;
 import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.util.JsfUtils;

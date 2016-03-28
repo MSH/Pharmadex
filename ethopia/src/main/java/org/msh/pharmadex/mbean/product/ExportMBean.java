@@ -81,14 +81,7 @@ public class ExportMBean implements Serializable {
                 if (res) success++;
                 else failure++;
             }
-            Cell cell = wb.getSheetAt(0).getRow(1).getCell(1);
-            CellStyle style = wb.createCellStyle();
-            style.setFillForegroundColor(IndexedColors.DARK_RED.getIndex());
-            style.setFillBackgroundColor(IndexedColors.DARK_GREEN.getIndex());
-            style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-            cell.setCellStyle(style);
-
-            File outf = new File("C:/Temp/res.xls");
+            File outf = new File("C:/Temp/res.xlsx");
             FileOutputStream out = new FileOutputStream(outf);
             wb.write(out);
             out.close();

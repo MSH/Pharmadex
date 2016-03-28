@@ -6,6 +6,7 @@ import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,19 +143,24 @@ public class ProductService implements Serializable {
 
             }
 
-//            List<ProdAppChecklist> prodAppChkLst = prodApplications.getProdAppChecklists();
-//            if (prodAppChkLst != null) {
-//                for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {
-//                    if (prodAppChecklist.getChecklist().isHeader()&&!prodAppChecklist.isValue()) {
-//                        issues.add("checklist_incomplete");
-//                        issue = true;
-//                        break;
-//                    }
-//                }
-//            } else {
-//                issues.add("checklist_incomplete");
-//                issue = true;
-//            }
+
+            List<ProdAppChecklist> prodAppChkLst = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
+            //List<ProdAppChecklist> prodAppChkLst = prodApplications.getProdAppChecklists();
+            if (prodAppChkLst != null) {
+                for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {
+                    //if (prodAppChecklist.getChecklist().isHeader()&&(!prodAppChecklist.getValue().toString()==null)) {
+                    if (prodAppChecklist.getChecklist().isHeader()){
+                        if (prodAppChecklist.getValue()==null){
+                            issues.add("checklist_incomplete");
+                            issue = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                issues.add("checklist_incomplete");
+                issue = true;
+            }
 
             if (issue) {
                 retObject.setObj(issues);

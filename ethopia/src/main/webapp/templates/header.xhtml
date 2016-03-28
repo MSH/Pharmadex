@@ -28,7 +28,7 @@
                     <h:panelGroup styleClass="logoutWelcomeId">
                         <sec:isAuthenticated>
                             <p:commandLink
-                                    value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"></p:commandLink>
+                                    value="#{msgs.admin_loggedinas} #{userSession.loggedInUser}"></p:commandLink>
                             <p:commandLink action="#{userSession.editUser}" value="#{msgs.admin_settings} |"
                                            immediate="true"
                                            ajax="false">

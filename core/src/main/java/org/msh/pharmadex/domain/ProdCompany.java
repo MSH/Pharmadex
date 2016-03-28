@@ -20,7 +20,8 @@ public class ProdCompany extends CreationDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    //@ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name="prod_id", nullable = false)
     private Product product;
 

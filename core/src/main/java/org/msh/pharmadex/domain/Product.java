@@ -32,7 +32,6 @@ public class Product extends CreationDetail implements Serializable {
     private String apprvdName;
 
     @Column(name = "prod_desc", length = 500)
-    @Size(max = 500, min = 3)
     private String prodDesc;
 
     @Column(name = "new_chemical_entity")
@@ -107,7 +106,8 @@ public class Product extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String ingrdStatment;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    //@OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.ALL)
     @NotAudited
     private Pricing pricing;
 

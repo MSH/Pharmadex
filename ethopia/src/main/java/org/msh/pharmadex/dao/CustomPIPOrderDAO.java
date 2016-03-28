@@ -70,7 +70,8 @@ public class CustomPIPOrderDAO {
         if (applicant==null) {
             List<PIPProd> pipProds = entityManager.createQuery("select distinct p from PIPProd p " +
                     "left join fetch p.pipOrder prod " +
-                    "where (prod.state = :state) AND (prod.approvalDate BETWEEN :startD AND :endD) "
+                    "where (prod.state = :state) AND (prod.approvalDate BETWEEN :startD AND :endD) "+
+                    " order by p.productName"
                     )
                     .setParameter("state", AmdmtState.APPROVED)
                     .setParameter("startD", startD)

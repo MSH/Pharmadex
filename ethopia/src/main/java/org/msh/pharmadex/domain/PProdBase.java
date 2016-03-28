@@ -187,4 +187,12 @@ public class PProdBase extends CreationDetail implements Serializable {
     public void setCurrency(String currency) {
         this.currency = currency;
     }
+
+    public String getFocFormName(){
+        return dosForm.getDosForm();
+    }
+
+    public void setDosFormName(String dos_Form){
+        dosForm.setDosForm(dos_Form);
+    }
 }

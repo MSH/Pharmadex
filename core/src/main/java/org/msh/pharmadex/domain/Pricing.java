@@ -31,7 +31,7 @@ public class Pricing extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String treatCost;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "PROD_ID")
     private Product product;
 

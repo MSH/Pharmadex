@@ -26,25 +26,23 @@ public class CustomDictionaryDAO {
             return (AdminRoute) entityManager.createQuery("select a from AdminRoute a where a.name = :aName ")
                     .setParameter("aName", name).getSingleResult();
         } catch (Exception ex) {
-            ex.printStackTrace();
             return null;
         }
     }
     public DosageForm findDosFormByName(String name){
         try {
-            return (DosageForm) entityManager.createQuery("select d from DosageForm d where d.dosForm = :dName ")
+            String query = "select d from DosageForm d where d.dosForm = :dName";
+            return (DosageForm) entityManager.createQuery(query)
                     .setParameter("dName", name).getSingleResult();
         }  catch (Exception ex) {
-        ex.printStackTrace();
-        return null;
-    }
+            return null;
+        }
     }
     public Atc findAtsbyCode(String name){
     try{
         return (Atc) entityManager.createQuery("select a from Atc a where a.atcCode = :aName ")
                 .setParameter("aName", name).getSingleResult();
     } catch (Exception ex) {
-        ex.printStackTrace();
         return null;
     }
     }
@@ -53,7 +51,6 @@ public class CustomDictionaryDAO {
             return (PharmClassif) entityManager.createQuery("select f from PharmClassif f where f.name = :aName ")
                     .setParameter("aName", name).getSingleResult();
         } catch (Exception ex) {
-            ex.printStackTrace();
             return null;
         }
     }

@@ -49,59 +49,70 @@ public class ExportService implements Serializable {
     private  boolean errorDetected;
 
     public boolean importRow(Row row) {
-        currrow=row;
-        errorDetected=false;
-        Product prod=new Product();
-        LicenseHolder lic=new LicenseHolder();
-        Applicant a=new Applicant();
-        ProdApplications pa=new ProdApplications();
-        Address addr=new Address();
+        int rowNo=0;
+        Cell cell = null;
+        try {
+            currrow = row;
+            rowNo++;
+            errorDetected = false;
+            Product prod = new Product();
+            LicenseHolder lic = new LicenseHolder();
+            Applicant a = new Applicant();
+            ProdApplications pa = new ProdApplications();
+            Address addr = new Address();
 
-        Cell cell = row.getCell(0);   //Presentation -
-        if (cell!=null) prod.setPackSize(cell.getStringCellValue());
+            cell = row.getCell(0);   //Presentation -
+            if (cell != null) prod.setPackSize(cell.getStringCellValue());
 
-        cell = row.getCell(1);  //Route Of Admin  catalog   in table adminroute
-        if (cell!=null)
-            prod.setAdminRoute(getAdminRouteAcc(cell.getStringCellValue()));
-        cell = row.getCell(2);  //Therapeutic Group    catalog  in table adminroute
-        if (cell!=null)
-             prod.setAtcs(getAtcList(cell.getStringCellValue()));
+            cell = row.getCell(1);  //Route Of Admin  catalog   in table adminroute
+            if (cell != null)
+                prod.setAdminRoute(getAdminRouteAcc(cell.getStringCellValue()));
+            cell = row.getCell(2);  //Therapeutic Group    catalog  in table adminroute
+            if (cell != null)
+                prod.setAtcs(getAtcList(cell.getStringCellValue()));
             cell = row.getCell(3);  //Indication   catalog in table pharmSlassif
-        if (cell!=null)
-            prod.setPharmClassif(getpharmSlassifAcc(cell.getStringCellValue()));
-        //col 4 classification is empty
-        cell = row.getCell(5);//Brand Name
-        if (cell!=null) prod.setProdName(cell.getStringCellValue());
-        cell = row.getCell(6);  //Generic Name
-        if (cell!=null)  prod.setGenName(cell.getStringCellValue());
-        cell = row.getCell(7);  //Dose strength
-        if (cell!=null)  prod.setDosStrength(cell.getStringCellValue());
-        cell = row.getCell(8);  //Dosage Form
-        prod.setDosForm(getDosFormAcc(cell.getStringCellValue()));
-        cell = row.getCell(9);//prod_desc
-        if (cell!=null)  prod.setDosForm(getDosFormAcc(cell.getStringCellValue()));
-        cell = row.getCell(10);  //shelf_life(Months)
-        if (cell!=null)prod.setShelfLife(cell.getStringCellValue());
-        cell = row.getCell(11);  //Licence Holder/manufacturer
-        if (cell!=null) lic=findLicHolderByName(cell.getStringCellValue());
-        cell = row.getCell(12); //Local Agent
-        if (cell!=null) lic.setFirstAgent(cell.getStringCellValue());
+            if (cell != null)
+                prod.setPharmClassif(getpharmSlassifAcc(cell.getStringCellValue()));
+            //col 4 classification is empty
+            cell = row.getCell(5);//Brand Name
+            if (cell != null) prod.setProdName(cell.getStringCellValue());
+            cell = row.getCell(6);  //Generic Name
+            if (cell != null) prod.setGenName(cell.getStringCellValue());
+            cell = row.getCell(7);  //Dose strength
+            if (cell != null) prod.setDosStrength(cell.getStringCellValue());
+            cell = row.getCell(8);  //Dosage Form
+            prod.setDosForm(getDosFormAcc(cell.getStringCellValue()));
+            cell = row.getCell(9);//prod_desc
+            if (cell != null) prod.setDosForm(getDosFormAcc(cell.getStringCellValue()));
+            cell = row.getCell(10);  //shelf_life(Months)
+            if (cell != null) prod.setShelfLife(cell.getStringCellValue());
+            cell = row.getCell(11);  //Licence Holder/manufacturer
+            if (cell != null) lic = findLicHolderByName(cell.getStringCellValue());
+            cell = row.getCell(12); //Local Agent
+            if (cell != null) lic.setFirstAgent(cell.getStringCellValue());
 
-        cell = row.getCell(13); //Registration Date
-        //if (cell!=null)pa.setRegistrationDate(cell.getDateCellValue());
-        cell = row.getCell(14); //RExpiry Date
-        //if (cell!=null) pa.setRegExpiryDate(cell.getDateCellValue());
-        cell = row.getCell(15);//Manufacturer/Actual site/
-        if (cell!=null) a.setAppName(cell.getStringCellValue());
-        cell = row.getCell(16); //Country of Origin
-        if (cell!=null) {
+            cell = row.getCell(13); //Registration Date
+            //if (cell!=null)pa.setRegistrationDate(cell.getDateCellValue());
+            cell = row.getCell(14); //RExpiry Date
+            //if (cell!=null) pa.setRegExpiryDate(cell.getDateCellValue());
+            cell = row.getCell(15);//Manufacturer/Actual site/
+            if (cell != null) a.setAppName(cell.getStringCellValue());
+            cell = row.getCell(16); //Country of Origin
+            if (cell != null) {
 
-            addr.setCountry(getCountry(cell.getStringCellValue()));
-            lic.setAddress(addr);
+                addr.setCountry(getCountry(cell.getStringCellValue()));
+                lic.setAddress(addr);
+            }
+            if (errorDetected) return false;
+            return addToDatabase(prod, lic, a, pa, addr);
+        }catch (Exception e){
+            String colNo="";
+            if (cell!=null){
+                colNo = String.valueOf(cell.getColumnIndex());
+            }
+            System.out.println(String.valueOf(rowNo)+" " + colNo + " " + e.getMessage());
+            return false;
         }
-        if (errorDetected) return false;
-        return addToDatabase(prod, lic, a, pa, addr);
-
     }
 
     public boolean addToDatabase(Product prod, LicenseHolder lic, Applicant a, ProdApplications pa, Address addr) {
@@ -115,14 +126,14 @@ public class ExportService implements Serializable {
         if (r!=null)return r;
         r=new LicenseHolder();
         r.setName(s);
-        //ExcelTools.setCellBackground(currrow.getCell(16), IndexedColors.GREY_40_PERCENT.getIndex());
+        //ExcelTools.setCellBackground(currrow.getCell(16), IndexedColors.GREY_25_PERCENT.getIndex());
 
         return r;
     }
     public DosageForm getDosFormAcc(String s) {
         DosageForm  r=dictionaryDAO.findDosFormByName(s);
         if (r!=null)return r;
-        ExcelTools.setCellBackground(currrow.getCell(9), IndexedColors.GREY_40_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(9), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
         return r;
     }
@@ -130,7 +141,7 @@ public class ExportService implements Serializable {
     public AdminRoute getAdminRouteAcc(String s) {
         AdminRoute r = dictionaryDAO.findAdminRouteByName(s);
         if (r!=null)return r;
-        ExcelTools.setCellBackground(currrow.getCell(2), IndexedColors.GREY_40_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(2), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
         return r;
     }
@@ -144,7 +155,7 @@ public class ExportService implements Serializable {
                 Atc atc = dictionaryDAO.findAtsbyCode(allnames[i]);
                 if (atc != null) res.add(atc);
                 else {
- //                   ExcelTools.setCellBackground(currrow.getCell(9), IndexedColors.GREY_40_PERCENT.getIndex());
+                    ExcelTools.setCellBackground(currrow.getCell(2), IndexedColors.GREY_25_PERCENT.getIndex());
                     errorDetected = true;
                     return null;
                 }
@@ -156,7 +167,7 @@ public class ExportService implements Serializable {
     public PharmClassif getpharmSlassifAcc(String s) {
         PharmClassif r = dictionaryDAO.findPharmSlassifByName(s);
         if (r!=null)return r;
-        ExcelTools.setCellBackground(currrow.getCell(3), IndexedColors.GREY_40_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(3), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
         return r;
     }
@@ -167,7 +178,7 @@ public class ExportService implements Serializable {
     public Country getCountry(String s) {
         Country r=countryDAO.findCountryByName(s);
         if (r!=null)return r;
-            ExcelTools.setCellBackground(currrow.getCell(16), IndexedColors.GREY_40_PERCENT.getIndex());
+            ExcelTools.setCellBackground(currrow.getCell(16), IndexedColors.GREY_25_PERCENT.getIndex());
        errorDetected=true;
         return r;
     }
@@ -207,7 +218,7 @@ public class ExportService implements Serializable {
             }
             comment.setVisible(Boolean.FALSE);
             comment.setString(str);
-            ExcelTools.setCellBackground(cell, IndexedColors.GREY_40_PERCENT.getIndex());
+            ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
             cell.setCellComment(comment);
             //запишем файл с изменениями в специальную папку
             String outFileName=getOutFileName();

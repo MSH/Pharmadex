@@ -124,7 +124,9 @@ public class PIPReportBean implements Serializable{
         this.dateStart = dateStart;
     }
 
-    public Applicant getSelectedApplicant() { return selectedApplicant; }
+    public Applicant getSelectedApplicant(){
+        return selectedApplicant;
+    }
     public void setSelectedApplicant(Applicant applicant) {
         this.selectedApplicant = applicant;
     }
