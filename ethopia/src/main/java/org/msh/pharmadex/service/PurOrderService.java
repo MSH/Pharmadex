@@ -6,16 +6,15 @@ import org.msh.pharmadex.dao.CustomPurOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderDAO;
 import org.msh.pharmadex.dao.iface.PIPOrderLookUpDAO;
 import org.msh.pharmadex.dao.iface.PurOrderDAO;
-import org.msh.pharmadex.domain.PIPOrder;
-import org.msh.pharmadex.domain.PIPOrderLookUp;
-import org.msh.pharmadex.domain.PurOrder;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -98,5 +97,23 @@ public class PurOrderService implements Serializable{
             purOrder = null;
         }
         return purOrder;
+    }
+
+
+    @Transactional
+    public List<PurProd>  findSelectedPurProds(Date startDate, Date endDate, Applicant applicant) {
+        RetObject retObject = new RetObject();
+        List<PurProd> purProds=new ArrayList<PurProd>();
+        if ((startDate==null)||(endDate==null)) return purProds;
+        try {
+            purProds = customPurOrderDAO.findSelectedPurProds(startDate,endDate,applicant);
+            retObject.setObj(purProds);
+            retObject.setMsg("persist");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            retObject.setMsg("error");
+            retObject.setObj(null);
+        }
+        return purProds;
     }
 }

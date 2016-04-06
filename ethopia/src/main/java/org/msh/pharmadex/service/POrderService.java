@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
+import org.msh.pharmadex.dao.CustomLicHolderDAO;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
 import org.msh.pharmadex.dao.CustomPurOrderDAO;
 import org.msh.pharmadex.dao.iface.*;
@@ -60,6 +61,15 @@ public class POrderService implements Serializable {
     private UserService userService;
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    CustomLicHolderDAO customLicHolderDAO;
+    public String findFirstAgent(Long id) {
+         Applicant a = customLicHolderDAO.findFirstAgent(id);
+        return a.getAppName();
+    }
+
+
 
     public List<PIPOrderLookUp> findPIPCheckList(ApplicantType applicantType, boolean pip) {
         Long appID = null;
