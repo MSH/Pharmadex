@@ -46,8 +46,9 @@
                 <div style="height: 10px;"/>
 
                 <div align="right">
+
                     <p:commandButton value="#{msgs.approve_review}" action="#{reviewBn.approveReview}" update=":reviewHome"
-                                     ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}">
+                                     ajax="false" rendered="true">
                         <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
                     </p:commandButton>
 

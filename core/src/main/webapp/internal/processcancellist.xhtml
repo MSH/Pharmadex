@@ -15,8 +15,12 @@
                                     completeMethod="#{regProdMbn.completeProduct}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}" forceSelection="true"
-                            />
-                    <p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">
+                            >
+                            <p:ajax event="itemSelect" listener="#{regProdMbn.onItemSelect}" update="@form" process="@form"/>
+                    </p:autoComplete>
+                    <p:commandButton value="#{msgs.global_submit}" action="/internal/suspenddetail.faces" ajax="false">
+                    <!--<p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">-->
+                        <f:param name="prodAppID" value="#{regProdMbn.prodTable.id}"/>
                     </p:commandButton>
                 </h:panelGrid>
             </p:panel>

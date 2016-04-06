@@ -97,6 +97,7 @@ public class ReportService implements Serializable {
         param.put("appNumber", prodApplications.getProdAppNo());
         param.put("registrar", "Major General Md Jahangir Hossain Mollik");
         return JasperFillManager.fillReport(resource.getFile(), param);
+
     }
 
     private String getEmailBody(List<ProdAppChecklist> prodAppChecklists, String summary) {

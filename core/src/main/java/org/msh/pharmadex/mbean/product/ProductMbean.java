@@ -53,7 +53,8 @@ public class ProductMbean implements Serializable {
         System.out.println("Product App ID ==" + id);
         Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
         flash.put("prodAppID", id);
-        return "productdetail";
+        return "/internal/processreg?faces-redirect=true";
+        //return "productdetail";
     }
 
     public ProductService getProductService() {

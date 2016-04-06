@@ -46,6 +46,7 @@
                 <div style="height: 10px;"/>
 
                 <div align="right">
+                    <h:outputText value="#{msgs.currency}"/>
                     <p:commandButton value="#{msgs.approve_review}" action="#{reviewBn.approveReview}"
                                      update=":reviewHome"
                                      ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}">
@@ -57,14 +58,22 @@
                                      ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}">
                         <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
                     </p:commandButton>
+                    <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}"
+                                     update=":reviewHome"
+                                     ajax="false" rendered="#{userSession.reviewer}">
+                        <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
+                    </p:commandButton>
+
                     <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
                                      update=":reviewHome" process=":reviewHome:reviewgrid @this"
                                      rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
+                    <!--
                     <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}"
                                      update=":reviewHome"
                                      ajax="false" rendered="#{userSession.reviewer and !reviewBn.review.submitted}">
                         <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
                     </p:commandButton>
+                    -->
                     <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
                                      ajax="false">
                         <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>

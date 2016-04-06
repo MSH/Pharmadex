@@ -256,6 +256,10 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
                     setDisplayAppReg(true);
 
                 }
+                if (role.getRolename().equalsIgnoreCase("ROLE_INSPECTOR")) {
+                    displayAppReg = true;
+                    setInspector(true);
+                }
             }
         }
     }

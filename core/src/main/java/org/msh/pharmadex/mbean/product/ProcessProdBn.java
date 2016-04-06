@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static javax.faces.context.FacesContext.*;
 import static org.msh.pharmadex.domain.enums.RegState.FEE;
 
 /**
@@ -63,7 +64,7 @@ public class ProcessProdBn implements Serializable {
     protected Product product;
     protected List<TimeLine> timeLineList;
     protected org.msh.pharmadex.domain.TimeLine timeLine = new org.msh.pharmadex.domain.TimeLine();
-    protected FacesContext facesContext = FacesContext.getCurrentInstance();
+    protected FacesContext facesContext = getCurrentInstance();
     protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     protected boolean displayVerify = false;
     @ManagedProperty(value = "#{globalEntityLists}")
@@ -185,7 +186,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public TimelineModel getTimelinesChartData() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         getProdApplications();
         timelinesChartData = new ArrayList<Timeline>();
@@ -232,9 +233,16 @@ public class ProcessProdBn implements Serializable {
     }
 
     private void initProdApps() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         try {
-            Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+            String id;
+            Long prodAppID;
+            id = getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
+            if (id!=null){
+                prodAppID = Long.valueOf(id);
+            }else{
+                prodAppID = (Long) getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
+            }
             if (prodAppID != null) {
                 prodApplications = prodApplicationsService.findProdApplications(prodAppID);
                 setFieldValues();
@@ -265,7 +273,7 @@ public class ProcessProdBn implements Serializable {
         try {
             if (comments == null)
                 comments = new ArrayList<Comment>();
-            facesContext = FacesContext.getCurrentInstance();
+            facesContext = getCurrentInstance();
             selComment.setDate(new Date());
             selComment.setProdApplications(prodApplications);
             selComment.setUser(loggedInUser);
@@ -283,7 +291,7 @@ public class ProcessProdBn implements Serializable {
 
     public void assignModerator() {
         try {
-            facesContext = FacesContext.getCurrentInstance();
+            facesContext = getCurrentInstance();
             prodApplications.setUpdatedDate(new Date());
             prodApplications.setModerator(moderator);
             RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
@@ -308,7 +316,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String sendMessage() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         mail.setDate(new Date());
         mail.setUser(loggedInUser);
         mail.setProdApplications(prodApplications);
@@ -320,7 +328,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String deleteComment(Comment delComment) {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         comments.remove(delComment);
         String result = commentService.deleteComment(delComment);
         if (result.equals("deleted"))
@@ -440,7 +448,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String openToApplicant() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         prodApplications.setRegState(timeLine.getRegState());
         RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
         if (retObject.getMsg().equals("persist")) {
@@ -457,7 +465,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String addTimeline() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
 
         try {
 
@@ -503,7 +511,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public void save() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         try {
             prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedINUserID());
 //            product = productService.findProduct(product.getId());
@@ -515,7 +523,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String registerProduct() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         try {
             if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
@@ -807,7 +815,7 @@ public class ProcessProdBn implements Serializable {
     }
 
     public String cancel() {
-        facesContext = FacesContext.getCurrentInstance();
+        facesContext = getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processProdBn", null);
         return "/public/registrationhome.faces";
@@ -819,7 +827,9 @@ public class ProcessProdBn implements Serializable {
             if (prodApplications != null && prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
                 displaySample = false;
             } else {
-                if ((userSession.isStaff() || userSession.isModerator() || userSession.isLab())) {
+                //Odissey. Req.18/03/16 Add SimpleRequest fuction to CSO
+                if ((userSession.isStaff() || userSession.isModerator()
+                    || userSession.isLab()) || userSession.isCsd()) {
                     RegState regState = prodApplications.getRegState();
                     if ((prodApplications != null && regState != null)) {
                         if (regState.equals(RegState.NEW_APPL) || regState.equals(RegState.FEE)) {

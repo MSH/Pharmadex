@@ -79,12 +79,15 @@ public class CompanyService implements Serializable {
             if(ct!=null&&ct!=""&&CompanyType.valueOf(ct).equals(CompanyType.FIN_PROD_MANUF))
                 prod.setManufName(selectedCompany.getCompanyName());
             ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
-            prodCompanies.add(prodCompany);
+            if (!prodCompanies.contains(prodCompany))
+                prodCompanies.add(prodCompany);
         }
+        prod.setProdCompanies(prodCompanies);
 
-        prodCompanies = prodCompanyDAO.save(prodCompanies);
-        productService.updateProduct(prod);
-        return prodCompanies;
+        //prodCompanies = prodCompanyDAO.save(prodCompanies);
+        //productService.updateProduct(prod);
+        prodCompanyDAO.flush();
+        return prod.getProdCompanies();
     }
 
     @Transactional

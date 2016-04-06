@@ -565,7 +565,7 @@ public class ReviewInfoBn implements Serializable {
                     priReview = false;
             }
         }
-
+        //priReview = true;
         return priReview;
     }
 

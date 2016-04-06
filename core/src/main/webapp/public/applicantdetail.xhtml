@@ -2,7 +2,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:P="http://java.sun.com/jsf/html"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -46,9 +46,27 @@
                         <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
                             <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
                         </ui:decorate>
-
+                        <!--
+                        <p:commandLink id="regdetails" value="#{msgs.regDetailsLabel}"
+                                rendered="#{(userSession.staff||userSession.head||userSession.admin)and processProdBn.registered}"
+                                action="/templates/prodappsummarytmpl.xhtml"
+                                icon="ui-icon-arrowthichk-n">
+                        </p:commandLink>
+                        rendered="#{userSession.staff and processProdBn.registered}">
+                        -->
                     </p:panel>
-
+                    <p:outputPanel id="detailsgroup" autoUpdate="true">
+                        <p:panel header="#{msgs.regDetailsLabel}"
+                                 rendered="#{(userSession.staff||userSession.head||userSession.admin)}">
+                            <h:panelGrid columns="1" cellpadding="10px">
+                                <p:commandLink id="showdetail" value="#{msgs.Global_details}!"
+                                      action="/internal/processreg"
+                                      ajax="false">
+                                      <f:param name="prodAppID" value="#{applicantHome.applicant.applcntId}"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:outputPanel>
                     <p:panel header="#{msgs.product_list}">
                         <p:dataTable id="products" var="prodApps" value="#{applicantHome.prodApplicationses}">
                             <p:column sortBy="#{prodApps.product.prodName}">

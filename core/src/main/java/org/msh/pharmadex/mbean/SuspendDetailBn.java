@@ -6,10 +6,12 @@ package org.msh.pharmadex.mbean;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.service.*;
@@ -83,6 +85,7 @@ public class SuspendDetailBn implements Serializable {
     private User reviewer;
     private User loggedInUser;
     private boolean showSuspend;
+    private boolean closed;
     private JasperPrint jasperPrint;
 
     @PostConstruct
@@ -110,6 +113,7 @@ public class SuspendDetailBn implements Serializable {
                     }
                 }
             }
+            isClosed();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -258,6 +262,15 @@ public class SuspendDetailBn implements Serializable {
         StreamedContent download = new DefaultStreamedContent(ist, prodAppLetter.getContentType(), prodAppLetter.getFileName());
         return download;
     }
+
+    public StreamedContent letterDownload(int letterType) {
+        List<ProdAppLetter> prodAppLetters = prodAppLetterDAO.findByProdApplications_IdAndLetterType(prodApplications.getId(), LetterType.SUSP_NOTIF_LETTER);
+        ProdAppLetter prodAppLetter = prodAppLetters.get(0);
+        InputStream ist = new ByteArrayInputStream(prodAppLetter.getFile());
+        StreamedContent download = new DefaultStreamedContent(ist, prodAppLetter.getContentType(), prodAppLetter.getFileName());
+        return download;
+    }
+
 
     public void initComment() {
         suspComment = new SuspComment();
@@ -540,6 +553,19 @@ public class SuspendDetailBn implements Serializable {
             showSuspend = false;
 
         return showSuspend;
+    }
+
+
+    public boolean isClosed() {
+        closed=false;
+        String state = prodApplications.getRegState().getKey();
+        if (state.equalsIgnoreCase("RegState.CANCEL"))
+            return true;
+        return closed;
+    }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 
     public void setShowSuspend(boolean showSuspend) {

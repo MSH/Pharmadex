@@ -30,14 +30,24 @@
                 <p:commandButton value="#{msgs.global_suspend}" oncomplete="PF('regDlg').show()"
                                  ajax="true"
                                  rendered="#{userSession.head and (suspendDetailBn.showSuspend)}"/>
+                <p:commandButton value="#{msgs.global_suspend}" oncomplete="PF('regDlg').show()"
+                                 ajax="true"
+                                 rendered="#{userSession.head and (suspendDetailBn.showSuspend)}"/>
+                <!-- hide before clarification
                 <p:commandButton value="#{msgs.review_feedback}" action="#{suspendDetailBn.reviewFeedback}" ajax="false"
                                  rendered="#{userSession.moderator}"/>
+                -->
                 <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}" ajax="false"
                                  rendered="#{userSession.head||userSession.moderator}"/>
                 <p:commandButton value="#{msgs.product_details}" immediate="true"
                                  action="/internal/processreg" ajax="false">
                     <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
                 </p:commandButton>
+                <p:commandButton id="suspletdownload" value="#{msgs.letters}"
+                                 onclick="PrimeFaces.monitorDownload(start, stop)">
+                    <p:fileDownload value="#{suspendDetailBn.letterDownload(1)}"/>
+                </p:commandButton>
+
 
             </div>
 
@@ -54,7 +64,7 @@
                                          oncomplete="PF('assignreviewdlg').show()"
                                          action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
                                          rendered="#{userSession.moderator||userSession.admin}"
-                                         update=":assignreviewDlg"/>
+                                         update=":assignreviewdlg"/>
 
 
                         <h:panelGrid columns="2" columnClasses="label value" cellpadding="10px" cellspacing="10px">
@@ -133,10 +143,13 @@
 
 
                 </p:tab>
+
                 <p:tab title="#{msgs.global_comment}">
                     <p:commandButton value="#{msgs.add_comment}" icon="ui-icon-document"
                                      action="#{suspendDetailBn.initComment}"
-                                     oncomplete="PF('addcommentDlg').show()" id="reviewcomment"/>
+                                     oncomplete="PF('addcommentDlg').show()" id="reviewcomment"
+                                     rendered="#{not suspendDetailBn.closed}"
+                    />
 
                     <p:dataTable id="commenttable" value="#{suspendDetailBn.suspComments}" var="it">
                         <p:column style="width:200px;">
@@ -301,7 +314,7 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"
-                  id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}">
+                  id="assignreviewdlg" modal="true" rendered="#{userSession.moderator}">
             <h:form prependId="false">
                 <p:panel>
                     <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
@@ -329,7 +342,7 @@
 
 
                     <p:commandButton id="submitButton1" value="#{msgs.global_submit}" update="@form"
-                                     oncomplete="if (!args.validationFailed) PF('reviewDlg').hide()"
+                                     oncomplete="PF('assignreviewdlg').hide()"
                                      action="#{suspendDetailBn.assignReviewer}" ajax="true"/>
                 </p:panel>
             </h:form>

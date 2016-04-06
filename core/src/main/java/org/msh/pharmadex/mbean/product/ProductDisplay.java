@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.faces.context.FacesContext.*;
+
 /**
  * Author: usrivastava
  */
@@ -48,7 +50,12 @@ public class ProductDisplay implements Serializable {
     @PostConstruct
     private void init() {
         try {
-            Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+            Long prodAppID;
+            if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("prodAppID"))
+                prodAppID = Long.valueOf(Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID")));
+            else{
+                prodAppID = (Long) getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
+            }
             if (prodAppID != null) {
                 prodApplications = prodApplicationsService.findProdApplications(prodAppID);
                 product = productService.findProduct(prodApplications.getProduct().getId());
@@ -57,7 +64,7 @@ public class ProductDisplay implements Serializable {
                 timeLineList = timelineService.findTimelineByApp(prodApplications.getId());
                 prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
                 foreignAppStatuses = prodApplicationsService.findForeignAppStatus(prodApplications.getId());
-                FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
+                getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -65,7 +72,7 @@ public class ProductDisplay implements Serializable {
     }
 
     public String sentToDetail() {
-        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+        Flash flash = getCurrentInstance().getExternalContext().getFlash();
         flash.put("appID", applicant.getApplcntId());
         return "applicantdetail";
     }
@@ -79,7 +86,7 @@ public class ProductDisplay implements Serializable {
     }
 
     public TimelineModel getTimelinesChartData() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = getCurrentInstance();
         java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         getProdApplications();
         timelinesChartData = new ArrayList<Timeline>();
@@ -100,13 +107,13 @@ public class ProductDisplay implements Serializable {
     }
 
     private void initFields() {
-        Long prodAppID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
+        Long prodAppID = (Long) getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
         if (prodAppID != null) {
             List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
             prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
             product = prodApplications.getProduct();
             applicant = prodApplications.getApplicant();
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
+            getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
         }
     }
 
@@ -177,7 +184,7 @@ public class ProductDisplay implements Serializable {
     }
 
     public boolean isShowfull() {
-        if (userSession.isStaff() || userSession.isModerator() || userSession.isReviewer() || userSession.isLab() || userSession.isClinical()) {
+        if (userSession.isStaff() || userSession.isModerator() || userSession.isReviewer() || userSession.isLab() || userSession.isClinical()|| userSession.isInspector()) {
             showfull = true;
         } else if (userSession.isCompany()) {
             if (prodApplications.getApplicant().getApplcntId().equals(userSession.getApplcantID())) {

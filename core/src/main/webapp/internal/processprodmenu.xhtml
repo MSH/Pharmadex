@@ -16,7 +16,10 @@
                         rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
             <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
                         action="/internal/reject.faces" ajax="false"
-                        rendered="#{processProdBn.canReject}"/>
+                        rendered="#{processProdBn.canReject}">
+                        <f:param name="product" value="#{prodRejectBn.prodApplications.product}>
+            </p:menuitem>
+
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
                         action="/internal/review" ajax="false">

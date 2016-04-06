@@ -5,6 +5,7 @@ public enum UserType {
     COMPANY,
     INSPECTOR,
     TIPC,
+    PORT_INSPECTOR,
     EXTERNAL;
 
     public String getKey() {

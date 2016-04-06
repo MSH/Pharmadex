@@ -139,7 +139,7 @@ public class FileUploadController implements Serializable {
         ProdApplications prodApplications = processProdBn.getProdApplications();
         InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
         Calendar c = Calendar.getInstance();
-        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR));
+        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
 //        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
         return download;
     }

@@ -130,8 +130,7 @@ public class Review implements Serializable {
     }
 
     public boolean isSubmitted() {
-        if (reviewStatus.equals(ReviewStatus.SUBMITTED))
-            submitted = true;
+        submitted = reviewStatus.equals(ReviewStatus.SUBMITTED);
         return submitted;
     }
 
