@@ -26,14 +26,6 @@ public class CountryService implements Serializable {
         return countries;
     }
 
-    public Country findCountryByName(String name) {
-        for (Country c : getCountries()) {
-            if (c.getCountryName().equalsIgnoreCase(name))
-                return c;
-        }
-        return null;
-    }
-
     public Country findCountryById(long id) {
         return countryDAO.find(id);
     }
