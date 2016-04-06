@@ -6,6 +6,8 @@ import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.domain.PIPOrderLookUp;
 import org.msh.pharmadex.domain.PIPProd;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.util.RetObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -23,6 +25,7 @@ public class CustomPIPOrderDAO {
 
     @PersistenceContext
     EntityManager entityManager;
+
 
     public List<PIPOrder> findPIPOrderByUser(Long userId, Long applcntId) {
         List<PIPOrder> pipOrders = entityManager.createQuery("select distinct porder from PIPOrder porder " +
@@ -65,7 +68,7 @@ public class CustomPIPOrderDAO {
                 .getResultList();
         return pipOrders;
     }
-
+// call from piporderreport
     public List<PIPProd> findAllPIPProds(Date startD, Date endD, Applicant applicant) {
         if (applicant==null) {
             List<PIPProd> pipProds = entityManager.createQuery("select distinct p from PIPProd p " +
@@ -92,7 +95,21 @@ public class CustomPIPOrderDAO {
             return pipProds;
         }
     }
+    /*SElECT pp.id, lic.id, lic.name
+    FROM pdx_et.pip_prod pp
+    INNER JOIN  pdx_et.product p ON pp.productName=p.prod_name
+    INNER JOIN pdx_et.licholder_prod lp ON lp.prod_id=p.id
+    INNER JOIN pdx_et.lic_holder lic ON lic.id=lp.licholder_id*/
 
+    public List<String> testGet(){
+        List res= entityManager.createNativeQuery("SElECT lic.name, pp "+
+                " FROM pdx_et.pip_prod pp "+
+                "INNER JOIN  pdx_et.product p ON pp.productName=p.prod_name "+
+                "INNER JOIN pdx_et.licholder_prod lp ON lp.prod_id=p.id "+
+                "INNER JOIN pdx_et.lic_holder lic ON lic.id=lp.licholder_id")
+                .getResultList();
+        return res;
+    }
     private void initializePIPOrder(List<PIPOrder> pipOrders) {
         for (PIPOrder pipOrder : pipOrders) {
             Hibernate.initialize(pipOrder.getPipProds());
