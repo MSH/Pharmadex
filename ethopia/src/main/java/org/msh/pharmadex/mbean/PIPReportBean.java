@@ -1,11 +1,14 @@
 package org.msh.pharmadex.mbean;
 
+import org.msh.pharmadex.dao.CustomLicHolderDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.service.PurOrderService;
 import org.msh.pharmadex.util.JsfUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
@@ -27,22 +30,30 @@ public class PIPReportBean implements Serializable{
     private Applicant selectedApplicant;
     private List<PIPProd> pipProds;
     private List<PurProd> purProds;
+private LicenseHolder lic;
+
+    public LicenseHolder getLic() {
+        return lic;
+    }
+
+    public void setLic(LicenseHolder lic) {
+        this.lic = lic;
+    }
 
     @ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
-
-    @ManagedProperty(value = "#{licenseHolderService}")
-    LicenseHolderService licenseHolderService;
-
-    public LicenseHolderService getLicenseHolderService() {
-        return licenseHolderService;
-    }
 
     public void setLicenseHolderService(LicenseHolderService licenseHolderService) {
         this.licenseHolderService = licenseHolderService;
     }
 
+    public LicenseHolderService getLicenseHolderService() {
 
+        return licenseHolderService;
+    }
+
+    @ManagedProperty(value = "#{licenseHolderService}")
+    LicenseHolderService licenseHolderService;
      @ManagedProperty(value = "#{POrderService}")
     protected POrderService pOrderService;
 
@@ -73,7 +84,7 @@ public class PIPReportBean implements Serializable{
         }
         if (!errorFound) return "error";
         getPipProds();
-        getTest();
+
         return "";
     }
     //for POreport
@@ -177,21 +188,33 @@ public class PIPReportBean implements Serializable{
         String fn2 = form2.getDosForm();
         return fn2.compareTo(fn2);
     }
-    private List<String> test;
-    public void setTest(List<String> t){
-        this.test=t;
-    };
 
-    public List<String> getTest(){
-        return test;
-    }
     public String findLicHolderByApplicant(Long id){
+        setLic(null);
         List<LicenseHolder> res = licenseHolderService.findLicHolderByApplicant(id);
         String s="";
         if (res!=null)
             if (res.size()!=0)
-           if (res.get(0)!=null ) s=res.get(0).getName();
+           if (res.get(0)!=null ) {
+               s=res.get(0).getName();
+           setLic(res.get(0));
+           }
 
         return s;
     }
+
+    public String findFirstAgent(){
+       if (lic==null) return "";
+        return pOrderService.findFirstAgent(lic.getId());
+    }
+
+/*
+    public LicenseHolder findLicHolderByApplicant(Long id){
+        List<LicenseHolder> res = licenseHolderService.findLicHolderByApplicant(id);
+        LicenseHolder s  =new LicenseHolder();
+        if (res!=null)
+            if (res.size()!=0)
+                if (res.get(0)!=null ) s=res.get(0);
+        return s;
+    }*/
 }

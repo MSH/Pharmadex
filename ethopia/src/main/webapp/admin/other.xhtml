@@ -5,19 +5,34 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="../templates/layout.xhtml">
     <ui:define name="content">
+
         <h:form id="srafrm">
-            <h:panelGroup id="content">
-                    <h:outputLabel value="path" for="file"/>
+            <p:panel header="">
+              <h:panelGrid id="content" columns="2" cellspacing="10" columnClasses="col1, col2">
+                    <h:outputLabel value="Path and file name for import" for="file"/>
                     <p:inputText value="#{exportMBean.filename}" id="file" required="true"
                                  style="width:200px;"/>
                     <p:message for="file"/>
 
                         <p:commandButton action="#{exportMBean.startExport}"
-                                         value="start" ajax="false">
+                                         value="Start import" ajax="false">
 
                         </p:commandButton>
 
-            </h:panelGroup>
+            </h:panelGrid>
+            <h:panelGrid id="res" columns="2" cellspacing="10" columnClasses="col1, col2">
+                <h:outputLabel value="Imported recors" for="s"/>
+                <h:outputLabel value="#{exportMBean.success}" id="s"/>
+                <h:outputLabel value="Errors recors" for="f"/>
+                <h:outputLabel value="#{exportMBean.failure}" id="f"/>
+            </h:panelGrid>
+        </p:panel>
+
+
+
+
+
+
         </h:form>
 
 

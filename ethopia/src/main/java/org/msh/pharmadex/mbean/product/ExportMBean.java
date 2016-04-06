@@ -29,9 +29,9 @@ public class ExportMBean implements Serializable {
     private String filename;
     public static Workbook wb;
     private static java.util.regex.Pattern numeric = java.util.regex.Pattern.compile("\\d*");
-    private static int success=0;
-    private static int failure=0;
-    private static int total=0;
+    private int success=0;
+    private  int failure=0;
+    private  int total=0;
 
     @ManagedProperty(value = "#{exportService}")
     private ExportService exportService ;
@@ -66,11 +66,28 @@ public class ExportMBean implements Serializable {
         this.filename = filename;
     }
 
+    public int getSuccess() {
+        return success;
+    }
+
+    public int getFailure() {
+        return failure;
+    }
+
+    public void setFailure(int failure) {
+        this.failure = failure;
+    }
+
+    public void setSuccess(int success) {
+        this.success = success;
+
+
+    }
 
     public String startExport(){
         FacesContext context = FacesContext.getCurrentInstance();
         if (filename==null) return "";
-        File f =new File(filename) ;
+        File f =new File(filename) ;  //c:/temp/LEGACY DATA.xlsx
         if (f.isFile()) try {
             wb = WorkbookFactory.create(new FileInputStream(filename));
             Sheet sheet = wb.getSheetAt(0);
@@ -78,7 +95,13 @@ public class ExportMBean implements Serializable {
             boolean res;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 res = exportService.importRow(sheet.getRow(i));
-                if (res) success++;
+                if (res) {
+                    success++;
+                    CellStyle style = wb.createCellStyle();
+                    style.setFillBackgroundColor(IndexedColors.GREY_40_PERCENT.getIndex());
+                    //style.setFillPattern(CellStyle.BIG_SPOTS);
+                    sheet.getRow(i).setRowStyle(style);
+                }
                 else failure++;
             }
             File outf = new File("C:/Temp/res.xlsx");
@@ -88,66 +111,9 @@ public class ExportMBean implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidFormatException e) {
-            e.printStackTrace();
+            setFilename("file not found");
         }
         return "";
     }
-
-
-
-    /*private void importRow(Row row) {
-
-        Product prod=new Product();
-        LicenseHolder lic=new LicenseHolder();
-        Applicant a=new Applicant();
-        ProdApplications pa=new ProdApplications();
-        Address addr=new Address();
-
-        Cell cell = row.getCell(0);   //Presentation -
-        if (cell!=null) prod.setPackSize(cell.getStringCellValue());
-
-        cell = row.getCell(1);  //Route Of Admin  catalog   in table adminroute
-        if (cell!=null)
-         prod.setAdminRoute(exportService.getAdminRouteAcc(cell.getStringCellValue()));
-        cell = row.getCell(2);  //Therapeutic Group    catalog  in table adminroute
-        if (cell!=null)
-        //temporary    prod.setAtcs(exportService.getAtcAcc(cell.getStringCellValue()));
-        cell = row.getCell(3);  //Indication   catalog in table pharmSlassif
-        if (cell!=null)
-         prod.setPharmClassif(exportService.getpharmSlassifAcc(cell.getStringCellValue()));
-        //col 4 classification is empty
-        cell = row.getCell(5);//Brand Name
-        if (cell!=null) prod.setProdName(cell.getStringCellValue());
-        cell = row.getCell(6);  //Generic Name
-        if (cell!=null)  prod.setGenName(cell.getStringCellValue());
-        cell = row.getCell(7);  //Dose strength
-        if (cell!=null)  prod.setDosStrength(cell.getStringCellValue());
-        cell = row.getCell(8);  //Dosage Form
-          prod.setDosForm(exportService.getDosFormAcc(cell.getStringCellValue()));
-        cell = row.getCell(9);//prod_desc
-        if (cell!=null)  prod.setDosForm(exportService.getDosFormAcc(cell.getStringCellValue()));
-        cell = row.getCell(10);  //shelf_life(Months)
-        if (cell!=null)prod.setShelfLife(cell.getStringCellValue());
-        cell = row.getCell(11);  //Licence Holder/manufacturer
-        if (cell!=null) lic.setName(cell.getStringCellValue());
-        cell = row.getCell(12); //Local Agent
-        if (cell!=null) lic.setFirstAgent(cell.getStringCellValue());
-
-         cell = row.getCell(13); //Registration Date
-       //if (cell!=null)pa.setRegistrationDate(cell.getDateCellValue());
-        cell = row.getCell(14); //RExpiry Date
-        //if (cell!=null) pa.setRegExpiryDate(cell.getDateCellValue());
-         cell = row.getCell(15);//Manufacturer/Actual site/
-        if (cell!=null) a.setAppName(cell.getStringCellValue());
-        cell = row.getCell(16); //Country of Origin
-        if (cell!=null) {
-
-            addr.setCountry(exportService.getCountry(cell.getStringCellValue()));
-            lic.setAddress(addr);
-        }
-
-
-    }*/
-
 
 }

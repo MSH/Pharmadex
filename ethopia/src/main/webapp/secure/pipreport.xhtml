@@ -92,7 +92,7 @@
                         <p:outputLabel value="#{eachprod.country}"/>
                     </p:column>
                     <p:column headerText="#{msgs.agent_first}">
-                        <p:outputLabel value="TBD"/>
+                        <p:outputLabel value="#{pIPReportBean.findFirstAgent()}"/>
                     </p:column>
                     <p:column headerText="#{msgs.global_quantity} ">
                         <h:outputText value="#{eachprod.quantity}"/>
@@ -101,7 +101,7 @@
                         <p:outputLabel value="1"/>
                     </p:column>
                     <p:column headerText="#{msgs.prod_presentation}">
-                        <p:outputLabel value="TBD"/>
+                        <p:outputLabel value="#{eachprod.productDesc}"/>
                     </p:column>
                     <!--
                     <p:summaryRow listener="#{pIPReportBean.onSummaryRow}">
