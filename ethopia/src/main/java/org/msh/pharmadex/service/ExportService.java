@@ -4,10 +4,12 @@ import org.apache.poi.ss.usermodel.*;
 
 
 import org.msh.pharmadex.dao.*;
+import org.msh.pharmadex.dao.iface.CompanyDAO;
+import org.msh.pharmadex.dao.iface.LicenseHolderDAO;
 import org.msh.pharmadex.dao.iface.ProdCompanyDAO;
 import org.msh.pharmadex.domain.*;
 
-import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.utils.ExcelTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,13 +41,17 @@ public class ExportService implements Serializable {
     CustomDictionaryDAO dictionaryDAO;
     @Autowired
     ProductDAO productDAO;
-
+    @Autowired
+    CompanyDAO companyDAO;
+    @Autowired
+    LicenseHolderDAO licenseHolderDAO;
     private Row currrow;
     private  boolean errorDetected;
 
     public boolean importRow(Row row) {
       errorDetected=false;
         int rowNo=0;
+        int curCol=0;
         Cell cell = null;
         try {
             currrow = row;
@@ -57,61 +63,84 @@ public class ExportService implements Serializable {
             ProdApplications pa = new ProdApplications();
             Address addr = new Address();
             Company co=new Company();
-            cell = row.getCell(0);   //Presentation -   prod description
+            cell = row.getCell(curCol);   // A Presentation -   prod description
+            cell.setCellType(Cell.CELL_TYPE_STRING);
             if (cell != null) prod.setProdDesc(cell.getStringCellValue());
-
-            cell = row.getCell(1);  //Route Of Admin  catalog   in table adminroute
+            curCol++;
+            cell = row.getCell(curCol);  // B Route Of Admin  catalog   in table adminroute
             if (cell != null)
-                prod.setAdminRoute(fingAdminRouteAcc(cell.getStringCellValue()));
-            cell = row.getCell(2);  //Therapeutic Group    catalog  in table adminroute
+                prod.setAdminRoute(fingAdminRouteAcc(cell.getStringCellValue(),curCol));
+            curCol++;
+            cell = row.getCell(curCol);  //C Therapeutic Group    catalog  in table adminroute
             if (cell != null)
-                prod.setAtcs(findAtcList(cell.getStringCellValue()));
-            cell = row.getCell(3);  //Indication   catalog in table pharmSlassif
+                prod.setAtcs(findAtcList(cell.getStringCellValue(),curCol));
+            /*cell = row.getCell(3);  //Indication   catalog in table pharmSlassif
             if (cell != null)
                 prod.setIndications(cell.getStringCellValue());//prod.setPharmClassif(findpharmSlassifAcc(cell.getStringCellValue()));
             //col 4 classification is empty
-            cell = row.getCell(5);//Brand Name
+       */
+            curCol++;
+            cell = row.getCell(curCol);// D Brand Name
             if (cell != null) prod.setProdName(cell.getStringCellValue());
-            cell = row.getCell(6);  //Generic Name
+            curCol++;
+            cell = row.getCell(curCol);  // E Generic Name
             if (cell != null) prod.setGenName(cell.getStringCellValue());
-            cell = row.getCell(7);  //Dose strength
+            curCol++;
+            cell = row.getCell(curCol);  //F Dose strength
             if (cell != null) {
+                cell.setCellType(Cell.CELL_TYPE_STRING);
                 prod.setDosStrength(cutNumberPart(cell.getStringCellValue()));
-                prod.setDosUnit(findDocUnit(cell.getStringCellValue()));
+                prod.setDosUnit(findDocUnit(cell.getStringCellValue(),curCol));
             }
-            cell = row.getCell(8);  //Dosage Form
-            prod.setDosForm(findDosFormAcc(cell.getStringCellValue()));
-            cell = row.getCell(9);//prod_desc -  conttype
+            curCol++;
+            cell = row.getCell(curCol);  //G Dosage Form
+            prod.setDosForm(findDosFormAcc(cell.getStringCellValue(),curCol));
+            curCol++;
+            cell = row.getCell(curCol);//H prod_desc -  conttype
             if (cell != null) prod.setContType(cell.getStringCellValue());
-            cell = row.getCell(10);  //shelf_life(Months)
+            curCol++;
+            cell = row.getCell(curCol);  //I shelf_life(Months)
             if (cell != null) prod.setShelfLife(cell.getStringCellValue());
-            cell = row.getCell(11);  //Licence Holder/manufacturer
+            curCol++;
+            cell = row.getCell(curCol);  //J Licence Holder/manufacturer
             if (cell != null) lic = findLicHolderByName(cell.getStringCellValue());
             //if (cell != null) co=FindCompany(cell.getStringCellValue());
-            cell = row.getCell(12); //Local Agent
-            //if (cell != null) lic.setFirstAgent(cell.getStringCellValue());
+            curCol++;
+            cell = row.getCell(curCol); //K Local Agent
             if (cell != null) a= findApplicant(cell.getStringCellValue());
-            cell = row.getCell(13);//date
+            curCol++;
+            cell = row.getCell(curCol);//L date
            if (cell!=null)pa.setRegistrationDate(getDateValue(cell));
-
-            cell = row.getCell(14); //RExpiry Date
+            curCol++;
+            cell = row.getCell(curCol); //M Expiry Date
       if (cell!=null) pa.setRegistrationDate(getDateValue(cell));
-            cell = row.getCell(15);//Manufacturer/Actual site/
+            curCol++;
+            cell = row.getCell(curCol);//N Manufacturer/Actual site/
             if (cell != null) {
-                String[]all= new String[3];
-                all=cell.getStringCellValue().split(", ",2);
+                String all=cell.getStringCellValue();
+                int pos=all.indexOf(",");
+                if (pos==0) {
+                    co=FindCompany(all);
+                }else{
+                    co=FindCompany(all.substring(0,pos));
+                    addr.setAddress1(all.substring(pos+1));
+                }
+                /* String[]all= new String[3];
+               all=cell.getStringCellValue().split(", ",2);
                 co=FindCompany(all[0]);
-                if (all.length>1) addr.setAddress1(all[all.length-1]);
+                if (all.length>1) addr.setAddress1(all[all.length-1]);*/
 
             }
-            cell = row.getCell(16); //Country of Origin
-            if (cell != null)     addr.setCountry(findCountry(cell.getStringCellValue()));
+            curCol++;
+            cell = row.getCell(curCol); //Country of Origin
+            if (cell != null)     addr.setCountry(findCountry(cell.getStringCellValue(),curCol));
             if (errorDetected) return false;
             co.setAddress(addr);
             Product oldprod=findExistingProd(prod);
             if(oldprod!=null)
                 prod=oldprod;
-            return addToDatabase(prod, co, a, pa, lic);
+            //return addToDatabase(prod, co, a, pa, lic);
+            return true;
         }catch (Exception e){
             String colNo="";
             if (cell!=null){
@@ -130,13 +159,21 @@ public class ExportService implements Serializable {
             pa.setApplicant(a);
             pa.setProduct(prod);
             pa.setRegState(RegState.REGISTERED);
+           if (prod.getAgeGroup()==null) prod.setAgeGroup(AgeGroup.BOTH);
+            if(prod.getDrugType()==null)prod.setDrugType(ProdDrugType.PHARMACEUTICAL);
+            if(prod.getProdCategory()==null) prod.setProdCategory(ProdCategory.HUMAN);
+            companyDAO.save(co);
             //set manufacrurer
             List<ProdCompany> comlist=new ArrayList<ProdCompany>();
             ProdCompany com=new ProdCompany();
             com.setProduct(prod);
             com.setCompany(co);
+            com.setCompanyType(CompanyType.FIN_PROD_MANUF);
             comlist.add(com);
       //List<ProdApplications>
+            licenseHolderDAO.save(lic);
+            //TODO add arent_info
+            //if (cell != null) lic.setFirstAgent(cell.getStringCellValue());
            List<Product> old=lic.getProducts();
            if (old==null) old=new ArrayList<Product>();
                 old.add(prod);
@@ -171,13 +208,13 @@ public class ExportService implements Serializable {
         if (s==null)return res;
         s=s.trim();
         for (int i=0;i<s.length();i++){
-          if(  Character.isDigit(s.charAt(i)))
+          if(  Character.isDigit(s.charAt(i)) )
               res=res+s.charAt(i);
             else return res;
         }
         return res;
     }
-    private DosUom findDocUnit(String s) {
+    private DosUom findDocUnit(String s, int col) {
         String res="";
         int ind=0;
         if (s == null) return null;
@@ -193,12 +230,13 @@ public class ExportService implements Serializable {
         res=res.trim();
         DosUom  r=dictionaryDAO.findDosUomByName(res);
         if (r!=null)return r;
-        ExcelTools.setCellBackground(currrow.getCell(7), IndexedColors.GREY_25_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
         return r;
     }
 
     public Company FindCompany(String s){
+        s=s.trim();
         Company r= dictionaryDAO.findCompanyByName(s);
         if (r!=null)return r;
         r=new Company();
@@ -216,23 +254,30 @@ public class ExportService implements Serializable {
 
         return r;
     }
-    public DosageForm findDosFormAcc(String s) {
+    public DosageForm findDosFormAcc(String s, int col) {
+        s=s.trim();
         DosageForm  r=dictionaryDAO.findDosFormByName(s);
         if (r!=null)return r;
-        ExcelTools.setCellBackground(currrow.getCell(8), IndexedColors.GREY_25_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
         return r;
     }
 
-    public AdminRoute fingAdminRouteAcc(String s) {
+    public AdminRoute fingAdminRouteAcc(String s,int col) {
+        int pos=s.indexOf(",");
+        if (pos==0){
+            s=s.trim();
+        }else{
+           s=s.substring(pos+1).trim();
+        }
         AdminRoute r = dictionaryDAO.findAdminRouteByName(s);
         if (r!=null)return r;
-        ExcelTools.setCellBackground(currrow.getCell(2), IndexedColors.GREY_25_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
         return r;
     }
 
-    public List<Atc> findAtcList(String s) {
+    public List<Atc> findAtcList(String s,int col) {
         List<Atc> res=new ArrayList<Atc>();
         String[]allnames= new String[10];
         allnames=s.split(", ",10);
@@ -241,7 +286,7 @@ public class ExportService implements Serializable {
                 Atc atc = dictionaryDAO.findAtsbyCode(allnames[i]);
                 if (atc != null) res.add(atc);
                 else {
-                    ExcelTools.setCellBackground(currrow.getCell(2), IndexedColors.GREY_25_PERCENT.getIndex());
+                    ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
                     errorDetected = true;
                     return null;
                 }
@@ -261,10 +306,11 @@ public class ExportService implements Serializable {
 
 
 
-    public Country findCountry(String s) {
+    public Country findCountry(String s,int col) {
+        s=s.trim();
         Country r=countryDAO.findCountryByName(s);
         if (r!=null)return r;
-            ExcelTools.setCellBackground(currrow.getCell(16), IndexedColors.GREY_25_PERCENT.getIndex());
+            ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
        errorDetected=true;
         return r;
     }
@@ -283,10 +329,11 @@ Date getDateValue(Cell cell){
     return dt;
 }
       public Applicant findApplicant(String s){
-        Applicant a=new Applicant();
-        a=dictionaryDAO.findApplicantByName(s);
-        if (a==null) a.setAppName(s);
-                  return a;
+        Applicant a=dictionaryDAO.findApplicantByName(s);
+        if (a!=null)return a;
+        a=new Applicant();
+        a.setAppName(s);
+        return a;
       }
 
 /*    public static void errorToLog(Workbook wb, ErrorCell errorCell){
