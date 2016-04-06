@@ -35,6 +35,16 @@ public class DosageFormService implements Serializable {
         return dosageForms;
     }
 
+    public DosageForm findDosageFormByName(String name){
+        if (dosageForms == null)
+            dosageForms = (List<DosageForm>) dosageFormDAO.findAll();
+        for (DosageForm c : dosageForms) {
+            if (c.getDosForm().equalsIgnoreCase(name))
+                return c;
+        }
+        return null;
+    }
+
     @Transactional
     public List<DosUom> findAllDosUom() {
         if (dosUoms == null)
