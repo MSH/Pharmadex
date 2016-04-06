@@ -6,6 +6,7 @@ import org.msh.pharmadex.domain.*;
 
 import org.msh.pharmadex.service.ExportService;
 import org.msh.pharmadex.service.LicenseHolderService;
+import org.msh.pharmadex.utils.ExcelTools;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -86,6 +87,8 @@ public class ExportMBean implements Serializable {
 
     public String startExport(){
         FacesContext context = FacesContext.getCurrentInstance();
+        setSuccess(0);
+        setFailure(0);
         if (filename==null) return "";
         File f =new File(filename) ;  //c:/temp/LEGACY DATA.xlsx
         if (f.isFile()) try {
@@ -97,10 +100,10 @@ public class ExportMBean implements Serializable {
                 res = exportService.importRow(sheet.getRow(i));
                 if (res) {
                     success++;
-                    CellStyle style = wb.createCellStyle();
-                    style.setFillBackgroundColor(IndexedColors.GREY_40_PERCENT.getIndex());
-                    //style.setFillPattern(CellStyle.BIG_SPOTS);
-                    sheet.getRow(i).setRowStyle(style);
+                    ExcelTools.setCellBackground(sheet.getRow(i).getCell(3), IndexedColors.GREEN.getIndex());
+                    //CellStyle style = wb.createCellStyle();
+                   // style.setFillBackgroundColor(IndexedColors.GREEN.getIndex());
+  //                  sheet.getRow(i).setRowStyle(style);
                 }
                 else failure++;
             }
@@ -113,6 +116,7 @@ public class ExportMBean implements Serializable {
         } catch (InvalidFormatException e) {
             setFilename("file not found");
         }
+        else   setFilename("file not found");
         return "";
     }
 
