@@ -436,7 +436,29 @@ public class ReviewService implements Serializable {
         }
     }
 
+    /**
+     * changes review status It depends of current status and user role
+     * Odissey 09/04/16
+     */
+    public void updateReviewStatus(ReviewDetail reviewDetail){
+        //Statuses:NOT_ASSIGNED,ASSIGNED,IN_PROGRESS,SEC_REVIEW,SUBMITTED,FEEDBACK,ACCEPTED;
+        //Unknown to me: RFI_SUBMIT,RFI_APP_RESPONSE,RFI_RECIEVED,
+        ReviewInfo ri = reviewDetail.getReviewInfo();
+        User user = reviewDetail.getUpdatedBy();
+        if (userService.userHasRole(user,"Reviewer")){
+            if (ri.getReviewStatus().equals(ReviewStatus.ASSIGNED))
+                ri.setReviewStatus(ReviewStatus.IN_PROGRESS);
+            if (ri.getReviewStatus().equals(ReviewStatus.IN_PROGRESS))
+                ri.setReviewStatus(ReviewStatus.SUBMITTED);
+        }
+        if (userService.userHasRole(user,"HEAD")){
+            if (ri.getReviewStatus().equals(ReviewStatus.SUBMITTED))
+                ri.setReviewStatus(ReviewStatus.ACCEPTED);
+        }
+    }
+
     public ReviewDetail saveReviewDetail(ReviewDetail reviewDetail) {
+        updateReviewStatus(reviewDetail);
         return reviewDetailDAO.saveAndFlush(reviewDetail);
     }
 

@@ -31,9 +31,12 @@
                                  ajax="false">
                         <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
                 </p:commandButton>
-                <p:commandButton value="#{msgs.global_print}" action="#{reviewInfoBn.printReview}" ajax="false"
+                <p:commandButton value="#{msgs.global_print}"
+                                 action="#{reviewInfoBn.printReview}"
+                                 ajax="false"
                                  immediate="true" icon="ui-icon-print"/>
-                <p:commandButton value="#{msgs.approve_review}" action="#{reviewInfoBn.approveReview}"
+                <p:commandButton value="#{msgs.approve_review}"
+                                 action="#{reviewInfoBn.approveReview}"
                                  update=":reviewHome"
                                  ajax="false"
                                  rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}">

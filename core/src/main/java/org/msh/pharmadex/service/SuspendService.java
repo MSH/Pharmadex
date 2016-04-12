@@ -11,11 +11,11 @@ import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.ReviewDAO;
+import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.SuspendDAO;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.LetterType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.SuspensionStatus;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,8 @@ import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -42,6 +40,9 @@ public class SuspendService implements Serializable {
 
     @Autowired
     private SuspendDAO suspendDAO;
+
+    @Autowired
+    private ReviewInfoDAO reviewInfoDAO;
 
     @Autowired
     private ProdApplicationsService prodApplicationsService;
@@ -57,6 +58,9 @@ public class SuspendService implements Serializable {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     private ProdApplications prodApplications;
     private SuspDetail suspDetail;
@@ -76,6 +80,14 @@ public class SuspendService implements Serializable {
         List<SuspDetail> suspDetails = suspendDAO.findByProdApplications_Id(prodApplicationsId);
         return suspDetails;
 
+    }
+
+    public List<ReviewInfo> findReviewList(long userId,long appId){
+        ArrayList<ReviewInfo> res = new ArrayList<ReviewInfo>();
+        ReviewInfo reviewResult = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(userId, appId);
+        if (reviewResult!=null)
+            res.add(reviewResult);
+        return res;
     }
 
     public void createSuspLetter() throws SQLException, IOException, JRException {
@@ -151,7 +163,9 @@ public class SuspendService implements Serializable {
         }
 
         prodApplications.setRegState(regState);
-        prodApplicationsService.saveApplication(prodApplications, suspDetail.getUpdatedBy().getUserId());
+        User updatedBy = suspDetail.getUpdatedBy();
+        if (updatedBy==null) {updatedBy =  loggedInUser;}
+        prodApplicationsService.saveApplication(prodApplications, updatedBy.getUserId());
     }
 
     public JasperPrint initRegCert(SuspComment suspComment, URL resource) throws JRException, SQLException {
@@ -162,8 +176,22 @@ public class SuspendService implements Serializable {
         HashMap param = new HashMap();
         List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
         ProdApplications prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
+        String manufName = product.getManufName();
+        if (manufName==null){
+            List<ProdCompany> companyList = prodApplications.getProduct().getProdCompanies();
+            if (companyList!=null){
+                for(ProdCompany company:companyList){
+                    if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+                        manufName = company.getCompany().getCompanyName();
+                        suspDetail.getProdApplications().getProduct().setManufName(manufName);
+                        break;
+                    }
+
+                }
+            }
+        }
         param.put("id", prodApplications.getId());
-        param.put("manufName", prodApplications.getProduct().getManufName());
+        param.put("manufName", manufName);
         param.put("reason", emailBody);
         param.put("batchNo", suspDetail.getBatchNo());
 //        param.put("cso",user.getName());
@@ -263,6 +291,50 @@ public class SuspendService implements Serializable {
         return retObject;
     }
 
+    public RetObject submitModeratorDecision(SuspDetail sDetail, Long userID, String summary, String decision){
+        RetObject retObject;
+        suspDetail=sDetail;
+        //TODO Use resource
+        if (summary==null) summary="";
+        if ("RECOMMENDED".equalsIgnoreCase(decision)){
+            //moderator approves review and sends application to head
+            if (!"".equals(summary))
+                addComment(summary,userID);
+            suspDetail.setSuspensionStatus(SuspensionStatus.RESULT);
+        }else if ("NOT RECOMMENDED".equalsIgnoreCase(decision)){
+            if (!"".equals(summary)){
+                addComment(summary,userID);
+            }
+            //return suspension status to previous (IN_PROCESS) and review status to ASSIGNED for current reviewer
+            suspDetail.setSuspensionStatus(SuspensionStatus.IN_PROGRESS);
+            User reviewer = suspDetail.getReviewer();
+            if (reviewer!=null){
+                ReviewInfo review = reviewService.findReviewInfoByUserAndProdApp(reviewer.getUserId(), suspDetail.getProdApplications().getId());
+                review.setReviewStatus(ReviewStatus.ASSIGNED);
+                reviewService.saveReviewInfo(review);
+            }
+        }
+        retObject = saveSuspend(suspDetail);
+        return retObject;
+    }
+
+    private void addComment(String comment, long userID){
+        List<SuspComment> suspComments = suspDetail.getSuspComments();
+        if (suspComments == null) {
+            suspComments = new ArrayList<SuspComment>();
+        }
+
+        SuspComment suspComment = new SuspComment();
+        suspComment.setComment(comment);
+        suspComment.setUser(userService.findUser(userID));
+        suspComment.setDate(new Date());
+        suspComment.setSuspDetail(suspDetail);
+        suspComments.add(suspComment);
+    }
+
+    /**
+     * DEPECATED
+     */
     public RetObject submitModeratorComment(SuspDetail suspDetail, Long loggedINUserID) throws SQLException, JRException {
         RetObject retObject;
         if (null == suspDetail || null == suspDetail.getProdApplications())
@@ -282,6 +354,7 @@ public class SuspendService implements Serializable {
 
         return retObject;
     }
+
 
     public RetObject submitHead(SuspDetail suspDetail, Long loggedINUserID) {
         RetObject retObject;

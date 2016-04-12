@@ -5,10 +5,8 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ReviewDetail;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.dao.iface.RoleDAO;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsService;
@@ -28,6 +26,7 @@ import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -63,15 +62,17 @@ public class ReviewDetailBn implements Serializable {
     private UploadedFile file;
     private StreamedContent chart;
 
-    public void saveReview() {
+    /**
+     * Saves review without state changing
+     */
+    public void saveReview(boolean changeStatus) {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
-        reviewDetail.setAnswered(true);
-        ReviewInfo ri = reviewDetail.getReviewInfo();
-        if (ri.getReviewStatus().equals(ReviewStatus.ASSIGNED))
-            ri.setReviewStatus(ReviewStatus.IN_PROGRESS);
         User user = userService.findUser(userSession.getLoggedINUserID());
+        reviewDetail.setAnswered(true);
         reviewDetail.setUpdatedBy(user);
+        if (changeStatus)
+            reviewService.updateReviewStatus(reviewDetail);
         reviewDetail = reviewService.saveReviewDetail(reviewDetail);
         msg = new FacesMessage(bundle.getString("app_save_success"));
         facesContext.addMessage(null, msg);
@@ -90,15 +91,18 @@ public class ReviewDetailBn implements Serializable {
             satisfactory = false;
     }
 
+    /**
+     * Reviewer press "Submit"
+     * @return result
+     */
     public String submitReview() {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
-        saveReview();
+        saveReview(true);
         msg = new FacesMessage(bundle.getString("app_submit_success"));
         facesContext.addMessage(null, msg);
         return "reviewInfo";
     }
-
 
     public ReviewService getReviewService() {
         return reviewService;

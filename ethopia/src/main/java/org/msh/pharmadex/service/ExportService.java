@@ -336,6 +336,14 @@ Date getDateValue(Cell cell){
         return a;
       }
 
+    public ProdCompanyDAO getProdCompanyDAO() {
+        return prodCompanyDAO;
+    }
+
+    public void setProdCompanyDAO(ProdCompanyDAO prodCompanyDAO) {
+        this.prodCompanyDAO = prodCompanyDAO;
+    }
+
 /*    public static void errorToLog(Workbook wb, ErrorCell errorCell){
         if (errorCell==null) return;
         RequestService.logEvent("Імпорт", errorCell.getErrorMsg(), author);

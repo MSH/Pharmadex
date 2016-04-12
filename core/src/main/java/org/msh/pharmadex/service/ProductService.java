@@ -53,6 +53,20 @@ public class ProductService implements Serializable {
     public Product updateProduct(Product prod) {
 //        prod.getProdApplications().setApplicant(applicantDAO.findApplicant(prod.getApplicant().getApplcntId()));
 //        prod.getProdApplications().setUser(userService.findUser(prod.getProdApplications().getUser().getUserId()));
+        String manufName = prod.getManufName();
+        if (manufName==null){
+            List<ProdCompany> companyList = prod.getProdCompanies();
+            if (companyList!=null){
+                for(ProdCompany company:companyList){
+                    if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+                        manufName = company.getCompany().getContactName();
+                        prod.setManufName(manufName);
+                        break;
+                    }
+
+                }
+            }
+        }
         return productDAO.updateProduct(prod);
     }
 

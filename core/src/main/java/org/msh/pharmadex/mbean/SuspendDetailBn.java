@@ -10,9 +10,11 @@ import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
+import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
@@ -55,6 +57,9 @@ public class SuspendDetailBn implements Serializable {
     @ManagedProperty(value = "#{suspendService}")
     private SuspendService suspendService;
 
+    @ManagedProperty(value = "#{reviewService}")
+    private ReviewService reviewService;
+
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
@@ -85,37 +90,56 @@ public class SuspendDetailBn implements Serializable {
     private User reviewer;
     private User loggedInUser;
     private boolean showSuspend;
-    private boolean closed;
+    private boolean closed=false;
+    private String moderSummary;
+    private String moderDecision;
     private JasperPrint jasperPrint;
 
     @PostConstruct
     private void init() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            if (suspDetail == null) {
-                String suspID = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+            String suspID = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+            if (suspID==null){// this is new suspension record
+                Long prodAppID = Long.valueOf(facesContext.getExternalContext().getRequestParameterMap().get("prodAppID"));
+                if (prodAppID != null) {
+                    //prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+                    prodApplications = prodApplicationsService.findActiveProdAppByProd(prodAppID);
+                    product = prodApplications.getProduct();
+                    suspComments = new ArrayList<SuspComment>();
+                    suspDetail = new SuspDetail(prodApplications, suspComments);
+                    suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
+                    suspDetail.setCreatedBy(getLoggedInUser());
+                }
+            }else{
                 if (suspID != null && !suspID.equals("")) {
                     Long suspDetailID = Long.valueOf(suspID);
                     suspDetail = suspendService.findSuspendDetail(suspDetailID);
                     suspComments = suspDetail.getSuspComments();
-                    prodAppLetters = suspDetail.getProdAppLetters();
+                    prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(suspDetailID);
                     prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
                     product = prodApplications.getProduct();
-                } else {
-                    Long prodAppID = Long.valueOf(facesContext.getExternalContext().getRequestParameterMap().get("prodAppID"));
-                    if (prodAppID != null) {
-                        prodApplications = prodApplicationsService.findProdApplications(prodAppID);
-                        product = prodApplications.getProduct();
-                        suspComments = new ArrayList<SuspComment>();
-                        suspDetail = new SuspDetail(prodApplications, suspComments);
-                        suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
-                        suspDetail.setCreatedBy(getLoggedInUser());
-                    }
+//                    if (suspDetail.getReviewer()!=null)
+//                        checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
+                    isClosed();
                 }
             }
-            isClosed();
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void checkReviewStatus(long reviewerId, long appId){
+        try {
+            ReviewInfo reviews = reviewService.findReviewInfoByUserAndProdApp(reviewerId, appId);
+            if (null != reviews) {
+                if (reviews.getReviewStatus().equals(ReviewStatus.SUBMITTED))
+                    suspDetail.setSuspensionStatus(SuspensionStatus.SUBMIT);
+                if (reviews.getReviewStatus().equals(ReviewStatus.ACCEPTED))
+                    suspDetail.setSuspensionStatus(SuspensionStatus.RESULT);
+            }
+        }catch (Exception e){
+            //nothing to do
         }
     }
 
@@ -134,80 +158,12 @@ public class SuspendDetailBn implements Serializable {
             suspComments.add(suspComment);
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(userService.findUser(userSession.getLoggedINUserID()));
-
-//            RetObject retObject = suspendService.saveSuspend(suspDetail);
-//            if (retObject.getMsg().equals("success")) {
-//                suspDetail = (SuspDetail) retObject.getObj();
-//                facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
-//
-//            } else if (retObject.getMsg().equals("close_def")) {
-//                facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
-//
-//            }
         } catch (Exception ex) {
             ex.printStackTrace();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
         }
     }
 
-//    public void downloadSuspLetter(){
-//        File invoicePDF = null;
-//        Flash flash = JsfUtils.flashScope();
-//        flash.put("prodAppID", prodApplications.getId());
-//        flash.put("suspDetailID", suspDetail.getId());
-//        facesContext = FacesContext.getCurrentInstance();
-//        try {
-//            invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_susp", ".pdf");
-//        User user = userService.findUser(userSession.getLoggedINUserID());
-//        jasperPrint = suspendService.generateSuspLetter(suspDetail);
-//
-//        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
-//        byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
-//
-//        ProdAppLetter attachment = new ProdAppLetter();
-//        attachment.setRegState(prodApplications.getRegState());
-//        attachment.setFile(file);
-//        attachment.setProdApplications(prodApplications);
-//        attachment.setFileName(invoicePDF.getName());
-//        attachment.setTitle("Suspension Letter");
-//        attachment.setUploadedBy(prodApplications.getCreatedBy());
-//        attachment.setComment("Automatically generated Letter");
-//        attachment.setContentType("application/pdf");
-//        attachment.setLetterType(LetterType.SUSP_NOTIF_LETTER);
-//        prodAppLetterDAO.save(attachment);
-//
-//        HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-//        httpServletResponse.addHeader("Content-disposition", "attachment; filename=deficiency_letter.pdf");
-//        httpServletResponse.setContentType("application/pdf");
-//        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
-//        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
-//        facesContext.responseComplete();
-////        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-////        WebUtils.setSessionAttribute(request, "regHomeMbean", null);
-//
-//        TimeLine timeLine = new TimeLine();
-//        timeLine.setRegState(RegState.FOLLOW_UP);
-//        timeLine.setStatusDate(new Date());
-//        timeLine.setUser(user);
-//        timeLine.setComment(suspComment.getComment());
-//        timeLine.setProdApplications(prodApplications);
-//        prodApplications.setRegState(timeLine.getRegState());
-//        RetObject retObject = timelineService.saveTimeLine(timeLine);
-//        if (!retObject.getMsg().equals("persist")) {
-//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
-//        }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
-//        } catch (JRException e) {
-//            e.printStackTrace();
-//            facesContext.addMessage(null, new FacesMessage(e.getMessage()));
-//        }
-//
-//    }
 
     private User getLoggedInUser() {
         if (loggedInUser == null) {
@@ -257,23 +213,78 @@ public class SuspendDetailBn implements Serializable {
     }
 
     public StreamedContent fileDownload(ProdAppLetter doc) {
-        ProdAppLetter prodAppLetter = suspDetail.getProdAppLetters().get(0);
-        InputStream ist = new ByteArrayInputStream(prodAppLetter.getFile());
-        StreamedContent download = new DefaultStreamedContent(ist, prodAppLetter.getContentType(), prodAppLetter.getFileName());
+        InputStream ist = new ByteArrayInputStream(doc.getFile());
+        StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
         return download;
     }
 
-    public StreamedContent letterDownload(int letterType) {
-        List<ProdAppLetter> prodAppLetters = prodAppLetterDAO.findByProdApplications_IdAndLetterType(prodApplications.getId(), LetterType.SUSP_NOTIF_LETTER);
-        ProdAppLetter prodAppLetter = prodAppLetters.get(0);
-        InputStream ist = new ByteArrayInputStream(prodAppLetter.getFile());
-        StreamedContent download = new DefaultStreamedContent(ist, prodAppLetter.getContentType(), prodAppLetter.getFileName());
-        return download;
+    /**
+     * Returns all suspension letter
+     * @return
+     */
+    public List<ProdAppLetter> getLetters(){
+        List<ProdAppLetter> prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(prodApplications.getId());
+        List<ProdAppLetter> res = null;
+        if (prodAppLetters!=null){
+            if (prodAppLetters.size()>0){
+                for(int i=0;i<prodAppLetters.size();i++){
+                    ProdAppLetter letter = prodAppLetters.get(i);
+                    if ((letter.getLetterType()==LetterType.SUSP_NOTIF_LETTER)  || (letter.getLetterType()==LetterType.CANCELLATION_LETTER) || (letter.getLetterType()==LetterType.CANCELLATION_SENDER_LETTER)) {
+                        if (res==null) {res = new ArrayList<ProdAppLetter>();}
+                        res.add(letter);
+                    }
+                }
+            }
+        }
+        return res;
     }
 
+    public List<ReviewInfo> getReviewInfo(){
+        User user = suspDetail.getReviewer();
+        List<ReviewInfo> res = null;
+        if (user!=null){
+            res = suspendService.findReviewList(user.getUserId(),suspDetail.getProdApplications().getId());
+        }
+        return res;
+    }
 
     public void initComment() {
         suspComment = new SuspComment();
+    }
+
+
+    public String submitModeratorsDecision(){
+        if ("-".equals(moderDecision))
+            return "";
+        String r=bundle.getString("AmdmtState.NOT_RECOMMENDED");
+        if (r.equals(moderDecision)){
+            if ("".equals(moderSummary)){
+                FacesMessage fm = new FacesMessage("Please specify commend (reason).");
+                fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+                facesContext.addMessage(null, fm);
+            }
+        }
+        suspendService.submitModeratorDecision(suspDetail,userSession.getLoggedINUserID(),moderSummary,moderDecision);
+        return "processcancellist";
+    }
+
+    /**
+     * Return suspension application to moderator
+     */
+    public void not_recommend(){
+
+    }
+
+
+    public void submitSuspendStatus(int status){
+        if (status==1){
+            suspDetail.setDecision(RegState.CANCEL);
+        }if (status==2){
+            suspDetail.setDecision(RegState.SUSPEND);
+        }else if (status==3){
+            suspDetail.setDecision(RegState.REGISTERED);
+        }
+        submitSuspend();
     }
 
     public String submitSuspend() {
@@ -347,6 +358,16 @@ public class SuspendDetailBn implements Serializable {
         return decisionType;
     }
 
+   public List<String> getAprovalType(){
+       List<String> aprovalType = new ArrayList<String>();
+       //TODO USe resource
+       //aprovalType.add(bundle.getString("AmdmtState.RECOMMENDED"));
+       //aprovalType.add(bundle.getString("AmdmtState.NOT_RECOMMENDED"));
+       aprovalType.add("Recommended");
+       aprovalType.add("Not recommended");
+
+       return aprovalType;
+   }
 
     public String saveSuspend() {
         RetObject retObject = suspendService.saveSuspend(suspDetail);
@@ -426,6 +447,7 @@ public class SuspendDetailBn implements Serializable {
 
     }
 
+
     public UploadedFile getFile() {
         return file;
     }
@@ -498,6 +520,14 @@ public class SuspendDetailBn implements Serializable {
         this.prodAppLetter = prodAppLetter;
     }
 
+    public ReviewService getReviewService() {
+        return reviewService;
+    }
+
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
     public SuspendService getSuspendService() {
         return suspendService;
     }
@@ -564,6 +594,34 @@ public class SuspendDetailBn implements Serializable {
         return closed;
     }
 
+    /**
+     * Determine visibility of Submit button for moderator, depends of status
+     * @param no - buttin number
+     * @return
+     */
+    public boolean showSubmitButtonNo(int no){
+        if (suspDetail==null) return false;
+        if (no==1) {//before reviewing by assesor
+            if (!userSession.isModerator()) return false;
+            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.REQUESTED)
+                    ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.IN_PROGRESS)
+                    ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.ASSIGNED))
+                return true;
+            else
+                return false;
+        }else if (no==2){//Review finished, team leader should approve assessment and send it to head
+            if (!userSession.isModerator()) return false;
+            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT))
+                return true;
+            else
+                return false;
+        }else if (no==3) {
+            if (!userSession.isHead()) return false;
+            return isShowSuspend();
+        }
+        return false;
+    }
+
     public void setClosed(boolean closed) {
         this.closed = closed;
     }
@@ -587,4 +645,20 @@ public class SuspendDetailBn implements Serializable {
     public void setTimelineService(TimelineService timelineService) {
         this.timelineService = timelineService;
     }
+    public String getModerSummary() {
+        return moderSummary;
+    }
+
+    public void setModerSummary(String moderSummary) {
+        this.moderSummary = moderSummary;
+    }
+
+    public String getModerDecision() {
+        return moderDecision;
+    }
+
+    public void setModerDecision(String moderDecision) {
+        this.moderDecision = moderDecision;
+    }
+
 }

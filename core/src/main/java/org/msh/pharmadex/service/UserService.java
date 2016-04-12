@@ -114,6 +114,20 @@ public class UserService implements Serializable {
         return false;
     }
 
+    public boolean userHasRole(User user, String roleName){
+        if (user==null) return false;
+        if (roleName==null) return false;
+        if ("".equals(roleName)) return false;
+        List<Role> roles = user.getRoles();
+        if (roles==null) return false;
+        if (roles.size()==0) return false;
+        for(Role role:roles){
+            if (role.getRolename().equalsIgnoreCase(roleName))
+                return true;
+        }
+        return false;
+    }
+
     public List<User> findProcessors() {
         return userDAO.findProcessors();
     }

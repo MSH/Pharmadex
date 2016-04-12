@@ -23,32 +23,37 @@
 
             <div style="height: 10px;"/>
 
+
+
             <div align="right">
-                <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('reviewDlg').show()"
+                <!-- submit for moderator before reviewing -->
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBn.submitSuspend}"
+                                 ajax="false"
+                                 rendered="#{suspendDetailBn.showSubmitButtonNo(1)}"/>
+                <!-- submit for moderator after reviewing before aproving by head-->
+                <p:commandButton value="#{msgs.global_submit}"
+                                 oncomplete="PF('reviewDlgModer').show()"
                                  ajax="true"
-                                 rendered="#{userSession.reviewer}"/>
-                <p:commandButton value="#{msgs.global_suspend}" oncomplete="PF('regDlg').show()"
-                                 ajax="true"
-                                 rendered="#{userSession.head and (suspendDetailBn.showSuspend)}"/>
-                <p:commandButton value="#{msgs.global_suspend}" oncomplete="PF('regDlg').show()"
-                                 ajax="true"
-                                 rendered="#{userSession.head and (suspendDetailBn.showSuspend)}"/>
-                <!-- hide before clarification
-                <p:commandButton value="#{msgs.review_feedback}" action="#{suspendDetailBn.reviewFeedback}" ajax="false"
-                                 rendered="#{userSession.moderator}"/>
-                -->
-                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}" ajax="false"
-                                 rendered="#{userSession.head||userSession.moderator}"/>
+                                 rendered="#{suspendDetailBn.showSubmitButtonNo(2)}"/>
+                <!-- FINAL submit for head -->
+                <p:menuButton value="#{msgs.global_decision}" rendered="#{suspendDetailBn.showSubmitButtonNo(3)}">
+                    <p:menuitem value="#{msgs.not_recommended}" action="#{suspendDetailBn.not_recommend}"></p:menuitem>
+                    <p:menuitem value="Suspend" action="#{suspendDetailBn.submitSuspendStatus(2)}"></p:menuitem>
+                    <p:menuitem value="Cancel" action="#{suspendDetailBn.submitSuspendStatus(1)}"></p:menuitem>
+                    <p:menuitem value="Register" action="#{suspendDetailBn.submitSuspendStatus(3)}"></p:menuitem>
+                </p:menuButton>
+
+                <p:commandButton value="#{msgs.global_submit}"
+                                 oncomplete="PF('reviewDlg').show()"
+                                 action="#{suspendDetailBn.submitSuspend}" ajax="false"
+                                 rendered="#{(userSession.head||userSession.moderator) and (suspendDetailBn.showSuspend)}"/>
+
+                <!-- show product details -->
                 <p:commandButton value="#{msgs.product_details}" immediate="true"
                                  action="/internal/processreg" ajax="false">
                     <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
                 </p:commandButton>
-                <p:commandButton id="suspletdownload" value="#{msgs.letters}"
-                                 onclick="PrimeFaces.monitorDownload(start, stop)">
-                    <p:fileDownload value="#{suspendDetailBn.letterDownload(1)}"/>
-                </p:commandButton>
-
-
             </div>
 
             <div style="height: 10px;"/>
@@ -221,8 +226,55 @@
                         -->
                     </p:dataTable>
                 </p:tab>
-            </p:tabView>
 
+                <p:tab title="#{msgs.letters}" rendered="#{userSession.head}">
+                    <p:dataTable id="suspletterstbl" value="#{suspendDetailBn.letters}" var="doc">
+                        <p:column headerText="#{msgs.title}">
+                            <h:outputText value="#{doc.title}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.filename}">
+                            <h:outputText value="#{doc.fileName}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploaddate}">
+                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploadedby}">
+                            <h:outputText value="#{doc.uploadedBy.name}"/>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandButton id="leterdownloadlink" value="#{msgs.download_attach}" ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                             icon="ui-icon-arrowthichk-n">
+                                <p:fileDownload value="#{suspendDetailBn.fileDownload(doc)}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:tab>
+
+                <p:tab title="#{msgs.assessment}">
+                    <p:dataTable id="reviewtbl" value="#{suspendDetailBn.reviewInfo}" var="rev">
+                        <p:column headerText="#{msgs.processor}">
+                            <p:commandLink id="asmplink" value="#{rev.reviewer.name}"
+                                           action="/internal/reviewInfo.faces"
+                                           ajax="false">
+                                <f:param name="reviewInfoID" value="#{rev.id}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column headerText="#{msgs.review_status}">
+                            <h:outputText value="#{rev.reviewStatus}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs.recommendation}">
+                            <h:outputText value="#{rev.recomendType}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+            </p:tabView>
 
         </h:form>
 
@@ -264,6 +316,7 @@
                                  oncomplete="PF('attachdlg').hide()" update=":reviewHome"/>
             </h:form>
         </p:dialog>
+
         <p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false"
                   id="moderatordlg" modal="true" dynamic="true"
                   rendered="#{userSession.head||userSession.admin}">
@@ -287,6 +340,28 @@
                 <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
                                  action="#{suspendDetailBn.assignModerator}" update=":reviewHome"
                                  oncomplete="if (!args.validationFailed) PF('moderatordlg').hide()"/>
+            </h:form>
+        </p:dialog>
+
+        <!-- Moderator should choose recommend/not recommend and write reason -->
+        <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlgModer" id="reviewDlgModer" modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.recommendation}" for="recommod" styleClass="label"/>
+                    <p:selectOneMenu id="recommod" value="#{suspendDetailBn.moderDecision}" required="true"
+                                     requiredMessage="#{msgs.recommendation_valid}">
+                        <f:selectItem itemLabel="-"/>
+                        <f:selectItems value="#{suspendDetailBn.aprovalType}" var="type"/>
+                    </p:selectOneMenu>
+                    <p:message for="recommod"/>
+
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="moderSummary" styleClass="label"/>
+                    <p:editor value="#{suspendDetailBn.moderSummary}" id="moderSummary" required="true"
+                              width="700"/>
+                    <p:message for="moderSummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitModeratorsDecision}"
+                                 oncomplete="if (!args.validationFailed) PF('reviewDlgModer').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 

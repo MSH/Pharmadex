@@ -79,6 +79,7 @@ public class ReviewInfoBn implements Serializable {
     private String revType;
     private boolean priReview;
     private User loggedInUser;
+    private boolean submitted=false;
 
     @PostConstruct
     private void init() {
@@ -93,7 +94,6 @@ public class ReviewInfoBn implements Serializable {
                         reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), Long.valueOf(prodAppID));
                     }
                 }
-
                 if(reviewInfo!=null) {
                     ReviewStatus reviewStatus = reviewInfo.getReviewStatus();
                     if (reviewStatus.equals(ReviewStatus.SUBMITTED) || reviewStatus.equals(ReviewStatus.ACCEPTED)) {
@@ -188,6 +188,7 @@ public class ReviewInfoBn implements Serializable {
         facesContext.addMessage(null, msg);
 
     }
+
 
     public String saveReview() {
         reviewInfo.setUpdatedBy(loggedInUser);
@@ -567,6 +568,18 @@ public class ReviewInfoBn implements Serializable {
         }
         //priReview = true;
         return priReview;
+    }
+
+    public boolean isSubmitted() {
+        if (reviewInfo!=null){
+            submitted = reviewInfo.getReviewStatus().equals(ReviewStatus.SUBMITTED) ||
+                    reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED);
+        }
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 
     public void setPriReview(boolean priReview) {

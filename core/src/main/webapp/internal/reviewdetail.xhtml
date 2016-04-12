@@ -12,33 +12,37 @@
 
         <h:form id="reviewHome" enctype="multipart/form-data">
             <p:growl id="growl" showSummary="true"/>
-
+            <!-- product banner -->
             <div style="width:1054px">
                 <ui:decorate template="/templates/prodbannertempl.xhtml">
                     <ui:param name="prodApp" value="#{reviewDetailBn.prodApplications}"/>
                 </ui:decorate>
             </div>
-
+            <!-- header - review type -->
             <div align="center" style="background: #2191c0; padding: 5px; border-radius: 5px;">
                 <p:outputLabel value="#{reviewDetailBn.revType}"
                                style="align-content: center; font-weight: bold; color:darkred;"/>
             </div>
+            <!-- button bar -->
             <div style="height: 5px;"/>
-
             <p:panel header="#{msgs.complete_review}">
+                <!-- BACK, SAVE, SUBMIT-->
                 <p:commandButton value="#{msgs.global_back}" action="reviewInfo" ajax="false"
                                  immediate="true">
                     <f:param name="reviewInfoID" value="#{reviewDetailBn.reviewDetail.reviewInfo.id}"/>
                 </p:commandButton>
-                <p:commandButton value="#{msgs.global_save}" action="#{reviewDetailBn.saveReview}"
+                <p:commandButton value="#{msgs.global_save}" action="#{reviewDetailBn.saveReview(false)}"
                                  rendered="#{userSession.reviewer}"
                                  update=":reviewHome:growl reviewHome:reviewChkPnl" ajax="true">
                 </p:commandButton>
-                <p:commandButton value="#{msgs.global_submit}" action="#{reviewDetailBn.submitReview}"
-                                 ajax="false" rendered="#{userSession.reviewer}">
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{reviewDetailBn.submitReview}"
+                                 ajax="false"
+                                 rendered="#{(userSession.reviewer) and (not reviewInfoBn.submitted)}">
                     <f:param name="reviewInfoID" value="#{reviewDetailBn.reviewDetail.reviewInfo.id}"/>
                 </p:commandButton>
 
+                <!-- review area -->
                 <div style="height: 10px;"/>
 
                 <div style="background-color: rgb(33, 145, 192);font-weight: bold;color: white;padding: 5px; border: 2px solid; border-color: #015270; border-radius: 5px;">
@@ -68,16 +72,6 @@
                                         </p:selectBooleanButton>
                     -->
                 </h:panelGrid>
-                <!--
-                                <h:panelGrid columnClasses="label value" columns="2" cellspacing="5px" id="satispg">
-                                    <p:outputLabel id="satisLbl" value="#{msgs.review_info_satifno}:" styleClass="label"
-                                                   rendered="#{!reviewDetailBn.satisfactory}"/>
-                                    <p:editor id="noreasonTxt" value="#{reviewDetailBn.reviewDetail.noReason}" width="700"
-                                              rendered="#{!reviewDetailBn.satisfactory and userSession.reviewer}"/>
-                                    <h:outputText escape="false" value="#{reviewDetailBn.reviewDetail.noReason}"
-                                                  rendered="#{!userSession.reviewer}"></h:outputText>
-                                </h:panelGrid>
-                -->
                 <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
                     <p:outputLabel value="#{msgs.pri_processor}:" styleClass="label"/>
                     <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"
