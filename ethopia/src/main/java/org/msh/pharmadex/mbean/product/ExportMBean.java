@@ -32,7 +32,16 @@ public class ExportMBean implements Serializable {
     private static java.util.regex.Pattern numeric = java.util.regex.Pattern.compile("\\d*");
     private int success=0;
     private  int failure=0;
-    private  int total=0;
+    private  int ignore=0;
+    public int getIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(int ignore) {
+        this.ignore = ignore;
+    }
+
+
 
     @ManagedProperty(value = "#{exportService}")
     private ExportService exportService ;
@@ -85,10 +94,11 @@ public class ExportMBean implements Serializable {
 
     }
 
-    public String startExport(){
+    public String startExport(boolean importData){
         FacesContext context = FacesContext.getCurrentInstance();
         setSuccess(0);
         setFailure(0);
+        setIgnore(0);
         if (filename==null) return "";
         File f =new File(filename) ;  //c:/temp/LEGACY DATA.xlsx
         if (f.isFile()) try {
@@ -97,7 +107,7 @@ public class ExportMBean implements Serializable {
             if (sheet == null) return "";
             boolean res;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                res = exportService.importRow(sheet.getRow(i));
+                res = exportService.importRow(sheet.getRow(i),importData);
                 if (res) {
                     success++;
                     ExcelTools.setCellBackground(sheet.getRow(i).getCell(3), IndexedColors.GREEN.getIndex());
@@ -106,7 +116,9 @@ public class ExportMBean implements Serializable {
   //                  sheet.getRow(i).setRowStyle(style);
                 }
                 else failure++;
+
             }
+            setIgnore(success+failure);
             File outf = new File("C:/Temp/res.xlsx");
             FileOutputStream out = new FileOutputStream(outf);
             wb.write(out);
