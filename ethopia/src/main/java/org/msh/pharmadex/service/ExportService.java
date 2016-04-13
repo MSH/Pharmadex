@@ -4,9 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 
 
 import org.msh.pharmadex.dao.*;
-import org.msh.pharmadex.dao.iface.CompanyDAO;
-import org.msh.pharmadex.dao.iface.LicenseHolderDAO;
-import org.msh.pharmadex.dao.iface.ProdCompanyDAO;
+import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 
 import org.msh.pharmadex.domain.enums.*;
@@ -45,10 +43,20 @@ public class ExportService implements Serializable {
     CompanyDAO companyDAO;
     @Autowired
     LicenseHolderDAO licenseHolderDAO;
+    //@Autowired
+    //AgentInfoDAO agentInfoDAO;
+    @Autowired
+    ApplicantTypeDAO applicantTypeDAO;
+    @Autowired
+    ApplicantDAO applicantDAO;
+    @Autowired
+    UserDAO userDAO;
     private Row currrow;
     private  boolean errorDetected;
-
-    public boolean importRow(Row row) {
+    ApplicantType at=null;
+    User user=null;
+private int lastCol=0;
+    public boolean importRow(Row row, boolean importData) {
       errorDetected=false;
         int rowNo=0;
         int curCol=0;
@@ -64,12 +72,15 @@ public class ExportService implements Serializable {
             Address addr = new Address();
             Company co=new Company();
             cell = row.getCell(curCol);   // A Presentation -   prod description
-            cell.setCellType(Cell.CELL_TYPE_STRING);
+            if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC) cell.setCellType(Cell.CELL_TYPE_STRING);
+
             if (cell != null) prod.setProdDesc(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol);  // B Route Of Admin  catalog   in table adminroute
             if (cell != null)
-                prod.setAdminRoute(fingAdminRouteAcc(cell.getStringCellValue(),curCol));
+
+                prod.setIndications(cell.getStringCellValue());
+            //prod.setAdminRoute(fingAdminRouteAcc(cell.getStringCellValue(),curCol));
             curCol++;
             cell = row.getCell(curCol);  //C Therapeutic Group    catalog  in table adminroute
             if (cell != null)
@@ -88,9 +99,14 @@ public class ExportService implements Serializable {
             curCol++;
             cell = row.getCell(curCol);  //F Dose strength
             if (cell != null) {
-                cell.setCellType(Cell.CELL_TYPE_STRING);
-                prod.setDosStrength(cutNumberPart(cell.getStringCellValue()));
-                prod.setDosUnit(findDocUnit(cell.getStringCellValue(),curCol));
+                if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC){
+                    prod.setDosStrength(String.valueOf(cell.getNumericCellValue()*100));
+                    prod.setDosUnit(findDocUnit("%",curCol));
+                }else {
+                    prod.setDosStrength(cutNumberPart(cell.getStringCellValue()));
+                    prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
+                    if (prod.getDosUnit()==null) prod.setDosStrength(cell.getStringCellValue());
+                }
             }
             curCol++;
             cell = row.getCell(curCol);  //G Dosage Form
@@ -113,39 +129,36 @@ public class ExportService implements Serializable {
            if (cell!=null)pa.setRegistrationDate(getDateValue(cell));
             curCol++;
             cell = row.getCell(curCol); //M Expiry Date
-      if (cell!=null) pa.setRegistrationDate(getDateValue(cell));
+            if (cell!=null) pa.setRegExpiryDate(getDateValue(cell));
             curCol++;
             cell = row.getCell(curCol);//N Manufacturer/Actual site/
             if (cell != null) {
                 String all=cell.getStringCellValue();
                 int pos=all.indexOf(",");
-                if (pos==0) {
+                if (pos==-1) {
                     co=FindCompany(all);
                 }else{
                     co=FindCompany(all.substring(0,pos));
                     addr.setAddress1(all.substring(pos+1));
                 }
-                /* String[]all= new String[3];
-               all=cell.getStringCellValue().split(", ",2);
-                co=FindCompany(all[0]);
-                if (all.length>1) addr.setAddress1(all[all.length-1]);*/
-
-            }
+             }
             curCol++;
             cell = row.getCell(curCol); //Country of Origin
             if (cell != null)     addr.setCountry(findCountry(cell.getStringCellValue(),curCol));
             if (errorDetected) return false;
+            if (addr.getAddress1()==null) addr.setAddress1(addr.getCountry().getCountryName());
             co.setAddress(addr);
             Product oldprod=findExistingProd(prod);
-            if(oldprod!=null)
-                prod=oldprod;
-            //return addToDatabase(prod, co, a, pa, lic);
-            return true;
+            if(oldprod!=null)  prod=oldprod;
+            curCol++;
+            lastCol=curCol;
+            cell = row.getCell(curCol); //additional comment
+            if (cell!=null) importData=false;
+            if (importData)   return addToDatabase(prod, co, a, pa, lic);
+                   else return true;
         }catch (Exception e){
             String colNo="";
-            if (cell!=null){
-                colNo = String.valueOf(cell.getColumnIndex());
-            }
+            if (cell!=null)   colNo = String.valueOf(cell.getColumnIndex());
             System.out.println(String.valueOf(rowNo)+" " + colNo + " " + e.getMessage());
             return false;
         }
@@ -153,42 +166,85 @@ public class ExportService implements Serializable {
 
 
     public boolean addToDatabase(Product prod, Company co, Applicant a, ProdApplications pa, LicenseHolder lic) {
-
+        if(ifProdExist(prod,pa)==true){
+            Cell t = currrow.createCell(lastCol);
+            t.setCellValue("Exist");
+            return false;
+        }
+        if (at==null) at=applicantTypeDAO.findOne((long) 2);  //set applicant type = importer
+        if (user==null) user=userDAO.findUser((long) 1); //admin
         try{
 
             pa.setApplicant(a);
             pa.setProduct(prod);
             pa.setRegState(RegState.REGISTERED);
-           if (prod.getAgeGroup()==null) prod.setAgeGroup(AgeGroup.BOTH);
+            pa.setActive(true);
+            pa.setCreatedBy(user);
+            if (prod.getAgeGroup()==null) prod.setAgeGroup(AgeGroup.BOTH);
             if(prod.getDrugType()==null)prod.setDrugType(ProdDrugType.PHARMACEUTICAL);
             if(prod.getProdCategory()==null) prod.setProdCategory(ProdCategory.HUMAN);
-            companyDAO.save(co);
+            if (prod.getCreatedBy()==null) prod.setCreatedBy(user);
+            if (co.getCreatedBy()==null) co.setCreatedBy(user);
+            co=companyDAO.save(co);
+            if (a.getState()==null)a.setState(ApplicantState.REGISTERED);
+            if (a.getApplicantType()==null) a.setApplicantType(at);
+          //      a=applicantDAO.saveApplicant(a);
             //set manufacrurer
             List<ProdCompany> comlist=new ArrayList<ProdCompany>();
+            if (prod.getProdCompanies()!=null)comlist=prod.getProdCompanies();
             ProdCompany com=new ProdCompany();
             com.setProduct(prod);
             com.setCompany(co);
             com.setCompanyType(CompanyType.FIN_PROD_MANUF);
             comlist.add(com);
-      //List<ProdApplications>
-            licenseHolderDAO.save(lic);
-            //TODO add arent_info
+            prod.setProdCompanies(comlist);
+            String s = prodApplicationsDAO.saveApplication(pa);
+            // arent_info
+            List<AgentInfo> agInfoList=lic.getAgentInfos();
+            if (agInfoList==null) agInfoList=new  ArrayList<AgentInfo>();
+            AgentInfo ai=new AgentInfo();
+            ai.setApplicant(a);
+            ai.setLicenseHolder(lic);
+            ai.setAgentType(AgentType.FIRST);
+            ai.setStartDate(pa.getRegistrationDate());
+            ai.setEndDate(pa.getRegExpiryDate());
+            lic=licenseHolderDAO.save(lic);
+            ai.setCreatedBy(user);
+            agInfoList.add(ai);
+            //agentInfoDAO.save(ai);
+            lic.setAgentInfos(agInfoList);
+
             //if (cell != null) lic.setFirstAgent(cell.getStringCellValue());
            List<Product> old=lic.getProducts();
            if (old==null) old=new ArrayList<Product>();
                 old.add(prod);
             lic.setProducts(old);
-            String s = prodApplicationsDAO.saveApplication(pa);
-
-    }  catch (Exception ex) {
+            if (lic.getAddress().getAddress1()==null)lic.setAddress(co.getAddress());
+            if (lic.getCreatedBy()==null) lic.setCreatedBy(user);
+            lic=licenseHolderDAO.save(lic);
+            Cell t=currrow.createCell(lastCol);
+            t.setCellValue("Done");
+         }  catch (Exception ex) {
             return false;
         }
 
         return true;
     }
 
+    private boolean ifProdExist(Product prod,ProdApplications pa ){
+       if (prod.getId()==null)return false;
+        List<ProdApplications> lpa=prod.getProdApplicationses();
+        if (lpa!=null){
+            for (ProdApplications item : lpa){
+               if  (item.getRegExpiryDate()==null) return false;
+                if( item.getRegExpiryDate().equals(pa.getRegExpiryDate())) return true;
+            }
+        }
+        return false;
+
+    }
     private Product findExistingProd(Product prod) {
-        //TODO check by name, docform and dosagepl
+        // check by name, docform and dosagepl
         Product p=null;
         ProductFilter filter=new ProductFilter();
         filter.setProdName(prod.getProdName());
@@ -231,7 +287,7 @@ public class ExportService implements Serializable {
         DosUom  r=dictionaryDAO.findDosUomByName(res);
         if (r!=null)return r;
         ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
-        errorDetected=true;
+        //errorDetected=true;
         return r;
     }
 
@@ -287,7 +343,7 @@ public class ExportService implements Serializable {
                 if (atc != null) res.add(atc);
                 else {
                     ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
-                    errorDetected = true;
+                    //errorDetected = true;
                     return null;
                 }
             }
@@ -316,7 +372,7 @@ public class ExportService implements Serializable {
     }
 Date getDateValue(Cell cell){
     Date dt=null;
-
+if (cell.getCellType()==Cell.CELL_TYPE_STRING)
     try {
         String s = cell.getStringCellValue().trim();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -325,7 +381,8 @@ Date getDateValue(Cell cell){
         ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
 
-    }
+    }else
+dt=cell.getDateCellValue();
     return dt;
 }
       public Applicant findApplicant(String s){
@@ -336,76 +393,4 @@ Date getDateValue(Cell cell){
         return a;
       }
 
-    public ProdCompanyDAO getProdCompanyDAO() {
-        return prodCompanyDAO;
-    }
-
-    public void setProdCompanyDAO(ProdCompanyDAO prodCompanyDAO) {
-        this.prodCompanyDAO = prodCompanyDAO;
-    }
-
-/*    public static void errorToLog(Workbook wb, ErrorCell errorCell){
-        if (errorCell==null) return;
-        RequestService.logEvent("Імпорт", errorCell.getErrorMsg(), author);
-        try {
-            CreationHelper factory = ImportXL.wb.getCreationHelper();
-            ClientAnchor anchor = factory.createClientAnchor();
-            //CellReference cr = new CellReference(errorCell.getCellName());
-            Row row = wb.getSheet(errorCell.getTabName()).getRow(errorCell.getRowNo());
-            Cell cell = row.getCell(errorCell.getColumnNo());
-            if (cell==null){
-                cell = row.createCell(errorCell.getColumnNo());
-                cell.setCellValue(" ");
-            }
-            anchor.setAnchorType(1);
-            anchor.setCol1(cell.getColumnIndex());
-            anchor.setCol2(cell.getColumnIndex()+1);
-            anchor.setRow1(row.getRowNum()-1);
-            anchor.setRow2(row.getRowNum()+3);
-            Drawing drawing = cell.getSheet().createDrawingPatriarch();
-            Comment comment = cell.getCellComment();
-            if (comment==null)
-                comment = drawing.createCellComment(anchor);
-            RichTextString str = comment.getString();
-            if (str==null)
-                str = factory.createRichTextString(errorCell.getErrorMsg());
-            else{
-                if (!Tools.isEmptyStr(str.getString())){
-                    String addStr = str.getString() + ";" + errorCell.getErrorMsg();
-                    str = factory.createRichTextString(addStr);
-                }else
-                    str = factory.createRichTextString(errorCell.getErrorMsg());
-            }
-            comment.setVisible(Boolean.FALSE);
-            comment.setString(str);
-            ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
-            cell.setCellComment(comment);
-            //запишем файл с изменениями в специальную папку
-            String outFileName=getOutFileName();
-            FileOutputStream out = new FileOutputStream(outFileName);
-            wb.write(out);
-            out.close();
-        } catch (FileNotFoundException e) {
-            RequestService.logEvent("Помилка", "Неможливо відкрити електронну таблицю для аналізу помилок", author);
-        } catch (IOException e) {
-            RequestService.logEvent("Помилка", "Неможливо записати файл з аналізом помилок", author);		}
-        catch (IllegalStateException e){
-            // nothing to do - попытка вставить второй комментарий
-        } catch (IllegalArgumentException e){
-            // nothing to do  - попытка вставить второй комментарий
-        }
-    }
-
-    public static void errorsToLog(Workbook wb, List<ErrorCell> errorCells, Clerk author){
-        if (errorCells.size()==0) return;
-        //записали в лог базы
-        for(int i=0;i<errorCells.size();i++){
-            ErrorCell ec = errorCells.get(i);
-            RequestService.logEvent("Імпорт", ec.getErrorMsg(), author);
-        }
-        //теперь делаем отметки в файле Excel (в местах ошибок)
-        for(int i=0;i<errorCells.size();i++){
-            errorToLog(wb, errorCells.get(i), author);
-        }
-    }*/
 }
