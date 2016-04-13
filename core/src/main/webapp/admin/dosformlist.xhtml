@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="formlist">
+            <h:panelGroup id="content">
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all">#{msgs.dos_form}</h1>
+                </div>
+
+                <!--<p:growl id="growl" showDetail="true"/>
+                <p:messages id="messages" showDetail="true" showSummary="true"/>-->
+                <p:dataTable id="forms" var="form" value="#{dosFormBean.allForms}"
+                             rows="25" paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}" rowsPerPageTemplate="25,50,100,200">
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}" action="#{dosFormBean.addForm}"
+                                         oncomplete="PF('addform').show();"/>
+                    </f:facet>
+
+                    <p:column headerText="#{msgs.dos_form}" sortBy="#{form.dosForm}">
+                        <p:outputLabel value="#{form.dosForm}"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.inn_qty}" >
+                        <p:outputLabel value="#{form.sampleSize}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="addform" modal="true" resizable="false" header="#{msgs.global_add}" dynamic="true">
+            <h:form id="addfrm">
+               <!--     <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
+                        <h:outputLabel value="form"   for="n"/>
+                        <p:inputText value="#{dosFormBean.dosForm.dosForm}" readonly="#{dosFormBean.edit}" id="n"/>
+                        <h:outputLabel value="count"  for="s"/>
+                        <p:inputText value="#{dosFormBean.dosForm.sampleSize}" readonly="#{dosFormBean.edit}" id="s"/>
+                    </h:panelGrid>
+                      <p:commandButton action="#{dosFormBean.save}" value="#{msgs.global_add}" id="savebtn"/>                                     />
+                    <p:commandButton action="#{dosFormBean.save}" value="#{msgs.global_update}" id="updatebtn"/>
+                    <p:commandButton action="#{dosFormBean.cancel}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addform').hide()" ajax="false"
+-->
+                </h:form>
+            </p:dialog>
+
+    </ui:define>
+</ui:composition>
