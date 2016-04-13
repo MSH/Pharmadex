@@ -77,12 +77,16 @@ public class CustomLicHolderDAO {
             return null;
     }
     public LicenseHolder findLicHolderByName(String name) {
-        List<LicenseHolder> licenseHolders = entityManager.createQuery("select lh from LicenseHolder lh join lh.products p where lh.name = :nn")
-                .setParameter("nn", name)
-                .getResultList();
-        if (licenseHolders != null && licenseHolders.size() > 0)
-            return licenseHolders.get(0);
-        else
+        try {
+            List<LicenseHolder> licenseHolders = entityManager.createQuery("select lh from LicenseHolder lh  where lh.name = :nn")
+                    .setParameter("nn", name)
+                    .getResultList();
+            if (licenseHolders != null && licenseHolders.size() > 0)
+                return licenseHolders.get(0);
+            else
+                return null;
+        } catch (Exception ex) {
             return null;
+        }
     }
 }
