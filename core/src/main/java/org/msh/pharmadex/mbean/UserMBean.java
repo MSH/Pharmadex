@@ -168,6 +168,7 @@ public class UserMBean implements Serializable {
 
     public void updateuser() {
         selectedUser.setRoles(roles.getTarget());
+        selectedUser.setApplicant(getUserApp());
 //        if(!prevApplicantId.equals(userApp.getApplcntId())){
 //            selectedUser.setApplicant(applicantService.findApplicant(userApp.getApplcntId()));
 //        }
@@ -301,6 +302,7 @@ public class UserMBean implements Serializable {
 
     public void setUserApp(Applicant userApp) {
         this.userApp = userApp;
+        
     }
 
     public String getEmail() {
