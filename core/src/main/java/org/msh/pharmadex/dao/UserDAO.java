@@ -31,6 +31,9 @@ public class UserDAO implements Serializable {
 
     @Autowired
     CountryDAO countryDAO;
+    
+    @Autowired
+    ApplicantDAO applicantDAO;
 
     @Transactional
     public User findUser(Long id) {
@@ -135,6 +138,9 @@ public class UserDAO implements Serializable {
     @Transactional
     public User updateUser(User user) {
         user.getAddress().setCountry(countryDAO.find(user.getAddress().getCountry().getId()));
+        user.setApplicant(applicantDAO.findApplicant(user.getApplicant().getApplcntId()));
+        if(user.getApplicant() != null)
+        	user.setCompanyName(user.getApplicant().getAppName());
         user = entityManager.merge(user);
         return user;
     }

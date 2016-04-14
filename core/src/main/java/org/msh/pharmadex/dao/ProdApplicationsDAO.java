@@ -142,7 +142,8 @@ public class ProdApplicationsDAO implements Serializable {
                 Expression<Integer> userIdExp = userJoin.<Integer>get("userId");
                 p = userIdExp.in(userIdList);
             }
-            predicateList.add(p);
+            if(p != null)
+            	predicateList.add(p);
         }
 
         Predicate[] predicates = new Predicate[predicateList.size()];
