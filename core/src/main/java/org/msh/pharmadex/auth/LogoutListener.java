@@ -30,7 +30,7 @@ public class LogoutListener implements ApplicationListener<SessionDestroyedEvent
                 SecurityContextHolder.clearContext();
 //                response.sendRedirect(request.getContextPath() + "/home.faces?faces-redirect=true");
             }
-            System.out.println("-------------- Username == " + ud.getUsername());
+           // System.out.println("-------------- Username == " + ud.getUsername());
         }
     }
 }
