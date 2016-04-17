@@ -51,16 +51,25 @@ public class ExportService implements Serializable {
     ApplicantDAO applicantDAO;
     @Autowired
     UserDAO userDAO;
+    @Autowired
+    DosUomDAO dosUomDAO;
+    @Autowired
+    AtcDAO atcDAO;
     private Row currrow;
     private  boolean errorDetected;
     ApplicantType at=null;
     User user=null;
+    boolean isNewUom;
+    boolean isNewATC;
+    boolean isNewRoute;
 private int lastCol=0;
     public boolean importRow(Row row, boolean importData) {
       errorDetected=false;
         int rowNo=0;
         int curCol=0;
         Cell cell = null;
+        isNewATC=false;
+        isNewUom=false;
         try {
             currrow = row;
             rowNo++;
@@ -73,40 +82,50 @@ private int lastCol=0;
             Company co=new Company();
             cell = row.getCell(curCol);   // A Presentation -   prod description
             if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC) cell.setCellType(Cell.CELL_TYPE_STRING);
-
             if (cell != null) prod.setProdDesc(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol);  // B Route Of Admin  catalog   in table adminroute
-            if (cell != null)
-
-                prod.setIndications(cell.getStringCellValue());
-            //prod.setAdminRoute(fingAdminRouteAcc(cell.getStringCellValue(),curCol));
+            if (cell != null) {
+                prod.setAdminRoute(fingAdminRouteAcc(cell.getStringCellValue(), curCol));
+                if (prod.getAdminRoute()==null) prod.setIndications(cell.getStringCellValue());
+            }
             curCol++;
-            cell = row.getCell(curCol);  //C Therapeutic Group    catalog  in table adminroute
-            if (cell != null)
-                prod.setAtcs(findAtcList(cell.getStringCellValue(),curCol));
+            cell = row.getCell(curCol);  //C Therapeutic Group    ATC name
+            String atc="";
+            if (cell != null) atc=cell.getStringCellValue().trim();
+            cell = row.getCell(curCol+1);  //D Therapeutic Group    ATC code
+            String atccode="";
+            if (cell != null) atccode=cell.getStringCellValue().trim();
+             prod.setAtcs(findAtcList(atccode,atc,curCol+1));
+            curCol=curCol+2;
             /*cell = row.getCell(3);  //Indication   catalog in table pharmSlassif
             if (cell != null)
                 prod.setIndications(cell.getStringCellValue());//prod.setPharmClassif(findpharmSlassifAcc(cell.getStringCellValue()));
             //col 4 classification is empty
        */
-            curCol++;
-            cell = row.getCell(curCol);// D Brand Name
+            cell = row.getCell(curCol);// E Brand Name
             if (cell != null) prod.setProdName(cell.getStringCellValue());
             curCol++;
-            cell = row.getCell(curCol);  // E Generic Name
+            cell = row.getCell(curCol);  // f Generic Name
             if (cell != null) prod.setGenName(cell.getStringCellValue());
             curCol++;
-            cell = row.getCell(curCol);  //F Dose strength
+            cell = row.getCell(curCol);  //G Dose strength
             if (cell != null) {
                 if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC){
-                    prod.setDosStrength(String.valueOf(cell.getNumericCellValue()*100));
-                    prod.setDosUnit(findDocUnit("%",curCol));
+                    prod.setDosStrength(String.valueOf(cell.getNumericCellValue()));
+                   // prod.setDosUnit(findDocUnit("%",curCol));
                 }else {
-                    prod.setDosStrength(cutNumberPart(cell.getStringCellValue()));
-                    prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
-                    if (prod.getDosUnit()==null) prod.setDosStrength(cell.getStringCellValue());
+                    prod.setDosStrength(cell.getStringCellValue());
+                  //  prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
+                   //if (prod.getD ()==null) prod.setDosStrength(cell.getStringCellValue());
                 }
+            }
+            curCol++;
+            cell = row.getCell(curCol); //h - DosUnit
+            prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
+            if (prod.getDosUnit().getUom().equalsIgnoreCase("%")) {
+                Double val=new Double(prod.getDosStrength())*100;
+                prod.setDosStrength(String.valueOf(val));
             }
             curCol++;
             cell = row.getCell(curCol);  //G Dosage Form
@@ -153,7 +172,10 @@ private int lastCol=0;
             curCol++;
             lastCol=curCol;
             cell = row.getCell(curCol); //additional comment
-            if (cell!=null) importData=false;
+            if (cell!=null) {
+                if (! cell.getStringCellValue().equalsIgnoreCase(""))importData=false;
+            }
+
             if (importData)   return addToDatabase(prod, co, a, pa, lic);
                    else return true;
         }catch (Exception e){
@@ -174,7 +196,16 @@ private int lastCol=0;
         if (at==null) at=applicantTypeDAO.findOne((long) 2);  //set applicant type = importer
         if (user==null) user=userDAO.findUser((long) 1); //admin
         try{
-
+//todo проверить записывает ли atc
+            if (isNewUom){
+                DosUom u = prod.getDosUnit();
+                dosUomDAO.save(u);
+            }
+           if (isNewATC){
+               List<Atc> la=prod.getAtcs();
+               if (la.get(0)!=null)
+               atcDAO.save(la.get(0));
+           }
             pa.setApplicant(a);
             pa.setProduct(prod);
             pa.setRegState(RegState.REGISTERED);
@@ -270,7 +301,7 @@ private int lastCol=0;
         }
         return res;
     }
-    private DosUom findDocUnit(String s, int col) {
+    private DosUom findDocUnitOld(String s, int col) {
         String res="";
         int ind=0;
         if (s == null) return null;
@@ -288,6 +319,17 @@ private int lastCol=0;
         if (r!=null)return r;
         ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
         //errorDetected=true;
+        return r;
+    }
+    private DosUom findDocUnit(String s, int col) {
+        s=s.trim();
+        DosUom  r=dictionaryDAO.findDosUomByName(s);
+        if (r!=null)return r;
+        ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
+        r=new DosUom();
+        r.setUom(s);
+        r.setDiscontinued(true);
+        isNewUom=true;
         return r;
     }
 
@@ -333,7 +375,7 @@ private int lastCol=0;
         return r;
     }
 
-    public List<Atc> findAtcList(String s,int col) {
+    public List<Atc> findAtcListOld(String s,int col) {
         List<Atc> res=new ArrayList<Atc>();
         String[]allnames= new String[10];
         allnames=s.split(", ",10);
@@ -349,6 +391,20 @@ private int lastCol=0;
             }
         }
         return res;
+    }
+    public List<Atc> findAtcList(String code,String s, int col) {
+        List<Atc>   la=new ArrayList<Atc>();
+        Atc atc = dictionaryDAO.findAtsbyCode(code);
+                if (atc != null) la.add(atc);
+                else {
+                    ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
+                   atc=new Atc();
+                    atc.setAtcName(s);
+                    if (!s.equalsIgnoreCase("")) atc.setLevel(s.length()-1);
+                    la.add(atc);
+                    isNewATC=true;
+                }
+        return la;
     }
 
     public PharmClassif findpharmSlassifAcc(String s) {
