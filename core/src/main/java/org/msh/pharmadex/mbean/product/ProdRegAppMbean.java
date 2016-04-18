@@ -56,6 +56,8 @@ public class ProdRegAppMbean implements Serializable {
     private ApplicantService applicantService;
     @ManagedProperty(value = "#{productService}")
     private ProductService productService;
+    @ManagedProperty(value = "#{innService}")
+    private InnService innService;
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
     @ManagedProperty(value = "#{globalEntityLists}")
@@ -177,13 +179,13 @@ public class ProdRegAppMbean implements Serializable {
             WebUtils.setSessionAttribute(request, "regHomeMbean", null);
         } catch (JRException e) {
             e.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
     }
 
@@ -221,7 +223,7 @@ public class ProdRegAppMbean implements Serializable {
     public void handlePayReceiptUpload() {
         FacesMessage msg = null;
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+       // java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
         try {
             if (payReceipt != null) {
@@ -232,12 +234,12 @@ public class ProdRegAppMbean implements Serializable {
 
                 } catch (IOException e) {
                     msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                    facesContext.addMessage(null, msg);
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             } else {
                 msg = new FacesMessage(bundle.getString("global_fail"), payReceipt.getFileName() + bundle.getString("upload_fail"));
-                FacesContext.getCurrentInstance().addMessage(null, msg);
+                facesContext.addMessage(null, msg);
             }
         } catch (Exception ex) {
             if (ex instanceof PacketTooBigException) {
@@ -245,7 +247,7 @@ public class ProdRegAppMbean implements Serializable {
             } else {
                 msg = new FacesMessage("Error uploading file");
             }
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            facesContext.addMessage(null, msg);
         }
 
     }
@@ -281,14 +283,20 @@ public class ProdRegAppMbean implements Serializable {
 
     public StreamedContent fileDownload() {
         FacesMessage msg;
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+       // FacesContext facesContext = FacesContext.getCurrentInstance();
+       // java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
             byte[] file1 = prodApplications.getFeeReceipt();
-            InputStream ist = new ByteArrayInputStream(file1);
-            StreamedContent download = new DefaultStreamedContent(ist);
-//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
-            return download;
+            if(file != null){
+            	InputStream ist = new ByteArrayInputStream(file1);
+            	StreamedContent download = new DefaultStreamedContent(ist);
+           
+            	return download;
+            }else {
+            	msg = new FacesMessage("Error no file for download");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            	return null;
+            }
         } catch (Exception ex) {
             msg = new FacesMessage("Error downloading the file");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -462,10 +470,11 @@ public class ProdRegAppMbean implements Serializable {
         context = FacesContext.getCurrentInstance();
         try {
             selectedInns.remove(prodInn);
+            innService.removeProdInn(prodInn);
             context.addMessage(null, new FacesMessage(bundle.getString("inn_removed")));
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
         return null;
     }
@@ -474,10 +483,11 @@ public class ProdRegAppMbean implements Serializable {
         context = FacesContext.getCurrentInstance();
         try {
             selectedExipients.remove(prodExcipient);
+            innService.removeExcipient(prodExcipient);
             context.addMessage(null, new FacesMessage(bundle.getString("expnt_removed")));
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
 
         return null;
@@ -490,7 +500,7 @@ public class ProdRegAppMbean implements Serializable {
             context.addMessage(null, new FacesMessage(bundle.getString("atc_removed")));
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
         return null;
     }
@@ -502,7 +512,7 @@ public class ProdRegAppMbean implements Serializable {
             context.addMessage(null, new FacesMessage(bundle.getString("drugprice_removed")));
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
         return null;
     }
@@ -516,7 +526,7 @@ public class ProdRegAppMbean implements Serializable {
             context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
 
     }
@@ -529,7 +539,7 @@ public class ProdRegAppMbean implements Serializable {
             context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
         }
     }
 
@@ -596,7 +606,7 @@ public class ProdRegAppMbean implements Serializable {
             return "/secure/prodregack.faces";
         } catch (Exception ex) {
             ex.printStackTrace();
-            context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
             return "";
         }
 
@@ -738,10 +748,6 @@ public class ProdRegAppMbean implements Serializable {
         this.prodAppChecklists = prodAppChecklists;
     }
 
-    private void addMessage(FacesMessage message) {
-        context.addMessage(null, message);
-    }
-
     public List<DrugPrice> getDrugPrices() {
         return drugPrices;
     }
@@ -848,6 +854,14 @@ public class ProdRegAppMbean implements Serializable {
 
     public void setCompanyService(CompanyService companyService) {
         this.companyService = companyService;
+    }
+    
+    public InnService getInnService() {
+        return innService;
+    }
+
+    public void setInnService(InnService innService) {
+        this.innService = innService;
     }
 
     public GlobalEntityLists getGlobalEntityLists() {

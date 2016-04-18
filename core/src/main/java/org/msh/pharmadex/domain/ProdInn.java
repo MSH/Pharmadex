@@ -31,7 +31,8 @@ public class ProdInn extends CreationDetail implements Serializable {
     @JoinColumn(name = "INN_ID")
     private Inn inn;
 
-    @ManyToOne
+    //@ManyToOne
+    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "prod_id", nullable = false)
     private Product product;
 

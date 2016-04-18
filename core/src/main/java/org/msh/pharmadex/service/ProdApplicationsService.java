@@ -713,7 +713,7 @@ public class ProdApplicationsService implements Serializable {
             param.put("subject", "Product application deficiency letter for  " + prod.getProdName());
             param.put("registrar", workspace.getRegistrarName());
 
-            URL resource = getClass().getResource("/reports/letter.jasper");
+            URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
             jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));

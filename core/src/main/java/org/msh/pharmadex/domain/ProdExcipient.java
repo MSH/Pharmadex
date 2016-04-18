@@ -7,8 +7,9 @@ import java.io.Serializable;
 @Entity
 public class ProdExcipient extends CreationDetail implements Serializable {
 
+	private static final long serialVersionUID = 6597026660123168100L;
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true)
     private Long id;
@@ -30,7 +31,7 @@ public class ProdExcipient extends CreationDetail implements Serializable {
     @JoinColumn(name = "EXPNT_ID")
     private Excipient excipient;
 
-    @ManyToOne
+    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "prod_id", nullable = false)
     private Product product;
 
