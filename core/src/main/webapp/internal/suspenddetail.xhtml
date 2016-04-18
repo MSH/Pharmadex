@@ -38,10 +38,9 @@
                                  rendered="#{suspendDetailBn.showSubmitButtonNo(2)}"/>
                 <!-- FINAL submit for head -->
                 <p:menuButton value="#{msgs.global_decision}" rendered="#{suspendDetailBn.showSubmitButtonNo(3)}">
-                    <p:menuitem value="#{msgs.not_recommended}" action="#{suspendDetailBn.not_recommend}"></p:menuitem>
-                    <p:menuitem value="Suspend" action="#{suspendDetailBn.submitSuspendStatus(2)}"></p:menuitem>
-                    <p:menuitem value="Cancel" action="#{suspendDetailBn.submitSuspendStatus(1)}"></p:menuitem>
-                    <p:menuitem value="Register" action="#{suspendDetailBn.submitSuspendStatus(3)}"></p:menuitem>
+                    <p:menuitem value="#{msgs.susp_decisison_suspend}" action="#{suspendDetailBn.submitSuspendStatus(2)}"></p:menuitem>
+                    <p:menuitem value="#{msgs.susp_decisison_cancel_Cancel}" action="#{suspendDetailBn.submitSuspendStatus(1)}"></p:menuitem>
+                    <p:menuitem value="#{msgs.susp_decisison_register}" action="#{suspendDetailBn.submitSuspendStatus(3)}"></p:menuitem>
                 </p:menuButton>
 
                 <p:commandButton value="#{msgs.global_submit}"
@@ -174,11 +173,7 @@
                                               styleClass="text"/>
                             </div>
                         </p:column>
-                        <!--                        <p:column style="width:200px;">
-                                                    #{it.sampleTestStatus}
-                                                </p:column>
-                        -->
-                    </p:dataTable>
+                     </p:dataTable>
                 </p:tab>
 
                 <p:tab title="#{msgs.attachments}">
@@ -216,14 +211,6 @@
                                 <p:fileDownload value="#{suspendDetailBn.fileDownload(doc)}"/>
                             </p:commandButton>
                         </p:column>
-
-                        <!--
-                                                <p:column>
-                                                    <p:commandButton id="revdefdetails"
-                                                                     action="#{suspendDetailBn.findRevDef(doc)}" ajax="true" rendered="#{!doc.resolved}"
-                                                                     icon="ui-icon-search" oncomplete="PF('revDefDlg').show()"/>
-                                                </p:column>
-                        -->
                     </p:dataTable>
                 </p:tab>
 
@@ -351,7 +338,9 @@
                     <p:selectOneMenu id="recommod" value="#{suspendDetailBn.moderDecision}" required="true"
                                      requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
-                        <f:selectItems value="#{suspendDetailBn.aprovalType}" var="type"/>
+                        <f:selectItem itemLabel="#{msgs.susp_decisison_register}" value="#{msgs.susp_decisison_register}"/>
+                        <f:selectItem itemLabel="#{msgs.susp_decisison_suspend}" value="#{msgs.susp_decisison_suspend}"/>
+                        <f:selectItem itemLabel="#{msgs.susp_decisison_cancel}" value="#{msgs.susp_decisison_cancel}"/>
                     </p:selectOneMenu>
                     <p:message for="recommod"/>
 
@@ -417,7 +406,7 @@
 
 
                     <p:commandButton id="submitButton1" value="#{msgs.global_submit}" update="@form"
-                                     oncomplete="PF('assignreviewdlg').hide()"
+                                     oncomplete="if (!args.validationFailed) PF('assignreviewdlg').hide()"
                                      action="#{suspendDetailBn.assignReviewer}" ajax="true"/>
                 </p:panel>
             </h:form>

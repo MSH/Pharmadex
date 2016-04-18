@@ -6,7 +6,9 @@ package org.msh.pharmadex.mbean.lab;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.DosageForm;
+import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
@@ -110,6 +112,26 @@ public class SampleTestBn implements Serializable {
         DosageForm dosForm = sampleTestService.findDosQuantity(sampleTest.getProdApplications().getId());
         sampleTest.setQuantity(""+dosForm.getSampleSize()+" "+dosForm.getDosForm());
         sampleComment = new SampleComment(sampleTest);
+    }
+
+    public void createConfirmLetter(){
+        ProdApplications prodapp = processProdBn.getProdApplications();
+        if (prodapp!=null){
+            List<ProdAppLetter> letters = processProdBn.getLetters();
+            ProdAppLetter letter = null;
+            if (letters!=null){
+                for(ProdAppLetter let:letters){
+                       if (let.getLetterType().equals(LetterType.SAMPLE_TEST_RESULT)){
+                           letter = let;
+                           break;
+                       }
+                }
+            }
+            if (letter==null){
+
+            }
+        }
+
     }
 
     public GlobalEntityLists getGlobalEntityLists() {

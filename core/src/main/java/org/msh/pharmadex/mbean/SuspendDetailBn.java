@@ -32,6 +32,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.management.relation.RoleStatus;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,8 +120,8 @@ public class SuspendDetailBn implements Serializable {
                     prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(suspDetailID);
                     prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
                     product = prodApplications.getProduct();
-//                    if (suspDetail.getReviewer()!=null)
-//                        checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
+                    if (suspDetail.getReviewer()!=null)
+                        checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
                     isClosed();
                 }
             }
@@ -132,11 +133,16 @@ public class SuspendDetailBn implements Serializable {
     private void checkReviewStatus(long reviewerId, long appId){
         try {
             ReviewInfo reviews = reviewService.findReviewInfoByUserAndProdApp(reviewerId, appId);
+            if (reviews.getReviewStatus().equals(SuspensionStatus.FEEDBACK)) return;
             if (null != reviews) {
-                if (reviews.getReviewStatus().equals(ReviewStatus.SUBMITTED))
-                    suspDetail.setSuspensionStatus(SuspensionStatus.SUBMIT);
-                if (reviews.getReviewStatus().equals(ReviewStatus.ACCEPTED))
-                    suspDetail.setSuspensionStatus(SuspensionStatus.RESULT);
+                if (reviews.getReviewStatus().equals(ReviewStatus.ASSIGNED))
+                    suspDetail.setSuspensionStatus(SuspensionStatus.IN_PROGRESS);
+                else if (reviews.getReviewStatus().equals(ReviewStatus.SUBMITTED)
+                        ||reviews.getReviewStatus().equals(ReviewStatus.ACCEPTED)){
+                    if (!suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)){
+                        suspDetail.setSuspensionStatus(SuspensionStatus.SUBMIT);
+                    }
+                }
             }
         }catch (Exception e){
             //nothing to do
@@ -155,6 +161,10 @@ public class SuspendDetailBn implements Serializable {
             suspComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
             suspComment.setDate(new Date());
             suspComment.setSuspDetail(suspDetail);
+            if (suspComment.getComment()==null || suspComment.getComment().isEmpty()){
+                String mes = bundle.getString("comment_required");
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, mes, ""));
+            }
             suspComments.add(suspComment);
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(userService.findUser(userSession.getLoggedINUserID()));
@@ -254,16 +264,13 @@ public class SuspendDetailBn implements Serializable {
 
 
     public String submitModeratorsDecision(){
-        if ("-".equals(moderDecision))
-            return "";
-        String r=bundle.getString("AmdmtState.NOT_RECOMMENDED");
-        if (r.equals(moderDecision)){
-            if ("".equals(moderSummary)){
-                FacesMessage fm = new FacesMessage("Please specify commend (reason).");
-                fm.setSeverity(FacesMessage.SEVERITY_ERROR);
-                facesContext.addMessage(null, fm);
-            }
+        if ("".equals(moderSummary)){
+             FacesMessage fm = new FacesMessage("Please specify commend (reason).");
+             fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+             facesContext.addMessage(null, fm);
         }
+        ReviewInfo assessorsDecision = suspendService.findLastReviewResult(suspDetail);
+        if (moderDecision.equals(assessorsDecision.getRecomendType()))
         suspendService.submitModeratorDecision(suspDetail,userSession.getLoggedINUserID(),moderSummary,moderDecision);
         return "processcancellist";
     }
@@ -271,8 +278,9 @@ public class SuspendDetailBn implements Serializable {
     /**
      * Return suspension application to moderator
      */
-    public void not_recommend(){
-
+    public String not_recommend(){
+        suspDetail.setSuspensionStatus(SuspensionStatus.SUBMIT);
+        return "processcancellist";
     }
 
 
@@ -289,6 +297,7 @@ public class SuspendDetailBn implements Serializable {
 
     public String submitSuspend() {
         facesContext = FacesContext.getCurrentInstance();
+        String errorMsg="";
         if (userSession.isHead()) {
             if (suspDetail.getModerator() == null) {
                 FacesMessage fm = new FacesMessage("Please specify a moderator to process the request.");
@@ -311,12 +320,21 @@ public class SuspendDetailBn implements Serializable {
         }
 
         if (userSession.isModerator()) {
+            boolean errorFound = false;
             if (suspDetail.getReviewer() == null) {
-                FacesMessage fm = new FacesMessage("Please specify a Assessor to process the request.");
-                fm.setSeverity(FacesMessage.SEVERITY_WARN);
+                errorMsg=bundle.getString("susp_assesorReqired");
+                FacesMessage fm = new FacesMessage(errorMsg);
+                fm.setSeverity(FacesMessage.SEVERITY_ERROR);
                 facesContext.addMessage(null, fm);
-                return "";
+                errorFound=true;
             }
+            if (!suspendService.isCommentsExists(suspDetail,getLoggedInUser())){
+                errorMsg = userSession.getLoggedInUser()+" "+ bundle.getString("comment_required");
+                FacesMessage fm = new FacesMessage(errorMsg);
+                fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+                facesContext.addMessage(null, fm);
+            }
+            if (errorFound) return "";
             try {
                 RetObject retObject = suspendService.submitModeratorComment(suspDetail, userSession.getLoggedINUserID());
             } catch (SQLException e) {
@@ -363,8 +381,9 @@ public class SuspendDetailBn implements Serializable {
        //TODO USe resource
        //aprovalType.add(bundle.getString("AmdmtState.RECOMMENDED"));
        //aprovalType.add(bundle.getString("AmdmtState.NOT_RECOMMENDED"));
-       aprovalType.add("Recommended");
-       aprovalType.add("Not recommended");
+       aprovalType.add("Register");
+       aprovalType.add("Suspend");
+       aprovalType.add("Cancel");
 
        return aprovalType;
    }
@@ -601,11 +620,10 @@ public class SuspendDetailBn implements Serializable {
      */
     public boolean showSubmitButtonNo(int no){
         if (suspDetail==null) return false;
-        if (no==1) {//before reviewing by assesor
-            if (!userSession.isModerator()) return false;
-            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.REQUESTED)
-                    ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.IN_PROGRESS)
-                    ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.ASSIGNED))
+        if (no==1) {//moderator, before reviewing by assesor
+            if (!(userSession.isModerator()||(userSession.isHead()))) return false;
+            if (!(suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT)
+                    ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)))
                 return true;
             else
                 return false;

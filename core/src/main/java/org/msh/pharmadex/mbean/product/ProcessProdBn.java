@@ -530,20 +530,18 @@ public class ProcessProdBn implements Serializable {
                 return "";
             }
 
-//        prodApplications.setRegistrationDate(new Date());
             if(prodApplications.getProdRegNo()==null||prodApplications.getProdRegNo().equals(""))
                 prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + 0, prodApplications.getProdAppNo()));
-//        globalEntityLists.setRegProducts(null);
 
             prodApplications.setActive(true);
             prodApplications.setUpdatedBy(loggedInUser);
-//        prodApplications = prodApplicationsService.updateProdApp(prodApplications);
 
             String retValue = prodApplicationsService.registerProd(prodApplications);
             if(retValue.equals("created")) {
                 prodApplicationsService.createRegCert(prodApplications);
                 timeLineList = null;
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+
             }else{
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
             }
@@ -1019,4 +1017,5 @@ public class ProcessProdBn implements Serializable {
     public void setRevDeficiencies(ArrayList<RevDeficiency> revDeficiencies) {
         this.revDeficiencies = revDeficiencies;
     }
+
 }

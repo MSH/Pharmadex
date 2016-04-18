@@ -169,7 +169,8 @@ public class SuspendService implements Serializable {
     }
 
     public JasperPrint initRegCert(SuspComment suspComment, URL resource) throws JRException, SQLException {
-        String emailBody = suspComment.getComment();
+        //String emailBody = suspComment.getComment();
+        String emailBody = suspDetail.getReason();
         Product product = suspDetail.getProdApplications().getProduct();
 //        Session hibernateSession = entityManager.unwrap(Session.class);
         Connection conn = entityManager.unwrap(Session.class).connection();
@@ -234,6 +235,33 @@ public class SuspendService implements Serializable {
 
     }
 
+    /**
+     *
+     * @param suspDetail details of suspension
+     * @param user - user, can be empty
+     * @return true, if users comment exists. if user is null - true, if any comment exists
+     */
+    public boolean isCommentsExists(SuspDetail suspDetail,User user){
+        List<SuspComment> comments = suspDetail.getSuspComments();
+        if (user==null){
+            if (comments.size()==0)
+                return true;
+            else
+                return false;
+        }
+        if (comments==null){
+            return true;
+        }else{//Check whether there is a comment from moderator
+            boolean commentFound = false;
+            for(SuspComment com:comments) {
+                if (com.getUser().getUserId() == user.getUserId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public List<SuspDetail> findAll(UserSession userSession) {
         List<SuspDetail> suspDetails = null;
         if (userSession.isHead()) {
@@ -289,6 +317,26 @@ public class SuspendService implements Serializable {
 
         retObject = saveSuspend(suspDetail);
         return retObject;
+    }
+
+    public ReviewInfo findLastReviewResult(SuspDetail suspDetail){
+        List<ReviewInfo> rl = this.findReviewList(suspDetail.getReviewer().getUserId(), suspDetail.getProdApplications().getId());
+        if (rl==null) return null;
+        if (rl.size()==0) return null;
+        if (rl.size()==1) return rl.get(0);
+        //if exists a few review results, search for last
+        Calendar maxCal = Calendar.getInstance();
+        maxCal.add(Calendar.YEAR, -1);
+        Date maxDate = maxCal.getTime();
+        int indexOfMax=0; int i=0;
+        for(ReviewInfo info:rl){
+            if (info.getSubmitDate().after(maxDate)){
+                maxDate = info.getSubmitDate();
+                indexOfMax = i;
+            }
+            i++;
+        }
+        return rl.get(indexOfMax);
     }
 
     public RetObject submitModeratorDecision(SuspDetail sDetail, Long userID, String summary, String decision){

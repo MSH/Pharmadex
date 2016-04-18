@@ -9,6 +9,7 @@
         <p:selectBooleanButton id="sampletestrecieved" disabled="#{processProdBn.registered}"
                                value="#{processProdBn.prodApplications.sampleTestRecieved}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                               valueChangeListener="#{sampleTestBn.createConfirmLetter}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome" process=":reghome"

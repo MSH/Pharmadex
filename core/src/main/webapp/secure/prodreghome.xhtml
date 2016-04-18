@@ -65,7 +65,7 @@
                                          emptyMessage="No Inns selected"
                                     >
                                 <f:facet name="header">
-                                    <p:commandLink value="#{msgs.global_add}" action="#{prodAddDetailMBean.openAddInn}"
+                                    <p:commandLink value="#{msgs.global_add}*" action="#{prodAddDetailMBean.openAddInn}"
                                                    id="addInnBtn"
                                                    oncomplete="PF('addInnDlg').show()" update=":addInnFrm"/>
 
@@ -344,13 +344,14 @@
                         <p:messages/>
                         <h:panelGrid columns="1" cellspacing="10" id="companygrid" width="100%">
 
-                            <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
+                            <p:outputLabel value="#{msgs.manuf_detail_txt}"
+                                           styleClass="hint"/>
 
 
                             <p:dataTable id="companyTable" var="company" value="#{prodRegAppMbean.companies}"
                                          style="width:100%;">
                                 <f:facet name="header">
-                                    <p:commandLink id="addManufBtn" value="#{msgs.global_add}"
+                                    <p:commandLink id="addManufBtn" value="#{msgs.global_add}*"
                                                    oncomplete="PF('addCompanyDlg').show()"
                                                    action="#{companyMBean.initAddCompany}" update=":addcompany"
                                                    process="@form :addcompany">
