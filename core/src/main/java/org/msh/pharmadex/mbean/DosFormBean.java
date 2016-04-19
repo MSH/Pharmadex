@@ -57,7 +57,11 @@ public class DosFormBean implements Serializable {
         this.dosageFormDAO = dosageFormDAO;
     }
 
-
+    @PostConstruct
+    private void init() {
+        allForms= dosageFormService.findAllDosForm();
+        dosForm = new DosageForm();
+    }
 
     public DosageForm getDosForm() {
         return dosForm;
@@ -69,8 +73,7 @@ public class DosFormBean implements Serializable {
 
 
     public List<DosageForm> getAllForms() {
-        if (allForms==null)
-            allForms=dosageFormService.findAllDosForm() ;
+
             return allForms;
     }
 
@@ -80,7 +83,8 @@ public class DosFormBean implements Serializable {
 
     public void addForm(){
           dosForm = new DosageForm();
-          setEdit(false);
+          setEdit(true);
+
     }
 
     public String save() {
@@ -107,13 +111,6 @@ public class DosFormBean implements Serializable {
     }
 
 
-
-    public void add() {
-        dosForm = new DosageForm();
-        setEdit(false);
-    }
-
-
     public boolean isEdit() {
         return edit;
     }
@@ -122,5 +119,8 @@ public class DosFormBean implements Serializable {
         this.edit = edit;
     }
 
-
+    public void initUpdate(DosageForm f) {
+        dosForm = f;
+        edit = true;
+    }
 }
