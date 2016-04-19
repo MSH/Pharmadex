@@ -89,9 +89,7 @@ public class DosFormBean implements Serializable {
 
     public String save() {
         facesContext = FacesContext.getCurrentInstance();
-        if (dosForm.getUid() == 0)
-            dosForm.setUid(null);
-        try {
+       try {
             dosageFormDAO.save(dosForm);
             allForms = null;
         }catch (Exception e){
