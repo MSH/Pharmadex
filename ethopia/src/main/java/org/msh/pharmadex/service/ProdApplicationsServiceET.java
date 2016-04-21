@@ -4,6 +4,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class ProdApplicationsServiceET extends ProdApplicationsService{
+public class ProdApplicationsServiceET extends ProdApplicationsService {
 
 
     @Override
@@ -179,7 +180,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             params.put("regState", regState);
             params.put("userId", userSession.getLoggedINUserID());
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isLab()){
+        } else if (userSession.isLab()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.VERIFY);
             regState.add(RegState.REVIEW_BOARD);
@@ -188,7 +189,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             regState.add(RegState.NOT_RECOMMENDED);
             params.put("regState", regState);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isClinical()){
+        } else if (userSession.isClinical()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.VERIFY);
             regState.add(RegState.REVIEW_BOARD);
@@ -198,7 +199,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         }
 
-        if(userSession.isModerator()||userSession.isReviewer()||userSession.isHead()||userSession.isLab()) {
+        if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
             Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
                 @Override
                 public int compare(ProdApplications o1, ProdApplications o2) {
@@ -210,21 +211,21 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
         return prodApplicationses;
     }
 
-    public String generateRegNo(){
+    public String generateRegNo() {
         int count = productDAO.findCountRegProduct();
         String regNO = String.format("%04d", count);
         String appNo = prodApp.getProdAppNo();
-        appNo = appNo.substring(0,4);
+        appNo = appNo.substring(0, 4);
         String appType = "NMR";
         int dt = Calendar.getInstance().get(Calendar.YEAR);
-        String year = ""+dt;
-        regNO = regNO+appNo+appType+year;
+        String year = "" + dt;
+        regNO = regNO + appNo + appType + year;
         return regNO;
 
     }
 
     @Override
-    public String generateAppNo(ProdApplications prodApp){
+    public String generateAppNo(ProdApplications prodApp) {
         RegistrationUtil registrationUtil = new RegistrationUtil();
         String appType;
         if (prodApp.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
@@ -241,11 +242,36 @@ public class ProdApplicationsServiceET extends ProdApplicationsService{
         }
 
 
-
         return registrationUtil.generateAppNo(prodApp.getId(), "NMR");
 
     }
 
+    public List<ProdApplications> getFeedbackApplications(UserSession userSession) {
+        List<ProdApplications> prodApplicationses = null;
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        List<ReviewStatus> revState = new ArrayList<ReviewStatus>();
+        revState.add(ReviewStatus.RFI_SUBMIT);
+        params.put("reviewState", revState);
+        List<RegState> regState = new ArrayList<RegState>();
+        regState.add(RegState.REVIEW_BOARD);
+        params.put("regState", regState);
+        if (!userSession.isAdmin()) {
+            if (userSession.isModerator()) {
+                params.put("moderatorId", userSession.getLoggedINUserID());
+            } else if (userSession.isReviewer()) {
+                if (workspaceDAO.findAll().get(0).isDetailReview()) {
+                    params.put("reviewer", userSession.getLoggedINUserID());
+
+                } else
+                    params.put("reviewer", userSession.getLoggedINUserID());
+            } else if (userSession.isCompany()) {
+                params.put("userId", userSession.getLoggedINUserID());
+            }
+        }
+        prodApplicationses = prodApplicationsDAO.findProdAppByReviewStatus(params);
+
+        return prodApplicationses;
+    }
 
 
 
