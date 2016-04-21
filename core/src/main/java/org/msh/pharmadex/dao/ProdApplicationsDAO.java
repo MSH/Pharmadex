@@ -34,8 +34,8 @@ public class ProdApplicationsDAO implements Serializable {
         ProdApplications prodApp = (ProdApplications) entityManager.createQuery("select pa from ProdApplications pa where pa.id = :prodId ")
                 .setParameter("prodId", id)
                 .getSingleResult();
-        Hibernate.initialize(prodApp);
-        Hibernate.initialize(prodApp.getProduct());
+       // Hibernate.initialize(prodApp);
+       // Hibernate.initialize(prodApp.getProduct());
 //        Hibernate.initialize(prodApp.getProduct().getDosForm());
 //        Hibernate.initialize(prodApp.getProduct().getDosUnit());
 //        Hibernate.initialize(prodApp.getProduct().getAdminRoute());

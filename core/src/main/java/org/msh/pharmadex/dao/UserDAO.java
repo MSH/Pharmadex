@@ -59,7 +59,8 @@ public class UserDAO implements Serializable {
             user.setName("" + o[1]);
             user.setUsername("" + o[2]);
             user.setEmail("" + o[3]);
-            user.setType(UserType.valueOf((String) o[4]));
+            if(o[4] != null)
+            	user.setType(UserType.valueOf((String) o[4]));
             user.setEnabled((Boolean) o[5]);
             String companyName = (String) o[6];
             user.setCompanyName(companyName);
