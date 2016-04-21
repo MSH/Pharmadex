@@ -1,11 +1,22 @@
 package org.msh.pharmadex.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.msh.pharmadex.auth.UserDetailsAdapter;
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
-import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.ApplicantTypeDAO;
 import org.msh.pharmadex.dao.iface.RoleDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.ApplicantType;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Role;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UserType;
@@ -13,12 +24,6 @@ import org.msh.pharmadex.service.converter.ApplicantConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -81,28 +86,28 @@ public class ApplicantService implements Serializable {
         applicant.setState(ApplicantState.NEW_APPLICATION);
         userParam.setType(UserType.COMPANY);
 
-
-
         if (applicant.getUsers() == null) {
             applicant.setUsers(new ArrayList<User>());
             applicant.getUsers().add(userParam);
         }
 
         for (User user : applicant.getUsers()) {
-            if (user.getType().equals(UserType.COMPANY)) {
-                user.setApplicant(applicant);
-                applicant.setContactName(user.getName());
-            }
-            List<Role> rList = user.getRoles();
-            Role r;
-            if (rList == null || user.getRoles().size() < 1) {
-                rList = new ArrayList<Role>();
-                r = roleDAO.findOne(1);
-                rList.add(r);
-            }
-                r = roleDAO.findOne(4);
-                rList.add(r);
-                user.setRoles(rList);
+        	if(user != null){
+	            if (user.getType().equals(UserType.COMPANY)) {
+	                user.setApplicant(applicant);
+	                applicant.setContactName(user.getName());
+	            }
+	            List<Role> rList = user.getRoles();
+	            Role r;
+	            if (rList == null || user.getRoles().size() < 1) {
+	                rList = new ArrayList<Role>();
+	                r = roleDAO.findOne(1);
+	                rList.add(r);
+	            }
+	            r = roleDAO.findOne(4);
+	            rList.add(r);
+	            user.setRoles(rList);
+        	}
         }
         Applicant a = applicantDAO.updateApplicant(applicant);
         System.out.println("applicant id = " + applicant.getApplcntId());
@@ -110,6 +115,7 @@ public class ApplicantService implements Serializable {
         applicantConverter.setApplicantList(null);
         applicants = null;
         return a;
+       // }
     }
 
     @Transactional
@@ -160,6 +166,21 @@ public class ApplicantService implements Serializable {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("appID", appID);
         params.put("regState", RegState.REGISTERED);
+        List<ProdApplications> prodApps = prodApplicationsDAO.getProdAppByParams(params);
+        return prodApps;
+    }
+    
+    @Transactional
+    public List<ProdApplications> findProductNotRegForApplicant(Long appID) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("appID", appID);
+        List<RegState> listSt = new ArrayList<RegState>();
+        // добавим состояния которые не зарегистрированные, т.е. в процессе регистрации
+        for(RegState st:RegState.values()){
+        	if(!st.equals(RegState.REGISTERED))
+        		listSt.add(st);
+        }
+        params.put("regState", listSt);
         List<ProdApplications> prodApps = prodApplicationsDAO.getProdAppByParams(params);
         return prodApps;
     }
