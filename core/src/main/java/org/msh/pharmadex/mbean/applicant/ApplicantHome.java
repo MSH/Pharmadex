@@ -5,6 +5,7 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ApplicantService;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -28,7 +29,11 @@ public class ApplicantHome implements Serializable {
     private Applicant applicant;
 
     private List<ProdApplications> prodApplicationses;
-
+    private List<ProdApplications> prodNotRegApplicationses;
+    
+    private List<ProdApplications> filteredProdApplicationses;
+    private List<ProdApplications> filteredProdNotRegApplicationses;
+    
     public String sentToDetail(Long id) {
         Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
         flash.put("prodAppID", id);
@@ -36,7 +41,7 @@ public class ApplicantHome implements Serializable {
     }
 
     public List<ProdApplications> getProdApplicationses() {
-        if (prodApplicationses == null&&getApplicant()!=null)
+        if (prodApplicationses == null && getApplicant() != null)
             prodApplicationses = applicantService.findRegProductForApplicant(getApplicant().getApplcntId());
 
         return prodApplicationses;
@@ -44,6 +49,33 @@ public class ApplicantHome implements Serializable {
 
     public void setProdApplicationses(List<ProdApplications> prodApplicationses) {
         this.prodApplicationses = prodApplicationses;
+    }
+    
+    public List<ProdApplications> getProdNotRegApplicationses() {
+        if (prodNotRegApplicationses == null && getApplicant() != null)
+        	prodNotRegApplicationses = applicantService.findProductNotRegForApplicant(getApplicant().getApplcntId());
+
+        return prodNotRegApplicationses;
+    }
+
+    public void setProdNotRegApplicationses(List<ProdApplications> prodNotRegApplicationses) {
+        this.prodNotRegApplicationses = prodNotRegApplicationses;
+    }
+    
+    public List<ProdApplications> getFilteredProdApplicationses() {
+        return filteredProdApplicationses;
+    }
+
+    public void setFilteredProdApplicationses(List<ProdApplications> filteredProdApplicationses) {
+        this.filteredProdApplicationses = filteredProdApplicationses;
+    }
+    
+    public List<ProdApplications> getFilteredProdNotRegApplicationses() {
+        return filteredProdNotRegApplicationses;
+    }
+
+    public void setFilteredProdNotRegApplicationses(List<ProdApplications> filteredProdNotRegApplicationses) {
+        this.filteredProdNotRegApplicationses = filteredProdNotRegApplicationses;
     }
 
     public Applicant getApplicant() {
