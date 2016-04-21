@@ -96,7 +96,12 @@
                     <!--
                                         <p:menuitem value="#{msgs.reg_expired_notified}" icon="ui-icon-document"
                                                     url="/internal/processrxsitelist.faces"/>
+
                     -->
+                </p:submenu>
+                <p:submenu label="#{msgs.feedback}" rendered="#{userSession.admin || userSession.reviewer || userSession.moderator || userSession.company}">
+                <p:menuitem value="#{msgs.feedback}" icon="ui-icon-document"
+                            url="/secure/feedproducts.faces"/>
                 </p:submenu>
             </sec:isAuthenticated>
         </p:menu>
