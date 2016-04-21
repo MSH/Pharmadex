@@ -50,11 +50,13 @@
                     <p:message for="country"/>
 
                     <p:outputLabel value="#{msgs.applicant_phone}" for="phoneno" styleClass="label"/>
-                    <p:inputText value="#{registerUserMbean.user.phoneNo}" id="phoneno" required="true"/>
+                    <p:inputText value="#{registerUserMbean.user.phoneNo}" id="phoneno" required="true"
+                    			validatorMessage="#{msgs.valid_phoneno}"/>
                     <p:message for="phoneno"/>
 
                     <p:outputLabel value="#{msgs.applicant_faxno}" for="faxno" styleClass="label"/>
-                    <p:inputText value="#{registerUserMbean.user.faxNo}" id="faxno"/>
+                    <p:inputText value="#{registerUserMbean.user.faxNo}" id="faxno"
+		                    validatorMessage="#{msgs.valid_faxno}"/>
                     <p:message for="faxno"/>
 
                     <p:outputLabel value="#{msgs.User_email}" for="email" styleClass="label"/>
