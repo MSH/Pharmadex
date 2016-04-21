@@ -30,20 +30,16 @@
                     <h:outputLabel value="#{msgs.submitted_by}: " styleClass="title"/>
                     <h:outputLabel value="#{prodApp.createdBy.name}" styleClass="title"/>
                 </td>
-
             </tr>
             <tr>
                 <td>
                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
                     <p:commandLink id="viewLink" value="#{prodApp.applicant.appName}"
-                                   action="/public/applicantdetail.faces"
+                                  action="/public/applicantdetail.faces"
                                    ajax="false" style="color: darkblue;">
                         <f:param name="applicantID" value="#{prodApp.applicant.applcntId}"/>
                     </p:commandLink>
-
-
-                    <!--                                    <h:outputFormat value="#{productDisplay.product.applicant.appName}"/> -->
-                </td>
+				</td>
                 <td align="right">
                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
                     <h:outputFormat value="#{prodApp.submitDate}">

@@ -27,6 +27,13 @@
         <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
     </p:autoComplete>
 
+<!-- <h:outputLabel value="#{msgs.user_assigncompany}"/>
+                    <p:selectOneMenu value="#{userMBean.userApp.applcntId}">
+                        <f:selectItem itemLabel="#{userMBean.selectedUser.applicant.appName}" itemValue="#{userMBean.selectedUser.applicant.applcntId}"/>
+                        <f:selectItems value="#{applicantService.findAllApplicants()}" var="licHolder"
+                                       itemLabel="#{licHolder.appName}" itemValue="#{licHolder.applcntId}"/>
+                    </p:selectOneMenu> -->
+
 
 
 
