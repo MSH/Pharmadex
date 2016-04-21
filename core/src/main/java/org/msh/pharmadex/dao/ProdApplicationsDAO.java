@@ -5,6 +5,7 @@ import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.dao.iface.DosageFormDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -319,5 +320,26 @@ public class ProdApplicationsDAO implements Serializable {
     public List<ProdApplications> findProdAppByNo(String prodAppNo) {
         return entityManager.createQuery("from ProdApplications pa where pa.prodAppNo = :prodAppNo ")
                 .getResultList();
+    }
+
+    public List<ProdApplications> findProdAppByReviewStatus(HashMap params) {
+        if (params == null)
+            return null;
+        String addparam="";
+        if(params.get("moderatorId")!=null) addparam=" and pa.moderator="+params.get("moderatorId").toString();
+        if(params.get("reviewer")!=null) addparam=" and ri.reviewer=" +params.get("reviewer").toString();;;
+        //params.get("reviewerId");
+
+        if (params.get("userId")!=null)  addparam=" and pa.applicantUser="+params.get("userId").toString();
+
+        List<ReviewStatus> rs = (List<ReviewStatus>) params.get("reviewState");
+        List<RegState> regStates = (List<RegState>) params.get("regState");
+   List<ProdApplications> prodApplicationses = entityManager.createQuery("select pa from ProdApplications pa left join pa.reviewInfos ri where pa.regState in (:regStates) " +
+                "and  (ri.reviewStatus = :rs )"+addparam)
+                .setParameter("rs", rs)
+                .setParameter("regStates", regStates)
+                .getResultList();
+        return prodApplicationses;
+
     }
 }
