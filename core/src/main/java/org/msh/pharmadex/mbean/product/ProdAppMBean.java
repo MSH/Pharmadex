@@ -63,7 +63,7 @@ public class ProdAppMBean implements Serializable {
     }
 
     public List<ProdApplications> getPendingRenewals() {
-        return pendingRenewals;
+    	return pendingRenewals;
     }
 
     public void setPendingRenewals(List<ProdApplications> pendingRenewals) {

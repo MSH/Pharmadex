@@ -34,7 +34,9 @@ public class ImageStreamer implements Serializable {
             // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
             String imageId = context.getExternalContext().getRequestParameterMap().get("imageId");
             byte[] image = reviewService.findReviewDetailImage(Long.valueOf(imageId));
-            return new DefaultStreamedContent(new ByteArrayInputStream(image));
+            if(image != null)
+            	return new DefaultStreamedContent(new ByteArrayInputStream(image));
+            return new DefaultStreamedContent();
         }
     }
 

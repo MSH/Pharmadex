@@ -1,17 +1,59 @@
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
+import static javax.faces.context.FacesContext.getCurrentInstance;
+import static org.msh.pharmadex.domain.enums.RegState.FEE;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Attachment;
+import org.msh.pharmadex.domain.Comment;
+import org.msh.pharmadex.domain.Invoice;
+import org.msh.pharmadex.domain.Mail;
+import org.msh.pharmadex.domain.ProdAppAmdmt;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.Review;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.SuspDetail;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.mbean.UserAccessMBean;
-import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.service.AmdmtService;
+import org.msh.pharmadex.service.CommentService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.MailService;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.SampleTestService;
+import org.msh.pharmadex.service.SuspendService;
+import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -25,24 +67,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.util.WebUtils;
 
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static javax.faces.context.FacesContext.*;
-import static org.msh.pharmadex.domain.enums.RegState.FEE;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  * Backing bean to process the application made for registration
@@ -110,10 +135,10 @@ public class ProcessProdBn implements Serializable {
     private boolean displayClinical = false;
     private boolean displayReviewStatus = false;
     //    private ReviewInfo reviewInfo;
-    private SampleTest sampleTest;
+   // private SampleTest sampleTest;
     private UploadedFile file;
-    private boolean attach;
-    private JasperPrint jasperPrint;
+   // private boolean attach;
+    //private JasperPrint jasperPrint;
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
     private User loggedInUser;
@@ -541,7 +566,6 @@ public class ProcessProdBn implements Serializable {
                 prodApplicationsService.createRegCert(prodApplications);
                 timeLineList = null;
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
-
             }else{
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
             }
@@ -822,7 +846,8 @@ public class ProcessProdBn implements Serializable {
     public boolean isDisplaySample() {
         displaySample = false;
         if (prodApplications != null) {
-            if (prodApplications != null && prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+            if (prodApplications != null && prodApplications.getProdAppType() != null
+            		&& prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
                 displaySample = false;
             } else {
                 //Odissey. Req.18/03/16 Add SimpleRequest fuction to CSO
@@ -973,7 +998,8 @@ public class ProcessProdBn implements Serializable {
     }
 
     public boolean isDisplayClinical() {
-        if (prodApplications != null && prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+        if (prodApplications != null && prodApplications.getProdAppType() != null
+        		&& prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
             if (userSession.isHead() || userSession.isModerator() || userSession.isAdmin() || userSession.isClinical())
                 displayClinical = true;
         } else {
@@ -1017,5 +1043,4 @@ public class ProcessProdBn implements Serializable {
     public void setRevDeficiencies(ArrayList<RevDeficiency> revDeficiencies) {
         this.revDeficiencies = revDeficiencies;
     }
-
 }

@@ -137,20 +137,26 @@ public class FileUploadController implements Serializable {
 
     public StreamedContent regCertDownload() {
         ProdApplications prodApplications = processProdBn.getProdApplications();
-        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
-        Calendar c = Calendar.getInstance();
-        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
-//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
-        return download;
+        if(prodApplications != null){
+	        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
+	        Calendar c = Calendar.getInstance();
+	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
+	//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+	        return download;
+        }
+        return null;
     }
 
     public StreamedContent rejCertDownload() {
         ProdApplications prodApplications = processProdBn.getProdApplications();
-        InputStream ist = new ByteArrayInputStream(prodApplications.getRejCert());
-        Calendar c = Calendar.getInstance();
-        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR));
-//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
-        return download;
+        if(prodApplications != null){
+	        InputStream ist = new ByteArrayInputStream(prodApplications.getRejCert());
+	        Calendar c = Calendar.getInstance();
+	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR));
+	//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+	        return download;
+        }
+        return null;
     }
 
     public ArrayList<Attachment> getAttachments() {
