@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all">#{msgs.feedback}</h1>
+        </div>
+
+        <h:form prependId="false">
+
+
+            <p:dataTable id="applicantions" var="eachprod" value="#{prodAppFeedBean.prodApplicationsList}"
+                         rendered="#{not empty prodAppFeedBean.prodApplicationsList}">
+
+                <p:column headerText="Product Name">
+                    <p:column headerText="Product Name">
+                        <p:commandLink value="#{eachprod.product.prodName}"
+                                       action="/internal/processreg"
+                                       ajax="false">
+                            <f:param name="prodAppID" value="#{eachprod.id}"/>
+                        </p:commandLink>
+                    </p:column>
+                </p:column>
+
+
+                <p:column headerText="Generic Name">
+                    #{eachprod.product.genName}
+                </p:column>
+
+                <p:column headerText="#{msgs.application_no}">
+                    #{eachprod.prodAppNo}
+                </p:column>
+
+                <p:column headerText="Registration Status">
+                    #{msgs[eachprod.regState.key]}
+                </p:column>
+
+                <p:column headerText="#{msgs.prod_cat}">
+                    #{msgs[eachprod.product.prodCategory.key]}
+                </p:column>
+
+                <p:column headerText="Date Submitted">
+                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
+                </p:column>
+
+                <p:column headerText="Manufacturer Name">
+                    #{eachprod.product.manufName}
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+    </ui:define>
+</ui:composition>
