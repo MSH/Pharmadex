@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-04-20T12:38:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -23,6 +25,7 @@
 	<parameter name="manufName" class="java.lang.String"/>
 	<parameter name="appType" class="java.lang.String"/>
 	<parameter name="summary" class="java.lang.String"/>
+	<parameter name="DueDate" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -199,7 +202,7 @@
 				<text><![CDATA[	To,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="132" width="497" height="103" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<reportElement stretchType="RelativeToTallestObject" x="75" y="126" width="497" height="119" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
 				<textElement textAlignment="Justified" markup="html">
 					<font size="12"/>
 					<paragraph rightIndent="10"/>
@@ -319,6 +322,13 @@ If you do not supply the additional information within the due date, your applic
 				</textElement>
 				<text><![CDATA[Due Date]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="213" y="365" width="359" height="20" uuid="00ff08b5-c133-4410-b80a-7e961c316fd8"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DueDate}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>

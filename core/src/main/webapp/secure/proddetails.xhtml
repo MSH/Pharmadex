@@ -81,7 +81,8 @@
         <p:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
         <p:autoComplete id="pharmClassifcb" value="#{prodRegAppMbean.product.pharmClassif}"
                         completeMethod="#{globalEntityLists.completePharmClassif}" dropdown="true"
-                        var="it" itemLabel="#{it.name}" itemValue="#{it}" forceSelection="true"
+                        var="it" itemLabel="#{it.name}" itemValue="#{it}"
+                        forceSelection="false"
                         required="true"
                         requiredMessage="#{msgs.valid_value_req}"
                 >
@@ -92,7 +93,10 @@
 
         <p:outputLabel value="#{msgs.prod_desc}" for="prodDesc"/>
         <p:inputTextarea id="prodDesc" value="#{prodRegAppMbean.product.prodDesc}" rows="4" cols="50"
-                         title="ProdDesc" required="true"/>
+                         title="ProdDesc"
+                         required="true"
+                         requiredMessage="#{msgs.valid_value_req}"
+        />
         <p:message for="prodDesc" showSummary="true" showDetail="false"/>
     </h:panelGrid>
 

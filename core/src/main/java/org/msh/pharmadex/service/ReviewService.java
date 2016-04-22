@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -325,12 +326,14 @@ public class ReviewService implements Serializable {
         param.put("dosForm", product.getDosForm().getDosForm());
         param.put("manufName", product.getManufName());
         param.put("appType", "New Medicine Registration");
-        param.put("subject", "Product application deficiency letter for  " + product.getProdName());
+        param.put("subject", "Product application further information letter for  " + product.getProdName());
         param.put("body", emailBody);
         param.put("address1", prodApplications.getApplicant().getAddress().getAddress1());
         param.put("address2", prodApplications.getApplicant().getAddress().getAddress2());
         param.put("country", prodApplications.getApplicant().getAddress().getCountry().getCountryName());
-//        param.put("cso",user.getName());
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        String dueDate = sdf.format(reviewComment.getDueDate());
+        param.put("DueDate",dueDate);
         param.put("date", new Date());
 //        param.put("summary", comment);
         param.put("appNumber", prodApplications.getProdAppNo());

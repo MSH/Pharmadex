@@ -129,13 +129,12 @@ public class SuspendService implements Serializable {
      * @throws IOException
      */
     private void addLetter(File invoicePDF, LetterType letterType, String letterTitle, URL resource) throws SQLException, JRException, IOException {
-        JasperPrint jasperPrint = initRegCert(suspDetail.getSuspComments().get(0), resource);
+        JasperPrint jasperPrint = initRegCert(resource,null);
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
         byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 
         ProdAppLetter attachment = new ProdAppLetter();
         attachment.setRegState(prodApplications.getRegState());
-//            attachment.setComment(sampleTest.get);
         attachment.setFile(file);
         attachment.setProdApplications(prodApplications);
         attachment.setFileName(invoicePDF.getName());
@@ -144,7 +143,6 @@ public class SuspendService implements Serializable {
         attachment.setComment("System generated Letter");
         attachment.setLetterType(letterType);
         attachment.setContentType("application/pdf");
-//        attachment.setSuspDetail(suspDetail);
         if (suspDetail.getProdAppLetters() == null)
             suspDetail.setProdAppLetters(new ArrayList<ProdAppLetter>());
         suspDetail.getProdAppLetters().add(attachment);
@@ -168,11 +166,9 @@ public class SuspendService implements Serializable {
         prodApplicationsService.saveApplication(prodApplications, updatedBy.getUserId());
     }
 
-    public JasperPrint initRegCert(SuspComment suspComment, URL resource) throws JRException, SQLException {
-        //String emailBody = suspComment.getComment();
+    public JasperPrint initRegCert(URL resource, Company recipient) throws JRException, SQLException {
         String emailBody = suspDetail.getReason();
         Product product = suspDetail.getProdApplications().getProduct();
-//        Session hibernateSession = entityManager.unwrap(Session.class);
         Connection conn = entityManager.unwrap(Session.class).connection();
         HashMap param = new HashMap();
         List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
@@ -195,8 +191,10 @@ public class SuspendService implements Serializable {
         param.put("manufName", manufName);
         param.put("reason", emailBody);
         param.put("batchNo", suspDetail.getBatchNo());
-//        param.put("cso",user.getName());
-
+        param.put("recipient",recipient.getCompanyName());
+        param.put("recipientAddr1",recipient.getAddress());
+        param.put("recipientAddr2","");
+        param.put("recipientCountry","");
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         conn.close();
 
@@ -238,7 +236,7 @@ public class SuspendService implements Serializable {
     /**
      *
      * @param suspDetail details of suspension
-     * @param user - user, can be empty
+     * @param user - user, may be empty
      * @return true, if users comment exists. if user is null - true, if any comment exists
      */
     public boolean isCommentsExists(SuspDetail suspDetail,User user){

@@ -418,23 +418,32 @@ public class ProdApplicationsService implements Serializable {
     }
 
     public JasperPrint initRegCert() throws JRException, SQLException {
-//        Letter letter = letterService.findByLetterType(LetterType.INVOICE);
-//        String body = letter.getBody();
-//        MessageFormat mf = new MessageFormat(body);
-//        Object[] args = {prodApp.getProdName(), prodApp.getApplicant().getAppName(), prodApp.getProdApplications().getId()};
-//        body = mf.format(args);
-
         product = productDAO.findProduct(prodApp.getProduct().getId());
 
         String regDt = DateFormat.getDateInstance().format(prodApp.getRegistrationDate());
         String expDt = DateFormat.getDateInstance().format(prodApp.getRegExpiryDate());
 
-//        Session hibernateSession = entityManager.unwrap(Session.class);
         Connection conn = entityManager.unwrap(Session.class).connection();
 
         URL resource = getClass().getResource("/reports/reg_letter.jasper");
         HashMap param = new HashMap();
         param.put("prodappid", prodApp.getId());
+        String certNo = "0000000000"+String.valueOf(prodApp.getId())+String.valueOf(prodApp.getProduct().getId());
+        certNo = certNo.substring(certNo.length()-10,certNo.length());
+        String fullNo=prodApp.getProdAppType()+"/"+certNo;
+        //param.put("containerType",prodApp.getProduct().getContType());
+        param.put("cert_no",fullNo);
+        param.put("productDescription",prodApp.getProduct().getProdDesc());
+        List<UseCategory> cats = prodApp.getProduct().getUseCategories();
+        String catStr="";
+        for(UseCategory cat:cats){
+            if (!"".equals(cat)){
+                catStr = cat.name();
+            }else{
+                catStr = catStr +"," + cat.name();
+            }
+        }
+        param.put("prescription",catStr.toLowerCase());
         return JasperFillManager.fillReport(resource.getFile(), param, conn);
     }
 
@@ -530,7 +539,6 @@ public class ProdApplicationsService implements Serializable {
     public String createRegCert(ProdApplications prodApp) throws IOException, JRException, SQLException {
         this.prodApp = prodApp;
         this.product = prodApp.getProduct();
-        //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
         File invoicePDF = null;
         invoicePDF = File.createTempFile("" + product.getProdName() + "_registration", ".pdf");
         JasperPrint jasperPrint = initRegCert();

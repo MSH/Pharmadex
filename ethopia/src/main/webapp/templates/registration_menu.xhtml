@@ -99,7 +99,8 @@
 
                     -->
                 </p:submenu>
-                <p:submenu label="#{msgs.feedback}" rendered="#{userSession.admin || userSession.reviewer || userSession.moderator || userSession.company}">
+                <p:submenu label="#{msgs.feedback}"
+                           rendered="#{userSession.admin || userSession.reviewer || userSession.moderator || userSession.company || userSession.head}">
                 <p:menuitem value="#{msgs.feedback}" icon="ui-icon-document"
                             url="/secure/feedproducts.faces"/>
                 </p:submenu>

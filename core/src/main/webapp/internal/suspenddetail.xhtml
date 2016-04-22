@@ -101,8 +101,9 @@
                                              required="true" cols="100" rows="4"/>
                             <p:message for="suspReason" showSummary="true"/>
 
-                            <p:outputLabel value="#{msgs.batch_no}"/>
-                            <p:inputTextarea value="#{suspendDetailBn.suspDetail.batchNo}" cols="100" rows="4"/>
+                            <p:outputLabel value="#{msgs.batch_no}*"/>
+                            <p:inputTextarea value="#{suspendDetailBn.suspDetail.batchNo}" cols="100" rows="4"
+                                             required="true"/>
                             <p:outputLabel/>
 
                             <p:outputLabel value="#{msgs.updated_date}"/>
@@ -111,11 +112,12 @@
                             <p:outputLabel/>
 
                             <p:outputLabel value="#{msgs.global_duedate}"/>
-                            <p:outputLabel value="#{suspendDetailBn.suspDetail.dueDate}"
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.dueDate}*"
                                            converter="javax.faces.DateTime"
                                            rendered="#{not empty suspendDetailBn.suspDetail.dueDate}"/>
                             <p:calendar id="suspduedt" value="#{suspendDetailBn.suspDetail.dueDate}"
                                         rendered="#{empty suspendDetailBn.suspDetail.dueDate}"
+                                        required="true"
                                         style="width:100%" showButtonPanel="true"/>
                             <p:outputLabel/>
 

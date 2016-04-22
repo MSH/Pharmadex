@@ -333,6 +333,7 @@ public class SuspendDetailBn implements Serializable {
                 FacesMessage fm = new FacesMessage(errorMsg);
                 fm.setSeverity(FacesMessage.SEVERITY_ERROR);
                 facesContext.addMessage(null, fm);
+                errorFound=true;
             }
             if (errorFound) return "";
             try {
