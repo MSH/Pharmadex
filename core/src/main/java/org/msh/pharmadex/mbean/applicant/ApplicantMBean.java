@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.applicant;
 
+import org.msh.pharmadex.auth.PassPhrase;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ApplicantType;
@@ -171,6 +172,9 @@ public class ApplicantMBean implements Serializable {
         String username = user.getName().replaceAll("\\s", "");
         user.setUsername(username);
         user.setPassword(username);
+        
+        user = userService.passwordGenerator(user);
+        
         if (!userService.isEmailDuplicated(user.getEmail()) && !userService.isUsernameDuplicated(user.getUsername())) {
             if (userList == null)
                 userList = new ArrayList<User>();

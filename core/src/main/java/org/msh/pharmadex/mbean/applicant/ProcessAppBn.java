@@ -1,5 +1,21 @@
 package org.msh.pharmadex.mbean.applicant;
 
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Address;
 import org.msh.pharmadex.domain.Applicant;
@@ -14,21 +30,6 @@ import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
-
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
  * Backing bean to process the application made for registration
@@ -116,6 +117,8 @@ public class ProcessAppBn implements Serializable {
         String username = user.getName().replaceAll("\\s", "");
         user.setUsername(username);
         user.setPassword(username);
+        user = userService.passwordGenerator(user);
+        
         if (userList == null)
             userList = new ArrayList<User>();
         userList.add(user);

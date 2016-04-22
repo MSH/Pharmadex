@@ -15,9 +15,10 @@
                     <ui:include src="processprodmenu.xhtml"/>
 
                     <h:panelGroup styleClass="ui-widget" id="banner">
-                        <ui:decorate template="/templates/prodbannertempl.xhtml">
-                            <ui:param name="prodApp" value="#{processProdBn.prodApplications}"/>
-                        </ui:decorate>
+                    	<ui:include src="/templates/prodbannertempl.xhtml">
+                    		<ui:param name="prodApp" value="#{processProdBn.prodApplications}"/>
+                    	</ui:include>
+
                         <pe:timeline id="timeline" value="#{processProdBn.timelinesChartData}"
                                      axisPosition="top"
                                      showNavigation="true"
