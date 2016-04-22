@@ -155,6 +155,11 @@ public class GlobalEntityLists implements Serializable {
         return dosUoms;
     }
 
+    public List<DosUom> refreshUoms(){
+        dosUoms = dosageFormService.fetchAllDosUom();
+        return dosUoms;
+    }
+
     public List<PharmacySite> getPharmacySites() {
         if (pharmacySites == null)
             pharmacySites = pharmacySiteService.findAllPharmacySite(ApplicantState.REGISTERED);

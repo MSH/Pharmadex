@@ -53,6 +53,15 @@ public class DosageFormService implements Serializable {
     }
 
     @Transactional
+    /**
+     * Reread list from DB, even dosUom exist (usually after updatr dictionary)
+     */
+    public List<DosUom> fetchAllDosUom() {
+        dosUoms = (List<DosUom>) dosUomDAO.findAll();
+        return dosUoms;
+    }
+
+    @Transactional
     public DosageForm findDosagedForm(Long id) {
         return dosageFormDAO.findOne(id);
     }
@@ -61,6 +70,30 @@ public class DosageFormService implements Serializable {
     public DosUom findDosUom(int id) {
         return dosUomDAO.findOne(id);
 
+    }
+
+    public DosUom findDosUomByName(String name){
+        if (name==null) return null;
+        if ("".equals(name)) return null;
+        List<DosUom> lst = findAllDosUom();
+        if (lst==null) return null;
+        if (lst.size()==0) return null;
+        for (DosUom unit:lst){
+            if (unit.getUom().equalsIgnoreCase(name)){
+                return unit;
+            }
+        }
+        return  null;
+    }
+
+    public DosUom saveDosUom(String name){
+        DosUom unit = new DosUom();
+        DosUom existUnit = findDosUomByName(name);
+        unit.setUom(name);
+        unit.setDiscontinued(false);
+        if (existUnit!=null) return existUnit;
+        unit = dosUomDAO.save(unit);
+        return unit;
     }
 
 }
