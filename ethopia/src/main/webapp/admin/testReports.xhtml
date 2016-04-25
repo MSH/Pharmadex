@@ -15,9 +15,13 @@
                     <p:message for="recId"/>
 
                     <p:commandButton action="#{testReportsBn.startCheckingRegCertificate}"
-                                         value="Start report" ajax="false">
+                                         value="Start cert" ajax="false">
 
                     </p:commandButton>
+                  <p:commandButton action="#{testReportsBn.createLetter}"
+                                   value="Create Letter" ajax="false">
+
+                  </p:commandButton>
 
             </h:panelGrid>
         </p:panel>
