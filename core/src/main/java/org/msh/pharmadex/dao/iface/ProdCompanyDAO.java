@@ -1,10 +1,9 @@
 package org.msh.pharmadex.dao.iface;
 
-import org.msh.pharmadex.domain.Atc;
+import java.util.List;
+
 import org.msh.pharmadex.domain.ProdCompany;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,8 +16,6 @@ import java.util.List;
 public interface ProdCompanyDAO extends JpaRepository<ProdCompany, Long> {
 
     public List<ProdCompany> findByProduct_Id(Long product_Id);
-
-
 
 }
 
