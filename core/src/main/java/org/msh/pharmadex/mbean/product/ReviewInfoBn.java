@@ -9,8 +9,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
@@ -80,6 +79,7 @@ public class ReviewInfoBn implements Serializable {
     private boolean priReview;
     private User loggedInUser;
     private boolean submitted=false;
+    private String sourcePage="/internal/processreviewlist";
 
     @PostConstruct
     private void init() {
@@ -102,6 +102,9 @@ public class ReviewInfoBn implements Serializable {
                     reviewComments = getReviewComments();
                 }
                 loggedInUser = userService.findUser(userSession.getLoggedINUserID());
+                String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
+                if (srcPage!=null)
+                    sourcePage = srcPage;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -162,14 +165,15 @@ public class ReviewInfoBn implements Serializable {
         revDeficiency.setUser(loggedInUser);
         revDeficiency.setReviewInfo(reviewInfo);
         revDeficiency.setCreatedDate(new Date());
+        /*
         for (ReviewComment rc : getReviewComments()) {
-            if (rc.getRecomendType() != null && rc.getRecomendType().equals(RecomendType.FIR)) {
+            if (rc.getDecisionType() != null && rc.getDecisionType().equals(RecomendType.FIR)) {
                 if (rc.isFinalSummary()) {
                     reviewComment.setComment(rc.getComment());
                 }
             }
-
         }
+        */
     }
 
     public void findRevDef(RevDeficiency revDeficiency) {
@@ -209,9 +213,6 @@ public class ReviewInfoBn implements Serializable {
     public String approveReview() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-//        if (reviewInfo.getRecomendType() == null) {
-//            facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
-//        }
 
             if (!reviewInfo.getReviewStatus().equals(ReviewStatus.SUBMITTED)) {
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("recommendation_empty_valid"), bundle.getString("recommendation_empty_valid")));
@@ -223,7 +224,10 @@ public class ReviewInfoBn implements Serializable {
             saveReview();
             userSession.setProdAppID(reviewInfo.getProdApplications().getId());
             userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
-            return "/internal/processreg";
+            if (reviewInfo.getProdApplications().getRegState().equals(RegState.SUSPEND))
+                return "/internal/processreg";
+            else
+                return "/internal/suspenddetail";
         } catch (Exception ex) {
             ex.printStackTrace();
             facesContext.addMessage(null, new FacesMessage("Log out of the system and try again."));
@@ -272,15 +276,13 @@ public class ReviewInfoBn implements Serializable {
                 reviewInfo = (ReviewInfo) retObject.getObj();
                 reviewComments.add(reviewComment);
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
-
             } else if (retObject.getMsg().equals("close_def")) {
-                facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
-
+              facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
-        }
+            }catch(Exception ex){
+                ex.printStackTrace();
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
+            }
     }
 
     public void printReview() {
@@ -338,6 +340,11 @@ public class ReviewInfoBn implements Serializable {
         return "";
     }
 
+
+    /**
+     * Generate FIR letter
+     * @return
+     */
 
     public String generateLetter() {
         facesContext = FacesContext.getCurrentInstance();
@@ -438,6 +445,21 @@ public class ReviewInfoBn implements Serializable {
         return displayReviewQs;
     }
 
+    public List<RecomendType> getRevRecomendTypes() {
+        List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
+        if (!prodApplications.getRegState().equals(RegState.SUSPEND)){
+            recomendTypes.add(RecomendType.RECOMENDED);
+            recomendTypes.add(RecomendType.NOT_RECOMENDED);
+            recomendTypes.add(RecomendType.FEEDBACK);
+        }else{
+            recomendTypes.add(RecomendType.REGISTER);
+            recomendTypes.add(RecomendType.SUSPEND);
+            recomendTypes.add(RecomendType.CANCEL);
+        }
+        return recomendTypes;
+    }
+
+
     public void setDisplayReviewQs(List<DisplayReviewQ> displayReviewQs) {
         this.displayReviewQs = displayReviewQs;
     }
@@ -494,14 +516,6 @@ public class ReviewInfoBn implements Serializable {
 
     public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
         this.prodApplicationsService = prodApplicationsService;
-    }
-
-    public List<RecomendType> getRevRecomendTypes() {
-        List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
-        recomendTypes.add(RecomendType.RECOMENDED);
-        recomendTypes.add(RecomendType.NOT_RECOMENDED);
-        recomendTypes.add(RecomendType.FIR);
-        return recomendTypes;
     }
 
     public List<RevDeficiency> getRevDeficiencies() {
@@ -585,4 +599,14 @@ public class ReviewInfoBn implements Serializable {
     public void setPriReview(boolean priReview) {
         this.priReview = priReview;
     }
+
+    public String getSourcePage() {
+        return sourcePage;
+    }
+
+    public void setSourcePage(String sourcePage) {
+        this.sourcePage = sourcePage;
+    }
+
+
 }

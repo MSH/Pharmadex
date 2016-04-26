@@ -16,10 +16,7 @@ import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.ProdAppType;
-import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.mbean.product.ReviewInfoTable;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Author: usrivastava
@@ -535,9 +529,17 @@ public class ReviewService implements Serializable {
         return new RetObject("success", revDeficiency);
     }
 
+
+    /**
+     * Procedure calculates and saves review status in depends of current status and user role
+     * Then saves review info into database
+     * @param reviewInfo
+     * @param reviewComment
+     * @param userID
+     * @return
+     */
     public RetObject submitReviewInfo(ReviewInfo reviewInfo, ReviewComment reviewComment, Long userID) {
         if (reviewComment.getRecomendType() == null) {
-//            reviewInfo.setReviewStatus(ReviewStatus.IN_PROGRESS);
             reviewComment.setFinalSummary(false);
         } else {
             if (reviewComment.getRecomendType().equals(RecomendType.RECOMENDED) || reviewComment.getRecomendType().equals(RecomendType.NOT_RECOMENDED)
@@ -555,16 +557,12 @@ public class ReviewService implements Serializable {
                     reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
                 }
                 reviewComment.setFinalSummary(true);
+            }else if (reviewComment.getRecomendType().equals(RecomendType.REGISTER)||reviewComment.getRecomendType().equals(RecomendType.SUSPEND)||reviewComment.getRecomendType().equals(RecomendType.CANCEL)){
+                reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
             }
-//                } else if (reviewComment.getRecomendType().equals(RecomendType.FEEDBACK)) {
-//                    reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
-//                    reviewComment.setFinalSummary(false);
-//                }
         }
         reviewInfo.setSubmitDate(new Date());
         reviewInfo.getReviewComments().add(reviewComment);
-//        reviewInfo.setRevDeficiencies(revDeficiencies);
-
 
         List<RevDeficiency> revDeficiencies = revDeficiencyDAO.findByReviewInfo_Id(reviewInfo.getId());
         for (RevDeficiency revDeficiency : revDeficiencies) {
@@ -581,6 +579,7 @@ public class ReviewService implements Serializable {
         }
         return saveReviewInfo(reviewInfo);
     }
+
 
     public JasperPrint getReviewReport(Long id) throws Exception {
         JasperPrint jasperPrint;
@@ -634,5 +633,30 @@ public class ReviewService implements Serializable {
 
         reviewInfo = reviewInfoDAO.save(reviewInfo);
         return "persist";
+    }
+
+    public ReviewComment findSuspendReviewComment(ReviewInfo reviewInfo,User user){
+        if (reviewInfo==null) return null;
+        List<ReviewComment> comments = reviewInfo.getReviewComments();
+        if (comments!=null&&comments.size()>0){
+            for(ReviewComment comment:comments){
+                if (comment.getUser().getUserId()==user.getUserId()){
+                    return comment;
+                }
+            }
+        }
+        return null;
+    }
+
+    public ReviewComment createSuspendReviewComment(ReviewInfo reviewInfo,User user){
+        if (reviewInfo==null) return null;
+        ReviewComment comment = new ReviewComment();
+        List<ReviewComment> comments = reviewInfo.getReviewComments();
+        comment.setReviewInfo(reviewInfo);
+        comment.setUser(user);
+        comment.setDate(new Date());
+        comments.add(comment);
+        saveReviewInfo(reviewInfo);
+        return comment;
     }
 }

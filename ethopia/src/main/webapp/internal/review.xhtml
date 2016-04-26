@@ -19,7 +19,7 @@
                 <div class="post">
                     <h1 class="title ui-widget-header ui-corner-all"> #{msgs.complete_review}</h1>
                 </div>
-
+                <!-- banner panel -->
                 <p:panel>
                     <h:panelGrid columns="4" columnClasses="value, label, value, label  " cellpadding="10px"
                                  cellspacing="10px">
@@ -42,24 +42,28 @@
                                 />
                     </h:panelGrid>
                 </p:panel>
-
                 <div style="height: 10px;"/>
 
+                <!-- action pane - buttons panel -->
                 <div align="right">
-
+                    <!-- approve the review-->
                     <p:commandButton value="#{msgs.approve_review}" action="#{reviewBn.approveReview}" update=":reviewHome"
                                      ajax="false" rendered="true">
                         <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
                     </p:commandButton>
-
+                    <!--Assesor feedback-->
                     <p:commandButton value="#{msgs.send_to_review}" action="#{reviewBn.reviewerFeedback}" update=":reviewHome"
                                      ajax="false" rendered="#{userSession.moderator and reviewBn.review.submitted}"/>
+                    <!-- save button -->
                     <p:commandButton value="#{msgs.global_save}" action="#{reviewBn.saveReview}" ajax="true"
                                      update=":reviewHome" process=":reviewHome:reviewgrid @this"
                                      rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
+                    <!-- submit -->
                     <p:commandButton value="#{msgs.global_submit}" action="#{reviewBn.submitReview}" update=":reviewHome"
                                      ajax="false" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
-                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                    <!-- goto back -->
+                    <p:commandButton value="#{msgs.global_back}" immediate="true"
+                                     action="/internal/processreg"
                                      ajax="false">
                             <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
                     </p:commandButton>

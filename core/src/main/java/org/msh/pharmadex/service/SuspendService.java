@@ -29,7 +29,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -191,10 +190,6 @@ public class SuspendService implements Serializable {
         param.put("manufName", manufName);
         param.put("reason", emailBody);
         param.put("batchNo", suspDetail.getBatchNo());
-        param.put("recipient",recipient.getCompanyName());
-        param.put("recipientAddr1",recipient.getAddress());
-        param.put("recipientAddr2","");
-        param.put("recipientCountry","");
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         conn.close();
 
@@ -263,13 +258,13 @@ public class SuspendService implements Serializable {
     public List<SuspDetail> findAll(UserSession userSession) {
         List<SuspDetail> suspDetails = null;
         if (userSession.isHead()) {
-            suspDetails = suspendDAO.findAll();
+            suspDetails = suspendDAO.findByComplete(false);
         }
         if (userSession.isModerator()) {
-            suspDetails = suspendDAO.findByModerator_UserId(userSession.getLoggedINUserID());
+            suspDetails = suspendDAO.findByModerator_UserIdAndComplete(userSession.getLoggedINUserID(),false);
         }
         if (userSession.isReviewer()) {
-            suspDetails = suspendDAO.findByReviewer_UserId(userSession.getLoggedINUserID());
+            suspDetails = suspendDAO.findByReviewer_UserIdAndComplete(userSession.getLoggedINUserID(),false);
         }
         return suspDetails;
 
@@ -288,7 +283,12 @@ public class SuspendService implements Serializable {
             suspDetail.setCanceled(true);
 
         ProdApplications prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
-        prodApplications.setRegState(suspDetail.getDecision());
+        if (suspDetail.getDecision().equals(RecomendType.REGISTER)) {
+            prodApplications.setRegState(RegState.REGISTERED);
+        }else if (suspDetail.getDecision().equals(RecomendType.CANCEL)) {
+            prodApplications.setRegState(RegState.CANCEL);
+        }else
+            prodApplications.setRegState(RegState.SUSPEND);
 //        prodApplications.setRegExpiryDate(suspDetail.getSuspStDate());
         prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
 
@@ -419,21 +419,23 @@ public class SuspendService implements Serializable {
                 //update product applications
                 updateProdApp(RegState.SUSPEND);
             } else if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)) {
+                //process is finished, set final state
                 if (suspDetail.getDecision().equals(RegState.SUSPEND)) {
                     createSuspLetter();
+                    updateProdApp(RegState.SUSPEND);
                 } else if (suspDetail.getDecision().equals(RegState.CANCEL)) {
                     //process cancellation
                     //create cancellation letters
                     createCancelLetter();
                     createCancelSenderLetter();
                     suspDetail.setComplete(true);
-                } else if (suspDetail.getDecision().equals(RegState.REGISTERED)) {
+                    updateProdApp(RegState.CANCEL);
+                } else{
                     //update product
                     //update suspension detail
                     suspDetail.setComplete(true);
+                    updateProdApp(RegState.REGISTERED);
                 }
-                //update product applications
-                updateProdApp(suspDetail.getDecision());
             }
             //update suspension detail
             retObject = saveSuspend(this.suspDetail);
@@ -458,4 +460,87 @@ public class SuspendService implements Serializable {
             this.loggedInUser = userService.findUser(loggedINUserID);
         }
     }
+
+    private String getUserRole(ReviewInfo reviewInfo, User curUser){
+        if (reviewInfo.getProdApplications().getModerator().getUserId()==curUser.getUserId()){
+            return "moderator";
+        }else{
+            if (userService.userHasRole(curUser,"Head")){
+                return "head";
+            }
+        }
+        return "assesor";
+    }
+    /**
+     * Find out previous review decision (for TL of Assesor, for Head - TL)
+     * If some decisions exist, procedure will return latest decision
+     * @return
+     */
+    private ReviewComment getSubordinateDecision(ReviewInfo reviewInfo, User curUser){
+        String curUserRole = getUserRole(reviewInfo, curUser);
+        String searchRole="";
+        // determine, whom comment should be found (which role)
+        if (curUserRole.equals("moderator")){
+            searchRole="assesor";
+        }else if (curUserRole.equals("head")){
+            searchRole="moderator";
+        }else
+            return  null;
+
+        if ("".equals(curUserRole)) return null;
+
+        List<ReviewComment> reviewComments = reviewInfo.getReviewComments();
+        ReviewComment newlyComment = null;
+        Date lastDate = Calendar.getInstance().getTime();
+        for (ReviewComment rc : reviewComments) {
+            if (rc.getRecomendType() != null) {
+                User assesor = rc.getUser();
+                if (userService.userHasRole(assesor,searchRole)){
+                    if (rc.getDate().after(lastDate)||newlyComment==null){
+                        lastDate = rc.getDate();
+                        newlyComment = rc;
+                    }
+                }
+            }
+        }
+        return newlyComment;
+    }
+
+    public SuspensionStatus submitApprove(SuspDetail sDetail, ReviewInfo reviewInfo, RecomendType decision, Long userId){
+        suspDetail=sDetail;
+        SuspensionStatus result=null;
+        User curUser = userService.findUser(userId);
+        ReviewComment lastAssesorsComment = getSubordinateDecision(reviewInfo,curUser);
+        RecomendType previousRecommendation = lastAssesorsComment.getRecomendType();
+        String curUserRole = getUserRole(reviewInfo, curUser);
+        if (decision.equals(previousRecommendation)){
+            reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
+            //previous decisions are the same
+            if (curUserRole.equals("head")){ //am i head
+                suspDetail.setDecision(decision);
+                result=SuspensionStatus.RESULT;
+            }else{//moderator
+                result=SuspensionStatus.RESULT;
+            }
+        }else{//review results are different, i.e. negative decision
+            if (curUserRole.equals("head")){//am I head
+                //return to moderator for new decision (review)
+                suspDetail.setDecision(decision);
+                reviewInfo.setReviewStatus(ReviewStatus.ACCEPTED);
+                result=SuspensionStatus.SUBMIT;
+            }else{//I am moderator
+                //return to assesor for new review
+                //change assesors review status (must be reviewed)
+                ReviewInfo lastAssesorsReview = lastAssesorsComment.getReviewInfo();
+                lastAssesorsReview.setReviewStatus(ReviewStatus.ASSIGNED);
+                reviewService.saveReviewInfo(lastAssesorsReview);
+                //return suspension process to assesors review step
+                result=SuspensionStatus.ASSIGNED;
+            }
+        }
+        reviewService.saveReviewInfo(reviewInfo);
+        return result;
+    }
+
+
 }

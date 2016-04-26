@@ -33,6 +33,7 @@
             <p:commandLink id="viewLink" value="#{each.user.name}" action="/internal/review"
                            ajax="false" immediate="true">
                 <f:param name="reviewID" value="#{each.id}"/>
+                <f:param name="sourcePage" value="/internal/processreg.faces"/>
             </p:commandLink>
         </p:column>
 

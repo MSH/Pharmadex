@@ -45,7 +45,9 @@ public class PIPOrderListBn implements Serializable {
     public String searchPIPOrder(){
         POrderBase pOrderBase = pOrderService.findPOrder(pipNo, false);
         if(pOrderBase!=null) {
-            FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("processpiporder", ""+pOrderBase.getId());
+            String paramValue=String.valueOf(pOrderBase.getId());
+            //FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("processpiporder", paramValue);
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("pipOrderID", paramValue);
             return "processpiporder";
         }else{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Pre-Import permit not found!!!"));

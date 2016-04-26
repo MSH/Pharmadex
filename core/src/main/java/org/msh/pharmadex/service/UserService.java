@@ -118,11 +118,21 @@ public class UserService implements Serializable {
         if (user==null) return false;
         if (roleName==null) return false;
         if ("".equals(roleName)) return false;
+        long id = user.getUserId();
+        user = userDAO.findUser(id);
         List<Role> roles = user.getRoles();
         if (roles==null) return false;
         if (roles.size()==0) return false;
+        String intRoleName="";
+        if ("moderator".equalsIgnoreCase(roleName)){
+            intRoleName = "ROLE_MODERATOR";
+        }else if ("head".equalsIgnoreCase(roleName)){
+            intRoleName = "ROLE_HEAD";
+        }else if ("assesor".equalsIgnoreCase(roleName)){
+            intRoleName = "ROLE_REVIEWER";
+        }
         for(Role role:roles){
-            if (role.getRolename().equalsIgnoreCase(roleName))
+            if (role.getRolename().equalsIgnoreCase(intRoleName))
                 return true;
         }
         return false;

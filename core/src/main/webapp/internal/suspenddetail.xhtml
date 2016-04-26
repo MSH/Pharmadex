@@ -31,28 +31,28 @@
                                  action="#{suspendDetailBn.submitSuspend}"
                                  ajax="false"
                                  rendered="#{suspendDetailBn.showSubmitButtonNo(1)}"/>
-                <!-- submit for moderator after reviewing before aproving by head-->
+                <!-- submit for moderator or head after reviewing-->
                 <p:commandButton value="#{msgs.global_submit}"
-                                 oncomplete="PF('reviewDlgModer').show()"
+                                 action="#{suspendDetailBn.initApproval}"
+                                 oncomplete="PF('aproveDlg').show()"
                                  ajax="true"
                                  rendered="#{suspendDetailBn.showSubmitButtonNo(2)}"/>
-                <!-- FINAL submit for head -->
-                <p:menuButton value="#{msgs.global_decision}" rendered="#{suspendDetailBn.showSubmitButtonNo(3)}">
-                    <p:menuitem value="#{msgs.susp_decisison_suspend}" action="#{suspendDetailBn.submitSuspendStatus(2)}"></p:menuitem>
-                    <p:menuitem value="#{msgs.susp_decisison_cancel_Cancel}" action="#{suspendDetailBn.submitSuspendStatus(1)}"></p:menuitem>
-                    <p:menuitem value="#{msgs.susp_decisison_register}" action="#{suspendDetailBn.submitSuspendStatus(3)}"></p:menuitem>
-                </p:menuButton>
-
+                <!--
                 <p:commandButton value="#{msgs.global_submit}"
                                  oncomplete="PF('reviewDlg').show()"
                                  action="#{suspendDetailBn.submitSuspend}" ajax="false"
                                  rendered="#{(userSession.head||userSession.moderator) and (suspendDetailBn.showSuspend)}"/>
-
+                -->
                 <!-- show product details -->
                 <p:commandButton value="#{msgs.product_details}" immediate="true"
                                  action="/internal/processreg" ajax="false">
                     <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
                 </p:commandButton>
+                <!-- return to list -->
+                <p:commandButton value="#{msgs.global_back}" immediate="true"
+                                 action="/internal/processcancellist" ajax="false">
+                </p:commandButton>
+
             </div>
 
             <div style="height: 10px;"/>
@@ -67,7 +67,7 @@
                         <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
                                          oncomplete="PF('assignreviewdlg').show()"
                                          action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
-                                         rendered="#{userSession.moderator||userSession.admin}"
+                                         rendered="#{(userSession.moderator||userSession.admin)and (suspendDetailBn.showSubmitButtonNo(1))}"
                                          update=":assignreviewdlg"/>
 
 
@@ -111,8 +111,8 @@
                                            converter="javax.faces.DateTime"/>
                             <p:outputLabel/>
 
-                            <p:outputLabel value="#{msgs.global_duedate}"/>
-                            <p:outputLabel value="#{suspendDetailBn.suspDetail.dueDate}*"
+                            <p:outputLabel value="#{msgs.global_duedate}*"/>
+                            <p:outputLabel value="#{suspendDetailBn.suspDetail.dueDate}"
                                            converter="javax.faces.DateTime"
                                            rendered="#{not empty suspendDetailBn.suspDetail.dueDate}"/>
                             <p:calendar id="suspduedt" value="#{suspendDetailBn.suspDetail.dueDate}"
@@ -140,14 +140,13 @@
                     <p:panel header="#{msgs.global_summary}">
                         <h:panelGrid columns="2" cellspacing="5" cellpadding="5">
                             <p:outputLabel value="#{msgs.recommendation}" styleClass="label"/>
-                            <p:outputLabel value="#{suspendDetailBn.suspDetail.decision}" styleClass="label"/>
-
+                            <p:outputLabel value="#{suspendDetailBn.moderDecision}" styleClass="label"/>
                             <p:outputLabel value="#{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBn.moderSummary}" escape="false"/>
+                            <p:outputLabel value="Head #{msgs.global_summary}" styleClass="label"/>
                             <p:outputLabel value="#{suspendDetailBn.suspDetail.finalSumm}" escape="false"/>
                         </h:panelGrid>
                     </p:panel>
-
-
                 </p:tab>
 
                 <p:tab title="#{msgs.global_comment}">
@@ -252,6 +251,7 @@
                                            action="/internal/reviewInfo.faces"
                                            ajax="false">
                                 <f:param name="reviewInfoID" value="#{rev.id}"/>
+                                <f:param name="sourcePage" value="/internal/suspenddetail.faces"/>
                             </p:commandLink>
                         </p:column>
                         <p:column headerText="#{msgs.review_status}">
@@ -306,53 +306,28 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false"
-                  id="moderatordlg" modal="true" dynamic="true"
-                  rendered="#{userSession.head||userSession.admin}">
-            <h:form>
-
-                <p:panelGrid columns="2" columnClasses="label value">
-                    <h:outputText value="#{msgs.moderator_name}: "
-                                  escape="false"
-                                  styleClass="text"/>
-
-                    <p:autoComplete id="mod" value="#{suspendDetailBn.moderator}"
-                                    completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
-                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                    forceSelection="true"
-                                    converter="#{userConverter}">
-                    </p:autoComplete>
-
-                </p:panelGrid>
-
-
-                <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
-                                 action="#{suspendDetailBn.assignModerator}" update=":reviewHome"
-                                 oncomplete="if (!args.validationFailed) PF('moderatordlg').hide()"/>
-            </h:form>
-        </p:dialog>
-
-        <!-- Moderator should choose recommend/not recommend and write reason -->
-        <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlgModer" id="reviewDlgModer" modal="true" dynamic="true">
+        <!-- Moderator should choose decision: Register, Cancel,Suspend and type comment -->
+        <p:dialog header="#{msgs.global_decision}" widgetVar="aproveDlg" id="aproveDlg" modal="true" dynamic="true">
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <p:outputLabel value="#{msgs.recommendation}" for="recommod" styleClass="label"/>
-                    <p:selectOneMenu id="recommod" value="#{suspendDetailBn.moderDecision}" required="true"
+                    <p:outputLabel value="#{msgs.recommendation}" for="decis" styleClass="label"/>
+                    <p:selectOneMenu id="decis" value="#{suspendDetailBn.curReviewComment.recomendType}" required="true"
                                      requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
-                        <f:selectItem itemLabel="#{msgs.susp_decisison_register}" value="#{msgs.susp_decisison_register}"/>
-                        <f:selectItem itemLabel="#{msgs.susp_decisison_suspend}" value="#{msgs.susp_decisison_suspend}"/>
-                        <f:selectItem itemLabel="#{msgs.susp_decisison_cancel}" value="#{msgs.susp_decisison_cancel}"/>
+                        <f:selectItems value="#{suspendDetailBn.getRevRecomendTypes()}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
-                    <p:message for="recommod"/>
+                    <p:message for="recomcb"/>
 
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="moderSummary" styleClass="label"/>
-                    <p:editor value="#{suspendDetailBn.moderSummary}" id="moderSummary" required="true"
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="decsummary" styleClass="label"/>
+                    <p:editor value="#{suspendDetailBn.curReviewComment.comment}" id="decsummary" required="true"
                               width="700"/>
-                    <p:message for="moderSummary"/>
-                </h:panelGrid>
-                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitModeratorsDecision}"
-                                 oncomplete="if (!args.validationFailed) PF('reviewDlgModer').hide()" ajax="false"/>
+                    <p:message for="decsummary"/>
+                    </h:panelGrid>
+                    <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBn.submitAproveDecision}"
+                                 update="@form :reviewHome"
+                                 oncomplete="if(!args.validationFailed) PF('aproveDlg').hide()" ajax="true"/>
             </h:form>
         </p:dialog>
 

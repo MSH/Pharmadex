@@ -53,7 +53,10 @@ public class LicHolderBn implements Serializable {
     public void init() {
         try {
             if (licenseHolder == null) {
-                Long licHolderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("licHolderID"));
+                String licHolderIDStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("licHolderID");
+                Long licHolderID = null;
+                if (licHolderIDStr!=null)
+                    licHolderID = Long.parseLong(licHolderIDStr);
                 if (licHolderID != null) {
                     licenseHolder = licenseHolderService.findLicHolder(licHolderID);
                     agentInfos = licenseHolderService.findAllAgents(licenseHolder.getId());

@@ -12,10 +12,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.LetterType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.domain.enums.SuspensionStatus;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FileUploadEvent;
@@ -94,6 +91,8 @@ public class SuspendDetailBn implements Serializable {
     private boolean closed=false;
     private String moderSummary;
     private String moderDecision;
+    private ReviewInfo review;
+    private ReviewComment curReviewComment;
     private JasperPrint jasperPrint;
 
     @PostConstruct
@@ -104,7 +103,6 @@ public class SuspendDetailBn implements Serializable {
             if (suspID==null){// this is new suspension record
                 Long prodAppID = Long.valueOf(facesContext.getExternalContext().getRequestParameterMap().get("prodAppID"));
                 if (prodAppID != null) {
-                    //prodApplications = prodApplicationsService.findProdApplications(prodAppID);
                     prodApplications = prodApplicationsService.findActiveProdAppByProd(prodAppID);
                     product = prodApplications.getProduct();
                     suspComments = new ArrayList<SuspComment>();
@@ -114,14 +112,17 @@ public class SuspendDetailBn implements Serializable {
                 }
             }else{
                 if (suspID != null && !suspID.equals("")) {
+                    getLoggedInUser();
                     Long suspDetailID = Long.valueOf(suspID);
                     suspDetail = suspendService.findSuspendDetail(suspDetailID);
                     suspComments = suspDetail.getSuspComments();
                     prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(suspDetailID);
                     prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
                     product = prodApplications.getProduct();
-                    if (suspDetail.getReviewer()!=null)
+                    if (suspDetail.getReviewer()!=null){
                         checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
+                        review = reviewService.findReviewInfoByUserAndProdApp(suspDetail.getReviewer().getUserId(), prodApplications.getId());
+                    }
                     isClosed();
                 }
             }
@@ -130,15 +131,17 @@ public class SuspendDetailBn implements Serializable {
         }
     }
 
+
     private void checkReviewStatus(long reviewerId, long appId){
         try {
-            ReviewInfo reviews = reviewService.findReviewInfoByUserAndProdApp(reviewerId, appId);
-            if (reviews.getReviewStatus().equals(SuspensionStatus.FEEDBACK)) return;
-            if (null != reviews) {
-                if (reviews.getReviewStatus().equals(ReviewStatus.ASSIGNED))
+            review = reviewService.findReviewInfoByUserAndProdApp(reviewerId, appId);
+            List<ReviewComment> lst = review.getReviewComments();
+            if (review.getReviewStatus().equals(SuspensionStatus.FEEDBACK)) return;
+            if (null != review) {
+                if (review.getReviewStatus().equals(ReviewStatus.ASSIGNED))
                     suspDetail.setSuspensionStatus(SuspensionStatus.IN_PROGRESS);
-                else if (reviews.getReviewStatus().equals(ReviewStatus.SUBMITTED)
-                        ||reviews.getReviewStatus().equals(ReviewStatus.ACCEPTED)){
+                else if (review.getReviewStatus().equals(ReviewStatus.SUBMITTED)
+                        ||review.getReviewStatus().equals(ReviewStatus.ACCEPTED)){
                     if (!suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)){
                         suspDetail.setSuspensionStatus(SuspensionStatus.SUBMIT);
                     }
@@ -263,28 +266,8 @@ public class SuspendDetailBn implements Serializable {
     }
 
 
-    public String submitModeratorsDecision(){
-        if ("".equals(moderSummary)){
-             FacesMessage fm = new FacesMessage("Please specify commend (reason).");
-             fm.setSeverity(FacesMessage.SEVERITY_ERROR);
-             facesContext.addMessage(null, fm);
-        }
-        ReviewInfo assessorsDecision = suspendService.findLastReviewResult(suspDetail);
-        if (moderDecision.equals(assessorsDecision.getRecomendType()))
-        suspendService.submitModeratorDecision(suspDetail,userSession.getLoggedINUserID(),moderSummary,moderDecision);
-        return "processcancellist";
-    }
-
-    /**
-     * Return suspension application to moderator
-     */
-    public String not_recommend(){
-        suspDetail.setSuspensionStatus(SuspensionStatus.SUBMIT);
-        return "processcancellist";
-    }
-
-
-    public void submitSuspendStatus(int status){
+/*
+      public void submitSuspendStatus(int status){
         if (status==1){
             suspDetail.setDecision(RegState.CANCEL);
         }if (status==2){
@@ -294,18 +277,33 @@ public class SuspendDetailBn implements Serializable {
         }
         submitSuspend();
     }
+*/
 
+    /**
+     * Searches for review comment for current user, if it missing, creates it
+     */
+    public void initApproval(){
+        curReviewComment = reviewService.findSuspendReviewComment(review,loggedInUser);
+        if (curReviewComment==null){
+            curReviewComment = reviewService.createSuspendReviewComment(review,loggedInUser);
+        }
+    }
+
+    /**
+     * Main suspend procedure, action depends of document status and user position
+     * @return
+     */
     public String submitSuspend() {
         facesContext = FacesContext.getCurrentInstance();
         String errorMsg="";
-        if (userSession.isHead()) {
+        if (userSession.isHead()) {//head user (director)
             if (suspDetail.getModerator() == null) {
                 FacesMessage fm = new FacesMessage("Please specify a moderator to process the request.");
                 fm.setSeverity(FacesMessage.SEVERITY_WARN);
                 facesContext.addMessage(null, fm);
                 return "";
             }
-            if (suspComments.size() == 0) {
+            if (suspComments.size() == 0) {// head comment are mandatory
                 FacesMessage fm = new FacesMessage("Please specify comment for Team Leader.");
                 fm.setSeverity(FacesMessage.SEVERITY_WARN);
                 facesContext.addMessage(null, fm);
@@ -316,12 +314,13 @@ public class SuspendDetailBn implements Serializable {
                 FacesMessage fm = new FacesMessage("Error");
                 fm.setSeverity(FacesMessage.SEVERITY_ERROR);
                 facesContext.addMessage(null, fm);
+                return "";
             }
         }
 
-        if (userSession.isModerator()) {
+        if (userSession.isModerator()) {//moderator (team leader) role...
             boolean errorFound = false;
-            if (suspDetail.getReviewer() == null) {
+            if (suspDetail.getReviewer() == null) {//assesor assigment required
                 errorMsg=bundle.getString("susp_assesorReqired");
                 FacesMessage fm = new FacesMessage(errorMsg);
                 fm.setSeverity(FacesMessage.SEVERITY_ERROR);
@@ -329,6 +328,7 @@ public class SuspendDetailBn implements Serializable {
                 errorFound=true;
             }
             if (!suspendService.isCommentsExists(suspDetail,getLoggedInUser())){
+                //moderators comment are mandatory
                 errorMsg = userSession.getLoggedInUser()+" "+ bundle.getString("comment_required");
                 FacesMessage fm = new FacesMessage(errorMsg);
                 fm.setSeverity(FacesMessage.SEVERITY_ERROR);
@@ -351,7 +351,7 @@ public class SuspendDetailBn implements Serializable {
             }
         }
 
-        if (userSession.isReviewer()) {
+        if (userSession.isReviewer()) {//reviewer role...
             if (suspDetail.getFinalSumm() == null || suspDetail.equals("")) {
                 FacesMessage fm = new FacesMessage("Please provide final comment.");
                 fm.setSeverity(FacesMessage.SEVERITY_WARN);
@@ -366,7 +366,7 @@ public class SuspendDetailBn implements Serializable {
                 suspDetail = (SuspDetail) retObject.getObj();
             }
         }
-        return "processcancellist";
+        return "internal/processcancellist";
     }
 
     public List<RegState> getDecisionType() {
@@ -377,24 +377,6 @@ public class SuspendDetailBn implements Serializable {
         return decisionType;
     }
 
-   public List<String> getAprovalType(){
-       List<String> aprovalType = new ArrayList<String>();
-       //TODO USe resource
-       //aprovalType.add(bundle.getString("AmdmtState.RECOMMENDED"));
-       //aprovalType.add(bundle.getString("AmdmtState.NOT_RECOMMENDED"));
-       aprovalType.add("Register");
-       aprovalType.add("Suspend");
-       aprovalType.add("Cancel");
-
-       return aprovalType;
-   }
-
-    public String saveSuspend() {
-        RetObject retObject = suspendService.saveSuspend(suspDetail);
-        suspDetail = (SuspDetail) retObject.getObj();
-        return "";
-    }
-
     public String suspendProduct() {
         facesContext = FacesContext.getCurrentInstance();
         if (suspDetail.getSuspStDate() == null && suspDetail.getDecisionDate() == null && suspDetail.getDecision() == null)
@@ -403,7 +385,6 @@ public class SuspendDetailBn implements Serializable {
         RetObject retObject = null;
         try {
             retObject = suspendService.suspendProduct(suspDetail, getLoggedInUser());
-//        globalEntityLists.setRegProducts(null);
 
             if (retObject.getMsg().equals("persist")) {
                 return "/internal/processreg";
@@ -456,17 +437,12 @@ public class SuspendDetailBn implements Serializable {
         if (prodAppLetters == null)
             prodAppLetters = new ArrayList<ProdAppLetter>();
 
-//        file = userSession.getFile();
-//        prodAppLetter.setSuspDetail(suspDetail);q
-//        getpOrderDocDAO().save(getpOrderDoc());
         prodAppLetters.add(prodAppLetter);
         suspDetail.setProdAppLetters(prodAppLetters);
-//        userSession.setFile(null);
         FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
     }
-
 
     public UploadedFile getFile() {
         return file;
@@ -624,21 +600,46 @@ public class SuspendDetailBn implements Serializable {
         if (no==1) {//moderator, before reviewing by assesor
             if (!(userSession.isModerator()||(userSession.isHead()))) return false;
             if (!(suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT)
+                    ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.REQUESTED)
                     ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)))
                 return true;
             else
                 return false;
-        }else if (no==2){//Review finished, team leader should approve assessment and send it to head
-            if (!userSession.isModerator()) return false;
-            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT))
+        }else if (no==2){//Review finished, team leader or head should approve assessment and send it to head
+            if (!(userSession.isModerator()||userSession.isHead())) return false;
+            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT)||suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT))
                 return true;
             else
                 return false;
-        }else if (no==3) {
-            if (!userSession.isHead()) return false;
-            return isShowSuspend();
         }
         return false;
+    }
+
+    public List<RecomendType> getRevRecomendTypes() {
+        List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
+        recomendTypes.add(RecomendType.REGISTER);
+        recomendTypes.add(RecomendType.SUSPEND);
+        recomendTypes.add(RecomendType.CANCEL);
+        return recomendTypes;
+    }
+
+    public String submitAproveDecision(){
+        SuspensionStatus oldStatus = suspDetail.getSuspensionStatus();
+        SuspensionStatus suspStatus = suspendService.submitApprove(suspDetail,review,curReviewComment.getRecomendType(),getLoggedInUser().getUserId());
+        if (suspStatus.equals(oldStatus)){
+//            String statusMsg=bundle.getString("SuspensionStatusChanged") + " to " + suspStatus.getKey();
+//            FacesMessage fm = new FacesMessage(statusMsg);
+//            fm.setSeverity(FacesMessage.SEVERITY_INFO);
+//            facesContext.addMessage(null, fm);
+            suspDetail.setSuspensionStatus(suspStatus);
+        }
+        if (userSession.isHead())
+            suspDetail.setFinalSumm(curReviewComment.getComment());
+        else if (userSession.isHead())
+            suspDetail.setModeratorSumm(curReviewComment.getComment());
+        suspDetail.setDecision(curReviewComment.getRecomendType());
+        suspendService.saveSuspend(suspDetail);
+        return submitSuspend();
     }
 
     public void setClosed(boolean closed) {
@@ -664,6 +665,15 @@ public class SuspendDetailBn implements Serializable {
     public void setTimelineService(TimelineService timelineService) {
         this.timelineService = timelineService;
     }
+
+    public ReviewComment getCurReviewComment() {
+        return curReviewComment;
+    }
+
+    public void setCurReviewComment(ReviewComment curReviewComment) {
+        this.curReviewComment = curReviewComment;
+    }
+
     public String getModerSummary() {
         return moderSummary;
     }

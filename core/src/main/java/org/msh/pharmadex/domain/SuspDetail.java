@@ -4,7 +4,9 @@
 
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.SuspensionStatus;
 
 import javax.persistence.*;
@@ -61,7 +63,7 @@ public class SuspDetail extends CreationDetail {
     private Date suspEndDate;
 
     @Enumerated(EnumType.STRING)
-    private RegState decision;
+    private RecomendType decision;
 
     @OneToOne
     private User moderator;
@@ -75,7 +77,7 @@ public class SuspDetail extends CreationDetail {
     @Column(name = "complete")
     private boolean complete;
 
-    @OneToMany(mappedBy = "suspDetail", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "suspDetail", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<SuspComment> suspComments;
 
     @OneToMany(mappedBy = "suspDetail", cascade = {CascadeType.ALL})
@@ -204,11 +206,15 @@ public class SuspDetail extends CreationDetail {
         this.finalSumm = finalSumm;
     }
 
-    public RegState getDecision() {
+    public String getModeratorSumm() {  return moderatorSumm; }
+
+    public void setModeratorSumm(String moderatorSumm) { this.moderatorSumm = moderatorSumm; }
+
+    public RecomendType getDecision() {
         return decision;
     }
 
-    public void setDecision(RegState decision) {
+    public void setDecision(RecomendType decision) {
         this.decision = decision;
     }
 

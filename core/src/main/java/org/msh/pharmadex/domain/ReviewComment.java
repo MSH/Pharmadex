@@ -2,6 +2,7 @@ package org.msh.pharmadex.domain;
 
 
 import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.SuspendDecisionType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,8 +32,7 @@ public class ReviewComment implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
    	@Column(name="comment_date")
    	private Date date;
-
-    @Enumerated(EnumType.STRING)
+   @Enumerated(EnumType.STRING)
     private RecomendType recomendType;
 
     private boolean finalSummary;
@@ -40,10 +40,10 @@ public class ReviewComment implements Serializable
     public ReviewComment() {
     }
 
-    public ReviewComment(ReviewInfo reviewInfo, User user, RecomendType rType) {
+    public ReviewComment(ReviewInfo reviewInfo, User user, RecomendType recomendType) {
         this.reviewInfo = reviewInfo;
         this.user = user;
-        this.recomendType = rType;
+        this.recomendType = recomendType;
     }
 
     public Long getId() {
@@ -86,6 +86,14 @@ public class ReviewComment implements Serializable
         this.date = date;
     }
 
+    public boolean isFinalSummary() {
+        return finalSummary;
+    }
+
+    public void setFinalSummary(boolean finalSummary) {
+        this.finalSummary = finalSummary;
+    }
+
     public RecomendType getRecomendType() {
         return recomendType;
     }
@@ -94,11 +102,5 @@ public class ReviewComment implements Serializable
         this.recomendType = recomendType;
     }
 
-    public boolean isFinalSummary() {
-        return finalSummary;
-    }
 
-    public void setFinalSummary(boolean finalSummary) {
-        this.finalSummary = finalSummary;
-    }
 }

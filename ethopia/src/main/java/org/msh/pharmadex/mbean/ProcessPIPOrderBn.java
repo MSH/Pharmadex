@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static javax.faces.context.FacesContext.getCurrentInstance;
 
 /**
  * Backing bean to process the application made for registration
@@ -29,7 +30,16 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
     public void init() {
         try {
             pOrderBase = new PIPOrder();
-            Long pipOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID"));
+            Long pipOrderID=null;
+            facesContext = FacesContext.getCurrentInstance();
+            if (facesContext.getExternalContext().getRequestParameterMap().containsKey("pipOrderID"))
+                pipOrderID = Long.valueOf(Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID")));
+            else{
+                String pipOrderIDStr = (String) facesContext.getExternalContext().getFlash().get("pipOrderID");
+                if (pipOrderIDStr!=null)
+                    pipOrderID = Long.parseLong(pipOrderIDStr);
+            }
+            //Long pipOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID"));
             if (pipOrderID != null) {
                 pOrderBase = pOrderService.findPIPOrderByID(pipOrderID);
                 initVariables();

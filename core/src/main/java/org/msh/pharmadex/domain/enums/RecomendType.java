@@ -16,7 +16,10 @@ public enum RecomendType {
     NOT_RECOMENDED,
     FEEDBACK,
     FIR,
-    COMMENT;
+    COMMENT,
+    REGISTER,
+    SUSPEND,
+    CANCEL;
 
 
     public String getKey() {
