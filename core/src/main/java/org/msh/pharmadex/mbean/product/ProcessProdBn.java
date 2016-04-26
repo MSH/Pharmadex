@@ -111,7 +111,7 @@ public class ProcessProdBn implements Serializable {
     private UserAccessMBean userAccessMBean;
     @ManagedProperty(value = "#{sampleTestService}")
     private SampleTestService sampleTestService;
-    @ManagedProperty(value = "#{suspendService}")
+    @ManagedProperty(value = "#{suspendServiceET}")
     private SuspendService suspendService;
     @ManagedProperty(value = "#{attachmentDAO}")
     private AttachmentDAO attachmentDAO;

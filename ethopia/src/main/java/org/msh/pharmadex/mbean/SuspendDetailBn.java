@@ -6,11 +6,9 @@ package org.msh.pharmadex.mbean;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
-import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.service.*;
@@ -29,7 +27,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.management.relation.RoleStatus;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +49,7 @@ public class SuspendDetailBn implements Serializable {
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
-    @ManagedProperty(value = "#{suspendServiceET}")
+    @ManagedProperty(value = "#{suspendService}")
     private SuspendService suspendService;
 
     @ManagedProperty(value = "#{reviewService}")
@@ -214,6 +211,13 @@ public class SuspendDetailBn implements Serializable {
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(getLoggedInUser());
             suspDetail.setReviewer(reviewer);
+            review = reviewService.findReviewInfoByUserAndProdApp(reviewer.getUserId(), suspDetail.getProdApplications().getId());
+            if (review!=null){ // because review could be in registration process with same reviewers...
+                if (review.getCreatedDate().before(suspDetail.getCreatedDate())) {
+                    review.setReviewStatus(ReviewStatus.ASSIGNED);
+                    reviewService.saveReviewInfo(review);
+                }
+            }
             RetObject retObject = suspendService.saveSuspend(suspDetail);
             if (retObject.getMsg().equals("persist")) {
                 suspDetail = (SuspDetail) retObject.getObj();
@@ -264,20 +268,6 @@ public class SuspendDetailBn implements Serializable {
     public void initComment() {
         suspComment = new SuspComment();
     }
-
-
-/*
-      public void submitSuspendStatus(int status){
-        if (status==1){
-            suspDetail.setDecision(RegState.CANCEL);
-        }if (status==2){
-            suspDetail.setDecision(RegState.SUSPEND);
-        }else if (status==3){
-            suspDetail.setDecision(RegState.REGISTERED);
-        }
-        submitSuspend();
-    }
-*/
 
     /**
      * Searches for review comment for current user, if it missing, creates it
@@ -366,7 +356,7 @@ public class SuspendDetailBn implements Serializable {
                 suspDetail = (SuspDetail) retObject.getObj();
             }
         }
-        return "internal/processcancellist";
+        return "/internal/processcancellist.faces";
     }
 
     public List<RegState> getDecisionType() {
@@ -600,7 +590,6 @@ public class SuspendDetailBn implements Serializable {
         if (no==1) {//moderator, before reviewing by assesor
             if (!(userSession.isModerator()||(userSession.isHead()))) return false;
             if (!(suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT)
-                    ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.REQUESTED)
                     ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)))
                 return true;
             else

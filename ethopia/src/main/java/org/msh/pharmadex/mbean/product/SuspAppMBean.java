@@ -4,12 +4,9 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.SuspDetail;
 import org.msh.pharmadex.service.SuspendService;
-import org.msh.pharmadex.util.JsfUtils;
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.Flash;
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class SuspAppMBean implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     protected UserSession userSession;
     protected List<SuspDetail> submmittedAppList;
-    @ManagedProperty(value = "#{suspendServiceET}")
+    @ManagedProperty(value = "#{suspendService}")
     SuspendService suspendService;
     private List<ProdApplications> filteredApps;
 

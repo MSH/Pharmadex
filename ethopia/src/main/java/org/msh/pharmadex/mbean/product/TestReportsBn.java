@@ -9,10 +9,8 @@ import org.msh.pharmadex.service.SuspendService;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by Odissey on 19.04.2016.
@@ -26,16 +24,16 @@ public class TestReportsBn {
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
 
-    public SuspendService getSuspendService() {
-        return suspendService;
+    public SuspendService getSuspendServiceET() {
+        return suspendServiceET;
     }
 
-    public void setSuspendService(SuspendService suspendService) {
-        this.suspendService = suspendService;
+    public void setSuspendServiceET(SuspendService suspendServiceET) {
+        this.suspendServiceET = suspendServiceET;
     }
 
-    @ManagedProperty(value = "#{suspendService}")
-    private SuspendService suspendService;
+    @ManagedProperty(value = "#{suspendServiceET}")
+    private SuspendService suspendServiceET;
 
     public void startCheckingRegCertificate(){
         long id = Long.parseLong(recId);
@@ -70,11 +68,11 @@ public class TestReportsBn {
 
 public void createLetter() {
     long id = Long.parseLong(recId);
-    SuspDetail sd = suspendService.findSuspendDetail(id);
+    SuspDetail sd = suspendServiceET.findSuspendDetail(id);
 
-    suspendService.setSuspDetail(sd, (long) 1);
+    suspendServiceET.setSuspDetail(sd, (long) 1);
     try {
-        suspendService.createSuspLetter();
+        suspendServiceET.createSuspLetter();
     } catch (IOException e) {
         e.printStackTrace();
     }  catch (JRException e) {

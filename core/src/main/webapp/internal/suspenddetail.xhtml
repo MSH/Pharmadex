@@ -267,6 +267,32 @@
 
         </h:form>
 
+        <p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false"
+                  id="moderatordlg" modal="true" dynamic="true"
+                  rendered="#{userSession.head||userSession.admin}">
+            <h:form>
+
+                <p:panelGrid columns="2" columnClasses="label value">
+                    <h:outputText value="#{msgs.moderator_name}: "
+                                  escape="false"
+                                  styleClass="text"/>
+
+                    <p:autoComplete id="mod" value="#{suspendDetailBn.moderator}"
+                                    completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
+
+                </p:panelGrid>
+
+
+                <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBn.assignModerator}" update=":reviewHome"
+                                 oncomplete="if (!args.validationFailed) PF('moderatordlg').hide()"/>
+            </h:form>
+        </p:dialog>
+
         <p:dialog header="#{msgs.add_comment}" widgetVar="addcommentDlg" id="addcommentDlg"
                   modal="true" dynamic="true">
             <h:form prependId="false">
