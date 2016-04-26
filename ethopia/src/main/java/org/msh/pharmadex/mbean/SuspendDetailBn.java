@@ -32,9 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.ResourceBundle;
 
 /**
@@ -97,6 +95,10 @@ public class SuspendDetailBn implements Serializable {
         try {
             facesContext = FacesContext.getCurrentInstance();
             String suspID = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+            if (suspID==null){
+                if (facesContext.getExternalContext().getFlash()!=null)
+                    suspID = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");
+            }
             if (suspID==null){// this is new suspension record
                 Long prodAppID = Long.valueOf(facesContext.getExternalContext().getRequestParameterMap().get("prodAppID"));
                 if (prodAppID != null) {
@@ -615,18 +617,13 @@ public class SuspendDetailBn implements Serializable {
     public String submitAproveDecision(){
         SuspensionStatus oldStatus = suspDetail.getSuspensionStatus();
         SuspensionStatus suspStatus = suspendService.submitApprove(suspDetail,review,curReviewComment.getRecomendType(),getLoggedInUser().getUserId());
-        if (suspStatus.equals(oldStatus)){
-//            String statusMsg=bundle.getString("SuspensionStatusChanged") + " to " + suspStatus.getKey();
-//            FacesMessage fm = new FacesMessage(statusMsg);
-//            fm.setSeverity(FacesMessage.SEVERITY_INFO);
-//            facesContext.addMessage(null, fm);
-            suspDetail.setSuspensionStatus(suspStatus);
-        }
+        suspDetail.setSuspensionStatus(suspStatus);
         if (userSession.isHead())
             suspDetail.setFinalSumm(curReviewComment.getComment());
-        else if (userSession.isHead())
+        else if (userSession.isModerator())
             suspDetail.setModeratorSumm(curReviewComment.getComment());
         suspDetail.setDecision(curReviewComment.getRecomendType());
+        suspDetail.setDecisionDate(Calendar.getInstance().getTime());
         suspendService.saveSuspend(suspDetail);
         return submitSuspend();
     }

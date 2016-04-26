@@ -24,6 +24,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -226,10 +227,11 @@ public class ReviewInfoBn implements Serializable {
             saveReview();
             userSession.setProdAppID(reviewInfo.getProdApplications().getId());
             userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
-            if (reviewInfo.getProdApplications().getRegState().equals(RegState.SUSPEND))
-                return "/internal/processreg";
-            else
-                return "/internal/suspenddetail";
+            return goBack();
+//            if (reviewInfo.getProdApplications().getRegState().equals(RegState.SUSPEND))
+//                return "/internal/processreg";
+//            else
+//                return "/internal/suspenddetail";
         } catch (Exception ex) {
             ex.printStackTrace();
             facesContext.addMessage(null, new FacesMessage("Log out of the system and try again."));
@@ -587,15 +589,17 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String goBack(){
-        String id=FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("suspDetailID");
-        if (id!=null){//if call was from suspension screen, place to parameter stored Id of suspention
-            FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("suspDetailID",id);
-            return getSourcePage();
-        }
-        id=FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("suspDetailID");
-        if (id!=null){//if call was from suspension screen, place to parameter stored Id of suspention
-            FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("suspDetailID",id);
-            return getSourcePage();
+        String[] src = sourcePage.split(":");
+        if (src.length==1) return sourcePage; //return to list
+        String id=src[0];
+        String page = src[1];
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        if (page.contains("suspenddetail")){
+            context.getFlash().put("suspDetailID",id);
+            return page;
+        }else if (page.contains("process")){
+            context.getRequestParameterMap().put("suspDetailID",id);
+            return page;
         }
         return "";
     }

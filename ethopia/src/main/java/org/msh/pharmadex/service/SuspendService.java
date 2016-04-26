@@ -489,12 +489,14 @@ public class SuspendService implements Serializable {
         ReviewComment newlyComment = null;
         Date lastDate = Calendar.getInstance().getTime();
         for (ReviewComment rc : reviewComments) {
-            if (rc.getRecomendType() != null) {
-                User assesor = rc.getUser();
-                if (userService.userHasRole(assesor,searchRole)){
-                    if (rc.getDate().after(lastDate)||newlyComment==null){
-                        lastDate = rc.getDate();
-                        newlyComment = rc;
+            if (!rc.getDate().before(suspDetail.getCreatedDate())) {
+                if (rc.getRecomendType() != null) {
+                    User assesor = rc.getUser();
+                    if (userService.userHasRole(assesor, searchRole)) {
+                        if (rc.getDate().after(lastDate) || newlyComment == null) {
+                            lastDate = rc.getDate();
+                            newlyComment = rc;
+                        }
                     }
                 }
             }
@@ -527,6 +529,7 @@ public class SuspendService implements Serializable {
             }else{//I am moderator
                 //return to assesor for new review
                 //change assesors review status (must be reviewed)
+                suspDetail.setDecision(decision);
                 ReviewInfo lastAssesorsReview = lastAssesorsComment.getReviewInfo();
                 lastAssesorsReview.setReviewStatus(ReviewStatus.ASSIGNED);
                 reviewService.saveReviewInfo(lastAssesorsReview);
