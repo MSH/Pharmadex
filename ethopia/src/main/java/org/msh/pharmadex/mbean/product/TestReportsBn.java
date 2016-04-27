@@ -24,16 +24,9 @@ public class TestReportsBn {
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
 
-    public SuspendService getSuspendServiceET() {
-        return suspendServiceET;
-    }
+    @ManagedProperty(value = "#{suspendService}")
+    private SuspendService suspendService;
 
-    public void setSuspendServiceET(SuspendService suspendServiceET) {
-        this.suspendServiceET = suspendServiceET;
-    }
-
-    @ManagedProperty(value = "#{suspendServiceET}")
-    private SuspendService suspendServiceET;
 
     public void startCheckingRegCertificate(){
         long id = Long.parseLong(recId);
@@ -49,6 +42,22 @@ public class TestReportsBn {
         }
     }
 
+
+    public void createLetter() {
+        long id = Long.parseLong(recId);
+        SuspDetail sd = suspendService.findSuspendDetail(id);
+
+        suspendService.setSuspDetail(sd, (long) 1);
+        try {
+            suspendService.createSuspLetter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }  catch (JRException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String getRecId() {
         return recId;
@@ -66,19 +75,13 @@ public class TestReportsBn {
         this.prodApplicationsService = prodApplicationsService;
     }
 
-public void createLetter() {
-    long id = Long.parseLong(recId);
-    SuspDetail sd = suspendServiceET.findSuspendDetail(id);
-
-    suspendServiceET.setSuspDetail(sd, (long) 1);
-    try {
-        suspendServiceET.createSuspLetter();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }  catch (JRException e) {
-        e.printStackTrace();
-    } catch (SQLException e) {
-        e.printStackTrace();
+    public SuspendService getSuspendService() {
+        return suspendService;
     }
-}
+
+    public void setSuspendService(SuspendService suspendService) {
+        this.suspendService = suspendService;
+    }
+
+
 }

@@ -60,6 +60,9 @@ public class SuspendService implements Serializable {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private LicenseHolderService licenseHolderService;
+
     private ProdApplications prodApplications;
     private SuspDetail suspDetail;
     private User loggedInUser;
@@ -89,13 +92,20 @@ public class SuspendService implements Serializable {
     }
 
     public void createSuspLetter() throws SQLException, IOException, JRException {
-        File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_suspension", ".pdf");
+        File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_suspension_agent", ".pdf");
         String fileName = invoicePDF.getName();
         LetterType letterType = LetterType.SUSP_NOTIF_LETTER;
         String letterTitle = "Suspension Notification Letter";
         URL resource = getClass().getResource("/reports/suspension.jasper");
-        addLetter(invoicePDF, letterType, letterTitle, resource);
+        JasperPrint jasperPrint = initRegCert(resource);
+        addLetter(jasperPrint, invoicePDF, letterType, letterTitle, resource);
+        jasperPrint = initRegCertLic(resource);
+        if (jasperPrint!=null) {
+            File repoPDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_suspension_licHolder", ".pdf");
+            addLetter(jasperPrint, repoPDF, letterType, letterTitle, resource);
+        }
     }
+
 
     public void createCancelLetter() throws SQLException, IOException, JRException {
         File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_cancellation", ".pdf");
@@ -103,7 +113,8 @@ public class SuspendService implements Serializable {
         LetterType letterType = LetterType.CANCELLATION_LETTER;
         String letterTitle = "Cancellation Notification Letter";
         URL resource = getClass().getResource("/reports/suspension.jasper");
-        addLetter(invoicePDF, letterType, letterTitle, resource);
+        JasperPrint jasperPrint = initRegCert(resource);
+        addLetter(jasperPrint, invoicePDF, letterType, letterTitle, resource);
     }
 
     public void createCancelSenderLetter() throws SQLException, IOException, JRException {
@@ -112,7 +123,8 @@ public class SuspendService implements Serializable {
         LetterType letterType = LetterType.CANCELLATION_SENDER_LETTER;
         String letterTitle = "Cancellation Notification to Sender Letter";
         URL resource = getClass().getResource("/reports/cancel_susp_sender.jasper");
-        addLetter(invoicePDF, letterType, letterTitle, resource);
+        JasperPrint jasperPrint = initRegCert(resource);
+        addLetter(jasperPrint,invoicePDF, letterType, letterTitle, resource);
     }
 
     /**
@@ -126,8 +138,7 @@ public class SuspendService implements Serializable {
      * @throws JRException
      * @throws IOException
      */
-    private void addLetter(File invoicePDF, LetterType letterType, String letterTitle, URL resource) throws SQLException, JRException, IOException {
-        JasperPrint jasperPrint = initRegCert(resource,null);
+    private void addLetter(JasperPrint jasperPrint, File invoicePDF, LetterType letterType, String letterTitle, URL resource) throws SQLException, JRException, IOException {
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
         byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 
@@ -164,7 +175,35 @@ public class SuspendService implements Serializable {
         prodApplicationsService.saveApplication(prodApplications, updatedBy.getUserId());
     }
 
-    public JasperPrint initRegCert(URL resource, Company recipient) throws JRException, SQLException {
+    /**
+     * takes manufacturer name from company database, if this data missing in application
+     * @param prodApplications
+     * @return
+     */
+    private String takeManufacturerName(ProdApplications prodApplications){
+        String manufName="";
+        List<ProdCompany> companyList = prodApplications.getProduct().getProdCompanies();
+        if (companyList!=null){
+            for(ProdCompany company:companyList){
+                if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+                    manufName = company.getCompany().getCompanyName();
+                    suspDetail.getProdApplications().getProduct().setManufName(manufName);
+                    return manufName;
+                }
+
+            }
+        }
+        return manufName;
+    }
+
+    /***
+     * Creates letter to applicant (local agent) that registration was suspended after complains
+     * @param resource - resource to Jasper template
+     * @return Jasper binary to print or save
+     * @throws JRException
+     * @throws SQLException
+     */
+    public JasperPrint initRegCert(URL resource) throws JRException, SQLException {
         String emailBody = suspDetail.getReason();
         Product product = suspDetail.getProdApplications().getProduct();
         Connection conn = entityManager.unwrap(Session.class).connection();
@@ -172,26 +211,58 @@ public class SuspendService implements Serializable {
         List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
         ProdApplications prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
         String manufName = product.getManufName();
-        if (manufName==null){
-            List<ProdCompany> companyList = prodApplications.getProduct().getProdCompanies();
-            if (companyList!=null){
-                for(ProdCompany company:companyList){
-                    if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
-                        manufName = company.getCompany().getCompanyName();
-                        suspDetail.getProdApplications().getProduct().setManufName(manufName);
-                        break;
-                    }
-
-                }
-            }
-        }
+        if (manufName==null){ manufName=takeManufacturerName(prodApplications); }
+        param.put("companyName",prodApplications.getApplicant().getAppName());
+        param.put("address1",prodApplications.getApplicant().getAddress().getAddress1());
+        param.put("address2",prodApplications.getApplicant().getAddress().getAddress2());
+        param.put("countryName",prodApplications.getApplicant().getAddress().getCountry().getCountryName());
         param.put("id", prodApplications.getId());
         param.put("manufName", manufName);
         param.put("reason", emailBody);
         param.put("batchNo", suspDetail.getBatchNo());
+        param.put("recipientAddr2","");
+        param.put("recipientCountry","");
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         conn.close();
 
+        return jasperPrint;
+    }
+
+    /**
+     * Creates letter to applicant (local agent) that registration was suspended after complains
+     * @param resource resource to Jasper template
+     * @return
+     * @throws JRException
+     * @throws SQLException
+     */
+    public JasperPrint initRegCertLic(URL resource) throws JRException, SQLException {
+        String emailBody = suspDetail.getReason();
+        Product product = suspDetail.getProdApplications().getProduct();
+
+        Connection conn = entityManager.unwrap(Session.class).connection();
+        HashMap param = new HashMap();
+        List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
+        ProdApplications prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
+        String manufName = product.getManufName();
+        if (manufName==null){ manufName=takeManufacturerName(prodApplications); }
+        Long  appID=prodApplications.getApplicant().getApplcntId();
+        List<LicenseHolder> res = licenseHolderService.findLicHolderByApplicant(appID);
+        LicenseHolder li=null;
+        if (res!=null)
+            if (res.size()!=0)
+                li= res.get(0);
+        if (li==null) return null;
+        param.put("companyName",li.getName());
+        param.put("address1",li.getAddress().getAddress1());
+        param.put("address2",li.getAddress().getAddress2());
+        param.put("countryName",li.getAddress().getCountry());
+        param.put("id", prodApplications.getId());
+        param.put("manufName", manufName);
+        param.put("reason", emailBody);
+        param.put("batchNo", suspDetail.getBatchNo());
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+        conn.close();
 
         return jasperPrint;
     }
