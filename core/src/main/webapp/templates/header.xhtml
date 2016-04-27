@@ -74,6 +74,12 @@
                 <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-document"
                             url="/public/applicantlist.faces"
                             ajax="false"/>
+              <!--  <sec:isAuthenticated>
+                <p:menuitem value="#{msgs.applicant}" icon="ui-icon-document"
+                            rendered="#{userSession.admin||userSession.inspector}"
+                            url="/secure/allapplicantlist.faces"
+                            ajax="false"/>
+                </sec:isAuthenticated>-->
                 <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
                             ajax="false"/>
                 <p:menuitem value="#{msgs.susp_prod}" icon="ui-icon-document" url="/public/suspendedproducts.faces"

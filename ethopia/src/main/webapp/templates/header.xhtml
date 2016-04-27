@@ -77,6 +77,12 @@
                     <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-document"
                                 url="/public/applicantlist.faces"
                                 ajax="false"/>
+                    <sec:isAuthenticated>
+                        <p:menuitem value="#{msgs.applicant}" icon="ui-icon-document"
+                                    rendered="#{userSession.admin||userSession.inspector}"
+                                    url="/public/allapplicantlist.faces"
+                                    ajax="false"/>
+                    </sec:isAuthenticated>
                     <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document"
                                 url="/public/productlist.faces"
                                 ajax="false"/>
@@ -179,7 +185,7 @@
 
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.licensing}"
-                               rendered="#{userSession.admin||userSession.company||userSession.staff}">
+                               rendered="#{userSession.admin||userSession.company||userSession.staff||userSession.inspector}">
                         <p:menuitem value="#{msgs.pip}" url="/secure/piporder.faces"
                                     icon="ui-icon-document"
                                     rendered="#{userSession.admin||userSession.company||userSession.staff}"/>
@@ -193,13 +199,13 @@
                         <p:menuitem value="#{msgs.submitted_po}" url="/secure/purorderlist.faces"
                                     icon="ui-icon-folder-collapsed"
                                     rendered="#{userSession.company}"/>
-                        <p:separator rendered="#{userSession.admin||userSession.staff}"/>
+                        <p:separator rendered="#{userSession.admin||userSession.staff||userSession.inspector}"/>
                         <p:menuitem value="#{msgs.process_piporder}" url="/internal/processpiporderlist.faces"
                                     icon="ui-icon-gear"
-                                    rendered="#{userSession.admin||userSession.staff}"/>
+                                    rendered="#{userSession.admin||userSession.staff||userSession.inspector}"/>
                         <p:menuitem value="#{msgs.process_purorder}" url="/internal/processpurorderlist.faces"
                                     icon="ui-icon-gear"
-                                    rendered="#{userSession.admin||userSession.staff}"/>
+                                    rendered="#{userSession.admin||userSession.staff||userSession.inspector}"/>
                         <p:separator rendered="#{userSession.admin||userSession.staff}"/>
                         <p:menuitem value="#{msgs.pipreport}" url="/secure/pipreport.faces"
                                     icon="ui-icon-folder-collapsed"
