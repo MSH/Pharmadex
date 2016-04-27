@@ -4,7 +4,8 @@
                 xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
 
     <p:outputLabel value="#{msgs.applicant_addr1}*"/>
-    <p:inputText value="#{addressdata.address1}" required="true" rendered="#{input}"/>
+    <p:inputText value="#{addressdata.address1}" rendered="#{input}"
+    			 required="true" requiredMessage="#{msgs.valid_address}"/>
     <h:outputLabel value="#{addressdata.address1}" rendered="#{!input}" style="font-weight: bold;"/>
 
 
@@ -23,7 +24,7 @@
     <p:autoComplete value="#{addressdata.country}" rendered="#{input}"
                     completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
                     var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
-                    required="true" >
+                    required="true" requiredMessage="#{msgs.valid_country}">
         <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
     </p:autoComplete>
 

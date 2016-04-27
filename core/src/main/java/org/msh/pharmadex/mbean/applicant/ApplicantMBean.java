@@ -92,7 +92,7 @@ public class ApplicantMBean implements Serializable {
                 return "";
             }
             selectedApplicant.setSubmitDate(new Date());
-            if (selectedApplicant.getUsers() == null && user.getEmail() == null) {
+            if (selectedApplicant.getUsers() == null && (user == null || user.getEmail() == null)) {
                 FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
                 error.setSeverity(FacesMessage.SEVERITY_ERROR);
                 facesContext.addMessage(null, error);
