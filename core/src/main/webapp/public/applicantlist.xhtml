@@ -57,14 +57,16 @@
                     <h:outputText value="#{licHolder.email}"/>
                 </p:column>
 
+
                 <p:column filterBy="#{licHolder.phoneNo}" rendered="#{userSession.staff}"
                           sortBy="#{licHolder.phoneNo}"
-                        >
+                >
                     <f:facet name="header">
                         <h:outputText value="#{msgs.applicant_phone}"/>
                     </f:facet>
                     <h:outputText value="#{licHolder.phoneNo}"/>
                 </p:column>
+
 
             </p:dataTable>
 
