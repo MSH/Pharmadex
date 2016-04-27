@@ -47,6 +47,7 @@ public class ApplicantMBean implements Serializable {
     ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private Applicant selectedApplicant;
     private List<Applicant> allApplicant;
+    private List<Applicant> allStateApplicant;
     private List<Applicant> filteredApplicant;
     private boolean showAdd = false;
     private User user;
@@ -215,15 +216,31 @@ public class ApplicantMBean implements Serializable {
         this.selectedApplicant = selectedApplicant;
     }
 
+
     public List<Applicant> getAllApplicant() {
         if(allApplicant==null)
-            allApplicant = applicantService.getRegApplicants();
+                 allApplicant = applicantService.getRegApplicants();
+
         return allApplicant;
     }
 
     public void setAllApplicant(List<Applicant> allApplicant) {
         this.allApplicant = allApplicant;
     }
+
+    public void setAllStateApplicant(List<Applicant> allStateApplicant) {
+        this.allStateApplicant = allStateApplicant;
+    }
+
+    public List<Applicant> getAllStateApplicant() {
+        if(allStateApplicant==null)
+
+                allStateApplicant = applicantService.findAllApplicants();
+
+        return allStateApplicant;
+    }
+
+
 
     public boolean isShowAdd() {
         return showAdd;
