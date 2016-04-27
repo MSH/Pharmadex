@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post" style="width: 1054px;">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.applicant_list}</h1>
+        </div>
+
+        <h:form prependId="false">
+            <p:growl/>
+            <p:dataTable id="car" var="licHolder" value="#{applicantMBean.allStateApplicant}"
+                         filteredValue="#{applicantMBean.filteredApplicant}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,50,100">
+
+
+                <p:column filterBy="#{licHolder.appName}"
+                          sortBy="#{licHolder.appName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.registration_applicant}"/>
+                    </f:facet>
+
+
+                    <p:commandLink id="viewLink" value="#{licHolder.appName}" 
+                    		action="#{applicantMBean.sentToDetail(licHolder.applcntId)}" ajax="false">
+                    </p:commandLink>
+                </p:column>
+
+
+                <p:column filterBy="#{licHolder.applicantType.name}"
+                          sortBy="#{licHolder.applicantType.name}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.applicant_type}"/>
+                    </f:facet>
+
+                    <h:outputText value="#{licHolder.applicantType.name}"/>
+                </p:column>
+
+                <p:column filterBy="#{licHolder.contactName}"
+                          sortBy="#{licHolder.contactName}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.applicant_contactname}"/>
+                    </f:facet>
+
+                    <h:outputText value="#{licHolder.contactName}"/>
+                </p:column>
+
+                <p:column filterBy="#{licHolder.email}" rendered="#{userSession.staff}"
+                          sortBy="#{licHolder.email}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.User_email}"/>
+                    </f:facet>
+                    <h:outputText value="#{licHolder.email}"/>
+                </p:column>
+
+
+                <p:column filterBy="#{licHolder.phoneNo}" rendered="#{userSession.staff}"
+                          sortBy="#{licHolder.phoneNo}"
+                >
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.applicant_phone}"/>
+                    </f:facet>
+                    <h:outputText value="#{licHolder.phoneNo}"/>
+                </p:column>
+                <p:column filterBy="#{licHolder.state}"
+                          sortBy="#{msgs[licHolder.state.key]}"
+                >
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.state}"/>
+                    </f:facet>
+                    <h:outputText value="#{msgs[licHolder.state.key]}"/>
+                </p:column>
+
+            </p:dataTable>
+
+            <h:panelGrid columns="2" width="100%">
+                <p:panel>
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/pdf.png"/>
+                        <p:dataExporter type="pdf" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="car" fileName="#{msgs.applicant_list}"/>
+                    </h:commandLink>
+                </p:panel>
+            </h:panelGrid>
+
+        </h:form>
+
+        <p:dialog header="#{msgs.applicant_detail}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
+                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
+            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>
