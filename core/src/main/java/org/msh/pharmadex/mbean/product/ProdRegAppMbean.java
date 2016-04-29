@@ -1,16 +1,60 @@
 package org.msh.pharmadex.mbean.product;
 
-import com.mysql.jdbc.PacketTooBigException;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.AdminRoute;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.Attachment;
+import org.msh.pharmadex.domain.Checklist;
+import org.msh.pharmadex.domain.DosUom;
+import org.msh.pharmadex.domain.DosageForm;
+import org.msh.pharmadex.domain.DrugPrice;
+import org.msh.pharmadex.domain.ForeignAppStatus;
+import org.msh.pharmadex.domain.PharmClassif;
+import org.msh.pharmadex.domain.Pricing;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ProdInn;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UseCategory;
-import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.ChecklistService;
+import org.msh.pharmadex.service.CompanyService;
+import org.msh.pharmadex.service.DosageFormService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.InnService;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
@@ -22,23 +66,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import com.mysql.jdbc.PacketTooBigException;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Author: usrivastava
@@ -312,20 +343,26 @@ public class ProdRegAppMbean implements Serializable {
     public void addDocument() {
         FacesMessage msg;
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
-//        file = userSession.getFile();
-//        attachment.setFile(file.getContents());
-            attachmentDAO.save(attachment);
-            setAttachments(null);
-//        userSession.setFile(null);
-            msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-            facesContext.addMessage(null, msg);
+        	if(attachment != null && attachment.getFile() != null){
+        		int len = attachment.getFile().length;
+        		if(len > 4194304){// в БД используем LONGBLOB = 4194304 - maximum
+        			msg = new FacesMessage("Error! " + bundle.getString("Error.bigSizeFile"));
+                    facesContext.addMessage(null, msg);
+        		}else{
+        			attachmentDAO.save(attachment);
+                    setAttachments(null);
+                    msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+                    facesContext.addMessage(null, msg);
+        		}
+        	}
         } catch (Exception ex) {
             if (ex instanceof PacketTooBigException) {
-                msg = new FacesMessage("Upload file size is too big!!");
+            	msg = new FacesMessage("Error! " + bundle.getString("Error.bigSizeFile"));
+                //msg = new FacesMessage("Upload file size is too big!!");
             } else {
-                msg = new FacesMessage("Error uploading file");
+            	msg = new FacesMessage("Error! " + bundle.getString("Error.uploadFile"));
+               // msg = new FacesMessage("Error uploading file");
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }

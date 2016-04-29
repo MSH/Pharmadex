@@ -78,8 +78,8 @@ public class ReviewBn implements Serializable {
     @PostConstruct
     public void init(){
         try {
-            Long prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID")); //reviewID
-            review = reviewService.findReviewByProdApp(prodAppID);
+            Long reviewID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("reviewID"));
+            review = reviewService.findReview(reviewID);
             if(review != null)
             	reviewChecklists = review.getReviewChecklists();
         }catch (Exception ex){
