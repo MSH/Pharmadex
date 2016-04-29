@@ -218,7 +218,6 @@ public class ProdReviewBn implements Serializable {
         reviewInfo.setProdApplications(processProdBn.getProdApplications());
         reviewInfo.setAssignDate(new Date());
         reviewInfo.setReviewStatus(ReviewStatus.ASSIGNED);
-
     }
 
     public void initProcessorChange(ReviewInfo ri) {

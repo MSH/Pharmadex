@@ -230,18 +230,12 @@ and p.id = $P{id}]]>
 				</textElement>
 				<text><![CDATA[Therefore, to protect the public health the authority is forced to suspend or pend the market authorization given for the specific medicine(s) mentioned for the reasons specified above and all your applications under process until you investigate and justify about the quality defect occurred and all concerned bodies are also notified the copy of this letter not to issue any pre import permit or purchase order and not to be used by the people of Ethiopia for this particular medicine(s) until acceptable investigation report submitted, and corrective and preventive actions are ascertained. ]]></text>
 			</staticText>
-			<componentElement>
-				<reportElement x="372" y="0" width="200" height="50" uuid="636f3e17-33b9-477c-9f2b-9ed28a2b39c8"/>
-				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
-					<jr:codeExpression><![CDATA[$F{prodAppNo}]]></jr:codeExpression>
-				</jr:Code128>
-			</componentElement>
 			<staticText>
 				<reportElement x="75" y="131" width="100" height="20" uuid="fd5f9d5f-5e5d-4af7-a3a1-93f924f64dfb"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Dear Madam/Sir]]></text>
+				<text><![CDATA[Dear Madam/Sir!]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="211" y="343" width="361" height="20" uuid="6c4ab569-3e1a-4454-a262-4680eec56b96"/>

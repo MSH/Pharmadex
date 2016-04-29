@@ -475,7 +475,7 @@ public class ProdApplicationsService implements Serializable {
         //param.put("containerType",prodApp.getProduct().getContType());
         param.put("cert_no",fullNo);
         param.put("productDescription",prodApp.getProduct().getProdDesc());
-        List<UseCategory> cats = prodApp.getProduct().getUseCategories();
+        List<UseCategory> cats = product.getUseCategories();
         String catStr="";
         for(UseCategory cat:cats){
             if (!"".equals(cat)){

@@ -118,6 +118,7 @@ public class Product extends CreationDetail implements Serializable {
     @JoinTable(name = "tblusecategories", joinColumns = @JoinColumn(name = "prodID"))
     @Column(name = "useCategory")
     @Enumerated(EnumType.STRING)
+
     private List<UseCategory> useCategories;
 
     @Column(length = 500)

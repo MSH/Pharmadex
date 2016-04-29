@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-04-29T19:53:32 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -10,6 +12,11 @@
 	<parameter name="reason" class="java.lang.String"/>
 	<parameter name="batchNo" class="java.lang.String"/>
 	<parameter name="reportDate" class="java.lang.String"/>
+	<parameter name="decision" class="java.lang.String"/>
+	<parameter name="companyName" class="java.lang.String"/>
+	<parameter name="address1" class="java.lang.String"/>
+	<parameter name="address2" class="java.lang.String"/>
+	<parameter name="countryName" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, d.dosageform, p.id, p.prodAppType,
 concat(prod.dosage_strength, ' ', u.uom) as dosstrength
@@ -101,34 +108,6 @@ and p.id = $P{id}]]>
 	</pageHeader>
 	<columnHeader>
 		<band height="516" splitType="Stretch">
-			<textField>
-				<reportElement x="75" y="20" width="236" height="20" uuid="6b43134a-46d0-4c5e-a185-c3d7204ca5af"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="75" y="40" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="75" y="60" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="75" y="80" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="0" y="0" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
@@ -137,166 +116,187 @@ and p.id = $P{id}]]>
 				<text><![CDATA[	To,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="151" width="497" height="39" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
-				<textElement textAlignment="Justified">
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[Referencing to your report dated below, we have received complaints about the quality and safety of the medicine  below]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="75" y="218" width="134" height="20" uuid="070c98c8-0c88-49c4-b39c-41bfc80ee466"/>
+				<reportElement x="81" y="200" width="134" height="20" uuid="070c98c8-0c88-49c4-b39c-41bfc80ee466"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Product Name:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="238" width="134" height="20" uuid="e1d1590c-6b1a-49ff-9443-630b5837bca0"/>
+				<reportElement x="80" y="220" width="134" height="20" uuid="e1d1590c-6b1a-49ff-9443-630b5837bca0"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Product Strength:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="258" width="134" height="20" uuid="e6ca3b46-e938-4e8b-a022-34de222fcb7c"/>
+				<reportElement x="79" y="240" width="134" height="20" uuid="e6ca3b46-e938-4e8b-a022-34de222fcb7c"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dosage Form:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="278" width="134" height="20" uuid="468a35c4-b6ee-4261-a0de-5473c22604e9"/>
+				<reportElement x="80" y="260" width="134" height="20" uuid="468a35c4-b6ee-4261-a0de-5473c22604e9"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Manufacturer:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="298" width="134" height="20" uuid="4dda40db-70a0-4d69-85c5-5ecf3dbcd4a1"/>
+				<reportElement x="80" y="280" width="134" height="20" uuid="4dda40db-70a0-4d69-85c5-5ecf3dbcd4a1"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Type of Application:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="211" y="318" width="361" height="20" uuid="d2c372cf-e218-4694-b6a9-4215b7b28f24"/>
+				<reportElement x="216" y="300" width="361" height="20" uuid="d2c372cf-e218-4694-b6a9-4215b7b28f24"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prodAppNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="318" width="134" height="20" uuid="3239a902-8d87-4e9f-8efa-49f87e45f4be"/>
+				<reportElement x="80" y="300" width="134" height="20" uuid="3239a902-8d87-4e9f-8efa-49f87e45f4be"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Application Number:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="211" y="218" width="361" height="20" uuid="3c90ab7b-a777-4414-b313-7c335fad21f2"/>
+				<reportElement x="217" y="200" width="361" height="20" uuid="3c90ab7b-a777-4414-b313-7c335fad21f2"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="211" y="238" width="361" height="20" uuid="3ddc6fe7-41ad-4629-9403-1429c3cfe271"/>
+				<reportElement x="216" y="220" width="361" height="20" uuid="3ddc6fe7-41ad-4629-9403-1429c3cfe271"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dosstrength}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="211" y="278" width="361" height="20" uuid="3d7a6c50-00a5-4022-8f11-095ec9739ef1"/>
+				<reportElement x="216" y="260" width="361" height="20" uuid="3d7a6c50-00a5-4022-8f11-095ec9739ef1"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="211" y="298" width="361" height="20" uuid="e759ea4b-a872-47e0-a39d-07a6f5a5fa9b"/>
+				<reportElement x="216" y="280" width="361" height="20" uuid="e759ea4b-a872-47e0-a39d-07a6f5a5fa9b"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prodAppType}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="211" y="258" width="361" height="20" uuid="f868b32e-993b-4543-bd0d-aef18d9524a6"/>
+				<reportElement x="216" y="240" width="361" height="20" uuid="f868b32e-993b-4543-bd0d-aef18d9524a6"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="77" y="387" width="497" height="50" uuid="1c0da996-2737-4d10-b588-00aee870123e"/>
-				<textElement textAlignment="Justified">
-					<font size="12"/>
-					<paragraph rightIndent="2"/>
-				</textElement>
-				<text><![CDATA[Therefore, the Authority has taken the below measure on the specific product mentioned for the reasons specified above. Please share information to the organizations under your authority about the measures taken.  ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="75" y="131" width="100" height="20" uuid="fd5f9d5f-5e5d-4af7-a3a1-93f924f64dfb"/>
+				<reportElement x="79" y="131" width="100" height="20" uuid="fd5f9d5f-5e5d-4af7-a3a1-93f924f64dfb"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[Dear Madam/Sir]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="211" y="338" width="361" height="20" uuid="6c4ab569-3e1a-4454-a262-4680eec56b96"/>
+				<reportElement x="216" y="320" width="361" height="20" uuid="6c4ab569-3e1a-4454-a262-4680eec56b96"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="338" width="134" height="20" uuid="c1f62d3d-d467-44b5-9dd5-3ce5e6296038"/>
+				<reportElement x="80" y="320" width="134" height="20" uuid="c1f62d3d-d467-44b5-9dd5-3ce5e6296038"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Applicant:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="358" width="134" height="20" uuid="17f8ce82-6d23-481e-b691-6cc785de3afb"/>
+				<reportElement x="80" y="340" width="134" height="20" uuid="17f8ce82-6d23-481e-b691-6cc785de3afb"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Batch Number]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="211" y="358" width="361" height="20" uuid="33dcbba6-25d0-493e-bf46-0173b8ea9fc5"/>
+				<reportElement x="216" y="340" width="361" height="20" uuid="33dcbba6-25d0-493e-bf46-0173b8ea9fc5"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{batchNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="102" width="497" height="19" uuid="38966ead-bf4f-4e10-9070-1d833fb72ff3"/>
+				<reportElement x="80" y="102" width="497" height="19" uuid="38966ead-bf4f-4e10-9070-1d833fb72ff3"/>
 				<textElement textAlignment="Justified">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Notification of cancelled or suspended medicines ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="77" y="449" width="495" height="20" uuid="24565172-71c6-4edd-9d68-cf4be8574892"/>
+				<reportElement x="82" y="384" width="495" height="20" uuid="24565172-71c6-4edd-9d68-cf4be8574892"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{reason}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="75" y="198" width="134" height="20" uuid="7ca6ff3b-7c5d-4777-bcfc-107dfbfc40e0"/>
-				<textElement>
-					<font size="12" isBold="true"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="79" y="163" width="481" height="37" uuid="eac349eb-bd86-40b3-9a18-c07e9bd00dda"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Report Date]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="211" y="198" width="361" height="20" uuid="4a7936bd-fcdb-440e-9ec2-9493c35779fa"/>
+				<textFieldExpression><![CDATA["Referencing to your report dated "+$P{reportDate}+", we have received complaints about the quality and safety of the medicine: "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="79" y="364" width="479" height="16" uuid="73f980d3-1989-43ce-bb3a-cfca332d260e"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{reportDate}]]></textFieldExpression>
+				<text><![CDATA[It having the defect mentioned below]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="82" y="456" width="490" height="49" uuid="94e1dea8-ddba-4d36-a7de-a7f5cffc371e"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Therefore, the Authority has taken the decision to "+$P{decision}+" on the specific product mentioned for the reasons specified above. Please share information to the organizations under your authority about the measures taken."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="17" width="236" height="20" uuid="c71ac049-566f-4e28-bd63-574d043cab62"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="57" width="236" height="20" uuid="4da20b40-44b5-4d55-94e9-a90d674a2d41"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="37" width="236" height="20" uuid="08e941ce-00e4-4737-b4ec-2236e4967567"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="77" width="236" height="20" uuid="7fd6ce3a-f0a3-48f8-b2a1-17ea4ecfd236"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{countryName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>

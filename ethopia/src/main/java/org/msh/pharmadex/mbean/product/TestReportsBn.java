@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import net.sf.jasperreports.engine.JRException;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.SuspDetail;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.SuspendService;
 
@@ -46,10 +47,19 @@ public class TestReportsBn {
     public void createLetter() {
         long id = Long.parseLong(recId);
         SuspDetail sd = suspendService.findSuspendDetail(id);
-
-        suspendService.setSuspDetail(sd, (long) 1);
         try {
+            sd.setDecision(RecomendType.CANCEL);
+            suspendService.saveSuspend(sd);
+            suspendService.setSuspDetail(sd, (long) 1);
+            suspendService.createCancelLetter();
+            suspendService.createCancelSenderLetter();
+
+            sd.setDecision(RecomendType.SUSPEND);
+            suspendService.saveSuspend(sd);
+            suspendService.setSuspDetail(sd, (long) 1);
             suspendService.createSuspLetter();
+            suspendService.createCancelSenderLetter();
+
         } catch (IOException e) {
             e.printStackTrace();
         }  catch (JRException e) {

@@ -16,12 +16,12 @@
 
                     <p:commandButton action="#{testReportsBn.startCheckingRegCertificate}"
                                          value="Start cert" ajax="false">
-
+                    <p:message for="recId"/>
                     </p:commandButton>
-                  <p:commandButton action="#{testReportsBn.createLetter}"
+                    <p:commandButton action="#{testReportsBn.createLetter}"
                                    value="Create Letter" ajax="false">
-
-                  </p:commandButton>
+                    <p:message for="recId"/>
+                    </p:commandButton>
 
             </h:panelGrid>
         </p:panel>

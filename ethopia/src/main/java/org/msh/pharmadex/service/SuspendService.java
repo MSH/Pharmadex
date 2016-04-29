@@ -27,6 +27,7 @@ import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -69,7 +70,7 @@ public class SuspendService implements Serializable {
 
     @Transactional
     public SuspDetail findSuspendDetail(Long suspDetailID) {
-        SuspDetail suspDetail = suspendDAO.findOne(suspDetailID);
+        suspDetail = suspendDAO.findOne(suspDetailID);
         if (suspDetail.getSuspComments() != null)
             Hibernate.initialize(suspDetail.getSuspComments());
         if (suspDetail.getProdAppLetters() != null)
@@ -97,33 +98,40 @@ public class SuspendService implements Serializable {
         LetterType letterType = LetterType.SUSP_NOTIF_LETTER;
         String letterTitle = "Suspension Notification Letter";
         URL resource = getClass().getResource("/reports/suspension.jasper");
-        JasperPrint jasperPrint = initRegCert(resource);
+        JasperPrint jasperPrint = initRegCert(resource,letterType);
         addLetter(jasperPrint, invoicePDF, letterType, letterTitle, resource);
-        jasperPrint = initRegCertLic(resource);
-        if (jasperPrint!=null) {
+        JasperPrint jasperPrintLic = initRegCertLic(resource);
+        if (jasperPrintLic!=null) {
             File repoPDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_suspension_licHolder", ".pdf");
-            addLetter(jasperPrint, repoPDF, letterType, letterTitle, resource);
+            addLetter(jasperPrintLic, repoPDF, letterType, letterTitle, resource);
         }
     }
 
 
     public void createCancelLetter() throws SQLException, IOException, JRException {
-        File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_cancellation", ".pdf");
-        String fileName = invoicePDF.getName();
+        File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_cancellation_agent", ".pdf");
         LetterType letterType = LetterType.CANCELLATION_LETTER;
         String letterTitle = "Cancellation Notification Letter";
-        URL resource = getClass().getResource("/reports/suspension.jasper");
-        JasperPrint jasperPrint = initRegCert(resource);
+        String reportName = "/reports/cancellation.jasper";
+        URL resource = getClass().getResource(reportName);
+        JasperPrint jasperPrint = initRegCert(resource,letterType);
         addLetter(jasperPrint, invoicePDF, letterType, letterTitle, resource);
+        jasperPrint = initRegCertLic(resource);
+        if (jasperPrint!=null) {
+            File repoPDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_cancellation_licHolder", ".pdf");
+            addLetter(jasperPrint, repoPDF, letterType, letterTitle, resource);
+        }
+
     }
 
     public void createCancelSenderLetter() throws SQLException, IOException, JRException {
-        File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_cancelsender", ".pdf");
+        String decType = " "+ suspDetail.getDecision().name()+ "_sender";
+        File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + decType, ".pdf");
         String fileName = invoicePDF.getName();
         LetterType letterType = LetterType.CANCELLATION_SENDER_LETTER;
-        String letterTitle = "Cancellation Notification to Sender Letter";
+        String letterTitle = "Cancellation or Supension Notification to Sender Letter";
         URL resource = getClass().getResource("/reports/cancel_susp_sender.jasper");
-        JasperPrint jasperPrint = initRegCert(resource);
+        JasperPrint jasperPrint = initRegCert(resource, letterType);
         addLetter(jasperPrint,invoicePDF, letterType, letterTitle, resource);
     }
 
@@ -203,7 +211,7 @@ public class SuspendService implements Serializable {
      * @throws JRException
      * @throws SQLException
      */
-    public JasperPrint initRegCert(URL resource) throws JRException, SQLException {
+    public JasperPrint initRegCert(URL resource,LetterType letterType) throws JRException, SQLException {
         String emailBody = suspDetail.getReason();
         Product product = suspDetail.getProdApplications().getProduct();
         Connection conn = entityManager.unwrap(Session.class).connection();
@@ -212,17 +220,34 @@ public class SuspendService implements Serializable {
         ProdApplications prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
         String manufName = product.getManufName();
         if (manufName==null){ manufName=takeManufacturerName(prodApplications); }
-        param.put("companyName",prodApplications.getApplicant().getAppName());
-        param.put("address1",prodApplications.getApplicant().getAddress().getAddress1());
-        param.put("address2",prodApplications.getApplicant().getAddress().getAddress2());
-        param.put("countryName",prodApplications.getApplicant().getAddress().getCountry().getCountryName());
+        if (!(letterType.equals(LetterType.CANCELLATION_SENDER_LETTER))){
+            String paramValue = (prodApplications.getApplicant().getAppName()!=null) ? prodApplications.getApplicant().getAppName() : " ";
+            param.put("companyName",paramValue);
+            paramValue=(prodApplications.getApplicant().getAddress().getAddress1()!=null) ? prodApplications.getApplicant().getAddress().getAddress1() : " ";
+            param.put("address1",paramValue);
+            paramValue=(prodApplications.getApplicant().getAddress().getAddress2()!=null) ? prodApplications.getApplicant().getAddress().getAddress2() : " ";
+            param.put("address2",paramValue);
+            paramValue = (prodApplications.getApplicant().getAddress().getCountry().getCountryName()!=null) ? prodApplications.getApplicant().getAddress().getCountry().getCountryName() : " ";
+            param.put("countryName",paramValue);
+        }else{
+            String paramValue = (prodApplications.getApplicant().getAppName()!=null) ? prodApplications.getApplicant().getAppName() : " ";
+            param.put("companyName",suspDetail.getOrgReported());
+            param.put("address1","");
+            param.put("address2","");
+            param.put("countryName","");
+        }
         param.put("id", prodApplications.getId());
-        param.put("manufName", manufName);
-        param.put("reason", emailBody);
-        param.put("batchNo", suspDetail.getBatchNo());
-        param.put("recipientAddr2","");
-        param.put("recipientCountry","");
+        param.put("manufName", (manufName!=null) ? manufName : " ");
+        param.put("reason", (emailBody!=null) ? emailBody : " ");
+        param.put("batchNo", (suspDetail.getBatchNo()!=null) ? suspDetail.getBatchNo() : " ");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        String strDate = sdf.format(suspDetail.getCreatedDate());
+        param.put("reportDate",strDate);
+        String decision = (suspDetail.getDecision()!=null ? suspDetail.getDecision().name().toLowerCase() : " ");
+        param.put("decision",decision);
+
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+        jasperPrint.removePage(1);
         conn.close();
 
         return jasperPrint;
@@ -246,22 +271,41 @@ public class SuspendService implements Serializable {
         String manufName = product.getManufName();
         if (manufName==null){ manufName=takeManufacturerName(prodApplications); }
         Long  appID=prodApplications.getApplicant().getApplcntId();
-        List<LicenseHolder> res = licenseHolderService.findLicHolderByApplicant(appID);
-        LicenseHolder li=null;
-        if (res!=null)
-            if (res.size()!=0)
-                li= res.get(0);
+        //all license holders of applicants
+        List<LicenseHolder> res = licenseHolderService.findAllLicHoldersByApplicant(appID);
+        if (res==null) return null;
+        if (res.size()==0) return null;
+        LicenseHolder li = null;
+
+        List<Product> products;
+        for(LicenseHolder lh:res){//scan each LH
+            products = lh.getProducts();
+            for(Product lcProd:products){// all products of the LH
+                if (lcProd.getId()==product.getId()){
+                    //if product of LC is the product from application - we found lic holder
+                    li = lh;
+                    break;
+                }
+            }
+        }
+
         if (li==null) return null;
         param.put("companyName",li.getName());
-        param.put("address1",li.getAddress().getAddress1());
-        param.put("address2",li.getAddress().getAddress2());
-        param.put("countryName",li.getAddress().getCountry());
+        param.put("address1", ((li.getAddress().getAddress1())!=null) ? li.getAddress().getAddress1() : " ");
+        param.put("address2",(li.getAddress().getAddress2()!=null) ? li.getAddress().getAddress2():" ");
+        param.put("countryName",(li.getAddress().getCountry().getCountryName()!=null) ? li.getAddress().getCountry().getCountryName() : " ");
         param.put("id", prodApplications.getId());
-        param.put("manufName", manufName);
-        param.put("reason", emailBody);
-        param.put("batchNo", suspDetail.getBatchNo());
+        param.put("manufName", (manufName!=null) ? manufName : " ");
+        param.put("reason", (emailBody!=null) ? emailBody : " ");
+        param.put("batchNo", (suspDetail.getBatchNo()!=null) ? suspDetail.getBatchNo() : " ");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        String strDate = sdf.format(suspDetail.getCreatedDate());
+        param.put("reportDate",strDate);
+        String decision = (suspDetail.getDecision()!=null ? suspDetail.getDecision().name().toLowerCase() : " ");
+        param.put("decision",decision);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+        jasperPrint.removePage(1);
         conn.close();
 
         return jasperPrint;
@@ -296,33 +340,6 @@ public class SuspendService implements Serializable {
             return new RetObject("error");
         return saveSuspend(suspDetail);
 
-    }
-
-    /**
-     *
-     * @param suspDetail details of suspension
-     * @param user - user, may be empty
-     * @return true, if users comment exists. if user is null - true, if any comment exists
-     */
-    public boolean isCommentsExists(SuspDetail suspDetail,User user){
-        List<SuspComment> comments = suspDetail.getSuspComments();
-        if (user==null){
-            if (comments.size()==0)
-                return true;
-            else
-                return false;
-        }
-        if (comments==null){
-            return true;
-        }else{//Check whether there is a comment from moderator
-            boolean commentFound = false;
-            for(SuspComment com:comments) {
-                if (com.getUser().getUserId() == user.getUserId()) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public List<SuspDetail> findAll(UserSession userSession) {
@@ -482,15 +499,15 @@ public class SuspendService implements Serializable {
                 //new suspension request, generate a susp ID for processing
                 generateSuspNo();
                 //generate a suspension letter
-                createSuspLetter();
+                //createSuspLetter(); // no need - Legesse 28/04
                 //update product applications
                 updateProdApp(RegState.SUSPEND);
             } else if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)) {
                 //process is finished, set final state
-                if (suspDetail.getDecision().equals(RegState.SUSPEND)) {
+                if (suspDetail.getDecision().equals(RecomendType.SUSPEND)) {
                     createSuspLetter();
                     updateProdApp(RegState.SUSPEND);
-                } else if (suspDetail.getDecision().equals(RegState.CANCEL)) {
+                } else if (suspDetail.getDecision().equals(RecomendType.CANCEL)) {
                     //process cancellation
                     //create cancellation letters
                     createCancelLetter();
@@ -503,6 +520,7 @@ public class SuspendService implements Serializable {
                     suspDetail.setComplete(true);
                     updateProdApp(RegState.REGISTERED);
                 }
+                suspDetail.setComplete(true);
             }
             //update suspension detail
             retObject = saveSuspend(this.suspDetail);

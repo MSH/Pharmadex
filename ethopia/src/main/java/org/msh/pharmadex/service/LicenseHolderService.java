@@ -134,6 +134,22 @@ public class LicenseHolderService implements Serializable {
         return licenseHolders;
     }
 
+    public List<LicenseHolder> findAllLicHoldersByApplicant(Long applcntId) {
+        List<LicenseHolder> licenseHolders = new ArrayList<LicenseHolder>();
+        if (applcntId == null) {
+            return customLicHolderDAO.findAll();
+        }
+
+        List<AgentInfo> agentInfos = agentInfoDAO.findByApplicant_applcntIdAndAgentType(applcntId, AgentType.FIRST);
+        if (agentInfos != null) {
+            for (AgentInfo agentInfo : agentInfos) {
+                licenseHolders.add(agentInfo.getLicenseHolder());
+            }
+        }
+        return licenseHolders;
+    }
+
+
     public String saveProduct(Long applcntId, Product product) {
         try {
             List<LicenseHolder> licenseHolders = findLicHolderByApplicant(applcntId);

@@ -4,10 +4,12 @@
 
 package org.msh.pharmadex.mbean;
 
+import com.mysql.jdbc.PacketTooBigException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.*;
@@ -65,6 +67,9 @@ public class SuspendDetailBn implements Serializable {
     @ManagedProperty(value = "#{prodAppLetterDAO}")
     private ProdAppLetterDAO prodAppLetterDAO;
 
+    @ManagedProperty(value = "#{attachmentDAO}")
+    private AttachmentDAO attachmentDAO;
+
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
 
@@ -79,6 +84,8 @@ public class SuspendDetailBn implements Serializable {
     private List<SuspComment> suspComments;
     private List<ProdAppLetter> prodAppLetters;
     private ProdAppLetter prodAppLetter;
+    private List<Attachment> attachments;
+    private Attachment attachment;
     private User moderator;
     private User reviewer;
     private User loggedInUser;
@@ -105,6 +112,7 @@ public class SuspendDetailBn implements Serializable {
                     prodApplications = prodApplicationsService.findActiveProdAppByProd(prodAppID);
                     product = prodApplications.getProduct();
                     suspComments = new ArrayList<SuspComment>();
+                    suspComment = new SuspComment();
                     suspDetail = new SuspDetail(prodApplications, suspComments);
                     suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
                     suspDetail.setCreatedBy(getLoggedInUser());
@@ -115,8 +123,10 @@ public class SuspendDetailBn implements Serializable {
                     Long suspDetailID = Long.valueOf(suspID);
                     suspDetail = suspendService.findSuspendDetail(suspDetailID);
                     suspComments = suspDetail.getSuspComments();
-                    prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(suspDetailID);
+                    suspComment = new SuspComment();
                     prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
+                    prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(prodApplications.getId());
+                    attachments = attachmentDAO.findByProdApplications_Id(prodApplications.getId());
                     product = prodApplications.getProduct();
                     if (suspDetail.getReviewer()!=null){
                         checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
@@ -168,6 +178,7 @@ public class SuspendDetailBn implements Serializable {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, mes, ""));
             }
             suspComments.add(suspComment);
+            suspDetail.setSuspComments(suspComments);
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(userService.findUser(userSession.getLoggedINUserID()));
         } catch (Exception ex) {
@@ -190,11 +201,6 @@ public class SuspendDetailBn implements Serializable {
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(getLoggedInUser());
             suspDetail.setModerator(moderator);
-//            RetObject retObject = suspendService.saveSuspend(suspDetail);
-//            if (retObject.getMsg().equals("persist")) {
-//                suspDetail = (SuspDetail) retObject.getObj();
-//                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("moderator_add_success")));
-//            }
         } catch (Exception e) {
             logger.error("Problems saving moderator {}", "suspendetailbn", e);
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("processor_add_error")));
@@ -207,18 +213,35 @@ public class SuspendDetailBn implements Serializable {
         return "";
     }
 
+    public void initAssignReviewer(){
+        review = new ReviewInfo();
+        review.setReviewer(new User());
+        review.setProdApplications(suspDetail.getProdApplications());
+        review.setAssignDate(new Date());
+        review.setReviewStatus(ReviewStatus.ASSIGNED);
+    }
+
     public void assignReviewer() {
         try {
             facesContext = FacesContext.getCurrentInstance();
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(getLoggedInUser());
             suspDetail.setReviewer(reviewer);
-            review = reviewService.findReviewInfoByUserAndProdApp(reviewer.getUserId(), suspDetail.getProdApplications().getId());
-            if (review!=null){ // because review could be in registration process with same reviewers...
-                if (review.getCreatedDate().before(suspDetail.getCreatedDate())) {
-                    review.setReviewStatus(ReviewStatus.ASSIGNED);
+            ReviewInfo srchReview = reviewService.findReviewInfoByUserAndProdApp(reviewer.getUserId(), suspDetail.getProdApplications().getId());
+            if (srchReview!=null){ // because review could be in registration process with same reviewers...
+                if (srchReview.getCreatedDate().before(suspDetail.getCreatedDate())) {
+                    srchReview.setReviewStatus(ReviewStatus.ASSIGNED);
+                    review = srchReview;
                     reviewService.saveReviewInfo(review);
                 }
+            }
+            if (review!=null){//still null, creates
+                review = new ReviewInfo();
+                review.setReviewer(reviewer);
+                review.setProdApplications(suspDetail.getProdApplications());
+                review.setReviewStatus(ReviewStatus.ASSIGNED);
+                review.setDueDate(review.getDueDate());
+                reviewService.saveReviewInfo(review);
             }
             RetObject retObject = suspendService.saveSuspend(suspDetail);
             if (retObject.getMsg().equals("persist")) {
@@ -281,6 +304,14 @@ public class SuspendDetailBn implements Serializable {
         }
     }
 
+    public  void changeReviewer(){
+        review.setReviewer(reviewer);
+        review.setSecReviewer(null);
+        review.setReviewStatus(ReviewStatus.ASSIGNED);
+        review.setUpdatedDate(new Date());
+        reviewService.saveReviewInfo(review);
+    }
+
     /**
      * Main suspend procedure, action depends of document status and user position
      * @return
@@ -319,7 +350,7 @@ public class SuspendDetailBn implements Serializable {
                 facesContext.addMessage(null, fm);
                 errorFound=true;
             }
-            if (!suspendService.isCommentsExists(suspDetail,getLoggedInUser())){
+            if (!isCommentsExists(getLoggedInUser())){
                 //moderators comment are mandatory
                 errorMsg = userSession.getLoggedInUser()+" "+ bundle.getString("comment_required");
                 FacesMessage fm = new FacesMessage(errorMsg);
@@ -329,6 +360,12 @@ public class SuspendDetailBn implements Serializable {
             }
             if (errorFound) return "";
             try {
+
+/*
+                if (review.getReviewer().getUserId()!=reviewer.getUserId()){//reviewer was changed
+                    changeReviewer();
+                }
+*/
                 RetObject retObject = suspendService.submitModeratorComment(suspDetail, userSession.getLoggedINUserID());
             } catch (SQLException e) {
                 FacesMessage fm = new FacesMessage(e.getMessage());
@@ -416,24 +453,31 @@ public class SuspendDetailBn implements Serializable {
             facesContext.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-//        pOrderDoc.setPipOrder(get);
         prodAppLetter.setFileName(file.getFileName());
         prodAppLetter.setContentType(file.getContentType());
         prodAppLetter.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
         prodAppLetter.setRegState(prodApplications.getRegState());
-//        userSession.setFile(file);
-
+        prodAppLetter.setSuspDetail(suspDetail);
     }
 
-    public void addDocument() {
-        if (prodAppLetters == null)
-            prodAppLetters = new ArrayList<ProdAppLetter>();
-
-        prodAppLetters.add(prodAppLetter);
-        suspDetail.setProdAppLetters(prodAppLetters);
-        FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-
+    public boolean isCommentsExists(User user){
+        if (user==null){
+            if (suspComments.size()==0)
+                return true;
+            else
+                return false;
+        }
+        if (suspComments==null){
+            return true;
+        }else{//Check whether there is a comment from moderator
+            boolean commentFound = false;
+            for(SuspComment com:suspComments) {
+                if (com.getUser().getUserId() == user.getUserId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public UploadedFile getFile() {
@@ -584,14 +628,20 @@ public class SuspendDetailBn implements Serializable {
 
     /**
      * Determine visibility of Submit button for moderator, depends of status
-     * @param no - buttin number
+     * @param no - button number
      * @return
      */
     public boolean showSubmitButtonNo(int no){
         if (suspDetail==null) return false;
+        if (suspDetail.isComplete()) return false;
         if (no==1) {//moderator, before reviewing by assesor
             if (!(userSession.isModerator()||(userSession.isHead()))) return false;
-            if (!(suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT)
+            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.REQUESTED)){
+                if (userSession.isModerator()&&suspDetail.getModerator()==null)
+                    return false;
+                else
+                    return true;
+            }else if (!(suspDetail.getSuspensionStatus().equals(SuspensionStatus.SUBMIT)
                     ||suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)))
                 return true;
             else
@@ -674,6 +724,95 @@ public class SuspendDetailBn implements Serializable {
 
     public void setModerDecision(String moderDecision) {
         this.moderDecision = moderDecision;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public Attachment getAttachment() {
+        try {
+            if (attachments == null)
+                attachments = (ArrayList<Attachment>) attachmentDAO.findByProdApplications_Id(getProdApplications().getId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+        }
+
+        return attachment;
+    }
+
+    public void setAttachment(Attachment attachment) {
+        this.attachment = attachment;
+    }
+
+    public AttachmentDAO getAttachmentDAO() {
+        return attachmentDAO;
+    }
+
+    public void setAttachmentDAO(AttachmentDAO attachmentDAO) {
+        this.attachmentDAO = attachmentDAO;
+    }
+
+    public void prepareAttUpload() {
+        attachment = new Attachment();
+        attachment.setUpdatedDate(new Date());
+        attachment.setProdApplications(prodApplications);
+        attachment.setRegState(RegState.SAVED);
+    }
+
+    public void handleAttFileUpload(FileUploadEvent event) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        try {
+            file = event.getFile();
+            attachment.setFile(IOUtils.toByteArray(file.getInputstream()));
+            attachment.setProdApplications(prodApplications);
+            attachment.setFileName(file.getFileName());
+            attachment.setContentType(file.getContentType());
+            attachment.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
+            attachment.setRegState(prodApplications.getRegState());
+        } catch (IOException e) {
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+            facesContext.addMessage(null, msg);
+            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+        }
+    }
+
+    public void addDocument() {
+        FacesMessage msg;
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        try {
+            attachmentDAO.save(attachment);
+            attachments.add(attachment);
+            //setAttachments(null);
+            msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+            facesContext.addMessage(null, msg);
+        } catch (Exception ex) {
+            if (ex instanceof PacketTooBigException) {
+                msg = new FacesMessage("Upload file size is too big!!");
+            } else {
+                msg = new FacesMessage("Error uploading file");
+            }
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+
+
+    public ReviewInfo getReview() {
+        return review;
+    }
+
+    public void setReview(ReviewInfo review) {
+        this.review = review;
     }
 
 }
