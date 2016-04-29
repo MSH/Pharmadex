@@ -688,6 +688,7 @@
                     <p:outputLabel value="#{msgs.registration_date}" id="regstartdate" for="regDate"/>
                     <p:calendar value="#{processProdBn.prodApplications.registrationDate}" id="regDate" showOn="button"
                                 required="true" pattern="#{userAccessMBean.workspace.datePattern}">
+                        <f:validator validatorId="pastDateValidator"/>
                         <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
                     </p:calendar>
                     <p:message for="regstartdate"/>

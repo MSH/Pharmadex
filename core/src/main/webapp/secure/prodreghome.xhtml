@@ -883,9 +883,11 @@
                     <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
 
                     <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
-                    <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate"
-                                navigator="true" maxdate="#{foreignAppStatusMBean.todayDate}"
-                                showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"/>
+                    <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate" 
+                    			navigator="true" showOn="button" rendered="true"
+                                pattern="#{userAccessMBean.workspace.datePattern}">
+                       <f:validator validatorId="pastDateValidator"/>
+                    </p:calendar>
                 </h:panelGrid>
 
                 <h:panelGroup>

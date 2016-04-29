@@ -96,6 +96,15 @@ public class ReviewService implements Serializable {
         return review;
     }
 
+    public Review findReviewByProdApp(Long prodAppID) {
+    	List<Review> list = reviewDAO.findByProdApplications_Id(prodAppID);
+    	if(list != null && list.size() > 0)
+    		return list.get(0);
+        //Review review = reviewDAO.findOne(reviewID);
+
+        return null;
+    }
+    
     public RetObject saveReviewers(Review review) {
         RetObject retObject = new RetObject();
         Review returnvalue = reviewDAO.findByUser_UserIdAndProdApplications_Id(review.getUser().getUserId(), review.getProdApplications().getId());

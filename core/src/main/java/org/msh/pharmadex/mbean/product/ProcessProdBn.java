@@ -291,7 +291,6 @@ public class ProcessProdBn implements Serializable {
     public void dateChange() {
         Workspace w = workspaceDAO.findOne((long) 1);
         prodApplications.setRegExpiryDate(JsfUtils.addDate(prodApplications.getRegistrationDate(), w.getProdRegDuration()));
-
     }
 
     public String addComment() {

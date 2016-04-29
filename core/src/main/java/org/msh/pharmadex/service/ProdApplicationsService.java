@@ -1,8 +1,25 @@
 package org.msh.pharmadex.service;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
@@ -10,9 +27,39 @@ import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.CountryDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
-import org.msh.pharmadex.dao.iface.*;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.dao.iface.AdminRouteDAO;
+import org.msh.pharmadex.dao.iface.AppointmentDAO;
+import org.msh.pharmadex.dao.iface.AtcDAO;
+import org.msh.pharmadex.dao.iface.ChecklistDAO;
+import org.msh.pharmadex.dao.iface.DosUomDAO;
+import org.msh.pharmadex.dao.iface.ForeignAppStatusDAO;
+import org.msh.pharmadex.dao.iface.PharmClassDAO;
+import org.msh.pharmadex.dao.iface.ProdAppChecklistDAO;
+import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
+import org.msh.pharmadex.dao.iface.RevDeficiencyDAO;
+import org.msh.pharmadex.dao.iface.ReviewDAO;
+import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
+import org.msh.pharmadex.dao.iface.SampleTestDAO;
+import org.msh.pharmadex.dao.iface.StatusUserDAO;
+import org.msh.pharmadex.dao.iface.WorkspaceDAO;
+import org.msh.pharmadex.domain.Checklist;
+import org.msh.pharmadex.domain.ForeignAppStatus;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.StatusUser;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.domain.enums.PaymentStatus;
+import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +67,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.*;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.util.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Created by IntelliJ IDEA.
@@ -722,26 +763,26 @@ public class ProdApplicationsService implements Serializable {
             param.put("registrar", workspace.getRegistrarName());
 
             URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
-            jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
-            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
-            byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
+            if(resource != null){
+            	jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+            	net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+            	byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 
-            ProdAppLetter attachment = new ProdAppLetter();
-            attachment.setRegState(prodApp.getRegState());
-            attachment.setFile(file);
-            attachment.setProdApplications(prodApp);
-            attachment.setFileName(invoicePDF.getName());
-            attachment.setTitle("Acknowledgement Letter");
-            attachment.setUploadedBy(prodApp.getCreatedBy());
-            attachment.setComment("Automatically generated Letter");
-            attachment.setContentType("application/pdf");
-            attachment.setLetterType(LetterType.ACK_SUBMITTED);
-            prodAppLetterDAO.save(attachment);
-            conn.close();
-            return "persist";
-
-//                prodApplicationsDAO.updateApplication(prodApp);
-
+            	ProdAppLetter attachment = new ProdAppLetter();
+            	attachment.setRegState(prodApp.getRegState());
+            	attachment.setFile(file);
+            	attachment.setProdApplications(prodApp);
+            	attachment.setFileName(invoicePDF.getName());
+            	attachment.setTitle("Acknowledgement Letter");
+            	attachment.setUploadedBy(prodApp.getCreatedBy());
+            	attachment.setComment("Automatically generated Letter");
+            	attachment.setContentType("application/pdf");
+            	attachment.setLetterType(LetterType.ACK_SUBMITTED);
+            	prodAppLetterDAO.save(attachment);
+            	conn.close();
+            	return "persist";
+            }
+            return "error";
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return "error";

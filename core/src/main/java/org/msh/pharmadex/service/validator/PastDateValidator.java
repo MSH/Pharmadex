@@ -11,12 +11,12 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
 /**
- * Author: usrivastava
+ * Author: dudchenko
  * проверка введенной даты
- * введенная дата раньше текущей - ошибка
+ * введенная дата позже текущей - ошибка
  */
-@FacesValidator("futureDateValidator")
-public class FutureDateValidator implements Validator {
+@FacesValidator("pastDateValidator")
+public class PastDateValidator implements Validator {
 
 
     @Override
@@ -31,9 +31,9 @@ public class FutureDateValidator implements Validator {
         Date dateObj = (Date) o;
 
 
-        if(dateObj.before(new Date())){
+        if(dateObj.after(new Date())){
             FacesMessage msg = new FacesMessage(dateObj
-                    +" "+ resourceBundle.getString("future_date"));
+                    +" "+ resourceBundle.getString("past_date"));
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(msg);
         }
