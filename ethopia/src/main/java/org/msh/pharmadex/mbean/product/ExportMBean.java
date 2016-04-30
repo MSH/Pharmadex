@@ -2,12 +2,10 @@ package org.msh.pharmadex.mbean.product;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.msh.pharmadex.domain.*;
 
 import org.msh.pharmadex.service.ExportService;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.utils.ExcelTools;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import javax.faces.bean.ManagedBean;
@@ -15,8 +13,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.*;
-import java.util.Date;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by wing on 23.03.2016.
@@ -29,6 +27,7 @@ import java.util.List;
 public class ExportMBean implements Serializable {
     private String filename;
     public static Workbook wb;
+    private File f;
     private static java.util.regex.Pattern numeric = java.util.regex.Pattern.compile("\\d*");
     private int success=0;
     private  int failure=0;
@@ -90,17 +89,22 @@ public class ExportMBean implements Serializable {
 
     public void setSuccess(int success) {
         this.success = success;
-
-
     }
 
-    public String startExport(boolean importData){
+    private boolean initProcess(){
         FacesContext context = FacesContext.getCurrentInstance();
         setSuccess(0);
         setFailure(0);
         setIgnore(0);
-        if (filename==null) return "";
-        File f =new File(filename) ;  //c:/temp/LEGACY DATA.xlsx
+        if (filename==null) return false;
+        f =new File(filename) ;  //c:/temp/LEGACY DATA.xlsx
+        if (f==null) return  false;
+        Path path = Paths.get(filename);
+        return true;
+    }
+
+    public String startExport(boolean importData){
+        if (!initProcess()) setFilename("Initialisation failure");
         if (f.isFile()) try {
             wb = WorkbookFactory.create(new FileInputStream(filename));
             Sheet sheet = wb.getSheetAt(0);
@@ -111,9 +115,6 @@ public class ExportMBean implements Serializable {
                 if (res) {
                     success++;
                     ExcelTools.setCellBackground(sheet.getRow(i).getCell(3), IndexedColors.GREEN.getIndex());
-                    //CellStyle style = wb.createCellStyle();
-                   // style.setFillBackgroundColor(IndexedColors.GREEN.getIndex());
-  //                  sheet.getRow(i).setRowStyle(style);
                 }
                 else failure++;
 
@@ -128,7 +129,40 @@ public class ExportMBean implements Serializable {
         } catch (InvalidFormatException e) {
             setFilename("file not found");
         }
-        else   setFilename("file not found");
+        else
+            setFilename("file not found");
+        return "";
+    }
+
+    public String licHoldersImport(){
+        if (!initProcess()) setFilename("Error. Initialisation failure");
+        if (f.isFile())
+            try {
+                wb = WorkbookFactory.create(new FileInputStream(filename));
+                Sheet sheet = wb.getSheetAt(0);
+                if (sheet == null) return "";
+                String res;
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    res = exportService.importApplicants(sheet.getRow(i));
+                    if (!res.startsWith("Error")) {
+                        success++;
+                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(3), IndexedColors.GREEN.getIndex());
+                    }else
+                        failure++;
+                }
+                setIgnore(success+failure);
+                Path path = Paths.get(filename);
+                File outf = new File(path.toString()+"resLC.xlsx");
+                FileOutputStream out = new FileOutputStream(outf);
+                wb.write(out);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InvalidFormatException e) {
+                setFilename("file not found");
+        } else
+            setFilename("file not found");
+
         return "";
     }
 

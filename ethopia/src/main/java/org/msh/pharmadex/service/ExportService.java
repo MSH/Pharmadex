@@ -3,11 +3,13 @@ package org.msh.pharmadex.service;
 import org.apache.poi.ss.usermodel.*;
 
 
+import org.msh.pharmadex.auth.PassPhrase;
 import org.msh.pharmadex.dao.*;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 
 import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.utils.ExcelTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.util.Calendar.*;
 
 /**
  * Created by wing on 24.03.2016.
@@ -43,8 +47,8 @@ public class ExportService implements Serializable {
     CompanyDAO companyDAO;
     @Autowired
     LicenseHolderDAO licenseHolderDAO;
-    //@Autowired
-    //AgentInfoDAO agentInfoDAO;
+    @Autowired
+    AgentInfoDAO agentInfoDAO;
     @Autowired
     ApplicantTypeDAO applicantTypeDAO;
     @Autowired
@@ -55,6 +59,13 @@ public class ExportService implements Serializable {
     DosUomDAO dosUomDAO;
     @Autowired
     AtcDAO atcDAO;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private RoleDAO roleDao;
+
     private Row currrow;
     private  boolean errorDetected;
     ApplicantType at=null;
@@ -62,9 +73,28 @@ public class ExportService implements Serializable {
     boolean isNewUom;
     boolean isNewATC;
     boolean isNewRoute;
-private int lastCol=0;
+    private int lastCol=0;
+    private Country ourCountry;
+    private User admin;
+    private  Role staffRole;
+    private Role companyRole;
+    private List<ApplicantType> atList;
+
+    private boolean init(){
+        ourCountry = countryDAO.findCountryByName("Ethiopia");
+        admin = userDAO.findUser((long) 1);
+        staffRole = roleDao.findOne(3);
+        companyRole = roleDao.findOne(4);
+        ApplicantType atImport = applicantTypeDAO.findOne((long) 2);
+        ApplicantType atManuf = applicantTypeDAO.findOne((long) 1);
+        atList = new ArrayList<ApplicantType>();
+        atList.add(atImport);
+        atList.add(atManuf);
+        return true;
+    }
+
     public boolean importRow(Row row, boolean importData) {
-      errorDetected=false;
+        errorDetected=false;
         int rowNo=0;
         int curCol=0;
         Cell cell = null;
@@ -96,13 +126,8 @@ private int lastCol=0;
             cell = row.getCell(curCol+1);  //D Therapeutic Group    ATC code
             String atccode="";
             if (cell != null) atccode=cell.getStringCellValue().trim();
-             prod.setAtcs(findAtcList(atccode,atc,curCol+1));
+            prod.setAtcs(findAtcList(atccode,atc,curCol+1));
             curCol=curCol+2;
-            /*cell = row.getCell(3);  //Indication   catalog in table pharmSlassif
-            if (cell != null)
-                prod.setIndications(cell.getStringCellValue());//prod.setPharmClassif(findpharmSlassifAcc(cell.getStringCellValue()));
-            //col 4 classification is empty
-       */
             cell = row.getCell(curCol);// E Brand Name
             if (cell != null) prod.setProdName(cell.getStringCellValue());
             curCol++;
@@ -113,11 +138,11 @@ private int lastCol=0;
             if (cell != null) {
                 if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC){
                     prod.setDosStrength(String.valueOf(cell.getNumericCellValue()));
-                   // prod.setDosUnit(findDocUnit("%",curCol));
+                    // prod.setDosUnit(findDocUnit("%",curCol));
                 }else {
                     prod.setDosStrength(cell.getStringCellValue());
-                  //  prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
-                   //if (prod.getD ()==null) prod.setDosStrength(cell.getStringCellValue());
+                    //  prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
+                    //if (prod.getD ()==null) prod.setDosStrength(cell.getStringCellValue());
                 }
             }
             curCol++;
@@ -139,13 +164,13 @@ private int lastCol=0;
             curCol++;
             cell = row.getCell(curCol);  //J Licence Holder/manufacturer
             if (cell != null) lic = findLicHolderByName(cell.getStringCellValue());
-            //if (cell != null) co=FindCompany(cell.getStringCellValue());
+            //if (cell != null) co=findCompany(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol); //K Local Agent
             if (cell != null) a= findApplicant(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol);//L date
-           if (cell!=null)pa.setRegistrationDate(getDateValue(cell));
+            if (cell!=null)pa.setRegistrationDate(getDateValue(cell));
             curCol++;
             cell = row.getCell(curCol); //M Expiry Date
             if (cell!=null) pa.setRegExpiryDate(getDateValue(cell));
@@ -155,12 +180,12 @@ private int lastCol=0;
                 String all=cell.getStringCellValue();
                 int pos=all.indexOf(",");
                 if (pos==-1) {
-                    co=FindCompany(all);
+                    co= findCompany(all);
                 }else{
-                    co=FindCompany(all.substring(0,pos));
+                    co= findCompany(all.substring(0,pos));
                     addr.setAddress1(all.substring(pos+1));
                 }
-             }
+            }
             curCol++;
             cell = row.getCell(curCol); //Country of Origin
             if (cell != null)     addr.setCountry(findCountry(cell.getStringCellValue(),curCol));
@@ -177,7 +202,7 @@ private int lastCol=0;
             }
 
             if (importData)   return addToDatabase(prod, co, a, pa, lic);
-                   else return true;
+            else return true;
         }catch (Exception e){
             String colNo="";
             if (cell!=null)   colNo = String.valueOf(cell.getColumnIndex());
@@ -196,16 +221,16 @@ private int lastCol=0;
         if (at==null) at=applicantTypeDAO.findOne((long) 2);  //set applicant type = importer
         if (user==null) user=userDAO.findUser((long) 1); //admin
         try{
-//todo проверить записывает ли atc
+            //todo проверить записывает ли atc
             if (isNewUom){
                 DosUom u = prod.getDosUnit();
                 dosUomDAO.save(u);
             }
-           if (isNewATC){
-               List<Atc> la=prod.getAtcs();
-               if (la.get(0)!=null)
-               atcDAO.save(la.get(0));
-           }
+            if (isNewATC){
+                List<Atc> la=prod.getAtcs();
+                if (la.get(0)!=null)
+                    atcDAO.save(la.get(0));
+            }
             pa.setApplicant(a);
             pa.setProduct(prod);
             pa.setRegState(RegState.REGISTERED);
@@ -219,7 +244,7 @@ private int lastCol=0;
             co=companyDAO.save(co);
             if (a.getState()==null)a.setState(ApplicantState.REGISTERED);
             if (a.getApplicantType()==null) a.setApplicantType(at);
-          //      a=applicantDAO.saveApplicant(a);
+            //      a=applicantDAO.saveApplicant(a);
             //set manufacrurer
             List<ProdCompany> comlist=new ArrayList<ProdCompany>();
             if (prod.getProdCompanies()!=null)comlist=prod.getProdCompanies();
@@ -246,16 +271,16 @@ private int lastCol=0;
             lic.setAgentInfos(agInfoList);
 
             //if (cell != null) lic.setFirstAgent(cell.getStringCellValue());
-           List<Product> old=lic.getProducts();
-           if (old==null) old=new ArrayList<Product>();
-                old.add(prod);
+            List<Product> old=lic.getProducts();
+            if (old==null) old=new ArrayList<Product>();
+            old.add(prod);
             lic.setProducts(old);
             if (lic.getAddress().getAddress1()==null)lic.setAddress(co.getAddress());
             if (lic.getCreatedBy()==null) lic.setCreatedBy(user);
             lic=licenseHolderDAO.save(lic);
             Cell t=currrow.createCell(lastCol);
             t.setCellValue("Done");
-         }  catch (Exception ex) {
+        }  catch (Exception ex) {
             return false;
         }
 
@@ -263,11 +288,11 @@ private int lastCol=0;
     }
 
     private boolean ifProdExist(Product prod,ProdApplications pa ){
-       if (prod.getId()==null)return false;
+        if (prod.getId()==null)return false;
         List<ProdApplications> lpa=prod.getProdApplicationses();
         if (lpa!=null){
             for (ProdApplications item : lpa){
-               if  (item.getRegExpiryDate()==null) return false;
+                if  (item.getRegExpiryDate()==null) return false;
                 if( item.getRegExpiryDate().equals(pa.getRegExpiryDate())) return true;
             }
         }
@@ -295,8 +320,8 @@ private int lastCol=0;
         if (s==null)return res;
         s=s.trim();
         for (int i=0;i<s.length();i++){
-          if(  Character.isDigit(s.charAt(i)) )
-              res=res+s.charAt(i);
+            if(  Character.isDigit(s.charAt(i)) )
+                res=res+s.charAt(i);
             else return res;
         }
         return res;
@@ -333,7 +358,7 @@ private int lastCol=0;
         return r;
     }
 
-    public Company FindCompany(String s){
+    public Company findCompany(String s){
         s=s.trim();
         Company r= dictionaryDAO.findCompanyByName(s);
         if (r!=null)return r;
@@ -348,7 +373,6 @@ private int lastCol=0;
         if (r!=null)return r;
         r=new LicenseHolder();
         r.setName(s);
-        //ExcelTools.setCellBackground(currrow.getCell(16), IndexedColors.GREY_25_PERCENT.getIndex());
 
         return r;
     }
@@ -366,7 +390,7 @@ private int lastCol=0;
         if (pos==0){
             s=s.trim();
         }else{
-           s=s.substring(pos+1).trim();
+            s=s.substring(pos+1).trim();
         }
         AdminRoute r = dictionaryDAO.findAdminRouteByName(s);
         if (r!=null)return r;
@@ -395,15 +419,15 @@ private int lastCol=0;
     public List<Atc> findAtcList(String code,String s, int col) {
         List<Atc>   la=new ArrayList<Atc>();
         Atc atc = dictionaryDAO.findAtsbyCode(code);
-                if (atc != null) la.add(atc);
-                else {
-                    ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
-                   atc=new Atc();
-                    atc.setAtcName(s);
-                    if (!s.equalsIgnoreCase("")) atc.setLevel(s.length()-1);
-                    la.add(atc);
-                    isNewATC=true;
-                }
+        if (atc != null) la.add(atc);
+        else {
+            ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
+            atc=new Atc();
+            atc.setAtcName(s);
+            if (!s.equalsIgnoreCase("")) atc.setLevel(s.length()-1);
+            la.add(atc);
+            isNewATC=true;
+        }
         return la;
     }
 
@@ -415,38 +439,222 @@ private int lastCol=0;
         return r;
     }
 
-
-
-
     public Country findCountry(String s,int col) {
         s=s.trim();
         Country r=countryDAO.findCountryByName(s);
         if (r!=null)return r;
-            ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
-       errorDetected=true;
+        ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
+        errorDetected=true;
         return r;
     }
-Date getDateValue(Cell cell){
-    Date dt=null;
-if (cell.getCellType()==Cell.CELL_TYPE_STRING)
-    try {
-        String s = cell.getStringCellValue().trim();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        dt = formatter.parse(s);
-    }  catch (ParseException e) {
-        ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
-        errorDetected=true;
 
-    }else
-dt=cell.getDateCellValue();
-    return dt;
-}
-      public Applicant findApplicant(String s){
+    private Date getDateValue(Cell cell){
+        Date dt=null;
+        if (cell.getCellType()==Cell.CELL_TYPE_STRING)
+            try {
+                String s = cell.getStringCellValue().trim();
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                dt = formatter.parse(s);
+            }  catch (ParseException e) {
+                ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
+                errorDetected=true;
+
+            }else
+            dt=cell.getDateCellValue();
+        return dt;
+    }
+    public Applicant findApplicant(String s){
         Applicant a=dictionaryDAO.findApplicantByName(s);
         if (a!=null)return a;
         a=new Applicant();
         a.setAppName(s);
         return a;
-      }
+    }
+
+    private String getCellValue(int cellNo){
+        Cell cell = currrow.getCell(cellNo);
+        return  getCellValue(cell);
+    }
+
+    private String getCellValue(Cell cell){
+        String res="";
+        if (cell==null) return res;
+        if (cell.getCellType()==Cell.CELL_TYPE_BLANK) return res;
+        if (cell.getCellType()==Cell.CELL_TYPE_STRING){
+            if (cell.getStringCellValue()==null) return res;
+            res=cell.getStringCellValue().trim();
+            lastCol = cell.getColumnIndex();
+            return res;
+        }else if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC){
+            double num = cell.getNumericCellValue();
+            if (num!=0){
+                //res = String.format("%1$,.0f", num);
+                res = String.format("%1$.0f", num);
+                return res;
+            }
+        }
+        return  "";
+    }
+
+    private Company createUpdateCompany(String name, String email, Address addr, String phones, String contact){
+        try {
+            Company company = findCompany(name);
+            company.setCompanyName(name);
+            company.setAddress(addr);
+            company.setEmail(email);
+            company.setPhoneNo(phones);
+            company.setContactName(contact);
+            company = (Company) updateRecInfo(company);
+            return company;
+        }catch (Exception e){
+            e.printStackTrace();
+            return  null;
+        }
+    }
+
+    public  User createUpdateUser(String firstName, String lastName, String email, String phones, Address address, Company company, Applicant app){
+        try{
+            boolean isNewUser=false;
+            String fullName = firstName+" "+lastName;
+            User user = userDAO.findByUsername(fullName);
+            if (user==null)
+                user = userDAO.findByUsername(lastName+" "+firstName);
+            if (user==null){
+                user = new User();
+                isNewUser = true;
+            }
+            user.setName(fullName);
+            user.setEmail(email);
+            user.setAddress(address);
+            user.setPhoneNo(phones);
+            user.setApplicant(app);
+            user.setCompanyName(company.getCompanyName());
+            user.setEnabled(true);
+            user.setTimeZone(TimeZone.getTimeZone("CEST"));
+            user.setLanguage(Locale.ENGLISH);
+            user.setType(UserType.COMPANY);
+            List<Role> roles = new ArrayList<Role>();
+            roles.add(companyRole);
+            user.setRoles(roles);
+            user.setRegistrationDate(getInstance().getTime());
+            user.setUsername(getLogin(email));
+            user.setComments("automatically imported");
+            user = (User) this.updateRecInfo(user);
+            if (isNewUser){
+                setPassword(user); //user saved here
+            }else{
+                userDAO.updateUser(user);
+            }
+            return user;
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private  Applicant createUpdateApplicant(String name, Company company){
+        try {
+            Applicant app = findApplicant(name);
+            if (company!=null) {
+                app.setAddress(company.getAddress());
+                app.setEmail(company.getEmail());
+                app.setPhoneNo(company.getPhoneNo());
+                app.setContactName(company.getContactName());
+            }
+            app.setComment("automatically registered");
+            Date today = getInstance().getTime();
+            app.setRegistrationDate(today);
+            app.setApplicantType(atList.get(0));
+            app.setState(ApplicantState.REGISTERED);
+            app.setSubmitDate(today);
+            Calendar expDate = getInstance();
+            expDate.add(YEAR,5);
+            app.setRegExpiryDate(expDate.getTime());
+            app = (Applicant) this.updateRecInfo(app);
+            return app;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String importApplicants(Row row){
+        currrow = row;
+        String firstName=getCellValue(1);
+        String lastName=getCellValue(2);
+        String email=getCellValue(4);
+        String login=getLogin(email);
+        String address1=getCellValue(5);
+        String poBox=getCellValue(6);
+        String zipCode=getCellValue(7);
+        String orgName=getCellValue(8);
+        String phone=getCellValue(9);
+        String jobTittle=getCellValue(10);
+        init();
+        //detect company
+        Address address = createAddress(address1, poBox, zipCode);
+        Company company = createUpdateCompany(orgName,email,address,phone,firstName + " "+lastName);
+        if (company==null) return "Error registration of company";
+        company = companyDAO.save(company);
+        Applicant applicant = createUpdateApplicant(orgName,company);
+        if (applicant==null) return "Error registration of applicant";
+        applicant = applicantDAO.saveApplicant(applicant);
+        User user = createUpdateUser(firstName,lastName,email,phone,address,company,applicant);
+        if (user==null) return "Error registration of user";
+        userDAO.saveUser(user);
+        List<User> users = new ArrayList<User>();
+        users.add(user);
+        applicant.setUsers(users);
+        applicantDAO.saveApplicant(applicant);
+        String result = company.getId()+":"+applicant.getApplcntId()+":"+user.getUserId();
+        int colNum = row.getLastCellNum();
+        Cell resCell = row.createCell(colNum++);
+        resCell.setCellValue(result);
+        return result;
+    }
+
+    private String getLogin(String email){
+        String[] parts = email.split("@");
+        return parts[0];
+    }
+
+    private Address createAddress(String addr1, String addr2, String zipCode){
+        Address addr = new Address();
+        addr.setAddress1(addr1);
+        addr.setAddress2(addr2);
+        addr.setCountry(ourCountry);
+        addr.setZipcode(zipCode);
+        return addr;
+    }
+
+    private User setPassword(User user){
+        String password = PassPhrase.getNext();
+        user.setPassword(password);
+        System.out.println("Password == " + password);
+        user.setUpdatedDate(new Date());
+        Mail mail = new Mail();
+        mail.setMailto(user.getEmail());
+        mail.setSubject("Password Reset");
+        mail.setUser(user);
+        mail.setDate(new Date());
+        mail.setMessage("Your password has been successfully reset in order to access the system please use the username '" + user.getUsername() + "' and password '" + password + "' ");
+        try{
+            user = userService.updateUser(userService.passwordGenerator(user));
+            mailService.sendMail(mail,false);
+            return user;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private CreationDetail updateRecInfo(CreationDetail obj){
+        obj.setUpdatedBy(admin);
+        obj.setCreatedBy(admin);
+        Date today = getInstance().getTime();
+        obj.setCreatedDate(today);
+        obj.setUpdatedDate(today);
+        return obj;
+    }
 
 }

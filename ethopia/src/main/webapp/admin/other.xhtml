@@ -11,19 +11,29 @@
               <h:panelGrid id="content" columns="3" cellspacing="10" columnClasses="col1, col2,col3">
                     <h:outputLabel value="Path and file name for import" for="file"/>
                     <p:inputText value="#{exportMBean.filename}" id="file" required="true"
+                                 default="C:/Temp/"
                                  style="width:200px;"/>
                     <p:message for="file"/>
 
-                        <p:commandButton action="#{exportMBean.startExport(true)}"
-                                         value="Start import" ajax="false">
+                    <p:commandButton action="#{exportMBean.startExport(true)}"
+                                     id="impapp"
+                                     value="Applications" ajax="false">
+                    </p:commandButton>
+                    <h:outputLabel/>
+                    <p:message for="impapp"/>
 
-                        </p:commandButton>
+                    <p:commandButton action="#{exportMBean.startExport(false)}"
+                                     id="chkapp"
+                                     value="Check applications" ajax="false">
+                    </p:commandButton>
+                    <p:message for="chkapp"/>
+                    <h:outputLabel/>
 
-                  <p:commandButton action="#{exportMBean.startExport(false)}"
-                                   value="Start check data" ajax="false">
-
-                  </p:commandButton>
-
+                    <p:commandButton action="#{exportMBean.licHoldersImport}"
+                                     id = "apnti"
+                                   value="Applicants import" ajax="false">
+                    </p:commandButton>
+                    <p:message for="apnti"/>
 
             </h:panelGrid>
             <h:panelGrid id="res" columns="2" cellspacing="10" columnClasses="col1, col2">
