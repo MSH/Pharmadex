@@ -29,11 +29,12 @@
                     <p:message for="chkapp"/>
                     <h:outputLabel/>
 
-                    <p:commandButton action="#{exportMBean.licHoldersImport}"
+                    <p:commandButton action="#{exportMBean.loadingOrganisations}"
                                      id = "apnti"
                                    value="Applicants import" ajax="false">
                     </p:commandButton>
                     <p:message for="apnti"/>
+                    <h:outputText id="status" value="#{exportMBean.taskStatus}"/>
 
             </h:panelGrid>
             <h:panelGrid id="res" columns="2" cellspacing="10" columnClasses="col1, col2">

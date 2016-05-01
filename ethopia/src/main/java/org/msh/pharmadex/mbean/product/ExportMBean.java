@@ -32,6 +32,7 @@ public class ExportMBean implements Serializable {
     private int success=0;
     private  int failure=0;
     private  int ignore=0;
+    private String taskStatus="";
     public int getIgnore() {
         return ignore;
     }
@@ -107,7 +108,7 @@ public class ExportMBean implements Serializable {
         if (!initProcess()) setFilename("Initialisation failure");
         if (f.isFile()) try {
             wb = WorkbookFactory.create(new FileInputStream(filename));
-            Sheet sheet = wb.getSheetAt(0);
+            Sheet sheet = wb.getSheetAt(3);
             if (sheet == null) return "";
             boolean res;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -134,36 +135,98 @@ public class ExportMBean implements Serializable {
         return "";
     }
 
-    public String licHoldersImport(){
+    private String loadingApplicants(Sheet sheet){
+        success=0;
+        failure=0;
+        String res;
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            res = exportService.importApplicants(sheet.getRow(i));
+            if (!res.startsWith("Error")) {
+                success++;
+                ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+            }else
+                failure++;
+        }
+        if (failure==0)
+            return  "loading applicants:success";
+        else
+            return "loading applicants"+String.valueOf(failure)+" errors";
+    }
+
+    private String loadingLocalAgents(Sheet sheet){
+        String res;
+        success=0;
+        failure=0;
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            res = exportService.createUpdateSimpleLocalAgent(sheet.getRow(i));
+            if (!res.startsWith("Error")) {
+                success++;
+                ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+            }else
+                failure++;
+        }
+        if (failure==0)
+            return  "loading applicants:success";
+        else
+            return "loading applicants - "+String.valueOf(failure)+" errors";
+    }
+
+    private String loadingLicenseHolders(Sheet sheet){
+        String res;
+        success=0;
+        failure=0;
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            res = exportService.createUpdateLicenseHolder(sheet.getRow(i));
+            if (!res.startsWith("Error")) {
+                success++;
+                ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+            }else
+                failure++;
+        }
+        if (failure==0)
+            return  "license holders loading:success";
+        else
+            return "license holders loading - "+String.valueOf(failure)+" errors";
+    }
+
+
+    public String loadingOrganisations(){
         if (!initProcess()) setFilename("Error. Initialisation failure");
         if (f.isFile())
             try {
                 wb = WorkbookFactory.create(new FileInputStream(filename));
-                Sheet sheet = wb.getSheetAt(0);
+                Sheet sheet = wb.getSheetAt(1);
                 if (sheet == null) return "";
-                String res;
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                    res = exportService.importApplicants(sheet.getRow(i));
-                    if (!res.startsWith("Error")) {
-                        success++;
-                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(3), IndexedColors.GREEN.getIndex());
-                    }else
-                        failure++;
-                }
+
+                taskStatus=loadingLocalAgents(sheet);
+                if (!taskStatus.endsWith("success")) return taskStatus;
+                sheet = wb.getSheetAt(2);
+                if (sheet == null) return "";
+                taskStatus=loadingLicenseHolders(sheet);
+
+                sheet = wb.getSheetAt(0);
+                if (sheet == null) return "";
+                taskStatus=loadingApplicants(sheet);
+                if (!taskStatus.endsWith("success")) return taskStatus;
                 setIgnore(success+failure);
-                Path path = Paths.get(filename);
-                File outf = new File(path.toString()+"resLC.xlsx");
-                FileOutputStream out = new FileOutputStream(outf);
-                wb.write(out);
-                out.close();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InvalidFormatException e) {
                 setFilename("file not found");
-        } else
+            }
+        else
             setFilename("file not found");
 
         return "";
     }
+
+    public String getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
 
 }

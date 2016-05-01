@@ -176,6 +176,7 @@ public class ExportService implements Serializable {
             if (cell!=null) pa.setRegExpiryDate(getDateValue(cell));
             curCol++;
             cell = row.getCell(curCol);//N Manufacturer/Actual site/
+            String addrStr="";
             if (cell != null) {
                 String all=cell.getStringCellValue();
                 int pos=all.indexOf(",");
@@ -183,7 +184,10 @@ public class ExportService implements Serializable {
                     co= findCompany(all);
                 }else{
                     co= findCompany(all.substring(0,pos));
-                    addr.setAddress1(all.substring(pos+1));
+                    if (co.getAddress()==null) {
+                        addrStr = all.substring(pos + 1);
+                        addr.setAddress1(addrStr);
+                    }
                 }
             }
             curCol++;
@@ -496,11 +500,22 @@ public class ExportService implements Serializable {
         return  "";
     }
 
+    private void saveResultOfRowImport(Row row,String result){
+        int lastCol = row.getLastCellNum();
+        lastCol++;
+        Cell cell = row.createCell(lastCol);
+        cell.setCellValue(result);
+    }
+
     private Company createUpdateCompany(String name, String email, Address addr, String phones, String contact){
         try {
+            init();
             Company company = findCompany(name);
+            if (company.getAddress()!=null)
+                if (company.getAddress().getAddress1()==null) {
+                    company.setAddress(addr);
+                }
             company.setCompanyName(name);
-            company.setAddress(addr);
             company.setEmail(email);
             company.setPhoneNo(phones);
             company.setContactName(contact);
@@ -522,6 +537,8 @@ public class ExportService implements Serializable {
             if (user==null){
                 user = new User();
                 isNewUser = true;
+            }else{
+                return user;
             }
             user.setName(fullName);
             user.setEmail(email);
@@ -554,6 +571,7 @@ public class ExportService implements Serializable {
 
     private  Applicant createUpdateApplicant(String name, Company company){
         try {
+            init();
             Applicant app = findApplicant(name);
             if (company!=null) {
                 app.setAddress(company.getAddress());
@@ -578,6 +596,67 @@ public class ExportService implements Serializable {
         }
     }
 
+    /**
+     * Creates apllicants - names only
+     * @param row
+     * @return
+     */
+    public String createUpdateSimpleLocalAgent(Row row){
+        currrow = row;
+        String orgName=getCellValue(1);
+        Applicant applicant = createUpdateApplicant(orgName,null);
+        if (applicant==null) return "Error registration of single applicant";
+        if (applicant.getApplcntId()==null)
+            applicant = applicantDAO.saveApplicant(applicant);
+        String result = " :"+applicant.getApplcntId()+": ";
+        saveResultOfRowImport(row,result);
+        return result;
+    }
+
+    public String createUpdateLicenseHolder(Row row){
+        init();
+        currrow = row;
+        String licenseHolder=getCellValue(1);
+        String localAgent=getCellValue(2);
+        LicenseHolder lh = customLicHolderDAO.findLicHolderByName(licenseHolder);
+        if (lh==null){
+            lh = new LicenseHolder();
+            lh.setName(licenseHolder);
+            licenseHolderDAO.save(lh);
+        }
+        lh.setState(UserState.ACTIVE);
+        lh = (LicenseHolder) this.updateRecInfo(lh);
+        Applicant applicant = findApplicant(localAgent); //local agent
+        if (applicant.getApplcntId()==null) return "Error: applicant "+localAgent+" missing in database";
+
+        List<AgentInfo> agInfoList=lh.getAgentInfos();
+        if (agInfoList==null) agInfoList=new  ArrayList<AgentInfo>();
+        boolean found=false;
+        if (agInfoList.size()>0){// search, if this local agent present in list
+            for(AgentInfo a:agInfoList){
+                if (a.getApplicant().getApplcntId()==applicant.getApplcntId()){
+                    found=true;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            AgentInfo ai = new AgentInfo();
+            ai.setApplicant(applicant);
+            ai.setLicenseHolder(lh);
+            ai.setAgentType(AgentType.FIRST);
+            ai.setCreatedBy(user);
+            ai = (AgentInfo) updateRecInfo(ai);
+            agInfoList.add(ai);
+            lh.setAgentInfos(agInfoList);
+            licenseHolderDAO.save(lh);
+        }
+        String result = " :"+lh.getId()+": ";
+        saveResultOfRowImport(row,result);
+        return result;
+
+    }
+
     public String importApplicants(Row row){
         currrow = row;
         String firstName=getCellValue(1);
@@ -592,6 +671,7 @@ public class ExportService implements Serializable {
         String jobTittle=getCellValue(10);
         init();
         //detect company
+        String result="";
         Address address = createAddress(address1, poBox, zipCode);
         Company company = createUpdateCompany(orgName,email,address,phone,firstName + " "+lastName);
         if (company==null) return "Error registration of company";
@@ -601,15 +681,16 @@ public class ExportService implements Serializable {
         applicant = applicantDAO.saveApplicant(applicant);
         User user = createUpdateUser(firstName,lastName,email,phone,address,company,applicant);
         if (user==null) return "Error registration of user";
-        userDAO.saveUser(user);
         List<User> users = new ArrayList<User>();
         users.add(user);
         applicant.setUsers(users);
-        applicantDAO.saveApplicant(applicant);
-        String result = company.getId()+":"+applicant.getApplcntId()+":"+user.getUserId();
-        int colNum = row.getLastCellNum();
-        Cell resCell = row.createCell(colNum++);
-        resCell.setCellValue(result);
+        try{
+        applicantDAO.updateApplicant(applicant);
+        result = company.getId()+":"+applicant.getApplcntId()+":"+user.getUserId();
+        } catch (Exception e){
+            result = e.getMessage();
+        }
+        saveResultOfRowImport(row,result);
         return result;
     }
 
@@ -639,8 +720,9 @@ public class ExportService implements Serializable {
         mail.setDate(new Date());
         mail.setMessage("Your password has been successfully reset in order to access the system please use the username '" + user.getUsername() + "' and password '" + password + "' ");
         try{
-            user = userService.updateUser(userService.passwordGenerator(user));
-            mailService.sendMail(mail,false);
+            //user = userService.updateUser(userService.passwordGenerator(user));
+            //TODO УБрать комментарий с отправки почты
+            //mailService.sendMail(mail,false);
             return user;
         } catch (Exception e){
             e.printStackTrace();
