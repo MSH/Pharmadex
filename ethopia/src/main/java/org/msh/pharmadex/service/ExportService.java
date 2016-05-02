@@ -142,7 +142,7 @@ public class ExportService implements Serializable {
                     prod.setDosStrength(String.valueOf(cell.getNumericCellValue()));
                     // prod.setDosUnit(findDocUnit("%",curCol));
                 }else {
-                    prod.setDosStrength(cell.getStringCellValue());
+                    prod.setDosStrength(cell.getStringCellValue().trim());
                     //  prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
                     //if (prod.getD ()==null) prod.setDosStrength(cell.getStringCellValue());
                 }
@@ -321,9 +321,9 @@ public class ExportService implements Serializable {
         if (pl.size()==0) return p;
         for (int i=0;i<pl.size();i++){
             p=pl.get(i);
-            if(p.getDosForm()==prod.getDosForm() & p.getDosUnit()==prod.getDosUnit()& p.getDosStrength()==prod.getDosStrength()) return p;
+            if(p.getDosForm()==prod.getDosForm() & p.getDosUnit()==prod.getDosUnit()& p.getDosStrength().equalsIgnoreCase(prod.getDosStrength())) return p;
         }
-        return p;
+        return null;
     }
     private String cutNumberPart(String s) {
         String res="";
