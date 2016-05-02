@@ -65,14 +65,15 @@ public class ExportService implements Serializable {
     private MailService mailService;
     @Autowired
     private RoleDAO roleDao;
-
+    @Autowired
+    private DosageFormDAO dosageFormDAO;
     private Row currrow;
     private  boolean errorDetected;
     ApplicantType at=null;
     User user=null;
     boolean isNewUom;
     boolean isNewATC;
-    boolean isNewRoute;
+    boolean isNewForm;
     private int lastCol=0;
     private Country ourCountry;
     private User admin;
@@ -100,6 +101,7 @@ public class ExportService implements Serializable {
         Cell cell = null;
         isNewATC=false;
         isNewUom=false;
+        isNewForm=false;
         try {
             currrow = row;
             rowNo++;
@@ -235,6 +237,10 @@ public class ExportService implements Serializable {
                 if (la.get(0)!=null)
                     atcDAO.save(la.get(0));
             }
+            if (isNewForm){
+                DosageForm d=prod.getDosForm();
+                dosageFormDAO.save(d);
+            }
             pa.setApplicant(a);
             pa.setProduct(prod);
             pa.setRegState(RegState.REGISTERED);
@@ -351,7 +357,7 @@ public class ExportService implements Serializable {
         return r;
     }
     private DosUom findDocUnit(String s, int col) {
-        s=s.trim();
+        s=s.trim().toLowerCase();
         DosUom  r=dictionaryDAO.findDosUomByName(s);
         if (r!=null)return r;
         ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
@@ -385,7 +391,10 @@ public class ExportService implements Serializable {
         DosageForm  r=dictionaryDAO.findDosFormByName(s);
         if (r!=null)return r;
         ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
-        errorDetected=true;
+        //errorDetected=true;
+        r=new DosageForm();
+        r.setDosForm(s);
+        isNewForm=true;
         return r;
     }
 
@@ -472,6 +481,8 @@ public class ExportService implements Serializable {
         if (a!=null)return a;
         a=new Applicant();
         a.setAppName(s);
+        Cell cell = currrow.getCell(12);
+        ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
         return a;
     }
 
