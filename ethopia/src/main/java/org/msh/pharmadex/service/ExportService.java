@@ -9,7 +9,6 @@ import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 
 import org.msh.pharmadex.domain.enums.*;
-import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.utils.ExcelTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -394,8 +393,33 @@ public class ExportService implements Serializable {
         //errorDetected=true;
         r=new DosageForm();
         r.setDosForm(s);
+        r.setInactive(false);
+        r.setSampleSize(100);
         isNewForm=true;
         return r;
+    }
+
+    public DosageForm findDosForm(String s){
+        s=s.trim();
+        DosageForm  r=dictionaryDAO.findDosFormByName(s);
+        if (r!=null)return r;
+        r=new DosageForm();
+        r.setDosForm(s);
+        r.setInactive(false);
+        r.setSampleSize(100);
+        dosageFormDAO.save(r);
+        return r;
+    }
+
+    public DosUom findDosUOM(String s){
+        s=s.trim().toUpperCase();
+        DosUom res = dictionaryDAO.findDosUomByName(s);
+        if (res!=null) return res;
+        res = new DosUom();
+        res.setDiscontinued(false);
+        res.setUom(s);
+        res = dosUomDAO.save(res);
+        return res;
     }
 
     public AdminRoute fingAdminRouteAcc(String s,int col) {
@@ -538,7 +562,73 @@ public class ExportService implements Serializable {
         }
     }
 
-    public  User createUpdateUser(String firstName, String lastName, String email, String phones, Address address, Company company, Applicant app){
+    private void setUserRoles(User user, String roleNames) {
+        List<Role> roles = new ArrayList<Role>();
+        if ("".equals(roleNames)){
+            user.setType(UserType.COMPANY);
+            roles.add(companyRole);
+            return;
+        }
+        String[] roleList = roleNames.split(",");
+        for(String roleName:roleList) {
+            Role role=null;
+            if (roleName.equalsIgnoreCase("company")) {
+                user.setType(UserType.COMPANY);
+                roles.add(companyRole);
+            }else if (roleName.equalsIgnoreCase("inspector")) {
+                user.setType(UserType.INSPECTOR);
+                role=roleDao.findOne(5);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("staff")) {
+                user.setType(UserType.STAFF);
+                roles.add(staffRole);
+            }else if (roleName.equalsIgnoreCase("cso")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(3);
+                roles.add(role);
+            }else if ((roleName.equalsIgnoreCase("teamlead"))||(roleName.equalsIgnoreCase("moderator"))) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(6);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("reviewer")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(7);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("csd")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(9);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("head")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(8);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("lab")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(10);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("lab moderator")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(11);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("lab head")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(14);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("cs moderator")) {
+                user.setType(UserType.STAFF);
+                role=roleDao.findOne(13);
+                roles.add(role);
+            }else if (roleName.equalsIgnoreCase("public")) {
+                user.setType(UserType.EXTERNAL);
+                role=roleDao.findOne(1);
+                roles.add(role);
+            }
+        }
+        if (roles.size()>0)
+            user.setRoles(roles);
+    }
+
+    public  User createUpdateUser(String firstName, String lastName, String email, String phones, Address address, Company company, Applicant app, String roleNames, String password){
         try{
             boolean isNewUser=false;
             String fullName = firstName+" "+lastName;
@@ -555,19 +645,19 @@ public class ExportService implements Serializable {
             user.setEmail(email);
             user.setAddress(address);
             user.setPhoneNo(phones);
-            user.setApplicant(app);
+            if (app!=null)
+                user.setApplicant(app);
             user.setCompanyName(company.getCompanyName());
             user.setEnabled(true);
             user.setTimeZone(TimeZone.getTimeZone("CEST"));
             user.setLanguage(Locale.ENGLISH);
-            user.setType(UserType.COMPANY);
-            List<Role> roles = new ArrayList<Role>();
-            roles.add(companyRole);
-            user.setRoles(roles);
             user.setRegistrationDate(getInstance().getTime());
             user.setUsername(getLogin(email));
             user.setComments("automatically imported");
+            setUserRoles(user,roleNames);
             user = (User) this.updateRecInfo(user);
+            if (!"".equals(password))
+                user.setPassword(password);
             if (isNewUser){
                 setPassword(user); //user saved here
             }else{
@@ -668,42 +758,50 @@ public class ExportService implements Serializable {
 
     }
 
-    public String importApplicants(Row row){
+
+    public String importApplicants(Row row) {
         currrow = row;
-        String firstName=getCellValue(1);
-        String lastName=getCellValue(2);
-        String email=getCellValue(4);
-        String login=getLogin(email);
-        String address1=getCellValue(5);
-        String poBox=getCellValue(6);
-        String zipCode=getCellValue(7);
-        String orgName=getCellValue(8);
-        String phone=getCellValue(9);
-        String jobTittle=getCellValue(10);
+        String firstName = getCellValue(1);
+        String lastName = getCellValue(2);
+        String email = getCellValue(7);
+        String login = getLogin(email);
+        String address1 = getCellValue(4);
+        String poBox = getCellValue(5);
+        String zipCode = "";
+        String orgName = getCellValue(6);
+        String phone = getCellValue(8);
+        String jobTittle = getCellValue(9);
+        String role = getCellValue(10);
+        String password = getCellValue(11);
         init();
         //detect company
-        String result="";
+        String result = "";
         Address address = createAddress(address1, poBox, zipCode);
-        Company company = createUpdateCompany(orgName,email,address,phone,firstName + " "+lastName);
-        if (company==null) return "Error registration of company";
+        Company company = createUpdateCompany(orgName, email, address, phone, firstName + " " + lastName);
+        if (company == null) return "Error registration of company";
         company = companyDAO.save(company);
-        Applicant applicant = createUpdateApplicant(orgName,company);
-        if (applicant==null) return "Error registration of applicant";
-        applicant = applicantDAO.saveApplicant(applicant);
-        User user = createUpdateUser(firstName,lastName,email,phone,address,company,applicant);
-        if (user==null) return "Error registration of user";
-        List<User> users = new ArrayList<User>();
-        users.add(user);
-        applicant.setUsers(users);
-        try{
-        applicantDAO.updateApplicant(applicant);
-        result = company.getId()+":"+applicant.getApplcntId()+":"+user.getUserId();
-        } catch (Exception e){
-            result = e.getMessage();
+        Applicant applicant = createUpdateApplicant(orgName, company);
+        if (applicant != null)
+            applicant = applicantDAO.saveApplicant(applicant);
+        User user = createUpdateUser(firstName, lastName, email, phone, address, company, applicant, role, password);
+        if (user == null) return "Error registration of user";
+        if (applicant != null) {
+            List<User> users;
+            users = applicant.getUsers();
+            if (users == null) users = new ArrayList<User>();
+            users.add(user);
+            applicant.setUsers(users);
+            try {
+                applicantDAO.updateApplicant(applicant);
+                result = company.getId() + ":" + applicant.getApplcntId() + ":" + user.getUserId();
+            } catch (Exception e) {
+                result = e.getMessage();
+            }
         }
-        saveResultOfRowImport(row,result);
+        saveResultOfRowImport(row, result);
         return result;
     }
+
 
     private String getLogin(String email){
         String[] parts = email.split("@");
@@ -720,9 +818,14 @@ public class ExportService implements Serializable {
     }
 
     private User setPassword(User user){
-        String password = PassPhrase.getNext();
-        user.setPassword(password);
-        System.out.println("Password == " + password);
+        String password;
+        if (user.getPassword()==null) {
+            password = PassPhrase.getNext();
+            user.setPassword(password);
+            System.out.println("Password == " + password);
+        }else
+            password = user.getPassword();
+        user.setComments(user.getComments()+"("+password+")");
         user.setUpdatedDate(new Date());
         Mail mail = new Mail();
         mail.setMailto(user.getEmail());
@@ -731,9 +834,10 @@ public class ExportService implements Serializable {
         mail.setDate(new Date());
         mail.setMessage("Your password has been successfully reset in order to access the system please use the username '" + user.getUsername() + "' and password '" + password + "' ");
         try{
+            userService.passwordGenerator(user);
             //user = userService.updateUser(userService.passwordGenerator(user));
-            //TODO УБрать комментарий с отправки почты
-            //mailService.sendMail(mail,false);
+            //TODO Убрать комментарий с отправки почты
+            mailService.sendMail(mail,false);
             return user;
         } catch (Exception e){
             e.printStackTrace();

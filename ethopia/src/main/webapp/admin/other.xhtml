@@ -34,7 +34,15 @@
                                    value="Applicants import" ajax="false">
                     </p:commandButton>
                     <p:message for="apnti"/>
-                    <h:outputText id="status" value="#{exportMBean.taskStatus}"/>
+                    <h:outputLabel/>
+
+                    <p:commandButton action="#{exportMBean.loadingUsers}"
+                                     id = "impruser"
+                                     value="Import of users" ajax="false">
+                    </p:commandButton>
+                    <p:message for="imprtuser"/>
+                    <h:outputLabel/>
+                    <h:outputText id="imprtuser" value="#{exportMBean.taskStatus}"/>
 
             </h:panelGrid>
             <h:panelGrid id="res" columns="2" cellspacing="10" columnClasses="col1, col2">
