@@ -1,22 +1,32 @@
 package org.msh.pharmadex.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProductDAO;
-import org.msh.pharmadex.dao.iface.*;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.dao.iface.AtcDAO;
+import org.msh.pharmadex.dao.iface.DrugPriceDAO;
+import org.msh.pharmadex.dao.iface.InnDAO;
+import org.msh.pharmadex.dao.iface.PricingDAO;
+import org.msh.pharmadex.dao.iface.WorkspaceDAO;
+import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.DrugPrice;
+import org.msh.pharmadex.domain.Pricing;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Author: usrivastava
@@ -112,10 +122,6 @@ public class ProductService implements Serializable {
                 issues.add("no_applicant");
                 issue = true;
             }
-//            if (product.getExcipients() == null || product.getExcipients().size() < 1) {
-//                issues.add("no_excipient");
-//                issue = true;
-//            }
             if (product.getInns() == null || product.getInns().size() < 1) {
                 issues.add("no_inns");
                 issue = true;
@@ -132,10 +138,6 @@ public class ProductService implements Serializable {
                 issues.add("no_indications");
                 issue = true;
             }
-//            if (product.getIngrdStatment() == null || product.getIngrdStatment().equals("")) {
-//                issues.add("no_ingrdStatment");
-//                issue = true;
-//            }
             if (product.getProdCompanies() == null || product.getProdCompanies().size() < 1) {
                 issues.add("no_manufacturer");
                 issue = true;
@@ -159,11 +161,9 @@ public class ProductService implements Serializable {
 
 
             List<ProdAppChecklist> prodAppChkLst = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
-            //List<ProdAppChecklist> prodAppChkLst = prodApplications.getProdAppChecklists();
             if (prodAppChkLst != null) {
                 for (ProdAppChecklist prodAppChecklist : prodAppChkLst) {
-                    //if (prodAppChecklist.getChecklist().isHeader()&&(!prodAppChecklist.getValue().toString()==null)) {
-                    if (prodAppChecklist.getChecklist().isHeader()){
+                     if (prodAppChecklist.getChecklist().isHeader()){
                         if (prodAppChecklist.getValue()==null){
                             issues.add("checklist_incomplete");
                             issue = true;
@@ -183,7 +183,6 @@ public class ProductService implements Serializable {
                 retObject.setMsg("persist");
                 retObject.setObj(null);
             }
-
             return retObject;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -193,8 +192,6 @@ public class ProductService implements Serializable {
             return retObject;
 
         }
-
-
     }
 
     public RetObject findDrugPriceByProd(Long prodID) {

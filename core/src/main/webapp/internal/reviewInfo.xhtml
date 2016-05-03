@@ -53,7 +53,7 @@
                                  ajax="true" action="#{reviewInfoBn.initComment}"
                                  rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted and reviewInfoBn.priReview}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
-                                 action="#{reviewInfoBn.sourcePage}"
+                                 action="#{reviewInfoBn.getSourcePage}"
                                  ajax="false"/>
             </div>
 

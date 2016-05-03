@@ -4,18 +4,14 @@
 
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import org.apache.commons.io.IOUtils;
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.*;
-import org.msh.pharmadex.mbean.UserAccessMBean;
-import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.util.RetObject;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -25,14 +21,34 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+
+import org.apache.commons.io.IOUtils;
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.ReviewComment;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.UserAccessMBean;
+import org.msh.pharmadex.service.DisplayReviewInfo;
+import org.msh.pharmadex.service.DisplayReviewQ;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.RetObject;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Backing bean to capture review of products
@@ -601,7 +617,7 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public String getSourcePage() {
-        return sourcePage;
+    	return sourcePage;
     }
 
     public void setSourcePage(String sourcePage) {

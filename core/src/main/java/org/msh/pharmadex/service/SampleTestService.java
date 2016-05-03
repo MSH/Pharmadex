@@ -44,147 +44,151 @@ import java.util.List;
 public class SampleTestService implements Serializable {
 
 
-    @Autowired
-    private SampleTestDAO sampleTestDAO;
+	@Autowired
+	private SampleTestDAO sampleTestDAO;
 
-    @Autowired
-    private ProdApplicationsService prodApplicationsService;
+	@Autowired
+	private ProdApplicationsService prodApplicationsService;
 
-    @Autowired
-    private GlobalEntityLists globalEntityLists;
-    @PersistenceContext
-    private EntityManager entityManager;
-    @Autowired
-    private DosageFormService dosageFormService;
+	@Autowired
+	private GlobalEntityLists globalEntityLists;
+	@PersistenceContext
+	private EntityManager entityManager;
+	@Autowired
+	private DosageFormService dosageFormService;
 
-    @Transactional
-    public SampleTest findSampleTest(Long sampleTestID) {
-        SampleTest sampleTest = sampleTestDAO.findOne(sampleTestID);
-        Hibernate.initialize(sampleTest.getSampleComments());
-        Hibernate.initialize(sampleTest.getProdAppLetters());
-        return sampleTest;
-    }
+	@Transactional
+	public SampleTest findSampleTest(Long sampleTestID) {
+		SampleTest sampleTest = sampleTestDAO.findOne(sampleTestID);
+		Hibernate.initialize(sampleTest.getSampleComments());
+		Hibernate.initialize(sampleTest.getProdAppLetters());
+		return sampleTest;
+	}
 
-    public List<SampleTest> findSampleForProd(Long prodApplicationsId) {
-        List<SampleTest> sampleTests = sampleTestDAO.findByProdApplications_Id(prodApplicationsId);
-        return sampleTests;
+	public List<SampleTest> findSampleForProd(Long prodApplicationsId) {
+		List<SampleTest> sampleTests = sampleTestDAO.findByProdApplications_Id(prodApplicationsId);
+		return sampleTests;
 
-    }
+	}
 
-    public RetObject createDefLetter(SampleTest sampleTest){
-        ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
-        Product product = prodApp.getProduct();
-        try {
-//            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
-            File invoicePDF = File.createTempFile("" + product.getProdName() + "_samplerequest", ".pdf");
-            JasperPrint jasperPrint = initRegCert(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
-            net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
-            byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
-            ProdAppLetter attachment = new ProdAppLetter();
-            attachment.setRegState(prodApp.getRegState());
-//            attachment.setComment(sampleTest.get);
-            attachment.setFile(file);
-            attachment.setProdApplications(prodApp);
-            attachment.setFileName(invoicePDF.getName());
-            attachment.setTitle("Sample Request Letter");
-            attachment.setUploadedBy(sampleTest.getCreatedBy());
-            attachment.setComment("System generated Letter");
-            attachment.setLetterType(LetterType.SAMPLE_REQUEST_LETTER);
-            attachment.setContentType("application/pdf");
-//            attachment.setSampleTest(sampleTest);
+	public RetObject createDefLetter(SampleTest sampleTest){
+		ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
+		Product product = prodApp.getProduct();
+		try {
+			//            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
+			File invoicePDF = File.createTempFile("" + product.getProdName() + "_samplerequest", ".pdf");
+			JasperPrint jasperPrint = initRegCert(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
+			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+			byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
+			ProdAppLetter attachment = new ProdAppLetter();
+			attachment.setRegState(prodApp.getRegState());
+			//            attachment.setComment(sampleTest.get);
+			attachment.setFile(file);
+			attachment.setProdApplications(prodApp);
+			attachment.setFileName(invoicePDF.getName());
+			attachment.setTitle("Sample Request Letter");
+			attachment.setUploadedBy(sampleTest.getCreatedBy());
+			attachment.setComment("System generated Letter");
+			attachment.setLetterType(LetterType.SAMPLE_REQUEST_LETTER);
+			attachment.setContentType("application/pdf");
+			//            attachment.setSampleTest(sampleTest);
 
-            if(sampleTest.getProdAppLetters()==null)
-                sampleTest.setProdAppLetters(new ArrayList<ProdAppLetter>());
-            sampleTest.getProdAppLetters().add(attachment);
-            sampleTestDAO.saveAndFlush(sampleTest);
-            return saveSample(sampleTest);
-        } catch (JRException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return new RetObject("error");
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return new RetObject("error");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new RetObject("error");
-        }
-    }
+			if(sampleTest.getProdAppLetters()==null)
+				sampleTest.setProdAppLetters(new ArrayList<ProdAppLetter>());
+			sampleTest.getProdAppLetters().add(attachment);
+			sampleTestDAO.saveAndFlush(sampleTest);
+			return saveSample(sampleTest);
+		} catch (JRException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return new RetObject("error");
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return new RetObject("error");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new RetObject("error");
+		}
+	}
 
-    public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException, SQLException {
-        String emailBody = sampleComment.getComment();
-        Product product = prodApplications.getProduct();
-        URL resource = getClass().getResource("/reports/sample_request.jasper");
-//        Session hibernateSession = entityManager.unwrap(Session.class);
-        Connection conn = entityManager.unwrap(Session.class).connection();
-        HashMap param = new HashMap();
-        List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
-        prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
-        param.put("id", prodApplications.getId());
-        param.put("sampleQty", quantity);
-        param.put("appName", prodApplications.getApplicant().getAppName());
-        param.put("prodName", product.getProdName());
-        param.put("prodStrength", product.getDosStrength()+product.getDosUnit());
-        param.put("dosForm", product.getDosForm().getDosForm());
-        param.put("manufName", product.getManufName());
-        param.put("appType", "New Medicine Registration");
-        param.put("subject", "Sample request letter for  " + product.getProdName());
-        param.put("address1", prodApplications.getApplicant().getAddress().getAddress1());
-        param.put("address2", prodApplications.getApplicant().getAddress().getAddress2());
-        param.put("country", prodApplications.getApplicant().getAddress().getCountry().getCountryName());
-//        param.put("cso",user.getName());
-        param.put("date", new Date());
-        param.put("appNumber", prodApplications.getProdAppNo());
+	public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException, SQLException {
+		String emailBody = sampleComment.getComment();
+		Product product = prodApplications.getProduct();
+		URL resource = getClass().getResource("/reports/sample_request.jasper");
+		//        Session hibernateSession = entityManager.unwrap(Session.class);
+		Connection conn = entityManager.unwrap(Session.class).connection();
+		HashMap param = new HashMap();
+		List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
+		prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
+		param.put("id", prodApplications.getId());
+		param.put("sampleQty", quantity);
+		param.put("appName", prodApplications.getApplicant().getAppName());
+		param.put("prodName", product.getProdName());
+		param.put("prodStrength", product.getDosStrength()+product.getDosUnit());
+		param.put("dosForm", product.getDosForm().getDosForm());
+		param.put("manufName", product.getManufName());
+		param.put("appType", "New Medicine Registration");
+		param.put("subject", "Sample request letter for  " + product.getProdName());
+		param.put("address1", prodApplications.getApplicant().getAddress().getAddress1());
+		param.put("address2", prodApplications.getApplicant().getAddress().getAddress2());
+		param.put("country", prodApplications.getApplicant().getAddress().getCountry().getCountryName());
+		//        param.put("cso",user.getName());
+		param.put("date", new Date());
+		param.put("appNumber", prodApplications.getProdAppNo());
+		if(resource != null){
+			JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+			conn.close();
+			return jasperPrint;
+		} else{
+			conn.close();
+			return null;
+		}
+	}
 
-        JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
-        conn.close();
-        return jasperPrint;
-    }
+	public RetObject saveSample(SampleTest sampleTest) {
 
-    public RetObject saveSample(SampleTest sampleTest) {
+		RetObject retObject = new RetObject();
+		try {
+			if (sampleTest.getSampleTestStatus().equals(SampleTestStatus.REQUESTED)) {
+				if (sampleTest.getRecievedDt() != null) {
+					sampleTest.setSampleTestStatus(SampleTestStatus.SAMPLE_RECIEVED);
+				}
+			} else if (sampleTest.getSampleTestStatus().equals(SampleTestStatus.SAMPLE_RECIEVED)) {
+				sampleTest.setSampleTestStatus(SampleTestStatus.RESULT);
+			}
+			SampleTest sampleTest1 = sampleTestDAO.save(sampleTest);
+			retObject.setObj(sampleTest1);
+			retObject.setMsg("persist");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			retObject.setObj(ex.getMessage());
+			retObject.setMsg("error");
+		}
+		return retObject;
+	}
 
-        RetObject retObject = new RetObject();
-        try {
-            if (sampleTest.getSampleTestStatus().equals(SampleTestStatus.REQUESTED)) {
-                if (sampleTest.getRecievedDt() != null) {
-                    sampleTest.setSampleTestStatus(SampleTestStatus.SAMPLE_RECIEVED);
-                }
-            } else if (sampleTest.getSampleTestStatus().equals(SampleTestStatus.SAMPLE_RECIEVED)) {
-                sampleTest.setSampleTestStatus(SampleTestStatus.RESULT);
-            }
-            SampleTest sampleTest1 = sampleTestDAO.save(sampleTest);
-            retObject.setObj(sampleTest1);
-            retObject.setMsg("persist");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            retObject.setObj(ex.getMessage());
-            retObject.setMsg("error");
-        }
-        return retObject;
-    }
+	public RetObject addNewTest(SampleTest sampleTest) {
 
-    public RetObject addNewTest(SampleTest sampleTest) {
+		return saveSample(sampleTest);
 
-        return saveSample(sampleTest);
+	}
 
-    }
+	@Transactional
+	public DosageForm findDosQuantity(Long dosFormID) {
+		DosageForm dosageForm = null;
+		if(dosFormID!=null) {
+			ProdApplications prodApplications = prodApplicationsService.findProdApplications(dosFormID);
+			dosageForm = prodApplications.getProduct().getDosForm();
+		}
+		return dosageForm;
+	}
 
-    @Transactional
-    public DosageForm findDosQuantity(Long dosFormID) {
-        DosageForm dosageForm = null;
-        if(dosFormID!=null) {
-            ProdApplications prodApplications = prodApplicationsService.findProdApplications(dosFormID);
-            dosageForm = prodApplications.getProduct().getDosForm();
-        }
-        return dosageForm;
-    }
+	public RetObject addSampleMed(SampleMed sampleMed) {
+		return null;
+	}
 
-    public RetObject addSampleMed(SampleMed sampleMed) {
-        return null;
-    }
-
-    @Autowired
-    private ProdAppLetterDAO prodAppLetterDAO;
-    public ProdAppLetter saveProdAppLetter(ProdAppLetter prodAppLetter) {
-         return prodAppLetterDAO.save(prodAppLetter);
-    }
+	@Autowired
+	private ProdAppLetterDAO prodAppLetterDAO;
+	public ProdAppLetter saveProdAppLetter(ProdAppLetter prodAppLetter) {
+		return prodAppLetterDAO.save(prodAppLetter);
+	}
 }

@@ -45,10 +45,32 @@ public class DosageFormService implements Serializable {
         return null;
     }
 
+    /**
+     * 03.05.2016
+     * значение mg вынесено на первое место-чаще всего используется
+     */
     @Transactional
     public List<DosUom> findAllDosUom() {
-        if (dosUoms == null)
+        if (dosUoms == null){
             dosUoms = (List<DosUom>) dosUomDAO.findAll();
+            if(dosUoms != null && dosUoms.size() > 0){
+            	DosUom mg = null;
+            	for(DosUom uom:dosUoms){
+            		if(uom.getUom().equals("mg")){
+            			mg = uom;
+            			break;
+            		}
+            	}
+            	if(mg != null){
+            		int ind_mg = dosUoms.indexOf(mg);
+            		if(ind_mg > 0){ // вдруг и так первый в списке
+            			DosUom firstUom = dosUoms.get(0);
+            			dosUoms.set(0, mg);
+            			dosUoms.set(ind_mg, firstUom);
+            		}
+            	}
+            }
+        }
         return dosUoms;
     }
 
