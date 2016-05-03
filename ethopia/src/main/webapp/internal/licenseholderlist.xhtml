@@ -48,6 +48,10 @@
                           sortBy="#{licHolder.address.country.countryName}">
                     #{licHolder.address.country.countryName}
                 </p:column>
+                <p:column headerText="#{msgs.state}" filterBy="#{licHolder.state}"
+                          sortBy="#{licHolder.state}">
+                    #{msgs[licHolder.state.key]}
+                </p:column>
 
             </p:dataTable>
 
