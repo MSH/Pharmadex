@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.io.IOUtils;
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
@@ -119,6 +120,7 @@ public class SuspendDetailBn implements Serializable {
                     prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(suspDetailID);
                     prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
                     product = prodApplications.getProduct();
+                    if (product.getId()==null) return;
                     if (suspDetail.getReviewer()!=null){
                         checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
                         review = reviewService.findReviewInfoByUserAndProdApp(suspDetail.getReviewer().getUserId(), prodApplications.getId());

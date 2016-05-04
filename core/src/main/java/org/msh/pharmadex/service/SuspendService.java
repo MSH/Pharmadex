@@ -68,6 +68,7 @@ public class SuspendService implements Serializable {
     @Transactional
     public SuspDetail findSuspendDetail(Long suspDetailID) {
         SuspDetail suspDetail = suspendDAO.findOne(suspDetailID);
+        Hibernate.initialize(suspDetail.getProdApplications().getProduct());
         if (suspDetail.getSuspComments() != null)
             Hibernate.initialize(suspDetail.getSuspComments());
         if (suspDetail.getProdAppLetters() != null)

@@ -8,6 +8,7 @@ import com.mysql.jdbc.PacketTooBigException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
@@ -127,7 +128,11 @@ public class SuspendDetailBn implements Serializable {
                     prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
                     prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(prodApplications.getId());
                     attachments = attachmentDAO.findByProdApplications_Id(prodApplications.getId());
+                    if (prodApplications.getProduct()!=null)
+                        Hibernate.initialize(prodApplications.getProduct());
                     product = prodApplications.getProduct();
+                    if (prodApplications.getApplicant()!=null)
+                        Hibernate.initialize(prodApplications.getApplicant());
                     if (suspDetail.getReviewer()!=null){
                         checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
                         review = reviewService.findReviewInfoByUserAndProdApp(suspDetail.getReviewer().getUserId(), prodApplications.getId());
@@ -144,7 +149,6 @@ public class SuspendDetailBn implements Serializable {
     private void checkReviewStatus(long reviewerId, long appId){
         try {
             review = reviewService.findReviewInfoByUserAndProdApp(reviewerId, appId);
-            List<ReviewComment> lst = review.getReviewComments();
             if (review.getReviewStatus().equals(SuspensionStatus.FEEDBACK)) return;
             if (null != review) {
                 if (review.getReviewStatus().equals(ReviewStatus.ASSIGNED))

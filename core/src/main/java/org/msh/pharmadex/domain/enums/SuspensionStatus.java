@@ -10,7 +10,7 @@ public enum SuspensionStatus {
     SUBMIT,
     FEEDBACK,
     RESULT,
-    COMPLETED, newSuspStatus;
+    COMPLETED;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());
