@@ -498,7 +498,8 @@ public class ProdRegAppMbean implements Serializable {
                 setFieldValues();
                 context.addMessage(null, new FacesMessage(bundle.getString("app_save_success")));
             } else {
-                context.addMessage(null, new FacesMessage(bundle.getString("save_app_error")));
+            	String err = bundle.getString("save_app_error") + " " + bundle.getString("Error." + retObject.getMsg());
+                context.addMessage(null, new FacesMessage(err));
             }
         } catch (Exception e) {
             e.printStackTrace();

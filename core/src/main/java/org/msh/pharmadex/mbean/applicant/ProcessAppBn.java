@@ -156,6 +156,10 @@ public class ProcessAppBn implements Serializable {
     public List<User> completeUserList(String query) {
         return JsfUtils.completeSuggestions(query, getAvailableUsers());
     }
+    
+    public List<User> completeUserListByApplicant(String query) {
+        return JsfUtils.completeSuggestions(query, getUsersByApplicant(applicant.getApplcntId()));
+    }
 
     public String cancelAddUser() {
         user = new User();
@@ -185,6 +189,10 @@ public class ProcessAppBn implements Serializable {
         return userService.findUnregisteredUsers();
     }
 
+    public List<User> getUsersByApplicant(Long applicantID) {
+        return userService.findUserByApplicant(applicantID);
+    }
+    
     public void setAvailableUsers(List<User> availableUsers) {
         this.availableUsers = availableUsers;
     }

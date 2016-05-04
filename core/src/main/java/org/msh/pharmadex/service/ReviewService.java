@@ -4,9 +4,18 @@
 
 package org.msh.pharmadex.service;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.dao.CustomReviewDAO;
@@ -15,18 +24,30 @@ import org.msh.pharmadex.dao.iface.RevDeficiencyDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.Review;
+import org.msh.pharmadex.domain.ReviewComment;
+import org.msh.pharmadex.domain.ReviewDetail;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.ReviewQuestion;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.product.ReviewInfoTable;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Author: usrivastava
@@ -247,48 +268,32 @@ public class ReviewService implements Serializable {
 	}
 
 	public List<DisplayReviewQ> getDisplayReviewSum(ReviewInfo ri) {
-		List<ReviewDetail> reviewDetails = reviewQDAO.findReviewSummary(ri.getReviewer().getUserId(), ri.getId());
-		boolean init = false;
-		if (reviewDetails == null || reviewDetails.size() < 1) {
-			init = true;
-			reviewDetails = initReviewDetail(ri);
-		}
-
-		//        List<ReviewQuestion> reviewQuestions = reviewQDAO.findAll();
 		List<DisplayReviewQ> header1 = new ArrayList<DisplayReviewQ>();
-		List<DisplayReviewQ.Header2> header2 = new ArrayList<DisplayReviewQ.Header2>();
+		if(ri != null && ri.getReviewer() != null){
+			List<ReviewDetail> reviewDetails = reviewQDAO.findReviewSummary(ri.getReviewer().getUserId(), ri.getId());
+			boolean init = false;
+			if (reviewDetails == null || reviewDetails.size() < 1) {
+				init = true;
+				reviewDetails = initReviewDetail(ri);
+			}
 
-		String header1Name = "";
-		String header2Name = "";
+			//        List<ReviewQuestion> reviewQuestions = reviewQDAO.findAll();
+			List<DisplayReviewQ.Header2> header2 = new ArrayList<DisplayReviewQ.Header2>();
 
-		List<DisplayReviewInfo> questions = null;
-		DisplayReviewQ dispHeader1 = null;
-		DisplayReviewQ.Header2 dispHeader2;
-		int size = reviewDetails.size();
-		ReviewQuestion rq;
-		ReviewDetail rd;
-		for (int i = 0; i < reviewDetails.size(); i++) {
-			rd = reviewDetails.get(i);
-			rq = rd.getReviewQuestions();
+			String header1Name = "";
+			String header2Name = "";
 
-			if (header1Name.equals("")) {
-				header1Name = rq.getHeader1();
-				header2Name = rq.getHeader2();
-				questions = new ArrayList<DisplayReviewInfo>();
-				dispHeader1 = new DisplayReviewQ(header1Name, header2);
-				dispHeader2 = dispHeader1.new Header2(header2Name, questions);
-				header2.add(dispHeader2);
-				header1.add(dispHeader1);
-			} else {
-				if (header1Name.equals(rq.getHeader1())) {
-					if (!header2Name.equals(rq.getHeader2())) {
-						questions = new ArrayList<DisplayReviewInfo>();
-						header2Name = rq.getHeader2();
-						dispHeader2 = dispHeader1.new Header2(header2Name, questions);
-						header2.add(dispHeader2);
-					}
-				} else {
-					header2 = new ArrayList<DisplayReviewQ.Header2>();
+			List<DisplayReviewInfo> questions = null;
+			DisplayReviewQ dispHeader1 = null;
+			DisplayReviewQ.Header2 dispHeader2;
+			int size = reviewDetails.size();
+			ReviewQuestion rq;
+			ReviewDetail rd;
+			for (int i = 0; i < reviewDetails.size(); i++) {
+				rd = reviewDetails.get(i);
+				rq = rd.getReviewQuestions();
+
+				if (header1Name.equals("")) {
 					header1Name = rq.getHeader1();
 					header2Name = rq.getHeader2();
 					questions = new ArrayList<DisplayReviewInfo>();
@@ -296,11 +301,28 @@ public class ReviewService implements Serializable {
 					dispHeader2 = dispHeader1.new Header2(header2Name, questions);
 					header2.add(dispHeader2);
 					header1.add(dispHeader1);
+				} else {
+					if (header1Name.equals(rq.getHeader1())) {
+						if (!header2Name.equals(rq.getHeader2())) {
+							questions = new ArrayList<DisplayReviewInfo>();
+							header2Name = rq.getHeader2();
+							dispHeader2 = dispHeader1.new Header2(header2Name, questions);
+							header2.add(dispHeader2);
+						}
+					} else {
+						header2 = new ArrayList<DisplayReviewQ.Header2>();
+						header1Name = rq.getHeader1();
+						header2Name = rq.getHeader2();
+						questions = new ArrayList<DisplayReviewInfo>();
+						dispHeader1 = new DisplayReviewQ(header1Name, header2);
+						dispHeader2 = dispHeader1.new Header2(header2Name, questions);
+						header2.add(dispHeader2);
+						header1.add(dispHeader1);
+					}
 				}
+				questions.add(new DisplayReviewInfo(rq.getId(), rd.getId(), rq.getQuestion(), rd.isAnswered(), ri.getId()));
 			}
-			questions.add(new DisplayReviewInfo(rq.getId(), rd.getId(), rq.getQuestion(), rd.isAnswered(), ri.getId()));
 		}
-
 		return header1;
 	}
 

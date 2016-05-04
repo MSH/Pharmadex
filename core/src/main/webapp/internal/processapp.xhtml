@@ -104,7 +104,7 @@
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                     <h:outputLabel value="#{msgs.User_name}" for="username"/>
                     <p:autoComplete id="username" value="#{processAppBn.user}"
-                                    completeMethod="#{processAppBn.completeUserList}" dropdown="true"
+                                    completeMethod="#{processAppBn.completeUserListByApplicant}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
                                     converter="#{userConverter}">
                     </p:autoComplete>
