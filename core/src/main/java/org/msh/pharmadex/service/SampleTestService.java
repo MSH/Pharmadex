@@ -16,6 +16,7 @@ import org.msh.pharmadex.domain.DosageForm;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;

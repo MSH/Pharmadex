@@ -4,6 +4,19 @@
 
 package org.msh.pharmadex.mbean.lab;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.DosageForm;
 import org.msh.pharmadex.domain.ProdAppLetter;
@@ -17,20 +30,7 @@ import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.SampleTestService;
 import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
-
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Backing bean to capture review of products
@@ -110,7 +110,8 @@ public class SampleTestBn implements Serializable {
     public void initSampleAdd() {
         sampleTest.setSampleComments(new ArrayList<SampleComment>());
         DosageForm dosForm = sampleTestService.findDosQuantity(sampleTest.getProdApplications().getId());
-        sampleTest.setQuantity(""+dosForm.getSampleSize()+" "+dosForm.getDosForm());
+        String str = (dosForm.getSampleSize() != null ?dosForm.getSampleSize():"") + " " + (dosForm.getDosForm() != null ?dosForm.getDosForm():"");
+        sampleTest.setQuantity(str);
         sampleComment = new SampleComment(sampleTest);
     }
 

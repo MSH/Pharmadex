@@ -19,7 +19,6 @@ import java.util.List;
 @Table(name = "sample_test")
 public class SampleTest extends CreationDetail implements Serializable {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
