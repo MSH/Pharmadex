@@ -94,14 +94,14 @@ public class UserDAO implements Serializable {
 
     public User findByUsername(String username) throws NoResultException {
         try {
-            List<User> u =  entityManager.createQuery("select u from User u fetch all properties  where u.username = :username")
+            List<User> u =  entityManager.createQuery("select u from User u fetch all properties where u.username = :username")
                     .setParameter("username", username)
                     .getResultList();
             if(u.size()>1){
                 throw new Exception("Multiple Users with same username");
             }
             if(u.size()==0){
-                throw new Exception("User doesnt exist");
+               throw new Exception("User doesnt exist");
             }
             return u.get(0);
 

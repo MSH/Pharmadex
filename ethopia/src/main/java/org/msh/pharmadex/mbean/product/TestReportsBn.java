@@ -1,7 +1,9 @@
 package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JRException;
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.SuspDetail;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.service.ProdApplicationsService;

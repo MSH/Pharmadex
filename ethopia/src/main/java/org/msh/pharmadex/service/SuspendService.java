@@ -223,12 +223,18 @@ public class SuspendService implements Serializable {
         if (!(letterType.equals(LetterType.CANCELLATION_SENDER_LETTER))){
             String paramValue = (prodApplications.getApplicant().getAppName()!=null) ? prodApplications.getApplicant().getAppName() : " ";
             param.put("companyName",paramValue);
-            paramValue=(prodApplications.getApplicant().getAddress().getAddress1()!=null) ? prodApplications.getApplicant().getAddress().getAddress1() : " ";
-            param.put("address1",paramValue);
-            paramValue=(prodApplications.getApplicant().getAddress().getAddress2()!=null) ? prodApplications.getApplicant().getAddress().getAddress2() : " ";
-            param.put("address2",paramValue);
-            paramValue = (prodApplications.getApplicant().getAddress().getCountry().getCountryName()!=null) ? prodApplications.getApplicant().getAddress().getCountry().getCountryName() : " ";
-            param.put("countryName",paramValue);
+            if (prodApplications.getApplicant().getAddress()!=null) {
+                paramValue = (prodApplications.getApplicant().getAddress().getAddress1() != null) ? prodApplications.getApplicant().getAddress().getAddress1() : " ";
+                param.put("address1", paramValue);
+                paramValue = (prodApplications.getApplicant().getAddress().getAddress2() != null) ? prodApplications.getApplicant().getAddress().getAddress2() : " ";
+                param.put("address2", paramValue);
+                paramValue = (prodApplications.getApplicant().getAddress().getCountry().getCountryName() != null) ? prodApplications.getApplicant().getAddress().getCountry().getCountryName() : " ";
+                param.put("countryName", paramValue);
+            }else{
+                param.put("address1", " ");
+                param.put("address2", " ");
+                param.put("countryName", " ");
+            }
         }else{
             String paramValue = (prodApplications.getApplicant().getAppName()!=null) ? prodApplications.getApplicant().getAppName() : " ";
             param.put("companyName",suspDetail.getOrgReported());
@@ -547,12 +553,10 @@ public class SuspendService implements Serializable {
     }
 
     private String getUserRole(ReviewInfo reviewInfo, User curUser){
-        if (reviewInfo.getProdApplications().getModerator().getUserId()==curUser.getUserId()){
+        if (userService.userHasRole(curUser,"moderator")){
             return "moderator";
-        }else{
-            if (userService.userHasRole(curUser,"Head")){
-                return "head";
-            }
+        }else if (userService.userHasRole(curUser,"Head")){
+            return "head";
         }
         return "assesor";
     }

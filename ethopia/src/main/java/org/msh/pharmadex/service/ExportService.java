@@ -111,6 +111,7 @@ public class ExportService implements Serializable {
             ProdApplications pa = new ProdApplications();
             Address addr = new Address();
             Company co=new Company();
+            pa.setProdAppType(ProdAppType.GENERIC);
             cell = row.getCell(curCol);   // A Presentation -   prod description
             if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC) cell.setCellType(Cell.CELL_TYPE_STRING);
             if (cell != null) prod.setProdDesc(cell.getStringCellValue());
@@ -156,6 +157,7 @@ public class ExportService implements Serializable {
             curCol++;
             cell = row.getCell(curCol);  //G Dosage Form
             prod.setDosForm(findDosFormAcc(cell.getStringCellValue(),curCol));
+
             curCol++;
             cell = row.getCell(curCol);//H prod_desc -  conttype
             if (cell != null) prod.setContType(cell.getStringCellValue());
@@ -165,6 +167,7 @@ public class ExportService implements Serializable {
             curCol++;
             cell = row.getCell(curCol);  //J Licence Holder/manufacturer
             if (cell != null) lic = findLicHolderByName(cell.getStringCellValue());
+            if (lic!=null) prod.setManufName(lic.getName());
             //if (cell != null) co=findCompany(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol); //K Local Agent
@@ -837,7 +840,7 @@ public class ExportService implements Serializable {
             userService.passwordGenerator(user);
             //user = userService.updateUser(userService.passwordGenerator(user));
             //TODO Убрать комментарий с отправки почты
-            mailService.sendMail(mail,false);
+            //mailService.sendMail(mail,false);
             return user;
         } catch (Exception e){
             e.printStackTrace();
