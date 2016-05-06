@@ -396,7 +396,7 @@ public class ProdRegAppMbean implements Serializable {
         try {
             initializeNewApp(nextWizardStep);
             if (currentWizardStep.equals("prodreg")) {
-                if (applicant == null||applicant.getApplcntId()==null) {
+                if (applicant == null || applicant.getApplcntId()==null) {
                     FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Applicant not selected", "Select an Applicant.");
                     context.addMessage(null, msg1);
                     nextWizardStep = currentWizardStep; // keep wizard on current step if error

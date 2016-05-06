@@ -27,7 +27,7 @@ public class ApplicantConverter implements Converter, Serializable {
 
     public List<Applicant> getApplicantList() {
         if (applicantList == null)
-            applicantList = applicantService.findAllApplicants();
+            applicantList = applicantService.findAllApplicants(null);
         return applicantList;
     }
 

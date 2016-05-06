@@ -235,7 +235,7 @@ public class ApplicantMBean implements Serializable {
     public List<Applicant> getAllStateApplicant() {
         if(allStateApplicant==null)
 
-                allStateApplicant = applicantService.findAllApplicants();
+                allStateApplicant = applicantService.findAllApplicants(null);
 
         return allStateApplicant;
     }

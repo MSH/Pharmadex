@@ -39,7 +39,7 @@ public class ProcessAppListBn implements Serializable {
     }
 
     public List<Applicant> completeApplicantList(String query) {
-        return JsfUtils.completeSuggestions(query, applicantService.findAllApplicants());
+        return JsfUtils.completeSuggestions(query, applicantService.findAllApplicants(null));
     }
 
     public String searchApplicant() {

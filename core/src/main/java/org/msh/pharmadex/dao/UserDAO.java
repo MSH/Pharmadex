@@ -139,7 +139,7 @@ public class UserDAO implements Serializable {
     @Transactional
     public User updateUser(User user) {
         user.getAddress().setCountry(countryDAO.find(user.getAddress().getCountry().getId()));	 
-        if(user.getApplicant() != null && user.getApplicant().getApplcntId() != 0){
+        if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null && user.getApplicant().getApplcntId() != 0){
         	user.setApplicant(applicantDAO.findApplicant(user.getApplicant().getApplcntId()));
         	user.setCompanyName(user.getApplicant().getAppName());
         }

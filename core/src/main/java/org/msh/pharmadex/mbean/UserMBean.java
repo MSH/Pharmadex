@@ -55,6 +55,8 @@ public class UserMBean implements Serializable {
     private Long prevApplicantId;
     private Applicant userApp;
     private String email;
+    private String applicName = "";
+    private Long applicID = new Long(-1);
 
     public String exception() throws Exception {
         throw new Exception();
@@ -262,8 +264,15 @@ public class UserMBean implements Serializable {
         this.selectedUser = userService.findUser(selectedUser.getUserId());
         this.selectedRoles = this.selectedUser.getRoles();
         roles.setTarget(selectedRoles);
-        if (selectedUser.getApplicant() != null)
-            userApp = applicantService.findApplicant(selectedUser.getApplicant().getApplcntId());
+        if (this.selectedUser.getApplicant() != null){
+            userApp = applicantService.findApplicant(this.selectedUser.getApplicant().getApplcntId());
+            applicName = userApp.getAppName();
+        	applicID = userApp.getApplcntId();
+        }else{
+        	userApp = new Applicant();
+        	applicName = "-";
+        	applicID = new Long(-1);
+        }
         this.prevApplicantId = userApp.getApplcntId();
     }
 
@@ -305,6 +314,22 @@ public class UserMBean implements Serializable {
         
     }
 
+    public String getApplicName(){
+    	return applicName;
+    }
+    
+    public void setApplicName(String name){
+    	this.applicName = name;
+    }
+    
+    public Long getApplicID(){
+    	return applicID;
+    }
+    
+    public void setApplicID(Long id){
+    	this.applicID = id;
+    }
+    
     public String getEmail() {
         return email;
     }

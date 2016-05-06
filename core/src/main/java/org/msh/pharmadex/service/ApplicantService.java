@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.msh.pharmadex.auth.UserDetailsAdapter;
 import org.msh.pharmadex.dao.ApplicantDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.iface.ApplicantTypeDAO;
@@ -63,10 +62,27 @@ public class ApplicantService implements Serializable {
         return applicantDAO.findApplicant(id);
     }
 
-
+    /**
+     * получим список всех апликантов из БД
+     * если selectApplicantId != null тогда из полученного списка уберем апликанта с таким идом
+     * Это делается чтоб в выпадающих списках не двоилось значение с уже установленным
+     * @param selectApplicantId - ид апликанта, которого надо исключить из списка
+     * @return
+     */
     @Transactional
-    public List<Applicant> findAllApplicants() {
-        return applicantDAO.findAllApplicants();
+    public List<Applicant> findAllApplicants(Long selectApplicantId) {
+    	List<Applicant> result = new ArrayList<Applicant>();
+    	List<Applicant> list = applicantDAO.findAllApplicants();
+    	if(selectApplicantId != null && selectApplicantId > 0){
+    		if(list != null)
+    			for(Applicant apl:list){
+    				if(apl.getApplcntId().intValue() != selectApplicantId.intValue())
+    					result.add(apl);
+    			}
+    		
+    	}else
+    		result.addAll(list);
+        return result;
     }
 
     @Transactional

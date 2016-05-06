@@ -149,7 +149,7 @@ public class PIPAppSelectBn implements Serializable {
 
 
     public List<Applicant> completeApplicantList(String query) {
-        List<Applicant> applicants = applicantService.findAllApplicants();
+        List<Applicant> applicants = applicantService.findAllApplicants(null);
         return JsfUtils.completeSuggestions(query, applicants);
     }
 

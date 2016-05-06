@@ -164,7 +164,7 @@ public class AppSelectMBean implements Serializable {
 
     public List<Applicant> completeApplicantList(String query) {
         try {
-            List<Applicant> applicants = applicantService.findAllApplicants();
+            List<Applicant> applicants = applicantService.findAllApplicants(null);
             return JsfUtils.completeSuggestions(query, applicants);
         } catch (Exception ex){
             ex.printStackTrace();

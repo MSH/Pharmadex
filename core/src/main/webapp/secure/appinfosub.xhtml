@@ -42,31 +42,13 @@
 
     <h:panelGroup rendered="#{not empty regHomeData.applicant.applcntId}">
         <p:panel header="#{msgs.person_responsible}">
-            <!--
-                        <h:panelGroup id="nouser">
-                            <h:panelGrid columns="1" columnClasses="label">
-                                <h:outputLabel styleClass="label"
-                                               value="No User present for the Applicant. Please update the applicant information by clicking on the link below"/>
-                                <p:commandLink value="#{msgs.global_add}" action="/internal/processapp.faces"
-                                               immediate="true" ajax="false">
-                                    <f:setPropertyActionListener value="#{regHomeData.applicant.applcntId}" target="#{userSession.applcantID}"/>
-                                </p:commandLink>
-                            </h:panelGrid>
-
-                        </h:panelGroup>
-            -->
-
             <h:panelGroup id="userdetail">
-
                 <ui:decorate template="/templates/userdetailtmpl.xhtml">
                     <ui:param name="userdata" value="#{regHomeData.applicantUser}"/>
                     <ui:param name="input" value="#{false}"/>
                 </ui:decorate>
             </h:panelGroup>
-
         </p:panel>
-
-
     </h:panelGroup>
 
     <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantdlg" >

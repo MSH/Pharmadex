@@ -110,7 +110,7 @@ public class GlobalEntityLists implements Serializable {
     //Odissey 16/03
     public List<Applicant> getApplicants(){
         if (applicants==null)
-            applicants = applicantService.findAllApplicants();
+            applicants = applicantService.findAllApplicants(null);
         return applicants;
     }
 
