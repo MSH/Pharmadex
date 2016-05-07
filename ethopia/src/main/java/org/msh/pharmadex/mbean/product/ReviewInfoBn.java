@@ -82,6 +82,7 @@ public class ReviewInfoBn implements Serializable {
     private boolean priReview;
     private User loggedInUser;
     private boolean submitted=false;
+    private boolean reviewApproved=false;
     private String sourcePage="/internal/processreviewlist.faces";
 
     @PostConstruct
@@ -168,15 +169,20 @@ public class ReviewInfoBn implements Serializable {
         revDeficiency.setUser(loggedInUser);
         revDeficiency.setReviewInfo(reviewInfo);
         revDeficiency.setCreatedDate(new Date());
-        /*
-        for (ReviewComment rc : getReviewComments()) {
-            if (rc.getDecisionType() != null && rc.getDecisionType().equals(RecomendType.FIR)) {
-                if (rc.isFinalSummary()) {
-                    reviewComment.setComment(rc.getComment());
+
+        List<ReviewComment> comments = getReviewComments();
+        if (comments!=null)
+            if (comments.size()>0) {
+                for (int j = comments.size()-1; j != 0; j--) {
+                    ReviewComment rc = getReviewComments().get(j);
+                    if (rc.getRecomendType() != null && rc.getRecomendType().equals(RecomendType.FIR)) {
+                        if (rc.isFinalSummary()) {
+                            reviewComment.setComment(rc.getComment());
+                            break;
+                        }
                 }
             }
         }
-        */
     }
 
     public void findRevDef(RevDeficiency revDeficiency) {
@@ -228,10 +234,6 @@ public class ReviewInfoBn implements Serializable {
             userSession.setProdAppID(reviewInfo.getProdApplications().getId());
             userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
             return goBack();
-//            if (reviewInfo.getProdApplications().getRegState().equals(RegState.SUSPEND))
-//                return "/internal/processreg";
-//            else
-//                return "/internal/suspenddetail";
         } catch (Exception ex) {
             ex.printStackTrace();
             facesContext.addMessage(null, new FacesMessage("Log out of the system and try again."));
@@ -454,7 +456,7 @@ public class ReviewInfoBn implements Serializable {
         if (!prodApplications.getRegState().equals(RegState.SUSPEND)){
             recomendTypes.add(RecomendType.RECOMENDED);
             recomendTypes.add(RecomendType.NOT_RECOMENDED);
-            recomendTypes.add(RecomendType.FEEDBACK);
+            recomendTypes.add(RecomendType.FIR);
         }else{
             recomendTypes.add(RecomendType.REGISTER);
             recomendTypes.add(RecomendType.SUSPEND);
@@ -598,7 +600,7 @@ public class ReviewInfoBn implements Serializable {
             context.getFlash().put("suspDetailID",id);
             return page;
         }else if (page.contains("process")){
-            context.getRequestParameterMap().put("suspDetailID",id);
+            context.getFlash().put("prodAppID",id);
             return page;
         }
         return "";
@@ -614,6 +616,20 @@ public class ReviewInfoBn implements Serializable {
     public void setSubmitted(boolean submitted) {
         this.submitted = submitted;
     }
+
+
+    public boolean isReviewApproved() {
+        if (reviewInfo!=null){
+            reviewApproved = reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED);
+        }
+        return reviewApproved;
+    }
+
+    public void setReviewApproved(boolean reviewApproved) {
+        this.reviewApproved = reviewApproved;
+    }
+
+
 
     public void setPriReview(boolean priReview) {
         this.priReview = priReview;

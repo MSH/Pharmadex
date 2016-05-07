@@ -61,7 +61,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private boolean lab = false;
     private boolean clinical = false;
     private boolean labModerator = false;
-    private boolean labHead = true;
+    private boolean labHead = false;
     private boolean displayAppReg = false;
     private boolean displayPricing = false;
     private DisplayReviewInfo displayReviewInfo;

@@ -572,6 +572,8 @@ public class ReviewService implements Serializable {
                 reviewComment.setFinalSummary(true);
             }else if (reviewComment.getRecomendType().equals(RecomendType.REGISTER)||reviewComment.getRecomendType().equals(RecomendType.SUSPEND)||reviewComment.getRecomendType().equals(RecomendType.CANCEL)){
                 reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
+            }else if (reviewComment.getRecomendType().equals(RecomendType.FIR)){
+                reviewInfo.setReviewStatus(ReviewStatus.SUBMITTED);
             }
         }
         reviewInfo.setSubmitDate(new Date());

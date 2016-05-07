@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-05-05T16:34:17 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -227,28 +229,28 @@
 				<text><![CDATA[Dosage Form:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="255" width="134" height="20" uuid="468a35c4-b6ee-4261-a0de-5473c22604e9"/>
+				<reportElement x="75" y="254" width="134" height="20" uuid="468a35c4-b6ee-4261-a0de-5473c22604e9"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Manufacturer:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="275" width="134" height="20" uuid="4dda40db-70a0-4d69-85c5-5ecf3dbcd4a1"/>
+				<reportElement x="75" y="274" width="134" height="20" uuid="4dda40db-70a0-4d69-85c5-5ecf3dbcd4a1"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Type of Application:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="211" y="295" width="361" height="20" uuid="d2c372cf-e218-4694-b6a9-4215b7b28f24"/>
+				<reportElement x="211" y="294" width="361" height="20" uuid="d2c372cf-e218-4694-b6a9-4215b7b28f24"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{appNumber}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="295" width="134" height="20" uuid="3239a902-8d87-4e9f-8efa-49f87e45f4be"/>
+				<reportElement x="75" y="294" width="134" height="20" uuid="3239a902-8d87-4e9f-8efa-49f87e45f4be"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -269,14 +271,14 @@
 				<textFieldExpression><![CDATA[$P{prodStrength}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="211" y="255" width="361" height="20" uuid="3d7a6c50-00a5-4022-8f11-095ec9739ef1"/>
+				<reportElement x="211" y="254" width="361" height="20" uuid="3d7a6c50-00a5-4022-8f11-095ec9739ef1"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="211" y="275" width="361" height="20" uuid="e759ea4b-a872-47e0-a39d-07a6f5a5fa9b"/>
+				<reportElement x="211" y="274" width="361" height="20" uuid="e759ea4b-a872-47e0-a39d-07a6f5a5fa9b"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>

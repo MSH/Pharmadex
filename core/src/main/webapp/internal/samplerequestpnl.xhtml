@@ -4,6 +4,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <!--Button panel -->
     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" rendered="#{userSession.moderator||userSession.head||userSession.admin}">
         <p:outputLabel value="#{msgs.sample_test_result_rec}" styleClass="label" for="sampletestrecieved"/>
         <p:selectBooleanButton id="sampletestrecieved" disabled="#{processProdBn.registered}"

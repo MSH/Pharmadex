@@ -18,6 +18,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
 
 import org.msh.pharmadex.auth.UserSession;
@@ -266,7 +267,9 @@ public class ProcessProdBn implements Serializable {
             if (id!=null){
                 prodAppID = Long.valueOf(id);
             }else{
-                prodAppID = (Long) getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
+                Flash flash = facesContext.getExternalContext().getFlash();
+                String idStr = (String) flash.get("prodAppID");
+                prodAppID = Long.parseLong(idStr);
             }
             if (prodAppID != null) {
                 prodApplications = prodApplicationsService.findProdApplications(prodAppID);

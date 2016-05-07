@@ -63,7 +63,7 @@
                                      ajax="false" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
                     <!-- goto back -->
                     <p:commandButton value="#{msgs.global_back}" immediate="true"
-                                     action="/internal/processreg"
+                                     action="#{reviewBn.goBack}"
                                      ajax="false">
                             <f:param name="prodAppID" value="#{reviewBn.review.prodApplications.id}"/>
                     </p:commandButton>

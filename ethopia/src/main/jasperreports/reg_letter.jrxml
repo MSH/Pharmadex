@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-20T08:13:56 -->
+<!-- 2016-05-05T13:32:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
     <property name="ireport.zoom" value="1.1"/>
     <property name="ireport.x" value="0"/>
@@ -364,15 +364,15 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[Generic name]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="60" width="265" height="20" uuid="bbf50eef-cea9-46d7-9c68-970b1277e2a3"/>
+                <reportElement x="-1" y="83" width="265" height="20" uuid="bbf50eef-cea9-46d7-9c68-970b1277e2a3"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
                 </textElement>
-                <text><![CDATA[Dosage form:]]></text>
+                <text><![CDATA[Dosage strength]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="80" width="265" height="20" uuid="b0c0d8fb-650c-4111-8880-f85b0f07e6d7"/>
+                <reportElement x="0" y="100" width="265" height="20" uuid="b0c0d8fb-650c-4111-8880-f85b0f07e6d7"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -380,7 +380,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[Route of Administration]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="139" width="265" height="20" uuid="d3e74a10-4216-4411-ae26-3ce61fdea898"/>
+                <reportElement x="0" y="159" width="265" height="20" uuid="d3e74a10-4216-4411-ae26-3ce61fdea898"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -388,7 +388,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[Prescription Status]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="159" width="265" height="20" uuid="6aaebab1-ae2a-4fe9-bf27-785b3156ba5d"/>
+                <reportElement x="0" y="179" width="265" height="20" uuid="6aaebab1-ae2a-4fe9-bf27-785b3156ba5d"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -396,7 +396,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[Presentation (Pack size)]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="119" width="265" height="20" uuid="352db59d-a72e-4c43-842c-1cdc78b7f67e"/>
+                <reportElement x="0" y="139" width="265" height="20" uuid="352db59d-a72e-4c43-842c-1cdc78b7f67e"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -466,7 +466,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[Note: This Certificate, unless previously suspended, revoked or varied as to the period of its validity, will continue in force until the end of a period of four years from the date of issue.]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="179" width="265" height="20" uuid="5caa8555-e614-4b5d-af89-dd33f24cf6ab"/>
+                <reportElement x="0" y="199" width="265" height="20" uuid="5caa8555-e614-4b5d-af89-dd33f24cf6ab"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -474,7 +474,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[General appearance]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="199" width="265" height="20" uuid="b446b466-37ec-4028-86c7-198e72808b54"/>
+                <reportElement x="0" y="219" width="265" height="20" uuid="b446b466-37ec-4028-86c7-198e72808b54"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -482,7 +482,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[Primary container]]></text>
             </staticText>
             <staticText>
-                <reportElement x="-1" y="216" width="265" height="20" uuid="7b2e2171-5eff-4f86-a424-c294698849a6"/>
+                <reportElement x="-1" y="236" width="265" height="20" uuid="7b2e2171-5eff-4f86-a424-c294698849a6"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -490,7 +490,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[License holder]]></text>
             </staticText>
             <staticText>
-                <reportElement x="-1" y="236" width="265" height="20" uuid="e541b316-7750-4bda-8dc9-58924520bc0f"/>
+                <reportElement x="-1" y="256" width="265" height="20" uuid="e541b316-7750-4bda-8dc9-58924520bc0f"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -498,7 +498,7 @@ and p.id = $P{prodappid}]]>
                 <text><![CDATA[Address]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="100" width="265" height="20" uuid="c25a5f7c-91cb-47f3-b04b-95f091dcfdaf"/>
+                <reportElement x="0" y="120" width="265" height="20" uuid="c25a5f7c-91cb-47f3-b04b-95f091dcfdaf"/>
                 <textElement textAlignment="Right">
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
@@ -543,49 +543,49 @@ and p.id = $P{prodappid}]]>
                 <textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="267" y="80" width="303" height="20" uuid="43e42d5c-572f-45cd-b8d6-e4b322d43c02"/>
+                <reportElement x="267" y="100" width="303" height="20" uuid="43e42d5c-572f-45cd-b8d6-e4b322d43c02"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="267" y="99" width="303" height="20" uuid="85f7905e-00ba-470f-9cfc-0639bc3eda22"/>
+                <reportElement x="267" y="119" width="303" height="20" uuid="85f7905e-00ba-470f-9cfc-0639bc3eda22"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{shelfLife}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="267" y="120" width="303" height="20" uuid="9e0dcd4e-67bf-400d-b263-2e0aea21b9d3"/>
+                <reportElement x="267" y="140" width="303" height="20" uuid="9e0dcd4e-67bf-400d-b263-2e0aea21b9d3"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{indications}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="267" y="159" width="303" height="20" uuid="10be8f7e-6dc2-4360-92a7-14e65b13567c"/>
+                <reportElement x="267" y="179" width="303" height="20" uuid="10be8f7e-6dc2-4360-92a7-14e65b13567c"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{packSize}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="267" y="199" width="303" height="20" uuid="26150fb4-545a-49dd-8aac-d303b415fa6b"/>
+                <reportElement x="267" y="219" width="303" height="20" uuid="26150fb4-545a-49dd-8aac-d303b415fa6b"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{contType}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="266" y="216" width="304" height="20" uuid="0ca29b83-407d-4a48-b14e-6e2a15ebbbf3"/>
+                <reportElement x="266" y="236" width="304" height="20" uuid="0ca29b83-407d-4a48-b14e-6e2a15ebbbf3"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{lic_name}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="266" y="236" width="305" height="20" uuid="22f931c4-5480-4091-8966-450b9d9d5fe8"/>
+                <reportElement x="266" y="256" width="305" height="20" uuid="22f931c4-5480-4091-8966-450b9d9d5fe8"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
@@ -863,18 +863,33 @@ and p.id = $P{prodappid}]]>
                 </jr:table>
             </componentElement>
             <textField>
-                <reportElement x="266" y="139" width="296" height="20" uuid="63857e2e-1ad9-43fc-a168-20488446f640"/>
+                <reportElement x="266" y="159" width="296" height="20" uuid="63857e2e-1ad9-43fc-a168-20488446f640"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{prescription}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="267" y="178" width="293" height="21" uuid="6f9a061e-a66d-4535-ba85-e6d5927baee8"/>
+                <reportElement x="267" y="198" width="293" height="21" uuid="6f9a061e-a66d-4535-ba85-e6d5927baee8"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{productDescription}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="-1" y="60" width="265" height="20" uuid="5736955e-2bdb-4199-9226-706b4bb1624b"/>
+                <textElement textAlignment="Right">
+                    <font size="12"/>
+                    <paragraph leftIndent="10" rightIndent="10"/>
+                </textElement>
+                <text><![CDATA[Dosage form]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="267" y="83" width="303" height="20" uuid="25ede683-0e86-42b3-b5b1-b9a3916de9fb"/>
+                <textElement>
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{dosstrength}]]></textFieldExpression>
             </textField>
         </band>
     </detail>

@@ -11,16 +11,17 @@ import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.RetObject;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.ResourceBundle;
+
+import static javax.faces.context.FacesContext.getCurrentInstance;
 
 /**
  * Created by utkarsh on 3/6/15.

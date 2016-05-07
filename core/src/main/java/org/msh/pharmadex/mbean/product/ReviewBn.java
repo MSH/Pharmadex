@@ -166,6 +166,10 @@ public class ReviewBn implements Serializable {
         return "/internal/processreg";
     }
 
+    public String goBack(){
+        return "/internal/processreg";
+    }
+
     public Review getReview() {
         return review;
     }
