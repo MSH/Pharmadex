@@ -1,0 +1,161 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" rendered="#{userSession.moderator||userSession.head||userSession.admin}">
+        <p:outputLabel value="#{msgs.sample_test_result_rec}" styleClass="label" for="sampletestrecieved"/>
+        <p:selectBooleanButton id="sampletestrecieved" disabled="#{processProdBn.registered}"
+                               value="#{processProdBn.prodApplications.sampleTestRecieved}"
+                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                               valueChangeListener="#{sampleTestBn.createConfirmLetter}"
+                               onIcon="ui-icon-check"
+                               offIcon="ui-icon-close" style="width:60px">
+            <p:ajax update=":reghome:growl :reghome" process=":reghome"
+                    listener="#{processProdBn.changeSampleRecieved}"/>
+        </p:selectBooleanButton>
+    </h:panelGrid>
+    <h:panelGrid columns="2" style="margin-bottom:10px">
+    <p:commandButton action="#{sampleTestBn.initSampleAdd}" value="#{msgs.request_sampletest}"
+                     oncomplete="PF('addSampleTestDlg').show()"/>
+    <p:commandButton action="#{sampleTestBn.initSampleAdd}" value="#{msgs.addsample }"
+                     oncomplete="PF('addAdditionalSampleDlg').show()"/>
+    </h:panelGrid>
+    <p:dataTable id="sampletable" var="sample" value="#{sampleTestBn.sampleTests}" editable="true"
+                 style="margin-bottom:20px">
+        <f:facet name="header">
+            #{msgs.sample_test_result}
+        </f:facet>
+
+        <!--        <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form:msgs" />
+                <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form:msgs" />
+        -->
+
+        <p:column headerText="#{msgs.requested_date}">
+            <p:commandLink id="viewLink2"
+                           action="/internal/lab/sampletestdetail.faces"
+                           ajax="false" immediate="true">
+                <f:param name="sampleTestID" value="#{sample.id}"/>
+                <p:outputLabel value="#{sample.reqDt}">
+                    <f:convertDateTime pattern="MMM dd, yyyy"/>
+                </p:outputLabel>
+            </p:commandLink>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="#{msgs.global_curr_status}"/>
+            </f:facet>
+            <h:outputText value="#{msgs[sample.sampleTestStatus.key]}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.created_by}">
+            <p:outputLabel value="#{sample.createdBy.name}"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.updated_date}">
+            <p:outputLabel value="#{sample.updatedDate}" converter="javax.faces.DateTime"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.sampletest_recieved}">
+            <p:outputLabel value="#{sample.recievedDt}"
+                           converter="javax.faces.DateTime"/>
+        </p:column>
+
+        <p:column headerText="#{msgs.sample_test_date}">
+            <p:cellEditor>
+                <f:facet name="output"><p:outputLabel value="#{sample.resultDt}"
+                                                      converter="javax.faces.DateTime"/></f:facet>
+                <f:facet name="input"><p:calendar id="samplesubdt" value="#{sample.resultDt}"
+                                                  style="width:100%"/></f:facet>
+            </p:cellEditor>
+        </p:column>
+
+
+    </p:dataTable>
+
+    <!--
+
+    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" id="sampletestpg">
+
+
+
+        <p:outputLabel value="#{msgs.sampletest_notified}" for="dossloc" styleClass="label"/>
+        <p:selectBooleanCheckbox value="#{sampleTestBn.sampleTest.letterSent}"/>
+        <p:outputLabel value="#{msgs.sampletest_recieved}" for="dossloc" styleClass="label"/>
+        <p:selectBooleanCheckbox value="#{sampleTestBn.sampleTest.sampleRecieved}"/>
+
+        <h:outputText value="#{msgs.sample_test_result}" rendered="#{!sampleTestBn.attach}"/>
+        <p:fileUpload value="#{sampleTestBn.file}" mode="simple" rendered="#{!sampleTestBn.attach}"/>
+
+        <h:outputText/>
+        <p:commandLink value="#{msgs.global_upload}" ajax="false"
+                       actionListener="#{sampleTestBn.handleFileUpload}" rendered="#{!sampleTestBn.attach}"/>
+
+        <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="true"
+                         onclick="PrimeFaces.monitorDownload(start, stop)" immediate="true"
+                         icon="ui-icon-arrowthickstop-1-s" rendered="#{sampleTestBn.attach}">
+            <p:fileDownload value="#{sampleTestBn.fileDownload()}"/>
+        </p:commandButton>
+
+
+    </h:panelGrid>
+    -->
+
+    <p:dialog header="#{msgs.sample_test_result}" widgetVar="addSampleTestDlg" id="addSampleTestDlg"
+              modal="true" dynamic="true">
+        <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+            <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
+            <p:selectManyCheckbox id="itm_req" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
+                                  columns="1"
+                                  converter="omnifaces.GenericEnumConverter">
+                <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
+                               itemValue="#{type}"/>
+                <f:attribute name="collectionType" value="java.util.ArrayList"/>
+            </p:selectManyCheckbox>
+            <p:message for="itm_req" showSummary="true" showDetail="false"/>
+
+            <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
+            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity"/>
+            <p:message for="quantity" showSummary="true" showDetail="false"/>
+
+
+            <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
+            <p:editor value="#{sampleTestBn.sampleComment.comment}" id="revsummary" required="true"
+                      width="700"/>
+            <p:message for="revsummary"/>
+
+        </h:panelGrid>
+        <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBn.addSample(false)}"
+                         oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+    </p:dialog>
+
+    <p:dialog header="#{msgs.addsample}" widgetVar="addAdditionalSampleDlg" id="addAdditionalSampleDlg"
+              modal="true" dynamic="true">
+        <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+            <p:outputLabel value="#{msgs.item_requested}" for="itm_req2" styleClass="label"/>
+            <p:selectManyCheckbox id="itm_req2" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
+                                  columns="1"
+                                  converter="omnifaces.GenericEnumConverter">
+                <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
+                               itemValue="#{type}"/>
+                <f:attribute name="collectionType" value="java.util.ArrayList"/>
+            </p:selectManyCheckbox>
+            <p:message for="itm_req" showSummary="true" showDetail="false"/>
+
+            <p:outputLabel value="#{msgs.global_quantity}" for="addquantity" styleClass="label"/>
+            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="addquantity"/>
+            <p:message for="quantity" showSummary="true" showDetail="false"/>
+
+
+            <p:outputLabel value="#{msgs.reason_add_request}" for="addcomment" styleClass="label"/>
+            <p:editor value="#{sampleTestBn.sampleComment.comment}" id="addcomment" required="true"
+                      width="700"/>
+            <p:message for="addcomment"/>
+
+        </h:panelGrid>
+        <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBn.addSample(true)}"
+                         oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+    </p:dialog>
+</ui:composition>
