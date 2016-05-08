@@ -306,6 +306,7 @@ public class ExportService implements Serializable {
             for (ProdApplications item : lpa){
                 if  (item.getRegExpiryDate()==null) return false;
                 if( item.getRegExpiryDate().equals(pa.getRegExpiryDate())) return true;
+
             }
         }
         return false;
