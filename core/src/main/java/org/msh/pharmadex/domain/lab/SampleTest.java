@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "sample_test")
-public class SampleTest extends CreationDetail implements Serializable {
+public class  SampleTest extends CreationDetail implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
