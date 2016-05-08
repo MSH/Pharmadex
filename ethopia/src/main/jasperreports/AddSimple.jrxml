@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-05-08T11:03:27 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AddSimple" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="91470dd0-27b6-4d34-a08c-a310b6d144d6">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<parameter name="sampleQty" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="94" splitType="Stretch">
+			<image>
+				<reportElement stretchType="RelativeToTallestObject" x="130" y="0" width="75" height="70" uuid="0fdb11e6-027e-49da-8dd2-360f8cff6f8b"/>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="220" y="34" width="230" height="26" uuid="16ad37ef-4852-4119-97ac-ee4296230095"/>
+				<textElement>
+					<font fontName="Times New Roman" size="20"/>
+				</textElement>
+				<text><![CDATA[Form number: __________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="70" width="572" height="24" forecolor="#000000" uuid="8f12c846-8bac-4258-a32f-414f5f9eae1b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ETHIOPIAN FOOD, MEDICINE & HEALTHCARE ADMINISTRATION & CONTROL AUTHORITY ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+			<band height="125" splitType="Stretch">
+		</detail>
+
+		<pageHeader>
+			<staticText>
+				<reportElement x="56" y="74" width="100" height="30" uuid="b65915b4-8320-4158-aeb0-a428160f7179"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+				</textElement>
+				<text><![CDATA[1. Item requested]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="180" y="74" width="210" height="30" uuid="fa8f9cd6-3b9d-4eec-9e2c-a0f504e8531b"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sampleQty}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+</jasperReport>
