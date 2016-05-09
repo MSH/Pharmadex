@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-05-08T11:03:27 -->
+<!-- 2016-05-09T13:23:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AddSimple" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="91470dd0-27b6-4d34-a08c-a310b6d144d6">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
@@ -33,11 +33,8 @@
 			</staticText>
 		</band>
 	</title>
-	<detail>
-			<band height="125" splitType="Stretch">
-		</detail>
-
-		<pageHeader>
+	<pageHeader>
+		<band height="266" splitType="Stretch">
 			<staticText>
 				<reportElement x="56" y="74" width="100" height="30" uuid="b65915b4-8320-4158-aeb0-a428160f7179"/>
 				<textElement>
