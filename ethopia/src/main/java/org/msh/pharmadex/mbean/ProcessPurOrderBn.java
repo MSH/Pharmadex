@@ -29,11 +29,14 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
     public void init() {
         pOrderBase = new PurOrder();
         try {
-            Long purOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID"));
-            if (purOrderID != null) {
-                pOrderBase = pOrderService.findPurOrderEager(purOrderID);
-                initVariables();
-            }
+        	Object obj = FacesContext.getCurrentInstance().getExternalContext().getFlash().get("purOrderID");
+        	if(obj != null){
+        		Long purOrderID = Long.valueOf(obj.toString());
+        		if (purOrderID != null) {
+                    pOrderBase = pOrderService.findPurOrderEager(purOrderID);
+                    initVariables();
+                }
+        	}
         }catch(Exception ex){
             ex.printStackTrace();
         }

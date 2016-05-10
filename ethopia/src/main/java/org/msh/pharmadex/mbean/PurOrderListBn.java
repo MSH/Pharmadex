@@ -45,7 +45,10 @@ public class PurOrderListBn implements Serializable {
     public String searchPurOrder(){
             POrderBase pOrderBase = pOrderService.findPOrder(pipNo, true);
             if(pOrderBase!=null) {
-                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("purOrderID", ""+pOrderBase.getId());
+            	String paramValue = String.valueOf(pOrderBase.getId());
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().put("purOrderID", paramValue);
+                
+                //FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("purOrderID", ""+pOrderBase.getId());
                 return "processpurorder";
             }else{
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Purchase order not found!!!"));
