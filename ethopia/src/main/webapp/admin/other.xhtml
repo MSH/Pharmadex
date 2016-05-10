@@ -38,10 +38,20 @@
 
                     <p:commandButton action="#{exportMBean.loadingUsers}"
                                      id = "impruser"
-                                     value="Import of users" ajax="false">
+                                     value="Users" ajax="false">
                     </p:commandButton>
                     <p:message for="imprtuser"/>
                     <h:outputLabel/>
+
+                    <p:commandButton action="#{exportMBean.loadingCompanies}"
+                                   id = "imprtcompany"
+                                   value="Company" ajax="false">
+                    </p:commandButton>
+                    <p:message for="imprtcompany"/>
+                    <h:outputLabel/>
+
+                    <h:outputLabel/>
+
                     <h:outputText id="imprtuser" value="#{exportMBean.taskStatus}"/>
 
             </h:panelGrid>

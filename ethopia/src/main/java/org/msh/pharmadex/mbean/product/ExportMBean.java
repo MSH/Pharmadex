@@ -292,6 +292,60 @@ public class ExportMBean implements Serializable {
         return "";
     }
 
+    public  String loadingCompanies(){
+        if (!initProcess()) setFilename("Error. Initialisation failure");
+        if (f.isFile()) {
+            try {
+                wb = WorkbookFactory.create(new FileInputStream(filename));
+                Sheet sheet = wb.getSheetAt(3);
+                if (sheet == null) return "";
+                String res;
+                success = 0;
+                failure = 0;
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    Row row = sheet.getRow(i);
+                    res = exportService.importCompanies(row, 1);
+                    if (!res.startsWith("Error")) {
+                        success++;
+                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+                    } else
+                        failure++;
+                }
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    Row row = sheet.getRow(i);
+                    res = exportService.importCompanies(row, 2);
+                    if (!res.startsWith("Error")) {
+                        success++;
+                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+                    } else
+                        failure++;
+                }
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    Row row = sheet.getRow(i);
+                    res = exportService.importCompanies(row, 3);
+                    if (!res.startsWith("Error")) {
+                        success++;
+                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+                    } else
+                        failure++;
+                }
+
+                setIgnore(success + failure);
+                File outf = new File("C:/Temp/res.xlsx");
+                FileOutputStream out = new FileOutputStream(outf);
+                wb.write(out);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InvalidFormatException e) {
+                setFilename("file not found");
+            }
+        }else
+            setFilename("file not found");
+
+           return "";
+    }
+
     public String loadingOrganisations(){
         if (!initProcess()) setFilename("Error. Initialisation failure");
         if (f.isFile())

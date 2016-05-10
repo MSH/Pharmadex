@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
  */
 @ManagedBean
 @ViewScoped
-public class SampleTestBn implements Serializable {
+public class SampleTestBnET implements Serializable {
 
 
     @ManagedProperty(value = "#{globalEntityLists}")
@@ -102,7 +102,7 @@ public class SampleTestBn implements Serializable {
         sampleComment.setUser(sampleTest.getCreatedBy());
         sampleTest.getSampleComments().add(sampleComment);
         sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
-        RetObject riRetObj=null;
+        RetObject riRetObj;
         if (isAddSample) riRetObj = sampleAddService.createDefADDLetter(sampleTest);
          else riRetObj = sampleTestService.createDefLetter(sampleTest);
         if (!riRetObj.getMsg().equalsIgnoreCase("persist")) {

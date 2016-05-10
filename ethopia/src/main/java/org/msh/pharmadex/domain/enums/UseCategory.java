@@ -7,9 +7,7 @@ public enum UseCategory {
     SCH_NARCOTIC,
     PSYCHOTROPIC,
     PRESCRIPTION,
-    OTC,
-    HOSPITAL,
-    PHARMACY;
+    OTC;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());

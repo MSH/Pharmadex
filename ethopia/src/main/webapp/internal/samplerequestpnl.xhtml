@@ -9,7 +9,7 @@
         <p:selectBooleanButton id="sampletestrecieved" disabled="#{processProdBn.registered}"
                                value="#{processProdBn.prodApplications.sampleTestRecieved}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               valueChangeListener="#{sampleTestBn.createConfirmLetter}"
+                               valueChangeListener="#{sampleTestBnET.createConfirmLetter}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
             <p:ajax update=":reghome:growl :reghome" process=":reghome"
@@ -17,12 +17,12 @@
         </p:selectBooleanButton>
     </h:panelGrid>
     <h:panelGrid columns="2" style="margin-bottom:10px">
-    <p:commandButton action="#{sampleTestBn.initSampleAdd}" value="#{msgs.request_sampletest}"
+    <p:commandButton action="#{sampleTestBnET.initSampleAdd}" value="#{msgs.request_sampletest}"
                      oncomplete="PF('addSampleTestDlg').show()"/>
-    <p:commandButton action="#{sampleTestBn.initSampleAdd}" value="#{msgs.addsample }"
+    <p:commandButton action="#{sampleTestBnET.initSampleAdd}" value="#{msgs.addsample }"
                      oncomplete="PF('addAdditionalSampleDlg').show()"/>
     </h:panelGrid>
-    <p:dataTable id="sampletable" var="sample" value="#{sampleTestBn.sampleTests}" editable="true"
+    <p:dataTable id="sampletable" var="sample" value="#{sampleTestBnET.sampleTests}" editable="true"
                  style="margin-bottom:20px">
         <f:facet name="header">
             #{msgs.sample_test_result}
@@ -107,7 +107,7 @@
               modal="true" dynamic="true">
         <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
             <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
-            <p:selectManyCheckbox id="itm_req" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
+            <p:selectManyCheckbox id="itm_req" value="#{sampleTestBnET.sampleTest.sampleTypes}" layout="grid"
                                   columns="1"
                                   converter="omnifaces.GenericEnumConverter">
                 <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
@@ -117,17 +117,17 @@
             <p:message for="itm_req" showSummary="true" showDetail="false"/>
 
             <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
-            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity"/>
+            <p:inputText value="#{sampleTestBnET.sampleTest.quantity}" id="quantity"/>
             <p:message for="quantity" showSummary="true" showDetail="false"/>
 
 
             <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
-            <p:editor value="#{sampleTestBn.sampleComment.comment}" id="revsummary" required="true"
+            <p:editor value="#{sampleTestBnET.sampleComment.comment}" id="revsummary" required="true"
                       width="700"/>
             <p:message for="revsummary"/>
 
         </h:panelGrid>
-        <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBn.addSample(false)}"
+        <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBnET.addSample(false)}"
                          oncomplete="PF('reviewDlg').hide()" ajax="false"/>
     </p:dialog>
 
@@ -135,7 +135,7 @@
               modal="true" dynamic="true">
         <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
             <p:outputLabel value="#{msgs.item_requested}" for="itm_req2" styleClass="label"/>
-            <p:selectManyCheckbox id="itm_req2" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
+            <p:selectManyCheckbox id="itm_req2" value="#{sampleTestBnET.sampleTest.sampleTypes}" layout="grid"
                                   columns="1"
                                   converter="omnifaces.GenericEnumConverter">
                 <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
@@ -145,17 +145,18 @@
             <p:message for="itm_req" showSummary="true" showDetail="false"/>
 
             <p:outputLabel value="#{msgs.global_quantity}" for="addquantity" styleClass="label"/>
-            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="addquantity"/>
+            <p:inputText value="#{sampleTestBnET.sampleTest.quantity}" id="addquantity"/>
             <p:message for="quantity" showSummary="true" showDetail="false"/>
 
 
             <p:outputLabel value="#{msgs.reason_add_request}" for="addcomment" styleClass="label"/>
-            <p:editor value="#{sampleTestBn.sampleComment.comment}" id="addcomment" required="true"
+            <p:editor value="#{sampleTestBnET.sampleComment.comment}" id="addcomment" required="true"
                       width="700"/>
             <p:message for="addcomment"/>
 
         </h:panelGrid>
-        <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBn.addSample(true)}"
+        <p:commandButton value="#{msgs.global_submit}"
+                         action="#{sampleTestBnET.addSample(true)}"
                          oncomplete="PF('reviewDlg').hide()" ajax="false"/>
     </p:dialog>
 </ui:composition>

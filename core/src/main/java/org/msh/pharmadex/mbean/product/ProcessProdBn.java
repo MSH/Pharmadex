@@ -268,8 +268,12 @@ public class ProcessProdBn implements Serializable {
                 prodAppID = Long.valueOf(id);
             }else{
                 Flash flash = facesContext.getExternalContext().getFlash();
-                String idStr = (String) flash.get("prodAppID");
-                prodAppID = Long.parseLong(idStr);
+                if (flash.get("prodAppID").getClass().getName().endsWith("Long")) {
+                    prodAppID = (Long) flash.get("prodAppID");
+                }else {
+                    String idStr = (String) flash.get("prodAppID");
+                    prodAppID = Long.parseLong(idStr);
+                }
             }
             if (prodAppID != null) {
                 prodApplications = prodApplicationsService.findProdApplications(prodAppID);

@@ -47,13 +47,12 @@ public class SampleAddService implements Serializable {
     public JasperPrint initLetter(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException, SQLException {
         String emailBody = sampleComment.getComment();
         Product product = prodApplications.getProduct();
-        URL resource = getClass().getResource("/reports/AddSimple.jasper");
-        //        Session hibernateSession = entityManager.unwrap(Session.class);
+        URL resource = getClass().getResource("/reports/sample_request_add.jasper");
         Connection conn = entityManager.unwrap(Session.class).connection();
         HashMap param = new HashMap();
         param.put("sampleQty", quantity);
-
         param.put("date", new Date());
+        param.put("reason", sampleComment);
        if(resource != null){
             JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
             conn.close();
@@ -67,14 +66,12 @@ public class SampleAddService implements Serializable {
         ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
         Product product = prodApp.getProduct();
         try {
-            //            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
             File invoicePDF = File.createTempFile("" + product.getProdName() + "_addsamplerequest", ".pdf");
             JasperPrint jasperPrint = initLetter(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
             net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
             byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
             ProdAppLetter attachment = new ProdAppLetter();
             attachment.setRegState(prodApp.getRegState());
-            //            attachment.setComment(sampleTest.get);
             attachment.setFile(file);
             attachment.setProdApplications(prodApp);
             attachment.setFileName(invoicePDF.getName());
@@ -83,8 +80,6 @@ public class SampleAddService implements Serializable {
             attachment.setComment("System generated Letter");
             attachment.setLetterType(LetterType.SAMPLE_REQUEST_LETTER);
             attachment.setContentType("application/pdf");
-            //            attachment.setSampleTest(sampleTest);
-
             if(sampleTest.getProdAppLetters()==null)
                 sampleTest.setProdAppLetters(new ArrayList<ProdAppLetter>());
             sampleTest.getProdAppLetters().add(attachment);

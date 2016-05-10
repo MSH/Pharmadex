@@ -506,8 +506,19 @@ public class ExportService implements Serializable {
     }
     public Applicant findApplicant(String s){
         Applicant a=dictionaryDAO.findApplicantByName(s);
-        if (a!=null)return a;
+        if (a.getAddress()!=null){//applicant completely filled out
+            if (a.getAddress().getCountry()!=null && a.getAddress().getAddress1()!=null)
+                return  a;
+        }
         a=new Applicant();
+        Company company=findCompany(s);
+        if (company!=null){
+            if (a.getAddress().getCountry()==null && (company.getAddress().getCountry()!=null))
+                a.getAddress().setCountry(company.getAddress().getCountry());
+            if (a.getAddress().getAddress1()==null && (company.getAddress().getAddress1()!=null))
+                a.getAddress().setAddress1(company.getAddress().getAddress1());
+        }
+        a= (Applicant) updateRecInfo(a);
         a.setAppName(s);
         Cell cell = currrow.getCell(12);
         ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
@@ -546,14 +557,35 @@ public class ExportService implements Serializable {
         cell.setCellValue(result);
     }
 
+    private Company createUpdateCompanyPrimary(String name, String address, String countryName){
+        Company company = new Company();
+        company.setCompanyName(name.toUpperCase());
+        Country country=null;
+        if (!"".equals(countryName)){
+            country = findCountry(countryName,16);
+        }else{
+            country = countryDAO.find((long) 76);
+        }
+        Address addr = new Address();
+        addr.setCountry(country);
+        if (!"".equals(address))
+            addr.setAddress1(address.trim());
+        company.setAddress(addr);
+        company = (Company) updateRecInfo(company);
+        company = companyDAO.save(company);
+        companyDAO.flush();
+        return  company;
+    }
+
     private Company createUpdateCompany(String name, String email, Address addr, String phones, String contact){
         try {
             init();
             Company company = findCompany(name);
-            if (company.getAddress()!=null)
+            if (company.getAddress()!=null){
                 if (company.getAddress().getAddress1()==null) {
                     company.setAddress(addr);
                 }
+            }
             company.setCompanyName(name);
             company.setEmail(email);
             company.setPhoneNo(phones);
@@ -762,6 +794,63 @@ public class ExportService implements Serializable {
 
     }
 
+
+    public  String importCompanies(Row row, int mode){
+        currrow = row;
+        //11,12,15,16 - LH,LA,M,Country
+        init();
+        String manuf="";
+        String addr="";
+        String countryName="";
+        String companyName="";
+        Company company=null;
+        if (mode==1){//manufacturers
+            manuf = getCellValue(15);
+            countryName = getCellValue(16);
+            String[] parts = manuf.split(",");
+            companyName=parts[0]+", "+countryName;
+            company = findCompany(companyName);
+            if (company.getAddress().getCountry()!=null) return "";//exists, nothing to do
+            if (parts.length==1)
+                company = createUpdateCompanyPrimary(companyName,"",countryName);
+            else if (parts.length==2){
+                company = createUpdateCompanyPrimary(companyName,parts[1],countryName);
+            }else {
+                for (int j=1;j<parts.length;j++) {
+                    addr = "".equals(addr) ? parts[j] : addr + ", " + parts[j];
+                }
+                company = createUpdateCompanyPrimary(companyName,addr,countryName);
+            }
+        }else if (mode==2){//license holder
+            manuf = getCellValue(11);
+            countryName = getCellValue(16);
+            String[] parts = manuf.split(",");
+            companyName=parts[0]+", "+countryName;
+            company = findCompany(companyName);
+            if (company.getAddress().getCountry()!=null) return "";//exists, nothing to do
+            if (parts.length==1)
+                company = createUpdateCompanyPrimary(companyName,"",countryName);
+            else if (parts.length==2){
+                company = createUpdateCompanyPrimary(companyName,parts[1],countryName);
+            }else {
+                for (int j=1;j<parts.length;j++) {
+                    addr = "".equals(addr) ? parts[j] : addr + ", " + parts[j];
+                }
+                company = createUpdateCompanyPrimary(companyName,addr,countryName);
+            }
+
+        }else{//local agent
+            companyName = getCellValue(12);
+            company = findCompany(companyName);
+            if (company.getId()!=null) return "";
+            if (company.getAddress().getAddress1()!=null) return  ""; //exists, nothing to do
+            company = createUpdateCompanyPrimary(companyName,addr,countryName);
+        }
+        if (company!=null)
+            return "";
+        else
+            return "Error: company "+companyName+" did not create.";
+    }
 
     public String importApplicants(Row row) {
         currrow = row;

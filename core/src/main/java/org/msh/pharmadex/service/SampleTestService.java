@@ -76,14 +76,12 @@ public class SampleTestService implements Serializable {
 		ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
 		Product product = prodApp.getProduct();
 		try {
-			//            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
 			File invoicePDF = File.createTempFile("" + product.getProdName() + "_samplerequest", ".pdf");
 			JasperPrint jasperPrint = initRegCert(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
 			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 			byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 			ProdAppLetter attachment = new ProdAppLetter();
 			attachment.setRegState(prodApp.getRegState());
-			//            attachment.setComment(sampleTest.get);
 			attachment.setFile(file);
 			attachment.setProdApplications(prodApp);
 			attachment.setFileName(invoicePDF.getName());
