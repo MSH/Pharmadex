@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-29T19:44:09 -->
+<!-- 2016-05-11T18:32:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -15,6 +15,8 @@
 	<parameter name="address1" class="java.lang.String"/>
 	<parameter name="address2" class="java.lang.String"/>
 	<parameter name="countryName" class="java.lang.String"/>
+	<parameter name="DecisionDate" class="java.lang.String"/>
+	<parameter name="date" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.appName, p.prodAppNo, prod.prod_name, d.dosageform, p.id, p.prodAppType,
 concat(prod.dosage_strength, ' ', u.uom) as dosstrength
@@ -98,42 +100,42 @@ and p.id = $P{id}]]>
 	<columnHeader>
 		<band height="516" splitType="Stretch">
 			<textField>
-				<reportElement x="75" y="-1" width="236" height="20" uuid="6b43134a-46d0-4c5e-a185-c3d7204ca5af"/>
+				<reportElement x="75" y="18" width="236" height="20" uuid="6b43134a-46d0-4c5e-a185-c3d7204ca5af"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="75" y="19" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="75" y="38" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="75" y="39" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="75" y="58" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="75" y="59" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="75" y="78" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{countryName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement x="0" y="19" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[	To,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="130" width="497" height="63" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<reportElement x="75" y="136" width="497" height="63" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
@@ -231,7 +233,7 @@ and p.id = $P{id}]]>
 				<text><![CDATA[Therefore, the authority cancelled the market authorization permission for the specific product mentioned for the reasons specified above and the customer service directorate also notified by the copy of this letter not to issue any purchase order for this particular product.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="110" width="100" height="20" uuid="fd5f9d5f-5e5d-4af7-a3a1-93f924f64dfb"/>
+				<reportElement x="75" y="116" width="100" height="20" uuid="fd5f9d5f-5e5d-4af7-a3a1-93f924f64dfb"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -266,26 +268,47 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA[$P{batchNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="83" width="497" height="19" uuid="38966ead-bf4f-4e10-9070-1d833fb72ff3"/>
+				<reportElement x="75" y="95" width="497" height="19" uuid="38966ead-bf4f-4e10-9070-1d833fb72ff3"/>
 				<textElement textAlignment="Justified">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Notification for Cancellation of Market Authorization ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="75" y="381" width="496" height="29" uuid="24565172-71c6-4edd-9d68-cf4be8574892"/>
+				<reportElement x="75" y="399" width="496" height="44" uuid="24565172-71c6-4edd-9d68-cf4be8574892"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{reason}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="74" y="362" width="498" height="21" uuid="73d0a758-212f-4b65-9cfb-86de83905647"/>
+				<reportElement x="74" y="380" width="498" height="21" uuid="73d0a758-212f-4b65-9cfb-86de83905647"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[ We found that your product is substandard for the following reasons ]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="75" y="361" width="134" height="20" uuid="c9f515ab-efc8-40b5-baf6-e72b9537f123"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Decision date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="211" y="361" width="361" height="20" uuid="9b29020e-8f3d-49df-8cea-e18f18cf4fb6"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DecisionDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="43" y="-1" width="528" height="21" uuid="d956b442-795b-483f-9788-8d87d946da3f"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>

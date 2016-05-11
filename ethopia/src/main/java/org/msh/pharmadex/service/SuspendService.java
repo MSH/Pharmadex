@@ -250,12 +250,14 @@ public class SuspendService implements Serializable {
         param.put("manufName", (manufName!=null) ? manufName : " ");
         param.put("reason", (emailBody!=null) ? emailBody : " ");
         param.put("batchNo", (suspDetail.getBatchNo()!=null) ? suspDetail.getBatchNo() : " ");
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String strDate = sdf.format(suspDetail.getCreatedDate());
         param.put("reportDate",strDate);
-        String decision = (suspDetail.getDecision()!=null ? suspDetail.getDecision().name().toLowerCase() : " ");
-        param.put("decision",decision);
-
+        param.put("reason", suspDetail.getFinalSumm());
+        strDate = sdf.format(suspDetail.getDecisionDate());
+        param.put("DecisionDate",strDate);
+        strDate = sdf.format(Calendar.getInstance().getTime());
+        param.put("date",strDate);
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         jasperPrint.removePage(1);
         conn.close();
@@ -308,11 +310,16 @@ public class SuspendService implements Serializable {
         param.put("manufName", (manufName!=null) ? manufName : " ");
         param.put("reason", (emailBody!=null) ? emailBody : " ");
         param.put("batchNo", (suspDetail.getBatchNo()!=null) ? suspDetail.getBatchNo() : " ");
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String strDate = sdf.format(suspDetail.getCreatedDate());
-        param.put("reportDate",strDate);
         String decision = (suspDetail.getDecision()!=null ? suspDetail.getDecision().name().toLowerCase() : " ");
         param.put("decision",decision);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String strDate = sdf.format(suspDetail.getCreatedDate());
+        param.put("reportDate",strDate);
+        param.put("reason", suspDetail.getFinalSumm());
+        strDate = sdf.format(suspDetail.getDecisionDate());
+        param.put("DecisionDate",strDate);
+        strDate = sdf.format(Calendar.getInstance().getTime());
+        param.put("date",strDate);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         jasperPrint.removePage(1);
@@ -516,6 +523,8 @@ public class SuspendService implements Serializable {
                 //process is finished, set final state
                 if (suspDetail.getDecision().equals(RecomendType.SUSPEND)) {
                     createSuspLetter();
+                    createCancelSenderLetter();
+                    suspDetail.setComplete(true);
                     updateProdApp(RegState.SUSPEND);
                 } else if (suspDetail.getDecision().equals(RecomendType.CANCEL)) {
                     //process cancellation

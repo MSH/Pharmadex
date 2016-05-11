@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-29T19:53:32 -->
+<!-- 2016-05-11T18:30:05 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -17,6 +17,8 @@
 	<parameter name="address1" class="java.lang.String"/>
 	<parameter name="address2" class="java.lang.String"/>
 	<parameter name="countryName" class="java.lang.String"/>
+	<parameter name="DecisionDate" class="java.lang.String"/>
+	<parameter name="date" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, d.dosageform, p.id, p.prodAppType,
 concat(prod.dosage_strength, ' ', u.uom) as dosstrength
@@ -109,7 +111,7 @@ and p.id = $P{id}]]>
 	<columnHeader>
 		<band height="516" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement x="0" y="22" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -200,7 +202,7 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="79" y="131" width="100" height="20" uuid="fd5f9d5f-5e5d-4af7-a3a1-93f924f64dfb"/>
+				<reportElement x="79" y="134" width="100" height="20" uuid="fd5f9d5f-5e5d-4af7-a3a1-93f924f64dfb"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -221,28 +223,28 @@ and p.id = $P{id}]]>
 				<text><![CDATA[Applicant:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="80" y="340" width="134" height="20" uuid="17f8ce82-6d23-481e-b691-6cc785de3afb"/>
+				<reportElement x="80" y="359" width="134" height="20" uuid="17f8ce82-6d23-481e-b691-6cc785de3afb"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Batch Number]]></text>
+				<text><![CDATA[Decision date]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="216" y="340" width="361" height="20" uuid="33dcbba6-25d0-493e-bf46-0173b8ea9fc5"/>
+				<reportElement x="216" y="338" width="361" height="20" uuid="33dcbba6-25d0-493e-bf46-0173b8ea9fc5"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{batchNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="80" y="102" width="497" height="19" uuid="38966ead-bf4f-4e10-9070-1d833fb72ff3"/>
+				<reportElement x="80" y="107" width="497" height="19" uuid="38966ead-bf4f-4e10-9070-1d833fb72ff3"/>
 				<textElement textAlignment="Justified">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Notification of cancelled or suspended medicines ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="82" y="384" width="495" height="20" uuid="24565172-71c6-4edd-9d68-cf4be8574892"/>
+				<reportElement x="82" y="404" width="495" height="52" uuid="24565172-71c6-4edd-9d68-cf4be8574892"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -257,7 +259,7 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA["Referencing to your report dated "+$P{reportDate}+", we have received complaints about the quality and safety of the medicine: "]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="79" y="364" width="479" height="16" uuid="73f980d3-1989-43ce-bb3a-cfca332d260e"/>
+				<reportElement x="79" y="384" width="479" height="16" uuid="73f980d3-1989-43ce-bb3a-cfca332d260e"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -271,32 +273,53 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA["Therefore, the Authority has taken the decision to "+$P{decision}+" on the specific product mentioned for the reasons specified above. Please share information to the organizations under your authority about the measures taken."]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="81" y="17" width="236" height="20" uuid="c71ac049-566f-4e28-bd63-574d043cab62"/>
+				<reportElement x="81" y="22" width="236" height="20" uuid="c71ac049-566f-4e28-bd63-574d043cab62"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="81" y="57" width="236" height="20" uuid="4da20b40-44b5-4d55-94e9-a90d674a2d41"/>
+				<reportElement x="81" y="62" width="236" height="20" uuid="4da20b40-44b5-4d55-94e9-a90d674a2d41"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="81" y="37" width="236" height="20" uuid="08e941ce-00e4-4737-b4ec-2236e4967567"/>
+				<reportElement x="81" y="42" width="236" height="20" uuid="08e941ce-00e4-4737-b4ec-2236e4967567"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="81" y="77" width="236" height="20" uuid="7fd6ce3a-f0a3-48f8-b2a1-17ea4ecfd236"/>
+				<reportElement x="81" y="82" width="236" height="20" uuid="7fd6ce3a-f0a3-48f8-b2a1-17ea4ecfd236"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{countryName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="82" y="339" width="134" height="20" uuid="2c9c69ea-27c7-42b0-8cbb-57b779ff358f"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Batch Number]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="217" y="360" width="360" height="17" uuid="5f95987e-3566-452e-add8-a32abd821421"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DecisionDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="43" y="0" width="528" height="21" uuid="b01cc6d3-954d-4712-b891-6235aad290d9"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>

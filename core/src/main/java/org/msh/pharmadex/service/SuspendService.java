@@ -190,8 +190,8 @@ public class SuspendService implements Serializable {
         param.put("id", prodApplications.getId());
         param.put("manufName", manufName);
         //param.put("reason", emailBody);
-        param.put("reason", suspDetail.getFinalSumm());
         param.put("batchNo", suspDetail.getBatchNo());
+        param.put("DecisionDate",suspDetail.getDecisionDate());
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         conn.close();
 

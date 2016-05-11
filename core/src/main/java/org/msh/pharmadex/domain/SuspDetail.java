@@ -199,16 +199,22 @@ public class SuspDetail extends CreationDetail {
     }
 
     public String getFinalSumm() {
-        return finalSumm;
+        finalSumm = finalSumm.replaceAll("/","");
+        return finalSumm.replaceAll("<\\w*>","");
     }
 
     public void setFinalSumm(String finalSumm) {
         this.finalSumm = finalSumm;
     }
 
-    public String getModeratorSumm() {  return moderatorSumm; }
+    public String getModeratorSumm() {
+        finalSumm = finalSumm.replaceAll("\\\\","");
+        return moderatorSumm.replaceAll("<\\w+>","");
+    }
 
-    public void setModeratorSumm(String moderatorSumm) { this.moderatorSumm = moderatorSumm; }
+    public void setModeratorSumm(String moderatorSumm) {
+        this.moderatorSumm = moderatorSumm;
+    }
 
     public RecomendType getDecision() {
         return decision;
