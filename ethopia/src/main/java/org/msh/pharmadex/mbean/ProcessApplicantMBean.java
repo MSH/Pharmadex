@@ -189,6 +189,7 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
         }
     }
     
+    /** введенную строку коментария, добавляем в начало всей строки комента applicant */
     private void addComment(){
     	if(applicant != null){
     		String com = applicant.getComment();
@@ -201,9 +202,26 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
     			applicant.setComment(getNewComment());
     	}
     }
+    
+    /** получим последний внесенный коментарий - начало строки до разделителя && */
+    public String buildLastComment(){
+    	String res = "";
+    	if(applicant != null){
+    		String com = applicant.getComment();
+    		if(com != null && !com.isEmpty()){
+    			String[] array = com.split("&&");
+    			if(array.length > 0){
+    				for(String st:array){
+    					res += st + "<br>";
+    				}
+    			}
+    		}
+    	}
+    	return res;
+    }
 
     /**
-     * в статусе SUSPENDED видим только Register, Exit, Save
+     * проверка видимости кнопок меню, в зависимости от состояния
      */
     public boolean renderItemsMenu(String btn){
     	boolean vis = !userSession.isCompany();// это условие было в xhtml 
