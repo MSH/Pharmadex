@@ -7,7 +7,8 @@ public enum ApplicantState {
     NEW_APPLICATION,
     REGISTERED,
     BLOCKED,
-    REGISTRATION_EXPIRED;
+    REGISTRATION_EXPIRED,
+    SUSPENDED;
 
     public String getKey() {
    		return getClass().getSimpleName().concat("." + name());

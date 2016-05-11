@@ -11,41 +11,47 @@
                 <p:menu style="width:198px">
                     <p:submenu label="#{msgs.Registration}">
                         <p:menuitem value="#{msgs.global_save}" icon="ui-icon-gear"
-                                    action="#{processAppBn.saveApp}" ajax="false"
-                                    rendered="#{!userSession.company}"/>
+                                    action="#{processApplicantMBean.saveApp}" ajax="false"
+                                    rendered="#{processApplicantMBean.renderItemsMenu('SAVE')}"/>
                         <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
-                                    action="#{processAppBn.registerApplicant}" ajax="false"
-                                    rendered="#{!userSession.company}"/>
+                                    action="#{processApplicantMBean.registerApplicant}" ajax="false"
+                                    rendered="#{processApplicantMBean.renderItemsMenu('REGISTER')}"/>
+                        <p:menuitem value="#{msgs.suspension_applicant}" immediate="true" icon="ui-icon-gear"
+                                    oncomplete="PF('commSuspendDlg').show()"
+                                    rendered="#{processApplicantMBean.renderItemsMenu('SUSPEND')}"/>
                         <p:menuitem value="#{msgs.global_cancel}" immediate="true"
-                                    icon="ui-icon ui-icon-circle-triangle-w"
-                                    action="#{processAppBn.cancel}" ajax="false"/>
+                                    icon="ui-icon-gear"
+                                    oncomplete="PF('commCancelDlg').show()"
+                                    rendered="#{processApplicantMBean.renderItemsMenu('CANCEL')}"/>
+                        <p:menuitem value="#{msgs.global_exit}" immediate="true" icon="ui-icon ui-icon-circle-triangle-w"
+                                    action="#{processApplicantMBean.exitApplicant}" ajax="false"
+                                    rendered="#{!userSession.company}"/>
                     </p:submenu>
                 </p:menu>
-
-
+                                               
                 <h:panelGroup styleClass="ui-widget">
                     <h1 class="title ui-widget-header ui-corner-all">
                         <table class="banner">
                             <tr>
                                 <td>
-                                    <h:outputLabel value="#{processAppBn.applicant.appName}" styleClass="title"
+                                    <h:outputLabel value="#{processApplicantMBean.applicant.appName}" styleClass="title"
                                                    style="font-weight: bold; font-size: 1.5em"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.application_status}: "
                                                    style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{processAppBn.applicant.state}"
+                                    <h:outputLabel value="#{processApplicantMBean.applicant.state}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processAppBn.applicant.applcntId}" styleClass="title"/>
+                                    <h:outputFormat value="#{processApplicantMBean.applicant.applcntId}" styleClass="title"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}">
+                                    <h:outputFormat value="#{processApplicantMBean.applicant.submitDate}">
                                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                                     </h:outputFormat>
                                 </td>
@@ -58,7 +64,7 @@
 
                     <p:panel header="#{msgs.applicant_detail}">
                         <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                            <ui:param name="applicantdata" value="#{processAppBn.applicant}"></ui:param>
+                            <ui:param name="applicantdata" value="#{processApplicantMBean.applicant}"></ui:param>
                             <ui:param name="input" value="true"/>
                         </ui:decorate>
 
@@ -74,11 +80,11 @@
                                 <p:commandLink value="#{msgs.user_add}" oncomplete="PF('newUserDlg').show()"
                                                immediate="true" update=":newuser"
                                                style="font-weight: bolder; font-size: larger"
-                                               action="#{processAppBn.initNewUser}"/>
+                                               action="#{processApplicantMBean.initNewUser}"/>
 
                             </h:panelGrid>
 
-                            <p:dataTable id="usertable" var="applicantUser" value="#{processAppBn.userList}" style="width:100%;">
+                            <p:dataTable id="usertable" var="applicantUser" value="#{processApplicantMBean.userList}" style="width:100%;">
                                 <p:column headerText="#{msgs.User_name}">
                                     <h:outputText value="#{applicantUser.name}"/>
                                 </p:column>
@@ -104,17 +110,17 @@
             <h:form id="addUserFrm">
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                     <h:outputLabel value="#{msgs.User_name}" for="username"/>
-                    <p:autoComplete id="username" value="#{processAppBn.user}"
-                                    completeMethod="#{processAppBn.completeUserList}" dropdown="true"
+                    <p:autoComplete id="username" value="#{processApplicantMBean.user}"
+                                    completeMethod="#{processApplicantMBean.completeUserList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
                                     converter="#{userConverter}">
                     </p:autoComplete>
 
                     <h:panelGroup>
-                        <p:commandButton actionListener="#{processAppBn.addUserToApplicant}" value="#{msgs.global_add}"
+                        <p:commandButton actionListener="#{processApplicantMBean.addUserToApplicant}" value="#{msgs.global_add}"
                                          oncomplete="if (!args.validationFailed) PF('addUserDlg').hide()"
                                          update=":reghome:usertable :addUserdlg" process="@form"/>
-                        <p:commandButton action="#{processAppBn.cancelAddUser}" immediate="true"
+                        <p:commandButton action="#{processApplicantMBean.cancelAddUser}" immediate="true"
                                          value="#{msgs.global_cancel}" oncomplete="PF('addUserDlg').hide()"/>
                     </h:panelGroup>
                     <h:outputLabel/>
@@ -129,17 +135,17 @@
                 <p:messages/>
 
                 <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                    <ui:param name="userdata" value="#{processAppBn.user}"/>
+                    <ui:param name="userdata" value="#{processApplicantMBean.user}"/>
                     <ui:param name="input" value="#{true}"/>
                 </ui:decorate>
 
 
                 <h:panelGroup>
-                    <p:commandButton action="#{processAppBn.newUser}"
+                    <p:commandButton action="#{processApplicantMBean.newUser}"
                                      value="#{msgs.global_add}"
                                      oncomplete="if (!args.validationFailed) PF('newUserDlg').hide()"
                                      update=":reghome:usertable :newuser" process="@form" id="newUserBtn"/>
-                    <p:commandButton action="#{processAppBn.cancelAddUser}" immediate="true" ajax="true"
+                    <p:commandButton action="#{processApplicantMBean.cancelAddUser}" immediate="true" ajax="true"
                                      value="#{msgs.global_cancel}" oncomplete="PF('newUserDlg').hide()"/>
                 </h:panelGroup>
 
@@ -150,6 +156,38 @@
             </h:form>
         </p:dialog>
 
-
+		<p:dialog header="#{msgs.add_comment}" widgetVar="commSuspendDlg" id="commSuspendDlg" resizable="false" modal="true">
+            <h:form id="commSuspendFrm">
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+                    <h:outputLabel value="#{msgs.global_comment}" />
+                   <!--  <p:inputText id="newcomment" value="#{processApplicantMBean.applicant.comment}"/> -->
+					<p:inputTextarea id="commsuspend" value="#{processApplicantMBean.newComment}" rows="4" cols="50"
+                         title="#{msgs.global_comment}"
+        			/>
+                    <h:panelGroup>
+                        <p:commandButton action="#{processApplicantMBean.suspendApplicant}" value="#{msgs.suspend_applicant}"
+                                         oncomplete="PF('commSuspendDlg').hide()" process="@form"/>
+                        <p:commandButton action="#{processApplicantMBean.cancelCommentDlg}" immediate="true"
+                                         value="#{msgs.global_cancel}" oncomplete="PF('commSuspendDlg').hide()"/>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+		<p:dialog header="#{msgs.add_comment}" widgetVar="commCancelDlg" id="commCancelDlg" resizable="false" modal="true">
+            <h:form id="commCancelFrm">
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+                    <h:outputLabel value="#{msgs.global_comment}" />
+                   	<p:inputTextarea id="commcancel" value="#{processApplicantMBean.newComment}" rows="4" cols="50"
+                         title="#{msgs.global_comment}"
+        			/>
+                    <h:panelGroup>
+                        <p:commandButton action="#{processApplicantMBean.cancelApplicant}" value="#{msgs.block_applicant}"
+                                         oncomplete="PF('commCancelDlg').hide()" process="@form"/>
+                        <p:commandButton action="#{processApplicantMBean.cancelCommentDlg}" immediate="true"
+                                         value="#{msgs.global_cancel}" oncomplete="PF('commCancelDlg').hide()"/>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
     </ui:define>
 </ui:composition>

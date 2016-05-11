@@ -1,4 +1,4 @@
-package org.msh.pharmadex.mbean.applicant;
+package org.msh.pharmadex.mbean;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
@@ -23,6 +23,7 @@ import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.UserType;
+import org.msh.pharmadex.mbean.applicant.ProcessAppBn;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.MailService;
@@ -32,14 +33,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
 /**
- * Backing bean to process the application made for registration
- * Author: usrivastava
+ * переписанный класс ProcessAppBn из core
+ * Немного другая логика оказалась))))
+ * Author: dudchenko
  */
 @ManagedBean
 @ViewScoped
-public class ProcessAppBn implements Serializable {
-
-    @ManagedProperty(value = "#{globalEntityLists}")
+public class ProcessApplicantMBean extends ProcessAppBn implements Serializable {
+	@ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     FacesContext facesContext = FacesContext.getCurrentInstance();
     ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -55,8 +56,19 @@ public class ProcessAppBn implements Serializable {
     private User user;
     private List<User> availableUsers;
     private List<User> userList;
+    
+    /** текс, введенный в диалоге при Cancel, Suspension */
+    private String newComment = "";
 
-    @PostConstruct
+    public String getNewComment() {
+		return newComment;
+	}
+
+	public void setNewComment(String newComment) {
+		this.newComment = newComment;
+	}
+
+	@PostConstruct
     private void init() {
         if (user == null) {
             user = new User();
@@ -73,7 +85,7 @@ public class ProcessAppBn implements Serializable {
         user = new User();
 
     }
-
+    
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
@@ -138,17 +150,83 @@ public class ProcessAppBn implements Serializable {
         WebUtils.setSessionAttribute(request, "processAppBn", null);
         return "/internal/processapplist.faces";
     }
+    
+    public String suspendApplicant() {
+    	addComment();
+    	applicant.setState(ApplicantState.SUSPENDED);
+        applicantService.updateApp(applicant, null);
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "processAppBn", null);
+         
+        return goToExit();
+    }
 
-    public String cancel() {
+    public String cancelApplicant() {
+    	addComment();
+    	applicant.setState(ApplicantState.BLOCKED);
+        applicantService.updateApp(applicant, null);
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        WebUtils.setSessionAttribute(request, "processAppBn", null);
+         
+        return goToExit();
+    }
+    
+    public String exitApplicant() {
         applicant = new Applicant();
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processAppBn", null);
-        if(userSession.isCompany()){
+        return goToExit();
+    }
+    
+    private String goToExit(){
+    	if(userSession.isCompany()){
             return "/home.faces";
         }else {
             return "/internal/processapplist.faces";
         }
+    }
+    
+    private void addComment(){
+    	if(applicant != null){
+    		String com = applicant.getComment();
+    		if(com != null && !com.isEmpty()){
+    			String newCom = getNewComment() + "&&" + com;
+    			if(newCom.length() > 495)
+    				newCom = newCom.substring(0, 495) + "...";
+    			applicant.setComment(newCom);
+    		}else
+    			applicant.setComment(getNewComment());
+    	}
+    }
+
+    /**
+     * в статусе SUSPENDED видим только Register, Exit, Save
+     */
+    public boolean renderItemsMenu(String btn){
+    	boolean vis = !userSession.isCompany();// это условие было в xhtml 
+    	getApplicant();
+    	if(applicant != null){
+    		if(btn.equals("SAVE")){ // для любого состояния
+    			// видна в NEW_APPLICATION, SUSPENDED;
+    			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+    		}
+    		if(btn.equals("REGISTER")){
+    			// видна в NEW_APPLICATION, SUSPENDED;
+    			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+    		}
+    		if(btn.equals("SUSPEND")){
+    			// видна в NEW_APPLICATION;
+    			vis = vis && (applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+    		}
+    		if(btn.equals("CANCEL")){
+    			// видна в NEW_APPLICATION, SUSPENDED;
+    			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+    		}
+    	}
+    	return vis;
     }
 
     public List<User> completeUserList(String query) {
@@ -164,6 +242,10 @@ public class ProcessAppBn implements Serializable {
         return "";
     }
 
+    public String cancelCommentDlg() {
+        return "";
+    }
+    
     public Applicant getApplicant() {
         if (applicant == null) {
             if (userSession.getApplcantID() != null) {
@@ -172,9 +254,8 @@ public class ProcessAppBn implements Serializable {
                     applicant.setAddress(new Address());
                 if (applicant.getAddress().getCountry() == null)
                     applicant.getAddress().setCountry(new Country());
-            } else {
+            } else 
                 applicant = null;
-            }
         }
         return applicant;
     }
