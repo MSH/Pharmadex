@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
+<!-- 2016-05-11T16:52:37 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -404,7 +406,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[ETHIOPIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="189" width="752" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
+				<reportElement x="1" y="175" width="752" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -530,6 +532,13 @@ and pip.id = $P{piporderid}]]>
 				</textElement>
 				<text><![CDATA[Total Price]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="5" y="190" width="126" height="22" uuid="bc2174e5-046a-4ac4-bc3e-3220eb5e9c35"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT(TODAY( ),"dd/MM/YYYY") ]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

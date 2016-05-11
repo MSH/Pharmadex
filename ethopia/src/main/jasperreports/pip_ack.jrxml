@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
+<!-- 2016-05-11T16:38:07 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -374,7 +376,7 @@ and pip.id = $P{piporderid}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="462" splitType="Stretch">
+		<band height="334" splitType="Stretch">
 			<image>
 				<reportElement x="334" y="0" width="100" height="100" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
@@ -408,28 +410,28 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[PRE IMPORT PERMIT APPLICATION ACKNOWLEDGMENT LETTER]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="32" y="238" width="316" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="30" y="270" width="316" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="32" y="258" width="316" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="30" y="290" width="316" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="32" y="278" width="316" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="30" y="310" width="316" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="198" width="180" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement x="6" y="230" width="180" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10"/>
@@ -437,7 +439,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[To,]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="32" y="218" width="316" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
+				<reportElement x="30" y="250" width="316" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -449,32 +451,22 @@ and pip.id = $P{piporderid}]]>
 					<jr:codeExpression><![CDATA[$F{pipNo}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
-			<staticText>
-				<reportElement x="3" y="298" width="750" height="56" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
-				<textElement textAlignment="Justified">
-					<font size="10"/>
-					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
-				</textElement>
-				<text><![CDATA[Your application for pre import permit of the below products have been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 3 days from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only. ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="2" y="354" width="178" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
-				<textElement textAlignment="Justified">
-					<font size="10"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Your application number is ]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="181" y="354" width="394" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
+				<reportElement x="5" y="200" width="126" height="22" uuid="0edc3d38-a621-40c8-97d2-d07bc67d1230"/>
 				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph rightIndent="10"/>
+					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{pipNo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DATEFORMAT(TODAY( ),"dd/MM/YYYY") ]]></textFieldExpression>
 			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="171" splitType="Stretch">
 			<staticText>
-				<reportElement x="1" y="428" width="751" height="34" uuid="371a8efc-87fe-49dd-a03a-5e4fa2680ede"/>
+				<reportElement x="0" y="141" width="751" height="30" uuid="371a8efc-87fe-49dd-a03a-5e4fa2680ede"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -482,22 +474,15 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Please use the above application number for any future correspondence with FMHACA.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4" y="373" width="176" height="20" uuid="479e232d-74c4-47e8-9504-1ed34b3fd9bc"/>
+				<reportElement x="8" y="120" width="176" height="20" uuid="905bfe68-6bce-4685-bc6f-83c54531f5b1"/>
 				<textElement>
 					<font isBold="false"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
-				<text><![CDATA[Submission Date]]></text>
+				<text><![CDATA[Grand Total]]></text>
 			</staticText>
-			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="181" y="373" width="392" height="20" uuid="c71cf7f8-cb65-44db-b2df-f5f6b73d8b01"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{submitDate}]]></textFieldExpression>
-			</textField>
 			<textField pattern="">
-				<reportElement x="181" y="393" width="392" height="20" uuid="0784eae2-c9bb-4034-a0b6-68806f748c1b"/>
+				<reportElement x="181" y="120" width="392" height="20" uuid="0784eae2-c9bb-4034-a0b6-68806f748c1b"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -505,20 +490,45 @@ and pip.id = $P{piporderid}]]>
 				<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 			</textField>
 			<staticText>
-				<reportElement x="5" y="393" width="176" height="20" uuid="905bfe68-6bce-4685-bc6f-83c54531f5b1"/>
+				<reportElement x="8" y="90" width="176" height="20" uuid="479e232d-74c4-47e8-9504-1ed34b3fd9bc"/>
 				<textElement>
 					<font isBold="false"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
-				<text><![CDATA[Grand Total]]></text>
+				<text><![CDATA[Submission Date]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="181" y="90" width="392" height="20" uuid="c71cf7f8-cb65-44db-b2df-f5f6b73d8b01"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{submitDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="60" width="170" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
+				<textElement textAlignment="Justified">
+					<font size="10"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Your application number is ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="178" y="60" width="394" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pipNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="3" width="750" height="56" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<textElement textAlignment="Justified">
+					<font size="10"/>
+					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
+				</textElement>
+				<text><![CDATA[Your application for pre import permit of the below products have been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 3 days from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only. ]]></text>
 			</staticText>
 		</band>
-	</title>
-	<pageHeader>
-		<band height="15" splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band height="9" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
 		<band height="208">
