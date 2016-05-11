@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-05-10T06:45:23 -->
+<!-- 2016-05-11T07:18:11 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="752" pageHeight="792" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="712" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
     <property name="ireport.zoom" value="1.0"/>
     <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+    <subDataset name="Dataset1" uuid="bf44f849-4fc9-4fff-b4c6-e198624268f3">
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+    </subDataset>
     <parameter name="sampleQty" class="java.lang.String"/>
     <parameter name="date" class="java.lang.String"/>
     <parameter name="Reason" class="java.lang.String"/>
@@ -48,7 +53,7 @@
         <band height="49" splitType="Stretch"/>
     </pageHeader>
     <columnHeader>
-        <band height="487" splitType="Stretch">
+        <band height="449" splitType="Stretch">
             <staticText>
                 <reportElement x="40" y="6" width="290" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
                 <textElement>
@@ -85,7 +90,7 @@
                 <text><![CDATA[II.Additional quantity requested]]></text>
             </staticText>
             <textField>
-                <reportElement x="70" y="115" width="218" height="30" uuid="8324a4a6-c99e-44d0-809d-14ffaa2e310b"/>
+                <reportElement x="68" y="109" width="218" height="30" uuid="8324a4a6-c99e-44d0-809d-14ffaa2e310b"/>
                 <textElement>
                     <font size="14"/>
                 </textElement>
@@ -104,19 +109,19 @@
         <band height="5" splitType="Stretch"/>
     </detail>
     <columnFooter>
-        <band height="1" splitType="Stretch"/>
+        <band splitType="Stretch"/>
     </columnFooter>
     <pageFooter>
         <band height="44" splitType="Stretch">
             <staticText>
-                <reportElement x="75" y="1" width="657" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
+                <reportElement x="-10" y="1" width="742" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
                 <textElement>
                     <font size="12" isBold="false"/>
                 </textElement>
                 <text><![CDATA[Requested by:- ______________   Date:- ____________ Signature:- ______________]]></text>
             </staticText>
             <staticText>
-                <reportElement x="75" y="24" width="657" height="20" uuid="4ed05e4e-b872-45fe-a77a-f56c3f468cb8"/>
+                <reportElement x="-11" y="24" width="743" height="20" uuid="4ed05e4e-b872-45fe-a77a-f56c3f468cb8"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>

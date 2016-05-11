@@ -288,6 +288,9 @@ public class SuspendDetailBn implements Serializable {
         curReviewComment = reviewService.findSuspendReviewComment(review,loggedInUser);
         if (curReviewComment==null){
             curReviewComment = reviewService.createSuspendReviewComment(review,loggedInUser);
+            if (userService.userHasRole(loggedInUser,"Director")) {
+                curReviewComment.setComment(this.suspDetail.getReason());
+            }
         }
     }
 
@@ -629,15 +632,11 @@ public class SuspendDetailBn implements Serializable {
         SuspensionStatus oldStatus = suspDetail.getSuspensionStatus();
         SuspensionStatus suspStatus = suspendService.submitApprove(suspDetail,review,curReviewComment.getRecomendType(),getLoggedInUser().getUserId());
         if (suspStatus.equals(oldStatus)){
-//            String statusMsg=bundle.getString("SuspensionStatusChanged") + " to " + suspStatus.getKey();
-//            FacesMessage fm = new FacesMessage(statusMsg);
-//            fm.setSeverity(FacesMessage.SEVERITY_INFO);
-//            facesContext.addMessage(null, fm);
             suspDetail.setSuspensionStatus(suspStatus);
         }
-        if (userSession.isHead())
+        if (userSession.isHead()) {
             suspDetail.setFinalSumm(curReviewComment.getComment());
-        else if (userSession.isHead())
+        }else if (userSession.isHead())
             suspDetail.setModeratorSumm(curReviewComment.getComment());
         suspDetail.setDecision(curReviewComment.getRecomendType());
         suspendService.saveSuspend(suspDetail);

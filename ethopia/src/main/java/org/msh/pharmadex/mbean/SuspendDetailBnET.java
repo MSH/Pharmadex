@@ -44,7 +44,7 @@ import java.util.ResourceBundle;
  */
 @ManagedBean
 @ViewScoped
-public class SuspendDetailBn implements Serializable {
+public class SuspendDetailBnET implements Serializable {
 
 
     @ManagedProperty(value = "#{globalEntityLists}")
@@ -74,7 +74,7 @@ public class SuspendDetailBn implements Serializable {
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
 
-    private Logger logger = LoggerFactory.getLogger(SuspendDetailBn.class);
+    private Logger logger = LoggerFactory.getLogger(SuspendDetailBnET.class);
     private UploadedFile file;
     private SuspDetail suspDetail;
     private Product product;
@@ -258,7 +258,7 @@ public class SuspendDetailBn implements Serializable {
         }
     }
 
-    public StreamedContent fileDownload(ProdAppLetter doc) {
+    public StreamedContent fileDownload(Attachment doc) {
         InputStream ist = new ByteArrayInputStream(doc.getFile());
         StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
         return download;
@@ -305,6 +305,9 @@ public class SuspendDetailBn implements Serializable {
         curReviewComment = reviewService.findSuspendReviewComment(review,loggedInUser);
         if (curReviewComment==null){
             curReviewComment = reviewService.createSuspendReviewComment(review,loggedInUser);
+        }
+        if (userService.userHasRole(loggedInUser,"head")||userService.userHasRole(loggedInUser,"head")){
+            curReviewComment.setComment(suspDetail.getReason());
         }
     }
 

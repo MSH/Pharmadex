@@ -125,7 +125,7 @@ public class SampleTestBnET implements Serializable {
     }
 
     public void createConfirmLetter(){
-        ProdApplications prodapp = processProdBn.getProdApplications();
+ /*       ProdApplications prodapp = processProdBn.getProdApplications();
         if (prodapp!=null){
             List<ProdAppLetter> letters = processProdBn.getLetters();
             ProdAppLetter letter = null;
@@ -141,7 +141,7 @@ public class SampleTestBnET implements Serializable {
 
             }
         }
-
+*/
     }
 
     public GlobalEntityLists getGlobalEntityLists() {

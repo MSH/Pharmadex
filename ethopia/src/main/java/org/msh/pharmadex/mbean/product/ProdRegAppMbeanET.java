@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.FastTrackMedService;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.util.RetObject;
@@ -38,6 +39,14 @@ public class ProdRegAppMbeanET implements Serializable {
     @ManagedProperty(value = "#{fastTrackMedService}")
     private FastTrackMedService fastTrackMedService;
 
+    @ManagedProperty(value = "#{dosageFormService}")
+    private DosageFormService dosageFormService;
+
+    private Product product;
+
+    private List<DosUom> dosUoms;
+
+    private DosUom dosUom;
 
     @PostConstruct
     private void init() {
@@ -61,7 +70,8 @@ public class ProdRegAppMbeanET implements Serializable {
                 licenseHolder = licenseHolderService.findLicHolderByProduct(prodRegAppMbean.getProdApplications().getProduct().getId());
             }
         }
-
+        product = prodRegAppMbean.getProduct();
+        dosUom = new DosUom();
     }
 
     @Transactional
@@ -146,7 +156,60 @@ public class ProdRegAppMbeanET implements Serializable {
         return fastTrackMedService;
     }
 
+    public DosageFormService getDosageFormService() {
+        return dosageFormService;
+    }
+
+    public void setDosageFormService(DosageFormService dosageFormService) {
+        this.dosageFormService = dosageFormService;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public void setFastTrackMedService(FastTrackMedService fastTrackMedService) {
         this.fastTrackMedService = fastTrackMedService;
     }
+
+    public List<DosUom> getDosUoms() {
+        if (dosUoms==null)
+            dosUoms = prodRegAppMbean.getGlobalEntityLists().getDosUoms();
+        return dosUoms;
+    }
+
+    public void setDosUoms(List<DosUom> dosUoms) {
+        this.dosUoms = dosUoms;
+    }
+
+    public void initNewUom() {
+        if (product.getDosUnit()==null){
+            dosUom = new DosUom();
+            product.setDosUnit(dosUom);
+        }else if (product.getDosUnit().getUom()==null){
+            dosUom = new DosUom();
+            product.setDosUnit(dosUom);
+        }
+    }
+
+    public void uomSave(){
+        //if (dosUom.getUom()==null) return;
+        DosUom uom = dosageFormService.saveDosUom(product.getDosUnit().getUom());
+        prodRegAppMbean.getGlobalEntityLists().getDosUoms();
+        dosUoms.add(uom);
+        product.setDosUnit(uom);
+    }
+
+    public DosUom getDosUom() {
+        return dosUom;
+    }
+    public void setDosUom(DosUom dosUom) {
+        this.dosUom = dosUom;
+    }
+
+
 }

@@ -106,8 +106,6 @@ public class ProdRegAppMbean implements Serializable {
     private TimelineService timelineService;
     @ManagedProperty(value = "#{attachmentDAO}")
     private AttachmentDAO attachmentDAO;
-    @ManagedProperty(value = "#{dosageFormService}")
-    private DosageFormService dosageFormService;
 
     private List<ProdInn> selectedInns;
     private List<ProdExcipient> selectedExipients;
@@ -133,7 +131,7 @@ public class ProdRegAppMbean implements Serializable {
     private UploadedFile payReceipt;
     private UploadedFile clinicalReview;
     private boolean showfull;
-    private List<DosUom> dosUoms;
+
 
     @PostConstruct
     private void init() {
@@ -694,12 +692,6 @@ public class ProdRegAppMbean implements Serializable {
 
     }
 
-    public void uomSave(){
-        DosUom uom = dosageFormService.saveDosUom(product.getDosUnit().getUom());
-        dosUoms.add(uom);
-        product.setDosUnit(uom);
-    }
-
     //used to set all the field values after insert/update operation
     private void setFieldValues() {
         try {
@@ -1062,26 +1054,9 @@ public class ProdRegAppMbean implements Serializable {
         return showfull;
     }
 
-    public DosageFormService getDosageFormService() {
-        return dosageFormService;
-    }
-
-    public void setDosageFormService(DosageFormService dosageFormService) {
-        this.dosageFormService = dosageFormService;
-    }
 
     public void setShowfull(boolean showfull) {
         this.showfull = showfull;
-    }
-
-    public List<DosUom> getDosUoms() {
-        if (dosUoms==null)
-            globalEntityLists.getDosUoms();
-        return dosUoms;
-    }
-
-    public void setDosUoms(List<DosUom> dosUoms) {
-        this.dosUoms = dosUoms;
     }
 
 }

@@ -115,6 +115,7 @@ public class DosageFormService implements Serializable {
         unit.setDiscontinued(false);
         if (existUnit!=null) return existUnit;
         unit = dosUomDAO.save(unit);
+        dosUomDAO.flush();
         return unit;
     }
 

@@ -189,7 +189,8 @@ public class SuspendService implements Serializable {
         }
         param.put("id", prodApplications.getId());
         param.put("manufName", manufName);
-        param.put("reason", emailBody);
+        //param.put("reason", emailBody);
+        param.put("reason", suspDetail.getFinalSumm());
         param.put("batchNo", suspDetail.getBatchNo());
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         conn.close();
@@ -423,6 +424,8 @@ public class SuspendService implements Serializable {
                 //process is finished, set final state
                 if (suspDetail.getDecision().equals(RegState.SUSPEND)) {
                     createSuspLetter();
+                    createCancelSenderLetter();
+                    suspDetail.setComplete(true);
                     updateProdApp(RegState.SUSPEND);
                 } else if (suspDetail.getDecision().equals(RegState.CANCEL)) {
                     //process cancellation
