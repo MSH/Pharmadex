@@ -5,6 +5,7 @@ import org.msh.pharmadex.dao.UserDAO;
 import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
@@ -137,6 +138,26 @@ public class UserService implements Serializable {
             if (role.getRolename().equalsIgnoreCase(intRoleName))
                 return true;
         }
+        return false;
+    }
+    
+    public boolean userHasRole(User user, UserRole role){
+        if (user == null) return false;
+        if (role == null) return false;
+        
+        long id = user.getUserId();
+        user = userDAO.findUser(id);
+        if(user != null){
+        	List<Role> roles = user.getRoles();
+        	if (roles == null) return false;
+            if (roles.size() == 0) return false;
+            
+            for(Role r:roles){
+            	if(r.getRolename().equals(role.name()))
+            		return true;
+            }
+        }
+
         return false;
     }
 
