@@ -480,8 +480,7 @@ public class ProcessProdBn implements Serializable {
 
     public String openToApplicant() {
         facesContext = getCurrentInstance();
-        //prodApplications.setRegState(timeLine.getRegState());
-        prodApplications.setReviewStatus(ReviewStatus.FEEDBACK);
+        prodApplications.setRegState(timeLine.getRegState());
         RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
         if (retObject.getMsg().equals("persist")) {
             prodApplications = (ProdApplications) retObject.getObj();

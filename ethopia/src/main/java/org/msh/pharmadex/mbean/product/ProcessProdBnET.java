@@ -2,21 +2,27 @@ package org.msh.pharmadex.mbean.product;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.ProdApplicationsServiceET;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.util.RetObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import static javax.faces.context.FacesContext.getCurrentInstance;
 
 /**
  * Backing bean to process the application made for registration
@@ -33,9 +39,13 @@ public class ProcessProdBnET implements Serializable {
     public UserSession userSession;
     @ManagedProperty(value = "#{prodApplicationsServiceET}")
     public ProdApplicationsServiceET prodApplicationsServiceET;
+    @ManagedProperty(value = "#{reviewService}")
+    public ReviewService reviewService;
+
     protected boolean displayVerify = false;
     private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
     private JasperPrint jasperPrint;
+    private boolean showFeedBackButton;
 
     public boolean isDisplayVerify() {
         if (userSession.isAdmin() || userSession.isHead() || userSession.isModerator())
@@ -97,11 +107,63 @@ public class ProcessProdBnET implements Serializable {
             return prodApplicationsServiceET.nextStepOptions(prodApplications.getRegState(), userSession, processProdBn.getCheckReviewStatus());
         return null;
     }
-    public boolean showFeedbackButton(){
-        boolean res;
-        res = userSession.isHead() && (processProdBn.prodApplications.getRegState().equals(RegState.REVIEW_BOARD)||processProdBn.prodApplications.getRegState().equals(RegState.VERIFY));
-        return res;
+
+    public boolean isShowFeedBackButton() {
+           showFeedBackButton = false;// option have canceled
+//        showFeedBackButton = userSession.isModerator()
+//                && ((processProdBn.prodApplications.getRegState().equals(RegState.REVIEW_BOARD)
+//                ||processProdBn.prodApplications.getRegState().equals(RegState.VERIFY)));
+        return showFeedBackButton;
     }
+
+    public String feedbackToApplicant() {
+        FacesContext facesContext = getCurrentInstance();
+        ProdApplications prodApplications = processProdBn.prodApplications;
+        TimeLine timeLine = processProdBn.getTimeLine();
+        processProdBn.prodApplications.setRegState(processProdBn.timeLine.getRegState());
+        User loggedInUser = processProdBn.getUserService().findUser(userSession.getLoggedINUserID());
+        List<ReviewInfo> reviewInfos = reviewService.findReviewInfos(prodApplications.getId());
+        ReviewInfo review = null;
+        if (reviewInfos!=null){
+            if (reviewInfos.size()>0)
+                review = reviewInfos.get(0);
+        }
+        ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        if (review==null) {
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("FeedbackForbiden")));
+            return  "";
+        }
+        List<ReviewComment> reviewComments = review.getReviewComments();
+        if (reviewComments==null)
+            reviewComments = new ArrayList<ReviewComment>();
+        ReviewComment reviewComment = new ReviewComment();
+        reviewComment.setDate(new Date());
+        reviewComment.setReviewInfo(review);
+        reviewComment.setUser(loggedInUser);
+        reviewComment.setRecomendType(RecomendType.FEEDBACK);
+        reviewComment.setComment(this.processProdBn.timeLine.getComment());
+        reviewComments.add(reviewComment);
+        review.setReviewComments(reviewComments);
+        review.setReviewStatus(ReviewStatus.FEEDBACK);
+        RetObject retObject = reviewService.saveReviewInfo(review);
+        if (retObject.getMsg().equals("persist")) {
+            timeLine.setProdApplications(prodApplications);
+            processProdBn.getTimelineService().saveTimeLine(timeLine);
+            processProdBn.getTimeLineList().add(timeLine);
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
+        }else{
+            facesContext.addMessage(null, new FacesMessage(retObject.getMsg()));
+        }
+
+        return "/internal/processprodlist";
+    }
+
+
+    public void setShowFeedBackButton(boolean showFeedBackButton) {
+        this.showFeedBackButton = showFeedBackButton;
+    }
+
+
     public ProcessProdBn getProcessProdBn() {
         return processProdBn;
     }
@@ -125,4 +187,13 @@ public class ProcessProdBnET implements Serializable {
     public void setProdApplicationsServiceET(ProdApplicationsServiceET prodApplicationsServiceET) {
         this.prodApplicationsServiceET = prodApplicationsServiceET;
     }
+
+    public ReviewService getReviewService() {
+        return reviewService;
+    }
+
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
 }
