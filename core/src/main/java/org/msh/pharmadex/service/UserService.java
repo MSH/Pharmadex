@@ -130,6 +130,8 @@ public class UserService implements Serializable {
             intRoleName = "ROLE_HEAD";
         }else if ("assesor".equalsIgnoreCase(roleName)){
             intRoleName = "ROLE_REVIEWER";
+        }else if ("assesor".equalsIgnoreCase(roleName)){
+            intRoleName = "ROLE_CSD";
         }
         for(Role role:roles){
             if (role.getRolename().equalsIgnoreCase(intRoleName))

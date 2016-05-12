@@ -234,16 +234,19 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
     		if(btn.equals("REGISTER")){
     			// видна в NEW_APPLICATION, SUSPENDED;
     			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+                vis = vis && userService.userHasRole(user,"cso");
     		}
     		if(btn.equals("SUSPEND")){
     			// видна в NEW_APPLICATION;
     			vis = vis && (applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+                vis = vis && userService.userHasRole(user,"cso");
     		}
     		if(btn.equals("CANCEL")){
     			// видна в NEW_APPLICATION, SUSPENDED;
     			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+                vis = vis && userService.userHasRole(user,"cso");
     		}
-    	}
+        }
     	return vis;
     }
 
