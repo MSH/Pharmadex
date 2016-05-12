@@ -1,19 +1,20 @@
 package org.msh.pharmadex.mbean.applicant;
 
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.service.ApplicantService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.util.JsfUtils;
+import java.io.Serializable;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import java.io.Serializable;
-import java.util.List;
-import java.util.ResourceBundle;
+
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.util.JsfUtils;
 
 /**
  * Backing bean for the process applicant list page
@@ -54,13 +55,19 @@ public class ProcessAppListBn implements Serializable {
     }
 
     public List<Applicant> getPendingApps() {
-        if (pendingApps == null)
-            pendingApps = applicantService.getPendingApplicants();
+    	if(userSession.getWorkspaceName().equals("Ethiopia")){
+    		if (pendingApps == null)
+                pendingApps = applicantService.getApplicantsNotRegistered();
+    	}else{
+    		if (pendingApps == null)
+                pendingApps = applicantService.getPendingApplicants();
+    	}
+        
         return pendingApps;
     }
-
+    
     public void setPendingApps(List<Applicant> pendingApps) {
-        this.pendingApps = pendingApps;
+    	this.pendingApps = pendingApps;
     }
 
     public Applicant getApplicant() {

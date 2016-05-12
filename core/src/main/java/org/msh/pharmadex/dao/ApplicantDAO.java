@@ -69,7 +69,12 @@ public class ApplicantDAO implements Serializable {
                 .setParameter("state", ApplicantState.NEW_APPLICATION).getResultList();
     }
 
-
+    @Transactional(readOnly = true)
+    public List<Applicant> findApplicantsNotRegistered() {
+        return (List<Applicant>) entityManager.createQuery("select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype where a.state != :state ")
+                .setParameter("state", ApplicantState.REGISTERED).getResultList();
+    }
+    
     @Transactional
     public Applicant saveApplicant(Applicant applicant) {
 //        for (User u : applicant.getUsers()) {

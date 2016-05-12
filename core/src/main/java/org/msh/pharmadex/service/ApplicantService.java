@@ -2,6 +2,8 @@ package org.msh.pharmadex.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,6 +97,24 @@ public class ApplicantService implements Serializable {
     public List<Applicant> getPendingApplicants() {
         System.out.println("inside getPendingApplicants");
         return applicantDAO.findPendingApplicant();
+    }
+    
+    @Transactional
+    public List<Applicant> getApplicantsNotRegistered() {
+        System.out.println("inside getApplicantsNotRegistered");
+        List<Applicant> list = applicantDAO.findApplicantsNotRegistered();
+        if(list != null && list.size() > 0){
+        	// sort by state NEW_APPLICATION 
+        	Collections.sort(list, new Comparator<Applicant>() {
+				@Override
+				public int compare(Applicant o1, Applicant o2) {
+					int t1 = o1.getState().ordinal();
+					int t2 = o2.getState().ordinal();
+					return t1 > t2 ? 1:-1;
+				}
+			});
+        }
+        return list;
     }
 
     @Transactional
