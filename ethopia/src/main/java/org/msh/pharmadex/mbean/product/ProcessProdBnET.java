@@ -97,7 +97,11 @@ public class ProcessProdBnET implements Serializable {
             return prodApplicationsServiceET.nextStepOptions(prodApplications.getRegState(), userSession, processProdBn.getCheckReviewStatus());
         return null;
     }
-
+    public boolean showFeedbackButton(){
+        boolean res;
+        res = userSession.isHead() && (processProdBn.prodApplications.getRegState().equals(RegState.REVIEW_BOARD)||processProdBn.prodApplications.getRegState().equals(RegState.VERIFY));
+        return res;
+    }
     public ProcessProdBn getProcessProdBn() {
         return processProdBn;
     }

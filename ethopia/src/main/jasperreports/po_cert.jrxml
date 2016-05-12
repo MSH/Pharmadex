@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-05-11T17:01:10 -->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-05-12T06:06:05 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -370,28 +370,28 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[PURCHASE ORDER CERTIFICATE]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="34" y="220" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="41" y="207" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="34" y="240" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="41" y="227" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="34" y="260" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="40" y="247" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="180" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement x="3" y="188" width="38" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10"/>
@@ -399,20 +399,20 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[To,]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="34" y="199" width="236" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
+				<reportElement x="41" y="187" width="236" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="370" y="199" width="200" height="50" uuid="e7c5466d-317c-4791-b497-ae5134a061d9"/>
+				<reportElement positionType="Float" x="375" y="187" width="200" height="50" uuid="e7c5466d-317c-4791-b497-ae5134a061d9"/>
 				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
 					<jr:codeExpression><![CDATA[$F{pipNo}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
 			<staticText>
-				<reportElement x="1" y="280" width="751" height="46" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<reportElement x="1" y="267" width="751" height="46" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -420,7 +420,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[It is hereby certified that the Food Medicine and Health Care Administration and Control authority of Ehtiopia (FMHACA) has approved your Purchase Order of the below products subject to the general terms and conditions of the attached contract. ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="332" width="181" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
+				<reportElement x="1" y="313" width="181" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -428,7 +428,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Your application number is ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="183" y="333" width="181" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
+				<reportElement x="182" y="313" width="181" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -444,7 +444,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Please use the above application number for any future correspondence with FMHACA.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="355" width="180" height="20" uuid="be7f4be6-3e57-4f59-9830-d1199c040e0f"/>
+				<reportElement x="3" y="332" width="180" height="20" uuid="be7f4be6-3e57-4f59-9830-d1199c040e0f"/>
 				<textElement>
 					<font isBold="false"/>
 					<paragraph leftIndent="10"/>
@@ -452,28 +452,28 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Approval Date]]></text>
 			</staticText>
 			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="183" y="360" width="180" height="20" uuid="33cd60b4-ea68-4499-b14c-03956433e055"/>
+				<reportElement x="183" y="332" width="180" height="20" uuid="33cd60b4-ea68-4499-b14c-03956433e055"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{approvalDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="360" y="360" width="180" height="20" uuid="395f23fe-8ade-4565-b7c3-48e248f0a620"/>
+				<reportElement x="363" y="332" width="180" height="20" uuid="395f23fe-8ade-4565-b7c3-48e248f0a620"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[Expiry Date]]></text>
 			</staticText>
 			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="544" y="360" width="208" height="20" uuid="c69aea80-dadc-470e-ba26-faaf9a252fd8"/>
+				<reportElement x="543" y="332" width="208" height="20" uuid="c69aea80-dadc-470e-ba26-faaf9a252fd8"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{expiryDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="544" y="335" width="180" height="20" uuid="a1dfed6a-d639-4999-bfd9-eb91abafad72"/>
+				<reportElement x="543" y="312" width="180" height="20" uuid="a1dfed6a-d639-4999-bfd9-eb91abafad72"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -481,18 +481,18 @@ and pip.id = $P{piporderid}]]>
 				<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 			</textField>
 			<staticText>
-				<reportElement x="364" y="333" width="180" height="20" uuid="89684b83-fa3d-4e84-bbb1-4dd50acbcce0"/>
+				<reportElement x="363" y="313" width="180" height="20" uuid="89684b83-fa3d-4e84-bbb1-4dd50acbcce0"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[Total Price]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="3" y="158" width="126" height="22" uuid="86468861-3ff1-49bf-b536-c1116703f4fc"/>
+				<reportElement x="13" y="166" width="126" height="22" uuid="6a29d76d-b1aa-4d3c-9855-5da7d25818d9"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT(TODAY( ),"dd/MM/YYYY") ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

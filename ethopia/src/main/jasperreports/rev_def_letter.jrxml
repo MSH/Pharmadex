@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-05-11T17:11:13 -->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-05-12T05:58:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -140,27 +140,27 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="76" splitType="Stretch">
+		<band height="67" splitType="Stretch">
 			<staticText>
-				<reportElement x="1" y="25" width="572" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
+				<reportElement x="1" y="17" width="572" height="24" uuid="eddf2eef-a3a2-4130-bd8b-55aa96e4e1ef"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Further Information Request]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="0" width="572" height="25" uuid="a810f64b-8499-4cfe-a81c-4ec1238ad35c"/>
+				<reportElement x="1" y="-2" width="572" height="25" uuid="a810f64b-8499-4cfe-a81c-4ec1238ad35c"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Medicine Registration and Licensing Directorate]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="49" width="126" height="22" uuid="47170c77-879d-4d39-be5d-b8a28190c35c"/>
+				<reportElement x="40" y="41" width="100" height="23" uuid="8a040a01-55c4-4488-a7ea-a9aae3b93d2a"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT(TODAY( ),"dd/MM/YYYY") ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

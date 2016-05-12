@@ -222,6 +222,7 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
 
     /**
      * проверка видимости кнопок меню, в зависимости от состояния
+     * Checking of buttons visibility, depends from status (local agent actions)
      */
     public boolean renderItemsMenu(String btn){
     	boolean vis = !userSession.isCompany();// это условие было в xhtml 

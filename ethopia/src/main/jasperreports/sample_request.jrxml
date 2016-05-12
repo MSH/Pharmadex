@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-05-11T17:13:36 -->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-05-12T06:17:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -82,7 +82,7 @@ and p.id = $P{id}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="78" splitType="Stretch">
+		<band height="49" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="572" height="25" uuid="f972c7fc-b921-4fe6-96f0-6865908e5a67"/>
 				<textElement textAlignment="Center">
@@ -97,13 +97,6 @@ and p.id = $P{id}]]>
 				</textElement>
 				<text><![CDATA[Medicine Sample Requisition Form]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="5" y="56" width="126" height="22" uuid="9ff830eb-61c6-41b3-b6f2-995f3f342be2"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT(TODAY( ),"dd/MM/YYYY") ]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -137,7 +130,7 @@ and p.id = $P{id}]]>
 				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement x="0" y="22" width="60" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -275,6 +268,13 @@ This letter can only be  used for one time import of the product samples.
 			</staticText>
 			<textField pattern="MMMMM dd, yyyy">
 				<reportElement x="211" y="281" width="361" height="20" uuid="48a6709a-54b7-428e-96b4-01084a0b3be8"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="41" y="2" width="126" height="22" uuid="fe79986e-89c9-4824-9007-ddd1d9f48316"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>

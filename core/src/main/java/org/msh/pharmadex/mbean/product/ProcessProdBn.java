@@ -480,7 +480,8 @@ public class ProcessProdBn implements Serializable {
 
     public String openToApplicant() {
         facesContext = getCurrentInstance();
-        prodApplications.setRegState(timeLine.getRegState());
+        //prodApplications.setRegState(timeLine.getRegState());
+        prodApplications.setReviewStatus(ReviewStatus.FEEDBACK);
         RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
         if (retObject.getMsg().equals("persist")) {
             prodApplications = (ProdApplications) retObject.getObj();
@@ -1030,6 +1031,11 @@ public class ProcessProdBn implements Serializable {
         return disableVerify;
     }
 
+    public boolean showFeedbackButton(){
+        boolean res;
+        res = userSession.isHead() && (prodApplications.getRegState().equals(RegState.REVIEW_BOARD)||prodApplications.getRegState().equals(RegState.VERIFY));
+        return res;
+    }
     public void setDisableVerify(boolean disableVerify) {
         this.disableVerify = disableVerify;
     }

@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-05-11T17:43:15 -->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-05-12T06:23:19 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="752" pageHeight="792" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="712" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<subDataset name="Dataset1" uuid="bf44f849-4fc9-4fff-b4c6-e198624268f3">
-		<queryString>
-			<![CDATA[]]>
-		</queryString>
-	</subDataset>
 	<parameter name="sampleQty" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
-	<parameter name="Reason" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -50,66 +43,58 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="70" splitType="Stretch">
-			<textField>
-				<reportElement x="44" y="48" width="126" height="22" uuid="104b8b56-618d-49aa-abf6-638c52d4f465"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[DATEFORMAT(TODAY( ),"dd/MM/YYYY")]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="38" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="449" splitType="Stretch">
+		<band height="487" splitType="Stretch">
 			<staticText>
-				<reportElement x="40" y="6" width="290" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement x="40" y="27" width="290" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Sample ID: - _______________]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="288" y="91" width="185" height="20" uuid="acc68d4a-67c4-4d26-88ab-683ddba26bc7"/>
+				<reportElement x="288" y="111" width="185" height="20" uuid="acc68d4a-67c4-4d26-88ab-683ddba26bc7"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{sampleQty}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="39" y="27" width="196" height="20" uuid="7e1f18e6-364b-46eb-abd3-4a48ce21b5c4"/>
+				<reportElement x="39" y="47" width="196" height="20" uuid="7e1f18e6-364b-46eb-abd3-4a48ce21b5c4"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[1.       Item requested:-]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="38" y="59" width="502" height="30" uuid="615e8d55-ec82-4fe8-8a13-d41d50a2ae4f"/>
+				<reportElement x="38" y="79" width="502" height="30" uuid="615e8d55-ec82-4fe8-8a13-d41d50a2ae4f"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["2.	I. Quantity and date submitted ______________________"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="75" y="88" width="205" height="30" uuid="a0b6d609-54dd-4410-9210-6262cd5972e2"/>
+				<reportElement x="75" y="108" width="205" height="30" uuid="a0b6d609-54dd-4410-9210-6262cd5972e2"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[II.Additional quantity requested]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="68" y="109" width="218" height="30" uuid="8324a4a6-c99e-44d0-809d-14ffaa2e310b"/>
+				<reportElement x="70" y="135" width="218" height="30" uuid="8324a4a6-c99e-44d0-809d-14ffaa2e310b"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["III. Reason for additional request"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="288" y="117" width="392" height="63" uuid="8e21c6e1-1707-474a-a2fa-2e995b72b05d"/>
+				<reportElement x="42" y="2" width="126" height="22" uuid="8479c621-5431-45bb-bb62-c0a7ba92af9d"/>
 				<textElement>
-					<font size="14"/>
+					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{Reason}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -117,19 +102,19 @@
 		<band height="5" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band splitType="Stretch"/>
+		<band height="1" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="44" splitType="Stretch">
 			<staticText>
-				<reportElement x="-10" y="1" width="742" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
+				<reportElement x="75" y="1" width="657" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Requested by:- ______________   Date:- ____________ Signature:- ______________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-11" y="24" width="743" height="20" uuid="4ed05e4e-b872-45fe-a77a-f56c3f468cb8"/>
+				<reportElement x="75" y="24" width="657" height="20" uuid="4ed05e4e-b872-45fe-a77a-f56c3f468cb8"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
