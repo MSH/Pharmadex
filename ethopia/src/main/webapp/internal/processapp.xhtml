@@ -24,8 +24,7 @@
                                     oncomplete="PF('commCancelDlg').show()"
                                     rendered="#{processApplicantMBean.renderItemsMenu('CANCEL')}"/>
                         <p:menuitem value="#{msgs.global_exit}" immediate="true" icon="ui-icon ui-icon-circle-triangle-w"
-                                    action="#{processApplicantMBean.exitApplicant}" ajax="false"
-                                    rendered="#{!userSession.company}"/>
+                                    action="#{processApplicantMBean.exitApplicant}" ajax="false"/>
                     </p:submenu>
                 </p:menu>
                                                

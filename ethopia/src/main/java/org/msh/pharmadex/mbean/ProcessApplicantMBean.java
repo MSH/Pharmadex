@@ -22,6 +22,7 @@ import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.domain.enums.UserRole;
 import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.mbean.applicant.ProcessAppBn;
 import org.msh.pharmadex.service.ApplicantService;
@@ -220,32 +221,30 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
     	return res;
     }
 
-    /**
-     * проверка видимости кнопок меню, в зависимости от состояния
-     * Checking of buttons visibility, depends from status (local agent actions)
-     */
+    /** Checking of buttons visibility, depends from status (local agent actions) */
     public boolean renderItemsMenu(String btn){
     	boolean vis = !userSession.isCompany();// это условие было в xhtml 
     	getApplicant();
     	if(applicant != null){
+    		User curUser = userSession.getUserAccess().getUser();
     		if(btn.equals("SAVE")){ // для любого состояния
     			// видна в NEW_APPLICATION, SUSPENDED;
-    			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
+    			vis = vis && (applicant.getState().equals(ApplicantState.NEW_APPLICATION) || applicant.getState().equals(ApplicantState.SUSPENDED));
     		}
     		if(btn.equals("REGISTER")){
     			// видна в NEW_APPLICATION, SUSPENDED;
-    			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
-                vis = vis && userService.userHasRole(user,"cso");
+    			vis = vis && (applicant.getState().equals(ApplicantState.NEW_APPLICATION) || applicant.getState().equals(ApplicantState.SUSPENDED));
+                vis = vis && userService.userHasRole(curUser, UserRole.ROLE_CSD);
     		}
     		if(btn.equals("SUSPEND")){
     			// видна в NEW_APPLICATION;
     			vis = vis && (applicant.getState().equals(ApplicantState.NEW_APPLICATION));
-                vis = vis && userService.userHasRole(user,"cso");
+                vis = vis && userService.userHasRole(curUser, UserRole.ROLE_CSD);
     		}
     		if(btn.equals("CANCEL")){
     			// видна в NEW_APPLICATION, SUSPENDED;
-    			vis = vis && (applicant.getState().equals(ApplicantState.SUSPENDED) || applicant.getState().equals(ApplicantState.NEW_APPLICATION));
-                vis = vis && userService.userHasRole(user,"cso");
+    			vis = vis && (applicant.getState().equals(ApplicantState.NEW_APPLICATION) || applicant.getState().equals(ApplicantState.SUSPENDED));
+                vis = vis && userService.userHasRole(curUser, UserRole.ROLE_CSD);
     		}
         }
     	return vis;
