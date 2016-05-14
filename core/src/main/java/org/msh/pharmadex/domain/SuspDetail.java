@@ -199,8 +199,12 @@ public class SuspDetail extends CreationDetail {
     }
 
     public String getFinalSumm() {
-        finalSumm = finalSumm.replaceAll("/","");
-        return finalSumm.replaceAll("<\\w*>","");
+        if (finalSumm!=null) {
+            finalSumm = finalSumm.replaceAll("/", "");
+            return finalSumm.replaceAll("<\\w*>", "");
+        }else{
+            return  finalSumm;
+        }
     }
 
     public void setFinalSumm(String finalSumm) {
@@ -208,8 +212,12 @@ public class SuspDetail extends CreationDetail {
     }
 
     public String getModeratorSumm() {
-        finalSumm = finalSumm.replaceAll("\\\\","");
-        return moderatorSumm.replaceAll("<\\w+>","");
+        if (moderatorSumm!=null){
+            moderatorSumm = moderatorSumm.replaceAll("\\\\", "");
+            return moderatorSumm.replaceAll("<\\w+>", "");
+        }else{
+            return moderatorSumm;
+        }
     }
 
     public void setModeratorSumm(String moderatorSumm) {
