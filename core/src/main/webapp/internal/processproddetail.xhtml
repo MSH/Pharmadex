@@ -18,7 +18,8 @@
 
                 <p:growl id="growl" showDetail="true" showSummary="true"/>
 
-                <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                <p:commandButton value="#{msgs.global_back}" immediate="true"
+                                 action="/internal/processreg"
                                  ajax="false" style="text-align: right;">
                         <f:param name="prodAppID" value="#{productDisplay.prodApplications.id}"/>
                 </p:commandButton>

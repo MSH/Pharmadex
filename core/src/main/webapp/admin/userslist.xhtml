@@ -75,7 +75,7 @@
 
         <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
 
-            <h:outputText value="#{msgs.user_type}"/>
+            <h:outputText value="#{msgs.User_type}"/>
             <p:selectOneMenu value="#{userMBean.selectedUser.type}">
                 <f:selectItem itemLabel="-" itemValue=""/>
                 <f:selectItems value="#{globalLists.userTypes}" var="type" itemLabel="#{msgs[type.key]}"/>

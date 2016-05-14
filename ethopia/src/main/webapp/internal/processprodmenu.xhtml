@@ -37,6 +37,12 @@
 
             <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" ajax="false"
                         icon="ui-icon-extlink"/>
+            <p:menuitem value="Return to #{msgs.global_suspend}" icon="ui-icon-gear"
+                        action="suspenddetail" ajax="false"
+                        rendered="#{userSession.head||processProdBn.suspended}">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="suspDetailID" value="#{processProdBn.suspId}"/>
+            </p:menuitem>
 
 
             <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
@@ -71,8 +77,9 @@
                         rendered="false" update=":reghome:growl" ajax="true"/>
             <p:menuitem value="#{msgs.global_suspend}" icon="ui-icon-gear"
                         action="suspenddetail" ajax="false"
-                        rendered="#{userSession.admin||userSession.head}">
+                        rendered="#{userSession.head}">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="suspDetailID" value="#{processProdBn.suspId}"/>
             </p:menuitem>
             <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
                         oncomplete="PF('dlgAmdment').show()" rendered="false"

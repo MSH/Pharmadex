@@ -155,9 +155,18 @@ public class ProcessProdBn implements Serializable {
     private boolean disableVerify;
     private boolean displayFir;
 
+    private String suspId;
+
     @PostConstruct
     private void init() {
         try {
+            facesContext = FacesContext.getCurrentInstance();
+            suspId = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+            if (suspId==null){
+                if (facesContext.getExternalContext().getFlash()!=null)
+                    suspId = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");
+            }
+
             loggedInUser = userService.findUser(userSession.getLoggedINUserID());
             mail.setUser(loggedInUser);
             timeLine.setUser(loggedInUser);
@@ -637,6 +646,15 @@ public class ProcessProdBn implements Serializable {
         return false;
     }
 
+    public  boolean isSuspended(){
+        if (prodApplications != null) {
+            if (prodApplications.getRegState().equals(RegState.SUSPEND))
+                return true;
+        }
+        return false;
+    }
+
+
     public void setRegistered(boolean registered) {
         this.registered = registered;
     }
@@ -1035,6 +1053,16 @@ public class ProcessProdBn implements Serializable {
         res = userSession.isHead() && (prodApplications.getRegState().equals(RegState.REVIEW_BOARD)||prodApplications.getRegState().equals(RegState.VERIFY));
         return res;
     }
+
+    public String returnToSuspendMode() {
+        if (suspId == null){
+            return "";
+        }else{
+            facesContext.getExternalContext().getRequestParameterMap().put("suspDetailID",suspId);
+            return "internal/suspenddetail";
+        }
+    }
+
     public void setDisableVerify(boolean disableVerify) {
         this.disableVerify = disableVerify;
     }
@@ -1054,4 +1082,13 @@ public class ProcessProdBn implements Serializable {
     public void setRevDeficiencies(ArrayList<RevDeficiency> revDeficiencies) {
         this.revDeficiencies = revDeficiencies;
     }
+    public String getSuspId() {
+        return suspId;
+    }
+
+    public void setSuspId(String suspId) {
+        this.suspId = suspId;
+    }
+
+
 }
