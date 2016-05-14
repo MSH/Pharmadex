@@ -11,6 +11,8 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.utils.ExcelTools;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -480,9 +482,29 @@ public class ExportService implements Serializable {
         return r;
     }
 
+    public User findUser(String str){
+        List<User> users = userService.findAllUsers();
+        if (users==null) return null;
+        if (users.size()==0) return null;
+        for(User user:users){
+            if (str.equals(user.getName())){
+                return user;
+            }
+            if (str.equals(user.getEmail())){
+                return user;
+            }
+        }
+        return null;
+    }
+
     public Country findCountry(String s,int col) {
         s=s.trim();
-        Country r=countryDAO.findCountryByName(s);
+        Country r=null;
+        try {
+            r = countryDAO.findCountryByName(s);
+        }catch (Exception e){
+            System.out.println(s);
+        }
         if (r!=null)return r;
         ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
@@ -506,10 +528,7 @@ public class ExportService implements Serializable {
     }
     public Applicant findApplicant(String s){
         Applicant a=dictionaryDAO.findApplicantByName(s);
-        if (a.getAddress()!=null){//applicant completely filled out
-            if (a.getAddress().getCountry()!=null && a.getAddress().getAddress1()!=null)
-                return  a;
-        }
+        if (a!=null) return a;
         a=new Applicant();
         Company company=findCompany(s);
         if (company!=null){
@@ -572,8 +591,12 @@ public class ExportService implements Serializable {
             addr.setAddress1(address.trim());
         company.setAddress(addr);
         company = (Company) updateRecInfo(company);
-        company = companyDAO.save(company);
-        companyDAO.flush();
+        try {
+            company = companyDAO.save(company);
+            companyDAO.flush();
+        }catch (DataIntegrityViolationException e){
+            //nothing to do
+        }
         return  company;
     }
 
@@ -668,9 +691,9 @@ public class ExportService implements Serializable {
         try{
             boolean isNewUser=false;
             String fullName = firstName+" "+lastName;
-            User user = userDAO.findByUsername(fullName);
+            User user = findUser(fullName);
             if (user==null)
-                user = userDAO.findByUsername(lastName+" "+firstName);
+                user = findUser(email);;
             if (user==null){
                 user = new User();
                 isNewUser = true;
@@ -710,12 +733,18 @@ public class ExportService implements Serializable {
         try {
             init();
             Applicant app = findApplicant(name);
+            if (app.getApplcntId()!=null) return app;
+            company = findCompany(name);
+            if (company.getId()==null)
+                return null;
+/*
             if (company!=null) {
                 app.setAddress(company.getAddress());
                 app.setEmail(company.getEmail());
                 app.setPhoneNo(company.getPhoneNo());
                 app.setContactName(company.getContactName());
             }
+*/
             app.setComment("automatically registered");
             Date today = getInstance().getTime();
             app.setRegistrationDate(today);
@@ -740,110 +769,117 @@ public class ExportService implements Serializable {
      */
     public String createUpdateSimpleLocalAgent(Row row){
         currrow = row;
-        String orgName=getCellValue(1);
-        Applicant applicant = createUpdateApplicant(orgName,null);
-        if (applicant==null) return "Error registration of single applicant";
-        if (applicant.getApplcntId()==null)
-            applicant = applicantDAO.saveApplicant(applicant);
-        String result = " :"+applicant.getApplcntId()+": ";
-        saveResultOfRowImport(row,result);
+        String result="";
+        for (int i=11;i<=13;i++) {
+            String orgName = getCellValue(i);
+            if (!"".equals(orgName)) {
+                Applicant applicant = createUpdateApplicant(orgName, null);
+                if (applicant == null) return "Error registration of single applicant";
+                if (applicant.getApplcntId() == null) {
+                    applicant = applicantDAO.saveApplicant(applicant);
+                }
+                result = String.valueOf(applicant.getApplcntId());
+                saveResultOfRowImport(row, result);
+            }
+        }
         return result;
     }
 
     public String createUpdateLicenseHolder(Row row){
         init();
         currrow = row;
-        String licenseHolder=getCellValue(1);
-        String localAgent=getCellValue(2);
+        List<String> locAgents = new ArrayList<String>();
+        String licenseHolder=getCellValue(11);
+        String localAgent=getCellValue(12);
+        locAgents.add(localAgent);
+        localAgent=getCellValue(13);
+        if (!"".equals(localAgent)) locAgents.add(localAgent);
+        localAgent=getCellValue(14);
+        if (!"".equals(localAgent)) locAgents.add(localAgent);
         LicenseHolder lh = customLicHolderDAO.findLicHolderByName(licenseHolder);
         if (lh==null){
             lh = new LicenseHolder();
             lh.setName(licenseHolder);
-            licenseHolderDAO.save(lh);
+            lh.setState(UserState.ACTIVE);
+            lh = (LicenseHolder) this.updateRecInfo(lh);
+            lh = licenseHolderDAO.save(lh);
         }
-        lh.setState(UserState.ACTIVE);
-        lh = (LicenseHolder) this.updateRecInfo(lh);
-        Applicant applicant = findApplicant(localAgent); //local agent
-        if (applicant.getApplcntId()==null) return "Error: applicant "+localAgent+" missing in database";
-
-        List<AgentInfo> agInfoList=lh.getAgentInfos();
-        if (agInfoList==null) agInfoList=new  ArrayList<AgentInfo>();
-        boolean found=false;
-        if (agInfoList.size()>0){// search, if this local agent present in list
-            for(AgentInfo a:agInfoList){
-                if (a.getApplicant().getApplcntId()==applicant.getApplcntId()){
-                    found=true;
-                    break;
+        String result = String.valueOf(lh.getId());
+        int count=0;
+        for(String agentName:locAgents) {
+            localAgent = agentName;
+            Applicant applicant = findApplicant(localAgent); //local agent
+            if (applicant.getApplcntId() != null) {
+                result = result +":"+String.valueOf(applicant.getApplcntId());
+                List<AgentInfo> agInfoList = lh.getAgentInfos();
+                if (agInfoList == null)
+                    agInfoList = new ArrayList<AgentInfo>();
+                boolean found = false;
+                if (agInfoList.size() > 0) {// search, if this local agent present in list
+                    for (AgentInfo a : agInfoList) {
+                        if (a.getApplicant().getApplcntId() == applicant.getApplcntId() &&
+                            a.getLicenseHolder().getId() == lh.getId()){
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found) {
+                    count++;
+                    AgentInfo ai = new AgentInfo();
+                    ai.setApplicant(applicant);
+                    ai.setLicenseHolder(lh);
+                    if (count==1)
+                        ai.setAgentType(AgentType.FIRST);
+                    else if (count==2)
+                        ai.setAgentType(AgentType.SECOND);
+                    else
+                        ai.setAgentType(AgentType.THIRD);
+                    ai.setCreatedBy(user);
+                    ai = (AgentInfo) updateRecInfo(ai);
+                    agInfoList.add(ai);
+                    lh.setAgentInfos(agInfoList);
+                    licenseHolderDAO.save(lh);
                 }
             }
         }
-        if (!found) {
-            AgentInfo ai = new AgentInfo();
-            ai.setApplicant(applicant);
-            ai.setLicenseHolder(lh);
-            ai.setAgentType(AgentType.FIRST);
-            ai.setCreatedBy(user);
-            ai = (AgentInfo) updateRecInfo(ai);
-            agInfoList.add(ai);
-            lh.setAgentInfos(agInfoList);
-            licenseHolderDAO.save(lh);
+        if (count>0) {
+            System.out.println("License holder " + lh.getName() + " created and " + count + " agents");
+        }else{
+            result = "omitted";
         }
-        String result = " :"+lh.getId()+": ";
         saveResultOfRowImport(row,result);
         return result;
-
     }
 
 
-    public  String importCompanies(Row row, int mode){
+    public  String importCompanies(Row row, int mode, int colNo){
         currrow = row;
-        //11,12,15,16 - LH,LA,M,Country
+        //11,12,13,14,17,18 - LH,LA1,LA2,LA3,M,Country
         init();
         String manuf="";
         String addr="";
         String countryName="";
         String companyName="";
         Company company=null;
-        if (mode==1){//manufacturers
-            manuf = getCellValue(15);
-            countryName = getCellValue(16);
-            String[] parts = manuf.split(",");
-            companyName=parts[0]+", "+countryName;
-            company = findCompany(companyName);
-            if (company.getAddress().getCountry()!=null) return "";//exists, nothing to do
-            if (parts.length==1)
-                company = createUpdateCompanyPrimary(companyName,"",countryName);
-            else if (parts.length==2){
-                company = createUpdateCompanyPrimary(companyName,parts[1],countryName);
-            }else {
-                for (int j=1;j<parts.length;j++) {
-                    addr = "".equals(addr) ? parts[j] : addr + ", " + parts[j];
-                }
-                company = createUpdateCompanyPrimary(companyName,addr,countryName);
+        manuf = getCellValue(colNo);
+        countryName = getCellValue(18);
+        if (!"".equals(countryName))
+            countryName = countryName.trim();
+        if ("".equals(manuf)) return  "";
+        String[] parts = manuf.split(",");
+        companyName=parts[0].trim();
+        company = findCompany(companyName);
+        if (company.getId()!=null) return "";
+        if (company.getAddress().getCountry()!=null) return "";//exists, nothing to do
+        if (parts.length==1)
+            company = createUpdateCompanyPrimary(companyName,"",countryName);
+        else if (parts.length==2){
+            company = createUpdateCompanyPrimary(companyName,parts[1],countryName);
+        }else {
+            for (int j=1;j<parts.length;j++) {
+                addr = "".equals(addr) ? parts[j] : addr + ", " + parts[j];
             }
-        }else if (mode==2){//license holder
-            manuf = getCellValue(11);
-            countryName = getCellValue(16);
-            String[] parts = manuf.split(",");
-            companyName=parts[0]+", "+countryName;
-            company = findCompany(companyName);
-            if (company.getAddress().getCountry()!=null) return "";//exists, nothing to do
-            if (parts.length==1)
-                company = createUpdateCompanyPrimary(companyName,"",countryName);
-            else if (parts.length==2){
-                company = createUpdateCompanyPrimary(companyName,parts[1],countryName);
-            }else {
-                for (int j=1;j<parts.length;j++) {
-                    addr = "".equals(addr) ? parts[j] : addr + ", " + parts[j];
-                }
-                company = createUpdateCompanyPrimary(companyName,addr,countryName);
-            }
-
-        }else{//local agent
-            companyName = getCellValue(12);
-            company = findCompany(companyName);
-            if (company.getId()!=null) return "";
-            if (company.getAddress().getAddress1()!=null) return  ""; //exists, nothing to do
             company = createUpdateCompanyPrimary(companyName,addr,countryName);
         }
         if (company!=null)
@@ -852,7 +888,11 @@ public class ExportService implements Serializable {
             return "Error: company "+companyName+" did not create.";
     }
 
-    public String importApplicants(Row row) {
+    public String importLocalAgents(){
+        return "";
+    }
+
+    public String importUsers(Row row) {
         currrow = row;
         String firstName = getCellValue(1);
         String lastName = getCellValue(2);
@@ -866,17 +906,27 @@ public class ExportService implements Serializable {
         String jobTittle = getCellValue(9);
         String role = getCellValue(10);
         String password = getCellValue(11);
+        if ("".equals(email)) return "no email";
         init();
         //detect company
         String result = "";
-        Address address = createAddress(address1, poBox, zipCode);
-        Company company = createUpdateCompany(orgName, email, address, phone, firstName + " " + lastName);
-        if (company == null) return "Error registration of company";
-        company = companyDAO.save(company);
-        Applicant applicant = createUpdateApplicant(orgName, company);
-        if (applicant != null)
-            applicant = applicantDAO.saveApplicant(applicant);
-        User user = createUpdateUser(firstName, lastName, email, phone, address, company, applicant, role, password);
+        Company company = findCompany(orgName);
+        if (company == null) return "Error: company not found";
+        Address cAddr = company.getAddress();
+        cAddr.setAddress1(address1);
+        cAddr.setAddress2(poBox);
+        cAddr.setCountry(ourCountry);
+        company.setAddress(cAddr);
+        companyDAO.saveAndFlush(company);
+        Applicant applicant = findApplicant(orgName);
+        if (applicant == null) return "Error: applicant not found";
+        Address aAddr = applicant.getAddress();
+        aAddr.setAddress1(address1);
+        aAddr.setAddress2(poBox);
+        aAddr.setCountry(ourCountry);
+        applicant.setAddress(aAddr);
+
+        User user = createUpdateUser(firstName, lastName, email, phone, cAddr, company, applicant, role, password);
         if (user == null) return "Error registration of user";
         if (applicant != null) {
             List<User> users;
@@ -926,11 +976,13 @@ public class ExportService implements Serializable {
         mail.setUser(user);
         mail.setDate(new Date());
         mail.setMessage("Your password has been successfully reset in order to access the system please use the username '" + user.getUsername() + "' and password '" + password + "' ");
-        try{
+        try {
             userService.passwordGenerator(user);
             //user = userService.updateUser(userService.passwordGenerator(user));
             //TODO Убрать комментарий с отправки почты
-            //mailService.sendMail(mail,false);
+            mailService.sendMail(mail, false);
+            return user;
+        } catch (MailSendException me){
             return user;
         } catch (Exception e){
             e.printStackTrace();

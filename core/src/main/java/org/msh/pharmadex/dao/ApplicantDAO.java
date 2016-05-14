@@ -83,6 +83,7 @@ public class ApplicantDAO implements Serializable {
 //        }
 
         Applicant a = entityManager.merge(applicant);
+        entityManager.flush();
         return a;
     }
 

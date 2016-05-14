@@ -138,7 +138,7 @@ public class ExportMBean implements Serializable {
         failure = 0;
         String res;
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-            res = exportService.importApplicants(sheet.getRow(i));
+            res = exportService.importUsers(sheet.getRow(i));
             if (!res.startsWith("Error")) {
                 success++;
                 ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
@@ -187,85 +187,6 @@ public class ExportMBean implements Serializable {
             return "license holders loading - " + String.valueOf(failure) + " errors";
     }
 
-    private void importUOMS() {
-        String values = "%V/V;" +
-                "%W/V;" +
-                "%W/W;" +
-                "mcg/0.5ML;" +
-                "mcg/ML;" +
-                "10ML;" +
-                "5ML;" +
-                "CCID50;" +
-                "DOSE;" +
-                "IU/5ML;" +
-                "IU/MG;" +
-                "IU/ML/IU;" +
-                "MG/mcg;" +
-                "MG/0.5ML;" +
-                "MG/10ML;" +
-                "MG/3ML;" +
-                "MG/G;" +
-                "MG/IU/IU/IU/MG/MG/MG/ug;" +
-                "MG/IU/MG;" +
-                "MG/MG/mcg;" +
-                "MG/MG/U;" +
-                "MG/ML;" +
-                "MG/ML,%W/V;" +
-                "MG/ug/MG/MG;" +
-                "MMOL/ML;" +
-                "MOL/ML;" +
-                "MOSMOL/L;" +
-                "OMEGA;" +
-                "U/ML;" +
-                "NA";
-        String[] lstVal = values.split(";");
-        for (String value : lstVal) {
-            exportService.findDosUOM(value);
-        }
-    }
-
-    private void importDosForms() {
-        String values = "ENTERED COATED TABLET," +
-                "POWDER FOR SUSPENSION," +
-                "POWDER FOR INJECTION," +
-                "POWDER FOR SOLUTION," +
-                "FILM COATED TABLET," +
-                "CHEWABLE TABLET," +
-                "EYE DROP," +
-                "EYE/EAR DROP," +
-                "DROP," +
-                "NAZAL DROPS," +
-                "SOFT GELATIN CAPSULE," +
-                "LARGE VOLUME INJECTION," +
-                "PESSARIES," +
-                "LOZENGES," +
-                "DISPERSABLE TABLET," +
-                "EFFERVESCENT TABLET," +
-                "EYE OINTMENT," +
-                "DELAYED RELEASE CAPSULE," +
-                "GRANULES FOR SOLUTION," +
-                "POWDER FOR INHALATION," +
-                "LYOPHILIZED INJECTION," +
-                "DELAYED RELEASE ENTERICOTED TABLET," +
-                "LYOPHILIZED POWDER FOR INJECTION," +
-                "STERILE WATER FOR INJECTION," +
-                "SUSTAINED RELEASE FILM-COATED TABLET," +
-                "IUD," +
-                "SOLUTION FOR INFUSION," +
-                "DRY SYRUP," +
-                "SUSPENSION FOR INHALATION," +
-                "ENTERIC COATED TABLET," +
-                "PROLONGED RELEASE TABLET," +
-                "GRANULE FOR INJECTION," +
-                "INHALATION," +
-                "POWDER FOR CONCENTRATE FOR INJECTION," +
-                "NASAL SPRAY," +
-                "DELAYED RELEASE ENTERIC COATED ";
-        String[] lstVal = values.split(",");
-        for (String value : lstVal) {
-            exportService.findDosForm(value);
-        }
-    }
 
     public String loadingUsers(){
         if (!initProcess()) setFilename("Error. Initialisation failure");
@@ -273,10 +194,10 @@ public class ExportMBean implements Serializable {
             try {
                 wb = WorkbookFactory.create(new FileInputStream(filename));
                 Sheet sheet = wb.getSheetAt(0);
-                if (sheet == null) return "";
+//                if (sheet == null) return "";
                 taskStatus=loadingApplicants(sheet);
-                if (!taskStatus.endsWith("success")) return taskStatus;
-                setIgnore(success+failure);
+//                if (!taskStatus.endsWith("success")) return taskStatus;
+//                setIgnore(success+failure);
                 File outf = new File("C:/Temp/res.xlsx");
                 FileOutputStream out = new FileOutputStream(outf);
                 wb.write(out);
@@ -297,39 +218,23 @@ public class ExportMBean implements Serializable {
         if (f.isFile()) {
             try {
                 wb = WorkbookFactory.create(new FileInputStream(filename));
-                Sheet sheet = wb.getSheetAt(3);
+                Sheet sheet = wb.getSheetAt(0);
                 if (sheet == null) return "";
                 String res;
                 success = 0;
                 failure = 0;
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                    Row row = sheet.getRow(i);
-                    res = exportService.importCompanies(row, 1);
-                    if (!res.startsWith("Error")) {
-                        success++;
-                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
-                    } else
-                        failure++;
+                Integer[] colsSet = {11,12,13,14};
+                for(Integer colNo:colsSet) {
+                    for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                        Row row = sheet.getRow(i);
+                        res = exportService.importCompanies(row, 1, colNo);
+                        if (!res.startsWith("Error")) {
+                            success++;
+                            ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+                        } else
+                            failure++;
+                    }
                 }
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                    Row row = sheet.getRow(i);
-                    res = exportService.importCompanies(row, 2);
-                    if (!res.startsWith("Error")) {
-                        success++;
-                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
-                    } else
-                        failure++;
-                }
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                    Row row = sheet.getRow(i);
-                    res = exportService.importCompanies(row, 3);
-                    if (!res.startsWith("Error")) {
-                        success++;
-                        ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
-                    } else
-                        failure++;
-                }
-
                 setIgnore(success + failure);
                 File outf = new File("C:/Temp/res.xlsx");
                 FileOutputStream out = new FileOutputStream(outf);
@@ -350,24 +255,26 @@ public class ExportMBean implements Serializable {
         if (!initProcess()) setFilename("Error. Initialisation failure");
         if (f.isFile())
             try {
-                //importDosForms();
-                //importUOMS();
-
                 wb = WorkbookFactory.create(new FileInputStream(filename));
-                Sheet sheet = wb.getSheetAt(1);
+                Sheet sheet = wb.getSheetAt(0);
                 if (sheet == null) return "";
 
-                taskStatus=loadingLocalAgents(sheet);
-                if (!taskStatus.endsWith("success")) return taskStatus;
-                sheet = wb.getSheetAt(2);
-                if (sheet == null) return "";
+//                taskStatus=loadingLocalAgents(sheet);
+//                if (!taskStatus.endsWith("success")) return taskStatus;
+//                sheet = wb.getSheetAt(0);
+//                if (sheet == null) return "";
                 taskStatus=loadingLicenseHolders(sheet);
 
-                sheet = wb.getSheetAt(0);
-                if (sheet == null) return "";
-                taskStatus=loadingApplicants(sheet);
-                if (!taskStatus.endsWith("success")) return taskStatus;
+//                sheet = wb.getSheetAt(0);
+//                if (sheet == null) return "";
+//                taskStatus=loadingApplicants(sheet);
+//                if (!taskStatus.endsWith("success")) return taskStatus;
+
                 setIgnore(success+failure);
+                File outf = new File("C:/Temp/lh_res.xlsx");
+                FileOutputStream out = new FileOutputStream(outf);
+                wb.write(out);
+                out.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
