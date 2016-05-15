@@ -41,6 +41,14 @@
         <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
         <p:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
         <p:panel id="uomPanel" style="vertical-align:top">
+            <p:autoComplete id="unitOfMeassurment"
+                            dropdown="true"
+                            completeMethod="#{globalEntityLists.dosUoms}"
+                            var="it" itemLabel="#{it.name}" itemValue="#{it.id}"
+                            onComplete=""
+                >
+            </p:autoComplete>
+            <!--
             <p:selectOneMenu id="dosUnit" value="#{prodRegAppMbean.product.dosUnit.id}"
                              requiredMessage="#{msgs.valid_dos_form}"
                              style="vertical-align:top"
@@ -57,6 +65,7 @@
 
             />
             </form>
+            -->
         </p:panel>
         <p:message for="dosUnit" showSummary="true" showDetail="false"/>
 

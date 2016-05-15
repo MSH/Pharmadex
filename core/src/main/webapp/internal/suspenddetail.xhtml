@@ -45,7 +45,7 @@
                 -->
                 <!-- show product details -->
                 <p:commandButton value="#{msgs.product_details}" immediate="true"
-                                 action="/internal/processreg" ajax="false">
+                                 action="#{suspendDetailBn.showProductDetails}" ajax="false">
                     <f:param name="prodAppID" value="#{suspendDetailBn.prodApplications.id}"/>
                 </p:commandButton>
                 <!-- return to list -->

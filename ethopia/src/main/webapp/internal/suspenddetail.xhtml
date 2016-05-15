@@ -39,7 +39,7 @@
                                  rendered="#{suspendDetailBnET.showSubmitButtonNo(2)}"/>
                 <!-- show product details -->
                 <p:commandButton value="#{msgs.product_details}" immediate="true"
-                                 action="/internal/processreg"
+                                 action="#{suspendDetailBnET.showProductDetails}"
                                  ajax="false">
                     <f:param name="suspDetailID" value="#{suspendDetailBnET.suspDetail.id}"/>
                     <f:param name="prodAppID" value="#{suspendDetailBnET.prodApplications.id}"/>

@@ -812,6 +812,14 @@ public class SuspendDetailBnET implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
+    public String showProductDetails(){
+        String res = submitSuspend();
+        if (!"".equals(res)) {
+            facesContext.getExternalContext().getRequestParameterMap().put("prodAppID",String.valueOf(suspDetail.getId()));
+            return "/internal/processreg";
+        }
+        return "";
+    }
 
 
     public ReviewInfo getReview() {
