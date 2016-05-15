@@ -135,7 +135,8 @@ public class SuspendDetailBnET implements Serializable {
                         Hibernate.initialize(prodApplications.getApplicant());
                     if (suspDetail.getReviewer()!=null){
                         checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
-                        review = reviewService.findReviewInfoByUserAndProdApp(suspDetail.getReviewer().getUserId(), prodApplications.getId());
+         //               review = reviewService.findReviewInfoByUserAndProdApp(suspDetail.getReviewer().getUserId(), prodApplications.getId());
+                        review = reviewService.findReviewInfoByUserAndProdAppAfter(suspDetail.getReviewer().getUserId(), prodApplications.getId(),suspDetail.getCreatedDate());
                     }
                     isClosed();
                 }
@@ -148,8 +149,10 @@ public class SuspendDetailBnET implements Serializable {
 
     private void checkReviewStatus(long reviewerId, long appId){
         try {
-            review = reviewService.findReviewInfoByUserAndProdApp(reviewerId, appId);
-            if (review.getReviewStatus().equals(SuspensionStatus.FEEDBACK)) return;
+           // review = reviewService.findReviewInfoByUserAndProdApp(reviewerId, appId);
+            review = reviewService.findReviewInfoByUserAndProdAppAfter(suspDetail.getReviewer().getUserId(), prodApplications.getId(),suspDetail.getCreatedDate());
+            
+        	if (review.getReviewStatus().equals(SuspensionStatus.FEEDBACK)) return;
             if (null != review) {
                 if (review.getReviewStatus().equals(ReviewStatus.ASSIGNED))
                     suspDetail.setSuspensionStatus(SuspensionStatus.IN_PROGRESS);
@@ -231,7 +234,9 @@ public class SuspendDetailBnET implements Serializable {
             suspDetail.setUpdatedDate(new Date());
             suspDetail.setUpdatedBy(getLoggedInUser());
             suspDetail.setReviewer(reviewer);
-            ReviewInfo srchReview = reviewService.findReviewInfoByUserAndProdApp(reviewer.getUserId(), suspDetail.getProdApplications().getId());
+           // ReviewInfo srchReview = reviewService.findReviewInfoByUserAndProdApp(reviewer.getUserId(), suspDetail.getProdApplications().getId());
+            ReviewInfo srchReview = reviewService.findReviewInfoByUserAndProdAppAfter(suspDetail.getReviewer().getUserId(), prodApplications.getId(),suspDetail.getCreatedDate());
+            
             if (srchReview!=null){ // because review could be in registration process with same reviewers...
                 if (srchReview.getCreatedDate().before(suspDetail.getCreatedDate())) {
                     srchReview.setReviewStatus(ReviewStatus.ASSIGNED);
