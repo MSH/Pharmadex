@@ -90,9 +90,10 @@ public class SuspendService implements Serializable {
 
     public List<ReviewInfo> findReviewList(long userId,long appId){
         ArrayList<ReviewInfo> res = new ArrayList<ReviewInfo>();
-        ReviewInfo reviewResult = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(userId, appId);
-        if (reviewResult!=null)
-            res.add(reviewResult);
+        //ReviewInfo reviewResult = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(userId, appId);
+        List<ReviewInfo> li =reviewInfoDAO.findByProdApplications_IdAndReviewer_UserId(appId,userId);
+        if (li!=null)
+            res=(ArrayList<ReviewInfo>) li;
         return res;
     }
 
