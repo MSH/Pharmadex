@@ -144,7 +144,16 @@ public class ReviewService implements Serializable {
 
 	@Transactional
 	public ReviewInfo findReviewInfoByUserAndProdApp(Long userId, Long prodAppID) {
-		ReviewInfo reviewInfo = reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
+		ReviewInfo reviewInfo= null;
+		List<ReviewInfo> li= reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
+		if (li==null)  return reviewInfo;
+		if (li.size()==1) reviewInfo=li.get(0); 
+		 else {
+			 Date dt=new Date("1.1.2000");
+			 for (int i = 0; li.size() > i; i++) {
+				 if (!li.get(i).getCreatedDate().after(dt)) reviewInfo=li.get(i);
+			 }
+		 }
 		Hibernate.initialize(reviewInfo.getReviewDetails());
 		Hibernate.initialize(reviewInfo.getReviewer());
 		Hibernate.initialize(reviewInfo.getSecReviewer());
