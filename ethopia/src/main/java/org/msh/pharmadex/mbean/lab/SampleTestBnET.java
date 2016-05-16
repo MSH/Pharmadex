@@ -103,7 +103,7 @@ public class SampleTestBnET implements Serializable {
         sampleTest.getSampleComments().add(sampleComment);
         sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
         RetObject riRetObj;
-        if (isAddSample) riRetObj = sampleAddService.createDefADDLetter(sampleTest);
+        if (isAddSample) riRetObj = sampleAddService.createDefADDLetter(sampleTest, resourceBundle);
          else riRetObj = sampleTestService.createDefLetter(sampleTest);
         if (!riRetObj.getMsg().equalsIgnoreCase("persist")) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
