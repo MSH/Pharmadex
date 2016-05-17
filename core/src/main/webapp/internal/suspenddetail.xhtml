@@ -178,11 +178,6 @@
                 </p:tab>
 
                 <p:tab title="#{msgs.attachments}">
-                    <!--
-                                        <p:commandButton icon="ui-icon-document" value="#{msgs.generate_report}"
-                                                         oncomplete="PF('attachDlg').show()" action="#{suspendDetailBn.initComment}"/>
-                    -->
-
                     <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                      oncomplete="PF('attachdlg').show()" action="#{suspendDetailBn.prepareUpload}"
                                      update=":attachdlg" id="addDocBtn"

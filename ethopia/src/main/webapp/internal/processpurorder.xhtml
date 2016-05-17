@@ -422,12 +422,13 @@
                     <p:message for="recomcb"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
-                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="revsummary" required="true"
+                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="revsummary"
+                              required="true"
                               width="700"/>
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.submitComment}"
-                                 oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+                                 oncomplete="if (!args.validationFailed) PF('reviewDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 

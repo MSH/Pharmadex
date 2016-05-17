@@ -61,6 +61,7 @@ public class PIPOrderBn extends POrderBn {
                     pipOrder.setApplicantUser(applicantUser);
                     pipOrder.setApplicant(getApplicant());
 
+                    //pipProd = new PIPProd(new DosageForm(), new DosUom(), pipOrder, pipOrder.getCurrency().getCurrCD());
                     pOrderChecklists = new ArrayList<POrderChecklist>();
                     List<PIPOrderLookUp> allChecklist = findAllChecklists();
                     POrderChecklist eachCheckList;
@@ -120,7 +121,10 @@ public class PIPOrderBn extends POrderBn {
     @Override
     public void initAddProd() {
 //        Currency curr = currencyService.findCurrency(pipOrder.getCurrency().getId());
-        setPipProd(new PIPProd(new DosageForm(), new DosUom(), pipOrder, pipOrder.getCurrency().getCurrCD()));
+        DosUom uom = new DosUom();
+        uom.setUom("");
+        uom.setId(0);
+        setPipProd(new PIPProd(new DosageForm(), uom, pipOrder, pipOrder.getCurrency().getCurrCD()));
 
     }
 

@@ -105,7 +105,7 @@ public class ReviewInfoTable implements Serializable {
 
     public boolean isPastDue() {
         pastDue = false;
-        if(reviewStatus.equals(ReviewStatus.SUBMITTED)||reviewStatus.equals(ReviewStatus.ACCEPTED)||reviewStatus.equals(ReviewStatus.RFI_APP_RESPONSE)) {
+        if(reviewStatus.equals(ReviewStatus.SUBMITTED)||reviewStatus.equals(ReviewStatus.ACCEPTED)||reviewStatus.equals(ReviewStatus.FIR_APP_RESPONSE)) {
             pastDue = false;
         }else{
             Date currDate = new Date();

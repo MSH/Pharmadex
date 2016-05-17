@@ -108,11 +108,15 @@ public class ExportService implements Serializable {
             rowNo++;
             errorDetected = false;
             Product prod = new Product();
-            LicenseHolder lic = new LicenseHolder();
-            Applicant a = new Applicant();
+            LicenseHolder lic=null;
+            Applicant a = null;
+            Address addr = null;
+            Company co=null;
+            //LicenseHolder lic = new LicenseHolder();
+            //Applicant a = new Applicant();
+            //Address addr = new Address();
+            //Company co=new Company();
             ProdApplications pa = new ProdApplications();
-            Address addr = new Address();
-            Company co=new Company();
             pa.setProdAppType(ProdAppType.GENERIC);
             cell = row.getCell(curCol);   // A Presentation -   prod description
             if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC) cell.setCellType(Cell.CELL_TYPE_STRING);
@@ -157,31 +161,33 @@ public class ExportService implements Serializable {
                 prod.setDosStrength(String.valueOf(val));
             }
             curCol++;
-            cell = row.getCell(curCol);  //G Dosage Form
+            cell = row.getCell(curCol);  //I Dosage Form
             prod.setDosForm(findDosFormAcc(cell.getStringCellValue(),curCol));
 
             curCol++;
-            cell = row.getCell(curCol);//H prod_desc -  conttype
+            cell = row.getCell(curCol);//J prod_desc -  conttype
             if (cell != null) prod.setContType(cell.getStringCellValue());
             curCol++;
-            cell = row.getCell(curCol);  //I shelf_life(Months)
+            cell = row.getCell(curCol);  //K shelf_life(Months)
             if (cell != null) prod.setShelfLife(cell.getStringCellValue());
             curCol++;
-            cell = row.getCell(curCol);  //J Licence Holder/manufacturer
+            cell = row.getCell(curCol);  //L Licence Holder/manufacturer
             if (cell != null) lic = findLicHolderByName(cell.getStringCellValue());
             if (lic!=null) prod.setManufName(lic.getName());
             //if (cell != null) co=findCompany(cell.getStringCellValue());
             curCol++;
-            cell = row.getCell(curCol); //K Local Agent
+            cell = row.getCell(curCol); //M Local Agent 1
             if (cell != null) a= findApplicant(cell.getStringCellValue());
             curCol++;
-            cell = row.getCell(curCol);//L date
+            curCol++; // ommit 2 cols, only for dictionary
+            curCol++;
+            cell = row.getCell(curCol);//P date
             if (cell!=null)pa.setRegistrationDate(getDateValue(cell));
             curCol++;
-            cell = row.getCell(curCol); //M Expiry Date
+            cell = row.getCell(curCol); //Q Expiry Date
             if (cell!=null) pa.setRegExpiryDate(getDateValue(cell));
             curCol++;
-            cell = row.getCell(curCol);//N Manufacturer/Actual site/
+            cell = row.getCell(curCol);//R Manufacturer/Actual site/
             String addrStr="";
             if (cell != null) {
                 String all=cell.getStringCellValue();
@@ -190,18 +196,35 @@ public class ExportService implements Serializable {
                     co= findCompany(all);
                 }else{
                     co= findCompany(all.substring(0,pos));
+                    addr = co.getAddress();
                     if (co.getAddress()==null) {
                         addrStr = all.substring(pos + 1);
                         addr.setAddress1(addrStr);
+                        co.setAddress(addr);
                     }
                 }
             }
             curCol++;
-            cell = row.getCell(curCol); //Country of Origin
-            if (cell != null)     addr.setCountry(findCountry(cell.getStringCellValue(),curCol));
+ //           cell = row.getCell(curCol); //S Country of Origin
+ //           if (cell != null){
+ //               String cntrName = cell.getStringCellValue();
+ //               Country country = findCountry(cntrName,curCol);
+ //               addr.setCountry(country);
+ //           }
+            pa = (ProdApplications) updateRecInfo(pa);
+            List<User> aUsers = a.getUsers();
+            if (aUsers!=null){
+                if (aUsers.size()>0){
+                    User usr = aUsers.get(0);
+                    a.setCreatedBy(usr);
+                    pa.setApplicantUser(usr);
+                }
+            }
             if (errorDetected) return false;
-            if (addr.getAddress1()==null) addr.setAddress1(addr.getCountry().getCountryName());
-            co.setAddress(addr);
+//            addr = co.getAddress();
+//            if (addr.getAddress1()==null)
+//                addr.setAddress1(addr.getCountry().getCountryName());
+//            co.setAddress(addr);
             Product oldprod=findExistingProd(prod);
             if(oldprod!=null)  prod=oldprod;
             curCol++;
@@ -211,20 +234,23 @@ public class ExportService implements Serializable {
                 if (! cell.getStringCellValue().equalsIgnoreCase(""))importData=false;
             }
 
-            if (importData)   return addToDatabase(prod, co, a, pa, lic);
+            if (importData) return addToDatabase(currrow.getRowNum(),prod, co, a, pa, lic);
             else return true;
         }catch (Exception e){
             String colNo="";
             if (cell!=null)   colNo = String.valueOf(cell.getColumnIndex());
+            Cell erCell = currrow.createCell(curCol);
+            erCell.setCellValue(String.valueOf(rowNo)+" " + colNo + " " + e.getMessage());
+            ExcelTools.setCellBackground(currrow.getCell(curCol), IndexedColors.GREY_25_PERCENT.getIndex());
             System.out.println(String.valueOf(rowNo)+" " + colNo + " " + e.getMessage());
             return false;
         }
     }
 
 
-    public boolean addToDatabase(Product prod, Company co, Applicant a, ProdApplications pa, LicenseHolder lic) {
+    public boolean addToDatabase(int num,Product prod, Company co, Applicant a, ProdApplications pa, LicenseHolder lic) {
+        Cell t = currrow.createCell(lastCol);
         if(ifProdExist(prod,pa)==true){
-            Cell t = currrow.createCell(lastCol);
             t.setCellValue("Exist");
             return false;
         }
@@ -250,15 +276,15 @@ public class ExportService implements Serializable {
             pa.setRegState(RegState.REGISTERED);
             pa.setActive(true);
             pa.setCreatedBy(user);
+            String no="00000"+String.valueOf(num);
+            no=no.substring(no.length()-4,no.length());
+            pa.setProdRegNo(no+"/NMR/LD");
             if (prod.getAgeGroup()==null) prod.setAgeGroup(AgeGroup.BOTH);
             if(prod.getDrugType()==null)prod.setDrugType(ProdDrugType.PHARMACEUTICAL);
             if(prod.getProdCategory()==null) prod.setProdCategory(ProdCategory.HUMAN);
             if (prod.getCreatedBy()==null) prod.setCreatedBy(user);
-            if (co.getCreatedBy()==null) co.setCreatedBy(user);
-            co=companyDAO.save(co);
             if (a.getState()==null)a.setState(ApplicantState.REGISTERED);
             if (a.getApplicantType()==null) a.setApplicantType(at);
-            //      a=applicantDAO.saveApplicant(a);
             //set manufacrurer
             List<ProdCompany> comlist=new ArrayList<ProdCompany>();
             if (prod.getProdCompanies()!=null)comlist=prod.getProdCompanies();
@@ -270,7 +296,7 @@ public class ExportService implements Serializable {
             prod.setProdCompanies(comlist);
             String s = prodApplicationsDAO.saveApplication(pa);
             // arent_info
-            List<AgentInfo> agInfoList=lic.getAgentInfos();
+  /*          List<AgentInfo> agInfoList=lic.getAgentInfos();
             if (agInfoList==null) agInfoList=new  ArrayList<AgentInfo>();
             AgentInfo ai=new AgentInfo();
             ai.setApplicant(a);
@@ -283,7 +309,7 @@ public class ExportService implements Serializable {
             agInfoList.add(ai);
             //agentInfoDAO.save(ai);
             lic.setAgentInfos(agInfoList);
-
+*/
             //if (cell != null) lic.setFirstAgent(cell.getStringCellValue());
             List<Product> old=lic.getProducts();
             if (old==null) old=new ArrayList<Product>();
@@ -292,9 +318,10 @@ public class ExportService implements Serializable {
             if (lic.getAddress().getAddress1()==null)lic.setAddress(co.getAddress());
             if (lic.getCreatedBy()==null) lic.setCreatedBy(user);
             lic=licenseHolderDAO.save(lic);
-            Cell t=currrow.createCell(lastCol);
+            t=currrow.createCell(lastCol);
             t.setCellValue("Done");
         }  catch (Exception ex) {
+            t.setCellValue(ex.getMessage());
             return false;
         }
 
@@ -364,12 +391,14 @@ public class ExportService implements Serializable {
     private DosUom findDocUnit(String s, int col) {
         s=s.trim().toLowerCase();
         DosUom  r=dictionaryDAO.findDosUomByName(s);
+/*
         if (r!=null)return r;
         ExcelTools.setCellBackground(currrow.getCell(col), IndexedColors.GREY_25_PERCENT.getIndex());
         r=new DosUom();
         r.setUom(s);
         r.setDiscontinued(true);
         isNewUom=true;
+*/
         return r;
     }
 

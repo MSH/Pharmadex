@@ -161,7 +161,10 @@ public class ProcessProdBn implements Serializable {
     private void init() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            suspId = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+            if (facesContext.getExternalContext().getRequestParameterMap()!=null) {
+                suspId = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+                if ("null".equals(suspId)) suspId=null;
+            }
             if (suspId==null){
                 if (facesContext.getExternalContext().getFlash()!=null)
                     suspId = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");

@@ -103,11 +103,11 @@ public class ExportMBean implements Serializable {
         return true;
     }
 
-    public String startExport(boolean importData) {
+    public String startExport(boolean importData) throws FileNotFoundException {
         if (!initProcess()) setFilename("Initialisation failure");
         if (f.isFile()) try {
             wb = WorkbookFactory.create(new FileInputStream(filename));
-            Sheet sheet = wb.getSheetAt(3);
+            Sheet sheet = wb.getSheetAt(0);
             if (sheet == null) return "";
             boolean res;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -119,14 +119,19 @@ public class ExportMBean implements Serializable {
 
             }
             setIgnore(success + failure);
-            File outf = new File("C:/Temp/res.xlsx");
-            FileOutputStream out = new FileOutputStream(outf);
-            wb.write(out);
-            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidFormatException e) {
             setFilename("file not found");
+        } finally{
+            File outf = new File("C:/Temp/res.xlsx");
+            FileOutputStream out = new FileOutputStream(outf);
+            try {
+                wb.write(out);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else
             setFilename("file not found");

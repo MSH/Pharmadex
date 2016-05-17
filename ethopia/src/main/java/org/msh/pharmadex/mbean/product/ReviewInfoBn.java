@@ -326,7 +326,7 @@ public class ReviewInfoBn implements Serializable {
         try {
             reviewComment.setFinalSummary(false);
             reviewComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
-            reviewInfo.setReviewStatus(ReviewStatus.RFI_RECIEVED);
+            reviewInfo.setReviewStatus(ReviewStatus.FIR_RECIEVED);
             reviewInfo.setSubmitDate(new Date());
             revDeficiency.setAckComment(reviewComment);
             revDeficiency.setResolved(true);
@@ -361,7 +361,7 @@ public class ReviewInfoBn implements Serializable {
             revDeficiency.setUser(reviewComment.getUser());
             reviewInfo.setSubmitDate(new Date());
             getReviewComments().add(reviewComment);
-            reviewInfo.setReviewStatus(ReviewStatus.RFI_SUBMIT);
+            reviewInfo.setReviewStatus(ReviewStatus.FIR_SUBMIT);
             revDeficiency.setReviewInfo(reviewInfo);
             revDeficiency.setCreatedDate(new Date());
             RetObject retObject = reviewService.createDefLetter(revDeficiency);
@@ -569,11 +569,11 @@ public class ReviewInfoBn implements Serializable {
         if (reviewInfo != null) {
             if (reviewInfo.getReviewer() != null && userSession.getLoggedINUserID().equals(reviewInfo.getReviewer().getUserId())) {
                 if (reviewInfo.getReviewStatus().equals(ReviewStatus.ASSIGNED) || reviewInfo.getReviewStatus().equals(ReviewStatus.IN_PROGRESS)
-                        || reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED))
+                        || reviewInfo.getReviewStatus().equals(ReviewStatus.FIR_RECIEVED))
                     priReview = true;
                 else {
                     if (!reviewInfo.isSecreview() && (reviewInfo.getReviewStatus().equals(ReviewStatus.FEEDBACK) ||
-                            reviewInfo.getReviewStatus().equals(ReviewStatus.RFI_RECIEVED)))
+                            reviewInfo.getReviewStatus().equals(ReviewStatus.FIR_RECIEVED)))
                         priReview = true;
                     else
                         priReview = false;

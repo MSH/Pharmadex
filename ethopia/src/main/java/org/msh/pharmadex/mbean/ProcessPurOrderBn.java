@@ -30,6 +30,10 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
         pOrderBase = new PurOrder();
         try {
         	Object obj = FacesContext.getCurrentInstance().getExternalContext().getFlash().get("purOrderID");
+            if (obj==null){
+                if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()!=null)
+                    obj = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID");
+            }
         	if(obj != null){
         		Long purOrderID = Long.valueOf(obj.toString());
         		if (purOrderID != null) {

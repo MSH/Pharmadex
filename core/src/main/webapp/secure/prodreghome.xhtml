@@ -577,31 +577,6 @@
                     </p:panel>
                 </p:tab>
 
-                <!--
-        <p:tab id="appointment" title="#{msgs.appointment}" rendered="false">
-            <p:panel header="#{msgs.selappointment}">
-                <div align="right">
-                    <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="false"/>
-                    <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
-                                     ajax="false"/>
-                    <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
-                    <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
-                </div>
-                <p:schedule value="#{prodRegAppMbean.eventModel}" widgetVar="myschedule">
-
-                    <p:ajax event="dateSelect" listener="#{prodRegAppMbean.onDateSelect}" update=":event:eventDetails"
-                            oncomplete="PF('eventDialog').show()"/>
-                    <p:ajax event="eventSelect" listener="#{prodRegAppMbean.onEventSelect}" update=":event:eventDetails"
-                            oncomplete="PF('eventDialog').show()"/>
-                    <p:ajax event="eventMove" listener="#{prodRegAppMbean.onEventMove}" update=":reghome:growl"/>
-                    <p:ajax event="eventResize" listener="#{prodRegAppMbean.onEventResize}" update=":reghome:growl"/>
-
-                </p:schedule>
-
-            </p:panel>
-        </p:tab>
-        -->
-
                 <p:tab id="summary" title="Summary">
                     <p:panel header="Summary">
                         <ui:decorate template="/templates/prodappsummarytmpl.xhtml">

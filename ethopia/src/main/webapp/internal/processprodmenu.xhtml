@@ -39,7 +39,7 @@
                         icon="ui-icon-extlink"/>
             <p:menuitem value="Return to #{msgs.global_suspend}" icon="ui-icon-gear"
                         action="suspenddetail" ajax="false"
-                        rendered="#{userSession.head||processProdBn.suspended}">
+                        rendered="#{processProdBnET.showReturnToSuspensionButton}">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
                 <f:param name="suspDetailID" value="#{processProdBn.suspId}"/>
             </p:menuitem>

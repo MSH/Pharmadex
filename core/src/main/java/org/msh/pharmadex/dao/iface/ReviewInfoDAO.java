@@ -29,10 +29,10 @@ public interface ReviewInfoDAO extends JpaRepository<ReviewInfo, Long> {
 
     public List<ReviewInfo> findByProdApplications_IdOrderByAssignDateAsc(Long id);
 
-    @Query("select r from ReviewInfo r left join fetch r.reviewComments where r.prodApplications.id=?1 and (r.reviewer.userId = ?2 or r.secReviewer.userId = ?3)")
+    @Query("select r from ReviewInfo r where r.prodApplications.id=?1 and (r.reviewer.userId = ?2 or r.secReviewer.userId = ?3)")
     public List<ReviewInfo> findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(Long prodApplications_Id, Long reviewer_UserId, Long secReviewer_UserId);
 
-    @Query("select r from ReviewInfo r left join fetch r.reviewComments where r.prodApplications.id=?1 and (r.reviewer.userId = ?2)")
+    @Query("select r from ReviewInfo r where r.prodApplications.id=?1 and (r.reviewer.userId = ?2)")
     public List<ReviewInfo> findByProdApplications_IdAndReviewer_UserId(Long prodApplications_Id, Long reviewer_UserId);
 
     @Query("select rc from ReviewComment rc left join fetch rc.user where rc.reviewInfo.id = ?1 ")

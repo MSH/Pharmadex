@@ -368,7 +368,7 @@ public class ReviewService implements Serializable {
 		Product product = prodApp.getProduct();
 		try {
 			ReviewInfo ri = reviewInfoDAO.findOne(revDeficiency.getReviewInfo().getId());
-			ri.setReviewStatus  (ReviewStatus.RFI_SUBMIT);
+			ri.setReviewStatus  (ReviewStatus.FIR_SUBMIT);
 			//            invoice.setPaymentStatus(PaymentStatus.INVOICE_ISSUED);
 			File invoicePDF = File.createTempFile("" + product.getProdName() + "_fir", ".pdf");
 			JasperPrint jasperPrint = initRegCert(prodApp, revDeficiency);
@@ -465,7 +465,6 @@ public class ReviewService implements Serializable {
 	 */
 	public void updateReviewStatus(ReviewDetail reviewDetail){
 		//Statuses:NOT_ASSIGNED,ASSIGNED,IN_PROGRESS,SEC_REVIEW,SUBMITTED,FEEDBACK,ACCEPTED;
-		//Unknown to me: RFI_SUBMIT,RFI_APP_RESPONSE,RFI_RECIEVED,
 		ReviewInfo ri = reviewDetail.getReviewInfo();
 		User user = reviewDetail.getUpdatedBy();
 		if (userService.userHasRole(user,"Reviewer")){
@@ -645,7 +644,7 @@ public class ReviewService implements Serializable {
 			return "empty";
 
 		ReviewInfo reviewInfo = reviewInfoDAO.findById(revDeficiency.getReviewInfo().getId());
-		reviewInfo.setReviewStatus(ReviewStatus.RFI_APP_RESPONSE);
+		reviewInfo.setReviewStatus(ReviewStatus.FIR_APP_RESPONSE);
 		reviewInfo.setUpdatedDate(new Date());
 		if(reviewInfo.getReviewComments()==null){
 			reviewInfo.setReviewComments(new ArrayList<ReviewComment>());

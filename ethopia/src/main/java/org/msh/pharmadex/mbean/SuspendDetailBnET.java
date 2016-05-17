@@ -102,10 +102,12 @@ public class SuspendDetailBnET implements Serializable {
     private void init() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            String suspID = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
+            String suspID=null;
+            if (facesContext.getExternalContext().getFlash()!=null)
+                 suspID = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");
             if (suspID==null){
-                if (facesContext.getExternalContext().getFlash()!=null)
-                    suspID = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");
+                if (facesContext.getExternalContext().getRequestParameterMap()!=null)
+               suspID = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
             }
             if (suspID==null){// this is new suspension record
                 Long prodAppID = Long.valueOf(facesContext.getExternalContext().getRequestParameterMap().get("prodAppID"));
@@ -817,13 +819,15 @@ public class SuspendDetailBnET implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
-    public String showProductDetails(){
-        String res = submitSuspend();
-        if (!"".equals(res)) {
-            facesContext.getExternalContext().getRequestParameterMap().put("prodAppID",String.valueOf(suspDetail.getId()));
-            return "/internal/processreg";
+    public String showProductDetails() {
+        String res = "";
+        if (suspDetail.getId() == null) {
+            res = submitSuspend();
+            if ("".equals(res)) return "";
+//        facesContext.getExternalContext().getFlash().put("prodAppID", String.valueOf(suspDetail.getProdApplications().getId()));
+            facesContext.getExternalContext().getFlash().put("suspDetailID", String.valueOf(suspDetail.getId()));
         }
-        return "";
+        return "/internal/processreg";
     }
 
 

@@ -62,15 +62,17 @@ public class PurOrderBn extends POrderBn {
     @PostConstruct
     private void init() {
         String purOrderSt = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID");
-        if (purOrderSt != null && !purOrderSt.equals("")) {
-            Long purOrderID = Long.valueOf(purOrderSt);
-            purOrder = getpOrderService().findPurOrderEager(purOrderID);
-            if (purOrder.getCurrency() == null)
-                purOrder.setCurrency(new Currency());
-            pOrderChecklists = purOrder.getpOrderChecklists();
-            purProds = purOrder.getPurProds();
-            setApplicantUser(purOrder.getApplicantUser());
-            setApplicant(purOrder.getApplicantUser().getApplicant());
+        if (purOrderSt != null){
+            if (!purOrderSt.equals("")) {
+                Long purOrderID = Long.valueOf(purOrderSt);
+                purOrder = getpOrderService().findPurOrderEager(purOrderID);
+                if (purOrder.getCurrency() == null)
+                    purOrder.setCurrency(new Currency());
+                pOrderChecklists = purOrder.getpOrderChecklists();
+                purProds = purOrder.getPurProds();
+                setApplicantUser(purOrder.getApplicantUser());
+                setApplicant(purOrder.getApplicantUser().getApplicant());
+            }
         } else {
             purOrder = new PurOrder(new Currency());
             if (getUserSession().isCompany()) {

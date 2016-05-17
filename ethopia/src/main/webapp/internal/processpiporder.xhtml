@@ -421,7 +421,7 @@
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{processPIPOrderBn.submitComment}"
-                                 oncomplete="PF('reviewDlg').hide()" ajax="false"/>
+                                 oncomplete="if (!args.validationFailed) PF('reviewDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 

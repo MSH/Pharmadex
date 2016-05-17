@@ -108,6 +108,12 @@ public class ProcessProdBnET implements Serializable {
         return null;
     }
 
+    public boolean isShowReturnToSuspensionButton(){
+        if (!userSession.isHead()) return false;
+        if (processProdBn.getSuspId()==null) return false;
+        return true;
+    }
+
     public boolean isShowFeedBackButton() {
            showFeedBackButton = false;// option have canceled
 //        showFeedBackButton = userSession.isModerator()

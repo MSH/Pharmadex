@@ -250,7 +250,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
         List<ProdApplications> prodApplicationses = null;
         HashMap<String, Object> params = new HashMap<String, Object>();
         List<ReviewStatus> revState = new ArrayList<ReviewStatus>();
-        revState.add(ReviewStatus.RFI_SUBMIT);
+        revState.add(ReviewStatus.FIR_SUBMIT);
         params.put("reviewState", revState);
         List<RegState> regState = new ArrayList<RegState>();
         regState.add(RegState.REVIEW_BOARD);
