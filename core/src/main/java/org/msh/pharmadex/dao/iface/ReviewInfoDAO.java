@@ -37,5 +37,9 @@ public interface ReviewInfoDAO extends JpaRepository<ReviewInfo, Long> {
 
     @Query("select rc from ReviewComment rc left join fetch rc.user where rc.reviewInfo.id = ?1 ")
     List<ReviewComment> findReviewComments(Long id);
+    
+    @Query("select r from ReviewInfo r  where r.prodApplications.id=?1 and (r.reviewer.userId = ?2)")
+    public List<ReviewInfo> findByProdApplications_IdAndR_UserId(Long prodApplications_Id, Long r_UserId);
+
 }
 
