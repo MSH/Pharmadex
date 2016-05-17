@@ -708,7 +708,7 @@ public class ProdApplicationsService implements Serializable {
         ArrayList<RevDeficiency> activeDefs = new ArrayList<RevDeficiency>();
 
         for(ReviewInfo ri : revInfos){
-            if(ri.getReviewStatus().equals(ReviewStatus.RFI_SUBMIT)){
+            if(ri.getReviewStatus().equals(ReviewStatus.FIR_SUBMIT)){
                 for(RevDeficiency rd : ri.getRevDeficiencies()){
                     if(rd.getAckDate()==null)
                         activeDefs.add(rd);
