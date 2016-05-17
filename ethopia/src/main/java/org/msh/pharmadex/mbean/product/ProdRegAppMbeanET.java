@@ -84,7 +84,6 @@ public class ProdRegAppMbeanET implements Serializable {
             if (licenseHolder != null && prodRegAppMbean.getProduct() != null) {
                 retObject = licenseHolderService.saveProduct(licenseHolder, product);
                 licenseHolder = (LicenseHolder) retObject.getObj();
-
             }
             if (fastTrackMedService.genmedExists(product.getGenName())) {
                 prodApplications.setFastrack(true);
@@ -96,7 +95,6 @@ public class ProdRegAppMbeanET implements Serializable {
             ex.printStackTrace();
         }
     }
-
 
     public LicenseHolder getLicenseHolder() {
         if (licenseHolder == null) {
