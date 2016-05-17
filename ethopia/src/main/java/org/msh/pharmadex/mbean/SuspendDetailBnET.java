@@ -294,7 +294,7 @@ public class SuspendDetailBnET implements Serializable {
         User user = suspDetail.getReviewer();
         List<ReviewInfo> res = null;
         if (user!=null){
-            res = suspendService.findReviewList(user.getUserId(),suspDetail.getProdApplications().getId());
+            res = suspendService.findReviewListNew(user.getUserId(),suspDetail.getProdApplications().getId());
         }
         return res;
     }
