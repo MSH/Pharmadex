@@ -47,7 +47,6 @@ import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.CompanyService;
-import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.InnService;
 import org.msh.pharmadex.service.ProdApplicationsService;
@@ -487,7 +486,7 @@ public class ProdRegAppMbean implements Serializable {
     @Transactional
     public void saveApp() {
         context = FacesContext.getCurrentInstance();
-        product.setUseCategories(useCategories);
+        product.setUseCategories(useCategories);	
         try {
 //            prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
             RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
@@ -1058,5 +1057,4 @@ public class ProdRegAppMbean implements Serializable {
     public void setShowfull(boolean showfull) {
         this.showfull = showfull;
     }
-
 }

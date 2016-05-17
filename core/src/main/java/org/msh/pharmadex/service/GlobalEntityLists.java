@@ -1,17 +1,33 @@
 package org.msh.pharmadex.service;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
 import org.msh.pharmadex.dao.CustomFeeSchDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.AdminRoute;
+import org.msh.pharmadex.domain.AmdmtCategory;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.ApplicantType;
+import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.Company;
+import org.msh.pharmadex.domain.Country;
+import org.msh.pharmadex.domain.Currency;
+import org.msh.pharmadex.domain.DosUom;
+import org.msh.pharmadex.domain.DosageForm;
+import org.msh.pharmadex.domain.Excipient;
+import org.msh.pharmadex.domain.FeeSchedule;
+import org.msh.pharmadex.domain.Inn;
+import org.msh.pharmadex.domain.PharmClassif;
+import org.msh.pharmadex.domain.PharmacySite;
+import org.msh.pharmadex.domain.SRA;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.ApplicantState;
-import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Author: usrivastava
@@ -186,6 +202,9 @@ public class GlobalEntityLists implements Serializable {
         return JsfUtils.completeSuggestions(query, getPharmClassifs());
     }
 
+    public List<DosUom> completeDosUom(String query) {
+    	return JsfUtils.completeSuggestions(query, getDosUoms());
+    }
 
     public List<AdminRoute> getAdminRoutes() {
         if (adminRoutes == null)

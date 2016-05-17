@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.IOUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.ApplicantDAO;

@@ -45,6 +45,14 @@ public class DosUom implements Serializable {
     public void setDiscontinued(boolean discontinued) {
         this.discontinued = discontinued;
     }
+    
+    public DosUom() {
+    }
+
+    public DosUom(String uom) {
+        this.uom = uom;
+    }
+    
 
     @Override
     public String toString() {
