@@ -96,7 +96,14 @@ public class SuspendService implements Serializable {
             res=(ArrayList<ReviewInfo>) li;
         return res;
     }
-
+    public List<ReviewInfo> findReviewListNew(long userId,long appId){
+        ArrayList<ReviewInfo> res = new ArrayList<ReviewInfo>();
+        //ReviewInfo reviewResult = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(userId, appId);
+        List<ReviewInfo> li =reviewInfoDAO.findByProdApplications_IdAndR_UserId(appId,userId);
+        if (li!=null)
+            res=(ArrayList<ReviewInfo>) li;
+        return res;
+    }
     public void createSuspLetter() throws SQLException, IOException, JRException {
         File invoicePDF = File.createTempFile("" + prodApplications.getProduct().getProdName() + "_suspension_agent", ".pdf");
         String fileName = invoicePDF.getName();
