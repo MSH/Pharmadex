@@ -43,7 +43,7 @@
         <p:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
         <p:autoComplete id="dosUnit" value="#{prodRegAppMbean.product.dosUnit}"
                         completeMethod="#{globalEntityLists.completeDosUom}" dropdown="true"
-                        var="it" itemLabel="#{it.uom}" itemValue="#{it.id}" forceSelection="false"
+                        var="it" itemLabel="#{it.uom}" itemValue="#{it}" forceSelection="false"
                         converter="#{dosUomConverter}"
                         required="true"
                         requiredMessage="#{msgs.valid_dosUom}">
