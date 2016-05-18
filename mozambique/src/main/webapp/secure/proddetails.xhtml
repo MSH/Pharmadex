@@ -55,7 +55,7 @@
                            itemValue="#{dosUom.id}"/>
         </p:selectOneMenu>
         <p:message for="dosUnit" showSummary="true" showDetail="false"/>
-
+        
         <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
         <p:inputText id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
                      required="true" requiredMessage="#{msgs.dos_strength}: Value required">
