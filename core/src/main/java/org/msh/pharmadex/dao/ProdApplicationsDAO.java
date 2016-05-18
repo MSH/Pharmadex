@@ -176,11 +176,36 @@ public class ProdApplicationsDAO implements Serializable {
 
     @Transactional
     public ProdApplications updateApplication(ProdApplications prodApplications) {
-        //prodApplications = entityManager.merge(prodApplications);
+        if(prodApplications != null && prodApplications.getProduct() != null){
+    		if(prodApplications.getProduct().getDosUnit() != null){
+    			DosUom du = prodApplications.getProduct().getDosUnit();
+        		if(du.getId() == 0){
+        			// verification
+        			DosUom du2 = findDosUom(du.getUom());
+        			if(du2 == null)
+        				entityManager.persist(du);
+        			else
+        				du = du2;
+        			prodApplications.getProduct().setDosUnit(du);
+        		}
+        	}
+    	}
         prodApplications = entityManager.merge(prodApplications);
         return prodApplications;
     }
 
+    public DosUom findDosUom(String uom) {
+    	List<DosUom> list = entityManager.createQuery("select du from DosUom du")
+                .getResultList();
+    	if(list != null){
+    		for(DosUom d:list){
+    			if(d.getUom().equals(uom))
+    				return d;
+    		}
+    	}
+        return null;
+    }
+    
     public List<Company> findCompanies(Long prodId) {
         return entityManager.createQuery("select c from Company c where c.product.id = :prodId ")
                 .setParameter("prodId", prodId)

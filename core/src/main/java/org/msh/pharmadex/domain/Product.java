@@ -49,8 +49,7 @@ public class Product extends CreationDetail implements Serializable {
     @Column(name = "dosage_strength")
     private String dosStrength;
 
-    //@ManyToOne(fetch = FetchType.EAGER)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOSUNIT_ID")
     @NotAudited
     private DosUom dosUnit;

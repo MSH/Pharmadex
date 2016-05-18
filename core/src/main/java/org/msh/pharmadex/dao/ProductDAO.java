@@ -2,6 +2,7 @@ package org.msh.pharmadex.dao;
 
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.DosUom;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
@@ -43,6 +44,13 @@ public class ProductDAO implements Serializable {
 
     @Transactional
     public String saveProduct(Product product) {
+    	if(product != null && product.getDosUnit() != null){
+    		if(product.getDosUnit().getId() == 0){
+    			DosUom du = product.getDosUnit();
+    			entityManager.persist(du);
+    			product.setDosUnit(du);
+    		}
+    	}
         entityManager.persist(product);
         return "persisted";
     }
@@ -50,35 +58,8 @@ public class ProductDAO implements Serializable {
     @Transactional
     public Product updateProduct(Product product) {
         try {
-
-            Product prod = entityManager.merge(product);
-//            Hibernate.initialize(prod.getInns());
-//            Hibernate.initialize(prod.getAtcs());
-//            Hibernate.initialize(prod.getExcipients());
-////        Hibernate.initialize(prod.getCompanies());
-//            Hibernate.initialize(prod.getProdApplications());
-//            Hibernate.initialize(prod.getApplicant());
-//            if (prod.getProdApplications() != null) {
-//                Hibernate.initialize(prod.getProdApplications().getInvoices());
-//                Hibernate.initialize(prod.getProdApplications().getComments());
-//                Hibernate.initialize(prod.getProdApplications().getMails());
-//                Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
-//                Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
-//                Hibernate.initialize(prod.getProdApplications().getTimeLines());
-//                Hibernate.initialize(prod.getProdApplications().getPricing());
-//                Hibernate.initialize(prod.getProdApplications().getForeignAppStatus());
-//                Hibernate.initialize(prod.getProdApplications().getModerator());
-//
-//                if (prod.getProdApplications().getReviews() != null)
-//                    Hibernate.initialize(prod.getProdApplications().getReviews());
-//                if (prod.getProdApplications().getPricing() != null) {
-//                    Hibernate.initialize(prod.getProdApplications().getPricing().getDrugPrices());
-//                }
-//                if (prod.getProdCompanies() != null) {
-//                    Hibernate.initialize(prod.getProdCompanies());
-//                }
-//            }
-            return prod;
+        	Product prod = entityManager.merge(product);
+        	return prod;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -159,23 +140,10 @@ public class ProductDAO implements Serializable {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> root = query.from(Product.class);
-//        Join<Product, ProdApplications> prodAppJoin = root.join("prodApplications");
-//        Join<Product, Atc> atcJoin = root.join("atcs");
-//        Join<Product, Company> companyJoin = root.join("companies");
-
-//        root.fetch("prodApplications", JoinType.LEFT);
-//        root.fetch("inns", JoinType.LEFT);
-//        root.fetch("excipients", JoinType.LEFT);
-//        root.fetch("atcs", JoinType.LEFT);
-//        root.fetch("prodCompanies", JoinType.LEFT);
-//        root.fetch("prodApplications", JoinType.LEFT);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
         Predicate p = cb.equal(root.get("id"), prodId);
         predicateList.add(p);
-//        Predicate p2 = cb.equal(prodAppJoin.get("active"), true);
-//        predicateList.add(p2);
-
 
         query.where(p);
         Product prod = entityManager.createQuery(query).getSingleResult();
@@ -187,31 +155,10 @@ public class ProductDAO implements Serializable {
         Hibernate.initialize(prod.getDosForm());
         Hibernate.initialize(prod.getPricing());
         Hibernate.initialize(prod.getUseCategories());
-
-
-//        Hibernate.initialize(prod.getProdApplications());
-//        Hibernate.initialize(prod.getApplicant());
-
-//        if (prod.getProdApplications() != null) {
-//            Hibernate.initialize(prod.getProdApplications().getInvoices());
-//            Hibernate.initialize(prod.getProdApplications().getComments());
-//            Hibernate.initialize(prod.getProdApplications().getMails());
-//            Hibernate.initialize(prod.getProdApplications().getProdAppAmdmts());
-//            Hibernate.initialize(prod.getProdApplications().getProdAppChecklists());
-//            Hibernate.initialize(prod.getProdApplications().getTimeLines());
-//            for (TimeLine timeLine : prod.getProdApplications().getTimeLines()) {
-//                Hibernate.initialize(timeLine.getUser());
-//            }
-//            Hibernate.initialize(prod.getProdApplications().getPricing());
-//            Hibernate.initialize(prod.getProdApplications().getModerator());
-//            Hibernate.initialize(prod.getProdApplications().getForeignAppStatus());
-//            Hibernate.initialize(prod.getProdApplications().getUser());
-//            if (prod.getProdApplications().getReviews() != null)
-//                Hibernate.initialize(prod.getProdApplications().getReviews());
+        
         if (prod.getPricing() != null) {
             Hibernate.initialize(prod.getPricing().getDrugPrices());
         }
-//        }
         return prod;
 
 
