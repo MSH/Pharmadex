@@ -204,6 +204,7 @@ public class ExportService implements Serializable {
                     }
                 }
             }
+          
             curCol++;
  //           cell = row.getCell(curCol); //S Country of Origin
  //           if (cell != null){
@@ -406,8 +407,11 @@ public class ExportService implements Serializable {
         s=s.trim();
         Company r= dictionaryDAO.findCompanyByName(s);
         if (r!=null)return r;
-        r=new Company();
-        r.setCompanyName(s);
+        //r=new Company();
+        //r.setCompanyName(s);
+        ExcelTools.setCellBackground(currrow.getCell(17), IndexedColors.GREY_25_PERCENT.getIndex());
+        errorDetected=true;
+    
         return r;
     }
     // /check dictionary methods
