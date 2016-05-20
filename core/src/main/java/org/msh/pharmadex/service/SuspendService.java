@@ -4,38 +4,61 @@
 
 package org.msh.pharmadex.service;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.SuspendDAO;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.domain.Company;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.ReviewComment;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.SuspComment;
+import org.msh.pharmadex.domain.SuspDetail;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.CompanyType;
+import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.*;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Author: usrivastava
  */
 @Service
 public class SuspendService implements Serializable {
-
 
     @Autowired
     private SuspendDAO suspendDAO;
@@ -45,9 +68,6 @@ public class SuspendService implements Serializable {
 
     @Autowired
     private ProdApplicationsService prodApplicationsService;
-
-    @Autowired
-    private GlobalEntityLists globalEntityLists;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -60,6 +80,9 @@ public class SuspendService implements Serializable {
 
     @Autowired
     private ReviewService reviewService;
+    
+    @Autowired
+	private UtilsByReports utilsByReports;
 
     private ProdApplications prodApplications;
     private SuspDetail suspDetail;
@@ -170,7 +193,6 @@ public class SuspendService implements Serializable {
         String emailBody = suspDetail.getReason();
         Product product = suspDetail.getProdApplications().getProduct();
         Connection conn = entityManager.unwrap(Session.class).connection();
-        HashMap param = new HashMap();
         List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
         ProdApplications prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
         String manufName = product.getManufName();
@@ -187,14 +209,18 @@ public class SuspendService implements Serializable {
                 }
             }
         }
-        param.put("id", prodApplications.getId());
-        param.put("manufName", manufName);
-        //param.put("reason", emailBody);
-        param.put("batchNo", suspDetail.getBatchNo());
+        
+        HashMap<String, Object> param = new HashMap<String, Object>();
+		utilsByReports.init(param, prodApplications, product);
+
+		utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+
+		param.put("batchNo", suspDetail.getBatchNo());
         param.put("DecisionDate",suspDetail.getDecisionDate());
+
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         conn.close();
-
 
         return jasperPrint;
     }

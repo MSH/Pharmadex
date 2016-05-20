@@ -4,9 +4,22 @@
 
 package org.msh.pharmadex.service;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -16,7 +29,6 @@ import org.msh.pharmadex.domain.DosageForm;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
@@ -27,16 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.*;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Author: usrivastava
@@ -44,6 +49,7 @@ import java.util.List;
 @Service
 public class SampleTestService implements Serializable {
 
+	private static final long serialVersionUID = -4443722066709166235L;
 
 	@Autowired
 	private SampleTestDAO sampleTestDAO;
@@ -51,12 +57,11 @@ public class SampleTestService implements Serializable {
 	@Autowired
 	private ProdApplicationsService prodApplicationsService;
 
-	@Autowired
-	private GlobalEntityLists globalEntityLists;
 	@PersistenceContext
 	private EntityManager entityManager;
+	
 	@Autowired
-	private DosageFormService dosageFormService;
+	private UtilsByReports utilsByReports;
 
 	@Transactional
 	public SampleTest findSampleTest(Long sampleTestID) {
@@ -110,29 +115,30 @@ public class SampleTestService implements Serializable {
 	}
 
 	public JasperPrint initRegCert(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException, SQLException {
-		String emailBody = sampleComment.getComment();
 		Product product = prodApplications.getProduct();
 		URL resource = getClass().getResource("/reports/sample_request.jasper");
-		//        Session hibernateSession = entityManager.unwrap(Session.class);
 		Connection conn = entityManager.unwrap(Session.class).connection();
-		HashMap param = new HashMap();
 		List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
 		prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
-		param.put("id", prodApplications.getId());
-		param.put("sampleQty", quantity);
-		param.put("appName", prodApplications.getApplicant().getAppName());
-		param.put("prodName", product.getProdName());
-		param.put("prodStrength", product.getDosStrength()+product.getDosUnit());
-		param.put("dosForm", product.getDosForm().getDosForm());
-		param.put("manufName", product.getManufName());
-		param.put("appType", "New Medicine Registration");
-		param.put("subject", "Sample request letter for  " + product.getProdName());
-		param.put("address1", prodApplications.getApplicant().getAddress().getAddress1());
-		param.put("address2", prodApplications.getApplicant().getAddress().getAddress2());
-		param.put("country", prodApplications.getApplicant().getAddress().getCountry().getCountryName());
-		//        param.put("cso",user.getName());
+		
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		utilsByReports.init(param, prodApplications, product);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, "New Medicine Registration", true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SUBJECT, "Sample request letter for  ", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
+		
 		param.put("date", new Date());
-		param.put("appNumber", prodApplications.getProdAppNo());
+
 		if(resource != null){
 			JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
 			conn.close();
