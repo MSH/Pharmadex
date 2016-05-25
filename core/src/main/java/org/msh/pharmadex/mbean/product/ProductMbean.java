@@ -1,14 +1,15 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.service.ProductService;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
-import java.io.Serializable;
-import java.util.List;
+
+import org.msh.pharmadex.service.ProductService;
 
 /**
  * Author: usrivastava
@@ -20,6 +21,7 @@ public class ProductMbean implements Serializable {
 
     @ManagedProperty(value = "#{productService}")
     private ProductService productService;
+    
     private List<ProdTable> products;
     private List<ProdTable> filteredProducts;
     private List<ProdTable> suspendedProds;
