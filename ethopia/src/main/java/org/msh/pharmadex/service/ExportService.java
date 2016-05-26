@@ -156,10 +156,7 @@ public class ExportService implements Serializable {
             curCol++;
             cell = row.getCell(curCol); //h - DosUnit
             prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
-            if (prod.getDosUnit().getUom().equalsIgnoreCase("%")) {
-                Double val=new Double(prod.getDosStrength())*100;
-                prod.setDosStrength(String.valueOf(val));
-            }
+           
             curCol++;
             cell = row.getCell(curCol);  //I Dosage Form
             prod.setDosForm(findDosFormAcc(cell.getStringCellValue(),curCol));
@@ -316,7 +313,8 @@ public class ExportService implements Serializable {
             if (old==null) old=new ArrayList<Product>();
             old.add(prod);
             lic.setProducts(old);
-            if (lic.getAddress().getAddress1()==null)lic.setAddress(co.getAddress());
+            if(lic.getAddress()==null)lic.setAddress(co.getAddress());
+            else             if (lic.getAddress().getAddress1()==null)lic.setAddress(co.getAddress());
             if (lic.getCreatedBy()==null) lic.setCreatedBy(user);
             lic=licenseHolderDAO.save(lic);
             t=currrow.createCell(lastCol);
@@ -343,7 +341,7 @@ public class ExportService implements Serializable {
 
     }
     private Product findExistingProd(Product prod) {
-        // check by name, docform and dosagepl
+        // check by name, , proddesc, docform and dosagepl
         Product p=null;
         ProductFilter filter=new ProductFilter();
         filter.setProdName(prod.getProdName());
@@ -354,7 +352,10 @@ public class ExportService implements Serializable {
         if (pl.size()==0) return p;
         for (int i=0;i<pl.size();i++){
             p=pl.get(i);
-            if(p.getDosForm()==prod.getDosForm() & p.getDosUnit()==prod.getDosUnit()& p.getDosStrength().equalsIgnoreCase(prod.getDosStrength())) return p;
+               if(p.getDosForm()==prod.getDosForm() & p.getDosUnit()==prod.getDosUnit()&
+            		p.getDosStrength().equalsIgnoreCase(prod.getDosStrength()) & 
+            		p.getProdDesc().equalsIgnoreCase(prod.getProdDesc()) & p.getManufName().equalsIgnoreCase(prod.getManufName()))  return p;
+           
         }
         return null;
     }
