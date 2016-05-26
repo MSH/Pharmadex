@@ -45,8 +45,10 @@ public class PIPOrderBn extends POrderBn {
             if (pipOrderst != null && !pipOrderst.equals("")) {
                 Long pipOrderID = Long.valueOf(pipOrderst);
                 pipOrder = getpOrderService().findPIPOrderByID(pipOrderID);
-                if (pipOrder.getCurrency() == null)
+                if (pipOrder.getCurrency() == null){
                     pipOrder.setCurrency(new Currency());
+                 
+                }
                 pOrderChecklists = pipOrder.getpOrderChecklists();
                 pipProds = pipOrder.getPipProds();
                 setApplicantUser(pipOrder.getApplicantUser());
@@ -60,8 +62,9 @@ public class PIPOrderBn extends POrderBn {
                     pipOrder.setCreatedBy(applicantUser);
                     pipOrder.setApplicantUser(applicantUser);
                     pipOrder.setApplicant(getApplicant());
-
-                    //pipProd = new PIPProd(new DosageForm(), new DosUom(), pipOrder, pipOrder.getCurrency().getCurrCD());
+//  26.05
+                    pipOrder.getCurrency().setCurrCD("US Dollar");
+                    pipProd = new PIPProd(new DosageForm(), new DosUom(), pipOrder, pipOrder.getCurrency().getCurrCD());
                     pOrderChecklists = new ArrayList<POrderChecklist>();
                     List<PIPOrderLookUp> allChecklist = findAllChecklists();
                     POrderChecklist eachCheckList;
@@ -120,11 +123,12 @@ public class PIPOrderBn extends POrderBn {
 
     @Override
     public void initAddProd() {
-//        Currency curr = currencyService.findCurrency(pipOrder.getCurrency().getId());
+   //Currency curr = currencyService.findCurrency(pipOrder.getCurrency().getId());
         DosUom uom = new DosUom();
         uom.setUom("");
         uom.setId(0);
-        setPipProd(new PIPProd(new DosageForm(), uom, pipOrder, pipOrder.getCurrency().getCurrCD()));
+        //setPipProd(new PIPProd(new DosageForm(), uom, pipOrder, pipOrder.getCurrency().getCurrCD()));
+        setPipProd(pipProd);
 
     }
 
