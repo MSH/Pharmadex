@@ -163,7 +163,9 @@ public class POrderService implements Serializable {
     public Double calculateGrandTotal(List pProdBaseList, Double freight){
         if(pProdBaseList == null)
             return 0.0;
+        if (freight==null) freight=(double) 0;
         Double grandTotal = freight;
+        
         for(Object obj : pProdBaseList){
             if(obj!=null){
                 PProdBase pProdBase = (PProdBase) obj;
