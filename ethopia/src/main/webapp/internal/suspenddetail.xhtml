@@ -69,7 +69,7 @@
 
                         <h:panelGrid columns="2" columnClasses="label value" cellpadding="10px" cellspacing="10px">
                             <h:outputText value="#{msgs.global_curr_status}" styleClass="label"/>
-                            <h:outputText value="#{msgs[suspendDetailBnET.suspDetail.suspensionStatus.key]}"
+                            <h:outputText value="#{msgs[suspendDetailBnET.suspDetail.suspensionStatus.key]} (#{suspendDetailBnET.suspDetail.decision})"
                                           styleClass="hint"/>
 
                             <p:outputLabel value="#{msgs.moderator_name}" styleClass="label"/>

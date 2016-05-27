@@ -169,12 +169,12 @@ public class ExportService implements Serializable {
             if (cell != null) prod.setShelfLife(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol);  //L Licence Holder/manufacturer
-            if (cell != null) lic = findLicHolderByName(cell.getStringCellValue());
+            if (cell != null) lic = findLicHolderByName(getCellValue(cell));
             if (lic!=null) prod.setManufName(lic.getName());
             //if (cell != null) co=findCompany(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol); //M Local Agent 1
-            if (cell != null) a= findApplicant(cell.getStringCellValue());
+            if (cell != null) a= findApplicant(getCellValue(cell));
             curCol++;
             curCol++; // ommit 2 cols, only for dictionary
             curCol++;
@@ -187,7 +187,7 @@ public class ExportService implements Serializable {
             cell = row.getCell(curCol);//R Manufacturer/Actual site/
             String addrStr="";
             if (cell != null) {
-                String all=cell.getStringCellValue();
+                String all=getCellValue(cell);
                 int pos=all.indexOf(",");
                 if (pos==-1) {
                     co= findCompany(all);

@@ -92,6 +92,7 @@
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                     <p:inputText id="comment" value="#{purOrderBn.purOrder.comment}"
+                                 required="true"
                                  readonly="#{purOrderBn.showWithdrawn}"/>
                     <p:message for="comment" showSummary="true"/>
 
@@ -373,6 +374,8 @@
                     <h:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
                     <p:autoComplete value="#{purOrderBn.product}" id="basicPojo" dropdown="true"
                                     completeMethod="#{purOrderBn.completeProduct}"
+                                    forceSelection="true"
+                                    scrollHeight="200"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}"
                             >

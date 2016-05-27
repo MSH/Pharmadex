@@ -90,6 +90,7 @@
 
                     <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
                     <p:inputText id="comment" value="#{pIPOrderBn.pipOrder.comment}"
+                                 required="true"
                                  readonly="#{!pIPOrderBn.showSubmit}"/>
                     <p:message for="comment" showSummary="true"/>
 

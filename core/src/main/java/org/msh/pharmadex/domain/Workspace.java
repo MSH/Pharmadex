@@ -26,7 +26,7 @@ public class Workspace extends CreationDetail implements Serializable {
     private String defaultLocale;
 
     @Column
-    private int prodRegDuration;
+    private int prodRegDuration=5;
 
     @Column
     private int pipRegDuration;

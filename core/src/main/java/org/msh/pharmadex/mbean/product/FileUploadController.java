@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean.product;
 
+import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
@@ -7,6 +8,7 @@ import org.msh.pharmadex.domain.Attachment;
 import org.msh.pharmadex.domain.Invoice;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -22,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -43,6 +46,9 @@ public class FileUploadController implements Serializable {
 
     @ManagedProperty(value = "#{userService}")
     UserService userService;
+
+    @ManagedProperty(value="#{prodApplicationsService}")
+    ProdApplicationsService prodApplicationsService;
 
     private ArrayList<Attachment> attachments;
     private UploadedFile file;
@@ -135,15 +141,15 @@ public class FileUploadController implements Serializable {
         return download;
     }
 
-    public StreamedContent regCertDownload() {
+    public StreamedContent regCertDownload() throws SQLException, IOException, JRException {
         ProdApplications prodApplications = processProdBn.getProdApplications();
         if(prodApplications != null){
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 	        Calendar c = Calendar.getInstance();
 	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
-	//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
 	        return download;
         }
+
         return null;
     }
 
@@ -220,4 +226,14 @@ public class FileUploadController implements Serializable {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+
 }
