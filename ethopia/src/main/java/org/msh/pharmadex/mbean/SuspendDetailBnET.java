@@ -246,7 +246,7 @@ public class SuspendDetailBnET implements Serializable {
                     reviewService.saveReviewInfo(review);
                 }
             }
-            if (review!=null){//still null, creates
+            if (review==null){//still null, creates
                 review = new ReviewInfo();
                 review.setReviewer(reviewer);
                 review.setProdApplications(suspDetail.getProdApplications());

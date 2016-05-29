@@ -680,7 +680,8 @@ public class ReviewService implements Serializable {
 
     public ReviewComment findSuspendReviewComment(ReviewInfo reviewInfo,User user){
         if (reviewInfo==null) return null;
-        List<ReviewComment> comments = reviewInfo.getReviewComments();
+        List<ReviewComment> comments = findReviewComments(reviewInfo.getId());
+        reviewInfo.setReviewComments(comments);
         if (comments!=null&&comments.size()>0){
             for(ReviewComment comment:comments){
                 if (comment.getUser().getUserId()==user.getUserId()){

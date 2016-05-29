@@ -264,7 +264,7 @@ public class SuspendService implements Serializable {
         param.put("reason", suspDetail.getFinalSumm());
         strDate = sdf.format(suspDetail.getDecisionDate());
         param.put("DecisionDate",strDate);
-        param.put("decision",suspDetail.getDecision());
+        param.put("decision",suspDetail.getDecision().toString());
         strDate = sdf.format(Calendar.getInstance().getTime());
         param.put("date",strDate);
         JasperPrint jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);

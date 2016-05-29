@@ -188,7 +188,7 @@ public class ReviewInfo extends CreationDetail implements Serializable {
     }
 
     public boolean isSubmitted() {
-        if (reviewStatus.equals(ReviewStatus.SUBMITTED))
+        if (reviewStatus.equals(ReviewStatus.SUBMITTED)||reviewStatus.equals(ReviewStatus.ACCEPTED))
             submitted = true;
         else
             submitted = false;

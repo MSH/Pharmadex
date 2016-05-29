@@ -442,7 +442,7 @@
                     <p:message for="addcomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.addComment}"
-                                 oncomplete="PF('commentDlg').hide()" ajax="false"/>
+                                 oncomplete="if (!args.validationFailed) PF('commentDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 
@@ -457,7 +457,7 @@
                     <p:message for="approvecomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.approveOrder}"
-                                 oncomplete="PF('approveDlg').hide()" ajax="false"/>
+                                 oncomplete="if (!args.validationFailed) PF('approveDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 
@@ -472,7 +472,7 @@
                     <p:message for="rejectcomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.rejectOrder}"
-                                 oncomplete="PF('rejectDlg').hide()" ajax="false"/>
+                                 oncomplete="if (!args.validationFailed) PF('rejectDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 
@@ -487,7 +487,7 @@
                     <p:message for="withdrawcomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.withdraw}"
-                                 oncomplete="PF('withdrawDlg').hide()" ajax="false"/>
+                                 oncomplete="if (!args.validationFailed) PF('withdrawDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
     </ui:define>

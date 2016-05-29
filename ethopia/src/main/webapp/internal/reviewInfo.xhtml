@@ -100,6 +100,7 @@
                 <p:tab title="#{msgs.global_comment}">
                     <p:commandButton value="#{msgs.add_comment}" icon="ui-icon-document"
                                      action="#{reviewInfoBn.initComment}"
+                                     rendered="#{!reviewInfoBn.reviewInfo.submitted}"
                                      oncomplete="PF('addcommentDlg').show()" id="reviewcomment"/>
 
                     <p:dataTable id="commenttable" value="#{reviewInfoBn.reviewComments}" var="it">
