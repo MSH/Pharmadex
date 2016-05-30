@@ -97,11 +97,12 @@ public class UserDAO implements Serializable {
             List<User> u =  entityManager.createQuery("select u from User u fetch all properties where u.username = :username")
                     .setParameter("username", username)
                     .getResultList();
-            if(u.size()>1){
+            if(u.size() > 1){
                 throw new Exception("Multiple Users with same username");
             }
-            if(u.size()==0){
-               throw new Exception("User doesnt exist");
+            if(u.size() == 0){
+               //throw new Exception("User doesnt exist");
+               return null;
             }
             return u.get(0);
 
@@ -110,8 +111,6 @@ public class UserDAO implements Serializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-//            throw new NoResultException("User doesnt exist");
-
         }
         return null;
     }
@@ -139,9 +138,12 @@ public class UserDAO implements Serializable {
     @Transactional
     public User updateUser(User user) {
         user.getAddress().setCountry(countryDAO.find(user.getAddress().getCountry().getId()));	 
-        if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null && user.getApplicant().getApplcntId() != 0){
+        if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null && user.getApplicant().getApplcntId() > 0){
         	user.setApplicant(applicantDAO.findApplicant(user.getApplicant().getApplcntId()));
         	user.setCompanyName(user.getApplicant().getAppName());
+        }else{
+        	user.setApplicant(null);
+        	user.setCompanyName("");
         }
         user = entityManager.merge(user);
         return user;

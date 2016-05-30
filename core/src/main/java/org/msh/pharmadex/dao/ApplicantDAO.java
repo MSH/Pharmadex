@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class ApplicantDAO implements Serializable {
 
     @Transactional(readOnly = true)
     public List<Applicant> findAllApplicants() {
-        return entityManager.createQuery(" select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype order by a.appName ").getResultList();
+    	return entityManager.createQuery(" select a from Applicant a left join fetch a.address.country c left join fetch a.applicantType apptype order by a.appName ").getResultList();
     }
 
     @Transactional(readOnly = true)

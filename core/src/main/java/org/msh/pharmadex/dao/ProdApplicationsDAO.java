@@ -1,20 +1,37 @@
 package org.msh.pharmadex.dao;
 
-import org.hibernate.Hibernate;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.dao.iface.DosageFormDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Company;
+import org.msh.pharmadex.domain.DosUom;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.Review;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Author: usrivastava
