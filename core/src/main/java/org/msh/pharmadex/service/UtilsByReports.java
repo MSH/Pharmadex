@@ -2,9 +2,12 @@ package org.msh.pharmadex.service;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.enums.CompanyType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,6 +38,11 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_SAMPLEQTY = "sampleQty";
 	public static String KEY_DUEDATE = "DueDate";
 	public static String KEY_COMPANY_NAME = "companyName";
+	public static String KEY_REASON = "reason";
+	public static String KEY_BATCHNO = "batchNo";
+	public static String KEY_REPORT_DATE = "reportDate";
+	public static String KEY_DECISION_DATE = "DecisionDate";
+	public static String KEY_DECISION = "decision";
 
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
@@ -53,9 +61,12 @@ public class UtilsByReports implements Serializable {
 	public void putNotNull(String key, String text, boolean onlyStr){
 		if(param == null)
 			return;
-		if(onlyStr)
-			param.put(key, text);
-		else{
+		if(onlyStr){
+			if(text != null)
+				param.put(key, text);
+			else
+				param.put(key, "");
+		}else{
 			putParamByProd(key, text);
 			putParamByProdApplications(key, text);
 		}
@@ -80,8 +91,12 @@ public class UtilsByReports implements Serializable {
 			param.put(k, str);
 		}
 		if(k.equals(KEY_MANUFNAME)){
-			str = prod.getManufName() != null ? prod.getManufName():"";
-				param.put(k, str);
+			if(prod.getManufName() == null)
+				str = takeManufacturerName();
+			else
+				str = prod.getManufName();
+			str = str != null?str:"";
+			param.put(k, str);
 		}
 		if(k.equals(KEY_SUBJECT)){
 			str = t + prod.getProdName() != null ? prod.getProdName():"";
@@ -122,5 +137,24 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_ID)){
 			param.put(k, prodApps.getId());
 		}
+		if(k.equals(KEY_COMPANY_NAME)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getAppName() != null ? prodApps.getApplicant().getAppName():"";
+			param.put(k, str);
+		}
 	}
+	
+	private String takeManufacturerName(){
+        String manufName = "";
+        List<ProdCompany> companyList = prod.getProdCompanies();
+        if (companyList != null){
+            for(ProdCompany company:companyList){
+                if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+                    manufName = company.getCompany().getCompanyName();
+                    return manufName;
+                }
+            }
+        }
+        return manufName;
+    }
 }
