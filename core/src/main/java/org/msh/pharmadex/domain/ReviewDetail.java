@@ -49,6 +49,9 @@ public class ReviewDetail extends CreationDetail {
     @Lob
     @Column(nullable = true)
     private byte[] file;
+    
+    @Column(name = "filename")
+    private String filename;
 
     public ReviewDetail() {
     }
@@ -131,7 +134,15 @@ public class ReviewDetail extends CreationDetail {
     public void setVolume(String volume) {
         this.volume = volume;
     }
+    
+    public String getFilename() {
+        return filename;
+    }
 
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    
     public String getSecComment() {
         return secComment;
     }

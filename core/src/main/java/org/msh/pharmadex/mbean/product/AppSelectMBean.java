@@ -1,16 +1,9 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.service.ApplicantService;
-import org.msh.pharmadex.service.CountryService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
-import org.omnifaces.util.Faces;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -20,10 +13,17 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.CountryService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.JsfUtils;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Author: usrivastava
@@ -31,241 +31,266 @@ import java.util.ResourceBundle;
 @ManagedBean
 @ViewScoped
 public class AppSelectMBean implements Serializable {
-    private static final Logger logger = LoggerFactory.getLogger(AppSelectMBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(AppSelectMBean.class);
 
-    @ManagedProperty(value = "#{prodRegAppMbean}")
-    ProdRegAppMbean prodRegAppMbean;
+	@ManagedProperty(value = "#{prodRegAppMbean}")
+	ProdRegAppMbean prodRegAppMbean;
 
-    @ManagedProperty(value = "#{globalEntityLists}")
-    GlobalEntityLists globalEntityLists;
+	@ManagedProperty(value = "#{globalEntityLists}")
+	GlobalEntityLists globalEntityLists;
 
-    @ManagedProperty(value = "#{countryService}")
-    CountryService countryService;
+	@ManagedProperty(value = "#{countryService}")
+	CountryService countryService;
 
-    @ManagedProperty(value = "#{applicantService}")
-    ApplicantService applicantService;
+	@ManagedProperty(value = "#{applicantService}")
+	ApplicantService applicantService;
 
-    @ManagedProperty(value = "#{userService}")
-    UserService userService;
+	@ManagedProperty(value = "#{userService}")
+	UserService userService;
 
-    private Applicant selectedApplicant;
-    private org.msh.pharmadex.domain.User applicantUser;
+	private Applicant selectedApplicant;
+	private org.msh.pharmadex.domain.User applicantUser;
 
-    private FacesContext facesContext = FacesContext.getCurrentInstance();
-    private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-    private boolean showApp;
-    private boolean showUser;
-    private boolean showUserSelect;
+	private FacesContext facesContext = FacesContext.getCurrentInstance();
+	private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
-    private List<UserDTO> users;
-    private UserDTO selectedUser;
+	/** flag by visible panel with info by Applicant */
+	private boolean showApp;
+	/** flag by visible list users of Applicant */
+	private boolean showUserSelect = false;
+	/** flag by visible label no Users of Applicant */
+	private boolean showLblNoUsers = false;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("Initialize AppSelectMBean");
-    }
+	private List<UserDTO> users;
+	private UserDTO responsable;
+	private UserDTO selectedUser;
 
-    @PreDestroy
-    public void destroy() {
-        System.out.println("Destroy bean");
-    }
+	@PostConstruct
+	public void init() {
+		System.out.println("Initialize AppSelectMBean");
+	}
 
-    public void gmpChangeListener() {
-//        if (selectedCompany.isGmpInsp())
-//            showGMP = true;
-//        else
-//            showGMP = false;
-        try {
-            if (selectedApplicant != null && selectedApplicant.getApplcntId() != null) {
-                selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
-                showApp = true;
-                convertUser(selectedApplicant.getUsers());
-                if (users.size() > 1) {
-                    setShowUserSelect(true);
-                } else {
-                    if (users.size() == 1) {
-                        selectedUser = users.get(0);
-                        showUser = true;
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Error", ex.getMessage()));
-        }
-    }
+	@PreDestroy
+	public void destroy() {
+		System.out.println("Destroy bean");
+	}
 
-    private void convertUser(List<org.msh.pharmadex.domain.User> users) {
-        this.users = new ArrayList<UserDTO>();
-        for (org.msh.pharmadex.domain.User u : users) {
-            this.users.add(new UserDTO(u));
-        }
+	public void gmpChangeListener() {
+		try {
+			if (selectedApplicant != null){
+				if(selectedApplicant.getApplcntId() != null) {
+					selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
+					showApp = true;
+					convertUser(selectedApplicant.getUsers());
+					// 1) no Responsable && no Users - showLbl GOTO admin
+					// 2) no Responsable && list Users - choose user from list Users
+					// 3) Responsable && no Users - user=responsable
+					// 4) Responsable && list Users - choose user from list Users
 
 
-    }
+					setShowUserSelect(users.size() > 0);
+					setShowLblNoUsers(!(users.size() > 0));
+					selectedUser = responsable;
+				}
+			}else{
+				setShowUserSelect(false);
+				setShowLblNoUsers(false);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error", ex.getMessage()));
+		}
+	}
 
-    public void appChangeListenener(SelectEvent event) {
-        logger.error("inside appChangeListenener");
-        logger.error("Selected company is " + selectedApplicant.getAppName());
-        logger.error("event " + event.getObject());
-        gmpChangeListener();
+	private void convertUser(List<org.msh.pharmadex.domain.User> users) {
+		String respName = selectedApplicant != null ? selectedApplicant.getContactName():"";
+		org.msh.pharmadex.domain.User resp = userService.findUserByUsername(respName);
+		responsable = resp != null ? new UserDTO(resp):null;
 
+		this.users = new ArrayList<UserDTO>();
+		for (org.msh.pharmadex.domain.User u : users) {
+			this.users.add(new UserDTO(u));
+		}
+		addUserInList();
+	}
 
-    }
+	private void addUserInList(){
+		if(responsable != null){
+			boolean contains = false;
+			for(UserDTO us:users){
+				if(responsable.getUserId().intValue() == us.getUserId().intValue()){
+					contains = true;
+					break;
+				}
+			}
+			if(!contains)
+				users.add(responsable);
+		}
+	}
 
-    public void onRowSelect(SelectEvent event) {
-        FacesMessage msg = new FacesMessage("User Selected", ((UserDTO) event.getObject()).getUsername());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-        logger.error("Selected User is " + ((UserDTO) event.getObject()).getUsername());
-    }
-
-    public void onRowUnselect(UnselectEvent event) {
-        FacesMessage msg = new FacesMessage("Car Unselected", ((Applicant) event.getObject()).getAppName());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-
-
-    public void appChangeListenener(AjaxBehaviorEvent event) {
-        logger.error("inside appChangeListenener");
-//        logger.error("Selected company is " + selectedApplicant.getAppName());
-        logger.error("event " + event.getSource());
-        gmpChangeListener();
-
-
-    }
-
-    public String addApptoRegistration() {
-        try{
-        selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
-        if (selectedUser == null) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Person responsible cannot be empty."));
-            FacesContext.getCurrentInstance().validationFailed();
-        } else {
-            applicantUser = userService.findUser(selectedUser.getUserId());
-            prodRegAppMbean.setApplicant(selectedApplicant);
-            prodRegAppMbean.setApplicantUser(applicantUser);
-            prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
-            prodRegAppMbean.getProdApplications().setApplicant(selectedApplicant);
-        }
-        } catch (Exception ex){
-            ex.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
-        }
-
-        return "";
-    }
-
-    public void cancelAddApplicant() {
-        selectedApplicant = new Applicant();
-        applicantUser = new org.msh.pharmadex.domain.User();
-    }
+	public void appChangeListenener(SelectEvent event) {
+		logger.error("inside appChangeListenener");
+		logger.error("Selected company is " + selectedApplicant.getAppName());
+		logger.error("event " + event.getObject());
+		gmpChangeListener();
 
 
-    public List<Applicant> completeApplicantList(String query) {
-        try {
-            List<Applicant> applicants = applicantService.findAllApplicants(null);
-            return JsfUtils.completeSuggestions(query, applicants);
-        } catch (Exception ex){
-            ex.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
-        }
-        return null;
-    }
+	}
 
-    public boolean isShowApp() {
-        return showApp;
-    }
+	public void onRowSelect(SelectEvent event) {
+		FacesMessage msg = new FacesMessage("User Selected", ((UserDTO) event.getObject()).getUsername());
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		logger.error("Selected User is " + ((UserDTO) event.getObject()).getUsername());
+	}
 
-    public void setShowApp(boolean showApp) {
-        this.showApp = showApp;
-    }
+	public void onRowUnselect(UnselectEvent event) {
+		FacesMessage msg = new FacesMessage("Car Unselected", ((Applicant) event.getObject()).getAppName());
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
 
-    public boolean isShowUserSelect() {
-        return showUserSelect;
-    }
 
-    public void setShowUserSelect(boolean showUserSelect) {
-        this.showUserSelect = showUserSelect;
-    }
+	public void appChangeListenener(AjaxBehaviorEvent event) {
+		logger.error("inside appChangeListenener");
+		//        logger.error("Selected company is " + selectedApplicant.getAppName());
+		logger.error("event " + event.getSource());
+		gmpChangeListener();
 
-    public Applicant getSelectedApplicant() {
-        return selectedApplicant;
-    }
 
-    public void setSelectedApplicant(Applicant selectedApplicant) {
-        this.selectedApplicant = selectedApplicant;
-    }
+	}
 
-    public org.msh.pharmadex.domain.User getApplicantUser() {
-        return applicantUser;
-    }
+	public String addApptoRegistration() {
+		try{
+			selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
+			if (selectedUser == null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Person responsible cannot be empty."));
+				FacesContext.getCurrentInstance().validationFailed();
+			} else {
+				applicantUser = userService.findUser(selectedUser.getUserId());
+				prodRegAppMbean.setApplicant(selectedApplicant);
+				//prodRegAppMbean.getApplicant().setContactName(applicantUser.getUsername());
+				prodRegAppMbean.setApplicantUser(applicantUser);
+				prodRegAppMbean.getProdApplications().setApplicantUser(applicantUser);
+				prodRegAppMbean.getProdApplications().setApplicant(selectedApplicant);
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
+		}
 
-    public void setApplicantUser(org.msh.pharmadex.domain.User applicantUser) {
-        this.applicantUser = applicantUser;
-    }
+		return "";
+	}
 
-    public boolean isShowUser() {
-        return showUser;
-    }
+	public void cancelAddApplicant() {
+		selectedApplicant = new Applicant();
+		applicantUser = new org.msh.pharmadex.domain.User();
+	}
 
-    public void setShowUser(boolean showUser) {
-        this.showUser = showUser;
-    }
 
-    public List<UserDTO> getUsers() {
-        return users;
-    }
+	public List<Applicant> completeApplicantList(String query) {
+		try {
+			List<Applicant> applicants = applicantService.findAllApplicants(null);
+			return JsfUtils.completeSuggestions(query, applicants);
+		} catch (Exception ex){
+			ex.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
+		}
+		return null;
+	}
 
-    public void setUsers(List<UserDTO> users) {
-        this.users = users;
-    }
+	public boolean isShowApp() {
+		return showApp;
+	}
 
-    public UserDTO getSelectedUser() {
-        return selectedUser;
-    }
+	public void setShowApp(boolean showApp) {
+		this.showApp = showApp;
+	}
 
-    public void setSelectedUser(UserDTO selectedUser) {
-        this.selectedUser = selectedUser;
-    }
+	public boolean isShowUserSelect() {
+		return showUserSelect;
+	}
 
-    public GlobalEntityLists getGlobalEntityLists() {
-        return globalEntityLists;
-    }
+	public void setShowUserSelect(boolean showUserSelect) {
+		this.showUserSelect = showUserSelect;
+	}
 
-    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
-        this.globalEntityLists = globalEntityLists;
-    }
+	public boolean isShowLblNoUsers() {
+		return showLblNoUsers;
+	}
 
-    public CountryService getCountryService() {
-        return countryService;
-    }
+	public void setShowLblNoUsers(boolean showLblNoUSers) {
+		this.showLblNoUsers = showLblNoUSers;
+	}
 
-    public void setCountryService(CountryService countryService) {
-        this.countryService = countryService;
-    }
+	public Applicant getSelectedApplicant() {
+		return selectedApplicant;
+	}
 
-    public ApplicantService getApplicantService() {
-        return applicantService;
-    }
+	public void setSelectedApplicant(Applicant selectedApplicant) {
+		this.selectedApplicant = selectedApplicant;
+	}
 
-    public void setApplicantService(ApplicantService applicantService) {
-        this.applicantService = applicantService;
-    }
+	public org.msh.pharmadex.domain.User getApplicantUser() {
+		return applicantUser;
+	}
 
-    public UserService getUserService() {
-        return userService;
-    }
+	public void setApplicantUser(org.msh.pharmadex.domain.User applicantUser) {
+		this.applicantUser = applicantUser;
+	}
 
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+	public List<UserDTO> getUsers() {
+		return users;
+	}
 
-    public ProdRegAppMbean getProdRegAppMbean() {
-        return prodRegAppMbean;
-    }
+	public void setUsers(List<UserDTO> users) {
+		this.users = users;
+	}
 
-    public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
-        this.prodRegAppMbean = prodRegAppMbean;
-    }
+	public UserDTO getSelectedUser() {
+		return selectedUser;
+	}
+
+	public void setSelectedUser(UserDTO selectedUser) {
+		this.selectedUser = selectedUser;
+	}
+
+	public GlobalEntityLists getGlobalEntityLists() {
+		return globalEntityLists;
+	}
+
+	public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+		this.globalEntityLists = globalEntityLists;
+	}
+
+	public CountryService getCountryService() {
+		return countryService;
+	}
+
+	public void setCountryService(CountryService countryService) {
+		this.countryService = countryService;
+	}
+
+	public ApplicantService getApplicantService() {
+		return applicantService;
+	}
+
+	public void setApplicantService(ApplicantService applicantService) {
+		this.applicantService = applicantService;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public ProdRegAppMbean getProdRegAppMbean() {
+		return prodRegAppMbean;
+	}
+
+	public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
+		this.prodRegAppMbean = prodRegAppMbean;
+	}
 }

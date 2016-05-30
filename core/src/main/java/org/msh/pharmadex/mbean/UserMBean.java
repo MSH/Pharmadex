@@ -158,7 +158,7 @@ public class UserMBean implements Serializable {
                 FacesContext context = FacesContext.getCurrentInstance();
                 HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
                 WebUtils.setSessionAttribute(request, "userMBean", null);
-                return "/admin/userslist_bk.faces";
+                return "";
             } catch (Exception e) {
                 e.printStackTrace();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
@@ -195,7 +195,6 @@ public class UserMBean implements Serializable {
         } else {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("no_user")));
         }
-//        return "/admin/userslist_bk.faces";
     }
 
     public void addUser() {
@@ -208,6 +207,23 @@ public class UserMBean implements Serializable {
         setEdit(false);
     }
 
+    public String cleanAssignCompany() {
+    	userApp = new Applicant();
+    	applicName = "-";
+    	applicID = new Long(-1);
+    	
+    	return "";
+    }
+    
+    public boolean visibleCleanBtn(){
+    	boolean vis = false;
+    	if(applicID > 0)
+    		vis = isEdit();
+    	else
+    		vis = false;
+    	return vis;
+    }
+    
     public String resetPassword() {
         String password = PassPhrase.getNext();
         selectedUser.setPassword(password);

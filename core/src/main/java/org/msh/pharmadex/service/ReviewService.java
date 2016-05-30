@@ -55,7 +55,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 @Service
 public class ReviewService implements Serializable {
 
-
 	@Autowired
 	TimelineService timelineService;
 	@Autowired
@@ -78,6 +77,9 @@ public class ReviewService implements Serializable {
 	private CustomReviewDAO customReviewDAO;
 	@Autowired
 	private UserAccessService userAccessService;
+
+	@Autowired
+	private UtilsByReports utilsByReports;
 
 	public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID) {
 		if (reviewerID == null)
@@ -148,12 +150,12 @@ public class ReviewService implements Serializable {
 		List<ReviewInfo> li= reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
 		if (li==null)  return reviewInfo;
 		if (li.size()==1) reviewInfo=li.get(0); 
-		 else {
-			 Date dt=new Date("1.1.2000");
-			 for (int i = 0; li.size() > i; i++) {
-				 if (!li.get(i).getCreatedDate().after(dt)) reviewInfo=li.get(i);
-			 }
-		 }
+		else {
+			Date dt=new Date("1.1.2000");
+			for (int i = 0; li.size() > i; i++) {
+				if (!li.get(i).getCreatedDate().after(dt)) reviewInfo=li.get(i);
+			}
+		}
 		Hibernate.initialize(reviewInfo.getReviewDetails());
 		Hibernate.initialize(reviewInfo.getReviewer());
 		Hibernate.initialize(reviewInfo.getSecReviewer());
@@ -260,12 +262,6 @@ public class ReviewService implements Serializable {
 			reviewQuestions = reviewQDAO.findByGenMed();
 		}
 
-
-		//        if (prodApplications.isSra()) {
-		//            reviewQuestions = reviewQDAO.findBySRA();
-		//        } else {
-		//            reviewQuestions = reviewQDAO.findByProdAppType(prodApplications.getProdAppType());
-		//        }
 		ReviewDetail reviewDetail;
 		for (ReviewQuestion reviewQuestion : reviewQuestions) {
 			reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false);
@@ -280,13 +276,18 @@ public class ReviewService implements Serializable {
 		List<DisplayReviewQ> header1 = new ArrayList<DisplayReviewQ>();
 		if(ri != null && ri.getReviewer() != null){
 			List<ReviewDetail> reviewDetails = reviewQDAO.findReviewSummary(ri.getReviewer().getUserId(), ri.getId());
-			boolean init = false;
-			if (reviewDetails == null || reviewDetails.size() < 1) {
-				init = true;
-				reviewDetails = initReviewDetail(ri);
-			}
 
-			//        List<ReviewQuestion> reviewQuestions = reviewQDAO.findAll();
+			if (reviewDetails == null)
+				reviewDetails = initReviewDetail(ri);
+
+			if(reviewDetails.size() < 1)
+				reviewDetails = initReviewDetail(ri);
+
+			if (reviewDetails == null)
+				return header1;
+			if(reviewDetails.size() == 0)
+				return header1;
+
 			List<DisplayReviewQ.Header2> header2 = new ArrayList<DisplayReviewQ.Header2>();
 
 			String header1Name = "";
@@ -295,7 +296,7 @@ public class ReviewService implements Serializable {
 			List<DisplayReviewInfo> questions = null;
 			DisplayReviewQ dispHeader1 = null;
 			DisplayReviewQ.Header2 dispHeader2;
-			int size = reviewDetails.size();
+
 			ReviewQuestion rq;
 			ReviewDetail rd;
 			for (int i = 0; i < reviewDetails.size(); i++) {
@@ -339,25 +340,29 @@ public class ReviewService implements Serializable {
 		String emailBody = reviewComment.getSentComment().getComment();
 		Product product = prodApplications.getProduct();
 		URL resource = getClass().getResource("/reports/rev_def_letter.jasper");
-		HashMap param = new HashMap();
-		param.put("appName", prodApplications.getApplicant().getAppName());
-		param.put("prodName", product.getProdName());
-		param.put("prodStrength", product.getDosStrength() + product.getDosUnit());
-		param.put("dosForm", product.getDosForm().getDosForm());
-		param.put("manufName", product.getManufName());
-		param.put("appType", "New Medicine Registration");
-		param.put("subject", "Product application further information letter for  " + product.getProdName());
-		param.put("body", emailBody);
-		param.put("address1", prodApplications.getApplicant().getAddress().getAddress1());
-		param.put("address2", prodApplications.getApplicant().getAddress().getAddress2());
-		param.put("country", prodApplications.getApplicant().getAddress().getCountry().getCountryName());
-		SimpleDateFormat sdf = new SimpleDateFormat();
-		String dueDate = sdf.format(reviewComment.getDueDate());
-		param.put("DueDate",dueDate);
+
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		utilsByReports.init(param, prodApplications, product);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, "New Medicine Registration", true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SUBJECT, "Product application further information letter for  ", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_BODY, emailBody, true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
+
+		if(reviewComment.getDueDate() != null){
+			SimpleDateFormat sdf = new SimpleDateFormat();
+			String dueDate = sdf.format(reviewComment.getDueDate());
+			param.put("DueDate", dueDate);
+		}
+
 		param.put("date", new Date());
-		//        param.put("summary", comment);
-		param.put("appNumber", prodApplications.getProdAppNo());
-		//        param.put("registrar", "Major General Md Jahangir Hossain Mollik");
 
 		return JasperFillManager.fillReport(resource.getFile(), param);
 	}

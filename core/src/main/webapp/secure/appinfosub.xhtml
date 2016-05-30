@@ -59,10 +59,10 @@
                                 var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" forceSelection="true"
                                 converter="#{applicantConverter}">
                     <p:ajax event="itemSelect"
-                            update=":reghome:appdetaildlg :reghome:contact"
+                            update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
                             listener="#{appSelectMBean.appChangeListenener}" partialSubmit="true" process=":reghome:appname"/>
                     <p:ajax event="change" listener="#{appSelectMBean.appChangeListenener}"
-                            update=":reghome:appdetaildlg :reghome:contact"
+                            update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
                             partialSubmit="true" process=":reghome:appname"/>
                 </p:autoComplete>
 
@@ -108,21 +108,9 @@
             </h:panelGroup>
 
             <p:panel header="#{msgs.person_responsible}" id="contact">
-
-                <h:panelGroup id="nouser1"
-                              rendered="#{empty appSelectMBean.selectedUser and !appSelectMBean.showUserSelect and not empty appSelectMBean.selectedApplicant}">
-                    <h:panelGrid columns="1" columnClasses="label">
-                        <h:outputLabel styleClass="label"
-                                       value="No User present for the Applicant. Please update the applicant information by clicking on the link below"/>
-                        <p:commandLink value="#{msgs.global_add}" action="/internal/processapp.faces"
-                                       immediate="true" ajax="false">
-                            <f:setPropertyActionListener value="#{appSelectMBean.selectedApplicant.applcntId}"
-                                                         target="#{userSession.applcantID}"/>
-                        </p:commandLink>
-                    </h:panelGrid>
-
-                </h:panelGroup>
-
+				<h:panelGrid columns="1" columnClasses="label" rendered="#{appSelectMBean.showLblNoUsers}">
+				 	<p:outputLabel value="#{msgs.error_noUsersInApplicant}" styleClass="hint"/>
+				</h:panelGrid>
                 <h:panelGroup id="multipleuser1" rendered="#{appSelectMBean.showUserSelect}">
                     <p:dataTable id="usertable" var="applicantUser" value="#{appSelectMBean.users}"
                                  style="width:100%;" selection="#{appSelectMBean.selectedUser}"
@@ -130,7 +118,7 @@
                         <p:ajax event="rowSelectRadio" listener="#{appSelectMBean.onRowSelect}"
                                 update=":reghome:messages"/>
 
-                        <p:column selectionMode="single"/>
+                        <p:column headerText="#{msgs.responsable}" selectionMode="single"/>
 
                         <p:column headerText="#{msgs.User_name}">
                             <h:outputText value="#{applicantUser.name}"/>
@@ -144,29 +132,20 @@
                             <h:outputText value="#{applicantUser.email}"/>
                         </p:column>
                     </p:dataTable>
-
                 </h:panelGroup>
-
-
-                <h:panelGroup id="userdetail1" rendered="#{appSelectMBean.showUser}">
-
-                    <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                        <ui:param name="userdata" value="#{appSelectMBean.selectedUser}"/>
-                        <ui:param name="input" value="#{false}"/>
-                    </ui:decorate>
-                </h:panelGroup>
-
             </p:panel>
 
 
             <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
 
-                <h:panelGroup>
+                <h:panelGroup id="btnpnl">
                     <p:commandButton value="#{msgs.global_add}" action="#{appSelectMBean.addApptoRegistration}"
                                      oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()"
-                                     update=":reghome" process=":reghome:addapplicantdlg"/>
+                                     update=":reghome" process=":reghome:addapplicantdlg" 
+                                     rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect}"/>
                     <p:commandButton action="#{appSelectMBean.cancelAddApplicant}" immediate="true"
-                                     value="#{msgs.global_cancel}" update=":reghome:addapplicantdlg" oncomplete="PF('addapplicantDlg').hide()"/>
+                                     value="#{msgs.global_cancel}" update=":reghome:addapplicantdlg" 
+                                     oncomplete="PF('addapplicantDlg').hide()"/>
                 </h:panelGroup>
                 <h:outputLabel/>
             </h:panelGrid>

@@ -190,6 +190,21 @@ public class ApplicantService implements Serializable {
             return null;
         }
     }
+    
+    @Transactional
+    public Applicant updateApp(Applicant applicant) {
+        try {
+            System.out.println("applicant id = " + applicant.getApplcntId());
+
+            applicant = applicantDAO.updateApplicant(applicant);
+
+            applicants = null;
+            return applicant;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     @Transactional

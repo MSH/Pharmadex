@@ -107,18 +107,22 @@
                     </p:selectOneMenu>
 
                     <h:outputLabel value="#{msgs.user_assigncompany}"/>
-                    <p:selectOneMenu value="#{userMBean.userApp.applcntId}">
+                    <p:selectOneMenu id="complist" value="#{userMBean.userApp.applcntId}">
                         <f:selectItem itemLabel="#{userMBean.applicName}" itemValue="#{userMBean.applicID}"/>
                         <f:selectItems value="#{applicantService.findAllApplicants(userMBean.applicID)}" var="licHolder"
                                        itemLabel="#{licHolder.appName}" itemValue="#{licHolder.applcntId}"/>
                     </p:selectOneMenu>
-
 
                     <h:outputText value="#{msgs.global_enable}"/>
                     <p:selectBooleanButton value="#{userMBean.selectedUser.enabled}" onLabel="#{msgs.global_yes}"
                                            offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
                     </p:selectBooleanButton>
 
+					<h:outputText value=""/>
+					<p:commandButton id="cleanbtn" action="#{userMBean.cleanAssignCompany}" value="#{msgs.clean}"
+                                     update=":userlist:users :userlist:messages :adduserfrm:complist"
+                                     rendered="#{userMBean.visibleCleanBtn()}"/>
+					<h:outputText value=""/>
                     <p:commandButton action="#{userMBean.resetPassword}" value="#{msgs.reset_password}"
                                      oncomplete="PF('adduser').hide()"
                                      update=":userlist:users :userlist:messages :adduserfrm"

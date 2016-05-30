@@ -4,30 +4,30 @@
 
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.dao.iface.RoleDAO;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.service.DisplayReviewInfo;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.ReviewService;
-import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.List;
-import java.util.ResourceBundle;
+
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ReviewDetail;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.service.DisplayReviewInfo;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.UserService;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 /**
  * Backing bean to capture review of products
@@ -78,10 +78,21 @@ public class ReviewDetailBn implements Serializable {
         facesContext.addMessage(null, msg);
     }
 
+    public boolean visibleBtnDownload(){
+    	boolean res = false;
+    	if(reviewDetail != null){
+    		if(reviewDetail.getFile() != null)
+    			return true;
+    	}
+    	return res;
+    }
+    
     public void handleFileUpload(FileUploadEvent event) {
-        FacesMessage message = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
+    	String fname = event.getFile().getFileName();
+        FacesMessage message = new FacesMessage("Successful", fname + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, message);
         reviewDetail.setFile(event.getFile().getContents());
+        reviewDetail.setFilename(fname);
     }
 
     public void satisAction() {

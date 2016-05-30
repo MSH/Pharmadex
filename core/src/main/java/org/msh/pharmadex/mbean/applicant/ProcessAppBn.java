@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -39,7 +38,9 @@ import org.springframework.web.util.WebUtils;
 @ViewScoped
 public class ProcessAppBn implements Serializable {
 
-    @ManagedProperty(value = "#{globalEntityLists}")
+	private static final long serialVersionUID = -8302237287679562751L;
+	
+	@ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     FacesContext facesContext = FacesContext.getCurrentInstance();
     ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -52,39 +53,29 @@ public class ProcessAppBn implements Serializable {
     private UserService userService;
     @ManagedProperty(value = "#{mailService}")
     private MailService mailService;
-    private User user;
-    private List<User> availableUsers;
-    private List<User> userList;
-
-    @PostConstruct
-    private void init() {
-        if (user == null) {
-            user = new User();
-            user.getAddress().setCountry(new Country());
-        }
-    }
+    
+    private User responsable;
+    /** Always alone */
+    private List<User> responsableList;
 
     @Transactional
-    public void addUserToApplicant() {
-        if (userList == null)
-            userList = new ArrayList<User>();
-        userList.add(user);
-        applicant.setUsers(userList);
-        user = new User();
-
+    public void replaceResponsableInApplicant() {
+        responsableList = new ArrayList<User>();
+        responsableList.add(responsable);
+        applicant.setContactName(responsable.getUsername());
     }
 
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
             applicant.setUpdatedDate(new Date());
-            if (applicant.getUsers() == null || applicant.getUsers().size() == 0) {
-                FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
+            if(responsable == null){
+            	FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
                 error.setSeverity(SEVERITY_ERROR);
                 facesContext.addMessage(null, error);
                 return null;
             }
-            applicant = applicantService.updateApp(applicant, null);
+            applicant = applicantService.updateApp(applicant);
 
             if (applicant == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
@@ -94,7 +85,6 @@ public class ProcessAppBn implements Serializable {
             HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
             WebUtils.setSessionAttribute(request, "applicantMBean", null);
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
-//            globalEntityLists.setRegApplicants(null);
             return "/public/applicantlist.faces";
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,36 +93,9 @@ public class ProcessAppBn implements Serializable {
         }
     }
 
-
-    public void initNewUser() {
-        user = new User();
-        user.setType(UserType.COMPANY);
-        user.setEnabled(false);
-    }
-
-    @Transactional
-    public void newUser() {
-        user.setEnabled(false);
-        user.setType(UserType.COMPANY);
-        String username = user.getName().replaceAll("\\s", "");
-        user.setUsername(username);
-        user.setPassword(username);
-        user = userService.passwordGenerator(user);
-        
-        if (userList == null)
-            userList = new ArrayList<User>();
-        userList.add(user);
-        applicant.setUsers(userList);
-//        applicantService.updateApp(selectedApplicant, user);
-        user = new User();
-
-    }
-
-
     public String registerApplicant() {
         applicant.setState(ApplicantState.REGISTERED);
         applicantService.updateApp(applicant, null);
-//        globalEntityLists.setRegApplicants(null);
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "processAppBn", null);
@@ -158,11 +121,10 @@ public class ProcessAppBn implements Serializable {
     public List<User> completeUserListByApplicant(String query) {
         return JsfUtils.completeSuggestions(query, getUsersByApplicant(applicant.getApplcntId()));
     }
-
+    
     public String cancelAddUser() {
-        user = new User();
         return "";
-    }
+   }
 
     public Applicant getApplicant() {
         if (applicant == null) {
@@ -187,34 +149,50 @@ public class ProcessAppBn implements Serializable {
         return userService.findUnregisteredUsers();
     }
 
+    /**
+     * choose list users by applicant and typeUser=Company!!!!!
+     * @param applicantID
+     * @return
+     */
     public List<User> getUsersByApplicant(Long applicantID) {
-        return userService.findUserByApplicant(applicantID);
+    	List<User> result = new ArrayList<User>();
+    	List<User> list = userService.findUserByApplicant(applicantID);
+    	if(list != null){
+    		for(User u:list){
+    			if(u.getType().equals(UserType.COMPANY))
+    				result.add(u);
+    		}
+    	}
+        return result;
+    }
+
+    public User getResponsable() {
+        return responsable;
+    }
+
+    public void setresponsable(User user) {
+        this.responsable = user;
     }
     
-    public void setAvailableUsers(List<User> availableUsers) {
-        this.availableUsers = availableUsers;
+    public List<User> getResponsableList() {
+    	if(responsableList == null){
+    		responsableList = new ArrayList<User>();
+    		User resp = null;
+    		String contactName = applicant.getContactName();
+    		if(contactName != null && !contactName.equals("") && !contactName.equals("NOT SPECIFIED")){
+    			resp = userService.findUserByUsername(contactName);
+    			if(resp != null)
+    				responsableList.add(resp);
+    		}
+    	}
+
+        return responsableList;
     }
 
-    public User getUser() {
-        return user;
+    public void setResponsableList(List<User> responsableList) {
+        this.responsableList = responsableList;
     }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<User> getUserList() {
-        if (userList == null) {
-            if (applicant != null)
-                userList = applicant.getUsers();
-        }
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
-    }
-
+    
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;
     }

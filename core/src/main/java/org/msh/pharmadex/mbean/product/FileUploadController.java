@@ -1,6 +1,18 @@
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JRException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
@@ -8,25 +20,12 @@ import org.msh.pharmadex.domain.Attachment;
 import org.msh.pharmadex.domain.Invoice;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Author: usrivastava
@@ -115,8 +114,6 @@ public class FileUploadController implements Serializable {
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("cannot_delte"));
             facesContext.addMessage(null, msg);
         }
-
-
     }
 
     public StreamedContent fileDownload(Attachment doc) {
@@ -147,19 +144,57 @@ public class FileUploadController implements Serializable {
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 	        Calendar c = Calendar.getInstance();
 	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
+	//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
 	        return download;
         }
-
         return null;
     }
 
+    public StreamedContent reviewDetailDownload(ReviewDetail reviewDetail) {
+    	if(reviewDetail == null)
+    		return null;
+    	
+    	String fname = reviewDetail.getFilename();
+    	if(fname == null)
+    		return null;
+    	if(fname.isEmpty())
+    		return null;
+    	
+    	String[] mas = fname.split("\\.");
+    	if(mas.length >= 2){
+    		String type = mas[mas.length - 1];
+    		
+    		InputStream ist = new ByteArrayInputStream(reviewDetail.getFile());
+	        StreamedContent download = new DefaultStreamedContent(ist, type, fname);
+	        return download;
+    	}
+    	return null;
+    }
+    
+    public void deleteReviewDetail(ReviewDetail reviewDetail) {
+    	if(reviewDetail == null)
+    		return;
+    	String fname = reviewDetail.getFilename();
+    	facesContext = FacesContext.getCurrentInstance();
+    	try {
+    		reviewDetail.setFile(null);
+    		reviewDetail.setFilename(null);
+    			
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_delete"), fname + " " + resourceBundle.getString("is_deleted"));
+            facesContext.addMessage(null, msg);
+    	} catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), fname + " " + resourceBundle.getString("cannot_delte"));
+            facesContext.addMessage(null, msg);
+        }
+    }
+    
     public StreamedContent rejCertDownload() {
         ProdApplications prodApplications = processProdBn.getProdApplications();
         if(prodApplications != null){
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRejCert());
 	        Calendar c = Calendar.getInstance();
 	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR));
-	//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
 	        return download;
         }
         return null;

@@ -115,18 +115,19 @@ public class FirSubmitBn implements Serializable {
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
         try {
-            attachment.setFile(IOUtils.toByteArray(file.getInputstream()));
+        	if(attachment != null){
+        		attachment.setFile(IOUtils.toByteArray(file.getInputstream()));
+        		attachment.setProdApplications(prodApplications);
+        		attachment.setFileName(file.getFileName());
+        		attachment.setContentType(file.getContentType());
+        		attachment.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
+        		attachment.setRegState(prodApplications.getRegState());
+        	}
         } catch (IOException e) {
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
             facesContext.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        attachment.setProdApplications(prodApplications);
-        attachment.setFileName(file.getFileName());
-        attachment.setContentType(file.getContentType());
-        attachment.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
-        attachment.setRegState(prodApplications.getRegState());
-//        userSession.setFile(file);
     }
 
     public void deleteDoc(Attachment attach) {

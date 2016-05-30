@@ -931,15 +931,12 @@
 
                 </p:fileUpload>
 
-                <!--<p:fileUpload value="#{prodRegAppMbean.file}" mode="simple" skinSimple="true"/>-->
-
                 <p:commandButton id="adddoc" value="#{msgs.global_submit}"
                                  action="#{prodRegAppMbean.addDocument}" process=":attachfrm"
                                  oncomplete="PF('attachDlg').hide()"
                                  update=":reghome:growl :reghome:messages :reghome :attachfrm"/>
             </h:form>
         </p:dialog>
-
 
         <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
                   resizable="false">

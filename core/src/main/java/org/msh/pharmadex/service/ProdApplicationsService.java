@@ -42,6 +42,7 @@ import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.dao.iface.StatusUserDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.ForeignAppStatus;
 import org.msh.pharmadex.domain.ProdAppChecklist;
@@ -407,12 +408,16 @@ public class ProdApplicationsService implements Serializable {
 			if (prodApplications.getProduct().getId() == null) {
 				productDAO.saveProduct(prodApplications.getProduct());
 			}
+			Applicant appl = prodApplications.getApplicant();
+			if(appl != null && prodApplications.getApplicantUser() != null){
+				appl.setContactName(prodApplications.getApplicantUser().getUsername());
+				applicantDAO.saveApplicant(appl);
+			}
 			if (prodApplications.getId() == null) {
 				prodApplications.setApplicant(applicantDAO.findApplicant(prodApplications.getApplicant().getApplcntId()));
 				prodApplicationsDAO.saveApplication(prodApplications);
 			} else
 				prodApplications = prodApplicationsDAO.updateApplication(prodApplications);
-			//            prodApplications = prodApplicationsDAO.findProdApplications(prodApplications.getId());
 			retObject = new RetObject("persist", prodApplications);
 			return retObject;
 		} catch (Exception ex) {
