@@ -162,7 +162,6 @@ public class InvoiceService implements Serializable {
     public List<ProdApplications> findPendingByApplicant(Long applicantID) {
         if (applicantID != null) {
             List<User> users = userDAO.findByApplicant(applicantID);
-            //        List<Invoice> pendInvoices = invoiceDAO.findByProdApplications_ProdApplicant_UsersAndPaymentStatus(users, PaymentStatus.INVOICE_ISSUED);
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("users", users);
             params.put("paymentStatus", PaymentStatus.INVOICE_ISSUED);

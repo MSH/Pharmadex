@@ -138,9 +138,7 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProdApplications> query = builder.createQuery(ProdApplications.class);
         Root<ProdApplications> root = query.from(ProdApplications.class);
-//        Join<ProdApplications, Invoice> invoiceJoin = root.join("invoices");
         Join<ProdApplications, User> userJoin = root.join("createdBy", JoinType.LEFT);
-//        root.fetch("invoices", JoinType.RIGHT);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
         Predicate p = null;
@@ -149,9 +147,6 @@ public class ProdApplicationsDAO implements Serializable {
             if (param.getKey().equals("startDt") && params.get("endDt") != null) {
                 p = builder.between(root.<Date>get("regExpiryDate"), (Date) params.get("startDt"), (Date) params.get("endDt"));
             }
-//            if (param.getKey().equals("paymentStatus") && param.getValue() != null) {
-//                p = builder.equal(invoiceJoin.<PaymentStatus>get("paymentStatus"), param.getValue());
-//            }
             if (param.getKey().equals("users") && param.getValue() != null) {
                 List<Long> userIdList = new ArrayList<Long>();
                 for (User u : (List<User>) params.get("users")) {
@@ -276,16 +271,13 @@ public class ProdApplicationsDAO implements Serializable {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProdApplications> query = cb.createQuery(ProdApplications.class);
         Root<ProdApplications> prodApp = query.from(ProdApplications.class);
-//        Join statusUser = prodApp.join("statusUser", JoinType.LEFT);
         Fetch<ProdApplications, Product> prod =  prodApp.fetch("product", JoinType.LEFT);
-//        prodApp.fetch("statusUser", JoinType.LEFT);
         prodApp.fetch("applicant", JoinType.LEFT);
         prod.fetch("dosForm", JoinType.LEFT);
         prod.fetch("dosUnit", JoinType.LEFT);
         prod.fetch("pharmClassif", JoinType.LEFT);
         prodApp.fetch("appointment", JoinType.LEFT);
         prodApp.fetch("moderator", JoinType.LEFT);
-//        prodApp.fetch("reviews", JoinType.LEFT);
         prod.fetch("adminRoute", JoinType.LEFT);
         prod.fetch("pricing", JoinType.LEFT);
 

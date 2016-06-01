@@ -118,21 +118,16 @@ public class UserDAO implements Serializable {
     @Transactional
     public String saveUser(User user) {
         user.setRegistrationDate(new Date());
-//        user.setEnabled(true);
-
-//        try {
-//            User u = findByUsernameOrEmail(user);
-//            if (u != null) {
-//                if (u.getEmail().equalsIgnoreCase(user.getEmail()))
-//                    return "There already exist a user with the same Email address. If you have forgotten your password or email address please click on the forgot password link";
-//                else if (u.getUsername().equalsIgnoreCase(user.getUsername()))
-//                    return "A user with the same username already exist in the database. If you have forgotten your password or email address please click on the forgot password link";
-//            }
-//        } catch (NoResultException no) {
+        user.getAddress().setCountry(countryDAO.find(user.getAddress().getCountry().getId()));	 
+        if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null && user.getApplicant().getApplcntId() > 0){
+        	user.setApplicant(applicantDAO.findApplicant(user.getApplicant().getApplcntId()));
+        	user.setCompanyName(user.getApplicant().getAppName());
+        }else{
+        	user.setApplicant(null);
+        	user.setCompanyName("");
+        }
         entityManager.persist(user);
         return "persisted";
-//        }
-//        return "";
     }
 
     @Transactional
@@ -168,6 +163,8 @@ public class UserDAO implements Serializable {
     }
 
     public boolean isUsernameDuplicated(String username) {
+    	if(username == null)
+    		return true;
         username = username.trim();
         Long i = (Long) entityManager.createQuery("select count(userId) from User u where upper(u.username) = upper(:username)")
                 .setParameter("username", username)

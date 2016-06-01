@@ -60,7 +60,8 @@
                                 converter="#{applicantConverter}">
                     <p:ajax event="itemSelect"
                             update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
-                            listener="#{appSelectMBean.appChangeListenener}" partialSubmit="true" process=":reghome:appname"/>
+                            listener="#{appSelectMBean.appChangeListenener}" partialSubmit="true" 
+                            process=":reghome:appname"/>
                     <p:ajax event="change" listener="#{appSelectMBean.appChangeListenener}"
                             update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
                             partialSubmit="true" process=":reghome:appname"/>

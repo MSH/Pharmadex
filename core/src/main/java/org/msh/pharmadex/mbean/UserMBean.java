@@ -1,16 +1,9 @@
 package org.msh.pharmadex.mbean;
 
-import org.hibernate.exception.ConstraintViolationException;
-import org.msh.pharmadex.auth.PassPhrase;
-import org.msh.pharmadex.dao.iface.RoleDAO;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.LetterType;
-import org.msh.pharmadex.service.ApplicantService;
-import org.msh.pharmadex.service.LetterService;
-import org.msh.pharmadex.service.MailService;
-import org.msh.pharmadex.service.UserService;
-import org.primefaces.model.DualListModel;
-import org.springframework.web.util.WebUtils;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -19,10 +12,23 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import org.hibernate.exception.ConstraintViolationException;
+import org.msh.pharmadex.auth.PassPhrase;
+import org.msh.pharmadex.dao.iface.RoleDAO;
+import org.msh.pharmadex.domain.Address;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Letter;
+import org.msh.pharmadex.domain.Mail;
+import org.msh.pharmadex.domain.Role;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.LetterService;
+import org.msh.pharmadex.service.MailService;
+import org.msh.pharmadex.service.UserService;
+import org.primefaces.model.DualListModel;
+import org.springframework.web.util.WebUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -95,13 +101,15 @@ public class UserMBean implements Serializable {
 
     public String saveUser() {
         facesContext = FacesContext.getCurrentInstance();
-        if (selectedUser.getUserId() == 0)
+        if (selectedUser.getUserId() != null && selectedUser.getUserId() == 0)
             selectedUser.setUserId(null);
         selectedUser.setRoles(roles.getTarget());
-        if (selectedUser != null && selectedUser.getApplicant() != null && selectedUser.getApplicant().getApplcntId() != null)
+        selectedUser.setApplicant(getUserApp());
+        
+        /*if (selectedUser != null && selectedUser.getApplicant() != null && selectedUser.getApplicant().getApplcntId() != null)
             selectedUser.setApplicant(applicantService.findApplicant(selectedUser.getApplicant().getApplcntId()));
         else
-            selectedUser.setApplicant(null);
+            selectedUser.setApplicant(null);*/
         if (isEdit()) {
             updateuser();
             return "";
@@ -158,7 +166,7 @@ public class UserMBean implements Serializable {
                 FacesContext context = FacesContext.getCurrentInstance();
                 HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
                 WebUtils.setSessionAttribute(request, "userMBean", null);
-                return "";
+                return "/admin/userslist_bk.faces";
             } catch (Exception e) {
                 e.printStackTrace();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
@@ -168,12 +176,10 @@ public class UserMBean implements Serializable {
 
     }
 
-    public void updateuser() {
+    public String updateuser() {
         selectedUser.setRoles(roles.getTarget());
         selectedUser.setApplicant(getUserApp());
-//        if(!prevApplicantId.equals(userApp.getApplcntId())){
-//            selectedUser.setApplicant(applicantService.findApplicant(userApp.getApplcntId()));
-//        }
+
         selectedUser.setUpdatedDate(new Date());
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
@@ -195,6 +201,8 @@ public class UserMBean implements Serializable {
         } else {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("no_user")));
         }
+        
+        return "/admin/userslist_bk.faces";
     }
 
     public void addUser() {
@@ -213,15 +221,6 @@ public class UserMBean implements Serializable {
     	applicID = new Long(-1);
     	
     	return "";
-    }
-    
-    public boolean visibleCleanBtn(){
-    	boolean vis = false;
-    	if(applicID > 0)
-    		vis = isEdit();
-    	else
-    		vis = false;
-    	return vis;
     }
     
     public String resetPassword() {
@@ -276,8 +275,8 @@ public class UserMBean implements Serializable {
         return selectedUser;
     }
 
-    public void setSelectedUser(User selectedUser) {
-        this.selectedUser = userService.findUser(selectedUser.getUserId());
+    public void setSelectedUser(User selUser) {
+        this.selectedUser = userService.findUser(selUser.getUserId());
         this.selectedRoles = this.selectedUser.getRoles();
         roles.setTarget(selectedRoles);
         if (this.selectedUser.getApplicant() != null){
@@ -291,7 +290,7 @@ public class UserMBean implements Serializable {
         }
         this.prevApplicantId = userApp.getApplcntId();
     }
-
+    
     public List<User> getAllUsers() {
         if(allUsers==null)
             allUsers = userService.findAllUsers();

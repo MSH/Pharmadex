@@ -482,6 +482,9 @@ public class ProcessProdBn implements Serializable {
         }
     }
 
+    /**
+     * At Mozambique this action delete
+     */
     public void initOpenToApp() {
         timeLine = new TimeLine();
         timeLine.setProdApplications(prodApplications);

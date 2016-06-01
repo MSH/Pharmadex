@@ -26,8 +26,8 @@
                     <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
             </p:menuitem>
 
-            <p:menuitem value="#{msgs.open_app}" action="#{processProdBn.initOpenToApp()}" rendered="#{userSession.staff}"
-                        ajax="true" icon="ui-icon-extlink" oncomplete="PF('openAppDlg').show()" />
+            <!-- <p:menuitem value="#{msgs.open_app}" action="#{processProdBn.initOpenToApp()}" rendered="#{userSession.staff}"
+                        ajax="true" icon="ui-icon-extlink" oncomplete="PF('openAppDlg').show()" /> -->
 
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and userAccessMBean.detailReview}"

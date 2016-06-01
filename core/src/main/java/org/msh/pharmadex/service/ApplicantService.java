@@ -86,6 +86,32 @@ public class ApplicantService implements Serializable {
     		result.addAll(list);
         return result;
     }
+    
+    @Transactional
+    public boolean visAssignCompanyComp(User user){
+    	boolean vis = false;
+    	if(user == null)
+    		return vis;
+    	if(user.getType() == null)
+    		return vis;
+    	
+    	if(user.getType().equals(UserType.COMPANY))
+    		return true;
+    	else{
+    		if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null)
+    			return true;
+    	}
+    	return vis;
+    }
+    
+    @Transactional
+    public boolean visibleCleanBtn(Long applicantID){
+    	boolean vis = false;
+    	if(applicantID != null && applicantID > 1)
+    		return true;
+
+    	return vis;
+    }
 
     @Transactional
     public List<Applicant> getRegApplicants() {
