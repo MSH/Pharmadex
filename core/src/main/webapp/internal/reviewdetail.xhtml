@@ -58,14 +58,14 @@
                     <p:outputLabel/>
                     <p:outputLabel/>
 
-                    <p:outputLabel value="Upload File:"/>
+                    <p:outputLabel value="#{msgs.upload_file}:"/>
                     <p:fileUpload fileUploadListener="#{reviewDetailBn.handleFileUpload}" mode="advanced"
                                   dragDropSupport="true"
                                   update=":reviewHome:reviewChkPnl growl" sizeLimit="100000000"/>
                     <p:outputLabel/>
                     
                     <p:outputLabel/>
-                    <p:commandButton id="fdownload" value="download file"
+                    <p:commandButton id="fdownload" value="#{msgs.global_download}"
                     				onclick="PrimeFaces.monitorDownload(start, stop)"
                          			icon="ui-icon-arrowthichk-n"
                          			rendered="#{reviewDetailBn.visibleBtnDownload()}">
@@ -77,7 +77,6 @@
                                      icon="ui-icon-trash"
                                      update=":reviewHome:reviewChkPnl"
                                      rendered="#{reviewDetailBn.visibleBtnDownload()}"/>
-                                   <!-- allowTypes="/(\.|\/)(gif|jpe?g|png)$/" -->
                 </h:panelGrid>
                 <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
                     <p:outputLabel value="#{msgs.pri_processor}:" styleClass="label"/>

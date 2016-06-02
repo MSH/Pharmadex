@@ -151,7 +151,7 @@ public class ReviewService implements Serializable {
 		if (li==null)  return reviewInfo;
 		if (li.size()==1) reviewInfo=li.get(0); 
 		else {
-			Date dt=new Date("1.1.2000");
+			Date dt = new Date("1.1.2000");
 			for (int i = 0; li.size() > i; i++) {
 				if (!li.get(i).getCreatedDate().after(dt)) reviewInfo=li.get(i);
 			}
