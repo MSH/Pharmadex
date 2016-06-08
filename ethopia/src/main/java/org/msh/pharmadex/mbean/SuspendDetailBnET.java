@@ -245,15 +245,15 @@ public class SuspendDetailBnET implements Serializable {
                     review = srchReview;
                     reviewService.saveReviewInfo(review);
                 }
+            }else{
+
             }
-            if (review==null){//still null, creates
-                review = new ReviewInfo();
-                review.setReviewer(reviewer);
-                review.setProdApplications(suspDetail.getProdApplications());
-                review.setReviewStatus(ReviewStatus.ASSIGNED);
-                review.setDueDate(review.getDueDate());
-                reviewService.saveReviewInfo(review);
-            }
+            if (review==null) review = new ReviewInfo();
+            review.setReviewer(reviewer);
+            review.setProdApplications(suspDetail.getProdApplications());
+            review.setReviewStatus(ReviewStatus.ASSIGNED);
+            if (review.getDueDate()!=null) review.getDueDate();
+            reviewService.saveReviewInfo(review);
             RetObject retObject = suspendService.saveSuspend(suspDetail);
             if (retObject.getMsg().equals("persist")) {
                 suspDetail = (SuspDetail) retObject.getObj();

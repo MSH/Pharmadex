@@ -400,7 +400,8 @@
                     </h:panelGrid>
 
 
-                    <p:commandButton id="submitButton1" value="#{msgs.global_submit}" update="@form"
+                    <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+                                     update=":reviewHome"
                                      oncomplete="if (!args.validationFailed) PF('assignreviewdlg').hide()"
                                      action="#{suspendDetailBnET.assignReviewer}" ajax="true"/>
                 </p:panel>
