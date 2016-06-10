@@ -134,7 +134,7 @@ public class ProdApplicationsService implements Serializable {
 	private SampleTestDAO sampleTestDAO;
 	@Autowired
 	private ReviewInfoDAO reviewInfoDAO;
-	
+
 	@Autowired
 	private UtilsByReports utilsByReports;
 
@@ -408,13 +408,18 @@ public class ProdApplicationsService implements Serializable {
 			if (prodApplications.getProduct().getId() == null) {
 				productDAO.saveProduct(prodApplications.getProduct());
 			}
-			Applicant appl = prodApplications.getApplicant();
-			if(appl != null && prodApplications.getApplicantUser() != null){
-				appl.setContactName(prodApplications.getApplicantUser().getUsername());
-				applicantDAO.saveApplicant(appl);
-			}
 			if (prodApplications.getId() == null) {
-				prodApplications.setApplicant(applicantDAO.findApplicant(prodApplications.getApplicant().getApplcntId()));
+				Applicant appl = prodApplications.getApplicant();
+				prodApplications.setApplicant(applicantDAO.findApplicant(appl.getApplcntId()));
+				
+				// change responsable in Applicant
+				User applUs = prodApplications.getApplicantUser();
+				if(appl != null && applUs != null){
+					if(applUs.getUsername() != null){
+						appl.setContactName(prodApplications.getApplicantUser().getUsername());
+						applicantDAO.saveApplicant(appl);
+					}
+				}
 				prodApplicationsDAO.saveApplication(prodApplications);
 			} else
 				prodApplications = prodApplicationsDAO.updateApplication(prodApplications);
@@ -507,7 +512,7 @@ public class ProdApplicationsService implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_BODY, summary, true);
-		
+
 		param.put("date", new Date());
 
 		return JasperFillManager.fillReport(resource.getFile(), param);
@@ -742,10 +747,10 @@ public class ProdApplicationsService implements Serializable {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
 			utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
-			
+
 			String subj1 = "Product Registration application for  " + (prod != null?prod.getProdName():"") + " recieved";
 			utilsByReports.putNotNull(UtilsByReports.KEY_SUBJECT_1, subj1, true);
-			
+
 			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_SUBJECT, "Product application deficiency letter for  ", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_REGISTRAR, workspace.getRegistrarName(), true);

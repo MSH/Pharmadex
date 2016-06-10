@@ -1,6 +1,7 @@
 package org.msh.pharmadex.service;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,6 +44,19 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_REPORT_DATE = "reportDate";
 	public static String KEY_DECISION_DATE = "DecisionDate";
 	public static String KEY_DECISION = "decision";
+	public static String KEY_SHELFINE = "shelfine";
+	public static String KEY_INN = "inn";
+	public static String KEY_PACKSIZE = "packsize";
+	public static String KEY_STORAGE = "storage";
+	public static String KEY_EXCIPIENT = "excipient";
+	
+	public static String KEY_FNM = "fnm";
+	public static String KEY_DRUGTYPE = "drugType";
+	public static String KEY_SUBACT = "subact";
+	public static String KEY_GEN = "gen";
+	public static String KEY_REG_DATE = "regDate";
+	public static String KEY_EXPIRY_DATE = "expiryDate";
+	public static String KEY_REG_NUMBER = "regNumber";
 
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
@@ -55,6 +69,12 @@ public class UtilsByReports implements Serializable {
 		
 		this.prodApps = _prodApps;
 		this.prod = _prod;
+	}
+	
+	public void putNotNull(String key, Object obj){
+		if(param == null)
+			return;
+		param.put(key, obj);
 	}
 	
 	/** onlyStr - true - add in map just string, without considering prodApps or(and) prod*/
@@ -76,7 +96,7 @@ public class UtilsByReports implements Serializable {
 		if(prod == null)
 			return ;
 		String str = "";
-
+		
 		if(k.equals(KEY_PRODNAME)){
 			str = prod.getProdName() != null ? prod.getProdName():"";
 			param.put(k, str);
@@ -100,6 +120,18 @@ public class UtilsByReports implements Serializable {
 		}
 		if(k.equals(KEY_SUBJECT)){
 			str = t + prod.getProdName() != null ? prod.getProdName():"";
+			param.put(k, str);
+		}
+		if(k.equals(KEY_SHELFINE)){
+			str = prod.getShelfLife() != null ? prod.getShelfLife():"";
+			param.put(k, str);
+		}
+		if(k.equals(KEY_PACKSIZE)){
+			str = prod.getPackSize() != null ? prod.getPackSize():"";
+			param.put(k, str);
+		}
+		if(k.equals(KEY_STORAGE)){
+			str = prod.getStorageCndtn() != null ? prod.getStorageCndtn():"";
 			param.put(k, str);
 		}
 	}
@@ -134,12 +166,26 @@ public class UtilsByReports implements Serializable {
 			str = prodApps.getProdAppNo() != null ? prodApps.getProdAppNo():"";
 			param.put(k, str);
 		}
+		if(k.equals(KEY_REG_NUMBER)){
+			str = prodApps.getProdRegNo() != null ? prodApps.getProdRegNo():"";
+			param.put(k, str);
+		}
 		if(k.equals(KEY_ID)){
 			param.put(k, prodApps.getId());
 		}
 		if(k.equals(KEY_COMPANY_NAME)){
 			if(prodApps.getApplicant() != null)
 				str = prodApps.getApplicant().getAppName() != null ? prodApps.getApplicant().getAppName():"";
+			param.put(k, str);
+		}
+		if(k.equals(KEY_REG_DATE)){
+			if(prodApps.getRegistrationDate() != null)
+				str = DateFormat.getDateInstance().format(prodApps.getRegistrationDate());
+			param.put(k, str);
+		}
+		if(k.equals(KEY_EXPIRY_DATE)){
+			if(prodApps.getRegExpiryDate() != null)
+				str = DateFormat.getDateInstance().format(prodApps.getRegExpiryDate());
 			param.put(k, str);
 		}
 	}

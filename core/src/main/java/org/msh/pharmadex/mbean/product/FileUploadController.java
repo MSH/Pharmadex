@@ -146,11 +146,20 @@ public class FileUploadController implements Serializable {
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 	        Calendar c = Calendar.getInstance();
 	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
-	//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
 	        return download;
         }
         return null;
     }
+    
+/*    public StreamedContent regCertDownload(ProdApplications prodApps) throws SQLException, IOException, JRException {
+        if(prodApps != null){
+	        InputStream ist = new ByteArrayInputStream(prodApps.getRegCert());
+	        Calendar c = Calendar.getInstance();
+	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApps.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
+	        return download;
+        }
+        return null;
+    }*/
 
     public StreamedContent reviewDetailDownload(ReviewDetail reviewDetail) {
     	if(reviewDetail == null)

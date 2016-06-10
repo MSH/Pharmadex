@@ -107,7 +107,7 @@ public class ApplicantService implements Serializable {
     @Transactional
     public boolean visibleCleanBtn(Long applicantID){
     	boolean vis = false;
-    	if(applicantID != null && applicantID > 1)
+    	if(applicantID != null && applicantID > 0)
     		return true;
 
     	return vis;

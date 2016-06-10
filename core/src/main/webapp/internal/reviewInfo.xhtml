@@ -150,11 +150,13 @@
                         </p:column>
 
                         <p:column>
-                            <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="false"
+                            <p:commandButton id="downloadLink" value="#{msgs.download_attach}"
+                            				 ajax="false"
                                              onclick="PrimeFaces.monitorDownload(start, stop)"
                                              icon="ui-icon-arrowthichk-n">
                                 <p:fileDownload value="#{reviewInfoBn.fileDownload(doc.prodAppLetter)}"/>
                             </p:commandButton>
+
                         </p:column>
 
                         <p:column>

@@ -177,18 +177,23 @@ public class ProdRegAppMbean implements Serializable {
 				pricing = new Pricing(drugPrices, product);
 				product.setPricing(pricing);
 
-				//Set logged in user company as the company.
-				if (userSession.isCompany()) {
+				// responsable User in prodApplications - prodApplications.getApplicantUser()
+				applicantUser = prodApplications.getApplicantUser();
+
+				if(applicantUser == null)
+					applicantUser = prodApplications.getCreatedBy();
+				if(applicantUser == null)
 					applicantUser = getLoggedInUser();
-					prodApplications.setApplicant(applicantUser.getApplicant());
-					prodApplications.setApplicantUser(applicantUser);
-				}
+
+				prodApplications.setApplicant(applicantUser.getApplicant());
+				prodApplications.setApplicantUser(applicantUser);
+
 				prodApplications.setCreatedBy(getLoggedInUser());
 			}
 		} else {
 			initProdApps(prodAppID);
 		}
-		
+
 		if(prodApplications.getcRevAttach() == null)
 			prepareUpload();
 	}
@@ -705,7 +710,14 @@ public class ProdRegAppMbean implements Serializable {
 				companies = product.getProdCompanies();
 				//        prodAppChecklists = prodApplications.getProdAppChecklists();
 				applicant = prodApplications.getApplicant();
-				applicantUser = prodApplications.getCreatedBy();
+
+				// responsable User in prodApplications - prodApplications.getApplicantUser()
+				applicantUser = prodApplications.getApplicantUser();
+				if(applicantUser == null)
+					applicantUser = prodApplications.getCreatedBy();
+				if(applicantUser == null)
+					applicantUser = getLoggedInUser();
+
 				pricing = product.getPricing();
 				drugPrices = pricing != null ? pricing.getDrugPrices() : null;
 				//        foreignAppStatuses = prodApplications.getForeignAppStatus();

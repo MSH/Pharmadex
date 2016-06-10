@@ -142,7 +142,7 @@ public class ProcessProdBn implements Serializable {
     //private JasperPrint jasperPrint;
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
-    private User loggedInUser;
+    public User loggedInUser;
     private List<ProdAppLetter> letters;
     private List<ReviewInfo> reviewInfos;
     private boolean registered;

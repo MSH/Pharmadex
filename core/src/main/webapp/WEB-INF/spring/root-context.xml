@@ -40,7 +40,7 @@
         <property name="username" value="epharmadex"/>
         <property name="password" value="Pharmadex1"/>
         <property name="javaMailProperties">
-     xxxxxxxxxxxx       <props>
+     		<props>
                 <!-- Use SMTP transport protocol -->
                 <prop key="mail.transport.protocol">smtp</prop>
                 <!-- Use SMTP-AUTH to authenticate to SMTP server -->
