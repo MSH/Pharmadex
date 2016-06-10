@@ -31,8 +31,8 @@
 
 
             <p:panel header="#{msgs.recieved_applications}">
-                <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBeanET.submmittedAppList}"
-                             filteredValue="#{prodAppMBeanET.filteredApps}">
+                <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBeanMZ.submmittedAppList}"
+                             filteredValue="#{prodAppMBeanMZ.filteredApps}">
 
                     <p:column filterBy="#{eachprod.product.prodName}"
                               sortBy="#{eachprod.product.prodName}">
