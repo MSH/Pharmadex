@@ -7,6 +7,12 @@
                 xmlns:o="http://omnifaces.org/ui">
 
     <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
+    	<p:outputLabel value="#{msgs.dosRecDate}" for="dosrecdate" styleClass="fy-required-field"/>
+        <p:calendar value="#{prodRegAppMbean.prodApplications.dosRecDate}" id="dosrecdate" showOn="button"
+                pattern="#{userAccessMBean.workspace.datePattern}"
+                required="true" requiredMessage="#{msgs.dosRecDate}: #{msgs.valueReq}"/>
+         <p:message for="dosrecdate" showSummary="true" showDetail="false"/>
+                    
         <p:outputLabel value="#{msgs.prod_app_type}" styleClass="fy-required-field"/>
         <p:outputLabel value="#{msgs[prodRegAppMbean.prodApplications.prodAppType.key]}" styleClass="label"/>
         <p:outputLabel/>
@@ -58,7 +64,7 @@
         
         <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
         <p:inputText id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
-                     required="true" requiredMessage="#{msgs.dos_strength}: Value required">
+                     required="true" requiredMessage="#{msgs.dos_strength}: #{msgs.valueReq}">
         </p:inputText>
         <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
 

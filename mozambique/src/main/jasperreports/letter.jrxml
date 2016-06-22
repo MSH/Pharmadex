@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-06-08T09:48:24 -->
+<!-- 2016-06-20T16:24:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -15,10 +15,10 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<parameter name="par1" class="java.lang.String"/>
-	<parameter name="par2" class="java.lang.String"/>
-	<parameter name="par3" class="java.lang.String"/>
-	<parameter name="par4" class="java.lang.String"/>
+	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="dosRecDate" class="java.lang.String"/>
+	<parameter name="prodName" class="java.lang.String"/>
+	<parameter name="genName" class="java.lang.String"/>
 	<parameter name="prodStrength" class="java.lang.String"/>
 	<parameter name="dosForm" class="java.lang.String"/>
 	<parameter name="packsize" class="java.lang.String"/>
@@ -88,7 +88,7 @@ Registo]]></text>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="491" splitType="Stretch">
+		<band height="489" splitType="Stretch">
 			<staticText>
 				<reportElement x="30" y="150" width="135" height="20" uuid="58b9d50a-a922-47d0-ad79-183188d4bef3">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -171,7 +171,7 @@ Registo]]></text>
 				<textElement>
 					<font fontName="Times New Roman" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{par4} == null ? "":$P{par4}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{genName} == null ? "":$P{genName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="220" y="378" width="130" height="20" uuid="8443c21c-7dd3-46c0-bf46-a4f326888074">
@@ -208,7 +208,7 @@ Registo]]></text>
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement x="302" y="16" width="135" height="16" uuid="13092bd1-d683-468e-aefe-032c8974c1ba">
+				<reportElement x="302" y="16" width="110" height="16" uuid="13092bd1-d683-468e-aefe-032c8974c1ba">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -216,21 +216,22 @@ Registo]]></text>
 				</textElement>
 				<text><![CDATA[Director Técnico da ]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="437" y="16" width="135" height="16" uuid="fdf17023-6a13-4d9b-a746-90ecee738470">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="415" y="16" width="155" height="32" uuid="fdf17023-6a13-4d9b-a746-90ecee738470">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Times New Roman" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{par1} == null ? "":$P{par1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{appName} == null ? "":$P{appName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="302" y="32" width="135" height="16" uuid="f7d34af1-9539-45ad-b41f-510697521b93">
+				<reportElement positionType="Float" x="302" y="48" width="110" height="16" uuid="f7d34af1-9539-45ad-b41f-510697521b93">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="12"/>
@@ -245,7 +246,7 @@ Registo]]></text>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{par2} == null ? "":$P{par2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{dosRecDate} == null ? "":$P{dosRecDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="435" y="80" width="50" height="18" uuid="b4eb28e0-5f47-4b97-9d37-7aad4a8e1f9e">
@@ -265,7 +266,7 @@ Registo]]></text>
 				</textElement>
 				<text><![CDATA[com as características que abaixo se segue:]]></text>
 			</staticText>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="130" y="100" width="135" height="18" uuid="9fa93d4d-26c4-4838-a3c8-5823fda22460">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -273,7 +274,7 @@ Registo]]></text>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{par3} == null ? "":$P{par3}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{prodName} == null ? "":$P{prodName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="210" width="135" height="20" uuid="0354913a-ab15-42f0-85c8-65ab1f246a53">

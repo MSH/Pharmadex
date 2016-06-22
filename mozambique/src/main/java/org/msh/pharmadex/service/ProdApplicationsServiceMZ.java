@@ -69,7 +69,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private ProdApplicationsService prodApplicationsService;
 	
 	@Autowired
-	private UtilsByReports utilsByReports;
+	private UtilsByReportsMZ utilsByReports;
 	
 	private ProdApplications prodApp;
 	private Product product;
@@ -210,29 +210,29 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		utilsByReports.init(param, prodApp, product);
-		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_REG_NUMBER, "", false);
-		//utilsByReports.putNotNull(UtilsByReports., "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNUMBER, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_NUMBER, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SUBMIT_DATE, "", false);
 		
-		utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_SHELFINE, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_ADDRESS1, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SHELFINE, "", false);
 		
 		//inn
-		utilsByReports.putNotNull(UtilsByReports.KEY_INN, "", true);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_INN, "", false);
 		
-		utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_PACKSIZE, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_STORAGE, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PACKSIZE, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_STORAGE, "", false);
 		//excipient
-		utilsByReports.putNotNull(UtilsByReports.KEY_EXCIPIENT, "", true);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXCIPIENT, "", false);
 		
 		String fnm = (product != null) ? product.getFnm():"";
 		boolean flag = (fnm != null && fnm.length() > 0) ? true: false;
-		utilsByReports.putNotNull(UtilsByReports.KEY_FNM, flag);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_FNM, flag);
 		
 		int t = 0;
 		if(prodApp != null){
@@ -244,11 +244,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					t = 2;
 				else if(type.equals(ProdAppType.RECOGNIZED))
 					t = 3;
-				else //if(type.equals(ProdAppType.GENERIC))
+				else if(type.equals(ProdAppType.RENEW))
 					t = 4;
 			}
 		}
-		utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, t);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPTYPE, t);
 		
 		t = 0;
 		if(product != null){
@@ -268,20 +268,20 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					t = 6;
 			}
 		}
-		utilsByReports.putNotNull(UtilsByReports.KEY_DRUGTYPE, t);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DRUGTYPE, t);
 		
 		boolean fl = false;
 		if(product != null){
 			fl = product.isNewChemicalEntity();
 			// or by ProdAppType type = prodApp.getProdAppType(); if(type.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
 		}
-		utilsByReports.putNotNull(UtilsByReports.KEY_SUBACT, fl);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SUBACT, fl);
 		
 		fl = false;
-		utilsByReports.putNotNull(UtilsByReports.KEY_GEN, fl);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GEN, fl);
 		
-		utilsByReports.putNotNull(UtilsByReports.KEY_REG_DATE, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_EXPIRY_DATE, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_DATE, "", false);
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXPIRY_DATE, "", false);
 		
 		return JasperFillManager.fillReport(resource.getFile(), param, conn);
 	}
@@ -301,15 +301,15 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
 			
-			//utilsByReports.putNotNull(UtilsByReports., "", false);
-			//utilsByReports.putNotNull(UtilsByReports., "", false);
-			//utilsByReports.putNotNull(UtilsByReports., "", false);
-			//utilsByReports.putNotNull(UtilsByReports., "", false);
-		    
-			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
-			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
-			utilsByReports.putNotNull(UtilsByReports.KEY_PACKSIZE, "", false);
-			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSREC_DATE, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
+			
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GENNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PACKSIZE, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
 
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
