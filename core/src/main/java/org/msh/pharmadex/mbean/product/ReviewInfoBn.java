@@ -240,10 +240,16 @@ public class ReviewInfoBn implements Serializable {
             saveReview();
             userSession.setProdAppID(reviewInfo.getProdApplications().getId());
             userSession.setProdID(reviewInfo.getProdApplications().getProduct().getId());
+            /* !!!!!!! 21.06.2016 old version
             if (reviewInfo.getProdApplications().getRegState().equals(RegState.SUSPEND))
                 return "/internal/processreg";
             else
                 return "/internal/suspenddetail";
+            */
+            if (reviewInfo.getProdApplications().getRegState().equals(RegState.SUSPEND))
+            	return "/internal/suspenddetail";
+            else
+            	return "/internal/processreg";
         } catch (Exception ex) {
             ex.printStackTrace();
             facesContext.addMessage(null, new FacesMessage("Log out of the system and try again."));

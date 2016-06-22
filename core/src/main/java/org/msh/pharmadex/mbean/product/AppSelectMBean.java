@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ComponentSystemEvent;
 
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.service.ApplicantService;
@@ -60,6 +61,8 @@ public class AppSelectMBean implements Serializable {
 	private boolean showUserSelect = false;
 	/** flag by visible label no Users of Applicant */
 	private boolean showLblNoUsers = false;
+	/** flag by visible btn Save */
+	private boolean showSaveBtn = false;
 
 	private List<UserDTO> users;
 	private UserDTO responsable;
@@ -68,6 +71,7 @@ public class AppSelectMBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		System.out.println("Initialize AppSelectMBean");
+		cancelAddApplicant();
 	}
 
 	@PreDestroy
@@ -91,6 +95,7 @@ public class AppSelectMBean implements Serializable {
 					setShowUserSelect(users.size() > 0);
 					setShowLblNoUsers(!(users.size() > 0));
 					selectedUser = responsable;
+					showSaveBtn = (selectedUser != null);
 				}
 			}else{
 				setShowUserSelect(false);
@@ -103,14 +108,15 @@ public class AppSelectMBean implements Serializable {
 		}
 	}
 
-	private void convertUser(List<org.msh.pharmadex.domain.User> users) {
+	private void convertUser(List<org.msh.pharmadex.domain.User> list) {
 		String respName = selectedApplicant != null ? selectedApplicant.getContactName():"";
 		org.msh.pharmadex.domain.User resp = userService.findUserByUsername(respName);
 		responsable = resp != null ? new UserDTO(resp):null;
 
 		this.users = new ArrayList<UserDTO>();
-		for (org.msh.pharmadex.domain.User u : users) {
-			this.users.add(new UserDTO(u));
+		for (org.msh.pharmadex.domain.User u : list) {
+			if(u.isEnabled())
+				this.users.add(new UserDTO(u));
 		}
 		addUserInList();
 	}
@@ -134,14 +140,21 @@ public class AppSelectMBean implements Serializable {
 		logger.error("Selected company is " + selectedApplicant.getAppName());
 		logger.error("event " + event.getObject());
 		gmpChangeListener();
-
-
 	}
 
 	public void onRowSelect(SelectEvent event) {
 		FacesMessage msg = new FacesMessage("User Selected", ((UserDTO) event.getObject()).getUsername());
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		logger.error("Selected User is " + ((UserDTO) event.getObject()).getUsername());
+		showSaveBtn = (selectedUser != null);
+	}
+	
+	public void validate(ComponentSystemEvent e) {
+		if(selectedUser == null){
+			FacesContext fc = FacesContext.getCurrentInstance();
+			fc.addMessage(null, new FacesMessage("Name and password are invalid. Please try again."));
+			fc.renderResponse();
+		}
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
@@ -162,9 +175,11 @@ public class AppSelectMBean implements Serializable {
 	public String addApptoRegistration() {
 		try{
 			selectedApplicant = applicantService.findApplicant(selectedApplicant.getApplcntId());
+			showSaveBtn = (selectedUser != null);
 			if (selectedUser == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Person responsible cannot be empty."));
-				FacesContext.getCurrentInstance().validationFailed();
+				FacesContext.getCurrentInstance().renderResponse();
+				return null;
 			} else {
 				applicantUser = userService.findUser(selectedUser.getUserId());
 				prodRegAppMbean.setApplicant(selectedApplicant);
@@ -184,6 +199,12 @@ public class AppSelectMBean implements Serializable {
 	public void cancelAddApplicant() {
 		selectedApplicant = new Applicant();
 		applicantUser = new org.msh.pharmadex.domain.User();
+		selectedUser = null;
+		this.users = new ArrayList<UserDTO>();
+		setShowLblNoUsers(false);
+		setShowUserSelect(false);
+		setShowSaveBtn(false);
+		setShowApp(false);
 	}
 
 
@@ -222,6 +243,14 @@ public class AppSelectMBean implements Serializable {
 		this.showLblNoUsers = showLblNoUSers;
 	}
 
+	public boolean isShowSaveBtn() {
+		return showSaveBtn;
+	}
+
+	public void setShowSaveBtn(boolean showSaveBtn) {
+		this.showSaveBtn = showSaveBtn;
+	}
+	
 	public Applicant getSelectedApplicant() {
 		return selectedApplicant;
 	}

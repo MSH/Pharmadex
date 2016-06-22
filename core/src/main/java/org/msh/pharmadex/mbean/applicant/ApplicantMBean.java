@@ -268,8 +268,13 @@ public class ApplicantMBean implements Serializable {
 
     public ArrayList<User> getUserList() {
         if (userList == null) {
-            if (selectedApplicant != null)
+            if (selectedApplicant != null && selectedApplicant.getApplcntId() != null)
                 userList = (ArrayList<User>) userService.findUserByApplicant(selectedApplicant.getApplcntId());
+            /*else{// create a new applicant
+            	userList = new ArrayList<User>();
+            	user = userService.findUser(userSession.getLoggedINUserID());
+            	userList.add(user);
+            }*/
         }
         return userList;
     }

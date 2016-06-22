@@ -25,12 +25,15 @@ public class ProdAppMBean implements Serializable {
     private static final long serialVersionUID = -900861644263726931L;
     @ManagedProperty(value = "#{userSession}")
     protected UserSession userSession;
+    
     protected List<ProdApplications> prodApplicationsList;
     protected List<ProdApplications> submmittedAppList;
     @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
+    
     @ManagedProperty(value = "#{invoiceService}")
     private InvoiceService invoiceService;
+    
     private ProdApplications selectedApplication = new ProdApplications();
     private List<ProdApplications> savedAppList;
     private boolean showAdd = false;

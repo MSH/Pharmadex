@@ -50,7 +50,7 @@
         </p:panel>
     </h:panelGroup>
 
-    <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantdlg" >
+    <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantdlg">
             <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
                 <h:outputLabel value="#{msgs.applicant_name}" for="appname"/>
                 <p:autoComplete id="appname" value="#{appSelectMBean.selectedApplicant}"
@@ -65,7 +65,6 @@
                             update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
                             partialSubmit="true" process=":reghome:appname"/>
                 </p:autoComplete>
-
             </h:panelGrid>
 
             <h:panelGroup id="appdetaildlg">
@@ -107,7 +106,7 @@
                 </h:panelGrid>
             </h:panelGroup>
 
-            <p:panel header="#{msgs.person_responsible}" id="contact">
+            <p:panel header="#{msgs.person_responsible}" id="contact" >
 				<h:panelGrid columns="1" columnClasses="label" rendered="#{appSelectMBean.showLblNoUsers}">
 				 	<p:outputLabel value="#{msgs.error_noUsersInApplicant}" styleClass="hint"/>
 				</h:panelGrid>
@@ -116,10 +115,10 @@
                                  style="width:100%;" selection="#{appSelectMBean.selectedUser}"
                                  rowKey="#{applicantUser.userId}">
                         <p:ajax event="rowSelectRadio" listener="#{appSelectMBean.onRowSelect}"
-                                update=":reghome:messages"/>
+                                update=":reghome:messages :reghome:btnpnl"/>
 
-                        <p:column headerText="#{msgs.responsable}" selectionMode="single"/>
-
+                        <p:column headerText="#{msgs.responsable}" selectionMode="single" />
+                        
                         <p:column headerText="#{msgs.User_name}">
                             <h:outputText value="#{applicantUser.name}"/>
                         </p:column>
@@ -137,12 +136,15 @@
 
 
             <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
-
                 <h:panelGroup id="btnpnl">
-                    <p:commandButton value="#{msgs.global_add}" action="#{appSelectMBean.addApptoRegistration}"
-                                     oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()"
-                                     update=":reghome" process=":reghome:addapplicantdlg" 
-                                     rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect}"/>
+                	 <!-- <p:inputText id="nameseluser" value="#{appSelectMBean.nameSelectedUSer}" styleClass="label">
+                     	<f:validator validatorId="applicantResponsableValidator"/>
+                     </p:inputText> -->
+                	 
+                    <p:commandButton value="#{msgs.global_save}" action="#{appSelectMBean.addApptoRegistration()}"
+                    				oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()"
+                                    update=":reghome" process=":reghome:addapplicantdlg" 
+                                    rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect and appSelectMBean.showSaveBtn}"/>
                     <p:commandButton action="#{appSelectMBean.cancelAddApplicant}" immediate="true"
                                      value="#{msgs.global_cancel}" update=":reghome:addapplicantdlg" 
                                      oncomplete="PF('addapplicantDlg').hide()"/>

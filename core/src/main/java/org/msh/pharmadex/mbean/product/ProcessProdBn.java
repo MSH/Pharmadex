@@ -1095,6 +1095,4 @@ public class ProcessProdBn implements Serializable {
     public void setSuspId(String suspId) {
         this.suspId = suspId;
     }
-
-
 }

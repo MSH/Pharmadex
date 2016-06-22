@@ -26,7 +26,8 @@ public class SuspAppMBean implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     protected UserSession userSession;
     protected List<SuspDetail> submmittedAppList;
-    @ManagedProperty(value = "#{suspendServiceET}")
+    
+    @ManagedProperty(value = "#{suspendService}")
     SuspendService suspendService;
     private List<ProdApplications> filteredApps;
 
