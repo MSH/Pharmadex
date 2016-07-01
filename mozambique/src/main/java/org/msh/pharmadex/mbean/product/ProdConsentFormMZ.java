@@ -5,24 +5,11 @@
 package org.msh.pharmadex.mbean.product;
 
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.LetterType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
-import org.msh.pharmadex.service.ReportService;
-import org.msh.pharmadex.service.TimelineService;
-import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
-import org.msh.pharmadex.util.RetObject;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.WebUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -32,11 +19,29 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.Date;
+
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
+import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.RetObject;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.WebUtils;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Backing bean to capture review of products

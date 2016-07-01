@@ -1,15 +1,15 @@
 package org.msh.pharmadex.mbean.product;
 
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
-import java.io.Serializable;
-import java.util.List;
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 
 @ManagedBean
 @ViewScoped
@@ -37,7 +37,6 @@ public class ProdAppMBeanMZ implements Serializable {
             submmittedAppList = prodApplicationsServiceMZ.getSubmittedApplications(userSession);
         return submmittedAppList;
     }
-
 
     public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
         return prodApplicationsServiceMZ;
