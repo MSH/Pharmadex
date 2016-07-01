@@ -95,7 +95,7 @@
                                     url="/secure/prodreginit.faces" ajax="false"/>
                         <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                     url="/secure/appregistration.faces" ajax="false"
-                                    rendered="#{userSession.displayAppReg}"/>
+                                    rendered="#{userSessionService.displayAppReg(userSession)}"/>
                         <!--
                                             <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"
                                                         url="/secure/pharmacyregistration.faces" ajax="false"/>
@@ -137,7 +137,8 @@
                         <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document" rendered="#{!userSession.reviewer}"
                                     url="/internal/processprodlist.faces"/>
                         <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
-                                    url="/internal/processapplist.faces"/>
+                                    url="/internal/processapplist.faces"
+                                    rendered="#{userSessionService.displayListAppOnReg(userSession)}"/>
                         <!--
                                             <p:menuitem value="#{msgs.rxsite_reg_process}" icon="ui-icon-document"
                                                         url="/internal/processrxsitelist.faces"/>
