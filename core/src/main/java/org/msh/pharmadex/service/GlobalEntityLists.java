@@ -20,6 +20,7 @@ import org.msh.pharmadex.domain.FeeSchedule;
 import org.msh.pharmadex.domain.Inn;
 import org.msh.pharmadex.domain.PharmClassif;
 import org.msh.pharmadex.domain.PharmacySite;
+import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.SRA;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.Workspace;
@@ -54,6 +55,7 @@ public class GlobalEntityLists implements Serializable {
     private Workspace workspace;
     private List<SRA> sras;
     private List<Currency> currencies;
+    private List<Role> roles;
 
 
     @Autowired

@@ -152,7 +152,7 @@ public class AppSelectMBean implements Serializable {
 	public void validate(ComponentSystemEvent e) {
 		if(selectedUser == null){
 			FacesContext fc = FacesContext.getCurrentInstance();
-			fc.addMessage(null, new FacesMessage("Name and password are invalid. Please try again."));
+			fc.addMessage(null, new FacesMessage("Error selected user."));
 			fc.renderResponse();
 		}
 	}
@@ -207,10 +207,12 @@ public class AppSelectMBean implements Serializable {
 		setShowApp(false);
 	}
 
-
+	/**
+	 * show only REGISTER Applicants
+	 */
 	public List<Applicant> completeApplicantList(String query) {
 		try {
-			List<Applicant> applicants = applicantService.findAllApplicants(null);
+			List<Applicant> applicants = applicantService.getRegApplicants();
 			return JsfUtils.completeSuggestions(query, applicants);
 		} catch (Exception ex){
 			ex.printStackTrace();

@@ -8,30 +8,41 @@
 
         <h:form id="reghome">
 
-            <h:panelGrid columns="1" cellpadding="10px">
+            <h:panelGrid columns="2" columnClasses="menu,content" cellpadding="10px">
+				 <p:menu style="width:198px">
+                    <p:submenu label="#{msgs.Registration}">
+                        <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk"
+                                    action="#{processAppBn.saveApp}" ajax="false"
+                                    rendered="#{userSession.staff || userSession.admin}"/>
+                        <p:menuitem value="#{msgs.global_cancel}" immediate="true"
+                                    icon="ui-icon ui-icon-circle-triangle-w"
+                                    action="#{processAppBn.cancel}" ajax="false"/>
+                    </p:submenu>
+                </p:menu>
 
+				
                 <h:panelGroup styleClass="ui-widget">
                     <h1 class="title ui-widget-header ui-corner-all">
                         <table class="banner">
                             <tr>
                                 <td>
-                                    <h:outputLabel value="#{applicantHome.applicant.appName}" styleClass="title"
+                                    <h:outputLabel value="#{processAppBn.applicant.appName}" styleClass="title"
                                                    style="font-weight: bold; font-size: 1.5em"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.registration_status}: " style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{applicantHome.applicant.state}"
+                                    <h:outputLabel value="#{processAppBn.applicant.state}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                                    <h:outputFormat value="#{applicantHome.applicant.applcntId}" styleClass="title"/>
+                                    <h:outputFormat value="#{processAppBn.applicant.applcntId}" styleClass="title"/>
                                 </td>
                                 <td align="right">
                                     <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{applicantHome.applicant.submitDate}">
+                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}">
                                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                                     </h:outputFormat>
                                 </td>
@@ -44,7 +55,7 @@
 
                     <p:panel header="#{msgs.applicant_detail}">
                         <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                            <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
+                            <ui:param name="applicantdata" value="#{processAppBn.applicant}"/>
                         </ui:decorate>
                         <!--
                         <p:commandLink id="regdetails" value="#{msgs.regDetailsLabel}"
@@ -55,6 +66,49 @@
                         rendered="#{userSession.staff and processProdBn.registered}">
                         -->
                     </p:panel>
+                    
+                    <h:panelGroup id="selectuser" rendered="#{userSession.staff || userSession.admin}">
+                        <p:panel header="#{msgs.person_responsible}">
+                            <h:panelGrid columns="1" cellpadding="10px">
+                            	<p:commandLink value="#{processAppBn.loadUsersByApplicant()}" oncomplete="PF('addUserDlg').show()"
+                                               immediate="true" style="font-weight: bolder; font-size: larger" 
+                                               update=":reghome:usertable :addUserFrm"/>
+                                <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"/>
+                                
+                                <!-- <p:commandLink value="#{msgs.user_add}" oncomplete="PF('newUserDlg').show()"
+                                               immediate="true" update=":newuser"
+                                               style="font-weight: bolder; font-size: larger"
+                                               action="#{processAppBn.initNewUser}"
+                                               rendered="#{userSession.admin}"/> -->
+                            </h:panelGrid>
+
+							<p:dataTable id="usertable" var="applicantUser" value="#{processAppBn.usersByApplicant}"
+                                 style="width:100%;" selection="#{applicantMBean.selectResponsable}"
+                                 rowKey="#{applicantUser.userId}"
+                                 >
+                                 <!-- update=":reghome:usertable" -->
+		                        <p:ajax event="rowSelectRadio" listener="#{processAppBn.onRowSelect}"
+		                                />
+								<!-- update=":reghome:usertable :reghome:messages" -->
+		                        <p:column headerText="#{msgs.responsable}" selectionMode="single" />
+		                        <p:column headerText="#{msgs.global_enable}" style="width:50px">
+		                        	<h:outputText value="#{applicantMBean.userIsEnabled(applicantUser)}" style="align:center; color:red"/>
+		                        </p:column>
+		                        <p:column headerText="#{msgs.User_name}">
+		                            <h:outputText value="#{applicantUser.name}"/>
+		                        </p:column>
+		
+		                        <p:column headerText="#{msgs.User_username}">
+		                            <h:outputText value="#{applicantUser.username}"/>
+		                        </p:column>
+		
+		                        <p:column headerText="#{msgs.User_email}">
+		                            <h:outputText value="#{applicantUser.email}"/>
+		                        </p:column>
+		                    </p:dataTable>
+
+                        </p:panel>
+                    </h:panelGroup>
                     
                     <p:outputPanel id="detailsgroup" autoUpdate="true">
                         <p:panel header="#{msgs.regDetailsLabel}"
@@ -68,7 +122,7 @@
                                 </p:commandLink>
                             </h:panelGrid>
                              -->
-                           <p:dataTable id="productsNotReg" var="prodAppsNotReg" value="#{applicantHome.prodNotRegApplicationses}"
+                           <p:dataTable id="productsNotReg" var="prodAppsNotReg" value="#{processAppBn.prodNotRegApplicationses}"
                            		paginator="true" rows="20" paginatorPosition="bottom"
                          		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          		rowsPerPageTemplate="20,50,100">
@@ -127,7 +181,7 @@
                         </p:panel>
                     </p:outputPanel>
                     <p:panel header="#{msgs.product_list}">
-                        <p:dataTable id="products" var="prodApps" value="#{applicantHome.prodApplicationses}"
+                        <p:dataTable id="products" var="prodApps" value="#{processAppBn.prodApplicationses}"
                         		paginator="true" rows="20" paginatorPosition="bottom"
                          		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          		rowsPerPageTemplate="20,50,100">
@@ -182,9 +236,30 @@
 
                 </h:panelGroup>
             </h:panelGrid>
-
         </h:form>
+		
+		<p:dialog header="#{msgs.user_add}" widgetVar="addUserDlg" id="addUserdlg" resizable="true" modal="true">
+            <h:form id="addUserFrm">
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+                    <h:outputLabel value="#{msgs.User_name}" for="username"/>
+                    <p:autoComplete id="username" value="#{applicantMBean.user}"
+                                    completeMethod="#{processAppBn.completeUserList}" dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
 
+                    <h:panelGroup>
+                        <p:commandButton actionListener="#{processAppBn.addSelectUserInList()}" value="#{msgs.global_add}"
+                                         oncomplete="if (!args.validationFailed) PF('addUserDlg').hide()"
+                                         update=":reghome:usertable :addUserdlg :reghome:messages" process="@form"/>
+                        <p:commandButton action="#{processAppBn.cancelAddUser}" immediate="true"
+                                         value="#{msgs.global_cancel}" oncomplete="PF('addUserDlg').hide()"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
 
     </ui:define>
 </ui:composition>

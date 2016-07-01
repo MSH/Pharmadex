@@ -36,7 +36,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ApplicantService implements Serializable {
 
-    @Resource
+	private static final long serialVersionUID = 7443010009876023006L;
+
+	@Resource
     ApplicantDAO applicantDAO;
 
     @Autowired
@@ -179,8 +181,19 @@ public class ApplicantService implements Serializable {
         return a;
        // }
     }
-
+    
     @Transactional
+    public Applicant submitApp(Applicant applicant) {
+        applicant.setState(ApplicantState.NEW_APPLICATION);
+
+        Applicant a = applicantDAO.updateApplicant(applicant);
+        System.out.println("applicant id = " + applicant.getApplcntId());
+        applicantConverter.setApplicantList(null);
+        applicants = null;
+        return a;
+    }
+
+    /*@Transactional
     public Applicant updateApp(Applicant applicant, User user) {
         try {
             System.out.println("applicant id = " + applicant.getApplcntId());
@@ -216,12 +229,13 @@ public class ApplicantService implements Serializable {
             return null;
         }
     }
-    
+    */
     @Transactional
-    public Applicant updateApp(Applicant applicant) {
+    public Applicant updateApp(Applicant applicant, ApplicantState newState) {
         try {
             System.out.println("applicant id = " + applicant.getApplcntId());
-
+            if(newState != null)
+            	applicant.setState(newState);
             applicant = applicantDAO.updateApplicant(applicant);
 
             applicants = null;

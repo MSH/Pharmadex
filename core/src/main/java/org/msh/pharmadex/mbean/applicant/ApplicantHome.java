@@ -1,6 +1,9 @@
 package org.msh.pharmadex.mbean.applicant;
 
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.Address;
 import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ApplicantService;
@@ -26,6 +29,9 @@ public class ApplicantHome implements Serializable {
     @ManagedProperty(value = "#{applicantService}")
     private ApplicantService applicantService;
 
+    @ManagedProperty(value = "#{userSession}")
+	private UserSession userSession;
+    
     private Applicant applicant;
 
     private List<ProdApplications> prodApplicationses;
@@ -79,12 +85,19 @@ public class ApplicantHome implements Serializable {
     }
 
     public Applicant getApplicant() {
-        if (applicant == null) {
+    	if (applicant == null) {
+			if (userSession.getApplcantID() != null) {
+				applicant = applicantService.findApplicant(userSession.getApplcantID());
+			} else {
+				applicant = null;
+			}
+		}
+        /*if (applicant == null) {
             Long applicantID = (Long) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("appID");
             if(applicantID!=null)
                 applicant = applicantService.findApplicant(applicantID);
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("appID");
-        }
+        }*/
 
         return applicant;
     }
@@ -100,4 +113,12 @@ public class ApplicantHome implements Serializable {
     public void setApplicantService(ApplicantService applicantService) {
         this.applicantService = applicantService;
     }
+    
+    public UserSession getUserSession() {
+		return userSession;
+	}
+
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
 }

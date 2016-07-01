@@ -25,11 +25,22 @@
                     </f:facet>
 
 
-                    <p:commandLink id="viewLink" value="#{licHolder.appName}" 
+                   <!--  <p:commandLink id="viewLink" value="#{licHolder.appName}" 
                     		action="#{applicantMBean.sentToDetail(licHolder.applcntId)}" ajax="false">
+                    </p:commandLink> -->
+                    <p:commandLink id="viewLink" value="#{licHolder.appName}" action="#{applicantMBean.sentToDetail(licHolder.applcntId)}"
+                                       ajax="false">
+                    	<f:setPropertyActionListener value="#{licHolder.applcntId}" target="#{userSession.applcantID}"/>
                     </p:commandLink>
                 </p:column>
 
+<!-- <p:column headerText="#{msgs.registration_applicant}">
+                        <p:commandLink value="#{licHolder.appName}" action="#{processAppListBn.goToAppDetail}"
+                                       ajax="false">
+                            <f:setPropertyActionListener value="#{licHolder.applcntId}"
+                                                         target="#{userSession.applcantID}"/>
+                        </p:commandLink>
+                    </p:column> -->
 
                 <p:column filterBy="#{licHolder.applicantType.name}"
                           sortBy="#{licHolder.applicantType.name}">

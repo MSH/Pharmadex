@@ -91,6 +91,13 @@ public class ApplicantDAO implements Serializable {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Applicant updateApplicant(Applicant applicant) {
         applicant.getAddress().setCountry(countryDAO.find(applicant.getAddress().getCountry().getId()));
+        List<User> list = applicant.getUsers();
+        if(list != null && list.size() > 0){
+        	for(User u:list){
+        		u.setApplicant(applicant);
+        		entityManager.merge(u);
+        	}
+        }
         Applicant a = entityManager.merge(applicant);
         return a;
     }

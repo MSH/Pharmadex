@@ -1,6 +1,23 @@
 package org.msh.pharmadex.mbean.applicant;
 
-import org.msh.pharmadex.auth.PassPhrase;
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
+import javax.faces.event.ComponentSystemEvent;
+import javax.servlet.http.HttpServletRequest;
+
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ApplicantType;
@@ -13,20 +30,6 @@ import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
-
 /**
  * Created by IntelliJ IDEA.
  * User: usrivastava
@@ -37,7 +40,9 @@ import java.util.ResourceBundle;
 @ManagedBean
 @ViewScoped
 public class ApplicantMBean implements Serializable {
-    @ManagedProperty(value = "#{applicantService}")
+
+	private static final long serialVersionUID = -3983563460376543047L;
+	@ManagedProperty(value = "#{applicantService}")
     ApplicantService applicantService;
     @ManagedProperty(value = "#{userService}")
     UserService userService;
@@ -49,26 +54,25 @@ public class ApplicantMBean implements Serializable {
     private List<Applicant> allApplicant;
     private List<Applicant> allStateApplicant;
     private List<Applicant> filteredApplicant;
-    private boolean showAdd = false;
     private User user;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
     private ArrayList<User> userList;
 
+    private User selectResponsable;
+    
     @PostConstruct
     private void init() {
         selectedApplicant = new Applicant();
-        if (userSession.isGeneral() || userSession.isCompany()) {
+       /* if (userSession.isGeneral() || userSession.isCompany()) {
             user = userService.findUser(userSession.getLoggedINUserID());
             selectedApplicant.getAddress().setCountry(user.getAddress().getCountry());
             selectedApplicant.setContactName(user != null ? user.getName() : null);
             selectedApplicant.setEmail(user != null ? user.getEmail() : null);
-
-        }
+        }*/
     }
 
     public void onRowSelect() {
-        setShowAdd(true);
         facesContext = FacesContext.getCurrentInstance();
         facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), "Selected " + selectedApplicant.getAppName()));
     }
@@ -85,21 +89,31 @@ public class ApplicantMBean implements Serializable {
         user.setEnabled(false);
     }
 
-    public String saveApp() {
+    /*public String submitApp() {
         facesContext = FacesContext.getCurrentInstance();
         try {
             if(applicantService.isApplicantDuplicated(selectedApplicant.getAppName())){
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_applicant_exist"), ""));
                 return "";
             }
-            selectedApplicant.setSubmitDate(new Date());
-            if (selectedApplicant.getUsers() == null && (user == null || user.getEmail() == null)) {
+            if (selectedApplicant.getUsers() == null) {
                 FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
                 error.setSeverity(FacesMessage.SEVERITY_ERROR);
                 facesContext.addMessage(null, error);
-                return null;
+                return "";
             }
-            selectedApplicant = applicantService.saveApp(selectedApplicant, user);
+            if(getSelectResponsable() == null){
+            	FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
+                error.setSeverity(FacesMessage.SEVERITY_ERROR);
+                facesContext.addMessage(null, error);
+				return "";
+			}
+            selectedApplicant.setSubmitDate(new Date());
+            // set responsable
+            selectedApplicant.setContactName(getSelectResponsable() != null ? getSelectResponsable().getUsername() : "");
+            selectedApplicant.setUsers(getProcessAppBn().getUsersByApplicant());
+         			
+            selectedApplicant = applicantService.submitApp(selectedApplicant);
             if (selectedApplicant != null) {
                 user.setApplicant(selectedApplicant);
                 if (userSession.isCompany()) {
@@ -108,7 +122,6 @@ public class ApplicantMBean implements Serializable {
                     userSession.setApplcantID(selectedApplicant.getApplcntId());
                 }
                 selectedApplicant = new Applicant();
-                setShowAdd(false);
                 HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
                 WebUtils.setSessionAttribute(request, "applicantMBean", null);
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_submit_success")));
@@ -121,33 +134,17 @@ public class ApplicantMBean implements Serializable {
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
             return null;
         }
-    }
+    }*/
 
     public List<ApplicantType> completeApplicantTypeList(String query) {
         return JsfUtils.completeSuggestions(query, globalEntityLists.getApplicantTypes());
     }
-
-//    @PostConstruct
-//    private void init(){
-//        if(userSession!=null&&userSession.getLoggedInUserObj()!=null&&selectedApplicant==null){
-//            selectedApplicant = new applicant();
-//            System.out.print("insisde initialization ");
-//            System.out.print("insisde initialization ");
-//            List<User> users = new ArrayList<User>();
-//            User user =userSession.getLoggedInUserObj();
-//            users.add(user);
-//            selectedApplicant.setUsers(users);
-//            selectedApplicant.setEmail(user.getEmail());
-//            selectedApplicant.setContactName(user.getName());
-//        }
-//    }
 
     public void editApp() {
         System.out.println("inside editUser");
     }
 
     public String cancelApp() {
-        setShowAdd(false);
         selectedApplicant = new Applicant();
         facesContext = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
@@ -191,10 +188,18 @@ public class ApplicantMBean implements Serializable {
         }
 
     }
+    
+    public void validate(ComponentSystemEvent e) {
+		if(selectResponsable == null){
+			FacesContext fc = FacesContext.getCurrentInstance();
+			fc.addMessage(null, new FacesMessage("Error selected user."));
+			fc.renderResponse();
+		}
+	}
 
-    public List<User> completeUserList(String query) {
+   /* public List<User> completeUserList(String query) {
         return JsfUtils.completeSuggestions(query, getAvailableUsers());
-    }
+    }*/
 
     public String cancelAddUser() {
         user = new User();
@@ -240,16 +245,6 @@ public class ApplicantMBean implements Serializable {
         return allStateApplicant;
     }
 
-
-
-    public boolean isShowAdd() {
-        return showAdd;
-    }
-
-    public void setShowAdd(boolean showAdd) {
-        this.showAdd = showAdd;
-    }
-
     public User getUser() {
         return user;
     }
@@ -278,6 +273,13 @@ public class ApplicantMBean implements Serializable {
         }
         return userList;
     }
+    
+    public String userIsEnabled(User usRow){
+		if(usRow != null)
+			if(!usRow.isEnabled())
+				return "X";
+		return "";
+	}
 
     public void setUserList(ArrayList<User> userList) {
         this.userList = userList;
@@ -314,4 +316,12 @@ public class ApplicantMBean implements Serializable {
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
     }
+    
+    public void setSelectResponsable(User us){
+		this.selectResponsable = us;
+	}
+
+	public User getSelectResponsable(){
+		return this.selectResponsable;
+	}
 }
