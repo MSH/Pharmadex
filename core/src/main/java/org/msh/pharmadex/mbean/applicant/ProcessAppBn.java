@@ -154,25 +154,25 @@ public class ProcessAppBn implements Serializable {
 	private boolean varificationApplicant(boolean isSubmit){
 		try {
 			if (applicant == null) {
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
 				return false;
 			}
 			if(isSubmit){
 				if(applicantService.isApplicantDuplicated(applicant.getAppName())){
-					facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_applicant_exist"), ""));
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("valid_applicant_exist"), ""));
 					return false;
 				}
 			}
 			if (!(usersByApplicant != null && usersByApplicant.size() > 0)) {
 				FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
 				error.setSeverity(FacesMessage.SEVERITY_ERROR);
-				facesContext.addMessage(null, error);
+				FacesContext.getCurrentInstance().addMessage(null, error);
 				return false;
 			}
 			if(getApplicantMBean().getSelectResponsable() == null){
 				FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
 				error.setSeverity(FacesMessage.SEVERITY_ERROR);
-				facesContext.addMessage(null, error);
+				FacesContext.getCurrentInstance().addMessage(null, error);
 				return false;
 			}
 			// set or update responsable
@@ -182,7 +182,7 @@ public class ProcessAppBn implements Serializable {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
 			return false;
 		}
 	}
