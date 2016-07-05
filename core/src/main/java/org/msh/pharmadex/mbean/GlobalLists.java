@@ -4,10 +4,13 @@ import org.msh.pharmadex.domain.enums.*;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -16,6 +19,9 @@ import java.util.List;
 @ApplicationScoped
 public class GlobalLists implements Serializable {
 
+	private FacesContext facesContext = FacesContext.getCurrentInstance();
+	private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+	
     public List<UserType> getUserTypes() {
         return Arrays.asList(UserType.values());
     }
@@ -112,4 +118,14 @@ public class GlobalLists implements Serializable {
     public List<SraType> getSras() {
         return Arrays.asList(SraType.values());
     }
+    
+    public String buildKeyMsgs(String val){
+		if(val != null && !val.equals("")){
+			YesNoNA v = YesNoNA.valueOf(val.toUpperCase());
+			if(v != null)
+				return v.getKey();
+			//resourceBundle.getString(v.getKey());
+		}
+		return null;
+	}
 }

@@ -32,18 +32,17 @@
         <f:facet name="header">
             <h:outputLink value="screening_template.docx" target="_blank">Download Dossier Screening Template </h:outputLink>
         </f:facet>
-        <p:column headerText="">
+        <p:column headerText="" style="width:25px">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
         </p:column>
         <p:column>
             <h:outputLabel value="#{checkList.checklist.name}"/>
         </p:column>
-        <p:column headerText="#{msgs.applicant}">
-            <p:outputLabel value="#{checkList.value}" rendered="#{checkList.checklist.header}"/>
+        <p:column headerText="#{msgs.applicant}" style="width:60px">
+            <p:outputLabel value="#{msgs[globalLists.buildKeyMsgs(checkList.value)]}" rendered="#{checkList.checklist.header}"/>
         </p:column>
-        <p:column headerText="#{msgs.UserType_STAFF}">
-            <!--            <p:selectBooleanCheckbox value="#{checkList.staffValue}" rendered="#{checkList.checklist.header}"/> -->
-            <p:outputLabel value="#{checkList.staffValue}" rendered="#{!processProdBn.prescreened}"/>
+        <p:column headerText="#{msgs.UserType_STAFF}" style="width:165px">
+            <p:outputLabel value="#{msgs[globalLists.buildKeyMsgs(checkList.staffValue)]}" rendered="#{!processProdBn.prescreened}"/>
             <p:selectOneButton id="console" value="#{checkList.staffValue}"
                                rendered="#{checkList.checklist.header and processProdBn.prescreened}">
                 <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}"/>
@@ -52,7 +51,7 @@
         <p:column headerText="#{msgs.global_remark}">
             <p:inputText value="#{checkList.staffComment}"/>
         </p:column>
-        <p:column>
+        <p:column style="width:90px">
             <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
                              action="#{preScreenProdMBn.setProdAppChecklist(checkList)}"
                              rendered="#{!checkList.fileUploaded}"/>

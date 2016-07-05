@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 public class GlobalEntityLists implements Serializable {
 
     private static final long serialVersionUID = 5852117386686135477L;
+	
     private List<DosageForm> dosageForms;
     private List<DosUom> dosUoms;
     private List<Country> countries;

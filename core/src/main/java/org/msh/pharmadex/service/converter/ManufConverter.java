@@ -16,11 +16,9 @@ import java.util.List;
 /**
  * Author: usrivastava
  */
-@FacesConverter(value = "ManufConverterConverter")
+@FacesConverter(value = "manufConverter")
 @Component
-@Scope("request")
 public class ManufConverter implements Converter, Serializable {
-
 
     @Autowired
     private GlobalEntityLists globalEntityLists;
