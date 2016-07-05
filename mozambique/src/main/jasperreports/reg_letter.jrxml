@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-06-21T16:26:47 -->
+<!-- 2016-07-05T17:03:03 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -134,11 +134,10 @@ Medicamento:
 				</textElement>
 				<text><![CDATA[Endereço:]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="140" y="394" width="410" height="16" uuid="890cd6b5-3d38-4fcf-9a0b-d040da403182">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="140" y="394" width="390" height="16" uuid="890cd6b5-3d38-4fcf-9a0b-d040da403182">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Calibri" size="11"/>
@@ -146,11 +145,10 @@ Medicamento:
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dosForm} == null ? "":$P{dosForm}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="140" y="410" width="410" height="16" uuid="f0723acd-4c0b-4fe9-a43c-08940d870b31">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="140" y="410" width="390" height="16" uuid="f0723acd-4c0b-4fe9-a43c-08940d870b31">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Calibri" size="11"/>
@@ -159,8 +157,7 @@ Medicamento:
 				<textFieldExpression><![CDATA[$P{packsize} == null ? "":$P{packsize}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="380" y="286" width="170" height="32" uuid="063cebf2-8bcb-4c05-a86f-a41673c8c105">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement positionType="Float" x="380" y="286" width="150" height="32" uuid="063cebf2-8bcb-4c05-a86f-a41673c8c105">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left">
@@ -181,9 +178,10 @@ Medicamento:
 				<text><![CDATA[Prazo de Validade:]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="140" y="334" width="80" height="16" uuid="9446aafa-b4d4-444a-8f6d-3f0a4ac67101">
+				<reportElement positionType="Float" x="140" y="334" width="150" height="16" uuid="9446aafa-b4d4-444a-8f6d-3f0a4ac67101">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Calibri" size="11"/>
@@ -191,16 +189,6 @@ Medicamento:
 				</textElement>
 				<textFieldExpression><![CDATA[$P{shelfine} == null ? "":$P{shelfine}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="220" y="334" width="42" height="16" uuid="cc1ee4cc-1b53-4fc6-b4f6-ac479733d909">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Calibri" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Meses]]></text>
-			</staticText>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="378" width="135" height="16" uuid="9eae64d8-9901-4aae-a865-da831662c09f">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -222,10 +210,9 @@ Medicamento:
 				<textFieldExpression><![CDATA[$P{inn} == null ? "":$P{inn}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="140" y="378" width="410" height="16" uuid="6b7385e7-5bae-4729-a0ed-8ad11a62924b">
+				<reportElement positionType="Float" x="140" y="378" width="390" height="16" uuid="6b7385e7-5bae-4729-a0ed-8ad11a62924b">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Calibri" size="11"/>
@@ -264,10 +251,9 @@ Medicamento:
 				</textElement>
 				<text><![CDATA[Conservação:]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="140" y="426" width="410" height="16" uuid="aee1b0e0-372b-4ffa-bf27-a39446d01209">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="140" y="426" width="390" height="16" uuid="aee1b0e0-372b-4ffa-bf27-a39446d01209">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Calibri" size="11"/>
@@ -287,13 +273,12 @@ Medicamento:
 				<text><![CDATA[Excipiente (s):]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="140" y="442" width="410" height="16" uuid="04b95e80-1ba5-45e6-a381-beed66c080d8">
+				<reportElement positionType="Float" x="140" y="442" width="350" height="14" uuid="04b95e80-1ba5-45e6-a381-beed66c080d8">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement markup="html">
-					<font fontName="Calibri" size="11"/>
+					<font fontName="Calibri" size="7"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{excipient} == null ? "":$P{excipient}]]></textFieldExpression>

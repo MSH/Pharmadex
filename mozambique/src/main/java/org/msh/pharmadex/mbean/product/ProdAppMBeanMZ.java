@@ -25,6 +25,7 @@ public class ProdAppMBeanMZ implements Serializable {
 	 
 	protected List<ProdApplications> prodApplicationsList;
     protected List<ProdApplications> submmittedAppList;
+    private List<ProdApplications> filteredApps;
     
     public List<ProdApplications> getProdApplicationsList() {
         if (prodApplicationsList == null)
@@ -52,5 +53,13 @@ public class ProdAppMBeanMZ implements Serializable {
 
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
+    }
+    
+    public List<ProdApplications> getFilteredApps() {
+        return filteredApps;
+    }
+
+    public void setFilteredApps(List<ProdApplications> filteredApps) {
+        this.filteredApps = filteredApps;
     }
 }

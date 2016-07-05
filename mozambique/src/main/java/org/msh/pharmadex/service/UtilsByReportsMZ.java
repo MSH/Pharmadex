@@ -167,7 +167,7 @@ public class UtilsByReportsMZ implements Serializable {
 						if(i == (exps.size() - 1))
 							str += exps.get(i).getExcipient().getName();
 						else
-							str += exps.get(i).getExcipient().getName() + "<br>";
+							str += exps.get(i).getExcipient().getName() + ", "; //"<br>"
 					}
 				}
 			}

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 /**
  */
 @Service
+@Transactional
 public class ProdApplicationsServiceMZ implements Serializable {
 
 	private static final long serialVersionUID = 4431326838232306604L;
@@ -93,7 +95,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
         } else if (userSession.isModerator()) {
             List<RegState> regState = new ArrayList<RegState>();
             regState.add(RegState.FOLLOW_UP);
-            regState.add(RegState.FEE);
+            regState.add(RegState.SCREENING);
             regState.add(RegState.VERIFY);
             regState.add(RegState.REVIEW_BOARD);
             params.put("regState", regState);
@@ -175,7 +177,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
             Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
                 @Override
                 public int compare(ProdApplications o1, ProdApplications o2) {
-                    return o1.getPriorityDate().compareTo(o2.getPriorityDate());
+                	Date d1 = o1.getPriorityDate();
+                	Date d2 = o2.getPriorityDate();
+                	if(d1 != null && d2 != null)
+                		return d1.compareTo(d2);
+                	return 0;
                 }
             });
         }
