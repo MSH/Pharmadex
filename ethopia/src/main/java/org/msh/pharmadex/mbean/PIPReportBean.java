@@ -1,22 +1,27 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.dao.CustomLicHolderDAO;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.LicenseHolderService;
-import org.msh.pharmadex.service.POrderService;
-import org.msh.pharmadex.service.PurOrderService;
-import org.msh.pharmadex.util.JsfUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Company;
+import org.msh.pharmadex.domain.Country;
+import org.msh.pharmadex.domain.DosageForm;
+import org.msh.pharmadex.domain.LicenseHolder;
+import org.msh.pharmadex.domain.PurProd;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.LicenseHolderService;
+import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.util.JsfUtils;
 
 /**
  * Created by Odissey on 15.03.2016.
@@ -25,12 +30,21 @@ import java.util.List;
 @ManagedBean
 @ViewScoped
 public class PIPReportBean implements Serializable{
-    private Date dateStart;
+	private static final long serialVersionUID = -7454217017553117902L;
+	
+	private Date dateStart;
     private Date dateEnd;
     private Applicant selectedApplicant;
-    private List<PIPProd> pipProds;
+    private Country selectedCountry = new Country();
+    private Company selectedCompany = new Company();
+    private String port;
+    
+    private List<PIPReportItemBean> pipProds;
     private List<PurProd> purProds;
-private LicenseHolder lic;
+    private LicenseHolder lic;
+    
+    private Double totalPrice = new Double(0);
+    private Integer totalNumbers = 0;
 
     public LicenseHolder getLic() {
         return lic;
@@ -120,6 +134,10 @@ private LicenseHolder lic;
     public List<Applicant> completeApplicant(String query){
         return JsfUtils.completeSuggestions(query, globalEntityLists.getApplicants());
     }
+    
+    public List<Company> completeCompany(String query){
+        return JsfUtils.completeSuggestions(query, globalEntityLists.getManufacturers());
+    }
 
     public Date getDateEnd() {
         return dateEnd;
@@ -141,6 +159,27 @@ private LicenseHolder lic;
     public void setSelectedApplicant(Applicant applicant) {
         this.selectedApplicant = applicant;
     }
+    
+    public Country getSelectedCountry(){
+        return selectedCountry;
+    }
+    public void setSelectedCountry(Country cont) {
+        this.selectedCountry = cont;
+    }
+    
+    public Company getSelectedCompany(){
+        return selectedCompany;
+    }
+    public void setSelectedCompany(Company comp) {
+        this.selectedCompany = comp;
+    }
+    
+    public String getPort(){
+        return port;
+    }
+    public void setPort(String p) {
+        this.port = p;
+    }
 
     public GlobalEntityLists getGlobalEntityLists() {
         return globalEntityLists;
@@ -155,20 +194,47 @@ private LicenseHolder lic;
         this.pOrderService = pOrderService;
     }
 
-
-
-    public List<PIPProd> getPipProds(){
-        if ((dateStart!=null && dateEnd!=null)) {
-            pipProds = pOrderService.findAllPIPProds(dateStart, dateEnd,selectedApplicant);
+    public List<PIPReportItemBean> getPipProds(){
+        if ((dateStart != null && dateEnd != null)) {
+        	Map<String, Object> map = new HashMap<String, Object>();
+        	map.put("startDate", dateStart);
+        	map.put("endDate", dateEnd);
+        	if(selectedApplicant != null)
+        		map.put("applicant", selectedApplicant.getApplcntId());
+        	if(selectedCompany != null)
+        		map.put("company", selectedCompany.getCompanyName());
+        	if(selectedCountry != null)
+        		map.put("country", selectedCountry.getId());
+        	map.put("port", port);
+        	
+            pipProds = pOrderService.findAllPIPProds(map);
+            
+            calculateTotals();
         }
         return pipProds;
     }
-    public void setPipProds(List<PIPProd> pipProds) {
+    
+    private void calculateTotals(){
+    	totalPrice = new Double(0);
+    	totalNumbers = 0;
+    	Double sum = new Double(0);
+    	if(pipProds != null){
+    		for(PIPReportItemBean it:pipProds){
+    			totalPrice += it.getTotalPrice();
+    			sum += it.getCount();
+    		}
+    	}
+    	
+    	if(sum > 0)
+    		totalNumbers = sum.intValue();
+    }
+    
+    public void setPipProds(List<PIPReportItemBean> pipProds) {
         this.pipProds = pipProds;
     }
     public List<PurProd> getPurProds(){
         if ((dateStart!=null && dateEnd!=null)) {
-            purProds = pOrderService.findSelectedPurProds(dateStart, dateEnd,selectedApplicant);
+            purProds = pOrderService.findSelectedPurProds(dateStart, dateEnd, selectedApplicant);
         }
         return purProds;
     }
@@ -176,10 +242,10 @@ private LicenseHolder lic;
         this.purProds = purProds;
     }
 
-    public void onSummaryRow(Object filter)
+   /* public void onSummaryRow(Object filter)
     {
         System.out.print("xxxx");
-    }
+    }*/
 
     public int sortIt(Object it1, Object it2){
         DosageForm form1 = (DosageForm) it1;
@@ -207,14 +273,20 @@ private LicenseHolder lic;
        if (lic==null) return "";
         return pOrderService.findFirstAgent(lic.getId());
     }
+    
+    public Double getTotalPrice() {
+		return totalPrice;
+	}
 
-/*
-    public LicenseHolder findLicHolderByApplicant(Long id){
-        List<LicenseHolder> res = licenseHolderService.findLicHolderByApplicant(id);
-        LicenseHolder s  =new LicenseHolder();
-        if (res!=null)
-            if (res.size()!=0)
-                if (res.get(0)!=null ) s=res.get(0);
-        return s;
-    }*/
+	public void setTotalPrice(Double total) {
+		this.totalPrice = total;
+	}
+
+	public Integer getTotalNumbers() {
+		return totalNumbers;
+	}
+
+	public void setTotalNumbers(Integer total) {
+		this.totalNumbers = total;
+	}
 }

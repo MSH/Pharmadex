@@ -31,9 +31,35 @@
                     <p:autoComplete id="repoapp" dropdown="true"
                                     value="#{pIPReportBean.selectedApplicant}"
                                     completeMethod="#{pIPReportBean.completeApplicant}"
-                                    var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" converter="#{applicantConverter}" forceSelection="false"
+                                    var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" 
+                                    converter="#{applicantConverter}" forceSelection="false"
                                     minQueryLength="2" maxResults="10"/>
                     <p:message for="repoapp" showSummary="true"/>
+                    
+                    <p:outputLabel value="#{msgs.piprepo_chooseCountry}"/>
+                    <!-- <p:outputLabel value="#{msgs.piprepo_chooseCountry}" id="country"/> -->
+                    <p:selectOneMenu id="country" value="#{pIPReportBean.selectedCountry.id}">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.countries}" var="cntry"
+                                       itemLabel="#{cntry.countryName}"
+                                       itemValue="#{cntry.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value=""/>
+                    
+                    <p:outputLabel value="#{msgs.manuf_name}"/>
+                    <p:autoComplete id="company" dropdown="true"
+                                    value="#{pIPReportBean.selectedCompany}"
+                                    completeMethod="#{pIPReportBean.completeCompany}"
+                                    var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}" 
+                                    converter="#{manufConverter}" forceSelection="false"
+                                    minQueryLength="2" maxResults="10"/>
+                    <p:outputLabel value=""/>
+                    
+                    <p:outputLabel value="#{msgs.port}"/>
+                    <p:inputText id="port" value="#{pIPReportBean.port}"/>
+                    <!-- <p:outputLabel id="port" value="#{msgs.piprepo_chooseCompany}" id="port"/> -->
+                    <p:outputLabel value=""/>
+                    
                     <p:commandButton action="#{pIPReportBean.startReport}" value="#{msgs.piprepo_start}" ajax="false"/>
 
                 </h:panelGrid>
@@ -58,61 +84,39 @@
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="20,50,100">
 
-                    <p:column headerText="#{msgs.dos_form}" sortBy="#{eachprod.dosFormName}">
-                        <p:outputLabel value="#{eachprod.dosForm.dosForm}"/>
+                    <p:column headerText="#{msgs.piprepo_colNo}" style="text-align:center">
+                        <p:outputLabel value="#{eachprod.nn}"/>
                     </p:column>
                     <p:column headerText="#{msgs.prod_name}" >
-                         <p:outputLabel value="#{eachprod.productName}"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.piprepo_regNumber}">
-                        <p:outputLabel value="#{eachprod.pipOrder.pipNo}"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.registrationNo}">
-                        <p:outputLabel value="#{eachprod.productNo}"/>
+                         <p:outputLabel value="#{eachprod.prodName}"/>
                     </p:column>
                     <p:column headerText="#{msgs.dos_strength}">
-                        <p:outputLabel value="#{eachprod.dosStrength}"/>
+                        <p:outputLabel value="#{eachprod.dosStren}"/>
                     </p:column>
-                    <p:column headerText="#{msgs.dos_strength}">
-                        <p:outputLabel value="#{eachprod.dosStrength}"/>
+                     <p:column headerText="#{msgs.piprepo_colUnit}">
+                        <p:outputLabel value="#{eachprod.unit}"/>
                     </p:column>
-
-                    <p:column headerText="#{msgs.total_price}">
-                        <h:outputText value="#{eachprod.totalPrice}" style="right: auto">
-                            <f:convertNumber type="currency"/>
-                        </h:outputText>
-                    </p:column>
-                    <p:column headerText="#{msgs.manuf_name}">
-                        <p:outputLabel value="#{eachprod.manufName}"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.license_holder}">
-                        <p:outputLabel value="#{pIPReportBean.findLicHolderByApplicant(eachprod.pipOrder.applicant.applcntId) }"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.manuf_country}">
-                        <p:outputLabel value="#{eachprod.country}"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.agent_first}">
-                        <p:outputLabel value="#{pIPReportBean.findFirstAgent()}"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.global_quantity} ">
-                        <h:outputText value="#{eachprod.quantity}"/>
-                    </p:column>
-                    <p:column headerText="#{msgs.piprepo_ordersamount}">
-                        <p:outputLabel value="1"/>
+                    <p:column headerText="#{msgs.dos_form}" sortBy="#{eachprod.dosFormName}">
+                        <p:outputLabel value="#{eachprod.dosForm}"/>
                     </p:column>
                     <p:column headerText="#{msgs.prod_presentation}">
-                        <p:outputLabel value="#{eachprod.productDesc}"/>
+                        <p:outputLabel value="#{eachprod.descript}"/>
                     </p:column>
-                    <!--
-                    <p:summaryRow listener="#{pIPReportBean.onSummaryRow}">
-                        <p:column colspan="3" style="text-align:right">
-                            <h:outputText value="Totals:" />
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{component.parent.attributes.total}" />
-                        </p:column>
-                    </p:summaryRow>
-                    -->
+                    <p:column headerText="#{msgs.piprepo_colTotalNum}" style="text-align:right">
+                        <h:outputText value="#{eachprod.count}"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.piprepo_colTotalQual}" style="text-align:right">
+                        <h:outputText value="#{eachprod.totalQuan}"/>
+                    </p:column>
+                    <p:column headerText="#{msgs.piprepo_colTotalPrice}" style="text-align:right">
+                        <h:outputText value="#{eachprod.totalPrice}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:dataTable emptyMessage=" ">
+                        <p:column colspan="6" headerText="#{msgs.piprepo_rowTotalNum}" style="text-align:right"/>  
+						<p:column headerText="#{pIPReportBean.totalNumbers}" style="text-align:right"/> 
+                        <p:column headerText="#{msgs.piprepo_rowTotalPrice}" style="text-align:right"/> 
+                        <p:column headerText="#{pIPReportBean.totalPrice}" style="text-align:right"/> 
                 </p:dataTable>
                 <p:separator/>
                 <h:panelGrid columns="2" width="100%">

@@ -12,6 +12,7 @@ import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.YesNoNA;
+import org.msh.pharmadex.mbean.PIPReportItemBean;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -632,12 +633,19 @@ public class POrderService implements Serializable {
     }
 
     @Transactional
-    public List<PIPProd>  findAllPIPProds(Date startDate,Date endDate, Applicant applicant) {
+    public List<PIPReportItemBean>  findAllPIPProds(Map<String, Object> map/*Date startDate, Date endDate, Applicant applicant*/) {
         RetObject retObject = new RetObject();
-        List<PIPProd> pipProds=new ArrayList<PIPProd>();
-        if ((startDate==null)||(endDate==null)) return pipProds;
-         try {
-            pipProds = customPIPOrderDAO.findAllPIPProds(startDate,endDate,applicant);
+        List<PIPReportItemBean> pipProds = new ArrayList<PIPReportItemBean>();
+        if(map == null)
+        	return pipProds;
+        
+        Date startDate = (Date)map.get("startDate");
+        Date endDate = (Date)map.get("endDate");
+        
+        if ((startDate == null) || (endDate == null)) 
+        	return pipProds;
+        try {
+            pipProds = customPIPOrderDAO.findAllPIPProds(map);
             retObject.setObj(pipProds);
             retObject.setMsg("persist");
          } catch (Exception ex) {
