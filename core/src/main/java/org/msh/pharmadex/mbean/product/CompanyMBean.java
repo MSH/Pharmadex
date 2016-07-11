@@ -59,7 +59,6 @@ public class CompanyMBean implements Serializable {
             } else {
                 prodRegAppMbean.setCompanies(prodCompanies);
             }
-//            prodRegAppMbean.setShowCompany(false);
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("company_add_success")));
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -69,25 +68,26 @@ public class CompanyMBean implements Serializable {
     }
 
     public void gmpChangeListener() {
-        if (selectedCompany.isGmpInsp())
-            showGMP = true;
-        else
-            showGMP = false;
+        if (selectedCompany!=null)
+            if (selectedCompany.isGmpInsp())
+                showGMP = true;
+            else
+                showGMP = false;
     }
 
     public void companyChangeEventListener(SelectEvent event) {
-        logger.error("inside companyChangeEventListener");
-        logger.error("Selected company is " + selectedCompany.getCompanyName());
-        logger.error("event " + event.getObject());
+//        logger.error("inside companyChangeEventListener");
+//        logger.error("Selected company is " + selectedCompany.getCompanyName());
+//        logger.error("event " + event.getObject());
         gmpChangeListener();
 
 
     }
 
     public void companyChangeEventListener(AjaxBehaviorEvent event) {
-        logger.error("inside companyChangeEventListener");
-        logger.error("Selected company is " + selectedCompany.getCompanyName());
-        logger.error("event " + event.getSource());
+//        logger.error("inside companyChangeEventListener");
+//        logger.error("Selected company is " + selectedCompany.getCompanyName());
+//        logger.error("event " + event.getSource());
         gmpChangeListener();
 
 

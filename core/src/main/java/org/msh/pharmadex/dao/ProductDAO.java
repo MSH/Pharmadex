@@ -166,6 +166,7 @@ public class ProductDAO implements Serializable {
 
     @Transactional
     public Product findProductEager(Long prodId) {
+/*
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> root = query.from(Product.class);
@@ -176,6 +177,8 @@ public class ProductDAO implements Serializable {
 
         query.where(p);
         Product prod = entityManager.createQuery(query).getSingleResult();
+*/
+        Product prod = findProduct(prodId);
         Hibernate.initialize(prod.getInns());
         Hibernate.initialize(prod.getAtcs());
         Hibernate.initialize(prod.getExcipients());

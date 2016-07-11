@@ -875,6 +875,7 @@ public class ProcessProdBn implements Serializable {
 
     public boolean isDisplaySample() {
         displaySample = false;
+        if (prodApplications.getProdAppType()==ProdAppType.RENEW) return false;
         if (prodApplications != null) {
             if (prodApplications != null && prodApplications.getProdAppType() != null
             		&& prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {

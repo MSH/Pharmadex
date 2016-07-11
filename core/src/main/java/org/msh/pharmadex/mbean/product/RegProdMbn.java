@@ -50,7 +50,6 @@ public class RegProdMbn implements Serializable {
         for (ProdTable p : productService.findAllRegisteredProduct()) {
             if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
                     || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
-//                    || (p.getApprvdName() != null && p.getApprvdName().toLowerCase().startsWith(query)))
                 suggestions.add(p);
         }
         return suggestions;
@@ -60,19 +59,10 @@ public class RegProdMbn implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (prodTable == null)
             return null;
-        return "/internal/processreg.faces";
+        return "/secure/prodrereg.faces";
     }
 
-    public String searchProdApp(){
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if(prodAppNo==null||prodAppNo.equals("")){
-            facesContext.addMessage(null, new FacesMessage("Product Application number not specified"));
-        }
 
-        List<ProdApplications> prodApplications = prodApplicationsService.findProdAppByAppNo(prodAppNo);
-
-        return "/internal/processreg.faces";
-    }
 
     public ProdApplicationsService getProdApplicationsService() {
         return prodApplicationsService;

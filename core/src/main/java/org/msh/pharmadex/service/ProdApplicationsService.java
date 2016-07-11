@@ -42,19 +42,7 @@ import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.dao.iface.StatusUserDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.Checklist;
-import org.msh.pharmadex.domain.ForeignAppStatus;
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.ProdAppLetter;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.RevDeficiency;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.StatusUser;
-import org.msh.pharmadex.domain.TimeLine;
-import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.ProdAppType;
@@ -630,7 +618,9 @@ public class ProdApplicationsService implements Serializable {
 	public RetObject saveForeignAppStatus(ForeignAppStatus selForeignAppStatus) {
 		RetObject retObject = new RetObject();
 		try {
-			selForeignAppStatus.setCountry(countryDAO.find(selForeignAppStatus.getCountry().getId()));
+			Long id = selForeignAppStatus.getCountry().getId();
+			Country country = countryDAO.find(id);
+			selForeignAppStatus.setCountry(country);
 			selForeignAppStatus = foreignAppStatusDAO.save(selForeignAppStatus);
 			retObject.setObj(selForeignAppStatus);
 			retObject.setMsg("persist");
@@ -682,8 +672,10 @@ public class ProdApplicationsService implements Serializable {
 				}
 			}
 
-			if(prodApplications.getSampleTestRecieved()==null||!prodApplications.getSampleTestRecieved()) {
-				return "lab_status";
+			if (prodApplications.getProdAppType()!=ProdAppType.RENEW) {
+				if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
+					return "lab_status";
+				}
 			}
 
 			if (complete) {

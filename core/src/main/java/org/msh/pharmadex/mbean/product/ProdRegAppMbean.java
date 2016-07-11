@@ -136,7 +136,8 @@ public class ProdRegAppMbean implements Serializable {
 	private void init() {
 		Long prodAppID;
 		try {
-			prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+			//prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
+			prodAppID = getParam("prodAppID");
 		} catch (NumberFormatException nfe) {
 			prodAppID = null;
 		}
@@ -193,9 +194,9 @@ public class ProdRegAppMbean implements Serializable {
 		} else {
 			initProdApps(prodAppID);
 		}
-
-		if(prodApplications.getcRevAttach() == null)
-			prepareUpload();
+		if (prodApplications!=null)
+			if(prodApplications.getcRevAttach() == null)
+				prepareUpload();
 	}
 
 	@PreDestroy
@@ -203,6 +204,28 @@ public class ProdRegAppMbean implements Serializable {
 		System.out.println("--------------------------------------");
 		System.out.println("------ProdRegAppMbean Bean destroyed-----");
 		System.out.println("--------------------------------------");
+	}
+	private Long getParam(String parameter){
+		context = FacesContext.getCurrentInstance();
+		String procId=null;
+		if (context.getExternalContext().getFlash()!=null){
+			Object id = context.getExternalContext().getFlash().get(parameter);
+			String name="";
+			if (id!=null)
+				name = id.getClass().getName();
+			if (name.toLowerCase().endsWith("long"))
+				return (Long) context.getExternalContext().getFlash().get(parameter);
+			else if (name.toLowerCase().endsWith("string"))
+				procId = (String) context.getExternalContext().getFlash().get(parameter);
+		}
+		if (procId==null){
+			if (context.getExternalContext().getRequestParameterMap()!=null)
+				procId = context.getExternalContext().getRequestParameterMap().get(parameter);
+		}
+		if (procId!=null){
+			return Long.parseLong(procId);
+		}
+		return null;
 	}
 
 	public void PDF() {
