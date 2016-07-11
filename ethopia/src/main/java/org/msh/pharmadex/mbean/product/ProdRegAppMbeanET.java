@@ -6,6 +6,8 @@ import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.FastTrackMedService;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.utils.Scrooge;
+import org.primefaces.event.FlowEvent;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -47,9 +49,13 @@ public class ProdRegAppMbeanET implements Serializable {
     private List<DosUom> dosUoms;
 
     private DosUom dosUom;
+    private Long parentAppId;
+    private String backTo;
+    private String currentTab;
 
     @PostConstruct
     private void init() {
+        parentAppId = Scrooge.beanParam("parentAppId");
         ProdAppInit prodAppInit = userSession.getProdAppInit();
         if (prodAppInit != null && prodAppInit.getLicHolderID() != null) {
             licenseHolder = licenseHolderService.findLicHolder(prodAppInit.getLicHolderID());
@@ -114,6 +120,16 @@ public class ProdRegAppMbeanET implements Serializable {
         return licenseHolder;
     }
 
+    public String openRegApplication(){
+        return "/public/productdetail.faces";
+    }
+
+
+    public String onFlowProcess(FlowEvent event) {
+        String result = prodRegAppMbean.onFlowProcess(event);
+        setCurrentTab(result);
+        return currentTab;
+    }
     public void setLicenseHolder(LicenseHolder licenseHolder) {
         this.licenseHolder = licenseHolder;
     }
@@ -209,5 +225,30 @@ public class ProdRegAppMbeanET implements Serializable {
         this.dosUom = dosUom;
     }
 
+    public Long getParentAppId() {
+        return parentAppId;
+    }
 
+    public void setParentAppId(Long parentAppId) {
+        this.parentAppId = parentAppId;
+    }
+
+    public String getBackTo() {
+        return backTo;
+    }
+
+    public void setBackTo(String backTo) {
+        this.backTo = backTo;
+    }
+
+    public String getCurrentTab() {
+        if (currentTab!=null)
+            return currentTab;
+        else
+            return "prodreg";
+    }
+
+    public void setCurrentTab(String currentTab) {
+        this.currentTab = currentTab;
+    }
 }

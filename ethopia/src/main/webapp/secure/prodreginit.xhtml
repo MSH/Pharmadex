@@ -30,7 +30,7 @@
                     <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}" required="true"
                                      requiredMessage="#{msgs.valid_prod_type}">
                         <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{globalLists.prodAppType}" var="prodcat"
+                        <f:selectItems value="#{prodRegInit.prodAppTypes}" var="prodcat"
                                        itemLabel="#{msgs[prodcat.key]}"/>
                     </p:selectOneMenu>
                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>

@@ -21,6 +21,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,6 +51,7 @@ public class ProdRegInit implements Serializable {
     private String prescreenfee;
     private String totalfee;
     private ProdAppType prodAppType;
+    private List<ProdAppType> prodAppTypes;
     private FacesContext context;
     private boolean eligible;
     private List<Checklist> checklists;
@@ -63,6 +65,10 @@ public class ProdRegInit implements Serializable {
         if (licenseHolders != null && licenseHolders.size() == 1) {
             selLicHolder = licenseHolders.get(0);
         }
+        prodAppTypes = new ArrayList<ProdAppType>();
+        prodAppTypes.add(ProdAppType.GENERIC);
+        prodAppTypes.add(ProdAppType.GENERIC_NO_BE);
+        prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
     }
 
     public List<LicenseHolder> completeLicHolderList(String query) {
@@ -268,5 +274,13 @@ public class ProdRegInit implements Serializable {
 
     public void setSelLicHolder(LicenseHolder selLicHolder) {
         this.selLicHolder = selLicHolder;
+    }
+
+    public List<ProdAppType> getProdAppTypes() {
+        return prodAppTypes;
+    }
+
+    public void setProdAppTypes(List<ProdAppType> prodAppTypes) {
+        this.prodAppTypes = prodAppTypes;
     }
 }

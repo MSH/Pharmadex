@@ -30,6 +30,11 @@
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                 url="/secure/appregistration.faces"
                                 ajax="false" rendered="#{userSession.displayAppReg}"/>
+                    <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
+                                url="/internal/processrereglist.faces"
+                                rendered="#{userSession.company||userSession.admin||userSession.staff}"/>
+
+
                     <!--
                                         <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"
                                                     url="/secure/pharmacyregistration.faces" ajax="false"/>
@@ -93,6 +98,9 @@
                                 url="/internal/paymentnotified.faces"/>
                     <p:menuitem value="#{msgs.reg_expired}" icon="ui-icon-document"
                                 url="/internal/expiredreg.faces"/>
+                    <p:menuitem value="#{msgs.renew}" icon="ui-icon-document"
+                                url="/internal/processrereglist.faces"/>
+
                     <!--
                                         <p:menuitem value="#{msgs.reg_expired_notified}" icon="ui-icon-document"
                                                     url="/internal/processrxsitelist.faces"/>
