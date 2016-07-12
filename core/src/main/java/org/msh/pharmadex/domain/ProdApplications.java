@@ -124,7 +124,16 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<ReviewInfo> reviewInfos;
 
-    @OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
+    public ProdApplications getParentApplication() {
+		return parentApplication;
+	}
+
+
+	public void setParentApplication(ProdApplications parentApplication) {
+		this.parentApplication = parentApplication;
+	}
+
+	@OneToMany(mappedBy = "prodApplications", cascade = {CascadeType.ALL})
     private List<Review> reviews;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -170,13 +179,17 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date priorityDate;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "papp_ID", nullable = true)
+    private ProdApplications parentApplication;
 
     public ProdApplications(Product prod, Applicant applicant) {
         this.product = prod;
         this.applicant = applicant;
     }
 
-    public ProdApplications(Product prod) {
+   
+	public ProdApplications(Product prod) {
         this.product = prod;
     }
 

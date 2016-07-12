@@ -35,8 +35,19 @@ public class Checklist extends CreationDetail implements Serializable {
 
     @Column(name = "renewal")
     private boolean renewal;
+    
+    @Column(name = "variation")
+    private boolean variation;
 
-    public Long getId() {
+    public boolean isVariation() {
+		return variation;
+	}
+
+	public void setVariation(boolean variation) {
+		this.variation = variation;
+	}
+
+	public Long getId() {
         return id;
     }
 
