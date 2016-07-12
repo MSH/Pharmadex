@@ -33,6 +33,6 @@ public interface ChecklistDAO extends JpaRepository<Checklist, Long> {
 
     public List<Checklist> findByHeaderAndRecognizedMed(boolean header, boolean recognizedMed);
 
-
+    public List<Checklist> findByVariationOrderByIdAsc(boolean variation);
 }
 
