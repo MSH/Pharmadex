@@ -33,6 +33,9 @@
                     <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
                                 url="/internal/processrereglist.faces"
                                 rendered="#{userSession.company||userSession.admin||userSession.staff}"/>
+                      <p:menuitem value="#{msgs.variation}" icon="ui-icon-gear"
+                                url="/internal/processvarlist.faces"
+                                rendered="#{userSession.company||userSession.admin||userSession.staff}"/>           
 
 
                     <!--
