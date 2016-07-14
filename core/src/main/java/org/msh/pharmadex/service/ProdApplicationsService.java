@@ -46,6 +46,7 @@ import org.msh.pharmadex.dao.iface.StatusUserDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Checklist;
+import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ForeignAppStatus;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdAppLetter;
