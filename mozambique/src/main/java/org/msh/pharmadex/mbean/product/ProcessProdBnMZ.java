@@ -45,10 +45,10 @@ public class ProcessProdBnMZ implements Serializable {
 	
 	@ManagedProperty(value = "#{processProdBn}")
     private ProcessProdBn processProdBn;
-	//private ProcessProdBn processProdBn;
 
 	public User loggedInUser;
-
+	private String gestorDeCTRM = resourceBundle.getString("gestorDeCTRM_value");
+	
 	@PostConstruct
 	private void init() {
 		try {
@@ -76,7 +76,7 @@ public class ProcessProdBnMZ implements Serializable {
 
 			String retValue = prodApplicationsServiceMZ.registerProd(prodApplications);
 			if(retValue.equals("created")) {
-				prodApplicationsServiceMZ.createRegCert(prodApplications);
+				prodApplicationsServiceMZ.createRegCert(prodApplications, getGestorDeCTRM());
 				//timeLineList = null;
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
 			}else{
@@ -134,4 +134,13 @@ public class ProcessProdBnMZ implements Serializable {
     public void setProcessProdBn(ProcessProdBn process) {
         this.processProdBn = process;
     }
+
+	public String getGestorDeCTRM() {
+		return gestorDeCTRM;
+	}
+
+	public void setGestorDeCTRM(String gestorDeCTRM) {
+		this.gestorDeCTRM = gestorDeCTRM;
+	}
+    
 }

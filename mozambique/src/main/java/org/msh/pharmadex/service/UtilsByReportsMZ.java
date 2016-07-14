@@ -64,7 +64,8 @@ public class UtilsByReportsMZ implements Serializable {
 	public static String KEY_REG_NUMBER = "regNumber";
 	public static String KEY_SUBMIT_DATE = "submitDate";
 	public static String KEY_DOSREC_DATE = "dosRecDate";
-
+	public static String KEY_GESTOR = "gestorDeCTRM";
+	
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
 	private Product prod = null;

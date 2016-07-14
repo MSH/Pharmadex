@@ -25,23 +25,17 @@
         </p:selectOneMenu>
         <p:message for="prodCatcb" showSummary="true" showDetail="false"/>
 
-        <!--
-        <p:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
-        <p:selectOneMenu id="cbdrugtype" value="#{prodRegAppMbean.prodApplications.drugType}" required="true">
-            <f:selectItem itemLabel="-" itemValue=""/>
-            <f:selectItems value="#{globalLists.drugTypes}" var="dt" itemLabel="#{msgs[dt.key]}"/>
-        </p:selectOneMenu>
-        <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
--->
         <p:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
-        <p:inputText id="prodDetailName" value="#{prodRegAppMbean.product.prodName}" title="Product Name"
-                     required="true" requiredMessage="#{msgs.valid_prod_name}" onblur="value=value.toUpperCase()">
-        </p:inputText>
+        <p:inputTextarea id="prodDetailName" value="#{prodRegAppMbean.product.prodName}" title="Product Name"
+                     required="true" requiredMessage="#{msgs.valid_prod_name}" onblur="value=value.toUpperCase()"
+                     cols="100" rows="1">
+        </p:inputTextarea>
         <p:message for="prodDetailName" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.prodgenname}" for="prodGenName"/>
-        <p:inputText id="prodGenName" value="#{prodRegAppMbean.product.genName}" title="Generic Name"
-                     required="true" requiredMessage="#{msgs.valid_gen_name}" onblur="value=value.toUpperCase()"/>
+        <p:inputTextarea id="prodGenName" value="#{prodRegAppMbean.product.genName}" title="Generic Name"
+                     required="true" requiredMessage="#{msgs.valid_gen_name}" onblur="value=value.toUpperCase()"
+                     cols="100" rows="1"/>
         <p:message for="prodGenName" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
@@ -63,9 +57,10 @@
         <p:message for="dosUnit" showSummary="true" showDetail="false"/>
         
         <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
-        <p:inputText id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
-                     required="true" requiredMessage="#{msgs.dos_strength}: #{msgs.valueReq}">
-        </p:inputText>
+        <p:inputTextarea id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
+                     required="true" requiredMessage="#{msgs.dos_strength}: #{msgs.valueReq}"
+                     cols="100" rows="1">
+        </p:inputTextarea>
         <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
@@ -85,26 +80,14 @@
         </p:selectOneMenu>
         <p:message for="ageGroupcb" showSummary="true" showDetail="false"/>
 
-<!--        <p:outputLabel value="#{msgs.product_pharmclassif}" for="pharmClassifcb"/>
-        <p:autoComplete id="pharmClassifcb" value="#{prodRegAppMbean.product.pharmClassif}"
-                        completeMethod="#{globalEntityLists.completePharmClassif}" dropdown="true"
-                        var="it" itemLabel="#{it.name}" itemValue="#{it}" forceSelection="true"
-                        required="true"
-                        requiredMessage="#{msgs.valid_value_req}"
-                >
-            <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.pharmClassifs}"/>
-        </p:autoComplete>
-        <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
--->
         <p:outputLabel value="#{msgs.prod_desc}" for="prodDesc"/>
-        <p:inputTextarea id="prodDesc" value="#{prodRegAppMbean.product.prodDesc}" rows="4" cols="50"
-                         title="ProdDesc" required="true"/>
+        <p:inputTextarea id="prodDesc" value="#{prodRegAppMbean.product.prodDesc}" rows="4" cols="100"
+                         title="ProdDesc" required="true" maxlength="1000"/>
     </h:panelGrid>
 
     <div align="right">
-<!--        <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
+		<p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
                          update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn"/>
--->
         <p:commandButton value="#{msgs.global_cancel}" immediate="true"
                          action="#{prodRegAppMbean.cancel}"
                          ajax="false"/>

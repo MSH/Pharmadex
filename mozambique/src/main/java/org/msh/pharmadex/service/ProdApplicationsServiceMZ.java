@@ -50,196 +50,185 @@ import net.sf.jasperreports.engine.JasperPrint;
 public class ProdApplicationsServiceMZ implements Serializable {
 
 	private static final long serialVersionUID = 4431326838232306604L;
-	
+
 	private java.util.ResourceBundle bundle;
 	private FacesContext context;
-	
+
 	@Resource
 	private ProdApplicationsDAO prodApplicationsDAO;
 	@Autowired
 	private WorkspaceDAO workspaceDAO;
 	@Autowired
 	private ProductDAO productDAO;
-	
+
 	@Autowired
 	private ProdAppLetterDAO prodAppLetterDAO;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Autowired
 	private ProdApplicationsService prodApplicationsService;
-	
+
 	@Autowired
 	private UtilsByReportsMZ utilsByReports;
-	
+
 	private ProdApplications prodApp;
 	private Product product;
 
-    public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
-        List<ProdApplications> prodApplicationses = null;
-        HashMap<String, Object> params = new HashMap<String, Object>();
+	/**
+	 * Applications are in states by role users
+	 * They do not have other conditionals
+	 */
+	public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
+		List<ProdApplications> prodApplicationses = null;
+		HashMap<String, Object> params = new HashMap<String, Object>();
 
-        if (userSession.isAdmin()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.FEE);
-            regState.add(RegState.NEW_APPL);
-            regState.add(RegState.DEFAULTED);
-            regState.add(RegState.FOLLOW_UP);
-            regState.add(RegState.RECOMMENDED);
-            regState.add(RegState.REVIEW_BOARD);
-            regState.add(RegState.SCREENING);
-            regState.add(RegState.VERIFY);
-            params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isModerator()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.FOLLOW_UP);
-            regState.add(RegState.SCREENING);
-            regState.add(RegState.VERIFY);
-            regState.add(RegState.REVIEW_BOARD);
-            params.put("regState", regState);
-            params.put("moderatorId", userSession.getLoggedINUserID());
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isReviewer()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.REVIEW_BOARD);
-            params.put("regState", regState);
-            if (workspaceDAO.findAll().get(0).isDetailReview()) {
-                params.put("reviewer", userSession.getLoggedINUserID());
-                return prodApplicationsDAO.findProdAppByReviewer(params);
-            } else
-                params.put("reviewerId", userSession.getLoggedINUserID());
-//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isHead()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.NEW_APPL);
-            regState.add(RegState.FEE);
-            regState.add(RegState.VERIFY);
-            regState.add(RegState.SCREENING);
-            regState.add(RegState.FOLLOW_UP);
-            regState.add(RegState.REVIEW_BOARD);
-            regState.add(RegState.RECOMMENDED);
-            regState.add(RegState.NOT_RECOMMENDED);
-            regState.add(RegState.REJECTED);
+		List<RegState> regState = new ArrayList<RegState>();
+		if (userSession.isAdmin()) {
+			regState.add(RegState.FEE);
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+		} 
+		if (userSession.isModerator()) {
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			//params.put("moderatorId", userSession.getLoggedINUserID());
+		} 
+		if (userSession.isReviewer()) {
+			regState.add(RegState.REVIEW_BOARD);
+			/*if (workspaceDAO.findAll().get(0).isDetailReview()) {
+				params.put("reviewer", userSession.getLoggedINUserID());
+				return prodApplicationsDAO.findProdAppByReviewer(params);
+			} else
+				params.put("reviewerId", userSession.getLoggedINUserID());*/
+		} 
+		if (userSession.isHead()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.FEE);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.NOT_RECOMMENDED);
+			regState.add(RegState.REJECTED);
+		} 
+		if (userSession.isStaff()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.FEE);
+			regState.add(RegState.FOLLOW_UP);
+		}
+		if (userSession.isCompany()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.FEE);
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REGISTERED);
+			regState.add(RegState.CANCEL);
+			regState.add(RegState.SUSPEND);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.NOT_RECOMMENDED);
+			regState.add(RegState.REJECTED);
+			params.put("userId", userSession.getLoggedINUserID());
+		}
+		if (userSession.isLab()) {
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.NOT_RECOMMENDED);
+		}
+		if (userSession.isClinical()) {
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.FOLLOW_UP);
+			params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
+		}
 
-            params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isStaff()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.NEW_APPL);
-            regState.add(RegState.SCREENING);
-            regState.add(RegState.FEE);
-            regState.add(RegState.FOLLOW_UP);
-            params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isCompany()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.NEW_APPL);
-            regState.add(RegState.FEE);
-            regState.add(RegState.NEW_APPL);
-            regState.add(RegState.DEFAULTED);
-            regState.add(RegState.FOLLOW_UP);
-            regState.add(RegState.RECOMMENDED);
-            regState.add(RegState.REVIEW_BOARD);
-            regState.add(RegState.SCREENING);
-            regState.add(RegState.VERIFY);
-            regState.add(RegState.REGISTERED);
-            regState.add(RegState.CANCEL);
-            regState.add(RegState.SUSPEND);
-            regState.add(RegState.DEFAULTED);
-            regState.add(RegState.NOT_RECOMMENDED);
-            regState.add(RegState.REJECTED);
+		params.put("regState", regState);
+		prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
 
-            params.put("regState", regState);
-            params.put("userId", userSession.getLoggedINUserID());
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isLab()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.VERIFY);
-            regState.add(RegState.REVIEW_BOARD);
-            regState.add(RegState.FOLLOW_UP);
-            regState.add(RegState.RECOMMENDED);
-            regState.add(RegState.NOT_RECOMMENDED);
-            params.put("regState", regState);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        } else if (userSession.isClinical()) {
-            List<RegState> regState = new ArrayList<RegState>();
-            regState.add(RegState.VERIFY);
-            regState.add(RegState.REVIEW_BOARD);
-            regState.add(RegState.FOLLOW_UP);
-            params.put("regState", regState);
-            params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
-            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-        }
+		if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
+			Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
+				@Override
+				public int compare(ProdApplications o1, ProdApplications o2) {
+					Date d1 = o1.getPriorityDate();
+					Date d2 = o2.getPriorityDate();
+					if(d1 != null && d2 != null)
+						return d1.compareTo(d2);
+					return 0;
+				}
+			});
+		}
 
-        if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
-            Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
-                @Override
-                public int compare(ProdApplications o1, ProdApplications o2) {
-                	Date d1 = o1.getPriorityDate();
-                	Date d2 = o2.getPriorityDate();
-                	if(d1 != null && d2 != null)
-                		return d1.compareTo(d2);
-                	return 0;
-                }
-            });
-        }
+		return prodApplicationses;
+	}
 
-        return prodApplicationses;
-    }
-    
-    @Transactional
+	@Transactional
 	public String registerProd(ProdApplications prodApp) {
-    	this.prodApp = prodApp;
-    	return prodApplicationsService.registerProd(this.prodApp);
-    }
-    
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-	public String createRegCert(ProdApplications prodApp) throws IOException, JRException, SQLException {
+		this.prodApp = prodApp;
+		return prodApplicationsService.registerProd(this.prodApp);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public String createRegCert(ProdApplications prodApp, String gestorDeCTRM) throws IOException, JRException, SQLException {
 		this.prodApp = prodApp;
 		this.product = prodApp.getProduct();
 		File invoicePDF = null;
 		invoicePDF = File.createTempFile("" + product.getProdName() + "_registration", ".pdf");
-		JasperPrint jasperPrint = initRegCert();
+		JasperPrint jasperPrint = initRegCert(gestorDeCTRM);
 		net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 		prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
 		prodApplicationsDAO.updateApplication(prodApp);
 		return "created";
 	}
-    
-    public JasperPrint initRegCert() throws JRException, SQLException {
+
+	public JasperPrint initRegCert(String gestor) throws JRException, SQLException {
 		product = productDAO.findProduct(prodApp.getProduct().getId());
 
 		Connection conn = entityManager.unwrap(Session.class).connection();
 		URL resource = getClass().getResource("/reports/reg_letter.jasper");
-		
+
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		utilsByReports.init(param, prodApp, product);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNUMBER, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_NUMBER, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SUBMIT_DATE, "", false);
-		
+
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_ADDRESS1, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SHELFINE, "", false);
-		
+
 		//inn
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_INN, "", false);
-		
+
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PACKSIZE, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_STORAGE, "", false);
 		//excipient
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXCIPIENT, "", false);
-		
+
 		String fnm = (product != null) ? product.getFnm():"";
 		boolean flag = (fnm != null && fnm.length() > 0) ? true: false;
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_FNM, flag);
-		
+
 		int t = 0;
 		if(prodApp != null){
 			ProdAppType type = prodApp.getProdAppType();
@@ -255,7 +244,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			}
 		}
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPTYPE, t);
-		
+
 		t = 0;
 		if(product != null){
 			ProdDrugType type = product.getDrugType();
@@ -275,42 +264,43 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			}
 		}
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DRUGTYPE, t);
-		
+
 		boolean fl = false;
 		if(product != null){
 			fl = product.isNewChemicalEntity();
 			// or by ProdAppType type = prodApp.getProdAppType(); if(type.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
 		}
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SUBACT, fl);
-		
+
 		fl = false;
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GEN, fl);
-		
+
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXPIRY_DATE, "", false);
-		
+		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GESTOR, gestor);
+
 		return JasperFillManager.fillReport(resource.getFile(), param, conn);
 	}
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public String createAckLetter(ProdApplications prodApp) {
-    	context = FacesContext.getCurrentInstance();
-    	bundle = context.getApplication().getResourceBundle(context, "msgs");
-    	
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+
 		Product prod = prodApp.getProduct();
 		try {
 			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
 
 			JasperPrint jasperPrint;
 			Connection conn = entityManager.unwrap(Session.class).connection();
-			
+
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
-			
+
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSREC_DATE, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
-			
+
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GENNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
@@ -348,5 +338,104 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			e.printStackTrace();
 			return "error";
 		}
+	}
+
+	public List<ProdApplications> getProcessProdAppList(UserSession userSession) {
+		List<ProdApplications> prodApplicationses = null;
+		HashMap<String, Object> params = new HashMap<String, Object>();
+
+		List<RegState> regState = new ArrayList<RegState>();
+		if (userSession.isAdmin()) {
+			regState.add(RegState.FEE);
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+		} 
+		if (userSession.isModerator()) {
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			params.put("moderatorId", userSession.getLoggedINUserID());
+		} 
+		if (userSession.isReviewer()) {
+			regState.add(RegState.REVIEW_BOARD);
+			if (workspaceDAO.findAll().get(0).isDetailReview()) {
+				params.put("regState", regState);
+				params.put("reviewer", userSession.getLoggedINUserID());
+				return prodApplicationsDAO.findProdAppByReviewer(params);
+			} else
+				params.put("reviewerId", userSession.getLoggedINUserID());
+		} 
+		if (userSession.isHead()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.FEE);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.NOT_RECOMMENDED);
+			regState.add(RegState.REJECTED);
+		} 
+		if (userSession.isStaff()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.FEE);
+			regState.add(RegState.FOLLOW_UP);
+		}
+		if (userSession.isCompany()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.FEE);
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REGISTERED);
+			regState.add(RegState.CANCEL);
+			regState.add(RegState.SUSPEND);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.NOT_RECOMMENDED);
+			regState.add(RegState.REJECTED);
+			params.put("userId", userSession.getLoggedINUserID());
+		}
+		if (userSession.isLab()) {
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.NOT_RECOMMENDED);
+		}
+		if (userSession.isClinical()) {
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.FOLLOW_UP);
+			params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
+		}
+
+		params.put("regState", regState);
+		prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+
+		if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
+			Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
+				@Override
+				public int compare(ProdApplications o1, ProdApplications o2) {
+					Date d1 = o1.getPriorityDate();
+					Date d2 = o2.getPriorityDate();
+					if(d1 != null && d2 != null)
+						return d1.compareTo(d2);
+					return 0;
+				}
+			});
+		}
+
+		return prodApplicationses;
 	}
 }

@@ -4,15 +4,16 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid">
+    <h:panelGrid columns="3" cellspacing="10px" cellpadding="10px" columnClasses="label, value" styleClass="grid"
+    				 style="width:100%;">
         <p:outputLabel value="#{msgs.prod_indications}" for="indication"/>
         <p:inputTextarea id="indication" value="#{prodRegAppMbean.product.indications}" required="true"
-        				requiredMessage="#{msgs.no_indications}" cols="100"/>
+        				requiredMessage="#{msgs.no_indications}" cols="100" maxlength="1000"/>
         <p:message for="indication" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.prod_posology}" for="posology"/>
         <p:inputTextarea id="posology" value="#{prodRegAppMbean.product.posology}" required="true"  
-        				requiredMessage="#{msgs.no_posology}" cols="100"/>
+        				requiredMessage="#{msgs.no_posology}" cols="100" maxlength="1000"/>
         <p:message for="posology" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
@@ -23,25 +24,25 @@
         <p:message for="cbdrugtype" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.prod_fnm}" for="fnm"/>
-        <p:inputText id="fnm" value="#{prodRegAppMbean.product.fnm}"/>
+        <p:inputTextarea id="fnm" value="#{prodRegAppMbean.product.fnm}" cols="100" rows="1"/>
         <p:message for="fnm" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_shelflife}" for="shelflife"/>
         <p:inputText id="shelflife" value="#{prodRegAppMbean.product.shelfLife}" required="true" 
-        				requiredMessage="#{msgs.no_shelflife}"/>
+        				requiredMessage="#{msgs.no_shelflife}" style="width:30%;"/>
         <p:message for="shelflife" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
-        <p:inputText id="inpacksize" value="#{prodRegAppMbean.product.packSize}"/>
+        <p:inputText id="inpacksize" value="#{prodRegAppMbean.product.packSize}" style="width:30%;"/>
         <p:message for="inpacksize" showSummary="true" showDetail="false"/>
 
 
         <p:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
-        <p:inputTextarea id="inconttype" value="#{prodRegAppMbean.product.contType}"/>
+        <p:inputTextarea id="inconttype" value="#{prodRegAppMbean.product.contType}" cols="100" rows="1"/>
         <p:message for="inconttype" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
-        <p:inputText id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}"/>
+        <p:inputTextarea id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}" cols="100" rows="1"/>
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.use_category}" for="grid"/>

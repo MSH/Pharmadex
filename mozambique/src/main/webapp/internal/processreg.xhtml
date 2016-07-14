@@ -693,14 +693,19 @@
                         <p:ajax event="dateSelect" listener="#{processProdBn.dateChange}" update=":regdatedlg"/>
                     </p:calendar>
                     <p:message for="regstartdate"/>
+                    
                     <p:outputLabel value="#{msgs.expiry_date}" for="expiryDate"/>
                     <p:calendar value="#{processProdBn.prodApplications.regExpiryDate}" id="expiryDate" showOn="button"
                                 required="true" pattern="#{userAccessMBean.workspace.datePattern}"/>
                     <p:message for="expiryDate"/>
+                    
                     <p:outputLabel for="regnumber" value="#{msgs.reg_number}"/>
                     <p:inputText id="regnumber" value="#{processProdBn.prodApplications.prodRegNo}" required="true"/>
                     <p:message for="regnumber" showSummary="true"/>
 
+					<p:outputLabel value="#{msgs.gestorDeCTRM}"/>
+                    <p:inputText id="gestorDeCTRM" value="#{processProdBnMZ.gestorDeCTRM}"/>
+                    <p:outputLabel/>
                 </h:panelGrid>
 
                 <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBnMZ.registerProduct(processProdBn.prodApplications)}"

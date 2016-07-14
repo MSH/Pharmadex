@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-07-05T17:03:03 -->
+<!-- 2016-07-14T11:21:27 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -36,6 +36,7 @@
 	<parameter name="regNumber" class="java.lang.String"/>
 	<parameter name="appNumber" class="java.lang.String"/>
 	<parameter name="submitDate" class="java.lang.String"/>
+	<parameter name="gestorDeCTRM" class="java.lang.String"/>
 	<background>
 		<band height="1" splitType="Stretch"/>
 	</background>
@@ -313,8 +314,7 @@ Medicamento:
 				<text><![CDATA[MINISTÉRIO DA SAÚDE]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="5" y="515" width="60" height="75" backcolor="rgba(255, 255, 255, 0.0)" uuid="bc42a9be-2775-4ad7-8904-341f43bcfbf1">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement x="5" y="515" width="55" height="75" backcolor="rgba(255, 255, 255, 0.0)" uuid="bc42a9be-2775-4ad7-8904-341f43bcfbf1">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
@@ -323,9 +323,8 @@ Medicamento:
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement mode="Opaque" x="11" y="500" width="48" height="21" backcolor="#BFBFBF" uuid="b1ee1753-9d23-4167-8798-bc4f0761b241">
+				<reportElement mode="Opaque" x="11" y="500" width="43" height="21" backcolor="#BFBFBF" uuid="b1ee1753-9d23-4167-8798-bc4f0761b241">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#BFBFBF"/>
@@ -339,10 +338,9 @@ Medicamento:
 				<text><![CDATA[FNM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="32" y="527" width="32" height="24" uuid="16070fa3-c1fa-429e-af4d-b08961b2a271">
+				<reportElement x="32" y="527" width="27" height="24" uuid="16070fa3-c1fa-429e-af4d-b08961b2a271">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -351,7 +349,7 @@ Medicamento:
 				<text><![CDATA[SIM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="32" y="553" width="32" height="24" uuid="e3fd468a-3762-4de3-a545-f569928cac96">
+				<reportElement x="32" y="553" width="27" height="24" uuid="e3fd468a-3762-4de3-a545-f569928cac96">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -379,8 +377,7 @@ Medicamento:
 				<textFieldExpression><![CDATA[$P{fnm} ? "X" : " "]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement x="5" y="610" width="60" height="75" backcolor="rgba(255, 255, 255, 0.0)" uuid="94fb6640-6933-4597-a44e-12b14bd47b4e">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement x="5" y="610" width="55" height="75" backcolor="rgba(255, 255, 255, 0.0)" uuid="94fb6640-6933-4597-a44e-12b14bd47b4e">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
@@ -390,8 +387,7 @@ Medicamento:
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement mode="Opaque" x="11" y="595" width="48" height="21" forecolor="#000000" backcolor="#BFBFBF" uuid="cadcd03a-1836-43bd-859f-e98a9febb6a7">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				<reportElement mode="Opaque" x="11" y="595" width="43" height="21" forecolor="#000000" backcolor="#BFBFBF" uuid="cadcd03a-1836-43bd-859f-e98a9febb6a7">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
@@ -407,10 +403,9 @@ Medicamento:
 				<text><![CDATA[Genérico]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="32" y="622" width="32" height="24" uuid="66276403-94ac-4957-a11f-6eb652ba45f0">
+				<reportElement x="32" y="622" width="27" height="24" uuid="66276403-94ac-4957-a11f-6eb652ba45f0">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Calibri" size="8" isBold="false"/>
@@ -418,7 +413,7 @@ Medicamento:
 				<text><![CDATA[SIM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="32" y="648" width="32" height="24" uuid="3c4f0703-ecb5-4d49-bd9d-0168fbcb88b5">
+				<reportElement x="32" y="648" width="27" height="24" uuid="3c4f0703-ecb5-4d49-bd9d-0168fbcb88b5">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -429,9 +424,9 @@ Medicamento:
 				<text><![CDATA[NÃO]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="70" y="515" width="100" height="170" forecolor="#BFBFBF" backcolor="rgba(255, 255, 255, 0.0)" uuid="9ce90299-55bf-472e-baaf-4fa2688e4304">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				<reportElement x="65" y="515" width="105" height="170" forecolor="#BFBFBF" backcolor="rgba(255, 255, 255, 0.0)" uuid="9ce90299-55bf-472e-baaf-4fa2688e4304">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 			</rectangle>
 			<rectangle>
@@ -535,11 +530,9 @@ Medicamento:
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="98" y="527" width="72" height="24" uuid="ddccb26b-81b7-478e-acd0-ec1ce94e48fb">
+				<reportElement x="93" y="527" width="77" height="24" uuid="ddccb26b-81b7-478e-acd0-ec1ce94e48fb">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Calibri" size="8" isBold="false"/>
@@ -547,7 +540,7 @@ Medicamento:
 				<text><![CDATA[Registo Completo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="98" y="553" width="72" height="24" uuid="fb22fc88-f408-4702-936b-a44820ad2570">
+				<reportElement x="93" y="553" width="77" height="24" uuid="fb22fc88-f408-4702-936b-a44820ad2570">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -559,7 +552,7 @@ Medicamento:
 				<text><![CDATA[Registo Abreviado]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="98" y="579" width="72" height="24" uuid="bbfa72f6-9f59-4081-9d79-e1467acc6e11">
+				<reportElement x="93" y="579" width="77" height="24" uuid="bbfa72f6-9f59-4081-9d79-e1467acc6e11">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -571,7 +564,7 @@ Medicamento:
 				<text><![CDATA[Por Reconhecimento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="98" y="605" width="72" height="24" uuid="79fdd9db-5a12-4423-8fd9-0043f644ac48">
+				<reportElement x="93" y="605" width="77" height="24" uuid="79fdd9db-5a12-4423-8fd9-0043f644ac48">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -796,10 +789,11 @@ Medicamento:
 				<textFieldExpression><![CDATA[$P{gen} ? " " : "X"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="76" y="527" width="17" height="24" uuid="096a28c9-6598-41b3-af1a-620b9a006b92">
+				<reportElement x="71" y="527" width="17" height="24" uuid="096a28c9-6598-41b3-af1a-620b9a006b92">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -814,7 +808,7 @@ Medicamento:
 				<textFieldExpression><![CDATA[$P{appType}==1? "X" : " "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="76" y="553" width="17" height="24" uuid="9cb908bb-f753-4855-888e-b2456df3e34d">
+				<reportElement x="71" y="553" width="17" height="24" uuid="9cb908bb-f753-4855-888e-b2456df3e34d">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -831,7 +825,7 @@ Medicamento:
 				<textFieldExpression><![CDATA[$P{appType}==2? "X" : " "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="76" y="579" width="17" height="24" uuid="02ad2d21-ccaf-44d1-b369-b732d0887309">
+				<reportElement x="71" y="579" width="17" height="24" uuid="02ad2d21-ccaf-44d1-b369-b732d0887309">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -848,7 +842,7 @@ Medicamento:
 				<textFieldExpression><![CDATA[$P{appType}==3? "X" : " "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="76" y="605" width="17" height="24" uuid="893c7ece-9600-412d-82bf-d19ba2499516">
+				<reportElement x="71" y="605" width="17" height="24" uuid="893c7ece-9600-412d-82bf-d19ba2499516">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -1105,7 +1099,7 @@ Farmacêutico (s) Activo (s):]]></text>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Data Comercialização:]]></text>
+				<text><![CDATA[Data de Autorização:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="275" y="704" width="110" height="16" uuid="844050f4-9026-4a8e-89fb-d7ee3479f3c4">
@@ -1127,7 +1121,7 @@ Farmacêutico (s) Activo (s):]]></text>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Validade CTRM:]]></text>
+				<text><![CDATA[Validade do Registo:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="120" y="720" width="155" height="16" uuid="8d5953c4-154f-4abc-833e-9852cc4368f8">
@@ -1258,6 +1252,18 @@ Farmacêutico (s) Activo (s):]]></text>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{manufName} == null ? "":$P{manufName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="395" y="704" width="160" height="16" uuid="6e48f3dc-9f79-4124-b479-032510016a62">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Calibri" size="11"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{gestorDeCTRM} != null && !$P{gestorDeCTRM}.isEmpty() ? $P{gestorDeCTRM} : "Sultana Razaco"]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
