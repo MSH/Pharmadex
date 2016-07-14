@@ -20,9 +20,9 @@ import java.io.Serializable;
 @ApplicationScoped
 public class ImageStreamer implements Serializable {
 
-    @ManagedProperty(value = "#{reviewService}")
+	private static final long serialVersionUID = -4171286475196794385L;
+	@ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
-
 
     public StreamedContent getImage() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -34,6 +34,7 @@ public class ImageStreamer implements Serializable {
             // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
             String imageId = context.getExternalContext().getRequestParameterMap().get("imageId");
             byte[] image = reviewService.findReviewDetailImage(Long.valueOf(imageId));
+
             if(image != null)
             	return new DefaultStreamedContent(new ByteArrayInputStream(image));
             return new DefaultStreamedContent();

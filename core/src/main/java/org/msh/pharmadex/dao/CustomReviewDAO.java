@@ -117,9 +117,10 @@ public class CustomReviewDAO implements Serializable {
         try {
 //        Session hibernateSession = entityManager.unwrap(Session.class);
             Connection conn = entityManager.unwrap(Session.class).connection();
-
+            
             HashMap param = new HashMap();
             param.put("reviewInfoID", id);
+            
             URL resource = getClass().getResource("/reports/review_detail_report.jasper");
             jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
             conn.close();

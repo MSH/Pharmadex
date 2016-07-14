@@ -436,8 +436,9 @@ public class ProdRegAppMbean implements Serializable {
 				}
 
 			}
-			if (!currentWizardStep.equals("prodreg"))
+			if (!currentWizardStep.equals("prodreg")){
 				saveApp();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			FacesMessage msg = new FacesMessage(e.getMessage(), "Detail....");

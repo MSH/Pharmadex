@@ -4,8 +4,6 @@
 
 package org.msh.pharmadex.mbean.product;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
@@ -25,9 +23,6 @@ import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
 
 /**
  * Backing bean to capture review of products
@@ -37,8 +32,9 @@ import org.primefaces.model.UploadedFile;
 @ViewScoped
 public class ReviewDetailBn implements Serializable {
 
+	private static final long serialVersionUID = -4955791411479803842L;
 
-    @ManagedProperty(value = "#{reviewService}")
+	@ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
 
     @ManagedProperty(value = "#{userSession}")
@@ -59,8 +55,8 @@ public class ReviewDetailBn implements Serializable {
     private String revType;
     private boolean priReviewer;
     private boolean secReviewer;
-    private UploadedFile file;
-    private StreamedContent chart;
+    
+    private boolean fileImg = false;
 
     /**
      * Saves review without state changing
@@ -93,8 +89,15 @@ public class ReviewDetailBn implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
         reviewDetail.setFile(event.getFile().getContents());
         reviewDetail.setFilename(fname);
+        
+        varificationFileName(fname);
     }
 
+    private void varificationFileName(String text){
+    	fileImg = (text.toLowerCase().endsWith(".png") || text.toLowerCase().endsWith(".gif")
+    			|| text.toLowerCase().endsWith(".jpeg") || text.toLowerCase().endsWith(".jpg"));
+    }
+    
     public void satisAction() {
         if (reviewDetail.isSatifactory())
             satisfactory = true;
@@ -144,9 +147,10 @@ public class ReviewDetailBn implements Serializable {
                 } else if (reviewDetail.getReviewInfo().getSecReviewer() != null && reviewDetail.getReviewInfo().getSecReviewer().getUserId().equals(userSession.getLoggedINUserID())) {
                     setSecReviewer(true);
                     setPriReviewer(false);
-
                 }
             }
+            if(reviewDetail.getFile() != null)
+            	varificationFileName(reviewDetail.getFilename());
         }
         return reviewDetail;
     }
@@ -220,25 +224,11 @@ public class ReviewDetailBn implements Serializable {
         this.userService = userService;
     }
 
-    public UploadedFile getFile() {
-        return file;
-    }
+	public boolean isFileImg() {
+		return fileImg;
+	}
 
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
-    public StreamedContent getChart() {
-        if(chart==null) {
-            if (reviewDetail != null) {
-                InputStream ist = new ByteArrayInputStream(reviewDetail.getFile());
-                chart = new DefaultStreamedContent(ist);
-            }
-        }
-        return chart;
-    }
-
-    public void setChart(StreamedContent chart) {
-        this.chart = chart;
-    }
+	public void setFileImg(boolean fileImg) {
+		this.fileImg = fileImg;
+	}
 }

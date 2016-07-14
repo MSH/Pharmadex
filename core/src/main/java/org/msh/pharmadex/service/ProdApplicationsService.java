@@ -12,6 +12,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +44,19 @@ import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.dao.iface.StatusUserDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Checklist;
+import org.msh.pharmadex.domain.ForeignAppStatus;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.StatusUser;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.PaymentStatus;
 import org.msh.pharmadex.domain.enums.ProdAppType;
@@ -254,12 +268,16 @@ public class ProdApplicationsService implements Serializable {
 		return prodApps;
 	}
 
+	/**
+	 * Applications are in states by role users
+	 * They do not have other conditionals
+	 */
 	public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
 		List<ProdApplications> prodApplicationses = null;
 		HashMap<String, Object> params = new HashMap<String, Object>();
 
+		List<RegState> regState = new ArrayList<RegState>();
 		if (userSession.isAdmin()) {
-			List<RegState> regState = new ArrayList<RegState>();
 			regState.add(RegState.FEE);
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.DEFAULTED);
@@ -268,34 +286,23 @@ public class ProdApplicationsService implements Serializable {
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.VERIFY);
-			params.put("regState", regState);
-			//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-		} else if (userSession.isModerator()) {
-			List<RegState> regState = new ArrayList<RegState>();
+		} 
+		if (userSession.isModerator()) {
 			regState.add(RegState.FOLLOW_UP);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.VERIFY);
 			regState.add(RegState.REVIEW_BOARD);
-			params.put("regState", regState);
-			params.put("moderatorId", userSession.getLoggedINUserID());
-			//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-		} else if (userSession.isReviewer()) {
-			List<RegState> regState = new ArrayList<RegState>();
-			regState.add(RegState.NEW_APPL);
-			regState.add(RegState.FEE);
-			regState.add(RegState.VERIFY);
-			regState.add(RegState.SCREENING);
-			regState.add(RegState.FOLLOW_UP);
+			//params.put("moderatorId", userSession.getLoggedINUserID());
+		} 
+		if (userSession.isReviewer()) {
 			regState.add(RegState.REVIEW_BOARD);
-			params.put("regState", regState);
-			if (workspaceDAO.findAll().get(0).isDetailReview()) {
+			/*if (workspaceDAO.findAll().get(0).isDetailReview()) {
 				params.put("reviewer", userSession.getLoggedINUserID());
 				return prodApplicationsDAO.findProdAppByReviewer(params);
 			} else
-				params.put("reviewerId", userSession.getLoggedINUserID());
-			//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-		} else if (userSession.isHead()) {
-			List<RegState> regState = new ArrayList<RegState>();
+				params.put("reviewerId", userSession.getLoggedINUserID());*/
+		} 
+		if (userSession.isHead()) {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.FEE);
 			regState.add(RegState.VERIFY);
@@ -305,19 +312,14 @@ public class ProdApplicationsService implements Serializable {
 			regState.add(RegState.RECOMMENDED);
 			regState.add(RegState.NOT_RECOMMENDED);
 			regState.add(RegState.REJECTED);
-			params.put("regState", regState);
-			//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-		} else if (userSession.isStaff()) {
-			List<RegState> regState = new ArrayList<RegState>();
+		} 
+		if (userSession.isStaff()) {
 			regState.add(RegState.NEW_APPL);
-			regState.add(RegState.FEE);
 			regState.add(RegState.SCREENING);
-			regState.add(RegState.VERIFY);
+			regState.add(RegState.FEE);
 			regState.add(RegState.FOLLOW_UP);
-			params.put("regState", regState);
-			//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-		} else if (userSession.isCompany()) {
-			List<RegState> regState = new ArrayList<RegState>();
+		}
+		if (userSession.isCompany()) {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.FEE);
 			regState.add(RegState.NEW_APPL);
@@ -333,28 +335,38 @@ public class ProdApplicationsService implements Serializable {
 			regState.add(RegState.DEFAULTED);
 			regState.add(RegState.NOT_RECOMMENDED);
 			regState.add(RegState.REJECTED);
-			params.put("regState", regState);
 			params.put("userId", userSession.getLoggedINUserID());
-			//            prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
-		} else if (userSession.isLab()) {
-			List<RegState> regState = new ArrayList<RegState>();
+		}
+		if (userSession.isLab()) {
 			regState.add(RegState.VERIFY);
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.FOLLOW_UP);
 			regState.add(RegState.RECOMMENDED);
 			regState.add(RegState.NOT_RECOMMENDED);
-			params.put("regState", regState);
-
-		} else if (userSession.isClinical()){
-			List<RegState> regState = new ArrayList<RegState>();
+		}
+		if (userSession.isClinical()) {
 			regState.add(RegState.VERIFY);
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.FOLLOW_UP);
-			params.put("regState", regState);
 			params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
-			prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
 		}
+
+		params.put("regState", regState);
 		prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+
+		if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
+			Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
+				@Override
+				public int compare(ProdApplications o1, ProdApplications o2) {
+					Date d1 = o1.getPriorityDate();
+					Date d2 = o2.getPriorityDate();
+					if(d1 != null && d2 != null)
+						return d1.compareTo(d2);
+					return 0;
+				}
+			});
+		}
+
 		return prodApplicationses;
 	}
 
@@ -795,5 +807,103 @@ public class ProdApplicationsService implements Serializable {
 			return null;
 
 		return prodApplicationsDAO.findProdAppByNo(prodAppNo);
+	}
+	
+	public List<ProdApplications> getProcessProdAppList(UserSession userSession) {
+		List<ProdApplications> prodApplicationses = null;
+		HashMap<String, Object> params = new HashMap<String, Object>();
+
+		List<RegState> regState = new ArrayList<RegState>();
+		if (userSession.isAdmin()) {
+			regState.add(RegState.FEE);
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+		} 
+		if (userSession.isModerator()) {
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+		} 
+		if (userSession.isReviewer()) {
+			regState.add(RegState.REVIEW_BOARD);
+			if (workspaceDAO.findAll().get(0).isDetailReview()) {
+				params.put("regState", regState);
+				params.put("reviewer", userSession.getLoggedINUserID());
+				return prodApplicationsDAO.findProdAppByReviewer(params);
+			} else
+				params.put("reviewerId", userSession.getLoggedINUserID());
+		} 
+		if (userSession.isHead()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.FEE);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.NOT_RECOMMENDED);
+			regState.add(RegState.REJECTED);
+		} 
+		if (userSession.isStaff()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.FEE);
+			regState.add(RegState.FOLLOW_UP);
+		}
+		if (userSession.isCompany()) {
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.FEE);
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.SCREENING);
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REGISTERED);
+			regState.add(RegState.CANCEL);
+			regState.add(RegState.SUSPEND);
+			regState.add(RegState.DEFAULTED);
+			regState.add(RegState.NOT_RECOMMENDED);
+			regState.add(RegState.REJECTED);
+			params.put("userId", userSession.getLoggedINUserID());
+		}
+		if (userSession.isLab()) {
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.FOLLOW_UP);
+			regState.add(RegState.RECOMMENDED);
+			regState.add(RegState.NOT_RECOMMENDED);
+		}
+		if (userSession.isClinical()) {
+			regState.add(RegState.VERIFY);
+			regState.add(RegState.REVIEW_BOARD);
+			regState.add(RegState.FOLLOW_UP);
+			params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
+		}
+
+		params.put("regState", regState);
+		prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+
+		if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
+			Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
+				@Override
+				public int compare(ProdApplications o1, ProdApplications o2) {
+					Date d1 = o1.getPriorityDate();
+					Date d2 = o2.getPriorityDate();
+					if(d1 != null && d2 != null)
+						return d1.compareTo(d2);
+					return 0;
+				}
+			});
+		}
+
+		return prodApplicationses;
 	}
 }

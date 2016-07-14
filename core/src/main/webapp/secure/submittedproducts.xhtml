@@ -16,7 +16,7 @@
                 <p:dataTable id="renewals" var="eachprod" value="#{prodAppMBean.pendingRenewals}"
                              rendered="#{not empty prodAppMBean.pendingRenewals}">
 
-                    <p:column headerText="Product Name">
+                    <p:column headerText="#{msgs.prod_name}">
                         <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
                                        action="/internal/processreg"
                                        ajax="false">

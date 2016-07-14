@@ -61,7 +61,7 @@
                     <p:outputLabel value="#{msgs.upload_file}:"/>
                     <p:fileUpload fileUploadListener="#{reviewDetailBn.handleFileUpload}" mode="advanced"
                                   dragDropSupport="true"
-                                  update=":reviewHome:reviewChkPnl growl" sizeLimit="100000000"/>
+                                  update=":reviewHome:reviewChkPnl :reviewHome:imgpnl growl" sizeLimit="100000000"/>
                     <p:outputLabel/>
                     
                     <p:outputLabel/>
@@ -91,12 +91,12 @@
                               rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}"/>
                     <p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.secComment}"
                                    rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and (!userSession.reviewer or !reviewDetailBn.secReviewer)}"></p:outputLabel>
-
-                    <!-- <p:outputLabel value="Image"/>
-                    <p:graphicImage value="#{imageStreamer.image}">
+                </h:panelGrid>
+                <h:panelGrid id="imgpnl" columns="2" columnClasses="label value" cellspacing="5px">
+                    <p:outputLabel value="#{msgs.image}" rendered="#{reviewDetailBn.fileImg}"/>
+                    <p:graphicImage value="#{imageStreamer.image}" rendered="#{reviewDetailBn.fileImg}">
                         <f:param name="imageId" value="#{reviewDetailBn.reviewDetail.id}"/>
-                    </p:graphicImage> -->
-
+                    </p:graphicImage>
                 </h:panelGrid>
             </p:panel>
 

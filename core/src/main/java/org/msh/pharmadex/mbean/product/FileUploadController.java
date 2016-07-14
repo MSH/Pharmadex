@@ -21,6 +21,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
+import static javax.faces.context.FacesContext.getCurrentInstance;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -140,9 +143,10 @@ public class FileUploadController implements Serializable {
         return download;
     }
 
-    public StreamedContent regCertDownload() throws SQLException, IOException, JRException {
-        ProdApplications prodApplications = processProdBn.getProdApplications();
+    public StreamedContent regCertDownload(ProdApplications prodApplications) throws SQLException, IOException, JRException {
+       // ProdApplications prodApplications = processProdBn.getProdApplications();
         if(prodApplications != null){
+        	//id = getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 	        Calendar c = Calendar.getInstance();
 	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");

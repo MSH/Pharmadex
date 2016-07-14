@@ -208,4 +208,10 @@ public class ProductDisplay implements Serializable {
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
     }
+    
+    public String goToBack(){
+    	if(userSession.getLoggedINUserID() != null && userSession.getLoggedINUserID() > 0)
+    		return "/internal/processprodlist.faces";
+    	return "/public/productlist.faces";
+    }
 }

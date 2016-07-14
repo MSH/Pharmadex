@@ -53,7 +53,7 @@ public class ProdAppMBean implements Serializable {
     private void init() {
         savedAppList = prodApplicationsService.findSavedApps(userSession.getLoggedINUserID());
         pendingRenewals = invoiceService.findPendingByApplicant(userSession.getApplcantID());
-        prodApplicationsList = prodApplicationsService.getSubmittedApplications(userSession);
+        prodApplicationsList = prodApplicationsService.getProcessProdAppList(userSession);
         submmittedAppList = prodApplicationsService.getSubmittedApplications(userSession);
         allApplicationForProcess = prodApplicationsService.getApplications();
     }

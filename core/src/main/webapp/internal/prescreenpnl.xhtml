@@ -8,11 +8,7 @@
     <h:panelGrid cellspacing="2" cellpadding="2" columns="4">
         <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
                          rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"/>
-        <!--
-                <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{processProdBnET.initTimeLine}" update=":reghome:processtab:sendtoapplicant"
-                                 rendered="#{processProdBnET.displayScreenAction}" oncomplete="PF('sendtoappdlg').show()"/>
-        -->
-        <p:commandButton id="sendtoapp2" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
+        <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
         <p:commandButton id="feedback" value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp" icon="ui-icon-cancel"

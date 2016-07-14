@@ -9,11 +9,11 @@
 
         <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;"
                      sortBy="#{checkList.checklist.id}">
-            <p:column headerText="#{msgs.checklist_moduleno}" colspan="4" rendered="#{!checkList.checklist.header}" style="background-color: bisque;font-weight: bolder;">
+            <p:column headerText="#{msgs.checklist_moduleno}" rendered="#{!checkList.checklist.header}" 
+            			colspan="4" style="background-color: bisque;font-weight: bolder;">
                 <h:outputLabel value="#{checkList.checklist.name}" />
             </p:column>
-
-            <p:column headerText="#{msgs.checklist_moduleno}" style="width:50px" rendered="#{checkList.checklist.header}">
+            <p:column headerText="#{msgs.checklist_moduleno}" rendered="#{checkList.checklist.header}">
                 <h:outputLabel value="#{checkList.checklist.moduleNo}" />
             </p:column>
             <p:column headerText="#{msgs.checklist_name}" rendered="#{checkList.checklist.header}">
@@ -22,7 +22,7 @@
             <p:column headerText="#{msgs.checklist_module}" rendered="#{checkList.checklist.header}">
                 <h:outputLabel value="#{checkList.checklist.module}"/>
             </p:column>
-            <p:column rendered = "#{checkList.checklist.header}">
+            <p:column rendered = "#{checkList.checklist.header}" style="width:165px">
                 <p:selectOneButton id="console" value="#{checkList.value}" >
                     <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}" />
                 </p:selectOneButton>

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-07-13T16:02:30 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="review_detail_report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ecd10e94-5bd5-48c4-9864-d88e8ef17d0d">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.util.JRLoader"/>
 	<parameter name="reviewInfoID" class="java.lang.String"/>
+	<parameter name="countryHead" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select rq.header1, rq.header2, rq.question, rd.other_comment, rd.answered, rd.sec_comment, rd.file, if(Length(rd.file)>0, true, false) as attach
+		<![CDATA[select rq.header1, rq.header2, rq.question, rd.other_comment, rd.answered, rd.sec_comment, rd.file, if(Length(rd.file)>0, true, false) as attach, rd.filename
 from review_info ri, review_detail rd, review_question rq
 where ri.id = rd.review_info_id
 and rq.id = rd.reviewquest_id
@@ -34,6 +37,9 @@ and ri.id = $P{reviewInfoID};]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="attach" class="java.lang.Boolean"/>
+	<field name="filename" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<group name="header1">
 		<groupExpression><![CDATA[$F{header1}]]></groupExpression>
 		<groupHeader>
@@ -92,13 +98,6 @@ and ri.id = $P{reviewInfoID};]]>
 					<text><![CDATA[FOOD, MEDICINE AND HEALTH CARE ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="1" y="48" width="474" height="24" forecolor="#006666" uuid="28612f0b-3c44-4f9f-8ac7-defe23aca6d5"/>
-					<textElement textAlignment="Center">
-						<font size="18" isBold="true"/>
-					</textElement>
-					<text><![CDATA[ETHIOPIA]]></text>
-				</staticText>
-				<staticText>
 					<reportElement x="1" y="24" width="474" height="24" forecolor="#006666" uuid="30e7a1e7-51b4-4ac5-9a37-418537f075d8"/>
 					<textElement textAlignment="Center">
 						<font size="18" isBold="true"/>
@@ -117,6 +116,18 @@ and ri.id = $P{reviewInfoID};]]>
 					</textElement>
 					<text><![CDATA[Review Report]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="1" y="48" width="474" height="24" forecolor="#066660" backcolor="#FFFFFF" uuid="dc4b45ca-38e5-4463-a545-0051d72b4dd1">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center">
+						<font size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{countryHead} != null ? $P{countryHead} : "ETHIOPIA"]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 	</title>
@@ -189,7 +200,11 @@ and ri.id = $P{reviewInfoID};]]>
 				<text><![CDATA[Secondary Comment]]></text>
 			</staticText>
 			<image>
-				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="2" y="81" width="553" height="238" isRemoveLineWhenBlank="true" uuid="17feed44-e37f-4074-9505-973606c092e2"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="2" y="81" width="553" height="238" isRemoveLineWhenBlank="true" uuid="17feed44-e37f-4074-9505-973606c092e2">
+					<printWhenExpression><![CDATA[$F{filename}.endsWith( ".png" ) || $F{filename}.endsWith( ".gif" )
+ || $F{filename}.endsWith( ".jpeg" )
+  || $F{filename}.endsWith( ".jpg" )]]></printWhenExpression>
+				</reportElement>
 				<imageExpression><![CDATA[$F{file}]]></imageExpression>
 			</image>
 		</band>

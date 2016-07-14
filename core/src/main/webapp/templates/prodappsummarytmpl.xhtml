@@ -11,9 +11,14 @@
         				 ajax="true"
                          onclick="PrimeFaces.monitorDownload(start, stop)"
                          icon="ui-icon-arrowthichk-n">
-            <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
+            <p:fileDownload value="#{fileUploadController.regCertDownload(prodAppData)}"/>
         </p:commandButton>
-        <!--  ajax="false" prodAppData-->
+        <!-- <p:commandButton icon="ui-icon-extlink" value="#{msgs.global_back}" type="button"
+        				action="home.faces" immediate="true" ajax="false" /> -->
+        <p:commandButton value="#{msgs.global_exit}" immediate="true"
+        							action="#{productDisplay.goToBack()}"
+                                 ajax="false" icon="ui-icon-extlink">
+        </p:commandButton>
     </div>
 
     <p:accordionPanel value="Product Information" activeIndex="0,1,2,3,4,5,6,7,8,9,10" multiple="true" id="prodsummaccpnl">
@@ -262,24 +267,21 @@
                 <h:outputLabel id="feesubmitdt" value="#{prodAppData.feeSubmittedDt}">
                     <f:convertDateTime pattern="MMM dd, yyyy"/>
                 </h:outputLabel>
-
-
             </h:panelGrid>
-
         </p:tab>
 
         <p:tab title="#{msgs.checklist}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
             <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;">
-                <p:column>
+                <p:column style="width:100px">
                     <h:outputLabel value="#{checkList.checklist.module}"/>
                 </p:column>
-                <p:column>
+                <p:column style="width:60px">
                     <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
                 </p:column>
                 <p:column>
                     <h:outputLabel value="#{checkList.checklist.name}"/>
                 </p:column>
-                <p:column>
+                <p:column style="width:60px">
                     <p:outputLabel value="#{msgs[globalLists.buildKeyMsgs(checkList.value)]}"/>
                 </p:column>
             </p:dataTable>
