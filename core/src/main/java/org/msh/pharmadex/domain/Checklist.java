@@ -34,16 +34,16 @@ public class Checklist extends CreationDetail implements Serializable {
     private boolean recognizedMed;
 
     @Column(name = "renewal")
-    private boolean renewal;
+    private Boolean renewal;
     
     @Column(name = "variation")
-    private boolean variation;
+    private Boolean variation;
 
-    public boolean isVariation() {
+    public Boolean isVariation() {
 		return variation;
 	}
 
-	public void setVariation(boolean variation) {
+	public void setVariation(Boolean variation) {
 		this.variation = variation;
 	}
 
@@ -111,11 +111,11 @@ public class Checklist extends CreationDetail implements Serializable {
         this.recognizedMed = recognizedMed;
     }
 
-    public boolean isRenewal() {
+    public Boolean isRenewal() {
         return renewal;
     }
 
-    public void setRenewal(boolean renewal) {
+    public void setRenewal(Boolean renewal) {
         this.renewal = renewal;
     }
 }
