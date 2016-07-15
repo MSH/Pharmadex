@@ -273,8 +273,29 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
         return prodApplicationses;
     }
 
+    public List<ProdApplications> getNewVariationApp(UserSession userSession){
+    	  List<ProdApplications> prodApplicationses = null;  
+    	HashMap<String, Object> params = new HashMap<String, Object>();
+    	    List<RegState> regState = new ArrayList<RegState>();
+            regState.add(RegState.NEW_APPL);
+            params.put("regState", regState);
+            if (!userSession.isAdmin()) {
+                if (userSession.isModerator()) {
+                    params.put("moderatorId", userSession.getLoggedINUserID());
+                } else if (userSession.isReviewer()) {
+                    if (workspaceDAO.findAll().get(0).isDetailReview()) {
+                        params.put("reviewer", userSession.getLoggedINUserID());
 
+                    } else
+                        params.put("reviewer", userSession.getLoggedINUserID());
+                } else if (userSession.isCompany()) {
+                    params.put("userId", userSession.getLoggedINUserID());
+                }
+            }
+           params.put("prodAppType",ProdAppType.VARIATION);
+           prodApplicationses= prodApplicationsDAO.getProdAppByParams(params);
+           return prodApplicationses;
 
-
+    }
 
 }
