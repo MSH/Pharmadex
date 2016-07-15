@@ -181,7 +181,20 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "papp_ID", nullable = true)
-    private ProdApplications parentApplication;
+    
+    @Column(nullable = true)
+    private byte[] isMajor;
+    
+    public byte[] getIsMajor() {
+		return isMajor;
+	}
+
+
+	public void setIsMajor(byte[] isMajor) {
+		this.isMajor = isMajor;
+	}
+
+	private ProdApplications parentApplication;
 
     public ProdApplications(Product prod, Applicant applicant) {
         this.product = prod;
