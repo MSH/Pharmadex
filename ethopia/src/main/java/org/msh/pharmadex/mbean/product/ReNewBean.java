@@ -35,21 +35,43 @@ public class ReNewBean {
     private FacesContext facesContext;
     private Long prodAppId;
     private Long parentAppId;
+    private ProdAppType RenewType;
+    private ProdAppType VariationType;
+    
+    
+    public ProdAppType getRenewType() {
+		return RenewType;
+	}
 
-    @PostConstruct
+	public void setRenewType(ProdAppType renewType) {
+		RenewType = renewType;
+	}
+
+	public ProdAppType getVariationType() {
+		return VariationType;
+	}
+
+	public void setVariationType(ProdAppType variationType) {
+		VariationType = variationType;
+	}
+
+	@PostConstruct
     private void init(){
         parentAppId = getParam("prodAppID");
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         curUser = getUserSession().getUserService().findUser(userSession.getLoggedINUserID());
+        setVariationType(ProdAppType.VARIATION);
+        setRenewType(ProdAppType.RENEW);
     }
 
-    public String startReregistration(){
+    public String startReregistration(ProdAppType newtype){
         //create copy of inital application and product
         ProdApplications prodAppRenew = new ProdApplications();
         ProdApplications prodApp = prodApplicationsService.findProdApplications(parentAppId);
         Scrooge.copyData(prodApp,prodAppRenew);
 //        prodAppRenew.setId((long) 0);
-        prodAppRenew.setProdAppType(ProdAppType.RENEW);
+        //prodAppRenew.setProdAppType(ProdAppType.RENEW);
+        prodAppRenew.setProdAppType(newtype);
         Product product = new Product();
         Product reg_product = productDAO.findProductEager(parentAppId);
         Scrooge.copyData(reg_product,product);

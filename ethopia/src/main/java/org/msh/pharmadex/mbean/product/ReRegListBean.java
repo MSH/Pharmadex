@@ -1,9 +1,11 @@
 package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.processes.ReRegistration;
 import org.msh.pharmadex.service.ProcessReRegService;
 import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProdApplicationsServiceET;
 import org.msh.pharmadex.service.ProductService;
 import org.primefaces.event.SelectEvent;
 
@@ -19,6 +21,7 @@ import java.util.ResourceBundle;
 
 /**
  * Created by Одиссей on 26.06.2016.
+ * used for reregistration and variation 
  */
 @ManagedBean
 @ViewScoped
@@ -31,6 +34,9 @@ public class ReRegListBean implements Serializable {
 
     @ManagedProperty(value = "#{prodApplicationsService}")
     ProdApplicationsService prodApplicationsService;
+    @ManagedProperty(value = "#{prodApplicationsServiceET}")
+    ProdApplicationsServiceET prodApplicationsServiceET;
+
 
     @ManagedProperty(value = "#{userSession}")
     UserSession userSession;
@@ -41,8 +47,19 @@ public class ReRegListBean implements Serializable {
     private ProdTable prodTable;
     private String prodAppNo;
     private List<ReRegistration> reRegAppList;
+    private List<ProdApplications> prodapppList;
+    
+    public List<ProdApplications> getProdapppList() {
+    	//return productService.findAllRegisteredProduct();
+    	return prodApplicationsServiceET.getNewVariationApp(userSession);
+  
+	}
 
-    public void onItemSelect(SelectEvent event) {
+	public void setProdapppList(List<ProdApplications> prodapppList) {
+		this.prodapppList = prodapppList;
+	}
+
+	public void onItemSelect(SelectEvent event) {
         if(event.getObject() instanceof ProdTable){
             prodTable = (ProdTable) event.getObject();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
@@ -91,6 +108,13 @@ public class ReRegListBean implements Serializable {
 
     public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
         this.prodApplicationsService = prodApplicationsService;
+    }
+    public ProdApplicationsServiceET getProdApplicationsServiceET() {
+        return prodApplicationsServiceET;
+    }
+
+    public void setProdApplicationsServiceET(ProdApplicationsServiceET prodApplicationsServiceET) {
+        this.prodApplicationsServiceET = prodApplicationsServiceET;
     }
 
     public UserSession getUserSession() {
