@@ -19,7 +19,7 @@
                         <p:ajax event="itemSelect" listener="#{reRegListBean.onItemSelect}" update="@form" process="@form"/>
                     </p:autoComplete>
                     <p:commandButton value="#{msgs.global_submit}"
-                                     action="#{reNewBean.startReregistration}"
+                                     action="#{reNewBean.startReregistration(reNewBean.renewType)}"
                                      ajax="false">
                         <f:param name="prodAppID" value="#{reRegListBean.prodTable.id}"/>
                     </p:commandButton>

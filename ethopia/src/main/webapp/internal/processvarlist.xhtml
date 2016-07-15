@@ -19,63 +19,94 @@
                         <p:ajax event="itemSelect" listener="#{reRegListBean.onItemSelect}" update="@form" process="@form"/>
                     </p:autoComplete>
                     <p:commandButton value="#{msgs.global_submit}"
-                                     action="#{reNewBean.startReregistration}"
+                                     action="#{reNewBean.startReregistration(reNewBean.variationType)}"
                                      ajax="false">
                         <f:param name="prodAppID" value="#{reRegListBean.prodTable.id}"/>
                     </p:commandButton>
                 </h:panelGrid>
             </p:panel>
-            <p:panel header="#{msgs.product_list}">
-                <p:dataTable id="applicantions" var="eachprod" value="#{reRegListBean.reRegAppList}">
-                    <p:column filterBy="#{eachprod.prodApplications.product.prodName}"
-                              sortBy="#{eachprod.prodApplications.product.prodName}">
+               <p:dataTable id="applicantions" var="eachprod" value="#{reRegListBean.prodapppList}"
+                         rendered="#{not empty prodAppMBean.savedAppList}">
+
+                <p:column headerText="Product Name">
+                    <p:commandLink value="#{eachprod.product.prodName}"
+                                   action="/secure/prodreghome.faces" ajax="false">
+                        <f:param value="#{eachprod.id}" name="prodAppID"/>
+                    </p:commandLink>
+                </p:column>
+
+                <p:column headerText="Generic Name">
+                    #{eachprod.product.genName}
+                </p:column>
+
+                <p:column headerText="Registration Status">
+                    #{msgs[eachprod.regState.key]}
+                </p:column>
+
+                <p:column headerText="#{msgs.prod_cat}">
+                    #{msgs[eachprod.product.prodCategory.key]}
+                </p:column>
+
+                <p:column headerText="#{msgs.applicant_name}">
+                    #{eachprod.applicant.appName}
+                </p:column>
+
+                <p:column headerText="Manufacturer Name">
+                    #{eachprod.product.manufName}
+                </p:column>
+            </p:dataTable>
+            
+       <!--  <p:panel header="#{msgs.product_list}">
+                <p:dataTable id="applicantions" var="eachprod" value="#{reRegListBean.prodapppList}">
+                    <p:column filterBy="#{eachprod.prodName}"
+                              sortBy="#{eachprod.prodName}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
-                        <p:commandLink id="viewLink" value="#{eachprod.prodApplications.product.prodName}"
-                                       action="/secure/prodrereg"
-                                       ajax="false"
-                        >
+                        <p:commandLink id="viewLink" value="#{eachprod.prodName}"
+                                      action="productdetail"
+                                   ajax="false">
+                     
                             <f:param name="ProcID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>
 
-                    <p:column filterBy="#{eachprod.prodApplications.product.genName}"
-                              sortBy="#{eachprod.prodApplications.product.genName}">
+                    <p:column filterBy="#{eachprod.genName}"
+                              sortBy="#{eachprod.genName}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prodgenname}"/>
                         </f:facet>
-                        <h:outputText value="#{eachprod.prodApplications.product.genName}"/>
+                        <h:outputText value="#{eachprod.genName}"/>
                     </p:column>
 
-                    <p:column filterBy="#{eachprod.created}"
-                              sortBy="#{eachprod.created}">
+                    <p:column filterBy="#{eachprod.regDate}"
+                              sortBy="#{eachprod.regDate}">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.global_createdate}"/>
                         </f:facet>
-                        <h:outputText value="#{eachprod.created}"/>
+                        <h:outputText value="#{eachprod.regDate}"/>
                     </p:column>
                     <p:column >
                         <f:facet name="header">
                             <h:outputText value="#{msgs.applicant}"/>
                         </f:facet>
-                        <h:outputText value="#{eachprod.prodApplications.applicant.appName}"/>
+                        <h:outputText value="#{eachprod.appName}"/>
                     </p:column>
                     <p:column >
                         <f:facet name="header">
                             <h:outputText value="#{msgs.manuf_name}"/>
                         </f:facet>
-                        <h:outputText value="#{eachprod.prodApplications.product.manufName}"/>
+                        <h:outputText value="#{eachprod.manufName}"/>
                     </p:column>
                     <p:column >
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prod_app_no}"/>
                         </f:facet>
-                        <h:outputText value="#{eachprod.prodApplications.prodAppNo}"/>
+                        <h:outputText value="#{eachprod.regNo}"/>
                     </p:column>
 
                 </p:dataTable>
-            </p:panel>
+            </p:panel>  -->
         </h:form>
     </ui:define>
 </ui:composition>
