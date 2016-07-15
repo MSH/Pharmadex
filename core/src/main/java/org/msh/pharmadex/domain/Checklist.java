@@ -46,6 +46,16 @@ public class Checklist extends CreationDetail implements Serializable {
 	public void setVariation(Boolean variation) {
 		this.variation = variation;
 	}
+	  @Column(name = "majVariation")
+	    private Boolean majVariation;
+
+	    public Boolean isMajVariation() {
+			return majVariation;
+		}
+
+		public void setMajVariation(Boolean variation) {
+			this.majVariation = variation;
+		}
 
 	public Long getId() {
         return id;
