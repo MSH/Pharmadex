@@ -149,7 +149,7 @@ public class ReviewDetailBn implements Serializable {
                     setPriReviewer(false);
                 }
             }
-            if(reviewDetail.getFile() != null)
+            if(reviewDetail.getFilename() != null)
             	varificationFileName(reviewDetail.getFilename());
         }
         return reviewDetail;
