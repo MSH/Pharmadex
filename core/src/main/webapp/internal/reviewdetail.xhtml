@@ -94,7 +94,7 @@
                 </h:panelGrid>
                 <h:panelGrid id="imgpnl" columns="2" columnClasses="label value" cellspacing="5px">
                     <p:outputLabel value="#{msgs.image}" rendered="#{reviewDetailBn.fileImg}"/>
-                    <p:graphicImage value="#{imageStreamer.image}" rendered="#{reviewDetailBn.fileImg}">
+                    <p:graphicImage value="#{imageStreamer.image}" rendered="#{reviewDetailBn.fileImg}" width="700">
                         <f:param name="imageId" value="#{reviewDetailBn.reviewDetail.id}"/>
                     </p:graphicImage>
                 </h:panelGrid>
