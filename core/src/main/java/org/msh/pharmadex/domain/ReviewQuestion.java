@@ -37,10 +37,33 @@ public class ReviewQuestion extends CreationDetail implements Serializable {
     @Lob
     @Column(name = "question")
     private String question;
+    
 
     private boolean sra;
 
+    @Column(name = "variation")
+    private Boolean variation;
+	
+    @Column(name = "majVariation")
+	private Boolean majVariation;
 
+
+    public Boolean isVariation() {
+		return variation;
+	}
+
+	public void setVariation(Boolean variation) {
+		this.variation = variation;
+	}
+
+	    public Boolean isMajVariation() {
+			return majVariation;
+		}
+
+		public void setMajVariation(Boolean variation) {
+			this.majVariation = variation;
+		}
+		
     public Long getId() {
         return id;
     }
