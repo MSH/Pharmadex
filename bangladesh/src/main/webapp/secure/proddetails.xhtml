@@ -1,0 +1,87 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
+    	<p:outputLabel value="#{msgs.dosRecDate}" for="dosrecdate" styleClass="fy-required-field"/>
+        <p:calendar value="#{prodRegAppMbean.prodApplications.dosRecDate}" id="dosrecdate" showOn="button"
+                pattern="#{userAccessMBean.workspace.datePattern}"
+                required="true" requiredMessage="#{msgs.dosRecDate}: #{msgs.valueReq}"/>
+         <p:message for="dosrecdate" showSummary="true" showDetail="false"/>
+                    
+        <p:outputLabel value="#{msgs.prod_app_type}" styleClass="fy-required-field"/>
+        <p:outputLabel value="#{msgs[prodRegAppMbean.prodApplications.prodAppType.key]}" styleClass="label"/>
+        <p:outputLabel/>
+
+        <p:outputLabel value="#{msgs.prod_cat}" for="prodCatcb" styleClass="fy-required-field"/>
+        <p:selectOneMenu id="prodCatcb" value="#{prodRegAppMbean.product.prodCategory}" required="true"
+                         requiredMessage="#{msgs.valid_prod_type}">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalLists.prodCategories}" var="prodcat" itemLabel="#{msgs[prodcat.key]}"/>
+        </p:selectOneMenu>
+        <p:message for="prodCatcb" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.prodName}" for="prodDetailName"/>
+        <p:inputTextarea id="prodDetailName" value="#{prodRegAppMbean.product.prodName}" title="Product Name"
+                     required="true" requiredMessage="#{msgs.valid_prod_name}" onblur="value=value.toUpperCase()"
+                     cols="100" rows="1">
+        </p:inputTextarea>
+        <p:message for="prodDetailName" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.prodgenname}" for="prodGenName"/>
+        <p:inputTextarea id="prodGenName" value="#{prodRegAppMbean.product.genName}" title="Generic Name"
+                     required="true" requiredMessage="#{msgs.valid_gen_name}" onblur="value=value.toUpperCase()"
+                     cols="100" rows="1"/>
+        <p:message for="prodGenName" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
+        <p:selectOneMenu id="dosForm" value="#{prodRegAppMbean.product.dosForm.uid}"
+                         requiredMessage="#{msgs.valid_dos_form}" required="true">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
+                           itemValue="#{dosForm.uid}"/>
+        </p:selectOneMenu>
+        <p:message for="dosForm" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
+        <p:selectOneMenu id="dosUnit" value="#{prodRegAppMbean.product.dosUnit.id}"
+                         requiredMessage="#{msgs.valid_dos_form}" required="true">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
+                           itemValue="#{dosUom.id}"/>
+        </p:selectOneMenu>
+        <p:message for="dosUnit" showSummary="true" showDetail="false"/>
+        
+        <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
+        <p:inputTextarea id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
+                     required="true" requiredMessage="#{msgs.dos_strength}: #{msgs.valueReq}"
+                     cols="100" rows="1">
+        </p:inputTextarea>
+        <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
+        <p:selectOneMenu id="adminroutecb" value="#{prodRegAppMbean.product.adminRoute.id}" required="true"
+                         requiredMessage="#{msgs.valid_value_req}">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalEntityLists.adminRoutes}" var="type" itemLabel="#{type.name}"
+                           itemValue="#{type.id}"/>
+        </p:selectOneMenu>
+        <p:message for="adminroutecb" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.age_group}" for="ageGroupcb"/>
+        <p:selectOneMenu id="ageGroupcb" value="#{prodRegAppMbean.product.ageGroup}" required="true"
+                         requiredMessage="#{msgs.valid_prod_type}">
+            <f:selectItem itemLabel="-" itemValue=""/>
+            <f:selectItems value="#{globalLists.ageGroupes}" var="ageGrp" itemLabel="#{msgs[ageGrp.key]}"/>
+        </p:selectOneMenu>
+        <p:message for="ageGroupcb" showSummary="true" showDetail="false"/>
+
+        <p:outputLabel value="#{msgs.prod_desc}" for="prodDesc"/>
+        <p:inputTextarea id="prodDesc" value="#{prodRegAppMbean.product.prodDesc}" rows="4" cols="100"
+                         title="ProdDesc" required="true" maxlength="1000"/>
+    </h:panelGrid>
+</ui:composition>

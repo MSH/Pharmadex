@@ -1,0 +1,24 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui">
+	<table width="100%">
+    	<tr>
+        	<td align="left">
+        		<p:commandButton value="#{msgs.global_cancel}" immediate="true" icon="ui-icon-extlink" 
+						 		 action="#{prodRegAppMbean.cancel}" ajax="false"/>
+			</td>
+			<td align="right" >
+        		<p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" icon="ui-icon-disk" 
+								 update=":reghome :reghome:growl" ajax="true"
+								 rendered="#{prodRegAppMbeanBN.visibleSave}"/>
+				<p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbean.validateApp}"
+                                 ajax="false"
+                                 rendered="#{prodRegAppMbeanBN.visibleSubmit}"/>
+			</td>
+        </tr>
+    </table>
+</ui:composition>

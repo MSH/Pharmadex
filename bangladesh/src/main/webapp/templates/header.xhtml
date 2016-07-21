@@ -18,16 +18,16 @@
 <div class="ui-widget ui-widget-header" style="height: 110px;">
     <h:form>
         <div id="logo">
-            <h:panelGrid columns="3" width="100%">
+            <h:panelGrid columns="2" width="100%">
                 <a href="${request.contextPath}/home.faces">
-                    <h:graphicImage name="images/headerbg1.jpg"/>
+                   <img src="${request.contextPath}/resources/images/headerbg1.jpg" />
                 </a>
-                <h:panelGrid columns="1" cellspacing="5">
-                </h:panelGrid>
+               <!--  <h:panelGrid columns="1" cellspacing="5">
+                </h:panelGrid> -->
 
                 <h:panelGroup styleClass="logoutWelcomeId">
                     <sec:isAuthenticated>
-                        <p:commandLink value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"></p:commandLink>
+                        <p:commandLink value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"/>
                         <p:commandLink action="#{userSession.editUser}" value="#{msgs.admin_settings} |"
                                        immediate="true"
                                        ajax="false">
@@ -35,19 +35,14 @@
                                                          target="#{registerUserMbean.user}"/>
                         </p:commandLink>
                         <p:commandLink action="#{userAuthHandler.logout}" value="#{msgs.admin_logout}" ajax="false"/>
-                        <!--                                <h:outputLink value="#{request.contextPath}/j_spring_security_logout">Logout</h:outputLink>
-                        -->                            </sec:isAuthenticated>
+                    </sec:isAuthenticated>
                     <sec:isAnonymous>
-                        <!--                                <h:outputLink value="#{request.contextPath}/pages/login1.faces" >Login</h:outputLink>
-                        -->
-
                         <h:panelGrid columns="1">
-                            <h:outputLink id="loginLink" value="javascript:void(0)"
-                                          onclick="PF('logindlg').show()"
-                                          title="login">
-                                <p:graphicImage value="/resources/images/log_in.png"/>
-                            </h:outputLink>
-                        </h:panelGrid>
+								<h:outputLink id="loginLink" value="javascript:void(0)"
+									onclick="PF('logindlg').show()" title="login">
+									<p:graphicImage value="/resources/images/log_in.png" />
+								</h:outputLink>
+							</h:panelGrid>
                     </sec:isAnonymous>
                 </h:panelGroup>
             </h:panelGrid>
