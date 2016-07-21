@@ -22,24 +22,11 @@ public class ProdAppMBeanMZ implements Serializable {
 
 	@ManagedProperty(value = "#{userSession}")
 	protected UserSession userSession;
-	 
-	//protected List<ProdApplications> prodApplicationsList;
-    //protected List<ProdApplications> submmittedAppList;
+	
+	protected List<ProdApplications> submmittedAppList;
     protected List<ProdApplications> processProdAppList;
     private List<ProdApplications> filteredApps;
-    
-   /* public List<ProdApplications> getProdApplicationsList() {
-        if (prodApplicationsList == null)
-            prodApplicationsList = prodApplicationsServiceMZ.getSubmittedApplications(userSession);
-        return prodApplicationsList;
-    }*/
 
-   /* public List<ProdApplications> getSubmmittedAppList() {
-        if (submmittedAppList == null)
-            submmittedAppList = prodApplicationsServiceMZ.getSubmittedApplications(userSession);
-        return submmittedAppList;
-    }*/
-    
     public List<ProdApplications> getProcessProdAppList() {
     	if(processProdAppList == null)
     		processProdAppList = prodApplicationsServiceMZ.getProcessProdAppList(userSession);
@@ -73,4 +60,14 @@ public class ProdAppMBeanMZ implements Serializable {
     public void setFilteredApps(List<ProdApplications> filteredApps) {
         this.filteredApps = filteredApps;
     }
+    
+    public List<ProdApplications> getSubmmittedAppList() {
+		if(submmittedAppList == null)
+			submmittedAppList = prodApplicationsServiceMZ.getSubmittedApplications(userSession);
+		return submmittedAppList;
+	}
+
+	public void setSubmmittedAppList(List<ProdApplications> submmittedAppList) {
+		this.submmittedAppList = submmittedAppList;
+	}
 }

@@ -19,8 +19,8 @@ ul.ui-menu-child {
 		<h:form>
 			<div id="logo">
 				<h:panelGrid columns="3" width="100%">
-					<a href="${request.contextPath}/home.faces"> <img
-						src="${request.contextPath}/resources/images/logo_mz.png" />
+					<a href="${request.contextPath}/home.faces"> 
+						<img src="${request.contextPath}/resources/images/logo_mz.png" />
 					</a>
 					<h:panelGrid columns="1" cellspacing="5">
 						<p:outputLabel value="REPÚBLICA DE MOÇAMBIQUE" styleClass="logo" />
@@ -31,16 +31,14 @@ ul.ui-menu-child {
 					</h:panelGrid>
 					<h:panelGroup styleClass="logoutWelcomeId">
 						<sec:isAuthenticated>
-							<p:commandLink
-								value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"></p:commandLink>
+							<p:commandLink value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"/>
 							<p:commandLink action="#{userSession.editUser}"
 								value="#{msgs.admin_settings} |" immediate="true" ajax="false">
 								<f:setPropertyActionListener
 									value="#{userSession.userAccess.user}"
 									target="#{registerUserMbean.user}" />
 							</p:commandLink>
-							<p:commandLink action="#{userAuthHandler.logout}"
-								value="#{msgs.admin_logout}" ajax="false" />
+							<p:commandLink action="#{userAuthHandler.logout}" value="#{msgs.admin_logout}" ajax="false" />
 						</sec:isAuthenticated>
 						<sec:isAnonymous>
 							<h:panelGrid columns="4">

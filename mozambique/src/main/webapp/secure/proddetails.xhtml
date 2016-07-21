@@ -84,16 +84,4 @@
         <p:inputTextarea id="prodDesc" value="#{prodRegAppMbean.product.prodDesc}" rows="4" cols="100"
                          title="ProdDesc" required="true" maxlength="1000"/>
     </h:panelGrid>
-
-    <div align="right">
-		<p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
-                         update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn"/>
-        <p:commandButton value="#{msgs.global_cancel}" immediate="true"
-                         action="#{prodRegAppMbean.cancel}"
-                         ajax="false"/>
-        <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"
-                         id="proddetailBackBtn"/>
-        <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="proddetailNxtBtn"/>
-    </div>
-
 </ui:composition>

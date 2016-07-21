@@ -5,6 +5,19 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
 
+	<h:panelGrid cellspacing="2" cellpadding="2" columns="4">
+        <p:commandButton value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"/>
+        <p:commandButton value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
+                         rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
+        </p:commandButton>
+        <p:commandButton value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp" icon="ui-icon-cancel"
+                         rendered="#{preScreenProdMBn.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
+        <p:commandButton value="#{msgs.global_print}" type="button" icon="ui-icon-print">
+            <p:printer target="checkListTbl"/>
+        </p:commandButton>
+    </h:panelGrid>
+    
     <h:panelGrid columns="2" columnClasses="label value" cellpadding="5" cellspacing="5">
         <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
         <p:outputLabel value="#{processProdBn.moderator.username}"/>

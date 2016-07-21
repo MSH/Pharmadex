@@ -125,6 +125,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.FEE);
+			regState.add(RegState.VERIFY);
 			regState.add(RegState.FOLLOW_UP);
 		}
 		if (userSession.isCompany()) {
@@ -386,6 +387,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.FEE);
+			regState.add(RegState.VERIFY);
 			regState.add(RegState.FOLLOW_UP);
 		}
 		if (userSession.isCompany()) {
