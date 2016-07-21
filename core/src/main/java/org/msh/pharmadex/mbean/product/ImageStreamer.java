@@ -31,12 +31,17 @@ public class ImageStreamer implements Serializable {
             // So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
             return new DefaultStreamedContent();
         } else {
+        	byte[] image = null;
             // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
-            String imageId = context.getExternalContext().getRequestParameterMap().get("imageId");
-            byte[] image = reviewService.findReviewDetailImage(Long.valueOf(imageId));
+            String revdetid = context.getExternalContext().getRequestParameterMap().get("revdetid");
+            if(revdetid != null){
+            	Long id = Long.valueOf(revdetid);
+            	if(id > 0)
+            		image = reviewService.findReviewDetailImage(id);
+            }
 
             if(image != null)
-            	return new DefaultStreamedContent(new ByteArrayInputStream(image));
+            	return new DefaultStreamedContent(new ByteArrayInputStream(image), "image/png");
             return new DefaultStreamedContent();
         }
     }

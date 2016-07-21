@@ -143,10 +143,14 @@ public class FileUploadController implements Serializable {
 		return download;
 	}
 
+	public boolean visibleCertDownload(ProdApplications prodApplications){
+		if(prodApplications != null && prodApplications.getRegCert() != null)
+			return true;
+		return false;
+	}
+	
 	public StreamedContent regCertDownload(ProdApplications prodApplications) throws SQLException, IOException, JRException {
-		// ProdApplications prodApplications = processProdBn.getProdApplications();
 		if(prodApplications != null){
-			//id = getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
 			if(prodApplications.getRegCert() != null){
 				InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 				Calendar c = Calendar.getInstance();

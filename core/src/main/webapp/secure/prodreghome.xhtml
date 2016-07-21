@@ -583,6 +583,7 @@
                             <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
                             <ui:param name="showfull" value="#{prodRegAppMbean.showfull}"/>
+                            <ui:param name="showexit" value="#{false}"/>
                         </ui:decorate>
 
                         <div align="right">
@@ -602,7 +603,7 @@
 
             </p:wizard>
 
-            <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
+            <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
                 :reghome:adddetailSaveBtn :reghome:adddetailBackBtn :reghome:adddetailNxtBtn :reghome:appStatusSaveBtn :reghome:appStatusBackBtn
                 :reghome:appStatusNxtBtn :reghome:manufSaveBtn :reghome:manufBackBtn :reghome:manufNextBtn :reghome:priceSaveBtn :reghome:priceBackBtn
                 :reghome:priceNxtBtn :reghome:sumSaveBtn

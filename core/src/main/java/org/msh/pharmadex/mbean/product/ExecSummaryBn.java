@@ -34,7 +34,6 @@ import java.util.ResourceBundle;
 @ViewScoped
 public class ExecSummaryBn implements Serializable {
 
-
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
@@ -214,5 +213,22 @@ public class ExecSummaryBn implements Serializable {
 
     public void setExecSummary(String execSummary) {
         this.execSummary = execSummary;
+    }
+    
+    /**
+     * If ReviewInfo contains two Review - show two names
+     * @param item
+     * @return
+     */
+    public String buildReviewerNames(ReviewInfo item){
+    	String names = "";
+    	if(item != null){
+    		if(item.getReviewer() != null){
+    			names = item.getReviewer().getName();
+    			if(item.getSecReviewer() != null)
+        			names += ", " + item.getSecReviewer().getName();
+    		}
+    	}
+    	return names;
     }
 }

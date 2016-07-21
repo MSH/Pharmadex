@@ -37,15 +37,9 @@
             <div style="height: 10px;"/>
 
             <ui:repeat value="#{execSummaryBn.reviewInfos}" var="each">
-                <p:fieldset legend="#{each.reviewer.name}" style="margin-bottom:20px">
+                <!-- <p:fieldset legend="#{each.reviewer.name}" style="margin-bottom:20px"> -->
+                <p:fieldset legend="#{execSummaryBn.buildReviewerNames(each)}" style="margin-bottom:20px">
                     <h:panelGrid columns="4" cellpadding="10" cellspacing="10">
-                        <!--                        <p:outputLabel value="#{msgs.recommendation}: "
-                                                               style="font-weight: bold;color: #a52a2a;"/>
-                                                <p:outputLabel value="#{msgs[each.recomendType.key]}"
-                                                               style="font-weight: bold;color: #a52a2a;"/>
-                                                <p:outputLabel/>
-                                                <p:outputLabel/>
-                        -->
                         <p:outputLabel value="#{msgs.checklist_module}:" styleClass="label"/>
                         <p:outputLabel value="#{each.ctdModule}"/>
 

@@ -449,7 +449,7 @@ public class ProdRegAppMbean implements Serializable {
 	}
 
 	//Used to initialize field values only for new applications. For saved applications the values are assigned in setprodapplications
-	private void initializeNewApp(String currentWizardStep) {
+	public void initializeNewApp(String currentWizardStep) {
 		if (currentWizardStep.equals("prodreg") && product.getId() == null) {
 		} else if (currentWizardStep.equals("proddetails")) {
 			//Only initialize once for new product applications. For saved application it is initialized in the setprodapplication method

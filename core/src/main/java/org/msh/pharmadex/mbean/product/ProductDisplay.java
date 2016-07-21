@@ -46,7 +46,6 @@ public class ProductDisplay implements Serializable {
     private List<ForeignAppStatus> foreignAppStatuses;
     private boolean showfull = false;
 
-
     @PostConstruct
     private void init() {
         try {

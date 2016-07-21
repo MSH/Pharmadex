@@ -63,31 +63,15 @@ public class ProcessAppBn implements Serializable {
 	@ManagedProperty(value = "#{applicantMBean}")
 	private ApplicantMBean applicantMBean;
 
-	//private User responsable;
-
-	/** Always alone */
-	//private List<User> responsableList;
-	//private List<User> users;
-	//private User selectedUser;
 
 	/** use in form applicant */
 	private List<User> usersByApplicant;
-	//private User selectResponsable;
-	//private User responsable;
-	//private User selectedUser;
 
 	/** new User - create only ADMINISTRATOR */
 	private User user;
 
 	private List<ProdApplications> prodApplicationses;
 	private List<ProdApplications> prodNotRegApplicationses;
-
-	/* @Transactional
-    public void replaceResponsableInApplicant() {
-        responsableList = new ArrayList<User>();
-        responsableList.add(responsable);
-        applicant.setContactName(responsable.getUsername());
-    }*/
 
 	@Transactional
 	public void addSelectUserInList() {
@@ -245,8 +229,8 @@ public class ProcessAppBn implements Serializable {
 	}
 
 	public String loadUsersByApplicant(){
-		if(applicant == null)
-			applicant = getApplicant();
+		//if(applicant == null)
+		//		applicant = getApplicant();
 		// init usersByApplicant list
 		if(applicant != null){
 			if(usersByApplicant == null){
@@ -273,14 +257,6 @@ public class ProcessAppBn implements Serializable {
 		return resp;
 	}
 
-	/*public void setSelectResponsable(User us){
-		this.selectResponsable = us;
-	}
-
-	public User getSelectResponsable(){
-		return this.selectResponsable;
-	}
-	 */
 	public void onRowSelect(SelectEvent event) {
 		User us = (User) event.getObject();
 		if(us != null && !us.isEnabled()){
@@ -294,12 +270,6 @@ public class ProcessAppBn implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
-	/*	public void onRowUnselect(UnselectEvent event) {
-		FacesMessage msg = new FacesMessage("Car Unselected", ((Applicant) event.getObject()).getAppName());
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}*/
-
-
 
 	/**
 	 * Add user from list users not relativs with applicant
@@ -310,14 +280,6 @@ public class ProcessAppBn implements Serializable {
 		List<User> list = userService.findUnregisteredUsers();
 		return list;
 	}
-
-	/*public User getResponsable() {
-		return responsable;
-	}
-
-	public void setResponsable(User user) {
-		this.responsable = user;
-	}*/
 
 	private void addUserInList(User us, List<User> list){
 		if(us != null && list != null){
@@ -419,21 +381,6 @@ public class ProcessAppBn implements Serializable {
 	public void setMailService(MailService mailService) {
 		this.mailService = mailService;
 	}
-
-	/*public User getSelectedUser(){
-		return selectedUser;
-	}
-
-	public void setSelectedUser(User u){
-		this.selectedUser = u;
-	}*/
-
-	/*public String userIsEnabled(User usRow){
-		if(usRow != null)
-			if(!usRow.isEnabled())
-				return "!";
-		return "";
-	}*/
 
 	public User getUser(){
 		return user;
