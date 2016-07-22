@@ -20,7 +20,8 @@ public enum RegState {
     NOT_RECOMMENDED,
     SUSPEND,
     CANCEL,
-    RENEWED;
+    RENEWED,
+    ARCHIVED;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());

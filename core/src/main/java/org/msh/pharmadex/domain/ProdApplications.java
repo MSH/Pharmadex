@@ -91,6 +91,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date regExpiryDate;
 
+    @Temporal(TemporalType.DATE)
+    private Date archivingDate;
+
     private boolean active;
 
     private boolean feeReceived;
@@ -183,17 +186,11 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @JoinColumn(name = "papp_ID", nullable = true)
     private ProdApplications parentApplication;
 
-    private ProdApplications parentApplication;
+    @Column(nullable = true, columnDefinition = "int default 0")
+    private int mjVarQnt = 0;
 
-    @Column(nullable = true)
-    private boolean isMajor;
-    
-    public boolean getIsMajor() {
-		return isMajor;
-	}
-    public void setIsMajor(boolean isMajor) {
-		this.isMajor = isMajor;
-	}
+    @Column(nullable = true, columnDefinition = "int default 0")
+    private int mnVarQnt = 0;
 
     public ProdApplications(Product prod, Applicant applicant) {
         this.product = prod;
@@ -643,6 +640,30 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public void setPriorityDate(Date priorityDate) {
         this.priorityDate = priorityDate;
+    }
+
+    public Date getArchivingDate() {
+        return archivingDate;
+    }
+
+    public void setArchivingDate(Date archivingDate) {
+        this.archivingDate = archivingDate;
+    }
+
+    public int getMjVarQnt() {
+        return mjVarQnt;
+    }
+
+    public void setMjVarQnt(int mjVarQnt) {
+        this.mjVarQnt = mjVarQnt;
+    }
+
+    public int getMnVarQnt() {
+        return mnVarQnt;
+    }
+
+    public void setMnVarQnt(int mnVarQnt) {
+        this.mnVarQnt = mnVarQnt;
     }
 }
 

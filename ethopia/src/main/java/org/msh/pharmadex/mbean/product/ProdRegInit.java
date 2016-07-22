@@ -270,7 +270,6 @@ public class ProdRegInit implements Serializable {
         paNew.setActive(false);
         paNew.setProdAppType(type);
         paNew.setRegState(RegState.SAVED);
-        paNew.setIsMajor(isMajor);
         Product p = new Product();
         Product pp = productDAO.findProductEager(parentProdId);
         p.setManufName(pp.getManufName());
