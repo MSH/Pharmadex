@@ -31,7 +31,7 @@ public class PreScreenProdMBnET extends PreScreenProdMBn {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         ProdApplications prodApplications = processProdBn.getProdApplications();
-
+        //prodApplicationsService.updateProdApp(prodApplications,getUserSession().getLoggedINUserID());
         if (!prodApplications.isPrescreenfeeReceived()) {
             facesContext.addMessage(null, new FacesMessage("Pre-screen fees not received"));
             return "";
@@ -40,4 +40,6 @@ public class PreScreenProdMBnET extends PreScreenProdMBn {
 
         return super.completeScreen();
     }
+
+
 }

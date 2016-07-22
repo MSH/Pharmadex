@@ -1,18 +1,11 @@
 package org.msh.pharmadex.mbean.product;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.gson.Gson;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
-import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.dao.iface.ReRegistrationDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.CompanyType;
@@ -20,13 +13,11 @@ import org.msh.pharmadex.domain.processes.ReRegistration;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
-import org.msh.pharmadex.utils.Scrooge;
+import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -35,11 +26,9 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-import java.util.ResourceBundle;
 
 /**
  * Created by Odissey on 16/06/2016.
@@ -115,7 +104,7 @@ public class ReRegBean implements Serializable{
     private void initNew(Long prodId){
         reApp = new ReRegistration();
         Date dt = Calendar.getInstance().getTime();
-        reApp = (ReRegistration) Scrooge.updateRecordInfo(reApp,curUser);
+       // reApp = (ReRegistration) Scrooge.updateRecordInfo(reApp,curUser);
         reApp.setSubmitDate(dt);
         reApp.setCreator(curUser);
         Product reg_product;

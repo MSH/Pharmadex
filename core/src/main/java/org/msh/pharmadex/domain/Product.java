@@ -75,7 +75,7 @@ public class Product extends CreationDetail implements Serializable {
     @NotAudited
     private List<ProdExcipient> excipients;
 
-    @ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "atc_id"))
     @NotAudited
     private List<Atc> atcs;
@@ -92,7 +92,7 @@ public class Product extends CreationDetail implements Serializable {
     @NotAudited
     private PharmClassif pharmClassif;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @NotAudited
     private List<ProdCompany> prodCompanies;
 

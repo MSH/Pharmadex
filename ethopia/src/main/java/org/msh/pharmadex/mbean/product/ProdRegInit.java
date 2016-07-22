@@ -6,13 +6,17 @@ package org.msh.pharmadex.mbean.product;
 
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AgentType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
-import org.msh.pharmadex.service.ChecklistService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.LicenseHolderService;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.Scrooge;
+import org.msh.pharmadex.utils.Tools;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -20,9 +24,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Backing bean to capture review of products
@@ -44,9 +48,18 @@ public class ProdRegInit implements Serializable {
     @ManagedProperty(value = "#{checklistService}")
     private ChecklistService checklistService;
 
+    @ManagedProperty(value = "#{productService}")
+    ProductService productService;
+
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    private ProdApplicationsService prodApplicationsService;
+
+    @ManagedProperty(value = "#{productDAO}")
+    private ProductDAO productDAO;
+
     private String[] selSRA;
     private boolean eml = false;
-    private boolean displayfeepanel;
+    private boolean displayfeepanel=false;
     private String fee;
     private String prescreenfee;
     private String totalfee;
@@ -55,9 +68,15 @@ public class ProdRegInit implements Serializable {
     private FacesContext context;
     private boolean eligible;
     private List<Checklist> checklists;
-
     private LicenseHolder selLicHolder;
     private List<LicenseHolder> licenseHolders;
+    private boolean showProductChoice;
+    private boolean showVariationType;
+    private ProdTable prodTable;
+    private int minorQuantity=0;
+    private int majorQuantity=0;
+    private java.util.ResourceBundle bundle;
+    private User curUser;
 
     @PostConstruct
     public void init() {
@@ -69,30 +88,99 @@ public class ProdRegInit implements Serializable {
         prodAppTypes.add(ProdAppType.GENERIC);
         prodAppTypes.add(ProdAppType.GENERIC_NO_BE);
         prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
+        prodAppTypes.add(ProdAppType.RENEW);
+        prodAppTypes.add(ProdAppType.VARIATION);
+
+        prodTable = null;
+        curUser = getUserSession().getUserService().findUser(userSession.getLoggedINUserID());
     }
+
 
     public List<LicenseHolder> completeLicHolderList(String query) {
         return JsfUtils.completeSuggestions(query, licenseHolders);
     }
 
-    public void calculate() {
+    /**
+     * sums minor and major validation fees (depence of number of changes)
+     */
+    private void addFee() {
+        Integer numFee = 0;
+        Integer numPreScrFee = 0;
+        if (majorQuantity > 0){
+            calculate("VARIATION_MAJOR");
+            if (!("".equals(fee) || "0".equals(fee))) {
+                numFee = Tools.currencyToInt(fee) * majorQuantity;
+            }
+            if (!("".equals(prescreenfee) || "0".equals(prescreenfee))) {
+                numPreScrFee = Tools.currencyToInt(prescreenfee) * majorQuantity;
+            }
+        }
+        if (minorQuantity > 0){
+            calculate("VARIATION_MINOR");
+            if (!("".equals(fee) || "0".equals(fee))) {
+                Integer numFee2 = Tools.currencyToInt(fee) * minorQuantity;
+                numFee = numFee + numFee2;
+            }
+            if (!("".equals(fee) || "0".equals(fee))) {
+                Integer numPreScrFee2 = Tools.currencyToInt(prescreenfee) * minorQuantity;
+                numPreScrFee = numPreScrFee2 + numPreScrFee;
+            }
+        }
+        if ((numFee+numPreScrFee)>0){
+            fee = String.valueOf(numFee.intValue());
+            prescreenfee = String.valueOf(numPreScrFee.intValue());
+            Integer total = numFee + numPreScrFee;
+            totalfee = String.valueOf(total.intValue());
+        }
+    }
+
+    public void calculate(String prodAppTypeName) {
+        totalfee="0"; fee="0";prescreenfee="0";
+        for (FeeSchedule feeSchedule : globalEntityLists.getFeeSchedules()) {
+            if (feeSchedule.getAppType().equals(prodAppTypeName)) {
+                totalfee = feeSchedule.getTotalFee();
+                fee = feeSchedule.getFee();
+                prescreenfee = feeSchedule.getPreScreenFee();
+                break;
+            }
+        }
+    }
+
+    public void checkAndCalculate() {
         context = FacesContext.getCurrentInstance();
         if (prodAppType==null) {
             context.addMessage(null, new FacesMessage("prodapptype_null"));
             displayfeepanel = false;
-        } else {
-            for (FeeSchedule feeSchedule : globalEntityLists.getFeeSchedules()) {
-                if (feeSchedule.getAppType().equals(prodAppType.name())) {
-                    totalfee = feeSchedule.getTotalFee();
-                    fee = feeSchedule.getFee();
-                    prescreenfee = feeSchedule.getPreScreenFee();
-                    break;
-                }
+            return;
+        } else if (prodAppType==ProdAppType.RENEW){
+            if (this.prodTable==null) {
+                String errString = getBundle().getString("variationProductRequired");
+                context.addMessage(null, new FacesMessage(errString));
+                displayfeepanel = false;
+                return;
             }
-            populateChecklist();
-            displayfeepanel = true;
+        } else if (prodAppType==ProdAppType.VARIATION) {
+            if (this.prodTable==null) {
+                String errString = getBundle().getString("variationProductRequired");
+                context.addMessage(null, new FacesMessage(errString));
+                displayfeepanel = false;
+                return;
+            }
+            if ((getMajorQuantity()==0) && (minorQuantity==0)){
+                String errString = getBundle().getString("variationQuantityNotBeNull");
+                context.addMessage(null, new FacesMessage(errString));
+                displayfeepanel = false;
+                return;
+            }else{
+                addFee();
+                populateChecklist();
+                displayfeepanel = true;
+                return;
+            }
         }
-
+        calculate(prodAppType.name());
+        populateChecklist();
+        displayfeepanel = true;
     }
 
     public void populateChecklist() {
@@ -107,8 +195,8 @@ public class ProdRegInit implements Serializable {
     }
 
     public String regApp() {
-        calculate();
-
+        checkAndCalculate();
+        if (!displayfeepanel) return "";
         ProdAppInit prodAppInit = new ProdAppInit();
         prodAppInit.setEml(eml);
         prodAppInit.setProdAppType(prodAppType);
@@ -125,7 +213,17 @@ public class ProdRegInit implements Serializable {
                     if (agentInfo.getAgentType().equals(AgentType.FIRST)) {
                         if (agentInfo.getApplicant() != null && agentInfo.getApplicant().getUsers() != null && agentInfo.getApplicant().getUsers().size() > 0) {
                             userSession.setProdAppInit(prodAppInit);
-                            return "/secure/prodreghome";
+                            if (prodAppType==ProdAppType.RENEW){
+                                Long prodAppId = prodTable.getProdAppID();
+                                return startReregVar(ProdAppType.RENEW,prodAppId,false);
+                            }else if (prodAppType==ProdAppType.VARIATION){
+                                Long prodAppId = prodTable.getProdAppID();
+                                boolean isMajor = false;
+                                if (this.majorQuantity>0)
+                                    isMajor = true;
+                                return startReregVar(ProdAppType.VARIATION,prodAppId,isMajor);
+                            }else
+                                return "/secure/prodreghome";
                         } else {
                             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                     "No User associated with the local agent representing " + selLicHolder.getName(),
@@ -149,6 +247,132 @@ public class ProdRegInit implements Serializable {
 
     }
 
+
+    public String startReregVar(ProdAppType newtype, Long parentAppId, boolean isMajor){
+        //create copy of inital application and product
+        ProdApplications prodAppRenew = new ProdApplications();
+        ProdApplications prodApp = prodApplicationsService.findProdApplications(parentAppId);
+        prodAppRenew=clone(prodApp,newtype,false);
+        prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
+
+        Long prodAppId = prodAppRenew.getId();
+        context.getExternalContext().getFlash().put("prodAppID",prodAppId);
+        context.getExternalContext().getFlash().put("parentAppId",parentAppId);
+        return "/secure/prodreghome.xhtml";
+    }
+
+    private ProdApplications clone(ProdApplications src, ProdAppType type, boolean isMajor) {
+        ProdApplications paNew = new ProdApplications();
+        paNew.setDosRecDate(src.getDosRecDate());
+        Long parentProdId = src.getProduct().getId();
+        Scrooge.copyData(src, paNew);
+        paNew.setId((long) 0);
+        paNew.setActive(false);
+        paNew.setProdAppType(type);
+        paNew.setRegState(RegState.SAVED);
+        paNew.setIsMajor(isMajor);
+        Product p = new Product();
+        Product pp = productDAO.findProductEager(parentProdId);
+        p.setManufName(pp.getManufName());
+        p.setDosUnit(pp.getDosUnit());
+        p.setAdminRoute(pp.getAdminRoute());
+        p.setAgeGroup(pp.getAgeGroup());
+        p.setContType(pp.getContType());
+        p.setDosForm(pp.getDosForm());
+        p.setDosStrength(pp.getDosStrength());
+        p.setApprvdName(null);
+        p.setDrugType(pp.getDrugType());
+        p.setGenName(pp.getGenName());
+        p.setIndications(pp.getIndications());
+        p.setNewChemicalEntity(false);
+        p.setNewChemicalName(null);
+        p.setPackSize(pp.getPackSize());
+        p.setPharmacopeiaStds(pp.getPharmacopeiaStds());
+        p.setPharmClassif(pp.getPharmClassif());
+        p.setDrugType(pp.getDrugType());
+        p.setFnm(pp.getFnm());
+        p.setIngrdStatment(pp.getIngrdStatment());
+        p.setPosology(pp.getPosology());
+        p.setProdCategory(pp.getProdCategory());
+        p.setProdDesc(pp.getProdDesc());
+        p.setProdName(pp.getProdName());
+        p.setProdType(pp.getProdType());
+        p.setShelfLife(pp.getShelfLife());
+        p.setStorageCndtn(pp.getStorageCndtn());
+        p.setUseCategories(pp.getUseCategories());
+        paNew.setProduct(p);
+
+        List<Atc> atcs = pp.getAtcs();
+        List<Atc> atcsNew = null;
+        if (atcs != null && atcs.size() > 0){
+            atcsNew = new ArrayList<Atc>();
+            for (int i = 0; i < atcs.size(); i++) {
+                Atc atc = new Atc();
+                Atc exist = atcs.get(i);
+                Scrooge.copyData(exist, atc);
+                atcsNew.add(atc);
+            }
+        }
+        p.setAtcs(atcsNew);
+
+        List<ProdCompany> cmpns = pp.getProdCompanies();
+        List<ProdCompany> cmpnsNew=null;
+        if (cmpns!=null&&cmpns.size()>0){
+            cmpnsNew = new ArrayList<ProdCompany>();
+            for(int i=0;i<cmpns.size();i++){
+                ProdCompany company = new ProdCompany();
+                Scrooge.copyData(cmpns.get(i),company);
+                company.setProduct(p);
+                cmpnsNew.add(company);
+            }
+        }
+        p.setProdCompanies(cmpnsNew);
+
+        List<ProdExcipient> excs = pp.getExcipients();
+        List<ProdExcipient> excsNew=new ArrayList<ProdExcipient>();
+        if (excs!=null&&excs.size()>0){
+            for(int i=0;i<excs.size();i++){
+                ProdExcipient exc = excs.get(i);
+                ProdExcipient excNew = new ProdExcipient();
+                Scrooge.copyData(exc,excNew);
+                excNew.setProduct(p);
+                excNew.setId(null);
+                excsNew.add(excNew);
+            }
+        }
+        p.setExcipients(excs);
+
+        List<ProdInn> inns = pp.getInns();
+        List<ProdInn> innsNew=new ArrayList<ProdInn>();
+        if (inns!=null&&inns.size()>0) {
+            for(int i=0; i<inns.size();i++){
+                ProdInn inn = inns.get(i);
+                ProdInn innNew = new ProdInn();
+                Scrooge.copyData(inn,innNew);
+                innNew.setId(null);
+                innNew.setProduct(p);
+                innsNew.add(innNew);
+            }
+        }
+        p.setInns(innsNew);
+
+        return paNew;
+    }
+
+    private Long getParam(String parameter){
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        String prodAppId=null;
+        if (facesContext.getExternalContext().getFlash()!=null)
+            prodAppId = (String) facesContext.getExternalContext().getFlash().get(parameter);
+        if (prodAppId==null){
+            if (facesContext.getExternalContext().getRequestParameterMap()!=null)
+                prodAppId = facesContext.getExternalContext().getRequestParameterMap().get(parameter);
+        }
+        if (prodAppId!=null){
+            return Long.parseLong(prodAppId);
+        }
+        return null;
+    }
 
     public UserSession getUserSession() {
         return userSession;
@@ -224,6 +448,33 @@ public class ProdRegInit implements Serializable {
         return eligible;
     }
 
+    public void ajaxListener(AjaxBehaviorEvent event){
+        isShowProductChoice();
+        isShowVariationType();
+        displayfeepanel=false;
+        RequestContext.getCurrentInstance().update("reghome");
+    }
+
+    public List<ProdTable> completeProduct(String query) {
+        List<ProdTable> suggestions = new ArrayList<ProdTable>();
+        List<ProdTable> prods = productService.findAllRegisteredProduct();
+        for (ProdTable p : prods) {
+            if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
+                    || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
+                suggestions.add(p);
+        }
+        return suggestions;
+    }
+
+    public void onItemSelect(SelectEvent event) {
+        if(event.getObject() instanceof ProdTable){
+            ProdTable prodTableCh = (ProdTable) event.getObject();
+            setProdTable(prodTableCh);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
+//            ajaxListener(event);
+        }
+    }
+
     public void setEligible(boolean eligible) {
         this.eligible = eligible;
     }
@@ -283,4 +534,106 @@ public class ProdRegInit implements Serializable {
     public void setProdAppTypes(List<ProdAppType> prodAppTypes) {
         this.prodAppTypes = prodAppTypes;
     }
+
+    public List<LicenseHolder> getLicenseHolders() {
+        return licenseHolders;
+    }
+
+    public void setLicenseHolders(List<LicenseHolder> licenseHolders) {
+        this.licenseHolders = licenseHolders;
+    }
+
+    public boolean isShowProductChoice() {
+        //showProductChoice = true;
+        showProductChoice = (prodAppType==ProdAppType.VARIATION) || (prodAppType==ProdAppType.RENEW);
+        return showProductChoice;
+    }
+
+    public void setShowProductChoice(boolean showProductChoice) {
+        this.showProductChoice = showProductChoice;
+    }
+
+    public boolean isShowVariationType() {
+        showVariationType = (prodAppType==ProdAppType.VARIATION);
+        return showVariationType;
+    }
+
+    public void setShowVariationType(boolean showVariationType) {
+        this.showVariationType = showVariationType;
+    }
+
+    public ProdTable getProdTable() {
+        return prodTable;
+    }
+
+    public void setProdTable(ProdTable prodTable) {
+        this.prodTable = prodTable;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public int getMinorQuantity() {
+        return minorQuantity;
+    }
+
+    public void setMinorQuantity(int minorQuantity) {
+        this.minorQuantity = minorQuantity;
+    }
+
+    public int getMajorQuantity() {
+        return majorQuantity;
+    }
+
+    public void setMajorQuantity(int majorQuantity) {
+        this.majorQuantity = majorQuantity;
+    }
+
+    public java.util.ResourceBundle getBundle() {
+        if (bundle!=null) return bundle;
+        bundle = context.getApplication().getResourceBundle(context, "msgs");
+        return bundle;
+    }
+
+    public void setBundle(java.util.ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public ProductDAO getProductDAO() {
+        return productDAO;
+    }
+
+    public void setProductDAO(ProductDAO productDAO) {
+        this.productDAO = productDAO;
+    }
+
+    public FacesContext getContext() {
+        return context;
+    }
+
+    public void setContext(FacesContext context) {
+        this.context = context;
+    }
+
+    public User getCurUser() {
+        return curUser;
+    }
+
+    public void setCurUser(User curUser) {
+        this.curUser = curUser;
+    }
+
 }

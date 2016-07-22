@@ -32,20 +32,48 @@
                         <f:selectItem itemLabel="-" itemValue=""/>
                         <f:selectItems value="#{prodRegInit.prodAppTypes}" var="prodcat"
                                        itemLabel="#{msgs[prodcat.key]}"/>
+                        <f:ajax listener="#{prodRegInit.ajaxListener}"/>
                     </p:selectOneMenu>
                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
 
-                    <h:outputLabel value="#{msgs.license_holder}" for="licname"/>
+                    <p:outputLabel value="#{msgs.license_holder}" for="licname"/>
                     <p:autoComplete id="licname" value="#{prodRegInit.selLicHolder}" required="true"
                                     requiredMessage="#{msgs.lic_holder_required}"
                                     completeMethod="#{prodRegInit.completeLicHolderList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
-                                    converter="#{licHolderConverter}" rendered="#{empty prodRegInit.selLicHolder}">
+                                    converter="#{licHolderConverter}"
+                                    rendered="#{empty prodRegInit.selLicHolder}">
                     </p:autoComplete>
-                    <h:outputLabel value="#{prodRegInit.selLicHolder.name}" style="font-weight: bold"
+                    <p:outputLabel value="#{prodRegInit.selLicHolder.name}" style="font-weight: bold"
                                    rendered="#{!empty prodRegInit.selLicHolder}"/>
                     <p:message for="licname" showSummary="true" showDetail="false"/>
 
+                    <p:outputLabel value="#{msgs.variationQuantityMj}" styleClass="fy-required-field"
+                                   for="majorQuantity"
+                                   rendered="#{prodRegInit.showVariationType}"/>
+                    <p:inputText id="majorQuantity" value="#{prodRegInit.majorQuantity}" rendered="#{prodRegInit.showVariationType}"/>
+                    <p:message for="majorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
+
+                    <p:outputLabel value="#{msgs.variationQuantityMn}" styleClass="fy-required-field"
+                                   for="minorQuantity"
+                                   rendered="#{prodRegInit.showVariationType}"/>
+                    <p:inputText id="minorQuantity" value="#{prodRegInit.minorQuantity}" rendered="#{prodRegInit.showVariationType}"/>
+                    <p:message for="minorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
+
+                    <h:outputLabel value="#{msgs.search_prod}*: "
+                                   rendered="#{prodRegInit.showProductChoice}"
+                                   for="prodTb"
+                                   styleClass="fy-required-field"/>
+                    <p:autoComplete value="#{prodRegInit.prodTable}" id="prodTb"
+                                    completeMethod="#{prodRegInit.completeProduct}"
+                                    rendered="#{prodRegInit.showProductChoice}"
+                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                    converter="#{productConverter}" forceSelection="true">
+
+                    </p:autoComplete>
+                    <p:message for="prodTb" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
+
+                    <p:outputLabel/>
                     <p:outputLabel
                             value="#{msgs.sra_msg}"/>
                     <h:panelGroup>
@@ -94,10 +122,13 @@
 
                 <div style="height:10px"/>
 
-                <p:commandButton value="#{msgs.calculate_fee}" action="#{prodRegInit.calculate}"
-                                 update=":reghome" process="@form"/>
+                <p:commandButton value="#{msgs.calculate_fee}" action="#{prodRegInit.checkAndCalculate}"
+                                 update=":reghome" process="@form">
+                    <f:param name="prodAppID" value="#{prodRegInit.prodTable.id}"/>
+                </p:commandButton>
                 <p:commandButton action="#{prodRegInit.regApp}" ajax="false"
-                                 value="Product Registration Application" rendered="#{prodRegInit.eligible}"/>
+                                 value="Product Registration Application"
+                                 rendered="#{prodRegInit.eligible}"/>
             </p:panel>
 
             <div style="height:10px"/>

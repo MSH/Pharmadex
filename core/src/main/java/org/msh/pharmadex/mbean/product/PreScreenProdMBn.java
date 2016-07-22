@@ -8,6 +8,7 @@ import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdAppChecklistService;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
@@ -46,6 +47,10 @@ public class PreScreenProdMBn implements Serializable {
     private UserSession userSession;
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
+    @ManagedProperty(value="#{prodApplicationsService}")
+    ProdApplicationsService prodApplicationsService;
+
+
     private TimeLine timeLine = new TimeLine();
     private User moderator;
     private List<ProdAppChecklist> prodAppChecklists;
@@ -56,13 +61,6 @@ public class PreScreenProdMBn implements Serializable {
     public String completeScreen() {
         facesContext = FacesContext.getCurrentInstance();
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-
-//        RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
-//        if (!retObject.getMsg().equals("persist")) {
-//            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString(retObject.getMsg())));
-//            return null;
-//        }
-
         RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
         prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
         if (!retObject.getMsg().equals("persist")) {
@@ -72,8 +70,8 @@ public class PreScreenProdMBn implements Serializable {
 
         ProdApplications prodApplications = processProdBn.getProdApplications();
         prodApplications.setModerator(moderator);
+        prodApplicationsService.updateProdApp(prodApplications,userSession.getLoggedINUserID());
 
-//        prodApplications.setProdAppChecklists(prodAppChecklists);
         if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)
                 || prodApplications.getRegState().equals(RegState.VERIFY)) {
             timeLine = new TimeLine();
@@ -301,4 +299,13 @@ public class PreScreenProdMBn implements Serializable {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
+
+    public ProdApplicationsService getProdApplicationsService() {
+        return prodApplicationsService;
+    }
+
+    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+        this.prodApplicationsService = prodApplicationsService;
+    }
+
 }

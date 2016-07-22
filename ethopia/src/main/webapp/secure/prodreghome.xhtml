@@ -31,6 +31,11 @@
                     </ui:decorate>
 
                     <div align="right">
+                        <p:commandButton value="#{msgs.prev_applications}"
+                                         rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                         onclick="PF('parentAppDlg').show();">
+                            <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+                        </p:commandButton>
                         <p:commandButton value="#{msgs.global_cancel}" immediate="true"
                                          action="#{prodRegAppMbean.cancel}"
                                          ajax="false"/>
@@ -39,13 +44,11 @@
 
                 </p:tab>
 
-
                 <p:tab id="proddetails" title="#{msgs.product_details}">
                     <p:panel header="#{msgs.product_details}">
                         <ui:include src="proddetails.xhtml"/>
                     </p:panel>
                 </p:tab>
-
 
                 <p:tab id="appdetails" title="#{msgs.application_detail}">
                     <p:panel header="#{msgs.application_detail}" id="appDetailPnl">
@@ -247,12 +250,11 @@
                         </p:blockUI>
 
                         <div align="right">
-                            <p:commandButton value="prod app"
-                                             onclick="PF('parentAppDlg').show();"
-                                             >
+                            <p:commandButton value="#{msgs.prev_applications}"
+                                             rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                             onclick="PF('parentAppDlg').show();">
                                 <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
                             </p:commandButton>
-
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}"
                                              update=":reghome :reghome:growl" ajax="true" id="adddetailSaveBtn"
                                              rendered="false"/>
@@ -332,6 +334,11 @@
 
 
                         <div align="right">
+                            <p:commandButton value="#{msgs.prev_applications}"
+                                             rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                             onclick="PF('parentAppDlg').show();">
+                                <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+                            </p:commandButton>
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
                                              update=":reghome" id="appStatusSaveBtn"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
@@ -343,7 +350,6 @@
                     </p:panel>
 
                 </p:tab>
-
 
                 <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
                     <p:panel header="#{msgs.manufacturer_detail}" id="manufPnl">
@@ -397,7 +403,11 @@
 
 
                         <div align="right">
-                            <p:commandButton value="Previous" > act</p:commandButton>
+                            <p:commandButton value="#{msgs.prev_applications}"
+                                             rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                             onclick="PF('parentAppDlg').show();">
+                                <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+                            </p:commandButton>
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
                                              update=":reghome" id="manufSaveBtn"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
@@ -407,10 +417,9 @@
                             <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="manufNextBtn"/>
                         </div>
                     </p:panel>
-
                 </p:tab>
 
-                <p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.displayPricing}">
+                <p:tab id="pricing" title="#{msgs.product_pricing}" rendered="false">
                     <p:panel header="#{msgs.product_pricing_general}" id="pricingPnl">
                         <p:messages/>
 
@@ -495,6 +504,11 @@
                         </ui:decorate>
 
                         <div align="right">
+                            <p:commandButton value="#{msgs.prev_applications}"
+                                             rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                             onclick="PF('parentAppDlg').show();">
+                                <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+                            </p:commandButton>
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
                                              update=":reghome" id="paySaveBtn"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
@@ -552,6 +566,11 @@
                         </h:panelGrid>
 
                         <div align="right">
+                            <p:commandButton value="#{msgs.prev_applications}"
+                                             rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                             onclick="PF('parentAppDlg').show();">
+                                <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+                            </p:commandButton>
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
                                              update=":reghome" id="attachSaveBtn"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
@@ -572,6 +591,11 @@
 
 
                         <div align="right">
+                            <p:commandButton value="#{msgs.prev_applications}"
+                                             rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                             onclick="PF('parentAppDlg').show();">
+                                <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+                            </p:commandButton>
                             <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="true"
                                              update=":reghome" id="chkSaveBtn"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
@@ -594,6 +618,11 @@
                         </ui:decorate>
 
                         <div align="right">
+                            <p:commandButton value="#{msgs.prev_applications}"
+                                             rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                                             onclick="PF('parentAppDlg').show();">
+                                <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+                            </p:commandButton>
                             <p:commandButton value="#{msgs.global_save}" ajax="true" update=":reghome"
                                              action="#{prodRegAppMbean.saveApp}" id="sumSaveBtn"/>
                             <p:commandButton value="#{msgs.global_cancel}" immediate="true"
@@ -603,11 +632,8 @@
                             <p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbean.validateApp}"
                                              ajax="false"/>
                         </div>
-
                     </p:panel>
                 </p:tab>
-
-
             </p:wizard>
 
             <p:blockUI block="wizardPnl" trigger=":reghome:prodregSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
@@ -638,12 +664,18 @@
             </p:dialog>
         </h:form>
 
-        <p:dialog header="" widgetVar="parentAppDlg" id="parentAppdlg" resizable="true" modal="true" dynamic="true">
+        <p:dialog widgetVar="parentAppDlg" id="parentAppdlg" resizable="true" modal="true" dynamic="true"
+                  >
             <h:form id ="parentAppForm">
-                <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                    <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
-                    <ui:param name="showfull" value="true"/>
-                </ui:decorate>
+                <p:panel>
+                    <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                        <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
+                        <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
+                        <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
+                        <ui:param name="dialogMode" value="true"/>
+                        <ui:param name="showfull" value="true"/>
+                    </ui:decorate>
+                </p:panel>
             </h:form>
         </p:dialog>
 
@@ -786,33 +818,6 @@
             </h:form>
         </p:dialog>
 
-        <!--
-        <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
-            <h:form id="event">
-                <h:panelGrid id="eventDetails" columns="2">
-
-                    <h:outputLabel for="from" value="From:"/>
-                    <p:inputMask id="from" value="#{prodRegAppMbean.event.startDate}" mask="99/99/9999">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </p:inputMask>
-
-                    <h:outputLabel for="to" value="To:"/>
-                    <p:inputMask id="to" value="#{prodRegAppMbean.event.endDate}" mask="99/99/9999">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </p:inputMask>
-
-                    <h:outputLabel for="allDay" value="All Day:"/>
-                    <h:selectBooleanCheckbox id="allDay" value="#{prodRegAppMbean.event.allDay}"/>
-
-                    <p:commandButton type="reset" value="Reset"/>
-                    <p:commandButton value="Save" actionListener="#{prodRegAppMbean.addEvent}"
-                                     oncomplete="reghome:myschedule.update(); event:eventDialog.hide();"/>
-                </h:panelGrid>
-            </h:form>
-        </p:dialog>
-
-        -->
-
         <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="true"
                   modal="true" dynamic="true">
             <h:form id="addcompany">
@@ -894,7 +899,6 @@
             </h:form>
         </p:dialog>
 
-
         <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg"
                   resizable="true" dynamic="true"
                   modal="true">
@@ -970,7 +974,7 @@
         }
 
         function expandAccPnl(){
-            $('#accordian').find('a[tabIndex=-1]:first').click();
+            $('#accordian').find('a[tabIndex=tabIndex-1]:first').click();
         }
     </script>
 </ui:composition>

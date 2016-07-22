@@ -6,7 +6,7 @@ import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.FastTrackMedService;
 import org.msh.pharmadex.service.LicenseHolderService;
 import org.msh.pharmadex.util.RetObject;
-import org.msh.pharmadex.utils.Scrooge;
+import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.FlowEvent;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +51,7 @@ public class ProdRegAppMbeanET implements Serializable {
     private DosUom dosUom;
     private Long parentAppId;
     private String backTo;
-    private String currentTab;
+    private String currentTab="prodreg";
 
     @PostConstruct
     private void init() {
@@ -245,7 +245,7 @@ public class ProdRegAppMbeanET implements Serializable {
         if (currentTab!=null)
             return currentTab;
         else
-            return "prodreg";
+            return "proddetails";
     }
 
     public void setCurrentTab(String currentTab) {

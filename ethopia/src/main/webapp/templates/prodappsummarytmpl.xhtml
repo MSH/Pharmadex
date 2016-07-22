@@ -4,27 +4,33 @@
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
 
     <div align="right">
-        <p:panel id="buttons" align="right">
-            <p:commandButton value="#{msgs.global_print}" type="button" icon="ui-icon-print">
+        <p:panel id="buttons" align="right" >
+            <p:commandButton value="#{msgs.global_print}" type="button" icon="ui-icon-print" rendered="#{empty dialogMode}">
                 <p:printer target="prodsummaccpnl"/>
             </p:commandButton>
             <h:outputLabel value=" "/>
             <p:commandButton id="regdownload" value="#{msgs.reg_cert}"
-                             rendered="#{userSession.head}"
+                             rendered="#{userSession.head and empty dialogMode}"
                              icon="ui-icon-arrowthichk-n">
                 <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
             </p:commandButton>
             <h:outputLabel value=" "/>
             <p:commandButton id="showregdetails" value="#{msgs.Global_details}"
                              action="/internal/processreg"
-                             rendered="#{showfull||userSession.inspector}"
+                             rendered="#{(showfull||userSession.inspector) and empty dialogMode}"
                              icon="ui-icon-arrowthichk-n">
                 <f:param name="prodAppID" value="#{prodAppData.id}"/>
             </p:commandButton>
+            <p:commandButton id="closeDialog" value="#{msgs.global_close}"
+                             rendered="#{dialogMode}"
+                             oncomplete="PF('parentAppDlg').hide()"
+            />
         </p:panel>
     </div>
 
-    <p:accordionPanel value="Product Information" activeIndex="0,1,2,3,4,5,6,7,8,9,10" multiple="true" id="prodsummaccpnl">
+    <p:accordionPanel value="Product Information" activeIndex="0,1,2,3,4,5,6,7,8,9,10"
+                      multiple="true" id="prodsummaccpnl" dynamic="true"
+                      style="margin-top:0" scrollable="true">
         <p:tab title="#{msgs.applicant_detail}"
                rendered="#{showfull}">
             <ui:decorate template="/templates/applicantdetailtmpl.xhtml">

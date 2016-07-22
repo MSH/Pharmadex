@@ -78,6 +78,16 @@ public class ProductDAO implements Serializable {
 
     }
 
+    @Transactional
+    public int removeProduct(Product product){
+        if (product==null) return 0;
+        if (product.getId()==null) return 0;
+        Long id = product.getId();
+        int deleted = entityManager.createQuery("select p from Product p where p.id = :prodId")
+                .setParameter("prodId", id)
+                .executeUpdate();
+        return deleted;
+    }
     /**
      * In DB Bangladesh in table prodApplications no field 'active'
      * @return
@@ -207,5 +217,6 @@ public class ProductDAO implements Serializable {
 
         return count.intValue();
     }
+
 }
 

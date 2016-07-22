@@ -334,6 +334,7 @@ public class ProcessProdBn implements Serializable {
 
     public void assignModerator() {
         try {
+
             facesContext = getCurrentInstance();
             prodApplications.setUpdatedDate(new Date());
             prodApplications.setModerator(moderator);

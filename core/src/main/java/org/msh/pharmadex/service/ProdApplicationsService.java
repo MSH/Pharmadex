@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.IOUtils;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.ApplicantDAO;
@@ -66,6 +67,7 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -287,14 +289,14 @@ public class ProdApplicationsService implements Serializable {
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.VERIFY);
-		} 
+		}
 		if (userSession.isModerator()) {
 			regState.add(RegState.FOLLOW_UP);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.VERIFY);
 			regState.add(RegState.REVIEW_BOARD);
 			//params.put("moderatorId", userSession.getLoggedINUserID());
-		} 
+		}
 		if (userSession.isReviewer()) {
 			regState.add(RegState.REVIEW_BOARD);
 			/*if (workspaceDAO.findAll().get(0).isDetailReview()) {
@@ -302,7 +304,7 @@ public class ProdApplicationsService implements Serializable {
 				return prodApplicationsDAO.findProdAppByReviewer(params);
 			} else
 				params.put("reviewerId", userSession.getLoggedINUserID());*/
-		} 
+		}
 		if (userSession.isHead()) {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.FEE);
@@ -313,7 +315,7 @@ public class ProdApplicationsService implements Serializable {
 			regState.add(RegState.RECOMMENDED);
 			regState.add(RegState.NOT_RECOMMENDED);
 			regState.add(RegState.REJECTED);
-		} 
+		}
 		if (userSession.isStaff()) {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.SCREENING);
@@ -372,7 +374,7 @@ public class ProdApplicationsService implements Serializable {
 	}
 
 	@Transactional
-	public ProdApplications     saveApplication(ProdApplications prodApplications, Long loggedInUserID) {
+	public ProdApplications saveApplication(ProdApplications prodApplications, Long loggedInUserID) {
 		if (prodApplications == null || loggedInUserID == null)
 			return null;
 		User loggedInUserObj = userService.findUser(loggedInUserID);
@@ -422,8 +424,9 @@ public class ProdApplicationsService implements Serializable {
 					}
 				}
 				prodApplicationsDAO.saveApplication(prodApplications);
-			} else
+			} else {
 				prodApplications = prodApplicationsDAO.updateApplication(prodApplications);
+			}
 			retObject = new RetObject("persist", prodApplications);
 			return retObject;
 		} catch (Exception ex) {
@@ -431,6 +434,22 @@ public class ProdApplicationsService implements Serializable {
 			return new RetObject(ex.getMessage(), null);
 		}
 	}
+
+	/**
+	 * It changes product in renew and variation application (data from temporary product in
+	 * renew and var changes data in primary application)
+	 */
+	public boolean replaceProduct(ProdApplications prodApp,Long loggedInUserID){
+		if (!(prodApp.getProdAppType()==ProdAppType.RENEW)||(prodApp.getProdAppType()==ProdAppType.VARIATION)) return false;
+		if (prodApp.getProdAppNo()==null) return false;
+		ProdApplications parentApp = findProdApplications(prodApp.getParentApplication().getId());
+		Product product = prodApp.getProduct();
+		parentApp.setProduct(product);
+		updateProdApp(parentApp,loggedInUserID);
+		return true;
+	}
+
+
 
 	@Transactional
 	public List<ProdAppChecklist> findAllProdChecklist(Long prodAppId) {
@@ -810,7 +829,7 @@ public class ProdApplicationsService implements Serializable {
 
 		return prodApplicationsDAO.findProdAppByNo(prodAppNo);
 	}
-	
+
 	public List<ProdApplications> getProcessProdAppList(UserSession userSession) {
 		List<ProdApplications> prodApplicationses = null;
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -825,13 +844,13 @@ public class ProdApplicationsService implements Serializable {
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.VERIFY);
-		} 
+		}
 		if (userSession.isModerator()) {
 			regState.add(RegState.FOLLOW_UP);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.VERIFY);
 			regState.add(RegState.REVIEW_BOARD);
-		} 
+		}
 		if (userSession.isReviewer()) {
 			regState.add(RegState.REVIEW_BOARD);
 			if (workspaceDAO.findAll().get(0).isDetailReview()) {
@@ -840,7 +859,7 @@ public class ProdApplicationsService implements Serializable {
 				return prodApplicationsDAO.findProdAppByReviewer(params);
 			} else
 				params.put("reviewerId", userSession.getLoggedINUserID());
-		} 
+		}
 		if (userSession.isHead()) {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.FEE);
@@ -851,7 +870,7 @@ public class ProdApplicationsService implements Serializable {
 			regState.add(RegState.RECOMMENDED);
 			regState.add(RegState.NOT_RECOMMENDED);
 			regState.add(RegState.REJECTED);
-		} 
+		}
 		if (userSession.isStaff()) {
 			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.SCREENING);

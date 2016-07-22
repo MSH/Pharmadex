@@ -93,6 +93,11 @@
     </h:panelGrid>
 
     <div align="right">
+        <p:commandButton value="#{msgs.prev_applications}"
+                         rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                         onclick="PF('parentAppDlg').show();">
+            <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
+        </p:commandButton>
 
         <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbeanET.saveApp}"
                          update=":reghome :reghome:growl" ajax="true" id="proddetailSaveBtn"/>

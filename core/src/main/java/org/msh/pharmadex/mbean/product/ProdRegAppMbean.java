@@ -452,23 +452,7 @@ public class ProdRegAppMbean implements Serializable {
 	public void initializeNewApp(String currentWizardStep) {
 		if (currentWizardStep.equals("prodreg") && product.getId() == null) {
 		} else if (currentWizardStep.equals("proddetails")) {
-			//Only initialize once for new product applications. For saved application it is initialized in the setprodapplication method
-			//            if (prodAppChecklists == null || prodAppChecklists.size() < 1) {
-			//                prodAppChecklists = new ArrayList<ProdAppChecklist>();
-			//                prodApplications.setProdAppChecklists(prodAppChecklists);
-			//                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications.getProdAppType(), true);
-			//                ProdAppChecklist eachProdAppCheck;
-			//                if (allChecklist != null && allChecklist.size() > 0) {
-			//                    for (int i = 0; allChecklist.size() > i; i++) {
-			//                        eachProdAppCheck = new ProdAppChecklist();
-			//                        eachProdAppCheck.setChecklist(allChecklist.get(i));
-			//                        eachProdAppCheck.setProdApplications(prodApplications);
-			//                        prodAppChecklists.add(eachProdAppCheck);
-			//                    }
-			//                }
-			//                prodApplications.setProdAppChecklists(prodAppChecklists);
 
-			//            }
 		} else if (currentWizardStep.equals("appdetails")) {
 
 		} else if (currentWizardStep.equals("applicationStatus")) {
@@ -495,6 +479,8 @@ public class ProdRegAppMbean implements Serializable {
 			if (prodAppChecklists != null && prodAppChecklists.size() < 1) {
 				prodAppChecklists = new ArrayList<ProdAppChecklist>();
 				List<Checklist> allChecklist = checklistService.getChecklists(prodApplications, true);
+				if (allChecklist==null) return;
+				if (allChecklist.size()==0) return;
 				ProdAppChecklist eachProdAppCheck;
 				if (allChecklist != null && allChecklist.size() > 0) {
 					for (int i = 0; allChecklist.size() > i; i++) {

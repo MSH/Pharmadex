@@ -1,14 +1,15 @@
 package org.msh.pharmadex.mbean.product;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.ProdApplicationsServiceET;
-import org.msh.pharmadex.utils.Scrooge;
+import org.msh.pharmadex.util.Scrooge;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -64,19 +65,19 @@ public class ReNewBean {
         setRenewType(ProdAppType.RENEW);
     }
 
-    public String startReregistration(ProdAppType newtype){
+    public String startReregistration(ProdAppType newtype,Long parentAppId){
         //create copy of inital application and product
         ProdApplications prodAppRenew = new ProdApplications();
         ProdApplications prodApp = prodApplicationsService.findProdApplications(parentAppId);
+        Long parentProdId = prodApp.getProduct().getId();
         Scrooge.copyData(prodApp,prodAppRenew);
-//        prodAppRenew.setId((long) 0);
-        //prodAppRenew.setProdAppType(ProdAppType.RENEW);
         prodAppRenew.setProdAppType(newtype);
         Product product = new Product();
-        Product reg_product = productDAO.findProductEager(parentAppId);
+        Product reg_product = productDAO.findProductEager(parentProdId);
         Scrooge.copyData(reg_product,product);
-        //productDAO.saveProduct(product);
         prodAppRenew.setProduct(product);
+        prodAppRenew.setParentApplication(prodApp);
+        prodAppRenew.setRegState(RegState.NEW_APPL);
         prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
         prodAppId = prodAppRenew.getId();
         facesContext.getExternalContext().getFlash().put("prodAppID",prodAppId);
