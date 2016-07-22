@@ -50,7 +50,8 @@ public class ChecklistService implements Serializable {
     }
 
     //SRA is recognized medicine
-    public List<Checklist> getETChecklists(ProdApplications prodApplications, boolean sra) {
+    //addParam  - kind of variation (minor/major)
+    public List<Checklist> getETChecklists(ProdApplications prodApplications, boolean addParam) {
         if (prodApplications == null)
             return null;
 
@@ -64,7 +65,10 @@ public class ChecklistService implements Serializable {
         else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
             checklists = checklistDAO.findByNewMedOrderByIdAsc(true);
         else if  (prodApplications.getProdAppType().equals(ProdAppType.VARIATION))
-            checklists = checklistDAO.findByVariationOrderByIdAsc(true);
+        {
+        	if (addParam)	checklists = checklistDAO.findByMajVariationOrderByIdAsc(true);
+        	else checklists = checklistDAO.findByVariationOrderByIdAsc(true);
+        }
         else
             checklists = checklistDAO.findByGenMedOrderByIdAsc(true);
 //        else if(prodAppType.equals(ProdAppType.RECOGNIZED))
