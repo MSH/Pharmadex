@@ -670,6 +670,7 @@ public class ProdApplicationsService implements Serializable {
 
 			boolean complete = false;
 			for (ReviewInfo reviewInfo : reviewInfos) {
+				// only Mozambique and Bangladesh
 				if (!(reviewInfo.getReviewStatus().equals(ReviewStatus.SUBMITTED) || reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED))) {
 					complete = false;
 					return "state_error";
