@@ -478,7 +478,31 @@ public class ProdRegAppMbean implements Serializable {
 			prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
 			if (prodAppChecklists != null && prodAppChecklists.size() < 1) {
 				prodAppChecklists = new ArrayList<ProdAppChecklist>();
-				List<Checklist> allChecklist = checklistService.getChecklists(prodApplications, true);
+				List<Checklist> allChecklist = null;
+				if (prodApplications.getMjVarQnt()>0)//if exists major variation, show it on this tab
+					allChecklist = checklistService.getETChecklists(prodApplications, true);
+				else//there isn't major - show minor check list here
+					allChecklist = checklistService.getETChecklists(prodApplications, false);
+				if (allChecklist==null) return;
+				if (allChecklist.size()==0) return;
+				ProdAppChecklist eachProdAppCheck;
+				if (allChecklist != null && allChecklist.size() > 0) {
+					for (int i = 0; allChecklist.size() > i; i++) {
+						eachProdAppCheck = new ProdAppChecklist();
+						eachProdAppCheck.setChecklist(allChecklist.get(i));
+						eachProdAppCheck.setProdApplications(prodApplications);
+						prodAppChecklists.add(eachProdAppCheck);
+					}
+				}
+			}
+		} else if (currentWizardStep.equals("prodAddAppChecklist")) {
+			prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
+			if (prodAppChecklists != null && prodAppChecklists.size() < 1) {
+				prodAppChecklists = new ArrayList<ProdAppChecklist>();
+				List<Checklist> allChecklist = null;
+				//if exists both major and minor variation, show minor app on this tab
+				if (prodApplications.getMjVarQnt()>0 && prodApplications.getMnVarQnt()>0)
+					allChecklist = checklistService.getETChecklists(prodApplications, false);
 				if (allChecklist==null) return;
 				if (allChecklist.size()==0) return;
 				ProdAppChecklist eachProdAppCheck;

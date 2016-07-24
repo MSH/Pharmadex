@@ -205,6 +205,8 @@ public class ProdRegInit implements Serializable {
         prodAppInit.setPrescreenfee(prescreenfee);
         prodAppInit.setTotalfee(totalfee);
         prodAppInit.setSRA(selSRA.length > 0);
+        prodAppInit.setMjVarQnt(majorQuantity);
+        prodAppInit.setMnVarQnt(minorQuantity);
         if (selLicHolder != null) {
             prodAppInit.setLicHolderID(selLicHolder.getId());
             selLicHolder = licenseHolderService.findLicHolder(selLicHolder.getId());
@@ -215,13 +217,10 @@ public class ProdRegInit implements Serializable {
                             userSession.setProdAppInit(prodAppInit);
                             if (prodAppType==ProdAppType.RENEW){
                                 Long prodAppId = prodTable.getProdAppID();
-                                return startReregVar(ProdAppType.RENEW,prodAppId,false);
+                                return startReregVar(ProdAppType.RENEW,prodAppId,prodAppInit);
                             }else if (prodAppType==ProdAppType.VARIATION){
                                 Long prodAppId = prodTable.getProdAppID();
-                                boolean isMajor = false;
-                                if (this.majorQuantity>0)
-                                    isMajor = true;
-                                return startReregVar(ProdAppType.VARIATION,prodAppId,isMajor);
+                                return startReregVar(ProdAppType.VARIATION,prodAppId,prodAppInit);
                             }else
                                 return "/secure/prodreghome";
                         } else {
@@ -248,10 +247,12 @@ public class ProdRegInit implements Serializable {
     }
 
 
-    public String startReregVar(ProdAppType newtype, Long parentAppId, boolean isMajor){
+    public String startReregVar(ProdAppType newtype, Long parentAppId, ProdAppInit paInit){
         //create copy of inital application and product
         ProdApplications prodAppRenew = new ProdApplications();
         ProdApplications prodApp = prodApplicationsService.findProdApplications(parentAppId);
+        prodApp.setMjVarQnt(paInit.getMjVarQnt());
+        prodApp.setMnVarQnt(paInit.getMnVarQnt());
         prodAppRenew=clone(prodApp,newtype,false);
         prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
 
@@ -270,6 +271,9 @@ public class ProdRegInit implements Serializable {
         paNew.setActive(false);
         paNew.setProdAppType(type);
         paNew.setRegState(RegState.SAVED);
+        paNew.setProdRegNo("");
+        paNew.setProdAppNo("");
+        paNew.setRegistrationDate(null);
         Product p = new Product();
         Product pp = productDAO.findProductEager(parentProdId);
         p.setManufName(pp.getManufName());

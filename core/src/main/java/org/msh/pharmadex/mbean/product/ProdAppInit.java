@@ -15,6 +15,8 @@ public class ProdAppInit {
     private String totalfee;
     private boolean SRA;
     private Long licHolderID;
+    private int mjVarQnt=0;
+    private int mnVarQnt=0;
 
     public ProdAppType getProdAppType() {
         return prodAppType;
@@ -78,5 +80,21 @@ public class ProdAppInit {
 
     public void setLicHolderID(Long licHolderID) {
         this.licHolderID = licHolderID;
+    }
+
+    public int getMjVarQnt() {
+        return mjVarQnt;
+    }
+
+    public void setMjVarQnt(int mjVarQnt) {
+        this.mjVarQnt = mjVarQnt;
+    }
+
+    public int getMnVarQnt() {
+        return mnVarQnt;
+    }
+
+    public void setMnVarQnt(int mnVarQnt) {
+        this.mnVarQnt = mnVarQnt;
     }
 }
