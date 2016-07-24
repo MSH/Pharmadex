@@ -187,7 +187,12 @@ public class ReviewService implements Serializable {
         if (prodApplications.getProdAppType()!=null){
             if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
                 reviewQuestions = reviewQDAO.findBySRA();
-            } else if (prodApplications.isSra()) {
+            } else if(prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
+            	if (prodApplications.getMjVarQnt()>0) reviewQuestions=reviewQDAO.findByMajVariation();
+            	else 
+            	reviewQuestions=reviewQDAO.findByVariation();
+            }
+            else if (prodApplications.isSra()) {
                 reviewQuestions = reviewQDAO.findBySRA();
             } else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
                 reviewQuestions = reviewQDAO.findByNewMolecule();
