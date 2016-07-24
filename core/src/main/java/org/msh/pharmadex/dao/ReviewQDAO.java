@@ -49,6 +49,16 @@ public class ReviewQDAO implements Serializable{
         return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.newMed = true")
                 .getResultList();
     }
+    
+    public List<ReviewQuestion> findByVariation() {
+        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.variation = true")
+                .getResultList();
+    }
+    
+    public List<ReviewQuestion> findByMajVariation() {
+        return entityManager.createQuery(" select rq from ReviewQuestion rq where rq.majVariation = true")
+                .getResultList();
+    }
 
     @Transactional(readOnly = true)
     public ReviewQuestion findOne(Long id){
