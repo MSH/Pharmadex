@@ -190,8 +190,10 @@ public class ProdRegInit implements Serializable {
             prodApplications.setSra(true);
         else
             prodApplications.setSra(false);
-        checklists = checklistService.getETChecklists(prodApplications, true);
-
+        if (prodApplications.getMjVarQnt()>0)
+            checklists = checklistService.getETChecklists(prodApplications, true);
+        else
+            checklists = checklistService.getETChecklists(prodApplications, false);
     }
 
     public String regApp() {

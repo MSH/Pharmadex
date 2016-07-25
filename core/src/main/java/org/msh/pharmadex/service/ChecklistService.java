@@ -23,8 +23,7 @@ public class ChecklistService implements Serializable {
 
     /**
      * Method to populate the checklist based on the application type selected on step 2 of the wizard.
-     *
-     * @param prodAppType type of product application selected
+     * @parm prodApplications - application
      * @param header      whether to fetch the entire checklist or just header information
      * @return list of Checklist object.
      */
@@ -64,10 +63,11 @@ public class ChecklistService implements Serializable {
                 checklists = checklistDAO.findByRecognizedMedOrderByIdAsc(true);
         else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
             checklists = checklistDAO.findByNewMedOrderByIdAsc(true);
-        else if  (prodApplications.getProdAppType().equals(ProdAppType.VARIATION))
-        {
-        	if (addParam)	checklists = checklistDAO.findByMajVariationOrderByIdAsc(true);
-        	else checklists = checklistDAO.findByVariationOrderByIdAsc(true);
+        else if  (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)) {
+        	if (addParam)
+                checklists = checklistDAO.findByMajvarOrderByIdAsc(true);
+        	else
+                checklists = checklistDAO.findByVariationOrderByIdAsc(true);
         }
         else
             checklists = checklistDAO.findByGenMedOrderByIdAsc(true);
