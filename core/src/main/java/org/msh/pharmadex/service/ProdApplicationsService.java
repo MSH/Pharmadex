@@ -709,6 +709,12 @@ public class ProdApplicationsService implements Serializable {
 				if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
 					return "lab_status";
 				}
+			}else if (prodApplications.getProdAppType()!=ProdAppType.VARIATION){
+				if (prodApplications.getMjVarQnt()>0){
+					if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
+						return "lab_status";
+					}
+				}
 			}
 
 			if (complete) {

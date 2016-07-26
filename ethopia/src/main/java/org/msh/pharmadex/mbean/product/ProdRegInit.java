@@ -27,6 +27,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Backing bean to capture review of products
@@ -104,32 +106,41 @@ public class ProdRegInit implements Serializable {
      * sums minor and major validation fees (depence of number of changes)
      */
     private void addFee() {
-        Integer numFee = 0;
-        Integer numPreScrFee = 0;
+        Pattern feePattern = Pattern.compile("^\\$(([1-9]\\d{0,2}(,\\d{3})*)|(([1-9]\\d*)?\\d))([\\.\\,]\\d?\\d?)?$?");
+        Matcher feeStr;
+        Double numFee = 0.0;
+        Double numPreScrFee = 0.0;
         if (majorQuantity > 0){
             calculate("VARIATION_MAJOR");
+            feeStr = feePattern.matcher(fee);
             if (!("".equals(fee) || "0".equals(fee))) {
-                numFee = Tools.currencyToInt(fee) * majorQuantity;
+                if (feeStr.matches())
+                    numFee = Tools.currencyToDouble(fee) * majorQuantity;
             }
             if (!("".equals(prescreenfee) || "0".equals(prescreenfee))) {
-                numPreScrFee = Tools.currencyToInt(prescreenfee) * majorQuantity;
+                //numPreScrFee = Tools.currencyToDouble(prescreenfee) * majorQuantity;
+                numPreScrFee = Tools.currencyToDouble(prescreenfee);
             }
         }
         if (minorQuantity > 0){
             calculate("VARIATION_MINOR");
+            feeStr = feePattern.matcher(fee);
             if (!("".equals(fee) || "0".equals(fee))) {
-                Integer numFee2 = Tools.currencyToInt(fee) * minorQuantity;
+                Double numFee2=0.0;
+                if (feeStr.matches())
+                    numFee2 = Tools.currencyToDouble(fee) * minorQuantity;
                 numFee = numFee + numFee2;
             }
             if (!("".equals(fee) || "0".equals(fee))) {
-                Integer numPreScrFee2 = Tools.currencyToInt(prescreenfee) * minorQuantity;
+                //Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee) * minorQuantity;
+                Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee);
                 numPreScrFee = numPreScrFee2 + numPreScrFee;
             }
         }
         if ((numFee+numPreScrFee)>0){
             fee = String.valueOf(numFee.intValue());
             prescreenfee = String.valueOf(numPreScrFee.intValue());
-            Integer total = numFee + numPreScrFee;
+            Double total = numFee + numPreScrFee;
             totalfee = String.valueOf(total.intValue());
         }
     }

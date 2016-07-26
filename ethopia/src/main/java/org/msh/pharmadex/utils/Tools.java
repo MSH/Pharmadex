@@ -69,11 +69,14 @@ public class Tools {
         return res;
     }
 
-    public static Integer currencyToInt(String s){
-        if (s==null) return 0;
+    public static Double currencyToDouble(String s){
+        if (s==null) return 0.0;
         s=s.trim();
         if (s.startsWith("$"))
             s=right(s,"$");
-        return Integer.parseInt(s);
+        Double res = Double.parseDouble(s);
+        return res;
     }
+
+
 }
