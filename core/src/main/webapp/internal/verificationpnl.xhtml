@@ -11,8 +11,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBn.changeStatusListener}"/>
+            <p:ajax  listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
 
@@ -23,8 +22,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBn.changeStatusListener}"/>
+            <p:ajax  listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.med_detail_complete}" styleClass="label"
@@ -34,8 +32,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBn.changeStatusListener}"/>
+            <p:ajax   listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
         <p:outputLabel value="#{msgs.dossier_complete}" styleClass="label"
@@ -45,8 +42,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
-                    listener="#{processProdBn.changeStatusListener}"/>
+            <p:ajax listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
     </h:panelGrid>
