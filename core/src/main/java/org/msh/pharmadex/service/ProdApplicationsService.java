@@ -567,28 +567,20 @@ public class ProdApplicationsService implements Serializable {
 		List<ProdApplications> prodApps;
 		ProdApplications proda = null;
 		try {
-			if (prodApp.getProdAppType().equals(ProdAppType.RENEW)) {
-				prodApps = prodApplicationsDAO.findProdApplicationByProduct(product.getId());
+			TimeLine timeLine = new TimeLine();
+			if (prodApp.getProdAppType().equals(ProdAppType.RENEW) || prodApp.getProdAppType().equals(ProdAppType.VARIATION)) {
+				/*prodApps = prodApplicationsDAO.findProdApplicationByProduct(product.getId());
 				if (prodApps != null) {
 					for (ProdApplications pa : prodApps) {
 						if (!pa.getProdAppType().equals(ProdAppType.RENEW)) {
 							proda = pa;
 						}
 					}
-				}
-				TimeLine timeLine = new TimeLine();
-				timeLine.setRegState(RegState.RENEWED);
-				timeLine.setComment("The application is being renewed");
-				timeLine.setUser(prodApp.getUpdatedBy());
-				timeLine.setStatusDate(new Date());
-				timeLine.setProdApplications(proda);
-				timelineService.saveTimeLine(timeLine);
-
-				proda.setRegState(timeLine.getRegState());
-				prodApplicationsDAO.updateApplication(proda);
-				timelineService.saveTimeLine(timeLine);
-			}else{
-				TimeLine timeLine = new TimeLine();
+				}*/
+				proda=prodApp.getParentApplication();
+				if (proda!=null) prodApplicationsDAO.moveToArchive(proda,prodApp.getRegistrationDate());
+						
+			}
 				timeLine.setRegState(RegState.REGISTERED);
 				timeLine.setProdApplications(prodApp);
 				timeLine.setStatusDate(new Date());
@@ -597,7 +589,7 @@ public class ProdApplicationsService implements Serializable {
 
 				prodApplicationsDAO.updateApplication(prodApp);
 				timelineService.saveTimeLine(timeLine);
-			}
+			
 			return "created";
 		}catch  (Exception ex){
 			ex.printStackTrace();
@@ -708,12 +700,6 @@ public class ProdApplicationsService implements Serializable {
 			if (prodApplications.getProdAppType()!=ProdAppType.RENEW) {
 				if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
 					return "lab_status";
-				}
-			}else if (prodApplications.getProdAppType()!=ProdAppType.VARIATION){
-				if (prodApplications.getMjVarQnt()>0){
-					if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
-						return "lab_status";
-					}
 				}
 			}
 
