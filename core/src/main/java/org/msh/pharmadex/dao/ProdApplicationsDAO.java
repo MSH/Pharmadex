@@ -209,6 +209,14 @@ public class ProdApplicationsDAO implements Serializable {
         return prodApplications;
     }
 
+    public boolean moveToArchive(ProdApplications prodApplications, Date archivingDate){
+    	prodApplications.setActive(false);
+    	prodApplications.setArchivingDate(archivingDate);
+    	entityManager.persist(prodApplications);
+    	//Product p=prodApplications.getProduct();
+    	//p.s
+    	return true;
+    }
     public DosUom findDosUom(String uom) {
     	List<DosUom> list = entityManager.createQuery("select du from DosUom du")
                 .getResultList();
