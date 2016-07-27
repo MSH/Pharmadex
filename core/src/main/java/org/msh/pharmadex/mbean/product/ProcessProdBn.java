@@ -581,6 +581,7 @@ public class ProcessProdBn implements Serializable {
                 prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + 0, prodApplications.getProdAppNo()));
 
             prodApplications.setActive(true);
+            //product.g
             prodApplications.setUpdatedBy(loggedInUser);
 
             String retValue = prodApplicationsService.registerProd(prodApplications);

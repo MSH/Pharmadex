@@ -530,6 +530,7 @@ public class ProdRegAppMbean implements Serializable {
 		context = FacesContext.getCurrentInstance();
 		product.setUseCategories(useCategories);	
 		try {
+			
 			RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
 			if (retObject.getMsg().equals("persist")) {
 				prodApplications = (ProdApplications) retObject.getObj();
