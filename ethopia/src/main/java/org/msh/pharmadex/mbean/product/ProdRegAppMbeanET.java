@@ -82,7 +82,12 @@ public class ProdRegAppMbeanET implements Serializable {
 
     @Transactional
     public void saveApp() {
-        prodRegAppMbean.saveApp();
+        if (parentAppId!=null){
+        	 ProdApplications prodApplications = prodRegAppMbean.getProdApplications();
+        	 ProdApplications parent= prodRegAppMbean.getProdApplicationsService().findProdApplications(parentAppId);
+        	 prodApplications.setParentApplication(parent);
+        }
+    	prodRegAppMbean.saveApp();
         RetObject retObject;
         try {
             ProdApplications prodApplications = prodRegAppMbean.getProdApplications();
