@@ -164,15 +164,14 @@
             <p:panel>
                 <h:panelGrid id="reviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
                     <p:outputLabel value="Will there be a secondary reviewer?" for="secreviewbb"/>
-                    <p:selectBooleanButton id="secreviewbb" value="#{prodReviewBn.reviewInfo.secreview}" onLabel="Yes"
-                                           offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close"
+                    <p:selectBooleanButton id="secreviewbb" value="#{prodReviewBn.reviewInfo.secreview}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close"
                                            style="width:60px">
                         <p:ajax update=":reghome:processtab:reviewPG" listener="#{prodReviewBn.secreviewListener}"/>
                     </p:selectBooleanButton>
 
                     <p:outputLabel/>
-                    <p:outputLabel
-                            value="You will not be able to change the selection of using or not using a seconday user after the assignment is done."
+                    <p:outputLabel value="#{msgs.assigDlgLbl}"
                             styleClass="hint"/>
 
                     <p:outputLabel value="#{msgs.processor}" for="prireviewac"

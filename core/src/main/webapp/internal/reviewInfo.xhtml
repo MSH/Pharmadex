@@ -85,7 +85,7 @@
 
 
                                             <h:panelGroup layout="block"
-                                                          styleClass="#{quest.save?'review_question_inactive':'review_question_active'}">
+                                                          styleClass="#{reviewInfoBn.buildStyleClassName(quest)}">
                                                 <h:outputText value="#{quest.question}" escape="false"/>
                                             </h:panelGroup>
                                         </p:column>

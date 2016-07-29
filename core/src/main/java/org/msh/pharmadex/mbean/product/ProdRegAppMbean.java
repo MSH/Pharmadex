@@ -501,10 +501,10 @@ public class ProdRegAppMbean implements Serializable {
 				prodAppChecklists = new ArrayList<ProdAppChecklist>();
 				List<Checklist> allChecklist = null;
 				//if exists both major and minor variation, show minor app on this tab
-				if (prodApplications.getMjVarQnt()>0 && prodApplications.getMnVarQnt()>0)
+				if (prodApplications.getMjVarQnt() > 0 && prodApplications.getMnVarQnt() > 0)
 					allChecklist = checklistService.getETChecklists(prodApplications, false);
-				if (allChecklist==null) return;
-				if (allChecklist.size()==0) return;
+				if (allChecklist == null) return;
+				if (allChecklist.size() == 0) return;
 				ProdAppChecklist eachProdAppCheck;
 				if (allChecklist != null && allChecklist.size() > 0) {
 					for (int i = 0; allChecklist.size() > i; i++) {
@@ -518,8 +518,9 @@ public class ProdRegAppMbean implements Serializable {
 		} else if (currentWizardStep.equals("appointment")) {
 
 		} else if (currentWizardStep.equals("summary")) {
-			if (prodAppChecklists != null)
+			if (prodAppChecklists != null){
 				prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
+			}
 		}
 
 	}
@@ -530,7 +531,9 @@ public class ProdRegAppMbean implements Serializable {
 		context = FacesContext.getCurrentInstance();
 		product.setUseCategories(useCategories);	
 		try {
-			
+			if (prodAppChecklists != null){
+				prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
+			}
 			RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
 			if (retObject.getMsg().equals("persist")) {
 				prodApplications = (ProdApplications) retObject.getObj();
@@ -636,7 +639,8 @@ public class ProdRegAppMbean implements Serializable {
 		try {
 			saveApp();
 			prodApplications.setApplicant(applicant);
-			prodApplications.setCreatedBy(applicantUser);
+			// 22.07.2016
+			//prodApplications.setCreatedBy(applicantUser);
 			//        prodApplications.setForeignAppStatus(foreignAppStatuses);
 			prodApplications.setProduct(product);
 			if (product.getId() == null) {

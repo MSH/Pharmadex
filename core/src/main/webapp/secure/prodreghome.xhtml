@@ -45,7 +45,6 @@
                     </p:panel>
                 </p:tab>
 
-
                 <p:tab id="appdetails" title="#{msgs.application_detail}">
                     <p:panel header="#{msgs.application_detail}" id="appDetailPnl">
 
@@ -337,7 +336,6 @@
 
                 </p:tab>
 
-
                 <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
                     <p:panel header="#{msgs.manufacturer_detail}" id="manufPnl">
                         <p:messages/>
@@ -533,6 +531,13 @@
                                     <h:outputText value="#{msgs[doc.regState.key]}"/>
                                 </p:column>
 
+								<p:column>
+                                    <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
+                                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                             icon="ui-icon-arrowthichk-s">
+                                    	<p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
+                                    </p:commandButton>
+                                </p:column>
 
                                 <p:column>
                                     <p:commandButton id="deleteattach"

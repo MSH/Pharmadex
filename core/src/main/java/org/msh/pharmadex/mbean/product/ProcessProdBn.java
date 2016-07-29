@@ -581,7 +581,6 @@ public class ProcessProdBn implements Serializable {
                 prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + 0, prodApplications.getProdAppNo()));
 
             prodApplications.setActive(true);
-            //product.g
             prodApplications.setUpdatedBy(loggedInUser);
 
             String retValue = prodApplicationsService.registerProd(prodApplications);
@@ -860,7 +859,8 @@ public class ProcessProdBn implements Serializable {
                 displayVerify = true;
             else
                 displayVerify = false;
-        }
+        }else
+            displayVerify = false;
         return displayVerify;
     }
 
@@ -908,7 +908,7 @@ public class ProcessProdBn implements Serializable {
         this.displaySample = displaySample;
     }
 
-    public SampleTestService getSampleTestService() {
+	public SampleTestService getSampleTestService() {
         return sampleTestService;
     }
 
@@ -965,8 +965,10 @@ public class ProcessProdBn implements Serializable {
         if (prodApplications != null && (prodApplications.getRegState().equals(RegState.NEW_APPL))
                 || prodApplications.getRegState().equals(RegState.FOLLOW_UP) || prodApplications.getRegState().equals(RegState.VERIFY))
             prescreened = true;
-        else
+        else{
+        	prescreened = false;
             displayVerify = false;
+        }
         return prescreened;
     }
 

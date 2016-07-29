@@ -39,6 +39,8 @@ import java.util.ResourceBundle;
 /**
  * Author: usrivastava
  */
+// 22.07.2016
+@Deprecated
 @ManagedBean
 @SessionScoped
 public class RegHomeMbean implements Serializable {
@@ -149,7 +151,8 @@ public class RegHomeMbean implements Serializable {
             if (userSession.isCompany()) {
                 applicantUser = userService.findUser(getLoggedInUser().getUserId());
                 prodApplications.setApplicant(applicantUser.getApplicant());
-                prodApplications.setCreatedBy(applicantUser);
+                // 22.07.2016
+    			//prodApplications.setCreatedBy(applicantUser);
             }
 
             prodInn = new ProdInn();
@@ -279,7 +282,8 @@ public class RegHomeMbean implements Serializable {
     public void saveApp() {
         context = FacesContext.getCurrentInstance();
         prodApplications.setApplicant(applicant);
-        prodApplications.setCreatedBy(applicantUser);
+     // 22.07.2016
+     			//prodApplications.setCreatedBy(applicantUser);
 //        product.setForeignAppStatus(foreignAppStatuses);
         product.setUseCategories(useCategories);
         prodApplications.setProduct(product);
@@ -351,7 +355,8 @@ public class RegHomeMbean implements Serializable {
     public String validateApp() {
         context = FacesContext.getCurrentInstance();
         prodApplications.setApplicant(applicant);
-        prodApplications.setCreatedBy(applicantUser);
+     // 22.07.2016
+     			//prodApplications.setCreatedBy(applicantUser);
 //        prodApplications.setForeignAppStatus(foreignAppStatuses);
         prodApplications.setProduct(product);
         if (product.getId() == null) {

@@ -34,6 +34,9 @@ import java.util.ResourceBundle;
 @ViewScoped
 public class ExecSummaryBn implements Serializable {
 
+	private FacesContext facesContext = FacesContext.getCurrentInstance();
+	private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+	
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
@@ -53,8 +56,10 @@ public class ExecSummaryBn implements Serializable {
     private Product product;
     private List<ReviewInfo> reviewInfos;
     private boolean readOnly;
+    private boolean editExecSumm;
     private List<RegState> nextSteps;
     private String execSummary;
+    private String execSummaryState;
 
     @PostConstruct
     private void init(){
@@ -78,6 +83,10 @@ public class ExecSummaryBn implements Serializable {
 
             if (prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
                 for (ReviewInfo ri : reviewInfos) {
+                	if(ri.getRecomendType() == null){
+                		facesContext.addMessage(null, new FacesMessage("Invalid operation!", resourceBundle.getString("Error.moderatorNotRecomended")));
+                        return "";
+                	}
                     if (!ri.getRecomendType().equals(RecomendType.RECOMENDED)) {
                         facesContext.addMessage(null, new FacesMessage("Invalid operation!", "Cannot recommend a product which is not recommended by the assessors. Send feedback to assessor to change there recommendation."));
                         return "";
@@ -85,6 +94,10 @@ public class ExecSummaryBn implements Serializable {
                 }
             } else if (prodApplications.getRegState().equals(RegState.NOT_RECOMMENDED)) {
                 for (ReviewInfo ri : reviewInfos) {
+                	if(ri.getRecomendType() == null){
+                		facesContext.addMessage(null, new FacesMessage("Invalid operation!", resourceBundle.getString("Error.moderatorNotRecomended")));
+                        return "";
+                	}
                     if (!ri.getRecomendType().equals(RecomendType.NOT_RECOMENDED)) {
                         facesContext.addMessage(null, new FacesMessage("Invalid operation!", "Cannot recommend a product which is not recommended by the assessors. Send feedback to assessor to change there recommendation."));
                         return "";
@@ -231,4 +244,39 @@ public class ExecSummaryBn implements Serializable {
     	}
     	return names;
     }
+
+	public boolean isEditExecSumm() {
+		/*
+		 * если текущий пользователь с ролью модератор и он назначен модератором
+		 * состояние досье не RECOMMENDED или NOT_RECOMMENDED
+		 */
+		editExecSumm = false;
+		if(prodApplications != null && prodApplications.getModerator() != null){
+			if(userSession.isModerator() && prodApplications.getModerator().getUserId().intValue() == userSession.getLoggedINUserID().intValue())
+				if(prodApplications.getRegState() != null && !(prodApplications.getRegState().equals(RegState.RECOMMENDED)
+						|| RegState.RECOMMENDED.equals(RegState.NOT_RECOMMENDED)))
+					editExecSumm = true;
+		}
+		return editExecSumm;
+	}
+
+	public void setEditExecSumm(boolean editExecSumm) {
+		this.editExecSumm = editExecSumm;
+	}
+
+	public String getExecSummaryState() {
+		execSummaryState = "";
+		if(prodApplications != null){
+			RegState st = prodApplications.getRegState();
+			if(st.equals(RegState.RECOMMENDED) || st.equals(RegState.NOT_RECOMMENDED)
+					|| st.equals(RegState.FOLLOW_UP))
+				execSummaryState = resourceBundle.getString(st.getKey());
+		}
+		return execSummaryState;
+	}
+	
+	public void setExecSummaryState(String execSummaryState) {
+		this.execSummaryState = execSummaryState;
+	}
+    
 }

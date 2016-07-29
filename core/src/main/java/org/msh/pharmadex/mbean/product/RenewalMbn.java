@@ -354,7 +354,8 @@ public class RenewalMbn implements Serializable {
     public String validateApp() {
         context = FacesContext.getCurrentInstance();
         prodApplications.setApplicant(applicant);
-        prodApplications.setCreatedBy(applicantUser);
+     // 22.07.2016
+     			//prodApplications.setCreatedBy(applicantUser);
 //        prodApplications.setForeignAppStatus(foreignAppStatuses);
         prodApplications.setProduct(product);
         if (product.getId() == null) {

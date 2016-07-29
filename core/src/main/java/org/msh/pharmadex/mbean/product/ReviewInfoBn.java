@@ -29,6 +29,7 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewComment;
+import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RecomendType;
@@ -202,8 +203,9 @@ public class ReviewInfoBn implements Serializable {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
         msg = new FacesMessage("Selected question is marked not applicable.");
-        reviewService.makeReviewNA(displayReviewInfo.getReviewDetailID());
+        reviewService.makeReviewNA(displayReviewInfo.getReviewDetailID(), userSession.getLoggedINUserID());
         displayReviewInfo.setSave(true);
+        
         displayReviewQs = null;
         facesContext.addMessage(null, msg);
 
@@ -462,7 +464,7 @@ public class ReviewInfoBn implements Serializable {
 
     public List<DisplayReviewQ> getDisplayReviewQs() {
         if (displayReviewQs == null) {
-            displayReviewQs = reviewService.getDisplayReviewSum(getReviewInfo());
+            displayReviewQs = reviewService.getDisplayReviewSum(getReviewInfo(), userSession.getLoggedINUserID());
         }
         return displayReviewQs;
     }
@@ -630,5 +632,20 @@ public class ReviewInfoBn implements Serializable {
         this.sourcePage = sourcePage;
     }
 
-
+    public String buildStyleClassName(DisplayReviewInfo q){
+    	String white = "review_question_active", grey = "review_question_inactive";
+    	// quest.save?'review_question_inactive':'review_question_active'
+    	
+    	ReviewDetail item = reviewService.findReviewDetails(q);
+    	if(item != null){
+    		Long create = (item.getCreatedBy() != null ? item.getCreatedBy().getUserId() : 0);
+    		Long update = (item.getUpdatedBy() != null ? item.getUpdatedBy().getUserId() : 0);
+    		
+    		if(create > 0 && update > 0){
+    			if(userSession.getLoggedINUserID().intValue() == update.intValue())
+    				return grey;
+    		}
+    	}
+    	return white;
+    }
 }

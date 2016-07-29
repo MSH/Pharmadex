@@ -18,6 +18,7 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
@@ -45,6 +46,9 @@ public class ReviewDetailBn implements Serializable {
 
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
+    
+    @ManagedProperty(value = "#{reviewInfoBn}")
+	private ReviewInfoBn reviewInfoBn;
 
     private ReviewDetail reviewDetail;
     private boolean satisfactory;
@@ -230,5 +234,13 @@ public class ReviewDetailBn implements Serializable {
 
 	public void setFileImg(boolean fileImg) {
 		this.fileImg = fileImg;
+	}
+	
+	public ReviewInfoBn getReviewInfoBn() {
+		return reviewInfoBn;
+	}
+
+	public void setReviewInfoBn(ReviewInfoBn reviewInfoBn) {
+		this.reviewInfoBn = reviewInfoBn;
 	}
 }

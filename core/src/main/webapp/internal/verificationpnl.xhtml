@@ -9,8 +9,8 @@
         <p:selectBooleanButton id="feerecieved"
                                value="#{processProdBn.prodApplications.feeReceived}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
+                               onIcon="ui-icon-check" offIcon="ui-icon-close" 
+                               style="width:60px" disabled="#{processProdBn.disableVerify}">
             <p:ajax  listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
@@ -20,8 +20,8 @@
         <p:selectBooleanButton id="appverify"
                                value="#{processProdBn.prodApplications.applicantVerified}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
+                               onIcon="ui-icon-check" offIcon="ui-icon-close" 
+                               style="width:60px" disabled="#{processProdBn.disableVerify}">
             <p:ajax  listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
@@ -30,8 +30,8 @@
         <p:selectBooleanButton id="prodverify"
                                value="#{processProdBn.prodApplications.productVerified}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
+                               onIcon="ui-icon-check" offIcon="ui-icon-close" 
+                               style="width:60px" disabled="#{processProdBn.disableVerify}">
             <p:ajax   listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
@@ -40,21 +40,10 @@
         <p:selectBooleanButton id="dosscomplete"
                                value="#{processProdBn.prodApplications.dossierReceived}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-                               onIcon="ui-icon-check"
-                               offIcon="ui-icon-close" style="width:60px">
+                               onIcon="ui-icon-check" offIcon="ui-icon-close" 
+                               style="width:60px" disabled="#{processProdBn.disableVerify}">
             <p:ajax listener="#{processProdBn.changeStatusListener}"/>
         </p:selectBooleanButton>
 
     </h:panelGrid>
-
-    <!--
-        <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
-        <h:outputLabel/>
-        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
-            <h:outputLabel value="Acknowledgement letter details"/>
-            <p:inputText/>
-        </h:panelGrid>
-    -->
-
-
 </ui:composition>

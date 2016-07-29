@@ -129,6 +129,9 @@ public class ProdReviewBn implements Serializable {
                 facesContext.addMessage(null, new FacesMessage("Due date must be in the future."));
             }
         }
+        secReviewer = null;
+        reviewer = null;
+        displaySecReview = false;
     }
 
     public void changeReviewer() {

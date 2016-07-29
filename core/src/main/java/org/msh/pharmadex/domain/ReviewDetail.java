@@ -56,19 +56,20 @@ public class ReviewDetail extends CreationDetail {
     public ReviewDetail() {
     }
 
-    public ReviewDetail(ReviewQuestion reviewQuestions, ReviewInfo reviewInfo, boolean satifactory, String noReason, String otherComment, boolean answered) {
+   /* public ReviewDetail(ReviewQuestion reviewQuestions, ReviewInfo reviewInfo, boolean satifactory, String noReason, String otherComment, boolean answered) {
         this.reviewQuestions = reviewQuestions;
         this.reviewInfo = reviewInfo;
         this.satifactory = satifactory;
         this.noReason = noReason;
         this.otherComment = otherComment;
         this.answered = answered;
-    }
+    }*/
 
-    public ReviewDetail(ReviewQuestion reviewQuestions, ReviewInfo reviewInfo, boolean answered) {
+    public ReviewDetail(ReviewQuestion reviewQuestions, ReviewInfo reviewInfo, boolean answered, User createdBy) {
         this.reviewQuestions = reviewQuestions;
         this.reviewInfo = reviewInfo;
         this.answered = answered;
+        this.setCreatedBy(createdBy);
     }
 
     public Long getId() {

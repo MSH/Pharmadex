@@ -51,8 +51,10 @@
 
                 <h:panelGrid columns="3" columnClasses="label value" cellspacing="5px" id="reviewChkPnl">
                     <p:outputLabel value="#{msgs.volumes}:"/>
-                    <p:inputText value="#{reviewDetailBn.reviewDetail.volume}"/>
-					<p:outputLabel/>
+					<p:inputText value="#{reviewDetailBn.reviewDetail.volume}" rendered="#{userSession.reviewer}"/>
+					<p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.volume}"
+                                   rendered="#{!userSession.reviewer}"/>
+                    <p:outputLabel/>
 
                     <p:outputLabel value="#{msgs.reviewer_response}: " styleClass="label"/>
                     <p:outputLabel/>

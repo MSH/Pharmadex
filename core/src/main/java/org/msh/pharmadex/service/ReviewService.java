@@ -79,6 +79,9 @@ public class ReviewService implements Serializable {
 	private UserAccessService userAccessService;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private UtilsByReports utilsByReports;
 
 	public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID) {
@@ -247,7 +250,7 @@ public class ReviewService implements Serializable {
 
 	}
 
-	public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo) {
+	public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo, Long loggedInUser) {
 		ProdApplications prodApplications = reviewInfo.getProdApplications();
 		List<ReviewDetail> reviewDetails = new ArrayList<ReviewDetail>();
 		List<ReviewQuestion> reviewQuestions = null;
@@ -264,7 +267,7 @@ public class ReviewService implements Serializable {
 
 		ReviewDetail reviewDetail;
 		for (ReviewQuestion reviewQuestion : reviewQuestions) {
-			reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false);
+			reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false, userService.findUser(loggedInUser));
 			reviewDetails.add(reviewDetail);
 		}
 
@@ -272,16 +275,16 @@ public class ReviewService implements Serializable {
 		return reviewDetails;
 	}
 
-	public List<DisplayReviewQ> getDisplayReviewSum(ReviewInfo ri) {
+	public List<DisplayReviewQ> getDisplayReviewSum(ReviewInfo ri, Long loggedInUser) {
 		List<DisplayReviewQ> header1 = new ArrayList<DisplayReviewQ>();
 		if(ri != null && ri.getReviewer() != null){
 			List<ReviewDetail> reviewDetails = reviewQDAO.findReviewSummary(ri.getReviewer().getUserId(), ri.getId());
 
 			if (reviewDetails == null)
-				reviewDetails = initReviewDetail(ri);
+				reviewDetails = initReviewDetail(ri, loggedInUser);
 
 			if(reviewDetails.size() < 1)
-				reviewDetails = initReviewDetail(ri);
+				reviewDetails = initReviewDetail(ri, loggedInUser);
 
 			if (reviewDetails == null)
 				return header1;
@@ -489,9 +492,11 @@ public class ReviewService implements Serializable {
 		return reviewDetailDAO.saveAndFlush(reviewDetail);
 	}
 
-	public ReviewDetail makeReviewNA(Long reviewDetailID) {
+	public ReviewDetail makeReviewNA(Long reviewDetailID, Long loggedINUserId) {
 		ReviewDetail rd = reviewDetailDAO.findOne(reviewDetailID);
 		rd.setAnswered(true);
+		rd.setUpdatedBy(userService.findUser(loggedINUserId));
+		
 		rd = reviewDetailDAO.saveAndFlush(rd);
 		return rd;
 	}
@@ -640,9 +645,7 @@ public class ReviewService implements Serializable {
 
 	}
 
-	@Autowired
-	private UserService userService;
-
+	
 	@Transactional
 	public String submitFir(RevDeficiency revDeficiency, ReviewComment reviewComment, Long loggedInUser) {
 		if(revDeficiency==null)

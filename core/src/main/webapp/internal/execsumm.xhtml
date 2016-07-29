@@ -28,7 +28,7 @@
                     <f:param name="prodAppID" value="#{execSummaryBn.prodApplications.id}"/>
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_submit}" action="#{execSummaryBn.submit}"
-                                 rendered="#{!execSummaryBn.readOnly}"
+                                 rendered="#{execSummaryBn.editExecSumm}"
                                  ajax="false">
                     <f:param name="prodAppID" value="#{execSummaryBn.prodApplications.id}"/>
                 </p:commandButton>
@@ -37,7 +37,6 @@
             <div style="height: 10px;"/>
 
             <ui:repeat value="#{execSummaryBn.reviewInfos}" var="each">
-                <!-- <p:fieldset legend="#{each.reviewer.name}" style="margin-bottom:20px"> -->
                 <p:fieldset legend="#{execSummaryBn.buildReviewerNames(each)}" style="margin-bottom:20px">
                     <h:panelGrid columns="4" cellpadding="10" cellspacing="10">
                         <p:outputLabel value="#{msgs.checklist_module}:" styleClass="label"/>
@@ -85,7 +84,7 @@
 
             <p:panel header="#{msgs.executive_summary}">
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="inputgrid"
-                             rendered="#{!execSummaryBn.readOnly}">
+                             rendered="#{execSummaryBn.editExecSumm}">
                     <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
 
                     <p:selectOneMenu id="recomcb" value="#{execSummaryBn.prodApplications.regState}"
@@ -100,9 +99,9 @@
 
                 </h:panelGrid>
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid"
-                             rendered="#{execSummaryBn.readOnly}">
+                             rendered="#{!execSummaryBn.editExecSumm}">
                     <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
-                    <p:outputLabel value="#{execSummaryBn.prodApplications.regState}"/>
+                    <p:outputLabel value="#{execSummaryBn.execSummaryState}"/>
                     <p:outputLabel value="Summary"/>
                     <p:outputLabel value="#{execSummaryBn.prodApplications.execSummary}" escape="false"
                                    rendered="#{execSummaryBn.readOnly}"/>
