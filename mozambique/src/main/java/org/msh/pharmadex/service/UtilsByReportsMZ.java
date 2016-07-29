@@ -28,6 +28,7 @@ public class UtilsByReportsMZ implements Serializable {
 	public static String KEY_ADDRESS2 = "address2";
 	public static String KEY_COUNTRY = "country";
 	public static String KEY_COUNTRY_NAME = "countryName";
+	/** номер при регистрации продукта (при формировании сертификата)*/
 	public static String KEY_APPNUMBER = "appNumber";
 	public static String KEY_ID = "id";
 	public static String KEY_PRODNAME = "prodName";
@@ -66,6 +67,12 @@ public class UtilsByReportsMZ implements Serializable {
 	public static String KEY_DOSREC_DATE = "dosRecDate";
 	public static String KEY_GESTOR = "gestorDeCTRM";
 	
+	/* для letter*/	
+	public static String KEY_APPADDRESS = "appAddress";	
+	public static String KEY_APPNUM = "appNum";/**номер в их системе (канцелярский номер) */
+	public static String KEY_APPUSERNAME = "appUserName"; /** ФИО */
+	public static String KEY_APPPOST = "appPost"; /**должность*/
+		
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
 	private Product prod = null;
@@ -238,6 +245,28 @@ public class UtilsByReportsMZ implements Serializable {
 				str = dateFormat.format(prodApps.getDosRecDate());
 			param.put(k, str);
 		}
+		/** letter*/	
+		if(k.equals(KEY_APPNUM)){
+			if(prodApps.getProdAppNo()!=null)
+				str = prodApps.getProdAppNo()!= null ? prodApps.getProdAppNo():"";
+			param.put(k, str);
+		}		
+		if(k.equals(KEY_APPPOST)){			
+			if(prodApps.getPosition()!=null)
+				str = prodApps.getPosition()!= null ? prodApps.getPosition():"";			
+			param.put(k, str);
+		}		
+		if(k.equals(KEY_APPADDRESS)){
+			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
+				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
+			param.put(k, str);
+		}		
+		if(k.equals(KEY_APPUSERNAME)){			
+			if(prodApps.getUsername()!=null)
+				str = prodApps.getUsername()!= null ? prodApps.getUsername():"";			
+			param.put(k, str);
+		}
+	
 	}
 	
 	private String takeManufacturerName(){

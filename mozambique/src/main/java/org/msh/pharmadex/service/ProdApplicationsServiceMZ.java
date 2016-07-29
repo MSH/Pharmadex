@@ -279,7 +279,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXPIRY_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GESTOR, gestor);
-
+		
 		return JasperFillManager.fillReport(resource.getFile(), param, conn);
 	}
 
@@ -307,7 +307,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PACKSIZE, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
-
+			
+			//letter
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNUM, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPPOST, "", false);				
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPUSERNAME, "", false);
+						
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
