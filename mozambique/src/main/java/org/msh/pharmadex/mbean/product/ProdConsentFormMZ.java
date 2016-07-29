@@ -70,6 +70,9 @@ public class ProdConsentFormMZ implements Serializable {
     private FacesContext context;
     private JasperPrint jasperPrint;
     private UploadedFile file;
+    
+    private String sender = "";
+    private String prodappno = "";
 
     public StreamedContent fileDownload() {
         ProdAppLetter prodAppLetter = prodApplicationsService.findAllLettersByProdAppAndType(prodApplications, LetterType.ACK_SUBMITTED);
@@ -87,9 +90,14 @@ public class ProdConsentFormMZ implements Serializable {
 
     @PostConstruct
     private void init() {
+    	context = FacesContext.getCurrentInstance();
+        bundle = context.getApplication().getResourceBundle(context, "msgs");
+        
         Long prodAppID = userSession.getProdAppID();
         if (prodAppID != null) {
             prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+            prodappno = prodApplicationsService.generateAppNo(prodApplications);
+            sender = bundle.getString("gestorDeCTRM_value");
             product = prodApplications.getProduct();
         }
 
@@ -105,9 +113,13 @@ public class ProdConsentFormMZ implements Serializable {
         if (!userService.verifyUser(userSession.getLoggedINUserID(), password)) {
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
         }
-
-        if (prodApplications.getProdAppNo() == null || prodApplications.getProdAppNo().equals(""))
-            prodApplications.setProdAppNo(prodApplicationsService.generateAppNo(prodApplications));
+        
+        if(getProdappno() == null  || getProdappno().equals(""))
+        	setProdappno(prodApplicationsService.generateAppNo(prodApplications));
+        prodApplications.setProdAppNo(getProdappno());
+        prodApplications.setUsername(getSender());
+       // if (prodApplications.getProdAppNo() == null || prodApplications.getProdAppNo().equals(""))
+          //  prodApplications.setProdAppNo(prodApplicationsService.generateAppNo(prodApplications));
 
         TimeLine timeLine = new TimeLine();
         timeLine.setComment(bundle.getString("timeline_newapp"));
@@ -231,4 +243,20 @@ public class ProdConsentFormMZ implements Serializable {
     public void setTimeLineService(TimelineService timeLineService) {
         this.timeLineService = timeLineService;
     }
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+
+	public String getProdappno() {
+		return prodappno;
+	}
+
+	public void setProdappno(String prodappno) {
+		this.prodappno = prodappno;
+	}
 }

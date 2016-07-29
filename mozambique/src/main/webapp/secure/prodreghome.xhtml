@@ -470,7 +470,14 @@
                                     <h:outputText value="#{msgs[doc.regState.key]}"/>
                                 </p:column>
 
-
+								<p:column>
+                                    <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
+                                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                             icon="ui-icon-arrowthichk-s">
+                                    	<p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
+                                    </p:commandButton>
+                                </p:column>
+                                
                                 <p:column>
                                     <p:commandButton id="deleteattach"
                                                      action="#{prodRegAppMbean.deleteDoc(doc)}" ajax="false"

@@ -5,6 +5,7 @@ import static javax.faces.context.FacesContext.getCurrentInstance;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -15,8 +16,10 @@ import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RegistrationUtil;
@@ -48,6 +51,9 @@ public class ProcessProdBnMZ implements Serializable {
 
 	public User loggedInUser;
 	private String gestorDeCTRM = resourceBundle.getString("gestorDeCTRM_value");
+	
+	private boolean visibleExecSumeryBtn = false;
+	private boolean disableCheckSample = false;
 	
 	@PostConstruct
 	private void init() {
@@ -99,6 +105,29 @@ public class ProcessProdBnMZ implements Serializable {
 		return null;
 	}
 	
+	public boolean isVisibleExecSumeryBtn() {
+		// (userSession.moderator||userSession.admin||userSession.head)and userAccessMBean.detailReview
+		if((userSession.isModerator() || userSession.isAdmin() || userSession.isHead()) 
+				&& processProdBn.getUserAccessMBean().isDetailReview()){
+			// if All ReviewInfo in state ACCEPTED
+			List<ReviewInfo> list = processProdBn.getReviewInfos();
+			if(list != null && list.size() > 0){
+				for(ReviewInfo rinfo:list){
+					if(!rinfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)){
+						visibleExecSumeryBtn = false;
+						return visibleExecSumeryBtn;
+					}
+				}
+				visibleExecSumeryBtn = true;
+			}
+		}
+		return visibleExecSumeryBtn;
+	}
+
+	public void setVisibleExecSumeryBtn(boolean visibleExecSumeryBtn) {
+		this.visibleExecSumeryBtn = visibleExecSumeryBtn;
+	}
+
 	public ProdApplications findProdApplications() {
 		return processProdBn.getProdApplications();
     }
@@ -143,4 +172,15 @@ public class ProcessProdBnMZ implements Serializable {
 		this.gestorDeCTRM = gestorDeCTRM;
 	}
     
+	public boolean isDisableCheckSample() {
+    	disableCheckSample = false;
+    	if(processProdBn.getProdApplications() != null)
+    		if(processProdBn.getProdApplications().getRegState().ordinal() > 6)
+    			disableCheckSample = true;
+		return disableCheckSample;
+	}
+
+	public void setDisableCheckSample(boolean checkSample) {
+		this.disableCheckSample = checkSample;
+	}
 }

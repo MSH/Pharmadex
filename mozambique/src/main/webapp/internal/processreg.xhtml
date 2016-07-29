@@ -29,7 +29,8 @@
                         <p:messages id="messages" showDetail="true" showSummary="true"/>
 
                         <p:tabView id="processtab" style="width: 830px;"
-                                   activeIndex="#{processProdBn.selectedTab}" dynamic="true">
+                                   activeIndex="#{processProdBn.selectedTab}" dynamic="true"
+                                    cache="false">
                             <p:tab title="#{msgs.application_info}" id="infotab">
                                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
 
@@ -75,8 +76,6 @@
                                         <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
                                     </p:commandButton>
                                 </h:panelGrid>
-
-
                             </p:tab>
 
                             <!-- Include workspace specific sequence of tabs. -->
@@ -327,8 +326,7 @@
                                 </p:panel>
                             </p:tab>
 
-                            <p:tab title="#{msgs.assessment}" id="process"
-                                   rendered="#{userSession.moderator||userSession.head}">
+                            <p:tab title="#{msgs.assessment}" id="process" rendered="#{userSession.moderator||userSession.head}">
                                 <ui:include src="reviewertable.xhtml"/>
                                 <f:param name="sourcePage" value="/internal/processreg.faces:#{each.prodApplications.id}"/>
                             </p:tab>
