@@ -211,7 +211,6 @@ public class ProdApplicationsDAO implements Serializable {
 
     public boolean moveToArchive(ProdApplications prodApplications, Date archivingDate){
         prodApplications.setRegState(RegState.ARCHIVE);
-
     	prodApplications.setArchivingDate(archivingDate);
     	entityManager.merge(prodApplications);
     	return true;
