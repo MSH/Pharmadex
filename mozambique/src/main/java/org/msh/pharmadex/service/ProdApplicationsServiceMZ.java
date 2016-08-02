@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
@@ -27,6 +28,7 @@ import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
+import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
@@ -34,14 +36,17 @@ import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 
 /**
  */
@@ -69,6 +74,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 	@Autowired
 	private ProdApplicationsService prodApplicationsService;
+	@Autowired
+	private ProdAppChecklistService checkListService;
 
 	@Autowired
 	private UtilsByReportsMZ utilsByReports;
@@ -279,8 +286,83 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXPIRY_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GESTOR, gestor);
-		
+
 		return JasperFillManager.fillReport(resource.getFile(), param, conn);
+	}
+	/**
+	 * Create deficiency letter and store it to letters
+	 * @return
+	 */
+	public String createDeficiencyLetterScr(ProdApplications prodApp){
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+		Product prod = prodApp.getProduct();
+		try {
+			File defScrPDF = File.createTempFile("" + prod.getProdName() + "_defScr", ".pdf");
+			JasperPrint jasperPrint;
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			utilsByReports.init(param, prodApp, prod);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GENNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPUSERNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PROD_DETAILS, "", false);
+			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
+			JRMapArrayDataSource source = createDeficiencySource(checkLists);
+			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");
+			if(source != null){
+				if(resource != null){
+					jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
+					net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(defScrPDF));
+					byte[] file = IOUtils.toByteArray(new FileInputStream(defScrPDF));
+					ProdAppLetter attachment = new ProdAppLetter();
+					attachment.setRegState(prodApp.getRegState());
+					attachment.setFile(file);
+					attachment.setProdApplications(prodApp);
+					attachment.setFileName(defScrPDF.getName());
+					attachment.setTitle(bundle.getString("LetterType.DEFICIENCY"));
+					attachment.setUploadedBy(prodApp.getCreatedBy());
+					attachment.setComment(bundle.getString("LetterType.DEFICIENCY"));
+					attachment.setContentType("application/pdf");
+					attachment.setLetterType(LetterType.ACK_SUBMITTED);
+					prodAppLetterDAO.save(attachment);
+					return "persist";
+				}else{
+					return "error";
+				}
+			}else{
+				return "error";
+			}
+
+		} catch (JRException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return "error";
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return "error";
+		} 
+	}
+
+	/**
+	 * Create data source for report from deficiency in check list
+	 * @param checkLists
+	 * @return data source or null if impossible
+	 */
+	private JRMapArrayDataSource createDeficiencySource(List<ProdAppChecklist> checkLists) {
+		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
+		if(checkLists != null){
+			for(ProdAppChecklist item : checkLists){
+				if(item.getStaffValue() == YesNoNA.NO || (item.getValue() == YesNoNA.NO) && item.getStaffValue() == YesNoNA.NA){
+					Map<String,String> mp = new HashMap<String,String>();
+					mp.put(UtilsByReportsMZ.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
+					res.add(mp);
+				}
+			}
+			return new JRMapArrayDataSource(res.toArray());
+		}else{
+			return null;
+		}
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -293,7 +375,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
 
 			JasperPrint jasperPrint;
-			Connection conn = entityManager.unwrap(Session.class).connection();
 
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
@@ -307,16 +388,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PACKSIZE, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
-			
+
 			//letter
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPPOST, "", false);				
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPUSERNAME, "", false);
-						
+
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
-				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 				net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 				byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 
@@ -331,7 +412,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				attachment.setContentType("application/pdf");
 				attachment.setLetterType(LetterType.ACK_SUBMITTED);
 				prodAppLetterDAO.save(attachment);
-				conn.close();
 				return "persist";
 			}
 			return "error";
@@ -340,9 +420,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			return "error";
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-			return "error";
-		} catch (SQLException e) {
-			e.printStackTrace();
 			return "error";
 		}
 	}

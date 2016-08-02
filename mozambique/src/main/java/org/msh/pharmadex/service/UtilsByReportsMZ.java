@@ -22,7 +22,8 @@ public class UtilsByReportsMZ implements Serializable {
 	private static final long serialVersionUID = 5110624647990815527L;
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-	
+
+	public static final String FLD_DEFICITEM_NAME = "defItemName";
 	public static String KEY_APPNAME = "appName";
 	public static String KEY_ADDRESS1 = "address1";
 	public static String KEY_ADDRESS2 = "address2";
@@ -55,7 +56,7 @@ public class UtilsByReportsMZ implements Serializable {
 	public static String KEY_PACKSIZE = "packsize";
 	public static String KEY_STORAGE = "storage";
 	public static String KEY_EXCIPIENT = "excipient";
-	
+
 	public static String KEY_FNM = "fnm";
 	public static String KEY_DRUGTYPE = "drugType";
 	public static String KEY_SUBACT = "subact";
@@ -66,32 +67,33 @@ public class UtilsByReportsMZ implements Serializable {
 	public static String KEY_SUBMIT_DATE = "submitDate";
 	public static String KEY_DOSREC_DATE = "dosRecDate";
 	public static String KEY_GESTOR = "gestorDeCTRM";
-	
+	public static String KEY_PROD_DETAILS = "fullName";
+
 	/* для letter*/	
 	public static String KEY_APPADDRESS = "appAddress";	
 	public static String KEY_APPNUM = "appNum";/**номер в их системе (канцелярский номер) */
 	public static String KEY_APPUSERNAME = "appUserName"; /** ФИО */
 	public static String KEY_APPPOST = "appPost"; /**должность*/
-		
+
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
 	private Product prod = null;
-	
+
 	public void init(HashMap<String, Object> _param, ProdApplications _prodApps, Product _prod){
 		this.param = _param;
 		if(param == null)
 			param = new HashMap<String, Object>();
-		
+
 		this.prodApps = _prodApps;
 		this.prod = _prod;
 	}
-	
+
 	public void putNotNull(String key, Object obj){
 		if(param == null)
 			return;
 		param.put(key, obj);
 	}
-	
+
 	/** onlyStr - true - add in map just string, without considering prodApps or(and) prod*/
 	public void putNotNull(String key, String text, boolean onlyStr){
 		if(param == null)
@@ -111,9 +113,18 @@ public class UtilsByReportsMZ implements Serializable {
 		if(prod == null)
 			return ;
 		String str = "";
-		
+
 		if(k.equals(KEY_PRODNAME)){
 			str = prod.getProdName() != null ? prod.getProdName():"";
+			param.put(k, str);
+		}
+		if(k.equals(KEY_PROD_DETAILS)){
+			str = prod.getProdName() != null ? prod.getProdName():"";
+			if(str.length()>0){
+				if(prod.getProdDesc() != null){
+					str = str +", "+prod.getProdDesc();
+				}
+			}
 			param.put(k, str);
 		}
 		if(k.equals(KEY_GENNAME)){
@@ -182,12 +193,12 @@ public class UtilsByReportsMZ implements Serializable {
 			param.put(k, str);
 		}
 	}
-	
+
 	private void putParamByProdApplications(String k, String t){
 		if(prodApps == null)
 			return ;
 		String str = "";
-		
+
 		if(k.equals(KEY_APPNAME)){
 			str = (prodApps.getApplicant() != null && prodApps.getApplicant().getAppName() != null)?prodApps.getApplicant().getAppName():"";
 			param.put(k, str);
@@ -195,19 +206,19 @@ public class UtilsByReportsMZ implements Serializable {
 		if(k.equals(KEY_ADDRESS1)){
 			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
 				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_ADDRESS2)){
 			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
 				str = prodApps.getApplicant().getAddress().getAddress2() != null ? prodApps.getApplicant().getAddress().getAddress2():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_COUNTRY)){
 			if(prodApps.getApplicant() != null && 
 					prodApps.getApplicant().getAddress() != null &&
 					prodApps.getApplicant().getAddress().getCountry() != null)
 				str = prodApps.getApplicant().getAddress().getCountry().getCountryName() != null ? prodApps.getApplicant().getAddress().getCountry().getCountryName():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_APPNUMBER)){
 			str = prodApps.getProdAppNo() != null ? prodApps.getProdAppNo():"";
@@ -223,7 +234,7 @@ public class UtilsByReportsMZ implements Serializable {
 		if(k.equals(KEY_COMPANY_NAME)){
 			if(prodApps.getApplicant() != null)
 				str = prodApps.getApplicant().getAppName() != null ? prodApps.getApplicant().getAppName():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_REG_DATE)){
 			if(prodApps.getRegistrationDate() != null)
@@ -249,37 +260,37 @@ public class UtilsByReportsMZ implements Serializable {
 		if(k.equals(KEY_APPNUM)){
 			if(prodApps.getProdAppNo()!=null)
 				str = prodApps.getProdAppNo()!= null ? prodApps.getProdAppNo():"";
-			param.put(k, str);
+				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPPOST)){			
 			if(prodApps.getPosition()!=null)
 				str = prodApps.getPosition()!= null ? prodApps.getPosition():"";			
-			param.put(k, str);
+				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPADDRESS)){
 			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
 				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
-			param.put(k, str);
+				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPUSERNAME)){			
 			if(prodApps.getUsername()!=null)
 				str = prodApps.getUsername()!= null ? prodApps.getUsername():"";			
-			param.put(k, str);
+				param.put(k, str);
 		}
-	
+
 	}
-	
+
 	private String takeManufacturerName(){
-        String manufName = "";
-        List<ProdCompany> companyList = prod.getProdCompanies();
-        if (companyList != null){
-            for(ProdCompany company:companyList){
-                if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
-                    manufName = company.getCompany().getCompanyName();
-                    return manufName;
-                }
-            }
-        }
-        return manufName;
-    }
+		String manufName = "";
+		List<ProdCompany> companyList = prod.getProdCompanies();
+		if (companyList != null){
+			for(ProdCompany company:companyList){
+				if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+					manufName = company.getCompany().getCompanyName();
+					return manufName;
+				}
+			}
+		}
+		return manufName;
+	}
 }
