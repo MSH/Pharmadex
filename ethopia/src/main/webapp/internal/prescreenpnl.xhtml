@@ -5,8 +5,7 @@
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 
-    <h:panelGrid cellspacing="10" cellpadding="10" columns="4">
-
+    <h:panelGrid id="btnpnl" cellspacing="10" cellpadding="10" columns="4">
         <p:commandButton value="Print" type="button" icon="ui-icon-print">
             <p:printer target="checkListTbl"/>
         </p:commandButton>
@@ -25,7 +24,7 @@
 
     </h:panelGrid>
 
-    <h:panelGrid columns="2" cellpadding="10" cellspacing="10">
+    <h:panelGrid id="modpnl" columns="2" cellpadding="10" cellspacing="10">
         <p:outputLabel value="#{msgs.prescreenfee_recieved}" styleClass="label" for="prescreenfeerecieved"/>
         <p:selectBooleanButton id="prescreenfeerecieved" disabled="#{!processProdBn.prescreened}"
                                value="#{processProdBn.prodApplications.prescreenfeeReceived}"
@@ -60,12 +59,13 @@
             </p:selectOneButton>
         </p:column>
         <p:column headerText="#{msgs.global_remark}">
-            <p:inputText value="#{checkList.staffComment}" readonly="#{!processProdBn.prescreened}"/>
+            <p:outputLabel value="#{checkList.staffComment}" rendered="#{!processProdBn.prescreened}"/>
+            <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBn.prescreened}"/>
         </p:column>
         <p:column>
             <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
                              action="#{preScreenProdMBnET.setProdAppChecklist(checkList)}"
-                             rendered="#{!checkList.fileUploaded}"/>
+                             rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"/>
 
             <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
                              onclick="PrimeFaces.monitorDownload(start, stop)"
@@ -96,16 +96,14 @@
                             converter="#{userConverter}">
             </p:autoComplete>
 
-            <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"
-                    />
+            <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"/>
             <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"/>
-
         </p:panelGrid>
-
 
         <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBnET.completeScreen}"
-                         oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form"/>
+                         oncomplete="PF('completescreendlg').hide()" process="@form" ajax="true" 
+                         update="btnpnl modpnl checkListTbl"/>
 
     </p:dialog>
 

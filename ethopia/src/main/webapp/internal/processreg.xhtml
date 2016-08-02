@@ -29,7 +29,8 @@
                         <p:messages id="messages" showDetail="true" showSummary="true"/>
 
                         <p:tabView id="processtab" style="width: 830px;"
-                                   activeIndex="#{processProdBn.selectedTab}" dynamic="true">
+                                   activeIndex="#{processProdBn.selectedTab}" dynamic="true"
+                                   cache="false">
                             <p:tab title="#{msgs.application_info}" id="infotab">
                                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
 

@@ -179,7 +179,7 @@ public class ReviewService implements Serializable {
 
     }
 
-    public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo) {
+    public List<ReviewDetail> initReviewDetail(ReviewInfo reviewInfo, Long loggedINUserId) {
         ProdApplications prodApplications = reviewInfo.getProdApplications();
         List<ReviewDetail> reviewDetails = new ArrayList<ReviewDetail>();
         List<ReviewQuestion> reviewQuestions = null;
@@ -206,7 +206,7 @@ public class ReviewService implements Serializable {
 
         ReviewDetail reviewDetail;
         for (ReviewQuestion reviewQuestion : reviewQuestions) {
-            reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false);
+            reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false, userService.findUser(loggedINUserId));
             reviewDetails.add(reviewDetail);
         }
 
@@ -214,12 +214,12 @@ public class ReviewService implements Serializable {
         return reviewDetails;
     }
 
-    public List<DisplayReviewQ> getDisplayReviewSum(ReviewInfo ri) {
+    public List<DisplayReviewQ> getDisplayReviewSum(ReviewInfo ri, Long loggedINUserId) {
         List<ReviewDetail> reviewDetails = reviewQDAO.findReviewSummary(ri.getReviewer().getUserId(), ri.getId());
         boolean init = false;
         if (reviewDetails == null || reviewDetails.size() < 1) {
             init = true;
-            reviewDetails = initReviewDetail(ri);
+            reviewDetails = initReviewDetail(ri, loggedINUserId);
         }
         List<DisplayReviewQ> header1 = new ArrayList<DisplayReviewQ>();
         List<DisplayReviewQ.Header2> header2 = new ArrayList<DisplayReviewQ.Header2>();

@@ -446,7 +446,7 @@ public class ReviewInfoBn implements Serializable {
 
     public List<DisplayReviewQ> getDisplayReviewQs() {
         if (displayReviewQs == null) {
-            displayReviewQs = reviewService.getDisplayReviewSum(getReviewInfo());
+            displayReviewQs = reviewService.getDisplayReviewSum(getReviewInfo(), userSession.getLoggedINUserID());
         }
         return displayReviewQs;
     }

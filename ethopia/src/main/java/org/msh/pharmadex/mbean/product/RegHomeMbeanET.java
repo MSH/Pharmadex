@@ -20,6 +20,8 @@ import java.util.List;
 /**
  * Created by usrivastava on 01/14/2015.
  */
+//22.07.2016
+@Deprecated
 @ManagedBean
 @ViewScoped
 public class RegHomeMbeanET implements Serializable{
