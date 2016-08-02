@@ -11,10 +11,13 @@ import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.RetObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,12 +44,18 @@ public class ProcessProdBnET implements Serializable {
     public ProdApplicationsServiceET prodApplicationsServiceET;
     @ManagedProperty(value = "#{reviewService}")
     public ReviewService reviewService;
-
+private String changedFields;
     protected boolean displayVerify = false;
     private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
     private JasperPrint jasperPrint;
     private boolean showFeedBackButton;
 
+    @PostConstruct
+    private void init() {
+    	ProdApplications pa= processProdBn.getProdApplications();
+    	if (pa!=null)changedFields=pa.getAppComment();
+    	if (changedFields==null) changedFields="";
+    }
     public boolean isDisplayVerify() {
         if (userSession.isAdmin() || userSession.isHead() || userSession.isModerator())
             return true;
@@ -164,7 +173,21 @@ public class ProcessProdBnET implements Serializable {
         return "/internal/processprodlist";
     }
 
-
+   public boolean isFieldChanged(String fieldname){
+	  //получим список из review_info.changedFields  если в списке нет, то false
+ //   	 String fieldname = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("fieldvalue");
+    	   
+    	if (changedFields.contains(fieldname)) return true;
+    	return false;
+    }
+    public String getFieldChanged(String name){
+  	  //получим список из review_info.changedFields  если в списке нет, то false
+      	 String fieldname = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("fieldvalue");
+      	   
+      	if (changedFields.contains(fieldname)) return "color: red;";
+      	return "color:black;";
+    }
+    
     public void setShowFeedBackButton(boolean showFeedBackButton) {
         this.showFeedBackButton = showFeedBackButton;
     }

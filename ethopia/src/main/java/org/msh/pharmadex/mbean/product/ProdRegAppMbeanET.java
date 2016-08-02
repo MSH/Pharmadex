@@ -256,4 +256,30 @@ public class ProdRegAppMbeanET implements Serializable {
     public void setCurrentTab(String currentTab) {
         this.currentTab = currentTab;
     }
+    @Transactional
+	public String submitApp() {
+    	ProdApplications curA=prodRegAppMbean.getProdApplications();
+    	  if (curA.getParentApplication()!=null){
+    		  Product oldPr=null;
+    		  String comment="";
+    		parentAppId=curA.getParentApplication().getId();
+    		  ProdApplications pa=prodRegAppMbean.getProdApplicationsService().findProdApplications(parentAppId);
+         	  if (pa!=null)  oldPr=pa.getProduct();
+         	  if (!product.getProdName().equalsIgnoreCase(oldPr.getProdName())) comment=comment+"prodName";
+         	  if (product.getProdCategory()!=oldPr.getProdCategory()) comment=comment+"prodCategory";
+          	  if (!product.getGenName().equalsIgnoreCase(oldPr.getGenName())) comment=comment+"genName";
+          	  if (product.getDosForm()!=oldPr.getDosForm()) comment=comment+"dosForm";
+          	  if (product.getDosStrength()!=oldPr.getDosStrength()) comment=comment+"dosStrength"; 
+          	  if (product.getDosUnit()!=oldPr.getDosUnit()) comment=comment+"dosUnit"; 
+              if (product.getAdminRoute()!=oldPr.getAdminRoute()) comment=comment+"adminRoute"; 
+              if (product.getAgeGroup()!=oldPr.getAgeGroup()) comment=comment+"ageGroup"; 
+              if (product.getPharmClassif()!=oldPr.getPharmClassif()) comment=comment+"pharmClassif"; 
+              if (!product.getProdDesc().equalsIgnoreCase(oldPr.getProdDesc())) comment=comment+"prodDesc";
+            
+              curA.setAppComment(comment);
+              prodRegAppMbean.setProdApplications(curA);
+    	  }
+    	return prodRegAppMbean.submitApp();
+    }
+    
 }
