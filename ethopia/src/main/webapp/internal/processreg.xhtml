@@ -33,43 +33,130 @@
                                    cache="false">
                             <p:tab title="#{msgs.application_info}" id="infotab">
                                 <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
-
-                                    <h:outputLabel value="#{msgs.prodName}:"/>
-                                    <h:outputLabel value="#{processProdBn.product.prodName}"/>
-
+                                  <h:outputLabel value="#{msgs.prodName}:"/>
+                                     <ui:fragment   rendered="#{processProdBnET.isFieldChanged('prodName')}">
+                                     <div>
+                                      <h:outputLabel value="#{processProdBn.product.prodName}" style="color: red;"/>
+                                     </div>
+                                    </ui:fragment>
+                                    <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('prodName')}">
+                                     <div>
+                                      <h:outputLabel value="#{processProdBn.product.prodName}" />
+                                     </div>
+                                    </ui:fragment>
+                                    
                                     <h:outputLabel value="#{msgs.prod_cat}:"/>
-                                    <h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}"/>
-
+                                   <ui:fragment   rendered="#{processProdBnET.isFieldChanged('prodCategory')}">
+                                                                                               
+                                    <div>
+                                          <h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}"  style="color: red;"/> 
+                                    </div>
+                                    </ui:fragment>
+                                    <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('prodCategory')}">
+                                                                                               
+                                    <div>
+                                          <h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}" /> 
+                                    </div>
+                                    </ui:fragment>
+                                 
                                     <h:outputLabel value="#{msgs.prodgenname}:"/>
-                                    <h:outputLabel value="#{processProdBn.product.genName}"/>
-
-                                    <h:outputLabel value="#{msgs.prod_app_type}:"/>
+                                     <ui:fragment   rendered="#{processProdBnET.isFieldChanged('genName')}">                                                                                             
+                                    <div>
+                                        <h:outputLabel value="#{processProdBn.product.genName}" style="color: red;"/>
+                                    </div>
+                                    </ui:fragment>
+                                    <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('genName')}">                                                                                             
+                                    <div>
+                                        <h:outputLabel value="#{processProdBn.product.genName}" />
+                                    </div>
+                                    </ui:fragment>  
+                                    <h:outputLabel value="#{msgs.prod_app_type}:"/>                                                                 
                                     <h:outputLabel value="#{msgs[processProdBn.prodApplications.prodAppType.key]}"/>
-
-                                    <h:outputLabel value="#{msgs.dos_form}"/>
-                                    <h:outputLabel value="#{processProdBn.product.dosForm.dosForm}"/>
-
+                                    
+                                     <h:outputLabel value="#{msgs.dos_form}:" />
+                                    <ui:fragment   rendered="#{processProdBnET.isFieldChanged('dosForm')}">                                                                                             
+                                    <div>
+                                         <h:outputLabel value="#{processProdBn.product.dosForm.dosForm}" style="color: red;"/>
+                                     </div>
+                                    </ui:fragment>  
+                                     <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('dosForm')}">                                                                                             
+                                    <div>
+                                        <h:outputLabel value="#{processProdBn.product.dosForm.dosForm}"/>
+                                    </div>
+                                    </ui:fragment>
+                                    
                                     <h:outputLabel value="#{msgs.dos_strength}" style="font-weight: bold;"/>
-                                    <h:outputLabel value="#{processProdBn.product.dosStrength}"/>
-
+                                    <ui:fragment   rendered="#{processProdBnET.isFieldChanged('dosStrength')}">                                                                                             
+                                    <div>
+                                       <h:outputLabel value="#{processProdBn.product.dosStrength}"  style="color: red;"/>
+                                    </div>
+                                    </ui:fragment>
+                                     <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('dosStrength')}">                                                                                             
+                                    <div>
+                                       <h:outputLabel value="#{processProdBn.product.dosStrength}"  />
+                                    </div>
+                                    </ui:fragment>
                                     <h:outputLabel value="#{msgs.dos_unit}"/>
-                                    <h:outputLabel value="#{processProdBn.product.dosUnit.uom}"/>
-
-                                    <h:outputLabel value="#{msgs.prod_cat}"/>
-                                    <h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}"/>
-
+                                     <ui:fragment   rendered="#{processProdBnET.isFieldChanged('dosUnit')}">                                                                                             
+                                    <div>
+                                         <h:outputLabel value="#{processProdBn.product.dosUnit.uom}" style="color: red;"/>
+                                     </div>
+                                    </ui:fragment>
+                                     <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('dosUnit')}">                                                                                             
+                                    <div>
+                                         <h:outputLabel value="#{processProdBn.product.dosUnit.uom}" />
+                                     </div>
+                                    </ui:fragment>
+                                    
                                     <h:outputLabel value="#{msgs.admin_route}"/>
-                                    <h:outputLabel value="#{msgs[processProdBn.product.adminRoute.key]}"/>
-
+                                    <ui:fragment   rendered="#{processProdBnET.isFieldChanged('adminRoute')}">                                                                                             
+                                    <div>
+                                      <h:outputLabel value="#{msgs[processProdBn.product.adminRoute.key]}" style="color: red;"/>
+                                     </div>
+                                    </ui:fragment>
+                                    <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('adminRoute')}">                                                                                             
+                                    <div>
+                                      <h:outputLabel value="#{msgs[processProdBn.product.adminRoute.key]}"/>
+                                     </div>
+                                    </ui:fragment>
+                                    
                                     <h:outputLabel value="#{msgs.age_group}"/>
-                                    <h:outputLabel value="#{msgs[processProdBn.product.ageGroup.key]}"/>
-
+                                     <ui:fragment   rendered="#{processProdBnET.isFieldChanged('ageGroup')}">                                                                                             
+                                    <div>
+                                        <h:outputLabel value="#{msgs[processProdBn.product.ageGroup.key]}" style="color: red;"/>
+                                    </div>
+                                    </ui:fragment>
+                                     <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('ageGroup')}">                                                                                             
+                                    <div>
+                                        <h:outputLabel value="#{msgs[processProdBn.product.ageGroup.key]}" />
+                                    </div>
+                                    </ui:fragment>
+                                    
                                     <h:outputLabel value="#{msgs.product_pharmclassif}"/>
-                                    <h:outputLabel value="#{processProdBn.product.pharmClassif.displayName}"/>
-
+                                    <ui:fragment   rendered="#{processProdBnET.isFieldChanged('pharmClassif')}">                                                                                             
+                                    <div>
+                                      <h:outputLabel value="#{processProdBn.product.pharmClassif.displayName}"  style="color: red;"/>
+                                    </div>
+                                    </ui:fragment>
+                                     <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('pharmClassif')}">                                                                                             
+                                    <div>
+                                      <h:outputLabel value="#{processProdBn.product.pharmClassif.displayName}"  />
+                                    </div>
+                                    </ui:fragment>
+                                    
                                     <h:outputLabel value="#{msgs.prod_desc}"/>
-                                    <h:outputLabel value="#{processProdBn.product.prodDesc}"/>
-
+                                    <ui:fragment   rendered="#{processProdBnET.isFieldChanged('prodDesc')}">                                                                                             
+                                    <div>
+                                        <h:outputLabel value="#{processProdBn.product.prodDesc}"  style="color: red;"/>
+                                     </div>
+                                    </ui:fragment>
+                                     <ui:fragment   rendered="#{!processProdBnET.isFieldChanged('prodDesc')}">                                                                                             
+                                    <div>
+                                        <h:outputLabel value="#{processProdBn.product.prodDesc}"/>
+                                     </div>
+                                    </ui:fragment>
+                                     <h:outputLabel value=" "></h:outputLabel>
+                                        <h:outputLabel value=" "></h:outputLabel>
                                     <h:outputLabel value="#{msgs.product_details}"/>
                                     <div>
                                     <p:commandButton value="#{msgs.click_here}!" action="processproddetail"
