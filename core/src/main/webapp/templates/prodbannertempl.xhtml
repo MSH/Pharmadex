@@ -9,7 +9,11 @@
         <table class="banner">
             <tr>
                 <td>
-                    <p:outputLabel value="#{prodApp.product.prodName}"
+                    <p:outputLabel value="#{prodApp.product.prodName}("
+                                   styleClass="title"
+                                   style="font-weight: bold;  font-size: 1.5em;
+                                   #{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}"/>
+                    <p:outputLabel value="#{msgs[processProdBn.prodApplications.prodAppType.key]})"
                                    styleClass="title"
                                    style="font-weight: bold;  font-size: 1.5em;
                                    #{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}"/>

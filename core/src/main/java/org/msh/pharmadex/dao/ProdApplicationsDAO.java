@@ -210,11 +210,10 @@ public class ProdApplicationsDAO implements Serializable {
     }
 
     public boolean moveToArchive(ProdApplications prodApplications, Date archivingDate){
-    	prodApplications.setActive(false);
+        prodApplications.setRegState(RegState.ARCHIVE);
+
     	prodApplications.setArchivingDate(archivingDate);
-    	entityManager.persist(prodApplications);
-    	//Product p=prodApplications.getProduct();
-    	//p.s
+    	entityManager.merge(prodApplications);
     	return true;
     }
     public DosUom findDosUom(String uom) {

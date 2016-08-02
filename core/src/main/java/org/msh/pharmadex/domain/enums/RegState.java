@@ -21,7 +21,7 @@ public enum RegState {
     SUSPEND,
     CANCEL,
     RENEWED,
-    ARCHIVED;
+    ARCHIVE;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());

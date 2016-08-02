@@ -130,6 +130,7 @@ public class ProdRegAppMbean implements Serializable {
 	private UploadedFile payReceipt;
 	private UploadedFile clinicalReview;
 	private boolean showfull;
+	private String appType;
 
 
 	@PostConstruct
@@ -1106,8 +1107,30 @@ public class ProdRegAppMbean implements Serializable {
 		return showfull;
 	}
 
-
 	public void setShowfull(boolean showfull) {
 		this.showfull = showfull;
+	}
+
+	public String getAppType() {
+		String res = bundle.getString(prodApplications.getProdAppType().getKey());
+		if (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
+			res = res + " (";
+			if (prodApplications.getMjVarQnt()>0){
+				res = res + bundle.getString("variationType.major").toLowerCase() + " " + String.valueOf(prodApplications.getMjVarQnt());
+			}
+			if (prodApplications.getMnVarQnt()>0 && (prodApplications.getMjVarQnt()>0)){
+				res = res + " " + "/" + " ";
+			}
+			if (prodApplications.getMnVarQnt()>0){
+				res = res + " " + bundle.getString("variationType.minor").toLowerCase() + " " + String.valueOf(prodApplications.getMnVarQnt());
+			}
+			res = res + ")";
+		}
+		appType = res;
+		return appType;
+	}
+
+	public void setAppType(String appType) {
+		this.appType = appType;
 	}
 }

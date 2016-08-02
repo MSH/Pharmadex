@@ -336,3 +336,8 @@ body {
 .colored {
     background: orangered;
 }
+
+.panelNoBorder, .panelNoBorder tr, .panelNoBorder td{
+    border: hidden;
+    border-color: white;
+}

@@ -569,26 +569,19 @@ public class ProdApplicationsService implements Serializable {
 		try {
 			TimeLine timeLine = new TimeLine();
 			if (prodApp.getProdAppType().equals(ProdAppType.RENEW) || prodApp.getProdAppType().equals(ProdAppType.VARIATION)) {
-				/*prodApps = prodApplicationsDAO.findProdApplicationByProduct(product.getId());
-				if (prodApps != null) {
-					for (ProdApplications pa : prodApps) {
-						if (!pa.getProdAppType().equals(ProdAppType.RENEW)) {
-							proda = pa;
-						}
-					}
-				}*/
 				proda=prodApp.getParentApplication();
-				if (proda!=null) prodApplicationsDAO.moveToArchive(proda,prodApp.getRegistrationDate());
+				if (proda!=null)
+					prodApplicationsDAO.moveToArchive(proda,prodApp.getRegistrationDate());
 						
 			}
-				timeLine.setRegState(RegState.REGISTERED);
-				timeLine.setProdApplications(prodApp);
-				timeLine.setStatusDate(new Date());
-				timeLine.setUser(prodApp.getUpdatedBy());
-				prodApp.setRegState(timeLine.getRegState());
+			timeLine.setRegState(RegState.REGISTERED);
+			timeLine.setProdApplications(prodApp);
+			timeLine.setStatusDate(new Date());
+			timeLine.setUser(prodApp.getUpdatedBy());
+			prodApp.setRegState(timeLine.getRegState());
 
-				prodApplicationsDAO.updateApplication(prodApp);
-				timelineService.saveTimeLine(timeLine);
+			prodApplicationsDAO.updateApplication(prodApp);
+			timelineService.saveTimeLine(timeLine);
 			
 			return "created";
 		}catch  (Exception ex){
@@ -657,6 +650,7 @@ public class ProdApplicationsService implements Serializable {
 	}
 
 	public List<ForeignAppStatus> findForeignAppStatus(Long prodAppID) {
+		if (prodAppID==null) return null;
 		return foreignAppStatusDAO.findByProdApplications_Id(prodAppID);
 
 

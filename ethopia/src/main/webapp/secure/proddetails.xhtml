@@ -7,7 +7,8 @@
 
     <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
         <p:outputLabel value="#{msgs.prod_app_type}" styleClass="fy-required-field"/>
-        <p:outputLabel value="#{msgs[prodRegAppMbean.prodApplications.prodAppType.key]}" styleClass="label"/>
+        <!--<p:outputLabel value="#{msgs[prodRegAppMbean.prodApplications.prodAppType.key]}" styleClass="label"/>-->
+        <p:outputLabel value="#{prodRegAppMbean.appType}" styleClass="label"/>
         <p:outputLabel/>
 
         <p:outputLabel value="#{msgs.prod_cat}" for="prodCatcb" styleClass="fy-required-field"/>
@@ -86,15 +87,16 @@
         </p:autoComplete>
         <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>
 
-
         <p:outputLabel value="#{msgs.prod_desc}" for="prodDesc"/>
         <p:inputTextarea id="prodDesc" value="#{prodRegAppMbean.product.prodDesc}" rows="4" cols="50"
                          title="ProdDesc"/>
+        <p:message for="prodDesc" showSummary="true" showDetail="false"/>
+
     </h:panelGrid>
 
     <div align="right">
         <p:commandButton value="#{msgs.prev_applications}"
-                         rendered="#{not empty prodRegAppMbeanET.parentAppId}"
+                         rendered="#{not empty prodRegAppMbeanET.parentAppId && (userSession.head||userSession.moderator||userSession.reviewer)}"
                          onclick="PF('parentAppDlg').show();">
             <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
         </p:commandButton>

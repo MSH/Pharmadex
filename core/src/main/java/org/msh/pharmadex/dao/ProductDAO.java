@@ -88,6 +88,7 @@ public class ProductDAO implements Serializable {
                 .executeUpdate();
         return deleted;
     }
+
     /**
      * In DB Bangladesh in table prodApplications no field 'active'
      * @return

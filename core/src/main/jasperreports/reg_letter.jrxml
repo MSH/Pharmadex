@@ -495,7 +495,7 @@ and p.id = $P{prodappid}]]>
 					<font size="12"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
 				</textElement>
-				<text><![CDATA[Shelf Life]]></text>
+				<text><![CDATA[Shelf Life (in monthes)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="582" width="265" height="20" uuid="e003ae11-9145-4bf2-8d7c-c12a5b9c08ec"/>

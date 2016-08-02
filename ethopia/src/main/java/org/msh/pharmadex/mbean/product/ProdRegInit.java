@@ -10,6 +10,7 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AgentType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
@@ -75,16 +76,21 @@ public class ProdRegInit implements Serializable {
     private boolean showProductChoice;
     private boolean showVariationType;
     private ProdTable prodTable;
+    //private Product selProduct;
     private int minorQuantity=0;
     private int majorQuantity=0;
     private java.util.ResourceBundle bundle;
     private User curUser;
+    private boolean fewLicHolders;
 
     @PostConstruct
     public void init() {
         licenseHolders = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
         if (licenseHolders != null && licenseHolders.size() == 1) {
             selLicHolder = licenseHolders.get(0);
+            fewLicHolders=false;
+        }else{
+            fewLicHolders=true;
         }
         prodAppTypes = new ArrayList<ProdAppType>();
         prodAppTypes.add(ProdAppType.GENERIC);
@@ -138,10 +144,10 @@ public class ProdRegInit implements Serializable {
             }
         }
         if ((numFee+numPreScrFee)>0){
-            fee = String.valueOf(numFee.intValue());
-            prescreenfee = String.valueOf(numPreScrFee.intValue());
+            fee = String.valueOf(numFee.doubleValue());
+            prescreenfee = String.valueOf(numPreScrFee.doubleValue());
             Double total = numFee + numPreScrFee;
-            totalfee = String.valueOf(total.intValue());
+            totalfee = String.valueOf(total.doubleValue());
         }
     }
 
@@ -471,23 +477,77 @@ public class ProdRegInit implements Serializable {
         RequestContext.getCurrentInstance().update("reghome");
     }
 
-    public List<ProdTable> completeProduct(String query) {
+    public List<ProdTable> completeRegisteredProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
         List<ProdTable> prods = productService.findAllRegisteredProduct();
         for (ProdTable p : prods) {
             if ((p.getProdName() != null && p.getProdName().toLowerCase().startsWith(query))
                     || (p.getGenName() != null && p.getGenName().toLowerCase().startsWith(query)))
-                suggestions.add(p);
+                    suggestions.add(p);
         }
         return suggestions;
     }
+
+    private ProdTable createProdTableRecord(Product p){
+        ProdTable pt = new ProdTable();
+        pt.setId(p.getId());
+        pt.setManufName(p.getManufName());
+        pt.setGenName(p.getGenName());
+        pt.setProdName(p.getProdName());
+        pt.setProdCategory(p.getProdCategory());
+        List<ProdApplications> apps = p.getProdApplicationses();
+        for(ProdApplications pa:apps){
+            if (pa.getProdAppType().equals(ProdAppType.GENERIC)||pa.getProdAppType().equals(ProdAppType.GENERIC_NO_BE)||pa.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)){
+                pt.setProdAppID(pa.getId());
+                pt.setRegDate(pa.getRegistrationDate());
+                pt.setRegExpiryDate(pa.getRegExpiryDate());
+                pt.setRegNo(pa.getProdRegNo());
+                pt.setProdDesc(p.getProdDesc());
+                pt.setAppName(pa.getApplicant().getAppName());
+            }
+        }
+        return pt;
+    }
+
+    public List<ProdTable> completeProduct(String query) {
+        List<ProdTable> suggestions = new ArrayList<ProdTable>();
+        List<ProdTable> prods = productService.findAllRegisteredProduct();
+        Long lcId = this.getSelLicHolder().getId();
+        LicenseHolder lc = licenseHolderService.findLicHolder(lcId);
+        List<Product> products = lc.getProducts();
+        if (products!=null){
+            for (Product p : products) {
+                if (" ".equals(query))
+                    suggestions.add(createProdTableRecord(p));
+                else{
+                     if (p.getProdName() != null){
+                        if ( p.getProdName().toLowerCase().startsWith(query)){
+                            suggestions.add(createProdTableRecord(p));
+                            continue;
+                        }
+                    }
+                    if (p.getGenName() != null){
+                        if (p.getGenName().toLowerCase().startsWith(query)){
+                            suggestions.add(createProdTableRecord(p));
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        return suggestions;
+    }
+
+
 
     public void onItemSelect(SelectEvent event) {
         if(event.getObject() instanceof ProdTable){
             ProdTable prodTableCh = (ProdTable) event.getObject();
             setProdTable(prodTableCh);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
-//            ajaxListener(event);
+        }else if(event.getObject() instanceof LicenseHolder){
+            LicenseHolder lc = (LicenseHolder) event.getObject();
+            setSelLicHolder(lc);
         }
     }
 
@@ -652,4 +712,11 @@ public class ProdRegInit implements Serializable {
         this.curUser = curUser;
     }
 
+    public boolean isFewLicHolders() {
+        return fewLicHolders;
+    }
+
+    public void setFewLicHolders(boolean fewLicHolders) {
+        this.fewLicHolders = fewLicHolders;
+    }
 }

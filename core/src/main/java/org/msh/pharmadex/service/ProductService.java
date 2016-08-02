@@ -222,4 +222,5 @@ public class ProductService implements Serializable {
     public List<ProdTable> findRevokedProds() {
         return productDAO.findProductsByState(RegState.CANCEL);
     }
+
 }

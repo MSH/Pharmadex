@@ -159,16 +159,21 @@
                                         <h:outputLabel value=" "></h:outputLabel>
                                     <h:outputLabel value="#{msgs.product_details}"/>
                                     <div>
-                                    <p:commandButton value="#{msgs.click_here}!" action="processproddetail"
+                                        <p:commandButton value="#{msgs.click_here}!" action="processproddetail"
                                                      ajax="false" target="_blank" icon="ui-icon-search">
-                                        <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
-                                    <h:outputLabel value=" "></h:outputLabel>
-                                    </p:commandButton>
+                                            <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                                        <h:outputLabel value=" "></h:outputLabel>
+                                        </p:commandButton>
                                         <p:commandButton value="Edit details" action="/secure/prodreghome"
                                                          ajax="false" target="_blank" icon="ui-icon-search"
                                                          rendered="#{userSession.moderator}"
                                             >
                                             <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                                        </p:commandButton>
+                                        <p:commandButton value="#{msgs.prev_applications}"
+                                                         rendered="#{not empty processProdBn.prodApplications.parentApplication.id}"
+                                                         onclick="PF('parentAppDlg').show();">
+                                            <f:param name="prodAppID" value="#{processProdBn.prodApplications.parentApplication.id}"/>
                                         </p:commandButton>
                                     </div>
                                 </h:panelGrid>
@@ -791,6 +796,21 @@
         <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
                   resizable="false" dynamic="true">
             <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+        </p:dialog>
+
+        <p:dialog widgetVar="parentAppDlg" id="parentAppdlg" resizable="true" modal="true" dynamic="true"
+        >
+            <h:form id ="parentAppForm">
+                <p:panel>
+                    <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                        <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
+                        <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
+                        <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
+                        <ui:param name="dialogMode" value="true"/>
+                        <ui:param name="showfull" value="true"/>
+                    </ui:decorate>
+                </p:panel>
+            </h:form>
         </p:dialog>
 
     </ui:define>
