@@ -15,7 +15,7 @@
             <p:messages showSummary="true" showDetail="true" id="messages"/>
             <pe:ajaxErrorHandler/>
 
-            <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="true"
+            <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="true" onBack="PF('backDlg').show()"
                       flowListener="#{prodRegAppMbeanMZ.onFlowProcess}" >
 
                 <pe:ajaxErrorHandler/>
