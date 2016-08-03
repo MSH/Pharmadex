@@ -629,7 +629,9 @@
                                              action="#{prodRegAppMbean.cancel}"
                                              ajax="false"/>
                             <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="sumBackBtn"/>
-                            <p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbeanET.submitApp}"
+                <!--             <p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbeanET.submitApp}"
+                                             ajax="false"/> -->
+                                                <p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbean.validateApp}"
                                              ajax="false"/>
                         </div>
                     </p:panel>
