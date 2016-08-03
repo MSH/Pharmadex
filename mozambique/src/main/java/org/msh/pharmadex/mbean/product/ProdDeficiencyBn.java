@@ -16,6 +16,7 @@ import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.util.RetObject;
+import org.primefaces.context.RequestContext;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -111,6 +112,8 @@ public class ProdDeficiencyBn implements Serializable {
     	String s =getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications);
     	if(!s.equals("persist")){
     		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+    	}else{
+    		RequestContext.getCurrentInstance().execute("PF('letterSuccessDlg').show()");
     	}
     }
 

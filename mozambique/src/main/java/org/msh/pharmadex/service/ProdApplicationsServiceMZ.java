@@ -2,8 +2,10 @@ package org.msh.pharmadex.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.Connection;
@@ -15,6 +17,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
@@ -367,7 +371,151 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	/**
+	 * Create review details and save it to letters (one point to find all generated documents)
+	 * @param prodApplications
+	 * @return
+	 */
+	public String createReviewDetails(ProdApplications prodApplications) {
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+		Properties prop = fetchReviewDetailsProperties();
+		if(prop != null){
+			Product prod = prodApp.getProduct();
+			try {
+				File rDPDF = File.createTempFile("" + prod.getProdName() + "_reviewDetails", ".pdf");
+				JasperPrint jasperPrint;
+				HashMap<String, Object> param = new HashMap<String, Object>();
+				utilsByReports.init(param, prodApp, prod);
+				utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
+				utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MODERNAME, "", false);
+				//TODO chief name from properties!!
+				JRMapArrayDataSource source = createReviewSourcePorto(prodApplications,bundle, prop);
+				URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report.jasper");
+				if(source != null){
+					if(resource != null){
+						jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
+						net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(rDPDF));
+						byte[] file = IOUtils.toByteArray(new FileInputStream(rDPDF));
+						ProdAppLetter attachment = new ProdAppLetter();
+						attachment.setRegState(prodApp.getRegState());
+						attachment.setFile(file);
+						attachment.setProdApplications(prodApp);
+						attachment.setFileName(rDPDF.getName());
+						attachment.setTitle(bundle.getString("LetterType.DEFICIENCY"));
+						attachment.setUploadedBy(prodApp.getCreatedBy());
+						attachment.setComment(bundle.getString("LetterType.DEFICIENCY"));
+						attachment.setContentType("application/pdf");
+						attachment.setLetterType(LetterType.ACK_SUBMITTED);
+						prodAppLetterDAO.save(attachment);
+						return "persist";
+					}else{
+						return "error";
+					}
+				}else{
+					return "error";
+				}
+
+			} catch (JRException e) {
+				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				return "error";
+			} catch (IOException e) {
+				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				return "error";
+			} 
+		}else{
+			return "error";
+		}
+	}
+	/**
+	 * Read necessary properties for review details (for Porto language)
+	 * @return properties or null
+	 */
+	private Properties fetchReviewDetailsProperties() {
+		Properties props = new Properties();
+		InputStream in;
+		try {
+			in = this.getClass().getResourceAsStream("review_details.properties");
+			props.load(in);
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return props;
+	}
+
+	/**
+	 * Create data source for review detail report. Portuguese language only!!!!
+	 * @param prodApplications current application
+	 * @param bundle language bundle
+	 * @param prop report specific properties
+	 * @return at least empty map!
+	 */
+	private JRMapArrayDataSource createReviewSourcePorto(ProdApplications prodApplications, ResourceBundle bundle, Properties prop) {
+		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
+		fillGeneralRS(res, prop,prodApplications);
+		return new JRMapArrayDataSource(res.toArray());
+	}
+	/**
+	 * Fill first section of the details - general information
+	 * @param res result map
+	 * @param prop specific properties
+	 * @param prodApplications current application
+	 */
+	private void fillGeneralRS(List<Map<String, String>> res, Properties prop, ProdApplications prodApplications) {
+		res.clear();
+		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_1"),fetchFullApplicant(prodApplications),null);
+		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_2"),prodApplications.getProduct().getGenName(),null);
+		//TODO 
+	}
+	/**
+	 * Fetch full applicant data name + address
+	 * @param prodApp 
+	 * @return
+	 */
+	private String fetchFullApplicant(ProdApplications prodApp) {
+		String name = prodApp.getApplicant().getAppName();
+		String addr1 = prodApp.getApplicant().getAddress().getAddress1();
+		String addr2 = prodApp.getApplicant().getAddress().getAddress2();
+		String addr="";
+		if(addr1 != null){
+			addr = addr1;
+		}
+		if(addr2 != null){
+			addr = addr + " "+addr2;
+		}
+		if(addr.length()==0){
+			addr="Maputo";
+		}
+		return name + " " + addr;
+	}
+
+	/**
+	 * Fill data for a line of the report to result res
+	 * @param res list of maps
+	 * @param reviewChapter
+	 * @param reviewItem
+	 * @param reviewItemData
+	 * @param reviewItemFile
+	 */
+	private void fillItemRS(List<Map<String, String>> res, String reviewChapter, String reviewItem,
+			String reviewItemData, String reviewItemFile) {
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("reviewChapter",reviewChapter);
+		map.put("reviewItem",reviewItem);
+		map.put("reviewItemData",reviewItemData);
+		map.put("reviewItemFile",reviewItemFile);
+	}
+
+	/**
+	 * Create application acknowledgement letter and store it to letters!
+	 * @param prodApp current prodapplication
+	 * @return persist or error
+	 */
 	public String createAckLetter(ProdApplications prodApp) {
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
@@ -525,8 +673,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		return prodApplicationses;
 	}
-	
-	
+
 	@Transactional
 	public String submitExecSummary(ProdApplications prodApplications, Long loggedInUser, List<ReviewInfo> reviewInfos) {
 		try {

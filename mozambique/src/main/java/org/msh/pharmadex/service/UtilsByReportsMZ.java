@@ -24,12 +24,13 @@ public class UtilsByReportsMZ implements Serializable {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 	public static final String FLD_DEFICITEM_NAME = "defItemName";
+
+	public static String KEY_MODERNAME = "moderName";
 	public static String KEY_APPNAME = "appName";
 	public static String KEY_ADDRESS1 = "address1";
 	public static String KEY_ADDRESS2 = "address2";
 	public static String KEY_COUNTRY = "country";
 	public static String KEY_COUNTRY_NAME = "countryName";
-	/** номер при регистрации продукта (при формировании сертификата)*/
 	public static String KEY_APPNUMBER = "appNumber";
 	public static String KEY_ID = "id";
 	public static String KEY_PRODNAME = "prodName";
@@ -199,6 +200,11 @@ public class UtilsByReportsMZ implements Serializable {
 			return ;
 		String str = "";
 
+		if(k.equals(KEY_MODERNAME)){
+			if(prodApps.getModerator() != null){
+				str= prodApps.getModerator().getUsername();
+			}
+		}
 		if(k.equals(KEY_APPNAME)){
 			str = (prodApps.getApplicant() != null && prodApps.getApplicant().getAppName() != null)?prodApps.getApplicant().getAppName():"";
 			param.put(k, str);
