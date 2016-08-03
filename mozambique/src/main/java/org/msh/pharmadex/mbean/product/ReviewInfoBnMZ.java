@@ -63,7 +63,7 @@ public class ReviewInfoBnMZ implements Serializable {
                 ex.printStackTrace();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
             }
-        return "/public/registrationhome";
+        return "/public/registrationhome.faces";
     }
 
     public String buildStyleClassName(DisplayReviewInfo q){

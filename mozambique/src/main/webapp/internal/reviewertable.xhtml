@@ -159,7 +159,7 @@
     </p:dataTable>
 
     <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"
-              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" >
+              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" closable="false">
         <p:messages id="messages"/>
             <p:panel>
                 <h:panelGrid id="reviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
@@ -227,17 +227,21 @@
 
                 </h:panelGrid>
 
-
-                <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+				<h:panelGrid columns="2" style="margin-top:10px">
+                   <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
                                  action="#{prodReviewBn.assignReviewer}"
-                                 oncomplete="if (!args.validationFailed) PF('assignreviewdlg').hide()" ajax="true"
-                                 update="@form"/>
+                                 oncomplete="if(!args.validationFailed)PF('assignreviewdlg').hide();"
+                                 ajax="true" update="@form"/>
+                   <p:commandButton id="cancelButton1" type="button" value="#{msgs.global_cancel}"
+                                     onclick="PF('assignreviewdlg').hide()"
+                                     ajax="false"/>
+                </h:panelGrid>
             </p:panel>
 
     </p:dialog>
 
     <p:dialog header="#{msgs.changereviewer}" widgetVar="changereviewdlg" dynamic="true"
-              id="changereviewDlg" modal="true" rendered="#{userSession.moderator}">
+              id="changereviewDlg" modal="true" rendered="#{userSession.moderator}" closable="false">
         <p:messages id="messages2"/>
         <p:panel>
             <h:panelGrid id="changeReviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
@@ -290,11 +294,15 @@
 
             </h:panelGrid>
 
-
-            <p:commandButton id="changeRevBtn" value="#{msgs.global_submit}"
+			<h:panelGrid columns="2" style="margin-top:10px">
+                   <p:commandButton id="changeRevBtn" value="#{msgs.global_submit}"
                              action="#{prodReviewBn.changeReviewer}" process="@form" ajax="false"
                              oncomplete="if (!args.validationFailed) PF('changereviewdlg').hide()"
                              update="@form"/>
+                   <p:commandButton id="cancelButton2" type="button" value="#{msgs.global_cancel}"
+                                     onclick="PF('changeRevBtn').hide()"
+                                     ajax="false"/>
+                </h:panelGrid>
         </p:panel>
 
     </p:dialog>

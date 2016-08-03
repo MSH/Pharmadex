@@ -32,10 +32,12 @@ import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -523,4 +525,48 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		return prodApplicationses;
 	}
+	
+	
+	@Transactional
+	public String submitExecSummary(ProdApplications prodApplications, Long loggedInUser, List<ReviewInfo> reviewInfos) {
+		try {
+			if (reviewInfos == null || prodApplications == null || loggedInUser == null)
+				return "empty";
+
+			boolean complete = false;
+			for (ReviewInfo reviewInfo : reviewInfos) {
+				if (!reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
+					complete = false;
+					return "state_error";
+				} else {
+					complete = true;
+				}
+			}
+
+			if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
+				// old version (!prodApplications.isClinicalRevReceived() || !prodApplications.isClinicalRevVerified() || prodApplications.getcRevAttach() == null)
+				if (!prodApplications.isClinicalRevReceived() || !prodApplications.isClinicalRevVerified()) {
+					complete = false;
+					return "clinical_review";
+				}
+			}
+
+			if (prodApplications.getProdAppType()!=ProdAppType.RENEW) {
+				if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
+					return "lab_status";
+				}
+			}
+
+			if (complete) {
+				prodApplicationsService.saveApplication(prodApplications, loggedInUser);
+				return "persist";
+			} else {
+				return "state_error";
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return "error";
+		}
+	}
+
 }

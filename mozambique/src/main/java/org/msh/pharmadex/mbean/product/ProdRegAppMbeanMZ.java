@@ -10,9 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 /**
@@ -30,7 +28,6 @@ public class ProdRegAppMbeanMZ implements Serializable {
 	private ProdRegAppMbean prodRegAppMbean;
 
 	private String currentStep = "";
-	private boolean yesclick = false;
 	private boolean visibleSave = false;
 	private boolean visibleSubmit = false;
 	
@@ -55,21 +52,7 @@ public class ProdRegAppMbeanMZ implements Serializable {
 		String currentWizardStep = event.getOldStep();
 		String nextWizardStep = event.getNewStep();
 		try {
-			if(isClickPrevious(currentWizardStep, nextWizardStep)){
-				if(currentStep.equals("summary")){
-					return nextWizardStep;
-				}
-				if(yesclick){
-					yesclick = false;
-					RequestContext.getCurrentInstance().execute("PF('backDlg').hide()");
-					currentStep = nextWizardStep;
-					return currentStep;
-				}else{
-					RequestContext.getCurrentInstance().execute("PF('backDlg').show()");
-					currentStep = currentWizardStep;
-					return currentStep;
-				}
-			}else{
+			if(!isClickPrevious(currentWizardStep, nextWizardStep)){
 				prodRegAppMbean.initializeNewApp(nextWizardStep);
 				if (currentWizardStep.equals("prodreg")) {
 					if (prodRegAppMbean.getApplicant() == null || prodRegAppMbean.getApplicant().getApplcntId()==null) {
@@ -106,25 +89,12 @@ public class ProdRegAppMbeanMZ implements Serializable {
 		return false;
 	}
 	
-	public void buttonAction(ActionEvent actionEvent) {
-		yesclick = true;
-		RequestContext.getCurrentInstance().execute("PF('wizard').back()");
-    }
-	
 	public ProdRegAppMbean getProdRegAppMbean() {
 		return prodRegAppMbean;
 	}
 
 	public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
 		this.prodRegAppMbean = prodRegAppMbean;
-	}
-
-	public boolean isYesclick() {
-		return yesclick;
-	}
-
-	public void setYesclick(boolean yesclick) {
-		this.yesclick = yesclick;
 	}
 
 	public String getCurrentStep() {
