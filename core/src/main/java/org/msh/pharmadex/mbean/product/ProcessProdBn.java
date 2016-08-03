@@ -24,22 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.Attachment;
-import org.msh.pharmadex.domain.Comment;
-import org.msh.pharmadex.domain.Invoice;
-import org.msh.pharmadex.domain.Mail;
-import org.msh.pharmadex.domain.ProdAppAmdmt;
-import org.msh.pharmadex.domain.ProdAppLetter;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.RevDeficiency;
-import org.msh.pharmadex.domain.Review;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.SuspDetail;
-import org.msh.pharmadex.domain.TimeLine;
-import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
@@ -116,30 +101,27 @@ public class ProcessProdBn implements Serializable {
     private SuspendService suspendService;
     @ManagedProperty(value = "#{attachmentDAO}")
     private AttachmentDAO attachmentDAO;
+    @ManagedProperty(value = "#{prodRegAppMbean}")
+    private ProdRegAppMbean prodRegAppMbean;
 
     private Applicant applicant;
     private List<Comment> comments;
     private List<Mail> mails;
     private List<ProdAppAmdmt> prodAppAmdmts;
-    //    private List<ProdAppChecklist> prodAppChecklists;
+    private List<ProdAppChecklist> prodAppChecklists;
     private TimelineModel model;
     private List<Timeline> timelinesChartData;
     private Comment selComment = new Comment();
     private Mail mail = new Mail();
     private String reviewComment;
     private List<Invoice> invoices;
-    //    private String prodID;
     private boolean checkReviewStatus = false;
     private int selectedTab;
     private User moderator;
     private boolean displaySample = false;
     private boolean displayClinical = false;
     private boolean displayReviewStatus = false;
-    //    private ReviewInfo reviewInfo;
-   // private SampleTest sampleTest;
     private UploadedFile file;
-   // private boolean attach;
-    //private JasperPrint jasperPrint;
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
     public User loggedInUser;
@@ -154,8 +136,9 @@ public class ProcessProdBn implements Serializable {
 
     private boolean disableVerify;
     private boolean displayFir;
-
     private String suspId;
+
+    private List<ForeignAppStatus> foreignAppStatuses;
 
     @PostConstruct
     private void init() {
@@ -1099,5 +1082,23 @@ public class ProcessProdBn implements Serializable {
 
     public void setSuspId(String suspId) {
         this.suspId = suspId;
+    }
+
+    public List<ForeignAppStatus> getForeignAppStatuses() {
+        foreignAppStatuses = prodRegAppMbean.getForeignAppStatuses();
+        return foreignAppStatuses;
+    }
+
+    public void setForeignAppStatuses(List<ForeignAppStatus> foreignAppStatuses) {
+        this.foreignAppStatuses = foreignAppStatuses;
+    }
+
+    public List<ProdAppChecklist> getProdAppChecklists() {
+        prodAppChecklists = prodRegAppMbean.getProdAppChecklists();
+        return prodAppChecklists;
+    }
+
+    public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
+        this.prodAppChecklists = prodAppChecklists;
     }
 }

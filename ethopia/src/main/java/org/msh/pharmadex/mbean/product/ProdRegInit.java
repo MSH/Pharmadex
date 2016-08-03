@@ -511,8 +511,12 @@ public class ProdRegInit implements Serializable {
 
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
-        List<ProdTable> prods = productService.findAllRegisteredProduct();
-        Long lcId = this.getSelLicHolder().getId();
+        List<ProdTable> prods;
+        if (getSelLicHolder() == null){
+            prods = productService.findAllRegisteredProduct();
+            return prods;
+        }
+        Long lcId = getSelLicHolder().getId();
         LicenseHolder lc = licenseHolderService.findLicHolder(lcId);
         List<Product> products = lc.getProducts();
         if (products!=null){

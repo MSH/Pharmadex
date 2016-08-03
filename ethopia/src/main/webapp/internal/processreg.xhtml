@@ -803,9 +803,9 @@
             <h:form id ="parentAppForm">
                 <p:panel>
                     <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
-                        <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
-                        <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
-                        <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
+                        <ui:param name="prodAppData" value="#{processProdBn.prodApplications}"/>
+                        <ui:param name="foreignAppStatus" value="#{processProdBn.foreignAppStatuses}"/>
+                        <ui:param name="prodAppChecklists" value="#{processProdBn.prodAppChecklists}"/>
                         <ui:param name="dialogMode" value="true"/>
                         <ui:param name="showfull" value="true"/>
                     </ui:decorate>

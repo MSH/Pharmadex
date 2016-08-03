@@ -96,7 +96,7 @@
 
     <div align="right">
         <p:commandButton value="#{msgs.prev_applications}"
-                         rendered="#{not empty prodRegAppMbeanET.parentAppId && (userSession.head||userSession.moderator||userSession.reviewer)}"
+                         rendered="#{(not empty prodRegAppMbeanET.parentAppId) and (userSession.head or userSession.moderator or userSession.reviewer)}"
                          onclick="PF('parentAppDlg').show();">
             <f:param name="prodAppID" value="#{prodRegAppMbeanET.parentAppId}"/>
         </p:commandButton>
