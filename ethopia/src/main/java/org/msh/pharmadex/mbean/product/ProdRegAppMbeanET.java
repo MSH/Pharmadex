@@ -257,7 +257,8 @@ public class ProdRegAppMbeanET implements Serializable {
         this.currentTab = currentTab;
     }
     @Transactional
-	public String submitApp() {
+	//don't use
+    public String submitApp() {
     	ProdApplications curA=prodRegAppMbean.getProdApplications();
     	  if (curA.getParentApplication()!=null){
     		  Product oldPr=null;
