@@ -114,7 +114,7 @@
 				<textElement>
 					<font fontName="DejaVu Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appPost} == null ? "":$P{appPost}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{appPost} == null ? "Director Técnico da":$P{appPost}.concat(" da")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="280" y="270" width="249" height="13" uuid="26565555-8d5c-4bbe-a489-5ae2ebf09d27">
@@ -357,7 +357,7 @@ FAX: 00258 21 326547]]></text>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Serif" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appUserName} == null ? "":$P{appUserName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{appUserName} == null ? "Dra. Sultana Razaco":$P{appUserName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="127" y="90" width="300" height="20" uuid="15ff9fe7-fdcb-4075-9938-a3f874058b5b">
