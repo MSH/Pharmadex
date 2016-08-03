@@ -76,7 +76,21 @@ public class SampleTestBn implements Serializable {
     }
 
     public void addSample() {
-        facesContext = FacesContext.getCurrentInstance();
+    	// by used in countries
+    	createSample();
+
+        RetObject riRetObj = sampleTestService.createDefLetter(sampleTest);
+        if (!riRetObj.getMsg().equalsIgnoreCase("persist")) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
+        } else {
+            sampleTests.add(sampleTest);
+
+        }
+        sampleTest = new SampleTest();
+    }
+    
+    public void createSample(){
+    	facesContext = FacesContext.getCurrentInstance();
         ProdApplications prodApplications = processProdBn.getProdApplications();
 
         if (sampleTest == null) {
@@ -96,15 +110,6 @@ public class SampleTestBn implements Serializable {
         sampleComment.setUser(sampleTest.getCreatedBy());
         sampleTest.getSampleComments().add(sampleComment);
         sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
-
-        RetObject riRetObj = sampleTestService.createDefLetter(sampleTest);
-        if (!riRetObj.getMsg().equalsIgnoreCase("persist")) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-        } else {
-            sampleTests.add(sampleTest);
-
-        }
-        sampleTest = new SampleTest();
     }
 
     public void initSampleAdd() {

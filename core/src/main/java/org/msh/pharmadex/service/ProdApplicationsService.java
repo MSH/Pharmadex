@@ -23,7 +23,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.IOUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.ApplicantDAO;
@@ -67,7 +66,6 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
-import org.msh.pharmadex.util.Scrooge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -675,8 +673,7 @@ public class ProdApplicationsService implements Serializable {
 
 			boolean complete = false;
 			for (ReviewInfo reviewInfo : reviewInfos) {
-				// only Mozambique and Bangladesh
-				if (!(reviewInfo.getReviewStatus().equals(ReviewStatus.SUBMITTED) || reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED))) {
+				if (!reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
 					complete = false;
 					return "state_error";
 				} else {

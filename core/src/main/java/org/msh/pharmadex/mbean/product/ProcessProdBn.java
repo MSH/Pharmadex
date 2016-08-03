@@ -1101,4 +1101,13 @@ public class ProcessProdBn implements Serializable {
     public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
         this.prodAppChecklists = prodAppChecklists;
     }
+
+	public ProdRegAppMbean getProdRegAppMbean() {
+		return prodRegAppMbean;
+	}
+
+	public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
+		this.prodRegAppMbean = prodRegAppMbean;
+	}
+    
 }
