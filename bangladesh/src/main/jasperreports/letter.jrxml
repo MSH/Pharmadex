@@ -1,267 +1,274 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="542" leftMargin="50" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-08-04T14:46:50 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<parameter name="id" class="java.lang.Long">
-		<defaultValueExpression><![CDATA[4772]]></defaultValueExpression>
-	</parameter>
-	<parameter name="registrar" class="java.lang.String"/>
-	<parameter name="manufName" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[select a.appName, a.address1, a.address2, c.countryName, p.prodAppNo, prod.prod_name, d.dosageform, p.id, p.prodAppType,
-concat(prod.dosage_strength, ' ', u.uom) as dosstrength
-from `ProdApplications` p, product prod, applicant a, country c, dosform d, `DosUom` u
-where prod.id = p.prod_id
-and a.`applcntId` = p.app_id
-and a.`CNTRY_ID` = c.id
-and d.uid = prod.`DOSFORM_ID`
-and u.id = prod.`DOSUNIT_ID`
-and p.id = $P{id}]]>
-	</queryString>
-	<field name="appName" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="address1" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="address2" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="countryName" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="prodAppNo" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="prod_name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="dosageform" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="id" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="prodAppType" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="dosstrength" class="java.lang.String"/>
+	<property name="ireport.y" value="67"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="appAddress" class="java.lang.String"/>
+	<parameter name="appResponsible" class="java.lang.String"/>
+	<parameter name="appNum" class="java.lang.String"/>
+	<parameter name="prodName" class="java.lang.String"/>
+	<parameter name="genName" class="java.lang.String"/>
+	<parameter name="prodStrength" class="java.lang.String"/>
+	<parameter name="dosForm" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="148" splitType="Stretch">
-			<image>
-				<reportElement x="248" y="1" width="80" height="80" uuid="4e6de708-9670-46c6-b7d7-570fdb57a817"/>
+		<band height="124" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="236" y="0" width="100" height="100" uuid="b94aef40-5b47-43d1-87ca-52fddd50615b">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="129" width="542" height="17" uuid="2640ee82-ec94-43ff-b879-914fa7e9f835"/>
+				<reportElement x="0" y="108" width="572" height="16" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
+					<font fontName="DejaVu Sans" size="11" isBold="true" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[105-106 Motijheel Commercial Area, Dhaka-1000]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="108" width="542" height="21" forecolor="#006666" uuid="4bdfc758-0892-47e5-8bc0-f0a8fd9fa2ff"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DIRECTORATE GENERAL OF DRUG ADMINISTRATION OF BANGLADESH]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="82" width="542" height="26" uuid="4acf8c79-e358-4f28-a728-424ab50470ee"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PEOPLE'S REPUBLIC OF BANGLADESH]]></text>
+				<text><![CDATA[Directorate General of Drug Administration of Bangladesh]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="531" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="6" width="100" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
-				<textElement>
-					<font size="12"/>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<text><![CDATA[To,]]></text>
-			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="498" width="542" height="20" uuid="f862559b-8b50-4802-a550-1df8d5af8aee"/>
-				<textElement>
-					<font size="12" isBold="false"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{registrar}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="309" width="542" height="48" uuid="c6eeee1e-839c-47b8-95b5-4dc77706bf46"/>
-				<textElement textAlignment="Justified">
-					<font fontName="SansSerif" size="12"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Your application has been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 1 year from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only. ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="372" width="542" height="42" uuid="052043bf-8725-43ca-9434-d6f32858c914"/>
-				<textElement>
-					<font size="12"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[If you have any queries as to the meaning of this letter, you should contact the undersigned immediately. ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="214" width="146" height="20" uuid="71a1dee4-7b66-4dbf-9b90-b3dbbdca611f"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<text><![CDATA[Product Strength:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="254" width="146" height="20" uuid="6fbb130a-4068-4004-9ef4-bfa715ba8857"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<text><![CDATA[Manufacturer:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="161" width="146" height="20" uuid="ef17e21d-66c9-4b40-a20b-1bb5f3abacd9"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<text><![CDATA[Application Number:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="146" y="254" width="361" height="20" uuid="910dfb07-0c12-4e7a-86fd-10e35960ebe4"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{manufName}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="194" width="146" height="20" uuid="ebc5e88d-9157-4a43-84b2-42da14283684"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<text><![CDATA[Product Name:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="274" width="146" height="20" uuid="50aa41bb-27b9-4962-9ab9-aaf84a72234a"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<text><![CDATA[Type of Application:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="234" width="146" height="20" uuid="623760f8-b21c-419c-a676-13ad02f5d760"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<text><![CDATA[Dosage Form:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="448" width="542" height="20" uuid="b65d652b-1337-4431-b97e-36bce3a44d57"/>
-				<textElement>
-					<font size="12"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Yours faithfully,]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="146" y="161" width="361" height="20" uuid="b1f822ff-242f-4959-bd25-2adcf8d97c08"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{prodAppNo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="23" y="27" width="235" height="20" uuid="e1832d52-fda2-4965-9eb2-e4c54f0b99e1"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="23" y="47" width="235" height="20" uuid="4bc1f04e-b5b6-4576-8822-090228d2cf38"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="23" y="67" width="235" height="20" uuid="b2d59df4-6044-4024-a938-ab7a032e459f"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="23" y="87" width="235" height="20" uuid="94c64a6f-2291-4278-8836-1a2fdfd933aa"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="146" y="194" width="361" height="20" uuid="4ab2a98d-3ad6-49d6-8a26-73662312f073"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="146" y="214" width="361" height="20" uuid="ed59ca46-95cb-4718-a9bd-029e28b0827f"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{dosstrength}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="146" y="234" width="361" height="20" uuid="edc01b64-ce9f-4579-aac9-a3cd0f8770c6"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="146" y="274" width="361" height="20" uuid="1c04eadc-e4f8-40b4-affe-db98fcc2c64d"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{prodAppType}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="124" width="542" height="20" uuid="1338e838-7e15-4cee-8b35-b86f63466d66"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[Subject: Acceptance Letter]]></text>
-			</staticText>
-		</band>
+		<band height="1" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="9" splitType="Stretch"/>
+		<band height="250" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="180" y="227" width="373" height="16" uuid="10eb287a-58c8-4f1e-b1c7-bbcf0a37d6ec">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="10" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dosForm} == null ? "":$P{dosForm}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="180" y="204" width="373" height="16" uuid="1bd8bd4b-0db5-4d09-a377-491b40acf8b9">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="10" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prodStrength} == null ? "":$P{prodStrength}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="180" y="181" width="373" height="16" uuid="972a5d4f-1e2b-49df-90dd-b00e39899272">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="10" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{genName} == null ? "":$P{genName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="30" width="553" height="16" uuid="10afc126-9153-461a-8359-2cd09d068691">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appName} == null ? "":$P{appName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="46" width="553" height="13" uuid="c1561ae5-6a67-4754-a072-1c54f806df75">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appAddress} == null ? "": ($P{appAddress}== ""?"" :$P{appAddress})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="5" width="180" height="16" uuid="4da3572c-3989-4cbd-884e-f1c45bcd25ce">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Memo No: ____________________  "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="62" width="553" height="16" uuid="034f7770-acce-4c2b-ab4a-7c89e6359bab">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Attention:".concat($P{appResponsible} == null ? "____________________": ($P{appResponsible}== ""?"" :$P{appResponsible})).concat("(e.g. Regulatory Affairs Manager)")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="94" width="180" height="16" uuid="f9036c27-e4a5-48cd-8867-df8fc91f3fb4">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Subject: Acceptance Letter"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="126" width="180" height="16" uuid="4a36835f-384d-4900-b354-80eacee79ddd">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Application Reference Number: "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="158" width="180" height="16" uuid="dd1dbf07-ed6c-4ae2-bb92-b5cd547951d1">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Trade name   "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="181" width="180" height="16" uuid="4f9fc04c-babc-485e-b947-921271565d49">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Generic name(s)    "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="204" width="180" height="16" uuid="1b832dfd-fb22-4f15-80f3-41e1448f1d4e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Strength(s) per dosage unit "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="227" width="180" height="16" uuid="fdb778ed-26b6-4202-9b20-59aef4bd529e">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Dosage form   "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="180" y="158" width="373" height="16" uuid="5995e9f2-3946-4068-b1de-7ce7bc6931ca">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="10" isBold="false" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prodName} == null ? "":$P{prodName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="180" y="126" width="373" height="16" uuid="73302aa2-cfed-4c1d-ab54-7196e50f85f2">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="10" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appNum} == null ? "":$P{appNum}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="381" y="5" width="50" height="16" uuid="7528fa11-b730-4464-8010-d9d90232057e">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Date:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="437" y="5" width="100" height="16" uuid="7ff8eeb9-0c2c-48b6-a8ae-ad4feec0938e">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="175" width="553" height="1" uuid="a462a00b-95d9-424d-a817-5de389d6cb87">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="222" width="553" height="1" uuid="1fb84101-4ff1-4dc7-8dd7-a1fa1f373317">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="200" width="553" height="1" uuid="54a94372-0ce7-43c3-93d4-c0fb59ef5227">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
 	</columnFooter>
-	<pageFooter>
-		<band splitType="Stretch"/>
-	</pageFooter>
 	<summary>
-		<band splitType="Stretch"/>
+		<band height="146" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="253" y="104" width="300" height="18" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="14" width="553" height="86" uuid="c1ad951c-a1ce-4584-98a8-6cc92993c9e1"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["Your application has been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 1 year from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only.".concat("<br><br>If you have any queries as to the meaning of this letter, you should contact the undersigned immediately. ").concat("<br><br>Yours faithfully ")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="253" y="128" width="300" height="16" uuid="080cc243-00d5-4bf8-9c97-e069c8505a6b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>
