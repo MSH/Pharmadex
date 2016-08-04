@@ -769,17 +769,7 @@ public class ProdApplicationsService implements Serializable {
 				net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 				byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 
-				ProdAppLetter attachment = new ProdAppLetter();
-				attachment.setRegState(prodApp.getRegState());
-				attachment.setFile(file);
-				attachment.setProdApplications(prodApp);
-				attachment.setFileName(invoicePDF.getName());
-				attachment.setTitle("Acknowledgement Letter");
-				attachment.setUploadedBy(prodApp.getCreatedBy());
-				attachment.setComment("Automatically generated Letter");
-				attachment.setContentType("application/pdf");
-				attachment.setLetterType(LetterType.ACK_SUBMITTED);
-				prodAppLetterDAO.save(attachment);
+				createProdAppLetter(prodApp, file, invoicePDF.getName(), "Acknowledgement Letter", "Automatically generated Letter", LetterType.ACK_SUBMITTED);
 				conn.close();
 				return "persist";
 			}
@@ -794,6 +784,20 @@ public class ProdApplicationsService implements Serializable {
 			e.printStackTrace();
 			return "error";
 		}
+	}
+	
+	public void createProdAppLetter(ProdApplications prApps, byte[] file, String fName, String title, String comment, LetterType ltype){
+		ProdAppLetter attachment = new ProdAppLetter();
+		attachment.setRegState(prApps.getRegState());
+		attachment.setFile(file);
+		attachment.setProdApplications(prApps);
+		attachment.setFileName(fName);
+		attachment.setTitle(title);
+		attachment.setUploadedBy(prApps.getCreatedBy());
+		attachment.setComment(comment);
+		attachment.setContentType("application/pdf");
+		attachment.setLetterType(ltype);
+		prodAppLetterDAO.save(attachment);
 	}
 
 	public ProdAppLetter findAllLettersByProdAppAndType(ProdApplications prodApplications, LetterType ackSubmitted) {

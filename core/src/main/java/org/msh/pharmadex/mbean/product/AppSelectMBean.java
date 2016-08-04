@@ -116,8 +116,10 @@ public class AppSelectMBean implements Serializable {
 
 		this.users = new ArrayList<UserDTO>();
 		for (org.msh.pharmadex.domain.User u : list) {
+			/* 04082016 Issue Bug #1929
 			if(u.isEnabled())
-				this.users.add(new UserDTO(u));
+			*/
+			this.users.add(new UserDTO(u));
 		}
 		addUserInList();
 	}

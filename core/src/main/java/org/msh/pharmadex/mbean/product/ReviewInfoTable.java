@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 
 import java.io.Serializable;
@@ -28,7 +29,7 @@ public class ReviewInfoTable implements Serializable {
     private boolean sra;
     private boolean fastrack;
     private Long prodAppID;
-
+    private RegState regState;
 
 
     public Long getId() {
@@ -167,4 +168,14 @@ public class ReviewInfoTable implements Serializable {
     public void setProdAppID(Long prodAppID) {
         this.prodAppID = prodAppID;
     }
+
+	public RegState getRegState() {
+		return regState;
+	}
+
+	public void setRegState(RegState regState) {
+		this.regState = regState;
+	}
+    
+    
 }

@@ -259,12 +259,13 @@ public class ProcessAppBn implements Serializable {
 
 	public void onRowSelect(SelectEvent event) {
 		User us = (User) event.getObject();
+		/* 04082016 Issue Bug #1929
 		if(us != null && !us.isEnabled()){
 			getApplicantMBean().setSelectResponsable(null);
 			FacesMessage msg = new FacesMessage("Selected User does not have an access!!! ", us.getUsername());
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
-		}
+		}*/
 
 		FacesMessage msg = new FacesMessage("User Selected", us.getUsername());
 		FacesContext.getCurrentInstance().addMessage(null, msg);
