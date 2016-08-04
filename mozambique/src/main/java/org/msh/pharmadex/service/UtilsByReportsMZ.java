@@ -202,7 +202,8 @@ public class UtilsByReportsMZ implements Serializable {
 
 		if(k.equals(KEY_MODERNAME)){
 			if(prodApps.getModerator() != null){
-				str= prodApps.getModerator().getUsername();
+				str= prodApps.getModerator().getName();
+				param.put(k, str);
 			}
 		}
 		if(k.equals(KEY_APPNAME)){

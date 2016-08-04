@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
@@ -377,13 +378,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @return
 	 */
 	public String createReviewDetails(ProdApplications prodApplications) {
+		prodApp = prodApplications;
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Properties prop = fetchReviewDetailsProperties();
 		if(prop != null){
 			Product prod = prodApp.getProduct();
 			try {
-				File rDPDF = File.createTempFile("" + prod.getProdName() + "_reviewDetails", ".pdf");
 				JasperPrint jasperPrint;
 				HashMap<String, Object> param = new HashMap<String, Object>();
 				utilsByReports.init(param, prodApp, prod);
@@ -395,19 +396,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				if(source != null){
 					if(resource != null){
 						jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
-						net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(rDPDF));
-						byte[] file = IOUtils.toByteArray(new FileInputStream(rDPDF));
-						ProdAppLetter attachment = new ProdAppLetter();
-						attachment.setRegState(prodApp.getRegState());
-						attachment.setFile(file);
-						attachment.setProdApplications(prodApp);
-						attachment.setFileName(rDPDF.getName());
-						attachment.setTitle(bundle.getString("LetterType.DEFICIENCY"));
-						attachment.setUploadedBy(prodApp.getCreatedBy());
-						attachment.setComment(bundle.getString("LetterType.DEFICIENCY"));
-						attachment.setContentType("application/pdf");
-						attachment.setLetterType(LetterType.ACK_SUBMITTED);
-						prodAppLetterDAO.save(attachment);
+						javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+						httpServletResponse.addHeader("Content-disposition", "attachment; filename=" +prod.getProdName() + "_Review.pdf");
+						httpServletResponse.setContentType("application/pdf");
+						javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+						net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+						servletOutputStream.close();
 						return "persist";
 					}else{
 						return "error";
@@ -509,6 +503,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		map.put("reviewItem",reviewItem);
 		map.put("reviewItemData",reviewItemData);
 		map.put("reviewItemFile",reviewItemFile);
+		res.add(map);
 	}
 
 	/**
