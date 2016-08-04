@@ -257,7 +257,11 @@
 											<p:fileDownload value="#{processProdBn.fileDownload(letter)}" />
 										</p:commandButton>
 									</p:column>
-
+									<p:column style="width: 30px;">
+							            <p:commandButton id="deletelet" action="#{processProdBnMZ.deleteLetter(letter)}"
+							                             icon="ui-icon-trash" ajax="true" immediate="true"
+							                             update=":reghome:processtab:lettertable :reghome:messages"/>
+							        </p:column>
 								</p:dataTable>
 							</p:tab>
 

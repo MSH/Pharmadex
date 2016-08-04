@@ -64,34 +64,8 @@ public class ReviewServiceMZ implements Serializable {
 	@Autowired
 	private UserAccessService userAccessService;
 	
-/*	@Autowired
-	TimelineService timelineService;
-	@Autowired
-	private ReviewDAO reviewDAO;
-	@Autowired
-	private GlobalEntityLists globalEntityLists;
-	@Autowired
-	private ChecklistService checklistService;
-	@Autowired
-	private ReviewInfoDAO reviewInfoDAO;
-	@Autowired
-	private ReviewQDAO reviewQDAO;
-	@Autowired
-	private ReviewDetailDAO reviewDetailDAO;
-	@Autowired
-	private ProdApplicationsService prodApplicationsService;
-	@Autowired
-	private RevDeficiencyDAO revDeficiencyDAO;
 	@Autowired
 	private CustomReviewDAO customReviewDAO;
-	@Autowired
-	private UserAccessService userAccessService;
-
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private UtilsByReports utilsByReports;*/
 
 	/**
 	 * Procedure calculates and saves review status in depends of current status and user role
@@ -142,6 +116,13 @@ public class ReviewServiceMZ implements Serializable {
 		}
 		return getReviewService().saveReviewInfo(reviewInfo);
 	}
+	
+	public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID) {
+		if (reviewerID == null)
+			return null;
+		return customReviewDAO.findReviewInfoByReview(reviewerID);
+
+	}
 
 	public ReviewService getReviewService() {
 		return reviewService;
@@ -150,6 +131,4 @@ public class ReviewServiceMZ implements Serializable {
 	public void setReviewService(ReviewService reviewService) {
 		this.reviewService = reviewService;
 	}
-
-	
 }

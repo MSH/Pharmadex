@@ -11,9 +11,9 @@
 
             <p:panel header="#{msgs.process_review_list}">
 
-                <p:dataTable id="revs" var="eachrev" value="#{reviewListMBean.reviewTables}"
-                             filteredValue="#{reviewListMBean.filteredReviewInfos}"
-                             rowStyleClass="#{eachrev.pastDue?'colored':null}" rendered="#{!reviewListMBean.workspace.detailReview}">
+                <p:dataTable id="revs" var="eachrev" value="#{reviewListMBeanMZ.reviewTables}"
+                             filteredValue="#{reviewListMBeanMZ.filteredReviewInfos}"
+                             rowStyleClass="#{eachrev.pastDue?'colored':null}" rendered="#{!reviewListMBeanMZ.workspace.detailReview}">
 
 
                     <p:column filterBy="#{eachrev.prodName}"
@@ -74,9 +74,10 @@
                     </p:column>
                 </p:dataTable>
 
-                <p:dataTable id="reviews" var="eachprod" value="#{reviewListMBean.reviewInfoTables}"
-                             filteredValue="#{reviewListMBean.filteredReviewInfos}"
-                        rowStyleClass="#{eachprod.pastDue?'colored':null}" rendered="#{reviewListMBean.workspace.detailReview}">
+                <p:dataTable id="reviews" var="eachprod" value="#{reviewListMBeanMZ.reviewInfoTables}"
+                             filteredValue="#{reviewListMBeanMZ.filteredReviewInfos}"
+                        rowStyleClass="#{eachprod.pastDue?'colored':null}" 
+                        rendered="#{reviewListMBeanMZ.workspace.detailReview}">
 
 
                     <p:column filterBy="#{eachprod.prodName}"

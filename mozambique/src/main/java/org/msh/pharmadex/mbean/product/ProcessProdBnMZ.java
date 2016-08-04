@@ -15,7 +15,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -123,6 +125,19 @@ public class ProcessProdBnMZ implements Serializable {
 		}
 		return visibleExecSumeryBtn;
 	}
+	
+	public String deleteLetter(ProdAppLetter let) {
+        getProcessProdBn().getLetters().remove(let);
+        facesContext = FacesContext.getCurrentInstance();
+        try {
+            prodApplicationsServiceMZ.deleteProdAppLetter(let);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("del_letter_success")));
+        } catch (Exception e) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("del_letter_success")));
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 	public void setVisibleExecSumeryBtn(boolean visibleExecSumeryBtn) {
 		this.visibleExecSumeryBtn = visibleExecSumeryBtn;
