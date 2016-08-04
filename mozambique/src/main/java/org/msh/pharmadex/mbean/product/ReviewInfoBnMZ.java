@@ -139,14 +139,14 @@ public class ReviewInfoBnMZ implements Serializable {
 		return getReviewInfoBn().isReadOnly();
 	}
 
-	public void printReviewDetails(){
+	public void printReview(){
 		ProdApplications prodApplications = getReviewInfoBn().getProdApplications();
 		if(prodApplications != null){
 			String s =getProdApplicationsServiceMZ().createReviewDetails(prodApplications);
 			if(!s.equals("persist")){
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
 			}else{
-				RequestContext.getCurrentInstance().execute("PF('letterSuccessDlg').show()");
+				javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
 			}
 		}else{
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
