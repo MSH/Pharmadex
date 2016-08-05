@@ -517,7 +517,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		//System.out.println("PRODAPPMZ REFRESHED!!!!");
 		Product prod = prodApp.getProduct();
 		try {
-			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
+			File invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_ack", ".pdf");
 
 			JasperPrint jasperPrint;
 
