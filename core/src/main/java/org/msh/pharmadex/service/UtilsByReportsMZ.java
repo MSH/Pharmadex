@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.ProdExcipient;
@@ -111,6 +112,7 @@ public class UtilsByReportsMZ implements Serializable {
 	}
 
 	private void putParamByProd(String k, String t){
+		Hibernate.initialize(prod);
 		if(prod == null)
 			return ;
 		String str = "";
@@ -199,7 +201,7 @@ public class UtilsByReportsMZ implements Serializable {
 		if(prodApps == null)
 			return ;
 		String str = "";
-
+		Hibernate.initialize(prodApps);
 		if(k.equals(KEY_MODERNAME)){
 			if(prodApps.getModerator() != null){
 				str= prodApps.getModerator().getName();

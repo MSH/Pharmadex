@@ -300,21 +300,25 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * Create deficiency letter and store it to letters
 	 * @return
 	 */
+	@Transactional
 	public String createDeficiencyLetterScr(ProdApplications prodApp){
 		context = FacesContext.getCurrentInstance();
+		prodApp = prodApplicationsService.findProdApplications(prodApp.getId());
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = prodApp.getProduct();
 		try {
 			File defScrPDF = File.createTempFile("" + prod.getProdName() + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
-			utilsByReports.init(param, prodApp, prod);
+			utilsByReports.init(param, prodApp, prodApp.getProduct());
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GENNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPUSERNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PROD_DETAILS, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
+			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
 			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");
@@ -359,10 +363,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private JRMapArrayDataSource createDeficiencySource(List<ProdAppChecklist> checkLists) {
 		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
 		if(checkLists != null){
+			int i=1;
 			for(ProdAppChecklist item : checkLists){
 				if(item.getStaffValue() == YesNoNA.NO || (item.getValue() == YesNoNA.NO) && item.getStaffValue() == YesNoNA.NA){
 					Map<String,String> mp = new HashMap<String,String>();
 					mp.put(UtilsByReportsMZ.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
+					mp.put("itemNum", i+". ");
+					i++;
 					res.add(mp);
 				}
 			}
@@ -377,6 +384,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @param prodApplications
 	 * @return
 	 */
+	@Transactional
 	public String createReviewDetails(ProdApplications prodApplications) {
 		prodApp = prodApplications;
 		context = FacesContext.getCurrentInstance();
@@ -511,6 +519,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @param prodApp current prodapplication
 	 * @return persist or error
 	 */
+	@Transactional
 	public String createAckLetter(ProdApplications prodApp) {
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
