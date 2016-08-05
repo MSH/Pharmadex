@@ -114,6 +114,8 @@ public class SampleTestBn implements Serializable {
 
     public void initSampleAdd() {
         sampleTest.setSampleComments(new ArrayList<SampleComment>());
+        ProdApplications prodApplications = processProdBn.getProdApplications();
+        sampleTest.setProdApplications(prodApplications);
         DosageForm dosForm = sampleTestService.findDosQuantity(sampleTest.getProdApplications().getId());
         String str = (dosForm.getSampleSize() != null ?dosForm.getSampleSize():"") + " " + (dosForm.getDosForm() != null ?dosForm.getDosForm():"");
         sampleTest.setQuantity(str);
