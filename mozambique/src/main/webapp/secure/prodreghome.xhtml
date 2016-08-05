@@ -42,10 +42,11 @@
 
                         <h:panelGrid id="adddetailgrid" columns="2" cellspacing="10px" cellpadding="10px" 
     				 				columnClasses="label, value" styleClass="grid" style="width:100%;">
-                            <p:outputLabel value="#{msgs.new_chemical_name}" styleClass="label"
+                            <p:outputLabel value="#{msgs.new_chemical_name}*" styleClass="label"
                                            rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
                             <p:inputText id="nceInput" value="#{prodRegAppMbean.product.newChemicalName}"
-                                         style="width:100%;"
+                                         style="width:100%;"  
+                                         required="true" requiredMessage="New Chemical Entity Name is missing"                                         
                                          rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
 
                             <h:outputLabel value="#{msgs.active_substance}" style="width: 60px;" styleClass="label"/>
@@ -366,7 +367,7 @@
                         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
                             <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
                             <p:inputText id="msrp" value="#{prodRegAppMbean.pricing.msrp}"
-                                         title="#{msgs.product_pricing_max}"
+                                         title="#{msgs.product_pricing_max}"                                         
                                     >
                             </p:inputText>
                             <p:message for="msrp" showSummary="true" showDetail="false"/>
