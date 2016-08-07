@@ -22,7 +22,6 @@ import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewServiceMZ;
 import org.msh.pharmadex.util.RetObject;
-import org.primefaces.context.RequestContext;
 
 /**
  * Backing bean to capture review of products

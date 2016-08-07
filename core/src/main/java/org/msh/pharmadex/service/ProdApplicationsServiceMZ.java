@@ -16,9 +16,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
@@ -29,7 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
+import org.msh.pharmadex.dao.ProductCompanyDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
@@ -51,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
@@ -72,7 +75,10 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private WorkspaceDAO workspaceDAO;
 	@Autowired
 	private ProductDAO productDAO;
-
+	@Autowired
+	private CustomReviewDAO customReviewDAO;
+	@Autowired
+	private ProductCompanyDAO prodCompanyDAO;
 	@Autowired
 	private ProdAppLetterDAO prodAppLetterDAO;
 
@@ -84,11 +90,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	@Autowired
 	private ProdAppChecklistService checkListService;
 
-	@Autowired
-	private UtilsByReportsMZ utilsByReports;
-
 	private ProdApplications prodApp;
 	private Product product;
+	// pt_PT
+	private Locale locale = new Locale("pt", "PT");
+	@Autowired
+	private UtilsByReportsMZ utilsByReports;
 
 	/**
 	 * Applications are in states by role users
@@ -300,25 +307,21 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * Create deficiency letter and store it to letters
 	 * @return
 	 */
-	@Transactional
 	public String createDeficiencyLetterScr(ProdApplications prodApp){
 		context = FacesContext.getCurrentInstance();
-		prodApp = prodApplicationsService.findProdApplications(prodApp.getId());
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = prodApp.getProduct();
 		try {
 			File defScrPDF = File.createTempFile("" + prod.getProdName() + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
-			utilsByReports.init(param, prodApp, prodApp.getProduct());
+			utilsByReports.init(param, prodApp, prod);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GENNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPUSERNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PROD_DETAILS, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
 			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");
@@ -363,13 +366,10 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private JRMapArrayDataSource createDeficiencySource(List<ProdAppChecklist> checkLists) {
 		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
 		if(checkLists != null){
-			int i=1;
 			for(ProdAppChecklist item : checkLists){
 				if(item.getStaffValue() == YesNoNA.NO || (item.getValue() == YesNoNA.NO) && item.getStaffValue() == YesNoNA.NA){
 					Map<String,String> mp = new HashMap<String,String>();
 					mp.put(UtilsByReportsMZ.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
-					mp.put("itemNum", i+". ");
-					i++;
 					res.add(mp);
 				}
 			}
@@ -384,7 +384,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @param prodApplications
 	 * @return
 	 */
-	@Transactional
 	public String createReviewDetails(ProdApplications prodApplications) {
 		prodApp = prodApplications;
 		context = FacesContext.getCurrentInstance();
@@ -398,8 +397,10 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.init(param, prodApp, prod);
 				utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
 				utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MODERNAME, "", false);
+				utilsByReports.putNotNull(JRParameter.REPORT_LOCALE, locale);
+
 				//TODO chief name from properties!!
-				JRMapArrayDataSource source = createReviewSourcePorto(prodApplications,bundle, prop);
+				JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO);
 				URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report.jasper");
 				if(source != null){
 					if(resource != null){
@@ -451,82 +452,17 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	}
 
 	/**
-	 * Create data source for review detail report. Portuguese language only!!!!
-	 * @param prodApplications current application
-	 * @param bundle language bundle
-	 * @param prop report specific properties
-	 * @return at least empty map!
-	 */
-	private JRMapArrayDataSource createReviewSourcePorto(ProdApplications prodApplications, ResourceBundle bundle, Properties prop) {
-		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
-		fillGeneralRS(res, prop,prodApplications);
-		return new JRMapArrayDataSource(res.toArray());
-	}
-	/**
-	 * Fill first section of the details - general information
-	 * @param res result map
-	 * @param prop specific properties
-	 * @param prodApplications current application
-	 */
-	private void fillGeneralRS(List<Map<String, String>> res, Properties prop, ProdApplications prodApplications) {
-		res.clear();
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_1"),fetchFullApplicant(prodApplications),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_2"),prodApplications.getProduct().getGenName(),null);
-		//TODO 
-	}
-	/**
-	 * Fetch full applicant data name + address
-	 * @param prodApp 
-	 * @return
-	 */
-	private String fetchFullApplicant(ProdApplications prodApp) {
-		String name = prodApp.getApplicant().getAppName();
-		String addr1 = prodApp.getApplicant().getAddress().getAddress1();
-		String addr2 = prodApp.getApplicant().getAddress().getAddress2();
-		String addr="";
-		if(addr1 != null){
-			addr = addr1;
-		}
-		if(addr2 != null){
-			addr = addr + " "+addr2;
-		}
-		if(addr.length()==0){
-			addr="Maputo";
-		}
-		return name + " " + addr;
-	}
-
-	/**
-	 * Fill data for a line of the report to result res
-	 * @param res list of maps
-	 * @param reviewChapter
-	 * @param reviewItem
-	 * @param reviewItemData
-	 * @param reviewItemFile
-	 */
-	private void fillItemRS(List<Map<String, String>> res, String reviewChapter, String reviewItem,
-			String reviewItemData, String reviewItemFile) {
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("reviewChapter",reviewChapter);
-		map.put("reviewItem",reviewItem);
-		map.put("reviewItemData",reviewItemData);
-		map.put("reviewItemFile",reviewItemFile);
-		res.add(map);
-	}
-
-	/**
 	 * Create application acknowledgement letter and store it to letters!
 	 * @param prodApp current prodapplication
 	 * @return persist or error
 	 */
-	@Transactional
 	public String createAckLetter(ProdApplications prodApp) {
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
-		//System.out.println("PRODAPPMZ REFRESHED!!!!");
+
 		Product prod = prodApp.getProduct();
 		try {
-			File invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_ack", ".pdf");
+			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
 
 			JasperPrint jasperPrint;
 
