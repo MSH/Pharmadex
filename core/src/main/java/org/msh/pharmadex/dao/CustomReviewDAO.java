@@ -4,11 +4,15 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.hibernate.Session;
+import org.msh.pharmadex.domain.ReviewDetail;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.ReviewQuestion;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.product.ReviewInfoTable;
+import org.msh.pharmadex.mbean.product.ReviewItemReport;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -185,6 +189,80 @@ public class CustomReviewDAO implements Serializable {
             prodTables.add(reviewInfoTable);
         }
         return prodTables;
+    }
+    
+    /**
+     * Method to fetch review info when the workspace configuration is set for detail review
+     * @param reviewID
+     * @return
+     */
+    public List<ReviewItemReport> getReviewListByReport(Long prodAppId) {
+    	List<ReviewItemReport> list = null;
+    	/*"select quest.id, quest.header1, quest.header2, us.name,  "
+    					+ "if((ri.secreview=1 and ri.sec_reviewer_id=us.userId), det.sec_comment, det.other_comment) as comm "
+    					+ ", det.file "
+    					+ " from review_info ri, review_detail det, review_question quest, user us "
+    					+ " where ri.prod_app_id=" + prodAppId
+    					+ " and ri.id=det.review_info_id "
+    					+ " and (us.userId=ri.reviewer_id or us.userId=ri.sec_reviewer_id) "
+    					+ " group by quest.header1, us.name, comm, det.file "
+    					+ " order by quest.id"*/
+    	String query = "SELECT det.id, us.name, "
+    					+ "if((info.secreview=1 and info.sec_reviewer_id=us.userId), det.sec_comment,"
+    					+ "det.other_comment) as comm, det.file, det.filename, quest.header1, quest.header2 "
+    					+ "FROM review_info info, review_detail det, review_question quest, user us "
+    					+ "where info.prod_app_id=" + prodAppId
+    					+ " and info.id=det.review_info_id"
+    					+ " and (us.userId=info.reviewer_id or us.userId=info.sec_reviewer_id)"
+    					+ "and ("
+    					+ " (not isnull(det.other_comment) and length(trim(det.other_comment)) > 0)"
+    					+ " or "
+    					+ " (not isnull(det.sec_comment) and length(trim(det.sec_comment)) > 0) "
+    					+ " or "
+    					+ " not isnull(det.file)) "
+    					+ " and det.reviewquest_id=quest.id "
+    					+ " group by det.id, us.`name`, det.file"
+    					+ " order by det.id ";    	
+    	
+    	List<Object[]> values = entityManager.createNativeQuery(query).getResultList();
+    	if(values != null && values.size() > 0){
+    		list = new ArrayList<ReviewItemReport>();
+    		for(Object[] obj:values){
+    			BigInteger v = (BigInteger)obj[0];
+    			Long idDet = new Long(v.longValue());
+    			ReviewItemReport item = isContainsItem(list, idDet);
+    			if(item == null){
+    				item = new ReviewItemReport();
+    				item.setDetailId(idDet);
+        			item.setFirstRevName((String)obj[1]);
+        			item.setFirstRevComment((String)obj[2]);
+        			String fname = (String)obj[4];
+        			if(fname != null && (fname.endsWith(".png") || fname.endsWith(".gif")
+        					 || fname.endsWith(".jpeg") || fname.endsWith(".jpg")))
+        				item.setFile((byte[])obj[3]);
+        			else
+        				item.setFile(null);
+        			item.setHeader1((String)obj[5]);
+        			item.setHeader2((String)obj[6]);
+        			
+        			list.add(item);
+    			}else{
+    				item.setSecondRevName((String)obj[1]);
+    				item.setSecondRevComment((String)obj[2]);
+    			}
+    		}
+    	}
+    	return list;
+    }
+    
+    private ReviewItemReport isContainsItem(List<ReviewItemReport> list, Long id){
+    	if(list != null && list.size() > 0){
+    		for(ReviewItemReport revItem:list){
+    			if(revItem.getDetailId().intValue() == id.intValue())
+    				return revItem;
+    		}
+    	}
+    	return null;
     }
 }
 
