@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core">
 
-	<h:panelGrid cellspacing="2" cellpadding="2" columns="4">
+	<h:panelGrid id="btnpnlFirst" cellspacing="2" cellpadding="2" columns="4">
         <p:commandButton value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
                          rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"/>
         <p:commandButton value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
@@ -18,7 +18,7 @@
         </p:commandButton>
     </h:panelGrid>
     
-    <h:panelGrid columns="2" columnClasses="label value" cellpadding="5" cellspacing="5">
+    <h:panelGrid id="modpnl" columns="2" columnClasses="label value" cellpadding="5" cellspacing="5">
         <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
         <p:outputLabel value="#{processProdBn.moderator.username}"/>
     </h:panelGrid>
@@ -45,12 +45,13 @@
             </p:selectOneButton>
         </p:column>
         <p:column headerText="#{msgs.global_remark}">
-            <p:inputText value="#{checkList.staffComment}"/>
+            <p:outputLabel value="#{checkList.staffComment}" rendered="#{!processProdBn.prescreened}"/>
+            <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBn.prescreened}"/>
         </p:column>
         <p:column style="width:90px">
             <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
                              action="#{preScreenProdMBn.setProdAppChecklist(checkList)}"
-                             rendered="#{!checkList.fileUploaded}"/>
+                             rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"/>
 
             <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
                              onclick="PrimeFaces.monitorDownload(start, stop)"
@@ -64,7 +65,7 @@
         </p:column>
     </p:dataTable>
 
-	<h:panelGrid cellspacing="2" cellpadding="2" columns="4">
+	<h:panelGrid id="btnpnlSecond" cellspacing="2" cellpadding="2" columns="4">
         <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
                          rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"/>
         <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
@@ -99,10 +100,10 @@
 
         </p:panelGrid>
 
-
         <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.completeScreen}"
-                         oncomplete="PF('completescreendlg').hide()" update=":reghome" process="@form" ajax="false"/>
+                         oncomplete="PF('completescreendlg').hide()" process="@form"  ajax="true" 
+                         update="btnpnlFirst modpnl checkListTbl btnpnlSecond"/>
 
     </p:dialog>
 
