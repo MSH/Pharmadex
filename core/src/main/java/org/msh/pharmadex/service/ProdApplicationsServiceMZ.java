@@ -211,7 +211,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		this.prodApp = prodApp;
 		this.product = prodApp.getProduct();
 		File invoicePDF = null;
-		invoicePDF = File.createTempFile("" + product.getProdName() + "_registration", ".pdf");
+		invoicePDF = File.createTempFile("" + product.getProdName().split(" ")[0] + "_registration", ".pdf");
 		JasperPrint jasperPrint = initRegCert(gestorDeCTRM);
 		net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 		prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
@@ -221,8 +221,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 	public JasperPrint initRegCert(String gestor) throws JRException, SQLException {
 		product = productDAO.findProduct(prodApp.getProduct().getId());
-
-		Connection conn = entityManager.unwrap(Session.class).connection();
 		URL resource = getClass().getResource("/reports/reg_letter.jasper");
 
 		HashMap<String, Object> param = new HashMap<String, Object>();
@@ -301,7 +299,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXPIRY_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GESTOR, gestor);
 
-		return JasperFillManager.fillReport(resource.getFile(), param, conn);
+		return JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 	}
 	/**
 	 * Create deficiency letter and store it to letters
@@ -312,7 +310,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = prodApp.getProduct();
 		try {
-			File defScrPDF = File.createTempFile("" + prod.getProdName() + "_defScr", ".pdf");
+			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
@@ -462,7 +460,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		Product prod = prodApp.getProduct();
 		try {
-			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
+			File invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_ack", ".pdf");
 
 			JasperPrint jasperPrint;
 
