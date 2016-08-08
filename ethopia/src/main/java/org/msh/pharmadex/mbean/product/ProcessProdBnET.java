@@ -180,13 +180,23 @@ private String changedFields;
     	if (changedFields.contains(fieldname)) return true;
     	return false;
     }
-    public String getFieldChanged(String name){
+    
+   public boolean findInnChanged(){
   	  //получим список из review_info.changedFields  если в списке нет, то false
-      	 String fieldname = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("fieldvalue");
-      	   
-      	if (changedFields.contains(fieldname)) return "color: red;";
-      	return "color:black;";
+       	if (changedFields.contains("inns")) return true;
+      	return false;
     }
+   
+   public boolean findExcipientChanged(){
+	  	  //получим список из review_info.changedFields  если в списке нет, то false
+	       	if (changedFields.contains("excipients")) return true;
+	      	return false;
+	    }
+   public boolean findAtcChanged(){
+	  	  //получим список из review_info.changedFields  если в списке нет, то false
+	       	if (changedFields.contains("Atc")) return true;
+	      	return false;
+	    }
     
     public void setShowFeedBackButton(boolean showFeedBackButton) {
         this.showFeedBackButton = showFeedBackButton;
