@@ -295,8 +295,19 @@ public class ProcessProdBn implements Serializable {
 		Workspace w = workspaceDAO.findOne((long) 1);
 		prodApplications.setRegExpiryDate(JsfUtils.addDate(prodApplications.getRegistrationDate(), w.getProdRegDuration()));
 	}
-
+	/**
+	 * Add comment and go to list
+	 * @return
+	 */
 	public String addComment() {
+		addCommentAjax();
+		return "/internal/processprodlist";
+	}
+	/**
+	 * Add comment, but stay here
+	 * @return
+	 */
+	public String addCommentAjax() {
 		try {
 			if (comments == null)
 				comments = new ArrayList<Comment>();
@@ -312,7 +323,7 @@ public class ProcessProdBn implements Serializable {
 			ex.printStackTrace();
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Log out of the system and try again."));
 		}
-		return "/internal/processprodlist";
+		return "";
 	}
 
 	public String assignModerator() {

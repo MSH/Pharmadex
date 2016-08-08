@@ -162,7 +162,7 @@ public class FileUploadController implements Serializable {
 		return null;
 	}
 
-	/*    public StreamedContent regCertDownload(ProdApplications prodApps) throws SQLException, IOException, JRException {
+	    public StreamedContent regCertDownload(ProdApplications prodApps) throws SQLException, IOException, JRException {
         if(prodApps != null){
 	        InputStream ist = new ByteArrayInputStream(prodApps.getRegCert());
 	        Calendar c = Calendar.getInstance();
@@ -170,7 +170,7 @@ public class FileUploadController implements Serializable {
 	        return download;
         }
         return null;
-    }*/
+    }
 
 	public StreamedContent reviewDetailDownload(ReviewDetail reviewDetail) {
 		if(reviewDetail == null)
