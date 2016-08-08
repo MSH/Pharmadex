@@ -74,17 +74,10 @@
                     </p:autoComplete>
                     <p:message for="prodTb" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
 
-                    <h:outputLabel value="#{msgs.product_details}: "
-                                   rendered="#{prodRegInit.showProductChoice}"
-                                   for="appDetails"
-                                   styleClass="fy-required-field"/>
-                    <p:panel styleClass="panelNoBorder">
-                    <p:inputTextarea id="appDetails" autoResize="true" rows="4" cols="50" maxlength="4000"
-                                     counter="charRemains" counterTemplate="{0} characters remaining."
-                                     rendered="#{prodRegInit.showProductChoice}"/>
-                    <h:outputText id="charRemains" style="color: #a0a0a0" rendered="#{prodRegInit.showProductChoice}"/>
-                    </p:panel>
-                    <h:outputLabel/>
+                    <h:outputLabel value="#{msgs.variationSummary}" rendered="#{prodRegInit.showVariationType}"/>
+                    <p:editor id="varDetails" value="#{prodRegInit.varSummary}" widgetVar="vardetails" height="100" width="550" rendered="#{prodRegInit.showVariationType}"/>
+                    <p:message for="varDetails" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
+
                     <p:outputLabel
                             value="#{msgs.sra_msg}"/>
                     <h:panelGroup>
@@ -95,8 +88,8 @@
                     </h:panelGroup>
                     <p:message for="regauth"/>
 
-                    <p:outputLabel value="#{msgs.sra_msg2}" styleClass="hint"/>
                     <p:outputLabel/>
+                    <p:outputLabel value="#{msgs.sra_msg2}" styleClass="hint"/>
                     <p:outputLabel/>
 
                     <p:panelGrid columns="3" styleClass="panelNoBorder" id="feePanel" >

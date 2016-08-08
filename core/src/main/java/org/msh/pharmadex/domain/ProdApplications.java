@@ -192,6 +192,9 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(nullable = true, columnDefinition = "int default 0")
     private int mnVarQnt = 0;
 
+    @Column(nullable = true)
+    private String prodAppDetails;
+
     public ProdApplications(Product prod, Applicant applicant) {
         this.product = prod;
         this.applicant = applicant;
@@ -666,5 +669,12 @@ public class ProdApplications extends CreationDetail implements Serializable {
         this.mnVarQnt = mnVarQnt;
     }
 
+    public String getProdAppDetails() {
+        return prodAppDetails;
+    }
+
+    public void setProdAppDetails(String prodAppDetails) {
+        this.prodAppDetails = prodAppDetails;
+    }
 }
 

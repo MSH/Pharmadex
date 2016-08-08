@@ -17,6 +17,7 @@ public class ProdAppInit {
     private Long licHolderID;
     private int mjVarQnt=0;
     private int mnVarQnt=0;
+    private String varSummary;
 
     public ProdAppType getProdAppType() {
         return prodAppType;
@@ -96,5 +97,13 @@ public class ProdAppInit {
 
     public void setMnVarQnt(int mnVarQnt) {
         this.mnVarQnt = mnVarQnt;
+    }
+
+    public String getVarSummary() {
+        return varSummary;
+    }
+
+    public void setVarSummary(String varSummary) {
+        this.varSummary = varSummary;
     }
 }

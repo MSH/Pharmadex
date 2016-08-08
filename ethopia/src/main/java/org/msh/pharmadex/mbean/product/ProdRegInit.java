@@ -79,6 +79,7 @@ public class ProdRegInit implements Serializable {
     //private Product selProduct;
     private int minorQuantity=0;
     private int majorQuantity=0;
+    private String varSummary;
     private java.util.ResourceBundle bundle;
     private User curUser;
     private boolean fewLicHolders;
@@ -230,6 +231,7 @@ public class ProdRegInit implements Serializable {
         prodAppInit.setSRA(selSRA.length > 0);
         prodAppInit.setMjVarQnt(majorQuantity);
         prodAppInit.setMnVarQnt(minorQuantity);
+        prodAppInit.setVarSummary(varSummary);
         if (selLicHolder != null) {
             prodAppInit.setLicHolderID(selLicHolder.getId());
             selLicHolder = licenseHolderService.findLicHolder(selLicHolder.getId());
@@ -277,6 +279,7 @@ public class ProdRegInit implements Serializable {
         prodApp.setMjVarQnt(paInit.getMjVarQnt());
         prodApp.setMnVarQnt(paInit.getMnVarQnt());
         prodAppRenew=clone(prodApp,newtype,false);
+        prodAppRenew.setProdAppDetails(paInit.getVarSummary());
         prodAppRenew.setFeeAmt(null);
         prodAppRenew.setFeeReceived(false);
         prodAppRenew.setFeeSubmittedDt(null);
@@ -756,5 +759,13 @@ public class ProdRegInit implements Serializable {
 
     public void setFewLicHolders(boolean fewLicHolders) {
         this.fewLicHolders = fewLicHolders;
+    }
+
+    public String getVarSummary() {
+        return varSummary;
+    }
+
+    public void setVarSummary(String varSummary) {
+        this.varSummary = varSummary;
     }
 }
