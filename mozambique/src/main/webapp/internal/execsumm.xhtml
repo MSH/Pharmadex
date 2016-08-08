@@ -88,7 +88,7 @@
                     <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
 
                     <p:selectOneMenu id="recomcb" value="#{execSummaryBn.prodApplications.regState}"
-                                     requiredMessage="#{msgs.recommendation_valid}">
+                              required="true" requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
                         <f:selectItems value="#{execSummaryBn.nextSteps}" var="type"
                                        itemLabel="#{msgs[type.key]}"/>
