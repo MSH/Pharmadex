@@ -308,15 +308,14 @@ public class ProcessProdBn implements Serializable {
 			comments.add(selComment);
 			selComment = new Comment();
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("comment_success")));
-			return "";
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Log out of the system and try again."));
-			return "";
 		}
+		return "/internal/processprodlist";
 	}
 
-	public void assignModerator() {
+	public String assignModerator() {
 		try {
 
 			facesContext = getCurrentInstance();
@@ -334,7 +333,7 @@ public class ProcessProdBn implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
 		}
 
-
+		return "/internal/processprodlist";
 	}
 
 	public String sendToRenew() {
@@ -497,7 +496,6 @@ public class ProcessProdBn implements Serializable {
 
 	public String addTimeline() {
 		facesContext = getCurrentInstance();
-
 		try {
 
 			timeLine.setStatusDate(new Date());
@@ -538,10 +536,10 @@ public class ProcessProdBn implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
 		}
 		timeLine = new TimeLine();
-		return "";  //To change body of created methods use File | Settings | File Templates.
+		return "/internal/processprodlist";  //To change body of created methods use File | Settings | File Templates.
 	}
 
-	public void save() {
+	public String save() {
 		facesContext = getCurrentInstance();
 		try {
 			prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedINUserID());
@@ -551,6 +549,7 @@ public class ProcessProdBn implements Serializable {
 			e.printStackTrace();
 			facesContext.addMessage(null, new FacesMessage(e.getMessage()));
 		}
+		return "/internal/processprodlist";
 	}
 
 	public String registerProduct() {
