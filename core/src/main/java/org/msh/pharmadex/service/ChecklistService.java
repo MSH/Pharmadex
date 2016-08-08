@@ -56,23 +56,22 @@ public class ChecklistService implements Serializable {
 
         if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
             checklists = checklistDAO.findByRenewalOrderByIdAsc(true);
-        } else if (prodApplications.isSra())
+        }else if  (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)) {
+                if (addParam) {
+                    checklists = checklistDAO.findByMajvarOrderByIdAsc(true);
+                }else {
+                    checklists = checklistDAO.findByVariationOrderByIdAsc(true);
+                }
+        }
+        else if (prodApplications.isSra())
             if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
                 checklists = checklistDAO.findBySRANewMeds(true);
             else
                 checklists = checklistDAO.findByRecognizedMedOrderByIdAsc(true);
         else if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY))
             checklists = checklistDAO.findByNewMedOrderByIdAsc(true);
-        else if  (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)) {
-        	if (addParam)
-                checklists = checklistDAO.findByMajvarOrderByIdAsc(true);
-        	else
-                checklists = checklistDAO.findByVariationOrderByIdAsc(true);
-        }
         else
             checklists = checklistDAO.findByGenMedOrderByIdAsc(true);
-//        else if(prodAppType.equals(ProdAppType.RECOGNIZED))
-//            checklists = checklistDAO.findByHeaderAndRecognizedMed(true,true);
         return checklists;
     }
 

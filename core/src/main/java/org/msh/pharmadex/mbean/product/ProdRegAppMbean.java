@@ -480,6 +480,7 @@ public class ProdRegAppMbean implements Serializable {
 			if (prodAppChecklists != null && prodAppChecklists.size() < 1) {
 				prodAppChecklists = new ArrayList<ProdAppChecklist>();
 				List<Checklist> allChecklist = null;
+
 				if (prodApplications.getMjVarQnt()>0)//if exists major variation, show it on this tab
 					allChecklist = checklistService.getETChecklists(prodApplications, true);
 				else//there isn't major - show minor check list here
@@ -741,17 +742,14 @@ public class ProdRegAppMbean implements Serializable {
 	//used to set all the field values after insert/update operation
 	private void setFieldValues() {
 		try {
-			//        prodApplications = product.getProdApplications();
 			if (prodApplications != null && prodApplications.getProduct() != null) {
 				product = productService.findProduct(prodApplications.getProduct().getId());
 				selectedInns = product.getInns();
 				selectedExipients = product.getExcipients();
 				selectedAtcs = product.getAtcs();
 				companies = product.getProdCompanies();
-				//        prodAppChecklists = prodApplications.getProdAppChecklists();
 				applicant = prodApplications.getApplicant();
 
-				// responsable User in prodApplications - prodApplications.getApplicantUser()
 				applicantUser = prodApplications.getApplicantUser();
 				if(applicantUser == null)
 					applicantUser = prodApplications.getCreatedBy();
@@ -760,7 +758,6 @@ public class ProdRegAppMbean implements Serializable {
 
 				pricing = product.getPricing();
 				drugPrices = pricing != null ? pricing.getDrugPrices() : null;
-				//        foreignAppStatuses = prodApplications.getForeignAppStatus();
 				useCategories = product.getUseCategories();
 			}
 		} catch (Exception ex) {
@@ -1116,13 +1113,13 @@ public class ProdRegAppMbean implements Serializable {
 		if (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
 			res = res + " (";
 			if (prodApplications.getMjVarQnt()>0){
-				res = res + bundle.getString("variationType.major").toLowerCase() + " " + String.valueOf(prodApplications.getMjVarQnt());
+				res = res + bundle.getString("variationType_major").toLowerCase() + " " + String.valueOf(prodApplications.getMjVarQnt());
 			}
 			if (prodApplications.getMnVarQnt()>0 && (prodApplications.getMjVarQnt()>0)){
 				res = res + " " + "/" + " ";
 			}
 			if (prodApplications.getMnVarQnt()>0){
-				res = res + " " + bundle.getString("variationType.minor").toLowerCase() + " " + String.valueOf(prodApplications.getMnVarQnt());
+				res = res + " " + bundle.getString("variationType_minor").toLowerCase() + " " + String.valueOf(prodApplications.getMnVarQnt());
 			}
 			res = res + ")";
 		}

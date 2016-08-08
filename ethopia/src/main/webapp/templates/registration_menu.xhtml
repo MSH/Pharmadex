@@ -30,18 +30,6 @@
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                 url="/secure/appregistration.faces"
                                 ajax="false" rendered="#{userSession.displayAppReg}"/>
-                    <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
-                                url="/internal/processrereglist.faces"
-                                rendered="#{userSession.company||userSession.admin||userSession.staff}"/>
-                      <p:menuitem value="#{msgs.variation}" icon="ui-icon-gear"
-                                url="/internal/processvarlist.faces"
-                                rendered="#{userSession.company||userSession.admin||userSession.staff}"/>           
-
-
-                    <!--
-                                        <p:menuitem value="#{msgs.premises_registration_form}" icon="ui-icon-gear"
-                                                    url="/secure/pharmacyregistration.faces" ajax="false"/>
-                    -->
                 </p:submenu>
 
 

@@ -338,6 +338,9 @@ body {
 }
 
 .panelNoBorder, .panelNoBorder tr, .panelNoBorder td{
+    padding: 0px 0px 0px 0px;
+    cellpadding: 0px;
+    mso-cellspacing: 0px;
     border: hidden;
     border-color: white;
 }

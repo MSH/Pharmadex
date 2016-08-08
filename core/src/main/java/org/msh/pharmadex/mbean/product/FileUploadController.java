@@ -149,8 +149,9 @@ public class FileUploadController implements Serializable {
 		return false;
 	}
 	
-	public StreamedContent regCertDownload(ProdApplications prodApplications) throws SQLException, IOException, JRException {
-		if(prodApplications != null){
+	public StreamedContent regCertDownload() throws SQLException, IOException, JRException {
+		ProdApplications prodApplications = processProdBn.getProdApplications();
+ 		if(prodApplications != null){
 			if(prodApplications.getRegCert() != null){
 				InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 				Calendar c = Calendar.getInstance();

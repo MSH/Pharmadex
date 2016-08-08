@@ -2,7 +2,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:H="http://java.sun.com/jsf/html"
                 template="../templates/registration_layout.xhtml">
     <ui:define name="regcontent">
         <div class="post">
@@ -74,7 +74,17 @@
                     </p:autoComplete>
                     <p:message for="prodTb" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
 
-                    <p:outputLabel/>
+                    <h:outputLabel value="#{msgs.product_details}: "
+                                   rendered="#{prodRegInit.showProductChoice}"
+                                   for="appDetails"
+                                   styleClass="fy-required-field"/>
+                    <p:panel styleClass="panelNoBorder">
+                    <p:inputTextarea id="appDetails" autoResize="true" rows="4" cols="50" maxlength="4000"
+                                     counter="charRemains" counterTemplate="{0} characters remaining."
+                                     rendered="#{prodRegInit.showProductChoice}"/>
+                    <h:outputText id="charRemains" style="color: #a0a0a0" rendered="#{prodRegInit.showProductChoice}"/>
+                    </p:panel>
+                    <h:outputLabel/>
                     <p:outputLabel
                             value="#{msgs.sra_msg}"/>
                     <h:panelGroup>

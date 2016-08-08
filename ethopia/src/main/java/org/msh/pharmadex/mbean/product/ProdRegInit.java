@@ -207,10 +207,14 @@ public class ProdRegInit implements Serializable {
             prodApplications.setSra(true);
         else
             prodApplications.setSra(false);
-        if (prodApplications.getMjVarQnt()>0)
-            checklists = checklistService.getETChecklists(prodApplications, true);
-        else
-            checklists = checklistService.getETChecklists(prodApplications, false);
+        if (prodAppType.equals(ProdAppType.VARIATION)){
+            if (this.getMajorQuantity()>0)
+                checklists = checklistService.getETChecklists(prodApplications, true);
+            else
+                checklists = checklistService.getETChecklists(prodApplications, false);
+        }else if (prodAppType.equals(ProdAppType.RENEW)){
+            checklists = checklistService.getChecklists(prodApplications,true);
+        }
     }
 
     public String regApp() {
@@ -268,11 +272,23 @@ public class ProdRegInit implements Serializable {
 
     public String startReregVar(ProdAppType newtype, Long parentAppId, ProdAppInit paInit){
         //create copy of inital application and product
-        ProdApplications prodAppRenew = new ProdApplications();
+        ProdApplications prodAppRenew;
         ProdApplications prodApp = prodApplicationsService.findProdApplications(parentAppId);
         prodApp.setMjVarQnt(paInit.getMjVarQnt());
         prodApp.setMnVarQnt(paInit.getMnVarQnt());
         prodAppRenew=clone(prodApp,newtype,false);
+        prodAppRenew.setFeeAmt(null);
+        prodAppRenew.setFeeReceived(false);
+        prodAppRenew.setFeeSubmittedDt(null);
+        prodAppRenew.setBankName(null);
+        prodAppRenew.setPrescreenBankName(null);
+        prodAppRenew.setDosRecDate(null);
+        prodAppRenew.setRegExpiryDate(null);
+        prodAppRenew.setProdRegNo(null);
+        prodAppRenew.setProdAppNo(null);
+        prodAppRenew.setFeeReceipt(null);
+        prodAppRenew.setReceiptNo(null);
+        prodAppRenew.setPrescreenReceiptNo(null);
         prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
 
         Long prodAppId = prodAppRenew.getId();
@@ -488,6 +504,16 @@ public class ProdRegInit implements Serializable {
         return suggestions;
     }
 
+    private ProdApplications getLastProductApplication(Product p){
+        List<ProdApplications> prodApps = p.getProdApplicationses();
+        if (prodApps==null) return null;
+        for(ProdApplications pa:prodApps){
+            if (pa.isActive())
+                return pa;
+        }
+        return null;
+    }
+
     private ProdTable createProdTableRecord(Product p){
         ProdTable pt = new ProdTable();
         pt.setId(p.getId());
@@ -518,26 +544,34 @@ public class ProdRegInit implements Serializable {
         }
         Long lcId = getSelLicHolder().getId();
         LicenseHolder lc = licenseHolderService.findLicHolder(lcId);
+        Calendar minDate = Calendar.getInstance();
+        minDate.add(Calendar.DAY_OF_YEAR,120);
         List<Product> products = lc.getProducts();
         if (products!=null){
-            for (Product p : products) {
-                if (" ".equals(query))
-                    suggestions.add(createProdTableRecord(p));
-                else{
-                     if (p.getProdName() != null){
-                        if ( p.getProdName().toLowerCase().startsWith(query)){
-                            suggestions.add(createProdTableRecord(p));
-                            continue;
-                        }
-                    }
-                    if (p.getGenName() != null){
-                        if (p.getGenName().toLowerCase().startsWith(query)){
-                            suggestions.add(createProdTableRecord(p));
-                            continue;
-                        }
-                    }
-                }
-            }
+           for (Product p : products) {
+               if (prodAppType == ProdAppType.RENEW){
+                   ProdApplications pa = getLastProductApplication(p);
+                   //include product to list only if expiration time have not came and no more 120 days before
+                   if (!(pa.getRegExpiryDate().before(minDate.getTime())&&(pa.getRegExpiryDate().after(Calendar.getInstance().getTime()))))
+                           continue;
+               }
+               if (" ".equals(query))
+                   suggestions.add(createProdTableRecord(p));
+               else {
+                   if (p.getProdName() != null) {
+                       if (p.getProdName().toLowerCase().startsWith(query)) {
+                           suggestions.add(createProdTableRecord(p));
+                           continue;
+                       }
+                   }
+                   if (p.getGenName() != null) {
+                      if (p.getGenName().toLowerCase().startsWith(query)) {
+                           suggestions.add(createProdTableRecord(p));
+                           continue;
+                      }
+                   }
+               }
+           }
         }
         return suggestions;
     }

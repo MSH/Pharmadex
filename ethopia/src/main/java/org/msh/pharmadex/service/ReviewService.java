@@ -186,7 +186,7 @@ public class ReviewService implements Serializable {
 
         if (prodApplications.getProdAppType()!=null){
             if (prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
-                reviewQuestions = reviewQDAO.findBySRA();
+                reviewQuestions = reviewQDAO.findByRenewal();
             } else if(prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
             	if (prodApplications.getMjVarQnt()>0) reviewQuestions=reviewQDAO.findByMajVariation();
             	else 

@@ -137,6 +137,7 @@ public class ProcessProdBn implements Serializable {
 	private boolean disableVerify;
 	private boolean displayFir;
 	private String suspId;
+    private String appType;
 
 	private List<ForeignAppStatus> foreignAppStatuses;
 
@@ -1108,4 +1109,25 @@ public class ProcessProdBn implements Serializable {
 		this.prodRegAppMbean = prodRegAppMbean;
 	}
 
+
+    public String getAppType() {
+        String res = resourceBundle.getString(prodApplications.getProdAppType().getKey());
+        if (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
+            if (prodApplications.getMjVarQnt()>0){
+                res = res + resourceBundle.getString("variationType_major").toLowerCase() + " " + String.valueOf(prodApplications.getMjVarQnt());
+            }
+            if (prodApplications.getMnVarQnt()>0 && (prodApplications.getMjVarQnt()>0)){
+                res = res + " " + "/" + " ";
+            }
+            if (prodApplications.getMnVarQnt()>0){
+                res = res + " " + resourceBundle.getString("variationType_minor").toLowerCase() + " " + String.valueOf(prodApplications.getMnVarQnt());
+            }
+        }
+        appType = "("+res+")";
+        return appType;
+    }
+
+    public void setAppType(String appType) {
+        this.appType = appType;
+    }
 }

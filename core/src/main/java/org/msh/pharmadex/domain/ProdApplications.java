@@ -665,5 +665,6 @@ public class ProdApplications extends CreationDetail implements Serializable {
     public void setMnVarQnt(int mnVarQnt) {
         this.mnVarQnt = mnVarQnt;
     }
+
 }
 
