@@ -480,12 +480,18 @@ public class ProdRegAppMbean implements Serializable {
 			if (prodAppChecklists != null && prodAppChecklists.size() < 1) {
 				prodAppChecklists = new ArrayList<ProdAppChecklist>();
 				List<Checklist> allChecklist = null;
-
+				List<Checklist> mChecklist = null;
 				if (prodApplications.getMjVarQnt()>0)//if exists major variation, show it on this tab
 					allChecklist = checklistService.getETChecklists(prodApplications, true);
-				else//there isn't major - show minor check list here
-					allChecklist = checklistService.getETChecklists(prodApplications, false);
-				if (allChecklist==null) return;
+				if (prodApplications.getMnVarQnt()>0)//there isn't major - show minor check list here
+					mChecklist = checklistService.getETChecklists(prodApplications, false);
+				if (allChecklist==null) allChecklist=new  ArrayList <Checklist>();
+				if ( mChecklist!=null) {
+					 for (Checklist ch: mChecklist) {
+						 if (!allChecklist.contains(ch)) allChecklist.add(ch);
+					 }
+				 } 
+	
 				if (allChecklist.size()==0) return;
 				ProdAppChecklist eachProdAppCheck;
 				if (allChecklist != null && allChecklist.size() > 0) {
