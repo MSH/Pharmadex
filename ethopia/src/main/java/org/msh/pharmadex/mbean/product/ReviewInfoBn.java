@@ -15,6 +15,10 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
+import org.primefaces.component.accordionpanel.AccordionPanel;
+import org.primefaces.component.tabview.TabView;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -44,7 +48,6 @@ import java.util.ResourceBundle;
 @ManagedBean
 @ViewScoped
 public class ReviewInfoBn implements Serializable {
-
 
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
@@ -84,10 +87,13 @@ public class ReviewInfoBn implements Serializable {
     private boolean submitted=false;
     private boolean reviewApproved=false;
     private String sourcePage="/internal/processreviewlist.faces";
+    private int header1ActIndex=0;
+    private int header2ActIndex=0;
 
     @PostConstruct
     private void init() {
         try {
+            restoreActiveIndexes();
             if (reviewInfo == null) {
                 String reviewInfoID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("reviewInfoID");
                 if(reviewInfoID!=null&&!reviewInfoID.equals("")) {
@@ -113,6 +119,16 @@ public class ReviewInfoBn implements Serializable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void restoreActiveIndexes(){
+        Long param = Scrooge.beanParam("reviewActiveIndex1");
+        if (param!=null)
+            header1ActIndex = param.intValue();
+        param = Scrooge.beanParam("reviewActiveIndex2");
+        if (param!=null)
+            header2ActIndex = param.intValue();
+
     }
 
     public void handleFileUpload() {
@@ -241,8 +257,16 @@ public class ReviewInfoBn implements Serializable {
         }
     }
 
+    private void storeActiveIndexes(){
+        if (header1ActIndex+header2ActIndex!=0){
+            Scrooge.setBeanParam("reviewActiveIndex1",(long) header1ActIndex);
+            Scrooge.setBeanParam("reviewActiveIndex2",(long) header2ActIndex);
+        }
+    }
+
     public String updateReview(DisplayReviewInfo displayReviewInfo) {
         FacesMessage msg;
+        storeActiveIndexes();
         facesContext = FacesContext.getCurrentInstance();
         msg = new FacesMessage(bundle.getString("global.success") + " Selected ID == " + displayReviewInfo.getId(), "Selected ID == " + displayReviewInfo.getId());
         facesContext.addMessage(null, msg);
@@ -465,6 +489,15 @@ public class ReviewInfoBn implements Serializable {
         return recomendTypes;
     }
 
+    public void onChangeHdr1(TabChangeEvent event){
+        AccordionPanel tv = (AccordionPanel) event.getSource();
+        header1ActIndex = tv.getIndex();
+    }
+
+    public void onChangeHdr2(TabChangeEvent event){
+        TabView tv = (TabView) event.getSource();
+        header2ActIndex = tv.getIndex();
+    }
 
     public void setDisplayReviewQs(List<DisplayReviewQ> displayReviewQs) {
         this.displayReviewQs = displayReviewQs;
@@ -643,5 +676,19 @@ public class ReviewInfoBn implements Serializable {
         this.sourcePage = sourcePage;
     }
 
+    public int getHeader1ActIndex() {
+        return header1ActIndex;
+    }
 
+    public void setHeader1ActIndex(int header1ActIndex) {
+        this.header1ActIndex = header1ActIndex;
+    }
+
+    public int getHeader2ActIndex() {
+        return header2ActIndex;
+    }
+
+    public void setHeader2ActIndex(int header2ActIndex) {
+        this.header2ActIndex = header2ActIndex;
+    }
 }

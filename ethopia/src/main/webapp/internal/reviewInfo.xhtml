@@ -57,12 +57,19 @@
                                  ajax="false"/>
             </div>
 
-
-            <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
+            <!-- main tab view - assesment details and comments -->
+            <p:tabView dynamic="true" id="detailtab" cache="false" style="width: 99%;">
                 <p:tab title="#{msgs.review_detail}">
-                    <p:accordionPanel value="#{reviewInfoBn.displayReviewQs}" var="header1" id="displayReviewQsacp">
+                    <p:accordionPanel value="#{reviewInfoBn.displayReviewQs}"
+                                      activeIndex="#{reviewInfoBn.header1ActIndex}"
+                                      var="header1" id="displayReviewQsacp"
+                                      >
+                        <p:ajax event="tabChange" listener="#{reviewInfoBn.onChangeHdr1}" update=":reviewHome:detailtab"/>
                         <p:tab title="#{header1.header1}">
-                            <p:tabView orientation="left" value="#{header1.header2s}" var="header2">
+                            <p:tabView orientation="left" value="#{header1.header2s}" var="header2"
+                                       activeIndex="#{reviewInfoBn.header2ActIndex}"
+                                       >
+                                <p:ajax event="tabChange" listener="#{reviewInfoBn.onChangeHdr2}" update=":reviewHome:detailtab"/>
                                 <p:tab title="#{header2.header2}">
                                     <p:dataTable value="#{header2.displayReviewInfos}" var="quest"
                                                  styleClass="borderless">

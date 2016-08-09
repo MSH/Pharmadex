@@ -510,6 +510,7 @@ public class ProdRegInit implements Serializable {
     private ProdApplications getLastProductApplication(Product p){
         List<ProdApplications> prodApps = p.getProdApplicationses();
         if (prodApps==null) return null;
+        if (prodApps.size()==1) return prodApps.get(0);
         for(ProdApplications pa:prodApps){
             if (pa.isActive())
                 return pa;
@@ -553,10 +554,13 @@ public class ProdRegInit implements Serializable {
         if (products!=null){
            for (Product p : products) {
                if (prodAppType == ProdAppType.RENEW){
-                   ProdApplications pa = getLastProductApplication(p);
+                    ProdApplications pa = getLastProductApplication(p);
                    //include product to list only if expiration time have not came and no more 120 days before
-                   if (!(pa.getRegExpiryDate().before(minDate.getTime())&&(pa.getRegExpiryDate().after(Calendar.getInstance().getTime()))))
-                           continue;
+                    if (pa.getRegExpiryDate()!=null)
+                        if (!(pa.getRegExpiryDate().before(minDate.getTime())&&(pa.getRegExpiryDate().after(Calendar.getInstance().getTime()))))
+                            continue;
+                    else
+                            continue;
                }
                if (" ".equals(query))
                    suggestions.add(createProdTableRecord(p));

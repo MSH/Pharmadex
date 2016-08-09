@@ -23,6 +23,7 @@ import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.FileUploadEvent;
 
 /**
@@ -61,6 +62,8 @@ public class ReviewDetailBn implements Serializable {
     private boolean secReviewer;
     
     private boolean fileImg = false;
+    private int header1ActIndex=0;
+    private int header2ActIndex=0;
 
     /**
      * Saves review without state changing
@@ -198,6 +201,28 @@ public class ReviewDetailBn implements Serializable {
                 revType = bundle.getString("sec_processor");
         }
         return revType;
+    }
+
+    public int getHeader1ActIndex() {
+        Long ind = Scrooge.beanParam("reviewActiveIndex1");
+        if (ind!=null)
+            header1ActIndex = ind.intValue();
+        return header1ActIndex;
+    }
+
+    public void setHeader1ActIndex(int header1ActIndex) {
+        this.header1ActIndex = header1ActIndex;
+    }
+
+    public int getHeader2ActIndex() {
+        Long ind = Scrooge.beanParam("reviewActiveIndex2");
+        if (ind!=null)
+            header2ActIndex = ind.intValue();
+        return header2ActIndex;
+    }
+
+    public void setHeader2ActIndex(int header2ActIndex) {
+        this.header2ActIndex = header2ActIndex;
     }
 
     public void setRevType(String revType) {

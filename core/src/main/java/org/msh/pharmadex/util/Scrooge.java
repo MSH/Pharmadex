@@ -1,6 +1,7 @@
 package org.msh.pharmadex.util;
 
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -84,7 +85,14 @@ public class Scrooge {
         return true;
     }
 
-
+    public static void setBeanParam(String paramName, Long paramValue){
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        String prodAppId=null;
+        Flash flash = facesContext.getExternalContext().getFlash();
+        if (flash!=null) {
+            flash.put(paramName,paramValue);
+        }
+    }
 
     public static Long beanParam(String parameter){
         FacesContext facesContext = FacesContext.getCurrentInstance();
