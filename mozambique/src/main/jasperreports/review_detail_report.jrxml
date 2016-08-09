@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-08-04T11:05:02 -->
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-08-09T11:24:54 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -14,7 +14,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="reviewDetail.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="moderName" class="java.lang.String"/>
 	<parameter name="prodName" class="java.lang.String"/>
 	<parameter name="cheifName" class="java.lang.String">
@@ -30,7 +30,7 @@
 	<field name="reviewItemData" class="java.lang.String">
 		<fieldDescription><![CDATA[Detail data of review item, may be empty!]]></fieldDescription>
 	</field>
-	<field name="reviewItemFile" class="java.lang.String">
+	<field name="reviewItemFile" class="java.io.InputStream">
 		<fieldDescription><![CDATA[Image file for review item]]></fieldDescription>
 	</field>
 	<group name="chapter" isReprintHeaderOnEachPage="true" keepTogether="true">
@@ -151,7 +151,7 @@
 					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
 					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle" markup="html"/>
 				<textFieldExpression><![CDATA[$F{reviewItem}== null?$F{reviewItemData}:""]]></textFieldExpression>
 			</textField>
 			<image scaleImage="RealSize" hAlign="Left">
@@ -163,8 +163,7 @@
 					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
 					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
 					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<printWhenExpression><![CDATA[$F{reviewItemFile} != null && ($F{reviewItemFile}.endsWith( ".png" ) || $F{reviewItemFile}.endsWith( ".gif" )
- || $F{reviewItemFile}.endsWith( ".jpeg" )  || $F{reviewItemFile}.endsWith( ".jpg" ))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{reviewItemFile} != null]]></printWhenExpression>
 				</reportElement>
 				<imageExpression><![CDATA[$F{reviewItemFile}]]></imageExpression>
 			</image>

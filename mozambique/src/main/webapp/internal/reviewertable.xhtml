@@ -203,7 +203,7 @@
 
                     <p:outputLabel value="#{msgs.checklist_module}" for="modulecb"/>
                     <p:selectOneMenu id="modulecb" value="#{prodReviewBn.reviewInfo.ctdModule}"
-                             required="true"  requiredMessage="#{msgs.recommendation_valid}" >
+                             requiredMessage="#{msgs.recommendation_valid}" >
                         <f:selectItem itemLabel="-"/>
                         <f:selectItems value="#{globalLists.cTDModules}" var="type" itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
