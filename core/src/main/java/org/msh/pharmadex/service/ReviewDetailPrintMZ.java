@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 
 import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
+import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ProdCompany;
@@ -69,14 +70,12 @@ public class ReviewDetailPrintMZ implements Serializable {
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_5"),fetchExcipients(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_6"),prodApp.getProduct().getPackSize(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_7"),prodApp.getProduct().getDosForm().getDosForm(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_8"),prodApp.getProduct().getStorageCndtn(),null);
+		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_8"),prodApp.getProduct().getIndications(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_9"),prodApp.getProduct().getShelfLife(),null);
-		//TODO
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_10"),"???",null);
+		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_10"),prodApp.getProduct().getStorageCndtn(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_11"),prodApp.getProduct().getAdminRoute().getName(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_12"),bundle.getString(prodApp.getProdAppType().getKey()),null);
-		//TODO
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_13"),"???",null);
+		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_13"),fetchATC_Names(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_14"),fetchManufacture(prodCompanyDAO, false),null);
 	}
 
@@ -87,7 +86,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 	}
 	
 	private static void fillResolutionText(List<Map<String, Object>> res, Properties prop) {
-		String number = prodApp.getProdAppNo() != null ? prodApp.getProdAppNo():"";
+		String number = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():"";
 		String chapter3t = prop.getProperty("chapter3_txt").replace("_REGNUMBER_", number);
 		String text = (prodApp.getExecSummary() != null ? prodApp.getExecSummary() + "\n":"") + chapter3t;
 		fillItemRS(res, prop.getProperty("chapter3"), null, text, null);
@@ -226,6 +225,20 @@ public class ReviewDetailPrintMZ implements Serializable {
 		return excipients;
 	}
 
+	private static String fetchATC_Names() {
+		String names = "";
+		if(prodApp != null && prodApp.getProduct() != null){
+			List<Atc> atcs = prodApp.getProduct().getAtcs();
+			if(atcs != null && atcs.size() > 0){
+				for(Atc atc:atcs){
+					names += (names.isEmpty()?"":", ") + atc.getAtcName();
+				}
+			}
+		}else
+			names = "N/A";
+		return names;
+	}
+	
 	private static String fetchManufacture(ProductCompanyDAO prodCompanyDAO, boolean onlyName) {
 		String manuf = "";
 		if(prodApp != null){
