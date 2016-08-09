@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-03T16:44:54 -->
+<!-- 2016-08-09T16:03:41 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -14,22 +14,28 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
 	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="appPost" class="java.lang.String"/>
 	<parameter name="appAddress" class="java.lang.String"/>
-	<parameter name="subject" class="java.lang.String"/>
 	<parameter name="prodName" class="java.lang.String"/>
-	<parameter name="prodStrength" class="java.lang.String"/>
-	<parameter name="dosForm" class="java.lang.String"/>
-	<parameter name="manufName" class="java.lang.String"/>
-	<parameter name="appType" class="java.lang.String"/>
-	<parameter name="appNum" class="java.lang.String"/>
+	<parameter name="fullName" class="java.lang.String"/>
+	<parameter name="appUserName" class="java.lang.String"/>
+	<field name="defItemName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="300" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="388" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="95" width="572" height="27" forecolor="#000000" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[_____________________________________________]]></text>
+			</staticText>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="236" y="0" width="100" height="100" uuid="b94aef40-5b47-43d1-87ca-52fddd50615b">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -37,82 +43,115 @@
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="103" width="555" height="22" forecolor="#000000" uuid="30c1f4e9-fde5-43ec-8691-2cdadea7d354">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="18" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration (DGDA)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="-1" y="125" width="555" height="22" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="18" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Ministry of Health and Family Welfare]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="147" width="555" height="18" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="14" isBold="true" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[Product Registration and Licensing Directorate]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="20" y="200" width="270" height="16" uuid="9d8562d4-e78e-42be-a876-957d00f421b2">
+				<reportElement x="0" y="120" width="565" height="16" forecolor="#000000" uuid="30c1f4e9-fde5-43ec-8691-2cdadea7d354">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE MOÇAMBIQUE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-1" y="142" width="572" height="16" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MINISTÉRIO DA SAÚDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="160" width="572" height="16" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="11" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Departamento Farmacêutico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="306" y="293" width="248" height="16" uuid="9d8562d4-e78e-42be-a876-957d00f421b2">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="DejaVu Serif" size="12"/>
+					<font fontName="DejaVu Serif" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[To,]]></text>
+				<text><![CDATA[Exmo Senhor]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="40" y="258" width="250" height="16" uuid="c4de58fc-e062-4138-b03a-1ea442e2d1fd">
+				<reportElement positionType="Float" x="306" y="313" width="249" height="13" uuid="c4de58fc-e062-4138-b03a-1ea442e2d1fd">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Serif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["".concat($P{appPost} == null ? "Director Técnico ":$P{appPost}).concat(" da ").concat($P{appName} == null ? "":$P{appName})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="306" y="333" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
+					<font fontName="DejaVu Serif" size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{subject} == null ? "":$P{subject}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{appAddress} == null ? "Maputo": ($P{appAddress}== ""?"Maputo" :$P{appAddress})]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="40" y="216" width="250" height="16" uuid="26565555-8d5c-4bbe-a489-5ae2ebf09d27">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="192" width="390" height="17" uuid="2d4c9c75-a1b3-4cc0-b4f9-25e2d14dcac4"/>
+				<textElement>
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Refª Nº                  /                    /DF                                      Maputo,        de]]></text>
+			</staticText>
+			<textField pattern="MMM, yyyy">
+				<reportElement positionType="Float" x="390" y="191" width="100" height="18" uuid="34c21125-f6d7-40e1-9acb-dcb2fbeedd42">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
+					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appName} == null ? "":$P{appName}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="40" y="232" width="250" height="16" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9"/>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{appAddress} == null ? "": ($P{appAddress}== ""?"Maputo" :$P{appAddress})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="165" width="555" height="18" uuid="2859c85b-d0ce-430d-8059-b662ab7c523a">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="14" isBold="true" isItalic="false"/>
+				<reportElement positionType="Float" x="0" y="241" width="60" height="20" uuid="3bd89e11-368c-41ae-bf60-32b8ea001c75"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<text><![CDATA[Dossier Sample request form]]></text>
+				<text><![CDATA[Assunto:]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement positionType="Float" x="65" y="241" width="480" height="18" uuid="f554b4e1-98fc-4663-b821-7fc5677724cb">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pedido de Amostras do Medicamento ".concat($P{prodName}  == null ? "":$P{prodName}).concat(" para Controlo de Qualidade")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement positionType="Float" x="0" y="357" width="550" height="24" uuid="0966b53c-0404-4bf5-bf0d-99e112ece84c">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement markup="html">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Serve a presente para solicitar o envio de amostras do medicamento ".concat($P{fullName}== null ? "": $P{fullName}).concat(" para Controlo de Qualidade. No acto da submissão, certifique-se de que inclui :")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="266" width="551" height="1" uuid="8e2d0272-6f18-4433-a318-d9903276c17b">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -124,321 +163,100 @@
 		<band height="1" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="200" splitType="Stretch">
-			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="0" width="555" height="50" uuid="dab4b25b-10bb-4e91-846a-15dff009ac76">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="DejaVu Serif" size="12" isBold="false"/>
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="0" width="555" height="20" uuid="ffb97e9b-6e1f-485b-9c87-61ec5736b192"/>
+				<textElement markup="html">
+					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<text><![CDATA[The document/dossier of the below product is found to be complete. ]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="50" width="158" height="23" uuid="f51a3479-2e54-4bf0-9c3c-2ff8244c6738">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="0.4"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Product Name:"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="158" y="50" width="397" height="23" uuid="3712ae5a-175b-45f8-9772-c688685767af">
-					<property name="com.jaspersoft.layout.grid.x" value="1"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{prodName} == null ? "":$P{prodName}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="73" width="555" height="2" uuid="939fad24-0e18-4f17-bbc7-d5f03cf13c4b">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<text><![CDATA[Static Text]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="75" width="158" height="23" isPrintWhenDetailOverflows="true" uuid="5aface1f-77c7-47c5-93cc-43a5419e67e8">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="0.4"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Product Strength:"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="158" y="75" width="397" height="23" uuid="2acf8007-25ce-404f-97e9-60c59c510ea4">
-					<property name="com.jaspersoft.layout.grid.x" value="1"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{prodStrength} == null ? "":$P{prodStrength}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="98" width="555" height="2" uuid="8fe9b1d3-a8fd-4d6a-80e2-45bf84328b1e">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
-				</reportElement>
-				<text><![CDATA[Static Text]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="100" width="158" height="23" uuid="ff24d890-bde6-472b-a37e-0bb690fe405f">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="0.4"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Dosage Form:"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="158" y="100" width="397" height="23" uuid="182e1439-8b4b-4aeb-a33f-0d675f02a688">
-					<property name="com.jaspersoft.layout.grid.x" value="1"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{dosForm} == null ? "":$P{dosForm}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="123" width="555" height="2" uuid="8e9f5c5f-5da2-45ba-ad21-cdb6a4bc4de8">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
-				</reportElement>
-				<text><![CDATA[Static Text]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="125" width="158" height="23" uuid="e62dd909-11ec-4db0-b0f7-7eb05e21ad91">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="0.4"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Manufacturer:"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="158" y="125" width="397" height="23" uuid="4b331aa3-f801-4c9b-b928-6896221eb88b">
-					<property name="com.jaspersoft.layout.grid.x" value="1"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{manufName} == null ? "":$P{manufName}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="148" width="555" height="2" uuid="a6540a89-adc7-436d-a36c-756891623b26">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
-				</reportElement>
-				<text><![CDATA[Static Text]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="150" width="158" height="23" uuid="f0ce1407-5f6a-4755-9a70-394f17da7876">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="0.4"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Type of Application:"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="158" y="150" width="397" height="23" uuid="efacb8d3-e27f-468d-b5b1-eff0f52c4614">
-					<property name="com.jaspersoft.layout.grid.x" value="1"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{appType} == null ? "":$P{appType}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="0" y="173" width="555" height="2" uuid="42c6e731-9777-47bb-899b-1552cf39d173">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="2"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
-				</reportElement>
-				<text><![CDATA[Static Text]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="175" width="158" height="23" uuid="04f0b4bd-8e45-46c7-88a2-5f92271bd3b7">
-					<property name="com.jaspersoft.layout.grid.x" value="0"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="0.4"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Application Number:"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="158" y="175" width="397" height="23" uuid="defc9601-b07e-49fe-a908-ade98a3735c3">
-					<property name="com.jaspersoft.layout.grid.x" value="1"/>
-					<property name="com.jaspersoft.layout.grid.y" value="-1"/>
-					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
-					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
-					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{appNum} == null ? "":$P{appNum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<li>" +$F{defItemName} + "</li>"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band splitType="Stretch"/>
+		<band height="1" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="50" splitType="Stretch">
+		<band height="81" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="572" height="2" uuid="557d0146-13a6-4abc-a0a9-6b6867e4d9f6"/>
 			</line>
 			<staticText>
-				<reportElement x="0" y="5" width="555" height="40" uuid="4f3358e4-5eaa-4362-af95-137ada0bd0bc">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<reportElement x="0" y="5" width="285" height="71" uuid="4f3358e4-5eaa-4362-af95-137ada0bd0bc">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="DejaVu Serif" size="12" isBold="false"/>
+				<textElement textAlignment="Left">
+					<font fontName="DejaVu Serif" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Thank You,
-Food Medicine and Health Care Administration and Control Authority ]]></text>
+				<text><![CDATA[DEPARTAMENTO FARMACÊUTICO
+C. Postal
+Av. Agostinho Neto/Salvador Allende 
+MAPUTO-MOÇAMBIQUE ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="5" width="285" height="71" uuid="f271c2ed-6fa9-4cd2-96c9-c7bc74c8a87d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif" size="9"/>
+				</textElement>
+				<text><![CDATA[
+
+TEL: 00258 21 303473
+FAX: 00258 21 326547]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="100" splitType="Stretch">
+		<band height="180" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement positionType="Float" x="-1" y="5" width="555" height="90" uuid="91f60573-9fb5-4cca-ac83-589d1455aac3">
+				<reportElement x="120" y="80" width="300" height="20" uuid="0fe2c96c-9cef-4022-9637-5f1fc2db6834">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="DejaVu Serif" size="12" isBold="false" isItalic="false"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Therefore, you are requested to submit sample of actual product (     ) with primary reference substance (BP or USP or EP) not less than 100mg and secondary reference substance not less than 500mg, specification and method of analysis of finished product and based on test method/specific monograph for your product, all reference standards (related substances, internal standards, references, chemicals used for system suitability solution, resolution solutions) for the purpose of laboratory analysis.]]></text>
+				<text><![CDATA[A Chefe do Sector de Registo]]></text>
+			</staticText>
+			<line>
+				<reportElement x="120" y="120" width="300" height="1" uuid="f64599aa-6d88-4396-ad02-73590f0d9ded">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="120" y="130" width="300" height="18" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appUserName} == null ? "Dra. Sultana Razaco":$P{appUserName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="120" y="160" width="300" height="20" uuid="15ff9fe7-fdcb-4075-9938-a3f874058b5b">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(Farmacêutica MSc, SN)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="48" width="250" height="22" uuid="d51225b6-2888-4d3a-a67c-28851cb084d1">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Atenciosamente,]]></text>
 			</staticText>
 		</band>
 	</summary>
