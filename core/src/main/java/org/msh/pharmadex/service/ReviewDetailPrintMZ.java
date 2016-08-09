@@ -34,6 +34,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 	private static final long serialVersionUID = 2915932566779556932L;
 
 	private static ProdApplications prodApp;
+	private static ResourceBundle bundle = null;
 
 	/**
 	 * Create data source for review detail report. Portuguese language only!!!!
@@ -42,13 +43,15 @@ public class ReviewDetailPrintMZ implements Serializable {
 	 * @param prop report specific properties
 	 * @return at least empty map!
 	 */	
-	public static JRMapArrayDataSource createReviewSourcePorto(ProdApplications prodApplications, ResourceBundle bundle, Properties prop, ProductCompanyDAO prodCompanyDAO,
+	public static JRMapArrayDataSource createReviewSourcePorto(ProdApplications prodApplications, ResourceBundle bun, Properties prop, ProductCompanyDAO prodCompanyDAO,
 			CustomReviewDAO customReviewDAO) {
 		List<Map<String,Object>> res = new ArrayList<Map<String,Object>>();
-		prodApp = prodApplications; 
-		fillGeneralRS(res, prop, bundle, prodCompanyDAO);
-		fillGeneralText(res, prop, bundle, prodCompanyDAO);
-		fillItems(res, prop, bundle, customReviewDAO);
+		prodApp = prodApplications;
+		bundle = bun;
+		fillGeneralRS(res, prop, prodCompanyDAO);
+		fillGeneralText(res, prop, prodCompanyDAO);
+		fillItems(res, prop, customReviewDAO);
+		fillResolutionText(res, prop);
 		return new JRMapArrayDataSource(res.toArray());
 	}
 
@@ -58,7 +61,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 	 * @param prop specific properties
 	 * @param prodApplications current application
 	 */
-	private static void fillGeneralRS(List<Map<String, Object>> res, Properties prop, ResourceBundle bundle, ProductCompanyDAO prodCompanyDAO) {
+	private static void fillGeneralRS(List<Map<String, Object>> res, Properties prop, ProductCompanyDAO prodCompanyDAO) {
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_1"),fetchFullApplicant(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_2"),prodApp.getProduct().getGenName(),null);
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_3"),prodApp.getProduct().getProdName(),null);
@@ -77,46 +80,94 @@ public class ReviewDetailPrintMZ implements Serializable {
 		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_14"),fetchManufacture(prodCompanyDAO, false),null);
 	}
 
-	private static void fillGeneralText(List<Map<String, Object>> res, Properties prop, ResourceBundle bundle, ProductCompanyDAO prodCompanyDAO) {
+	private static void fillGeneralText(List<Map<String, Object>> res, Properties prop, ProductCompanyDAO prodCompanyDAO) {
 		String chapter2t = prop.getProperty("chapter2_txt").replace("_APPLICANT_", prodApp.getApplicant().getAppName());
 		chapter2t = chapter2t.replace("_MANUFACTURER_", fetchManufacture(prodCompanyDAO, true));
 		fillItemRS(res,prop.getProperty("chapter2"),null,chapter2t,null);
 	}
+	
+	private static void fillResolutionText(List<Map<String, Object>> res, Properties prop) {
+		String number = prodApp.getProdAppNo() != null ? prodApp.getProdAppNo():"";
+		String chapter3t = prop.getProperty("chapter3_txt").replace("_REGNUMBER_", number);
+		String text = (prodApp.getExecSummary() != null ? prodApp.getExecSummary() + "\n":"") + chapter3t;
+		fillItemRS(res, prop.getProperty("chapter3"), null, text, null);
+	}
 
-	private static void fillItems(List<Map<String, Object>> res, Properties prop, ResourceBundle bundle, CustomReviewDAO customReviewDAO) {
+	private static void fillItems(List<Map<String, Object>> res, Properties prop, CustomReviewDAO customReviewDAO) {
 		List<ReviewItemReport> items = customReviewDAO.getReviewListByReport(prodApp.getId());
 		if(items != null && items.size() > 0){
-			Map<String, List<ReviewItemReport>> map = new HashMap<String, List<ReviewItemReport>>();
+			String header1 = "";
+			boolean isNewHeader = true;
+			List<ReviewItemReport> list = null;
 			for(ReviewItemReport item:items){
-				List<ReviewItemReport> list = map.get(item.getHeader2());
-				if(list == null)
+				if(header1.isEmpty())
+					header1 = item.getHeader1();
+				else{
+					if(header1.equals(item.getHeader1())){
+						isNewHeader = false;
+					}else{
+						header1 = item.getHeader1();
+						isNewHeader = true;
+					}
+				}
+				if(isNewHeader){
+					if(list != null && list.size() > 0){
+						// print prev Values
+						buildItemValues(res, list);
+					}	
+					// build new values
 					list = new ArrayList<ReviewItemReport>();
-				list.add(item);
-				map.put(item.getHeader2(),  list);
+					list.add(item);
+				}else{
+					list.add(item);
+				}
 			}
+		}
+	}
+	
+	/**
+	 * String header - name of item
+	 * List<ReviewItemReport> list - comments of item
+	 * @param map
+	 */
+	private static void buildItemValues(List<Map<String, Object>> res, List<ReviewItemReport> list){
+		String header = list.get(0).getHeader1();
+		Map<String, List<ReviewItemReport>> map = new HashMap<String, List<ReviewItemReport>>();
+		for(ReviewItemReport item:list){
+			List<ReviewItemReport> values = map.get(item.getHeader2());
+			if(values == null)
+				values = new ArrayList<ReviewItemReport>();
+			values.add(item);
+			map.put(item.getHeader2(), values);
+		}
+		
+		if(!map.isEmpty()){
 			Iterator<String> iterator = map.keySet().iterator();
 			while(iterator.hasNext()){
 				List<ReviewItemReport> values = map.get(iterator.next());
 				for(int i = 0; i < values.size(); i++){
-					ReviewItemReport item = values.get(i);
-					String text = item.getFirstRevName() + ": " + item.getFirstRevComment();
-					if(item.getSecondRevName() != null)
-						text += "\n" + item.getSecondRevName() + ": " + item.getSecondRevComment();
-
-					InputStream file = null;
-					if(item.getFile() != null){
-						file = new ByteArrayInputStream(item.getFile());
-					}
-					fillItemRS(res, item.getHeader1(), null, text, file);
-
-					if(i == (values.size() - 1)){
-						// empty item beetwen items
-						String emptyLine = "\n";
-						fillItemRS(res, item.getHeader1(), null, emptyLine, null);
-					}
+					printItemReview(res, header, values.get(i), (i == (values.size() - 1)));
 				}
 			}
 		}
+	}
+	
+	private static void printItemReview(List<Map<String, Object>> res, String chapter1, ReviewItemReport item, boolean isPrintEmptyLine){
+		String text = "";
+		if(item.getFirstRevComment() != null && !item.getFirstRevComment().equals(""))
+			text = item.getFirstRevName() + ": " + item.getFirstRevComment();
+		if(item.getSecondRevName() != null && item.getSecondRevComment() != null && !item.getSecondRevComment().equals(""))
+			text += (text.isEmpty()?"":"\n") + item.getSecondRevName() + ": " + item.getSecondRevComment();
+
+		if(isPrintEmptyLine && !text.isEmpty())
+			text += "\n";
+		
+		InputStream file = null;
+		if(item.getFile() != null){
+			file = new ByteArrayInputStream(item.getFile());
+		}
+		if(!text.equals("") || file != null)
+			fillItemRS(res, chapter1, null, text, file);
 	}
 
 	/**

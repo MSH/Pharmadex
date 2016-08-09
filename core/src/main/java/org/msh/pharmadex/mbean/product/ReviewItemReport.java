@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public class ReviewItemReport implements Serializable {
 
-	private Long detailId; 
+	private Long detailId;
+	private Long questionId;
     private String header1;
     private String header2;
     private String firstRevName;
@@ -15,11 +16,18 @@ public class ReviewItemReport implements Serializable {
     private String firstRevComment;
     private String secondRevComment;
     private byte[] file;
+    
 	public Long getDetailId() {
 		return detailId;
 	}
 	public void setDetailId(Long detailId) {
 		this.detailId = detailId;
+	}
+	public Long getQuestionId() {
+		return questionId;
+	}
+	public void setQuestionId(Long questionId) {
+		this.questionId = questionId;
 	}
 	public String getHeader1() {
 		return header1;

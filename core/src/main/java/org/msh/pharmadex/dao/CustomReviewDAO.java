@@ -209,7 +209,7 @@ public class CustomReviewDAO implements Serializable {
     					+ " order by quest.id"*/
     	String query = "SELECT det.id, us.name, "
     					+ "if((info.secreview=1 and info.sec_reviewer_id=us.userId), det.sec_comment,"
-    					+ "det.other_comment) as comm, det.file, det.filename, quest.header1, quest.header2 "
+    					+ "det.other_comment) as comm, det.file, det.filename, quest.header1, quest.header2, quest.id "
     					+ "FROM review_info info, review_detail det, review_question quest, user us "
     					+ "where info.prod_app_id=" + prodAppId
     					+ " and info.id=det.review_info_id"
@@ -245,6 +245,8 @@ public class CustomReviewDAO implements Serializable {
         			item.setHeader1((String)obj[5]);
         			item.setHeader2((String)obj[6]);
         			
+        			Long idQ = new Long(((BigInteger)obj[7]).longValue());
+        			item.setQuestionId(idQ);
         			list.add(item);
     			}else{
     				item.setSecondRevName((String)obj[1]);
