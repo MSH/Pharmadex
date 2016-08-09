@@ -24,6 +24,7 @@ import org.msh.pharmadex.dao.iface.RevDeficiencyDAO;
 import org.msh.pharmadex.dao.iface.ReviewDAO;
 import org.msh.pharmadex.dao.iface.ReviewDetailDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
+import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
@@ -189,8 +190,14 @@ public class ReviewService implements Serializable {
                 reviewQuestions = reviewQDAO.findByRenewal();
             } else if(prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
             	if (prodApplications.getMjVarQnt()>0) reviewQuestions=reviewQDAO.findByMajVariation();
-            	else 
-            	reviewQuestions=reviewQDAO.findByVariation();
+            	  List<ReviewQuestion> mReviewQuestions=null;
+            	  if (prodApplications.getMnVarQnt()>0) mReviewQuestions=reviewQDAO.findByVariation();
+            	  if (reviewQuestions==null) reviewQuestions=new  ArrayList <ReviewQuestion> ();
+  				if ( mReviewQuestions!=null) {
+  					 for (ReviewQuestion qn: mReviewQuestions) {
+  						 if (!reviewQuestions.contains(qn)) reviewQuestions.add(qn);
+  					 }
+  				 } 
             }
             else if (prodApplications.isSra()) {
                 reviewQuestions = reviewQDAO.findBySRA();
