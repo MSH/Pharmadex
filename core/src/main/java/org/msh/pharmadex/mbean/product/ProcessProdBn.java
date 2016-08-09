@@ -731,8 +731,7 @@ public class ProcessProdBn implements Serializable {
 	}
 
 	public List<Comment> getComments() {
-		if (comments == null)
-			comments = commentService.findAllCommentsByApp(prodApplications.getId(), userSession.isCompany());
+		comments = commentService.findAllCommentsByApp(prodApplications.getId(), userSession.isCompany());
 		return comments;
 	}
 
