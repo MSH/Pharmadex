@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-08-02T20:29:22 -->
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-08-09T13:49:02 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -14,7 +14,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Deficiency_xlsx.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="appPost" class="java.lang.String"/>
 	<parameter name="appAddress" class="java.lang.String"/>
@@ -147,7 +147,7 @@
 				<textFieldExpression><![CDATA["Pedido de elemento do produto ".concat($P{prodName})  == null ? "":$P{prodName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="6" y="330" width="544" height="20" uuid="1523de84-ac50-46eb-badc-c85639761375"/>
+				<reportElement positionType="Float" x="6" y="332" width="544" height="20" uuid="1523de84-ac50-46eb-badc-c85639761375"/>
 				<textElement>
 					<font fontName="DejaVu Serif" isBold="true"/>
 				</textElement>
@@ -159,6 +159,13 @@
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Efectuadas as avaliações clínica e farmacêutica do produto acima referenciado, o Departamento Farmacêutico informa que, a aprovação desta especialidade farmacêutica (<b><u>".concat($P{fullName}).concat("</u></b>), fica condicionada a apresentação da informação que se segue:")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="320" width="551" height="1" uuid="8e2d0272-6f18-4433-a318-d9903276c17b">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
