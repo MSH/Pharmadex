@@ -102,10 +102,11 @@
 								<ui:include src="samplerequestpnl.xhtml" />
 							</p:tab>
 
-							<p:tab title="#{msgs.prod_comments}"
+							<p:tab title="#{msgs.prod_comments}" id="commentTab"
 								rendered="#{!userSession.company and !userSession.lab and !userSession.clinical}">
 								<p:commandButton icon="ui-icon-document"
-									value="#{msgs.add_comment}" onclick="PF('dlg').show()" />
+									value="#{msgs.add_comment}" onclick="PF('dlgAjax').show()"
+										 />
 
 								<p:dataTable id="commenttable" value="#{processProdBn.comments}"
 									var="it">
@@ -258,10 +259,11 @@
 										</p:commandButton>
 									</p:column>
 									<p:column style="width: 30px;">
-							            <p:commandButton id="deletelet" action="#{processProdBnMZ.deleteLetter(letter)}"
-							                             icon="ui-icon-trash" ajax="true" immediate="true"
-							                             update=":reghome:processtab:lettertable :reghome:messages"/>
-							        </p:column>
+										<p:commandButton id="deletelet"
+											action="#{processProdBnMZ.deleteLetter(letter)}"
+											icon="ui-icon-trash" ajax="true" immediate="true"
+											update=":reghome:processtab:lettertable :reghome:messages" />
+									</p:column>
 								</p:dataTable>
 							</p:tab>
 
@@ -782,7 +784,26 @@
 
 				<p:commandButton id="submitButton" value="#{msgs.global_submit}"
 					action="#{processProdBn.addComment}" oncomplete="PF('dlg').hide()"
-					update=":reghome:processtab:commenttable :addCommentFrm :reghome:growl :reghome:messages" />
+					ajax="false" />
+			</h:form>
+		</p:dialog>
+		<p:dialog header="#{msgs.add_comment}" widgetVar="dlgAjax"
+			resizable="false" id="commentdlgA" modal="true" dynamic="true">
+			<h:form id="addCommentFrmA">
+				<h:panelGrid columns="2" style="margin-bottom:10px">
+					<h:outputLabel for="commenttext" value="Enter Comment:" />
+					<p:inputTextarea id="commenttextA"
+						value="#{processProdBn.selComment.comment}" rows="5" cols="50" />
+					<!--                    <h:outputLabel value="Internal Comment"/>
+                                        <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
+                                        -->
+				</h:panelGrid>
+
+				<p:commandButton id="submitButtonA" value="#{msgs.global_submit}"
+					action="#{processProdBn.addCommentAjax}"
+					oncomplete="PF('dlgAjax').hide()"
+					ajax="true"
+					update=":reghome:processtab:commenttable :reghome:messages" />
 			</h:form>
 		</p:dialog>
 
@@ -808,7 +829,7 @@
 			draggable="false" closable="false" resizable="false" dynamic="true">
 			<p:graphicImage value="/resources/images/ajax-loader.gif" />
 		</p:dialog>
-		
+
 
 
 
