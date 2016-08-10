@@ -2,11 +2,15 @@ package org.msh.pharmadex.service;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.springframework.stereotype.Component;
@@ -18,7 +22,12 @@ import org.springframework.stereotype.Component;
 public class UtilsByReports implements Serializable {
 
 	private static final long serialVersionUID = 5110624647990815527L;
+	
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+	public static final String FLD_DEFICITEM_NAME = "defItemName";
+
+	public static String KEY_MODERNAME = "moderName";
 	public static String KEY_APPNAME = "appName";
 	public static String KEY_ADDRESS1 = "address1";
 	public static String KEY_ADDRESS2 = "address2";
@@ -27,6 +36,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_APPNUMBER = "appNumber";
 	public static String KEY_ID = "id";
 	public static String KEY_PRODNAME = "prodName";
+	public static String KEY_GENNAME = "genName";
 	public static String KEY_PRODSTRENGTH = "prodStrength";
 	public static String KEY_DOSFORM = "dosForm";
 	public static String KEY_MANUFNAME = "manufName";
@@ -49,7 +59,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_PACKSIZE = "packsize";
 	public static String KEY_STORAGE = "storage";
 	public static String KEY_EXCIPIENT = "excipient";
-	
+
 	public static String KEY_FNM = "fnm";
 	public static String KEY_DRUGTYPE = "drugType";
 	public static String KEY_SUBACT = "subact";
@@ -57,7 +67,17 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_REG_DATE = "regDate";
 	public static String KEY_EXPIRY_DATE = "expiryDate";
 	public static String KEY_REG_NUMBER = "regNumber";
+	public static String KEY_SUBMIT_DATE = "submitDate";
+	public static String KEY_DOSREC_DATE = "dosRecDate";
+	public static String KEY_GESTOR = "gestorDeCTRM";
+	public static String KEY_PROD_DETAILS = "fullName";
 
+	/* для letter*/	
+	public static String KEY_APPADDRESS = "appAddress";	
+	public static String KEY_APPNUM = "appNum";/**номер в их системе (канцелярский номер) */
+	public static String KEY_APPUSERNAME = "appUserName"; /** ФИО */
+	public static String KEY_APPPOST = "appPost"; /**должность*/
+	
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
 	private Product prod = null;
@@ -93,12 +113,27 @@ public class UtilsByReports implements Serializable {
 	}
 
 	private void putParamByProd(String k, String t){
+		
+		Hibernate.initialize(prod);
 		if(prod == null)
 			return ;
 		String str = "";
-		
+
 		if(k.equals(KEY_PRODNAME)){
 			str = prod.getProdName() != null ? prod.getProdName():"";
+			param.put(k, str);
+		}
+		if(k.equals(KEY_PROD_DETAILS)){
+			str = prod.getProdName() != null ? prod.getProdName():"";
+			if(str.length()>0){
+				if(prod.getProdDesc() != null){
+					str = str +", "+prod.getProdDesc();
+				}
+			}
+			param.put(k, str);
+		}
+		if(k.equals(KEY_GENNAME)){
+			str = prod.getGenName() != null ? prod.getGenName():"";
 			param.put(k, str);
 		}
 		if(k.equals(KEY_PRODSTRENGTH)){
@@ -134,13 +169,48 @@ public class UtilsByReports implements Serializable {
 			str = prod.getStorageCndtn() != null ? prod.getStorageCndtn():"";
 			param.put(k, str);
 		}
+		if(k.equals(KEY_INN)){
+			List<ProdInn> inns = prod.getInns();
+			if(inns != null && inns.size() > 0){
+				for(int i = 0; i < inns.size(); i++){
+					if(inns.get(i).getInn() != null){
+						if(i == (inns.size() - 1))
+							str += inns.get(i).getInn().getName();
+						else
+							str += inns.get(i).getInn().getName() + " + ";
+					}
+				}
+				param.put(k, str);
+			}
+		}
+		if(k.equals(KEY_EXCIPIENT)){
+			List<ProdExcipient> exps = prod.getExcipients();
+			if(exps != null && exps.size() > 0){
+				for(int i = 0; i < exps.size(); i++){
+					if(exps.get(i).getExcipient() != null){
+						if(i == (exps.size() - 1))
+							str += exps.get(i).getExcipient().getName();
+						else
+							str += exps.get(i).getExcipient().getName() + ", "; //"<br>"
+					}
+				}
+			}
+			param.put(k, str);
+		}
 	}
 	
 	private void putParamByProdApplications(String k, String t){
+		
 		if(prodApps == null)
 			return ;
 		String str = "";
-		
+		Hibernate.initialize(prodApps);
+		if(k.equals(KEY_MODERNAME)){
+			if(prodApps.getModerator() != null){
+				str= prodApps.getModerator().getName();
+				param.put(k, str);
+			}
+		}
 		if(k.equals(KEY_APPNAME)){
 			str = (prodApps.getApplicant() != null && prodApps.getApplicant().getAppName() != null)?prodApps.getApplicant().getAppName():"";
 			param.put(k, str);
@@ -148,19 +218,19 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_ADDRESS1)){
 			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
 				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_ADDRESS2)){
 			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
 				str = prodApps.getApplicant().getAddress().getAddress2() != null ? prodApps.getApplicant().getAddress().getAddress2():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_COUNTRY)){
 			if(prodApps.getApplicant() != null && 
 					prodApps.getApplicant().getAddress() != null &&
 					prodApps.getApplicant().getAddress().getCountry() != null)
 				str = prodApps.getApplicant().getAddress().getCountry().getCountryName() != null ? prodApps.getApplicant().getAddress().getCountry().getCountryName():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_APPNUMBER)){
 			str = prodApps.getProdAppNo() != null ? prodApps.getProdAppNo():"";
@@ -176,31 +246,63 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_COMPANY_NAME)){
 			if(prodApps.getApplicant() != null)
 				str = prodApps.getApplicant().getAppName() != null ? prodApps.getApplicant().getAppName():"";
-			param.put(k, str);
+				param.put(k, str);
 		}
 		if(k.equals(KEY_REG_DATE)){
 			if(prodApps.getRegistrationDate() != null)
-				str = DateFormat.getDateInstance().format(prodApps.getRegistrationDate());
+				str = dateFormat.format(prodApps.getRegistrationDate());
 			param.put(k, str);
 		}
 		if(k.equals(KEY_EXPIRY_DATE)){
 			if(prodApps.getRegExpiryDate() != null)
-				str = DateFormat.getDateInstance().format(prodApps.getRegExpiryDate());
+				str = dateFormat.format(prodApps.getRegExpiryDate());
 			param.put(k, str);
 		}
+		if(k.equals(KEY_SUBMIT_DATE)){
+			if(prodApps.getSubmitDate() != null)
+				str = dateFormat.format(prodApps.getSubmitDate());
+			param.put(k, str);
+		}
+		if(k.equals(KEY_DOSREC_DATE)){
+			if(prodApps.getDosRecDate() != null)
+				str = dateFormat.format(prodApps.getDosRecDate());
+			param.put(k, str);
+		}
+		/** letter*/	
+		if(k.equals(KEY_APPNUM)){
+			if(prodApps.getProdAppNo()!=null)
+				str = prodApps.getProdAppNo()!= null ? prodApps.getProdAppNo():"";
+				param.put(k, str);
+		}		
+		if(k.equals(KEY_APPPOST)){			
+			if(prodApps.getPosition()!=null)
+				str = prodApps.getPosition()!= null ? prodApps.getPosition():"";			
+				param.put(k, str);
+		}		
+		if(k.equals(KEY_APPADDRESS)){
+			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
+				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
+				param.put(k, str);
+		}		
+		if(k.equals(KEY_APPUSERNAME)){			
+			if(prodApps.getUsername()!=null)
+				str = prodApps.getUsername()!= null ? prodApps.getUsername():"";			
+				param.put(k, str);
+		}
+
 	}
 	
-	private String takeManufacturerName(){
-        String manufName = "";
-        List<ProdCompany> companyList = prod.getProdCompanies();
-        if (companyList != null){
-            for(ProdCompany company:companyList){
-                if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
-                    manufName = company.getCompany().getCompanyName();
-                    return manufName;
-                }
-            }
-        }
-        return manufName;
+	private String takeManufacturerName(){        
+		String manufName = "";
+		List<ProdCompany> companyList = prod.getProdCompanies();
+		if (companyList != null){
+			for(ProdCompany company:companyList){
+				if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+					manufName = company.getCompany().getCompanyName();
+					return manufName;
+				}
+			}
+		}
+		return manufName;
     }
 }
