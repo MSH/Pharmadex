@@ -95,7 +95,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	// pt_PT
 	private Locale locale = new Locale("pt", "PT");
 	@Autowired
-	private UtilsByReportsMZ utilsByReports;
+	private UtilsByReports utilsByReports;
 
 	/**
 	 * Applications are in states by role users
@@ -225,29 +225,29 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		utilsByReports.init(param, prodApp, product);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNUMBER, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_NUMBER, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SUBMIT_DATE, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_REG_NUMBER, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SUBMIT_DATE, "", false);
 
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_ADDRESS1, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SHELFINE, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SHELFINE, "", false);
 
 		//inn
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_INN, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_INN, "", false);
 
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PACKSIZE, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_STORAGE, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PACKSIZE, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_STORAGE, "", false);
 		//excipient
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXCIPIENT, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_EXCIPIENT, "", false);
 
 		String fnm = (product != null) ? product.getFnm():"";
 		boolean flag = (fnm != null && fnm.length() > 0) ? true: false;
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_FNM, flag);
+		utilsByReports.putNotNull(UtilsByReports.KEY_FNM, flag);
 
 		int t = 0;
 		if(prodApp != null){
@@ -263,7 +263,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					t = 4;
 			}
 		}
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPTYPE, t);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, t);
 
 		t = 0;
 		if(product != null){
@@ -283,21 +283,21 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					t = 6;
 			}
 		}
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DRUGTYPE, t);
+		utilsByReports.putNotNull(UtilsByReports.KEY_DRUGTYPE, t);
 
 		boolean fl = false;
 		if(product != null){
 			fl = product.isNewChemicalEntity();
 			// or by ProdAppType type = prodApp.getProdAppType(); if(type.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
 		}
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SUBACT, fl);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SUBACT, fl);
 
 		fl = false;
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GEN, fl);
+		utilsByReports.putNotNull(UtilsByReports.KEY_GEN, fl);
 
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_REG_DATE, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_EXPIRY_DATE, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GESTOR, gestor);
+		utilsByReports.putNotNull(UtilsByReports.KEY_REG_DATE, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_EXPIRY_DATE, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_GESTOR, gestor);
 
 		return JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 	}
@@ -314,12 +314,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GENNAME, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPUSERNAME, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PROD_DETAILS, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PROD_DETAILS, "", false);
 			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");
@@ -367,7 +367,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			for(ProdAppChecklist item : checkLists){
 				if(item.getStaffValue() == YesNoNA.NO || (item.getValue() == YesNoNA.NO) && item.getStaffValue() == YesNoNA.NA){
 					Map<String,String> mp = new HashMap<String,String>();
-					mp.put(UtilsByReportsMZ.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
+					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
 					res.add(mp);
 				}
 			}
@@ -393,8 +393,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				JasperPrint jasperPrint;
 				HashMap<String, Object> param = new HashMap<String, Object>();
 				utilsByReports.init(param, prodApp, prod);
-				utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
-				utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MODERNAME, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_MODERNAME, "", false);
 				utilsByReports.putNotNull(JRParameter.REPORT_LOCALE, locale);
 
 				//TODO chief name from properties!!
@@ -460,28 +460,28 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		Product prod = prodApp.getProduct();
 		try {
-			File invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_ack", ".pdf");
+			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
 
 			JasperPrint jasperPrint;
 
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
 
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSREC_DATE, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_DOSREC_DATE, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
 
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_GENNAME, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PACKSIZE, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PACKSIZE, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
 
 			//letter
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNUM, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPPOST, "", false);				
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
-			utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPUSERNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPPOST, "", false);				
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
