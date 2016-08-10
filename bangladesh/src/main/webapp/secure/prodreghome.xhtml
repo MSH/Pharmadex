@@ -14,9 +14,9 @@
             <p:growl id="growl" showSummary="true" autoUpdate="true"/>
             <p:messages showSummary="true" showDetail="true" id="messages"/>
             <pe:ajaxErrorHandler/>
-
             <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="true"
-                      flowListener="#{prodRegAppMbeanBN.onFlowProcess}" >
+                      flowListener="#{prodRegAppMbeanMZ.onFlowProcess}" 
+                      onback="if(confirm('#{msgs.backDlg_war}') == true){return true;}else{return false;}" >
 
                 <pe:ajaxErrorHandler/>
 
@@ -40,12 +40,13 @@
                 <p:tab id="appdetails" title="#{msgs.application_detail}">
                     <p:panel header="#{msgs.application_detail}" id="appDetailPnl">
 
-                        <h:panelGrid id="adddetailgrid" columns="2" style="width: 100%;" cellspacing="10"
-                                     columnClasses="label value">
-                            <p:outputLabel value="#{msgs.new_chemical_name}" styleClass="label"
+                        <h:panelGrid id="adddetailgrid" columns="2" cellspacing="10px" cellpadding="10px" 
+    				 				columnClasses="label, value" styleClass="grid" style="width:100%;">
+                            <p:outputLabel value="#{msgs.new_chemical_name}*" styleClass="label"
                                            rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
                             <p:inputText id="nceInput" value="#{prodRegAppMbean.product.newChemicalName}"
-                                         style="width: 300px;"
+                                         style="width:100%;"  
+                                         required="true" requiredMessage="New Chemical Entity Name is missing"                                         
                                          rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
 
                             <h:outputLabel value="#{msgs.active_substance}" style="width: 60px;" styleClass="label"/>
@@ -366,7 +367,7 @@
                         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
                             <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
                             <p:inputText id="msrp" value="#{prodRegAppMbean.pricing.msrp}"
-                                         title="#{msgs.product_pricing_max}"
+                                         title="#{msgs.product_pricing_max}"                                         
                                     >
                             </p:inputText>
                             <p:message for="msrp" showSummary="true" showDetail="false"/>
@@ -513,15 +514,6 @@
                 </p:tab>
 
             </p:wizard>
-
-            <!-- <p:blockUI block="wizardPnl" trigger=":reghome:saveBtn :reghome:backBtn :reghome:nextBtn">
-            trigger=":reghome:prodregSaveBtn :reghome:proddetailSaveBtn :reghome:proddetailBackBtn :reghome:proddetailNxtBtn
-                :reghome:adddetailSaveBtn :reghome:adddetailBackBtn :reghome:adddetailNxtBtn :reghome:appStatusSaveBtn :reghome:appStatusBackBtn
-                :reghome:appStatusNxtBtn :reghome:manufSaveBtn :reghome:manufBackBtn :reghome:manufNextBtn :reghome:priceSaveBtn :reghome:priceBackBtn
-                :reghome:priceNxtBtn :reghome:sumSaveBtn
-                :reghome:sumBackBtn :reghome:paySaveBtn :reghome:payBackBtn :reghome:payNxtBtn :reghome:chkSaveBtn :reghome:chkBackBtn :reghome:chkNxtBtn"
-                <p:graphicImage value="/resources/images/ajax-loader.gif"/>
-            </p:blockUI> -->
 
             <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException"
                                     update="exceptionDialog"
@@ -827,11 +819,6 @@
                   resizable="false">
             <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
         </p:dialog>
-	
-		<p:confirmDialog widgetVar="backDlg" header="#{msgs.backDlg_header}" message="#{msgs.backDlg_war}" severity="alert" >
-			<p:commandButton value="#{msgs.global_yes}" actionListener="#{prodRegAppMbeanBN.buttonAction}" />
- 			<p:commandButton value="#{msgs.global_no}" onclick="PF('backDlg').hide();" type="button" />
-		</p:confirmDialog>
     </ui:define>
     <script type="text/javascript">
         function start() {
