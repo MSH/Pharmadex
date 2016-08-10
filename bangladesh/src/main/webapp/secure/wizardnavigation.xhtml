@@ -14,10 +14,10 @@
 			<td align="right" >
         		<p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" icon="ui-icon-disk" 
 								 update=":reghome :reghome:growl" ajax="true"
-								 rendered="#{prodRegAppMbeanBN.visibleSave}"/>
+								 rendered="#{prodRegAppMbeanMZ.visibleSave}"/>
 				<p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbean.validateApp}"
                                  ajax="false"
-                                 rendered="#{prodRegAppMbeanBN.visibleSubmit}"/>
+                                 rendered="#{prodRegAppMbeanMZ.visibleSubmit}"/>
 			</td>
         </tr>
     </table>

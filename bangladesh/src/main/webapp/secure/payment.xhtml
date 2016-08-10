@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:outputLabel value="#{msgs.confirm_payment}" styleClass="label"/>
+
+    <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
+
+        <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
+        <p:inputText id="bankname" value="#{prodRegAppMbean.prodApplications.bankName}" required="true"
+        				requiredMessage="Bank name is missing" style="width: 400px;"/>
+
+        <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
+        <p:inputText id="receiptno" value="#{prodRegAppMbean.prodApplications.receiptNo}"/>
+
+        <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
+        <p:calendar value="#{prodRegAppMbean.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"
+                pattern="#{userAccessMBean.workspace.datePattern}"  required="true"
+        				requiredMessage="Fee Submission Date is missing"/>
+
+		<ui:remove>
+	        <h:outputText value="#{msgs.upload_pay_receipt}"/>
+	        <p:fileUpload value="#{prodRegAppMbean.payReceipt}" mode="simple" rendered="true"/>
+	
+	        <h:outputText value=""/>
+	        <p:commandLink value="#{msgs.global_upload}" ajax="false"
+	                       actionListener="#{prodRegAppMbean.handlePayReceiptUpload}" rendered="true"/>
+	
+	        <p:commandButton id="downloadLink" value="#{msgs.download_attach}" ajax="true"
+	                         onclick="PrimeFaces.monitorDownload(start, stop)" immediate="true"
+	                         icon="ui-icon-arrowthichk-s" >
+	            <p:fileDownload value="#{prodRegAppMbean.fileDownload()}"/>
+	        </p:commandButton>
+		</ui:remove>
+    </h:panelGrid>
+
+
+</ui:composition>

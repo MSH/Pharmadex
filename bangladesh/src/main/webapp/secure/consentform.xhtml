@@ -19,28 +19,28 @@
                         <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
 
                             <h:outputLabel value="#{msgs.prodName}:"/>
-                            <h:outputLabel value="#{prodConsentFormBN.product.prodName}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.product.prodName}"/>
 
                             <h:outputLabel value="#{msgs.prodgenname}:"/>
-                            <h:outputLabel value="#{prodConsentFormBN.product.genName}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.product.genName}"/>
 
                             <h:outputLabel value="#{msgs.dos_form}"/>
-                            <h:outputLabel value="#{prodConsentFormBN.product.dosForm.dosForm}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.product.dosForm.dosForm}"/>
 
                             <h:outputLabel value="Dosage Strength:" style="font-weight: bold;"/>
-                            <h:outputLabel value="#{prodConsentFormBN.product.dosStrength}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.product.dosStrength}"/>
 
                             <h:outputLabel value="#{msgs.dos_unit}"/>
-                            <h:outputLabel value="#{prodConsentFormBN.product.dosUnit.uom}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.product.dosUnit.uom}"/>
 
                             <h:outputLabel value="#{msgs.prod_desc}"/>
-                            <h:outputLabel value="#{prodConsentFormBN.product.prodDesc}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.product.prodDesc}"/>
 
                             <h:outputLabel value="#{msgs.applicant}"/>
-                            <h:outputLabel value="#{prodConsentFormBN.prodApplications.applicant.appName}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.prodApplications.applicant.appName}"/>
 
                             <h:outputLabel value="#{msgs.manuf_name}"/>
-                            <h:outputLabel value="#{prodConsentFormBN.product.manufName}"/>
+                            <h:outputLabel value="#{prodConsentFormMZ.product.manufName}"/>
                         </h:panelGrid>
 
                         <p>is correct and true, and reflects the total information available. I further certify that I have examined the following statements and I attest to their accuracy.</p>
@@ -64,23 +64,29 @@
                             </ol>
                         </p>
 
-                        <p:panel header="Verification">
-
+                        <p:panel header="#{msgs.Lbl_ackLetter}">
                             <h:panelGrid cellspacing="10" cellpadding="10" columns="3"
                                          columnClasses="label value label">
-                                <p:outputLabel value="#{msgs.User_name}" for="username"/>
-                                <p:inputText value="#{prodConsentFormBN.prodApplications.username}" id="username"
+                                <p:outputLabel value="#{msgs.number}" for="prodappno"/>
+                                <p:inputText id="prodappno" value="#{prodConsentFormMZ.prodappno}"
                                              required="true"/>
-                                <p:message for="username"/>
-
-                                <p:outputLabel value="#{msgs.user_position}:" for="position"/>
-                                <p:inputText value="#{prodConsentFormBN.prodApplications.position}" id="position"
+                                <p:message for="prodappno"/>
+                                
+                                <p:outputLabel value="#{msgs.user_sender}" for="sender"/>
+                                <p:inputText value="#{prodConsentFormMZ.sender}" id="sender"
                                              required="true"/>
-                                <p:message for="position"/>
-
-                                <p:outputLabel value="#{msgs.changepwd_passinuse}:" for="pass"/>
-                                <p:password id="pass" value="#{prodConsentFormBN.password}" required="true"/>
-                                <p:message for="pass"/>
+                                <p:message for="sender"/>
+                                
+                                <p:outputLabel value="#{msgs.user_position}:" for="receiver"/>
+                                <p:inputText value="#{prodConsentFormMZ.prodApplications.position}" id="receiver"
+                                             required="true"/>
+                                <p:message for="receiver"/>
+                                
+                                <ui:remove>
+                                	<p:outputLabel value="#{msgs.changepwd_passinuse}:" for="pass"/>
+                                	<p:password id="pass" value="#{prodConsentFormMZ.password}" required="true"/>
+                                	<p:message for="pass"/>
+                                </ui:remove>
                             </h:panelGrid>
                         </p:panel>
 
@@ -90,10 +96,10 @@
             </h:panelGrid>
 
             <h:panelGroup>
-                <p:commandButton action="#{prodConsentFormBN.submitApp}" value="#{msgs.global_yes}" ajax="false">
-                        <f:param name="prodAppID" value="#{prodConsentFormBN.prodApplications.id}"/>
+                <p:commandButton action="#{prodConsentFormMZ.submitApp}" value="#{msgs.global_yes}" ajax="false">
+                        <f:param name="prodAppID" value="#{prodConsentFormMZ.prodApplications.id}"/>
                 </p:commandButton>
-                <p:commandButton action="#{prodConsentFormBN.cancel}" ajax="false" immediate="true"
+                <p:commandButton action="#{prodConsentFormMZ.cancel}" ajax="false" immediate="true"
                                  value="#{msgs.global_no}"/>
             </h:panelGroup>
 

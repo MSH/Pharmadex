@@ -58,38 +58,40 @@
 
 
             <h:outputFormat id="noRecordsFound" value="#{msgs.label_no_records_found}"
-                            rendered="#{empty prodAppMBean.prodApplicationsList}">
+                            rendered="#{empty prodAppMBeanMZ.submmittedAppList}">
                 <f:param value="#{msgs.lable_products}"/>
             </h:outputFormat>
 
-            <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBeanBN.submmittedAppList}"
-                         rendered="#{not empty prodAppMBean.prodApplicationsList}">
-
-                <p:column headerText="Product Name">
-                    <p:column headerText="Product Name">
-                        <p:commandLink value="#{eachprod.product.prodName}"
+            <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBeanMZ.submmittedAppList}"
+                         rendered="#{not empty prodAppMBeanMZ.submmittedAppList}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,40,100">
+                <p:column >
+                	<f:facet name="header">
+                        <h:outputText value="#{msgs.prod_name}"/>
+                    </f:facet>
+                    <p:commandLink value="#{eachprod.product.prodName}"
                                        action="/internal/processreg"
                                        ajax="false">
-                            <f:param name="prodAppID" value="#{eachprod.id}"/>
-                        </p:commandLink>
-                    </p:column>
+                    	<f:param name="prodAppID" value="#{eachprod.id}"/>
+                    </p:commandLink>
                 </p:column>
 
-
                 <p:column headerText="Generic Name">
-                    #{eachprod.product.genName}
+                	<h:outputText value="#{eachprod.product.genName}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.application_no}">
-                    #{eachprod.prodAppNo}
+                    <h:outputText value="#{eachprod.prodAppNo}"/>
                 </p:column>
 
                 <p:column headerText="Registration Status">
-                    #{msgs[eachprod.regState.key]}
+                    <h:outputText value="#{msgs[eachprod.regState.key]}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.prod_cat}">
-                    #{msgs[eachprod.product.prodCategory.key]}
+                    <h:outputText value="#{msgs[eachprod.product.prodCategory.key]}"/>
                 </p:column>
 
                 <p:column headerText="Date Submitted">
@@ -97,11 +99,34 @@
                 </p:column>
 
                 <p:column headerText="Manufacturer Name">
-                    #{eachprod.product.manufName}
+                    <h:outputText value="#{eachprod.product.manufName}"/>
                 </p:column>
 
             </p:dataTable>
+			
+			<h:panelGrid columns="2" width="100%" rendered="#{not empty prodAppMBeanMZ.submmittedAppList}">
+                <p:panel>
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="applicantions" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
 
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/pdf.png"/>
+                        <p:dataExporter type="pdf" target="applicantions" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="applicantions" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="applicantions" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+                </p:panel>
+            </h:panelGrid>
         </h:form>
     </ui:define>
 </ui:composition>
