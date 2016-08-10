@@ -121,6 +121,12 @@ public class ReviewDetailPrintMZ implements Serializable {
 					list.add(item);
 				}
 			}
+			if(isNewHeader){
+				if(list != null && list.size() > 0){
+					// print prev Values
+					buildItemValues(res, list);
+				}
+			}
 		}
 	}
 	
@@ -154,9 +160,9 @@ public class ReviewDetailPrintMZ implements Serializable {
 	private static void printItemReview(List<Map<String, Object>> res, String chapter1, ReviewItemReport item, boolean isPrintEmptyLine){
 		String text = "";
 		if(item.getFirstRevComment() != null && !item.getFirstRevComment().equals(""))
-			text = item.getFirstRevName() + ": " + item.getFirstRevComment();
+			text = "<b>" + item.getFirstRevName() + "</b>: " + item.getFirstRevComment();
 		if(item.getSecondRevName() != null && item.getSecondRevComment() != null && !item.getSecondRevComment().equals(""))
-			text += (text.isEmpty()?"":"\n") + item.getSecondRevName() + ": " + item.getSecondRevComment();
+			text += (text.isEmpty()?"":"\n") + "<b>" + item.getSecondRevName() + "</b>: " + item.getSecondRevComment();
 
 		if(isPrintEmptyLine && !text.isEmpty())
 			text += "\n";

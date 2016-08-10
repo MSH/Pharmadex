@@ -1,17 +1,9 @@
 package org.msh.pharmadex.auth;
 
-import org.msh.pharmadex.domain.Role;
-import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.domain.UserAccess;
-import org.msh.pharmadex.domain.Workspace;
-import org.msh.pharmadex.mbean.product.ProdAppInit;
-import org.msh.pharmadex.service.DisplayReviewInfo;
-import org.msh.pharmadex.service.UserAccessService;
-import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -26,10 +18,19 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+
+import org.msh.pharmadex.domain.Role;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.UserAccess;
+import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.mbean.product.ProdAppInit;
+import org.msh.pharmadex.service.DisplayReviewInfo;
+import org.msh.pharmadex.service.UserAccessService;
+import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.JsfUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 @ManagedBean
 @SessionScoped

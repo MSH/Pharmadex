@@ -44,6 +44,10 @@ import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
+import org.primefaces.component.accordionpanel.AccordionPanel;
+import org.primefaces.component.tabview.TabView;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -97,10 +101,15 @@ public class ReviewInfoBn implements Serializable {
     private User loggedInUser;
     private boolean submitted=false;
     private String sourcePage="/internal/processreviewlist";
+    private Long idProdAppSource = null; 
 
+    private int header1ActIndex = 0;
+    private int header2ActIndex = 0;
+   	
     @PostConstruct
     private void init() {
         try {
+        	restoreActiveIndexes();
             if (reviewInfo == null) {
                 String reviewInfoID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("reviewInfoID");
                 if(reviewInfoID!=null&&!reviewInfoID.equals("")) {
@@ -120,12 +129,24 @@ public class ReviewInfoBn implements Serializable {
                 }
                 loggedInUser = userService.findUser(userSession.getLoggedINUserID());
                 String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
-                if (srcPage!=null)
+                if (srcPage != null){
                     sourcePage = srcPage;
+                    buildIdApp();
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    
+    private void buildIdApp(){
+    	int index = sourcePage.indexOf(":");
+    	if(index != -1){
+    		String id = sourcePage.substring(0, index);
+    		idProdAppSource = new Long(id);
+    		sourcePage = sourcePage.substring(index + 1);
+    	}else
+    		idProdAppSource = prodApplications.getId();
     }
 
     public void handleFileUpload() {
@@ -261,6 +282,7 @@ public class ReviewInfoBn implements Serializable {
 
     public String updateReview(DisplayReviewInfo displayReviewInfo) {
         FacesMessage msg;
+        storeActiveIndexes();
         facesContext = FacesContext.getCurrentInstance();
         msg = new FacesMessage(bundle.getString("global.success") + " Selected ID == " + displayReviewInfo.getId(), "Selected ID == " + displayReviewInfo.getId());
         facesContext.addMessage(null, msg);
@@ -648,4 +670,55 @@ public class ReviewInfoBn implements Serializable {
     	}
     	return white;
     }
+
+    private void storeActiveIndexes(){
+        if (header1ActIndex + header2ActIndex != 0){
+            Scrooge.setBeanParam("reviewActiveIndex1", (long) header1ActIndex);
+            Scrooge.setBeanParam("reviewActiveIndex2", (long) header2ActIndex);
+        }
+    }
+    
+    private void restoreActiveIndexes(){
+        Long param = Scrooge.beanParam("reviewActiveIndex1");
+        if (param != null)
+            header1ActIndex = param.intValue();
+        param = Scrooge.beanParam("reviewActiveIndex2");
+        if (param != null)
+            header2ActIndex = param.intValue();
+    }
+    
+	public void onChangeHdr1(TabChangeEvent event){
+		AccordionPanel tv = (AccordionPanel) event.getSource();
+        header1ActIndex = tv.getIndex();
+        setHeader2ActIndex(0);
+    }
+    
+    public void onChangeHdr2(TabChangeEvent event){
+    	TabView tv = (TabView) event.getSource();
+        header2ActIndex = tv.getIndex();
+    }
+
+	public Long getIdProdAppSource() {
+		return idProdAppSource;
+	}
+
+	public void setIdProdAppSource(Long idProdAppSource) {
+		this.idProdAppSource = idProdAppSource;
+	}
+
+	public int getHeader1ActIndex() {
+		return header1ActIndex;
+	}
+
+	public void setHeader1ActIndex(int header1ActIndex) {
+		this.header1ActIndex = header1ActIndex;
+	}
+
+	public int getHeader2ActIndex() {
+		return header2ActIndex;
+	}
+
+	public void setHeader2ActIndex(int header2ActIndex) {
+		this.header2ActIndex = header2ActIndex;
+	}
 }

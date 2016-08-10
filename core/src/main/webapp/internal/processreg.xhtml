@@ -331,7 +331,7 @@
                             <p:tab title="#{msgs.assessment}" id="process"
                                    rendered="#{userSession.moderator||userSession.head}">
                                 <ui:include src="reviewertable.xhtml"/>
-                                <f:param name="sourcePage" value="/internal/processreg.faces:#{each.prodApplications.id}"/>
+                                <f:param name="sourcePage" value="#{each.prodApplications.id}:/internal/processreg.faces"/>
                             </p:tab>
 
                             <p:tab title="#{msgs.suspend_info}" id="susp"

@@ -13,7 +13,6 @@ public class DisplayReviewInfo {
     private String question;
     private boolean save;
 
-
     public DisplayReviewInfo(Long id, Long reviewDetailID, String question, boolean save, Long reviewInfoID) {
         this.id = id;
         this.question = question;
@@ -61,6 +60,4 @@ public class DisplayReviewInfo {
     public void setReviewInfoID(Long reviewInfoID) {
         this.reviewInfoID = reviewInfoID;
     }
-
-
 }
