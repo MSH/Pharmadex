@@ -652,7 +652,7 @@ Farmacêutico (s) Activo (s):
 					<font fontName="DejaVu Serif" size="14"/>
 					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{fnm} == null ? "": "X"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{fnm} ? "X" : " "]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="0" y="115" width="55" height="75" backcolor="rgba(255, 255, 255, 0.0)" uuid="8ac095b8-fec8-4d29-a025-42ae9169372c">
@@ -959,7 +959,7 @@ Farmacêutico (s) Activo (s):
 				<text><![CDATA[Tipo de Pedido]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="180" y="10" width="85" height="15" backcolor="#BFBFBF" uuid="f2c8bfce-8f75-4ce4-8343-500a20626635">
+				<reportElement mode="Opaque" x="178" y="10" width="90" height="15" backcolor="#BFBFBF" uuid="f2c8bfce-8f75-4ce4-8343-500a20626635">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -1020,7 +1020,7 @@ Farmacêutico (s) Activo (s):
 					<font fontName="DejaVu Serif" size="14"/>
 					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{fnm}  == null ? "":  "X"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{fnm} ? " " : "X"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="5" y="127" width="17" height="24" uuid="fe8d9a25-5f68-4647-8d7c-d9188e63d9ef">
