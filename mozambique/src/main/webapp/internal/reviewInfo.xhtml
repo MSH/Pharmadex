@@ -55,17 +55,21 @@
                                  rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted and reviewInfoBn.priReview}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
                                  action="#{reviewInfoBn.getSourcePage}"
-                                 ajax="false"/>
+                                 ajax="false">
+                                <f:param name="prodAppID" value="#{reviewInfoBn.idProdAppSource}"/>
+                </p:commandButton>
             </div>
 
 
             <p:tabView dynamic="true" id="detailtab" style="width: 99%;" cache="false">
                 <p:tab title="#{msgs.review_detail}">
                     <p:accordionPanel value="#{reviewInfoBn.displayReviewQs}" var="header1" id="displayReviewQsacp"
-                    					cache="false">
+                    					cache="false" activeIndex="#{reviewInfoBn.header1ActIndex}">
+                        <p:ajax event="tabChange" listener="#{reviewInfoBn.onChangeHdr1}" update=":reviewHome:detailtab"/>
                         <p:tab title="#{header1.header1}">
                             <p:tabView orientation="left" value="#{header1.header2s}" var="header2"
-                            			cache="false">
+                            			cache="false" activeIndex="#{reviewInfoBn.header2ActIndex}">
+                            	<p:ajax event="tabChange" listener="#{reviewInfoBn.onChangeHdr2}" update=":reviewHome:detailtab"/>
                                 <p:tab title="#{header2.header2}">
                                     <p:dataTable value="#{header2.displayReviewInfos}" var="quest"
                                                  styleClass="borderless">
