@@ -1,7 +1,6 @@
 package org.msh.pharmadex.service;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +71,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_GESTOR = "gestorDeCTRM";
 	public static String KEY_PROD_DETAILS = "fullName";
 
+	public static String KEY_USE_CATEGORY = "usecat";
 	/* для letter*/	
 	public static String KEY_APPADDRESS = "appAddress";	
 	public static String KEY_APPNUM = "appNum";/**номер в их системе (канцелярский номер) */

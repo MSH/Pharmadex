@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,6 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
@@ -45,6 +43,7 @@ import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -294,7 +293,17 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		fl = false;
 		utilsByReports.putNotNull(UtilsByReports.KEY_GEN, fl);
-
+		
+		//
+		String str = "";
+		List<UseCategory> cats = product.getUseCategories();
+		if(cats != null && cats.size() > 0){
+			for(UseCategory c:cats){
+				str += c.ordinal();
+			}
+		}
+		utilsByReports.putNotNull(UtilsByReports.KEY_USE_CATEGORY, str, true);
+		
 		utilsByReports.putNotNull(UtilsByReports.KEY_REG_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_EXPIRY_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_GESTOR, gestor);

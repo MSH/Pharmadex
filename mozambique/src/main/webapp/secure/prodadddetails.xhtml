@@ -47,9 +47,9 @@
 
         <p:outputLabel value="#{msgs.use_category}" for="grid"/>
         <p:selectManyCheckbox id="grid" value="#{prodRegAppMbean.useCategories}" layout="grid" columns="1"
-                              converter="omnifaces.GenericEnumConverter">
+                              converter="omnifaces.GenericEnumConverter" required="true" requiredMessage="#{msgs.no_use_category}">
             <f:selectItems value="#{globalLists.useCategory}" var="type" itemLabel="#{msgs[type.key]}"
-                           itemValue="#{type}"/>
+                           itemValue="#{type}" />
             <f:attribute name="collectionType" value="java.util.ArrayList"/>
         </p:selectManyCheckbox>
         <p:message for="grid" showSummary="true" showDetail="false"/>

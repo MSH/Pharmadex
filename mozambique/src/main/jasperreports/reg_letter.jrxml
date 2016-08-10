@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-03T19:22:01 -->
+<!-- 2016-08-10T16:05:03 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -29,6 +29,7 @@
 	<parameter name="fnm" class="java.lang.Boolean"/>
 	<parameter name="appType" class="java.lang.Integer"/>
 	<parameter name="drugType" class="java.lang.Integer"/>
+	<parameter name="usecat" class="java.lang.String"/>
 	<parameter name="subact" class="java.lang.Boolean"/>
 	<parameter name="gen" class="java.lang.Boolean"/>
 	<parameter name="regDate" class="java.lang.String"/>
@@ -779,34 +780,6 @@ Farmacêutico (s) Activo (s):
 				</textElement>
 				<text><![CDATA[Narcótico, Estupefaciente ou Psicotrópico]]></text>
 			</staticText>
-			<rectangle>
-				<reportElement x="391" y="32" width="17" height="24" uuid="87cf8da0-28d5-4bf4-8ede-f8cc25b8a5ea">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement x="391" y="58" width="17" height="24" uuid="cd9e89a4-7bb7-472f-958d-926b8218ebad">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement x="391" y="84" width="17" height="24" uuid="ea3c4bc6-f5cf-4e95-b51f-695b8e1b2860">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement x="391" y="110" width="17" height="24" uuid="187a1141-050b-42f4-884c-8212832bbe67">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-			</rectangle>
 			<staticText>
 				<reportElement x="88" y="32" width="77" height="24" uuid="57b1d69f-e6d9-46c4-b471-762f287cce58">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -1275,6 +1248,81 @@ Farmacêutico (s) Activo (s):
 					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{subact} == null ? "" : ($P{subact} ? " " : "X")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="32" width="17" height="24" uuid="1b5d2944-e0a8-4a47-b190-967f43cfb4e8">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14"/>
+					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{usecat} == null ? "" : ($P{usecat}.contains("1" )? "X" : " ")
+]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="58" width="17" height="24" uuid="6fc24008-2da0-4bab-8006-2f5192a59e10">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14"/>
+					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{usecat} == null ? "" : ($P{usecat}.contains("3" )? "X" : " ")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="84" width="17" height="24" uuid="f76d05ff-2708-4c9a-bcf1-76889d26eeac">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14"/>
+					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{usecat} == null ? "" : ($P{usecat}.contains("2" )? "X" : " ")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="110" width="17" height="24" uuid="4255de46-347b-4b66-9234-a545b0191d4f">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14"/>
+					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{usecat} == null ? "" : ($P{usecat}.contains("0" )? "X" : " ")]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
