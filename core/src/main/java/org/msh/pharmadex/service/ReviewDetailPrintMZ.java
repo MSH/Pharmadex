@@ -95,36 +95,22 @@ public class ReviewDetailPrintMZ implements Serializable {
 	private static void fillItems(List<Map<String, Object>> res, Properties prop, CustomReviewDAO customReviewDAO) {
 		List<ReviewItemReport> items = customReviewDAO.getReviewListByReport(prodApp.getId());
 		if(items != null && items.size() > 0){
-			String header1 = "";
-			boolean isNewHeader = true;
-			List<ReviewItemReport> list = null;
+			// header1-values
+			Map<String, List<ReviewItemReport>> map = new HashMap<String, List<ReviewItemReport>>();
 			for(ReviewItemReport item:items){
-				if(header1.isEmpty())
-					header1 = item.getHeader1();
-				else{
-					if(header1.equals(item.getHeader1())){
-						isNewHeader = false;
-					}else{
-						header1 = item.getHeader1();
-						isNewHeader = true;
-					}
-				}
-				if(isNewHeader){
-					if(list != null && list.size() > 0){
-						// print prev Values
-						buildItemValues(res, list);
-					}	
-					// build new values
+				String header1 = item.getHeader1();
+				List<ReviewItemReport> list = map.get(header1);
+				if(list == null)
 					list = new ArrayList<ReviewItemReport>();
-					list.add(item);
-				}else{
-					list.add(item);
-				}
+				list.add(item);
+				map.put(header1, list);
 			}
-			if(isNewHeader){
-				if(list != null && list.size() > 0){
-					// print prev Values
-					buildItemValues(res, list);
+			if(!map.isEmpty()){
+				Iterator<String> it = map.keySet().iterator();
+				while(it.hasNext()){
+					String header = it.next();
+					List<ReviewItemReport> list = map.get(header);
+					buildItemValues(res, header, list);
 				}
 			}
 		}
@@ -135,8 +121,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 	 * List<ReviewItemReport> list - comments of item
 	 * @param map
 	 */
-	private static void buildItemValues(List<Map<String, Object>> res, List<ReviewItemReport> list){
-		String header = list.get(0).getHeader1();
+	private static void buildItemValues(List<Map<String, Object>> res, String header, List<ReviewItemReport> list){
 		Map<String, List<ReviewItemReport>> map = new HashMap<String, List<ReviewItemReport>>();
 		for(ReviewItemReport item:list){
 			List<ReviewItemReport> values = map.get(item.getHeader2());
@@ -159,19 +144,31 @@ public class ReviewDetailPrintMZ implements Serializable {
 	
 	private static void printItemReview(List<Map<String, Object>> res, String chapter1, ReviewItemReport item, boolean isPrintEmptyLine){
 		String text = "";
-		if(item.getFirstRevComment() != null && !item.getFirstRevComment().equals(""))
-			text = "<b>" + item.getFirstRevName() + "</b>: " + item.getFirstRevComment();
-		if(item.getSecondRevName() != null && item.getSecondRevComment() != null && !item.getSecondRevComment().equals(""))
-			text += (text.isEmpty()?"":"\n") + "<b>" + item.getSecondRevName() + "</b>: " + item.getSecondRevComment();
-
-		if(isPrintEmptyLine && !text.isEmpty())
-			text += "\n";
-		
+		// 1) only first
+		if(item.getFirstRevComment() != null && !item.getFirstRevComment().equals("") 
+				&& (item.getSecondRevComment() == null || item.getSecondRevComment().equals(""))){
+			text = "<b>" + item.getFirstRevName() + "</b>:<br>" + item.getFirstRevComment();
+		}
+		// 2) only second
+		if(item.getSecondRevComment() != null && !item.getSecondRevComment().equals("") 
+				&& (item.getFirstRevComment() == null || item.getFirstRevComment().equals(""))){
+			text = "<b>" + item.getSecondRevName() + "</b>:<br>" + item.getSecondRevComment();
+		}
+		// 3) both
+		if(item.getFirstRevComment() != null && !item.getFirstRevComment().equals("") 
+				&& item.getSecondRevName() != null 
+				&& item.getSecondRevComment() != null && !item.getSecondRevComment().equals("")){
+			text = "<b>" + item.getFirstRevName() + "</b>:<br>" + item.getFirstRevComment()
+			 	+ "<br><br><b>" + item.getSecondRevName() + "</b>:<br>" + item.getSecondRevComment();
+		}
+		if(!text.isEmpty())
+			text += "<br>";
+		// file
 		InputStream file = null;
 		if(item.getFile() != null){
 			file = new ByteArrayInputStream(item.getFile());
 		}
-		if(!text.equals("") || file != null)
+		if(!text.isEmpty() || file != null)
 			fillItemRS(res, chapter1, null, text, file);
 	}
 
