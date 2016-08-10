@@ -1,14 +1,29 @@
 package org.msh.pharmadex.service;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.dao.CustomReviewDAO;
+import org.msh.pharmadex.dao.ProductCompanyDAO;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.util.RegistrationUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
+import java.util.ResourceBundle;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +34,10 @@ import java.util.*;
  */
 @Service
 public class ProdApplicationsServiceET extends ProdApplicationsService {
-
+    @Autowired
+    private CustomReviewDAO customReviewDAO;
+    @Autowired
+    private ProductCompanyDAO prodCompanyDAO;
 
     @Override
     public List<RegState> nextStepOptions(RegState regState, UserSession userSession, boolean reviewStatus) {
@@ -297,5 +315,75 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
            return prodApplicationses;
 
     }
-  
+    /**
+     * Create review details and save it to letters (one point to find all generated documents)
+     * @param prodApplications
+     * @return
+     */
+    public String createReviewDetails(ProdApplications prodApplications) {
+        prodApp = prodApplications;
+        FacesContext context = FacesContext.getCurrentInstance();
+        ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
+        Properties prop = fetchReviewDetailsProperties();
+        if(prop != null){
+            Product prod = prodApp.getProduct();
+            try {
+                JasperPrint jasperPrint;
+                HashMap<String, Object> param = new HashMap<String, Object>();
+                UtilsByReports utilsByReports = new UtilsByReports();
+                utilsByReports.init(param, prodApp, prod);
+                utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
+                utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MODERNAME, "", false);
+
+                //TODO chief name from properties!!
+                JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO);
+                URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report.jasper");
+                if(source != null){
+                    if(resource != null){
+                        jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
+                        javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+                        httpServletResponse.addHeader("Content-disposition", "attachment; filename=" +prod.getProdName() + "_Review.pdf");
+                        httpServletResponse.setContentType("application/pdf");
+                        javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+                        net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
+                        servletOutputStream.close();
+                        return "persist";
+                    }else{
+                        return "error";
+                    }
+                }else{
+                    return "error";
+                }
+
+            } catch (JRException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                return "error";
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                return "error";
+            }
+        }else{
+            return "error";
+        }
+    }
+    /**
+     * Read necessary properties for review details (for Porto language)
+     * @return properties or null
+     */
+    private Properties fetchReviewDetailsProperties() {
+        Properties props = new Properties();
+        InputStream in;
+        try {
+            in = this.getClass().getResourceAsStream("review_details.properties");
+            props.load(in);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return props;
+    }
 }

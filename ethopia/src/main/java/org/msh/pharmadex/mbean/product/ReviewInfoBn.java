@@ -64,6 +64,9 @@ public class ReviewInfoBn implements Serializable {
     @ManagedProperty(value = "#{prodApplicationsService}")
     private ProdApplicationsService prodApplicationsService;
 
+    @ManagedProperty(value = "#{prodApplicationsServiceET}")
+    private ProdApplicationsServiceET prodApplicationsServiceET;
+
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
 
@@ -316,6 +319,17 @@ public class ReviewInfoBn implements Serializable {
     }
 
     public void printReview() {
+        if(prodApplications != null){
+            String s =getProdApplicationsServiceET().createReviewDetails(prodApplications);
+            if(!s.equals("persist")){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+            }else{
+                javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+            }
+        }else{
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+        }
+        /*
         FacesContext context = FacesContext.getCurrentInstance();
         try {
             JasperPrint jasperPrint = reviewService.getReviewReport(reviewInfo.getId());
@@ -342,6 +356,7 @@ public class ReviewInfoBn implements Serializable {
         }
         FacesContext.getCurrentInstance().responseComplete();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        */
     }
 
     public String revDefAck() {
@@ -690,5 +705,13 @@ public class ReviewInfoBn implements Serializable {
 
     public void setHeader2ActIndex(int header2ActIndex) {
         this.header2ActIndex = header2ActIndex;
+    }
+
+    public ProdApplicationsServiceET getProdApplicationsServiceET() {
+        return prodApplicationsServiceET;
+    }
+
+    public void setProdApplicationsServiceET(ProdApplicationsServiceET prodApplicationsServiceET) {
+        this.prodApplicationsServiceET = prodApplicationsServiceET;
     }
 }

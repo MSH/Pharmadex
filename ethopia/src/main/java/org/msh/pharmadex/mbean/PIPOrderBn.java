@@ -123,11 +123,10 @@ public class PIPOrderBn extends POrderBn {
 
     @Override
     public void initAddProd() {
-   //Currency curr = currencyService.findCurrency(pipOrder.getCurrency().getId());
         DosUom uom = new DosUom();
         uom.setUom("");
         uom.setId(0);
-        //setPipProd(new PIPProd(new DosageForm(), uom, pipOrder, pipOrder.getCurrency().getCurrCD()));
+        setPipProd(new PIPProd(new DosageForm(), uom, pipOrder, pipOrder.getCurrency().getCurrCD()));
         setPipProd(pipProd);
 
     }
