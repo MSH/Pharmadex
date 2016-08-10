@@ -45,7 +45,7 @@
             </p:selectOneButton>
         </p:column>
         <p:column headerText="#{msgs.global_remark}">
-            <p:outputLabel value="#{checkList.staffComment}" rendered="#{!processProdBn.prescreened}"/>
+        	<p:outputLabel value="#{checkList.staffComment}" rendered="#{!processProdBn.prescreened}"/>
             <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBn.prescreened}"/>
         </p:column>
         <p:column style="width:90px">
@@ -56,10 +56,8 @@
             <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
                              onclick="PrimeFaces.monitorDownload(start, stop)"
                              icon="ui-icon-arrowstop-1-s"
-                             rendered="#{checkList.fileUploaded}"
-                    >
-                <p:fileDownload
-                        value="#{fileUploadController.moduleDocDownload(checkList)}"/>
+                             rendered="#{checkList.fileUploaded}">
+                <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
             </p:commandButton>
 
         </p:column>
@@ -102,9 +100,8 @@
 
         <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.completeScreen}"
-                         oncomplete="PF('completescreendlg').hide()" process="@form"  ajax="true" 
+                         oncomplete="PF('completescreendlg').hide()" process="@form" ajax="true" 
                          update="btnpnlFirst modpnl checkListTbl btnpnlSecond"/>
-
     </p:dialog>
 
     <p:dialog header="#{msgs.complete_screen}" widgetVar="archiveappdlg" resizable="false"
