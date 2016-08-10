@@ -54,7 +54,7 @@ public class SampleTestServiceMZ implements Serializable {
 	private EntityManager entityManager;
 	
 	@Autowired
-	private UtilsByReportsMZ utilsByReports;
+	private UtilsByReports utilsByReports;
 	
 	@Autowired
 	private SampleTestService sampleTestService;
@@ -105,21 +105,26 @@ public class SampleTestServiceMZ implements Serializable {
 		
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		utilsByReports.init(param, prodApplications, product);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPADDRESS, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SUBJECT, "Sample request letter for  ", true);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODSTRENGTH, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_DOSFORM, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MANUFNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPTYPE, "New Medicine Registration", true);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_APPNUM, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SUBJECT, "Sample request letter for  ", true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, "New Medicine Registration", true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
+				
+		
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPPOST, "", false);	
+		utilsByReports.putNotNull(UtilsByReports.KEY_PROD_DETAILS, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 		
 		
-		/*utilsByReports.putNotNull(UtilsByReportsMZ.KEY_ID, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_SAMPLEQTY, quantity, true);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_ADDRESS2, "", false);
-		utilsByReports.putNotNull(UtilsByReportsMZ.KEY_COUNTRY, "", false);*/
+		/*utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);*/
 
 		param.put("date", new Date());
 
