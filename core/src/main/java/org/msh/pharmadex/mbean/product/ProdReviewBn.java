@@ -10,6 +10,7 @@ import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.RetObject;
+import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -17,6 +18,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.ResourceBundle;
@@ -138,29 +141,6 @@ public class ProdReviewBn implements Serializable {
         try {
             facesContext = FacesContext.getCurrentInstance();
             ProdApplications prodApplications = processProdBn.getProdApplications();
-
-//        if (!userAccessMBean.isDetailReview()) {
-//            if (review == null) {
-//                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-//            }
-//            review.setProdApplications(prodApplications);
-//            review.setReviewStatus(ReviewStatus.ASSIGNED);
-//            review.setAssignDate(new Date());
-//            review.setUser(reviewer);
-//
-//            RetObject retObject = reviewService.saveReviewers(review);
-//            if (!retObject.getMsg().equalsIgnoreCase("success")) {
-//                if (retObject.getMsg().equals("exist")) {
-//                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), "Reviewer has already been assigned"));
-//
-//                } else
-//                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
-//            } else {
-//                reviews.add(review);
-//                updateRegState();
-//            }
-//            review = new Review();
-//        } else {
             if (reviewInfo == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
             }
@@ -169,8 +149,6 @@ public class ProdReviewBn implements Serializable {
             if (reviewInfo.getReviewComments() == null)
                 reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
             reviewInfo.getReviewComments().add(reviewComment);
-//            reviewInfo.setProdApplications(prodApplications);
-//            reviewInfo.setReviewStatus(ReviewStatus.ASSIGNED);
             if (userAccessMBean.getWorkspace().isSecReview())
                 reviewInfo.setSecReviewer(secReviewer);
 
@@ -192,14 +170,12 @@ public class ProdReviewBn implements Serializable {
             } else {
                 facesContext.addMessage(null, new FacesMessage("Due date must be in the future."));
             }
-//        }
         } catch (Exception ex) {
             ex.printStackTrace();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Due date must be in the future.", ex.getMessage()));
         }
     }
-
-
+    
     private void updateRegState() {
         if (!processProdBn.getProdApplications().getRegState().equals(RegState.REVIEW_BOARD)) {
             TimeLine timeLine = new TimeLine();
@@ -229,9 +205,6 @@ public class ProdReviewBn implements Serializable {
             reviewInfo = reviewService.findReviewInfo(ri.getId());
             reviewInfo.setUpdatedDate(new Date());
             reviewInfo.setUpdatedBy(processProdBn.getUser());
-//            reviewer = reviewInfo.getReviewer();
-//            secReviewer = reviewInfo.getSecReviewer();
-
             reviewComment = new ReviewComment(reviewInfo, processProdBn.getUser(), RecomendType.COMMENT);
             reviewComment.setDate(new Date());
         } catch (Exception ex) {

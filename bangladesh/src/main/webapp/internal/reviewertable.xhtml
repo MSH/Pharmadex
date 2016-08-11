@@ -299,7 +299,7 @@
                              action="#{prodReviewBn.changeReviewer}" process="@form" ajax="false"
                              oncomplete="if (!args.validationFailed) PF('changereviewdlg').hide()"
                              update="@form"/>
-                   <p:commandButton id="cancelButton2" type="button" value="#{msgs.global_cancel}"
+                   <p:commandButton id="cancelButton2" immediate="true" value="#{msgs.global_cancel}"
                                      onclick="PF('changereviewdlg').hide()"
                                      ajax="false"/>
                 </h:panelGrid>
