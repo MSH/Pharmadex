@@ -26,7 +26,7 @@
     <p:dataTable var="checkList" value="#{preScreenProdMBn.prodAppChecklists}"
                  style="width:100%;" id="checkListTbl">
         <f:facet name="header">
-            <h:outputLink value="screening_template.docx" target="_blank">Download Dossier Screening Template </h:outputLink>
+            <h:outputLabel value="#{msg.prod_screening}"/>
         </f:facet>
         <p:column headerText="" style="width:25px">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>

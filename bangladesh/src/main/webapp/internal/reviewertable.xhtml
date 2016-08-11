@@ -33,7 +33,7 @@
             <p:commandLink id="viewLink" value="#{each.user.name}" action="/internal/review"
                            ajax="false" immediate="true">
                 <f:param name="reviewID" value="#{each.id}"/>
-                <f:param name="sourcePage" value="/internal/processreg.faces:#{each.prodApplications.id}"/>
+                <f:param name="sourcePage" value="#{each.prodApplications.id}:/internal/processreg.faces"/>
             </p:commandLink>
         </p:column>
 
@@ -203,7 +203,7 @@
 
                     <p:outputLabel value="#{msgs.checklist_module}" for="modulecb"/>
                     <p:selectOneMenu id="modulecb" value="#{prodReviewBn.reviewInfo.ctdModule}"
-                                     requiredMessage="#{msgs.recommendation_valid}" >
+                             requiredMessage="#{msgs.recommendation_valid}" >
                         <f:selectItem itemLabel="-"/>
                         <f:selectItems value="#{globalLists.cTDModules}" var="type" itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
@@ -300,7 +300,7 @@
                              oncomplete="if (!args.validationFailed) PF('changereviewdlg').hide()"
                              update="@form"/>
                    <p:commandButton id="cancelButton2" type="button" value="#{msgs.global_cancel}"
-                                     onclick="PF('changeRevBtn').hide()"
+                                     onclick="PF('changereviewdlg').hide()"
                                      ajax="false"/>
                 </h:panelGrid>
         </p:panel>

@@ -30,6 +30,8 @@
                 <p:commandButton value="#{msgs.global_back}" action="reviewInfo" ajax="false"
                                  immediate="true">
                     <f:param name="reviewInfoID" value="#{reviewDetailBn.reviewDetail.reviewInfo.id}"/>
+                    <f:param name="reviewActiveIndex1" value="#{reviewDetailBn.header1ActIndex}"/>
+                    <f:param name="reviewActiveIndex2" value="#{reviewDetailBn.header2ActIndex}"/>
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_save}" action="#{reviewDetailBn.saveReview(false)}"
                                  rendered="#{reviewDetailBnMZ.visibleSaveBtn()}"
@@ -40,6 +42,8 @@
                                  ajax="false"
                                  rendered="#{reviewDetailBnMZ.visibleSubmitBtn()}">
                     <f:param name="reviewInfoID" value="#{reviewDetailBn.reviewDetail.reviewInfo.id}"/>
+                    <f:param name="reviewActiveIndex1" value="#{reviewDetailBn.header1ActIndex}"/>
+                    <f:param name="reviewActiveIndex2" value="#{reviewDetailBn.header2ActIndex}"/>
                 </p:commandButton>
 
                 <!-- review area -->
