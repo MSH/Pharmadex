@@ -451,6 +451,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		InputStream in;
 		try {
 			in = this.getClass().getResourceAsStream("review_details.properties");
+			if(in== null){
+				return null;
+			}
 			props.load(in);
 			in.close();
 		} catch (FileNotFoundException e) {
