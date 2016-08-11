@@ -110,9 +110,11 @@ public class ProdRegInit implements Serializable {
                 Scrooge.setBeanParam("StandardProcedure", (long) 0);
                 init();
             }
-
             ProdApplications prodApp = prodApplicationsService.findProdApplications(appId);
             Product product = productDAO.findProduct(prodId);
+            prodTable = createProdTableRecord(product);
+            fewLicHolders = false;
+            selLicHolder = licenseHolderService.findLicHolderByProduct(prodId);
         }
         curUser = getUserSession().getUserService().findUser(userSession.getLoggedINUserID());
     }

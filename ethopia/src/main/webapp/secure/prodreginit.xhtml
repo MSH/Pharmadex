@@ -61,7 +61,8 @@
                     <p:outputLabel value="#{msgs.variationQuantityMn}" styleClass="fy-required-field"
                                    for="minorQuantity"
                                    rendered="#{prodRegInit.showVariationType}"/>
-                    <p:inputText id="minorQuantity" value="#{prodRegInit.minorQuantity}" rendered="#{prodRegInit.showVariationType}"/>
+                    <p:inputText id="minorQuantity" value="#{prodRegInit.minorQuantity}"
+                                 rendered="#{prodRegInit.showVariationType}"/>
                     <p:message for="minorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
 
                     <h:outputLabel value="#{msgs.search_prod}*: "
@@ -70,11 +71,13 @@
                                    styleClass="fy-required-field"/>
                     <p:autoComplete value="#{prodRegInit.prodTable}" id="prodTable"
                                     completeMethod="#{prodRegInit.completeProduct}"
-                                    rendered="#{prodRegInit.showProductChoice}"
+                                    rendered="#{prodRegInit.showProductChoice  and prodRegInit.standardProcedureRecall}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}" forceSelection="true">
                         <p:ajax event="itemSelect" listener="#{prodRegInit.onItemSelect}"/>
                     </p:autoComplete>
+                    <p:outputLabel value="#{prodRegInit.prodTable.prodName}"
+                                   rendered="#{prodRegInit.showProductChoice  and !prodRegInit.standardProcedureRecall}"/>
                     <p:message for="prodTable" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
 
                     <h:outputLabel value="#{msgs.variationSummary}" rendered="#{prodRegInit.showVariationType}"/>

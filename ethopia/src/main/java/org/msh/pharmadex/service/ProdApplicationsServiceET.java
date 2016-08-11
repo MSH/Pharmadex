@@ -332,8 +332,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
                 HashMap<String, Object> param = new HashMap<String, Object>();
                 UtilsByReports utilsByReports = new UtilsByReports();
                 utilsByReports.init(param, prodApp, prod);
-                utilsByReports.putNotNull(UtilsByReportsMZ.KEY_PRODNAME, "", false);
-                utilsByReports.putNotNull(UtilsByReportsMZ.KEY_MODERNAME, "", false);
+                utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+                utilsByReports.putNotNull(UtilsByReports.KEY_MODERNAME, "", false);
 
                 //TODO chief name from properties!!
                 JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO);
