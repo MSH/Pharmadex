@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.CustomReviewDAO;
+import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
@@ -38,6 +39,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
     private CustomReviewDAO customReviewDAO;
     @Autowired
     private ProductCompanyDAO prodCompanyDAO;
+    @Autowired
+    private ProdApplicationsDAO prodApplicationsDAO;
 
     @Override
     public List<RegState> nextStepOptions(RegState regState, UserSession userSession, boolean reviewStatus) {
@@ -386,4 +389,15 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
         }
         return props;
     }
+
+	public List<ProdApplications> getAllAncestor(ProdApplications proda) {
+		ProdApplications an=proda;
+		List<ProdApplications> ans=new ArrayList<ProdApplications> ();
+		while (an.getParentApplication()!=null) {
+			 an=	prodApplicationsDAO.findProdApplications(proda.getParentApplication().getId());
+			if (an!=null) ans.add(an);
+			
+		}
+		return ans;
+	}
 }
