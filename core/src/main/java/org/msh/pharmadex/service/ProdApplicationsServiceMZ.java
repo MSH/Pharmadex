@@ -671,4 +671,14 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	public void deleteProdAppLetter(ProdAppLetter let){
 		prodAppLetterDAO.delete(let);
 	}
+
+	public ProdApplicationsService getProdApplicationsService() {
+		return prodApplicationsService;
+	}
+
+	public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+		this.prodApplicationsService = prodApplicationsService;
+	}
+	
+	
 }

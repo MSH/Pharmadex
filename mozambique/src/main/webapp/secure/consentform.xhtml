@@ -67,6 +67,10 @@
                         <p:panel header="#{msgs.Lbl_ackLetter}">
                             <h:panelGrid cellspacing="10" cellpadding="10" columns="3"
                                          columnClasses="label value label">
+                                <ui:include src="formbylet.xhtml">
+                                	<ui:param name="prodApp" value="#{prodConsentFormMZ.prodApplications}"/>
+                                </ui:include>
+                                <ui:remove>
                                 <p:outputLabel value="#{msgs.number}" for="prodappno"/>
                                 <p:inputText id="prodappno" value="#{prodConsentFormMZ.prodappno}"
                                              required="true"/>
@@ -81,8 +85,8 @@
                                 <p:inputText value="#{prodConsentFormMZ.prodApplications.position}" id="receiver"
                                              required="true"/>
                                 <p:message for="receiver"/>
+
                                 
-                                <ui:remove>
                                 	<p:outputLabel value="#{msgs.changepwd_passinuse}:" for="pass"/>
                                 	<p:password id="pass" value="#{prodConsentFormMZ.password}" required="true"/>
                                 	<p:message for="pass"/>

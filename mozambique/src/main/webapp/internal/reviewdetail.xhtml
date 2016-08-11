@@ -85,12 +85,20 @@
                                      rendered="#{reviewDetailBn.visibleBtnDownload() and reviewDetailBnMZ.visibleSaveBtn()}"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
+               	 	<p:outputLabel rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}"/>
+                    <p:outputLabel value="#{msgs.dont_insert_table}" styleClass="hint" 
+                    		rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}"/>
+                    
                     <p:outputLabel value="#{msgs.pri_processor}:" styleClass="label"/>
                     <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"
                               rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}"/>
                     <p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.otherComment}"
                                    rendered="#{!userSession.reviewer or !reviewDetailBn.priReviewer}"></p:outputLabel>
-
+                                   
+					<p:outputLabel rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}"/>
+                    <p:outputLabel value="#{msgs.dont_insert_table}" styleClass="hint" 
+                    				rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}"/>
+                    
                     <p:outputLabel value="#{msgs.sec_review_comment}:" styleClass="label"
                                    rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview}"/>
                     <p:editor value="#{reviewDetailBn.reviewDetail.secComment}" width="700"

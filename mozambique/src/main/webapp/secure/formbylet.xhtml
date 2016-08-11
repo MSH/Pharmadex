@@ -1,0 +1,21 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+	<h:panelGrid cellspacing="10" cellpadding="10" columns="3" columnClasses="label value label">
+		<p:outputLabel value="#{msgs.number}" for="prodappno" />
+		<p:inputText id="prodappno" value="#{prodApp.prodAppNo}" required="true" />
+		<p:message for="prodappno" />
+
+		<p:outputLabel value="#{msgs.user_sender}" for="sender" />
+		<p:inputText value="#{prodApp.username}" id="sender" required="true" />
+		<p:message for="sender" />
+
+		<p:outputLabel value="#{msgs.user_position}:" for="receiver" />
+		<p:inputText value="#{prodApp.position}" id="receiver" required="true" />
+		<p:message for="receiver" />
+	</h:panelGrid>
+</ui:composition>

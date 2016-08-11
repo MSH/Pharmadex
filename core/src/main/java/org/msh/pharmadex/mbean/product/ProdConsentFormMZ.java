@@ -64,6 +64,10 @@ public class ProdConsentFormMZ implements Serializable {
     private ReportService reportService;
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timeLineService;
+    
+    @ManagedProperty(value = "#{prodAckLetterFormMZ}")
+    private ProdAckLetterFormMZ prodAckLetterFormMZ;
+    
     private String password;
     private Product product;
     private ProdApplications prodApplications;
@@ -71,8 +75,8 @@ public class ProdConsentFormMZ implements Serializable {
     private JasperPrint jasperPrint;
     private UploadedFile file;
     
-    private String sender = "";
-    private String prodappno = "";
+    //private String sender = "";
+    //private String prodappno = "";
 
     public StreamedContent fileDownload() {
         ProdAppLetter prodAppLetter = prodApplicationsService.findAllLettersByProdAppAndType(prodApplications, LetterType.ACK_SUBMITTED);
@@ -96,8 +100,10 @@ public class ProdConsentFormMZ implements Serializable {
         Long prodAppID = userSession.getProdAppID();
         if (prodAppID != null) {
             prodApplications = prodApplicationsService.findProdApplications(prodAppID);
-            prodappno = prodApplicationsService.generateAppNo(prodApplications);
-            sender = bundle.getString("gestorDeCTRM_value");
+            
+            getProdAckLetterFormMZ().initParametrs(prodApplications);
+           // getProdAckLetterFormMZ().setProdappno(prodApplicationsService.generateAppNo(prodApplications));
+           // getProdAckLetterFormMZ().setSender(bundle.getString("gestorDeCTRM_value"));
             product = prodApplications.getProduct();
         }
 
@@ -114,10 +120,11 @@ public class ProdConsentFormMZ implements Serializable {
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
         }
         
-        if(getProdappno() == null  || getProdappno().equals(""))
-        	setProdappno(prodApplicationsService.generateAppNo(prodApplications));
-        prodApplications.setProdAppNo(getProdappno());
-        prodApplications.setUsername(getSender());
+        getProdAckLetterFormMZ().buildParametrs(prodApplications);
+        /*if(getProdAckLetterFormMZ().getProdappno() == null  || getProdAckLetterFormMZ().getProdappno().equals(""))
+        	getProdAckLetterFormMZ().setProdappno(prodApplicationsService.generateAppNo(prodApplications));
+        prodApplications.setProdAppNo(getProdAckLetterFormMZ().getProdappno());
+        prodApplications.setUsername(getProdAckLetterFormMZ().getSender());*/
        // if (prodApplications.getProdAppNo() == null || prodApplications.getProdAppNo().equals(""))
           //  prodApplications.setProdAppNo(prodApplicationsService.generateAppNo(prodApplications));
 
@@ -244,7 +251,16 @@ public class ProdConsentFormMZ implements Serializable {
         this.timeLineService = timeLineService;
     }
 
-	public String getSender() {
+	public ProdAckLetterFormMZ getProdAckLetterFormMZ() {
+		return prodAckLetterFormMZ;
+	}
+
+
+	public void setProdAckLetterFormMZ(ProdAckLetterFormMZ prodAckLetterFormMZ) {
+		this.prodAckLetterFormMZ = prodAckLetterFormMZ;
+	}
+
+	/*public String getSender() {
 		return sender;
 	}
 
@@ -258,5 +274,5 @@ public class ProdConsentFormMZ implements Serializable {
 
 	public void setProdappno(String prodappno) {
 		this.prodappno = prodappno;
-	}
+	}*/
 }
