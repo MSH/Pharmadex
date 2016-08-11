@@ -30,6 +30,8 @@ public class ReviewInfoTable implements Serializable {
     private boolean fastrack;
     private Long prodAppID;
     private RegState regState;
+    private Long secReviewerId;
+    private Boolean secondary;
 
 
     public Long getId() {
@@ -175,6 +177,22 @@ public class ReviewInfoTable implements Serializable {
 
 	public void setRegState(RegState regState) {
 		this.regState = regState;
+	}
+
+	public Long getSecReviewerId() {
+		return secReviewerId;
+	}
+
+	public void setSecReviewerId(Long secReviewerId) {
+		this.secReviewerId = secReviewerId;
+	}
+
+	public Boolean isSecondary() {
+		return secondary;
+	}
+
+	public void setSecondary(Boolean secondary) {
+		this.secondary = secondary;
 	}
     
     
