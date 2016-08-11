@@ -31,7 +31,7 @@ public class Product extends CreationDetail implements Serializable {
     @Size(max = 500, min = 3)
     private String apprvdName;
 
-    @Column(name = "prod_desc", length = 2048)
+    @Column(name = "prod_desc", length = 4096)
     private String prodDesc;
 
     @Column(name = "new_chemical_entity")
@@ -133,10 +133,10 @@ public class Product extends CreationDetail implements Serializable {
     @Column(length = 500)
     private String storageCndtn;
 
-    @Column(length = 2048)
+    @Column(length = 4096)
     private String indications;
 
-    @Column(length = 2048)
+    @Column(length = 4096)
     private String posology;
 
     @Column(length = 500)
