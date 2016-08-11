@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -93,74 +95,37 @@ public class ReviewDetailPrintMZ implements Serializable {
 	}
 
 	private static void fillItems(List<Map<String, Object>> res, Properties prop, CustomReviewDAO customReviewDAO) {
-		List<ReviewItemReport> items = customReviewDAO.getReviewListByReport(prodApp.getId());
-		if(items != null && items.size() > 0){
-			// header1-values
-			Map<String, List<ReviewItemReport>> map = new HashMap<String, List<ReviewItemReport>>();
-			for(ReviewItemReport item:items){
-				String header1 = item.getHeader1();
-				List<ReviewItemReport> list = map.get(header1);
-				if(list == null)
-					list = new ArrayList<ReviewItemReport>();
-				list.add(item);
-				map.put(header1, list);
-			}
-			if(!map.isEmpty()){
-				Iterator<String> it = map.keySet().iterator();
-				while(it.hasNext()){
-					String header = it.next();
-					List<ReviewItemReport> list = map.get(header);
-					buildItemValues(res, header, list);
+		Map<String, List<ReviewItemReport>> map = customReviewDAO.getReviewListByReportNew(prodApp.getId());
+		if(map != null && !map.isEmpty()){
+			Iterator<String> it = map.keySet().iterator();
+			while(it.hasNext()){
+				String header = it.next();
+				List<ReviewItemReport> list = map.get(header);
+				Collections.sort(list, new Comparator<ReviewItemReport>() {
+					@Override
+					public int compare(ReviewItemReport o1, ReviewItemReport o2) {
+						Long id1 = o1.getQuestionId();
+						Long id2 = o2.getQuestionId();
+						return id1.compareTo(id2);
+					}
+				});
+				for(ReviewItemReport item:list){
+					printItemReview(res, header, item);
 				}
 			}
 		}
 	}
 	
-	/**
-	 * String header - name of item
-	 * List<ReviewItemReport> list - comments of item
-	 * @param map
-	 */
-	private static void buildItemValues(List<Map<String, Object>> res, String header, List<ReviewItemReport> list){
-		Map<String, List<ReviewItemReport>> map = new HashMap<String, List<ReviewItemReport>>();
-		for(ReviewItemReport item:list){
-			List<ReviewItemReport> values = map.get(item.getHeader2());
-			if(values == null)
-				values = new ArrayList<ReviewItemReport>();
-			values.add(item);
-			map.put(item.getHeader2(), values);
-		}
-		
-		if(!map.isEmpty()){
-			Iterator<String> iterator = map.keySet().iterator();
-			while(iterator.hasNext()){
-				List<ReviewItemReport> values = map.get(iterator.next());
-				for(int i = 0; i < values.size(); i++){
-					printItemReview(res, header, values.get(i), (i == (values.size() - 1)));
-				}
-			}
-		}
-	}
-	
-	private static void printItemReview(List<Map<String, Object>> res, String chapter1, ReviewItemReport item, boolean isPrintEmptyLine){
+	private static void printItemReview(List<Map<String, Object>> res, String chapter1, ReviewItemReport item){
 		String text = "";
-		// 1) only first
-		if(item.getFirstRevComment() != null && !item.getFirstRevComment().equals("") 
-				&& (item.getSecondRevComment() == null || item.getSecondRevComment().equals(""))){
-			text = "<b>" + item.getFirstRevName() + "</b>:<br>" + item.getFirstRevComment();
+		
+		if(item.getFirstRevName() != null){
+			text = "<b>" + item.getFirstRevName() + "</b>:<br>" + item.getFirstRevComment() + "<br>";
 		}
-		// 2) only second
-		if(item.getSecondRevComment() != null && !item.getSecondRevComment().equals("") 
-				&& (item.getFirstRevComment() == null || item.getFirstRevComment().equals(""))){
-			text = "<b>" + item.getSecondRevName() + "</b>:<br>" + item.getSecondRevComment();
+		if(item.getSecondRevName() != null){
+			text += (text.isEmpty()?"":"<br>") + "<b>" + item.getSecondRevName() + "</b>:<br>" + item.getSecondRevComment() + "<br>";
 		}
-		// 3) both
-		if(item.getFirstRevComment() != null && !item.getFirstRevComment().equals("") 
-				&& item.getSecondRevName() != null 
-				&& item.getSecondRevComment() != null && !item.getSecondRevComment().equals("")){
-			text = "<b>" + item.getFirstRevName() + "</b>:<br>" + item.getFirstRevComment()
-			 	+ "<br><br><b>" + item.getSecondRevName() + "</b>:<br>" + item.getSecondRevComment();
-		}
+
 		if(!text.isEmpty())
 			text += "<br>";
 		// file
