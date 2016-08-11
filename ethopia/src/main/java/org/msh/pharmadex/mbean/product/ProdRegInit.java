@@ -10,7 +10,6 @@ import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AgentType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
-import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
@@ -83,24 +82,38 @@ public class ProdRegInit implements Serializable {
     private java.util.ResourceBundle bundle;
     private User curUser;
     private boolean fewLicHolders;
+    private boolean standardProcedureRecall = true;
 
     @PostConstruct
     public void init() {
-        licenseHolders = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
-        if (licenseHolders != null && licenseHolders.size() == 1) {
-            selLicHolder = licenseHolders.get(0);
-            fewLicHolders=false;
-        }else{
-            fewLicHolders=true;
-        }
-        prodAppTypes = new ArrayList<ProdAppType>();
-        prodAppTypes.add(ProdAppType.GENERIC);
-        prodAppTypes.add(ProdAppType.GENERIC_NO_BE);
-        prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
-        prodAppTypes.add(ProdAppType.RENEW);
-        prodAppTypes.add(ProdAppType.VARIATION);
+        if (Scrooge.beanParam("standardProcedure")!=null) standardProcedureRecall = false;
+        if (standardProcedureRecall) {// standard procedure - user open registration form
+            licenseHolders = licenseHolderService.findLicHolderByApplicant(userSession.getApplcantID());
+            if (licenseHolders != null && licenseHolders.size() == 1) {
+                selLicHolder = licenseHolders.get(0);
+                fewLicHolders = false;
+            } else {
+                fewLicHolders = true;
+            }
+            prodAppTypes = new ArrayList<ProdAppType>();
+            prodAppTypes.add(ProdAppType.GENERIC);
+            prodAppTypes.add(ProdAppType.GENERIC_NO_BE);
+            prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
+            prodAppTypes.add(ProdAppType.RENEW);
+            prodAppTypes.add(ProdAppType.VARIATION);
 
-        prodTable = null;
+            prodTable = null;
+        }else{ //procedure called from suspention or registration form for the chossen product
+            Long prodId = Scrooge.beanParam("prodID");
+            Long appId = Scrooge.beanParam("appID");
+            if ((prodId==null)||(appId==null)){ //if something wrong, make it manually
+                Scrooge.setBeanParam("StandardProcedure", (long) 0);
+                init();
+            }
+
+            ProdApplications prodApp = prodApplicationsService.findProdApplications(appId);
+            Product product = productDAO.findProduct(prodId);
+        }
         curUser = getUserSession().getUserService().findUser(userSession.getLoggedINUserID());
     }
 
@@ -126,7 +139,7 @@ public class ProdRegInit implements Serializable {
             }
             if (!("".equals(prescreenfee) || "0".equals(prescreenfee))) {
                 //numPreScrFee = Tools.currencyToDouble(prescreenfee) * majorQuantity;
-                numPreScrFee = Tools.currencyToDouble(prescreenfee);
+                numPreScrFee = Tools.currencyToDouble(prescreenfee) * majorQuantity;
             }
         }
         if (minorQuantity > 0){
@@ -140,7 +153,7 @@ public class ProdRegInit implements Serializable {
             }
             if (!("".equals(fee) || "0".equals(fee))) {
                 //Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee) * minorQuantity;
-                Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee);
+                Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee)* minorQuantity;
                 numPreScrFee = numPreScrFee2 + numPreScrFee;
             }
         }
@@ -492,6 +505,11 @@ public class ProdRegInit implements Serializable {
     public void ajaxListener(AjaxBehaviorEvent event){
         isShowProductChoice();
         isShowVariationType();
+        this.prodTable=null;
+        this.majorQuantity=0;
+        this.minorQuantity=0;
+        if (fewLicHolders)
+            this.selLicHolder=null;
         displayfeepanel=false;
         RequestContext.getCurrentInstance().update("reghome");
     }
@@ -510,9 +528,9 @@ public class ProdRegInit implements Serializable {
     private ProdApplications getLastProductApplication(Product p){
         List<ProdApplications> prodApps = p.getProdApplicationses();
         if (prodApps==null) return null;
-        if (prodApps.size()==1) return prodApps.get(0);
+//        if (prodApps.size()==1) return prodApps.get(0);
         for(ProdApplications pa:prodApps){
-            if (pa.isActive())
+            if (pa.getRegState().equals(RegState.REGISTERED))
                 return pa;
         }
         return null;
@@ -526,16 +544,13 @@ public class ProdRegInit implements Serializable {
         pt.setProdName(p.getProdName());
         pt.setProdCategory(p.getProdCategory());
         List<ProdApplications> apps = p.getProdApplicationses();
-        for(ProdApplications pa:apps){
-            if (pa.getProdAppType().equals(ProdAppType.GENERIC)||pa.getProdAppType().equals(ProdAppType.GENERIC_NO_BE)||pa.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)){
-                pt.setProdAppID(pa.getId());
-                pt.setRegDate(pa.getRegistrationDate());
-                pt.setRegExpiryDate(pa.getRegExpiryDate());
-                pt.setRegNo(pa.getProdRegNo());
-                pt.setProdDesc(p.getProdDesc());
-                pt.setAppName(pa.getApplicant().getAppName());
-            }
-        }
+        ProdApplications pa = apps.get(0);
+        pt.setProdAppID(pa.getId());
+        pt.setRegDate(pa.getRegistrationDate());
+        pt.setRegExpiryDate(pa.getRegExpiryDate());
+        pt.setRegNo(pa.getProdRegNo());
+        pt.setProdDesc(p.getProdDesc());
+        pt.setAppName(pa.getApplicant().getAppName());
         return pt;
     }
 
@@ -553,29 +568,34 @@ public class ProdRegInit implements Serializable {
         List<Product> products = lc.getProducts();
         if (products!=null){
            for (Product p : products) {
-               if (prodAppType == ProdAppType.RENEW){
-                    ProdApplications pa = getLastProductApplication(p);
-                   //include product to list only if expiration time have not came and no more 120 days before
-                    if (pa.getRegExpiryDate()!=null)
-                        if (!(pa.getRegExpiryDate().before(minDate.getTime())&&(pa.getRegExpiryDate().after(Calendar.getInstance().getTime()))))
-                            continue;
-                    else
-                            continue;
-               }
-               if (" ".equals(query))
-                   suggestions.add(createProdTableRecord(p));
-               else {
-                   if (p.getProdName() != null) {
-                       if (p.getProdName().toLowerCase().startsWith(query)) {
-                           suggestions.add(createProdTableRecord(p));
-                           continue;
-                       }
+               ProdApplications pa = getLastProductApplication(p);
+               if (pa!=null){
+                   if (prodAppType == ProdAppType.RENEW){
+                       //include product to list only if expiration time have not came and no more 120 days before
+                        if (pa.getRegExpiryDate()!=null)
+                            if (!(pa.getRegExpiryDate().before(minDate.getTime())&&(pa.getRegExpiryDate().after(Calendar.getInstance().getTime()))))
+                                continue;
+                   }else if (prodAppType == ProdAppType.VARIATION){
+                       //if product is expired - ommit it, check next
+                       if (pa.getRegExpiryDate()!=null)
+                           if (pa.getRegExpiryDate().before(Calendar.getInstance().getTime()))
+                               continue;
                    }
-                   if (p.getGenName() != null) {
-                      if (p.getGenName().toLowerCase().startsWith(query)) {
-                           suggestions.add(createProdTableRecord(p));
-                           continue;
-                      }
+                   if (" ".equals(query))
+                       suggestions.add(createProdTableRecord(p));
+                   else {
+                       if (p.getProdName() != null) {
+                           if (p.getProdName().toLowerCase().startsWith(query)) {
+                               suggestions.add(createProdTableRecord(p));
+                               continue;
+                           }
+                       }
+                       if (p.getGenName() != null) {
+                          if (p.getGenName().toLowerCase().startsWith(query)) {
+                               suggestions.add(createProdTableRecord(p));
+
+                          }
+                       }
                    }
                }
            }
@@ -771,5 +791,13 @@ public class ProdRegInit implements Serializable {
 
     public void setVarSummary(String varSummary) {
         this.varSummary = varSummary;
+    }
+
+    public boolean isStandardProcedureRecall() {
+        return standardProcedureRecall;
+    }
+
+    public void setStandardProcedureRecall(boolean standardProcedureRecall) {
+        this.standardProcedureRecall = standardProcedureRecall;
     }
 }

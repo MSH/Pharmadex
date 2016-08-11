@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-05-11T14:35:33 -->
+<!-- 2016-08-10T23:03:52 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
     <property name="ireport.zoom" value="1.1"/>
     <property name="ireport.x" value="0"/>
@@ -505,98 +505,98 @@ and p.id = $P{prodappid}]]>
                 </textElement>
                 <text><![CDATA[Certification No]]></text>
             </staticText>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="20" width="303" height="20" uuid="341f7c69-908f-4711-bad4-8ad1fee57180"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="40" width="303" height="20" uuid="a7784522-4062-4592-a8f4-cd795e6b694d"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{gen_name}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="60" width="303" height="20" uuid="65f54b5b-f253-4e0a-95a2-8d3212fa9193"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{dosageform}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="100" width="303" height="20" uuid="43e42d5c-572f-45cd-b8d6-e4b322d43c02"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="119" width="303" height="20" uuid="9e0dcd4e-67bf-400d-b263-2e0aea21b9d3"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{indications}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="158" width="303" height="20" uuid="10be8f7e-6dc2-4360-92a7-14e65b13567c"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{packSize}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="198" width="303" height="20" uuid="26150fb4-545a-49dd-8aac-d303b415fa6b"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{contType}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="266" y="215" width="304" height="20" uuid="0ca29b83-407d-4a48-b14e-6e2a15ebbbf3"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{lic_name}]]></textFieldExpression>
             </textField>
-            <textField>
-                <reportElement x="266" y="235" width="305" height="20" uuid="22f931c4-5480-4091-8966-450b9d9d5fe8"/>
+            <textField isBlankWhenNull="true">
+                <reportElement positionType="Float" stretchType="RelativeToTallestObject" x="266" y="235" width="305" height="20" isRemoveLineWhenBlank="true" uuid="22f931c4-5480-4091-8966-450b9d9d5fe8"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{lh_address}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="263" y="641" width="310" height="20" uuid="02fdfcd6-c5ef-4d7c-b20c-90991e990a41"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{registrationDate}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="264" y="621" width="309" height="20" uuid="c48ec351-057a-40b3-945e-c4f3d22832a4"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{cert_no}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="263" y="601" width="310" height="20" uuid="628a6a6b-8991-438e-9d4f-576646bb5296"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{prodRegNo}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="264" y="661" width="309" height="20" uuid="6c2c6f23-483d-4b79-9260-6e412d79cc78"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="264" y="562" width="306" height="20" uuid="a3921018-a387-4477-95d5-e56eda7516e9"/>
                 <textElement>
                     <font size="12"/>
@@ -832,14 +832,14 @@ and p.id = $P{prodappid}]]>
                     </jr:column>
                 </jr:table>
             </componentElement>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="266" y="138" width="296" height="20" uuid="63857e2e-1ad9-43fc-a168-20488446f640"/>
                 <textElement>
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{prescription}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="177" width="293" height="21" uuid="6f9a061e-a66d-4535-ba85-e6d5927baee8"/>
                 <textElement>
                     <font size="12"/>
@@ -854,7 +854,7 @@ and p.id = $P{prodappid}]]>
                 </textElement>
                 <text><![CDATA[Dosage form]]></text>
             </staticText>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="267" y="81" width="303" height="20" uuid="25ede683-0e86-42b3-b5b1-b9a3916de9fb"/>
                 <textElement>
                     <font size="12"/>
@@ -867,9 +867,9 @@ and p.id = $P{prodappid}]]>
                     <font size="12"/>
                     <paragraph leftIndent="10" rightIndent="10"/>
                 </textElement>
-                <text><![CDATA[Shelf life]]></text>
+                <text><![CDATA[Shelf life (in months)]]></text>
             </staticText>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="264" y="582" width="307" height="18" uuid="fc1b199a-6592-40b2-80b7-6482517e2691"/>
                 <textElement>
                     <font size="12"/>

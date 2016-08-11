@@ -43,6 +43,7 @@ import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.extensions.component.timeline.Timeline;
 import org.primefaces.extensions.model.timeline.TimelineEvent;
 import org.primefaces.extensions.model.timeline.TimelineModel;
@@ -345,6 +346,13 @@ public class ProcessProdBn implements Serializable {
 		}
 
 		return "/internal/processprodlist";
+	}
+
+	public String sendSubmitToRenew(){
+		Scrooge.setBeanParam("StandardProcedure",(long) 0);
+		Scrooge.setBeanParam("prodID", Scrooge.beanParam("prodID"));
+		Scrooge.setBeanParam("appID", Scrooge.beanParam("appID"));
+		return "secure/prodreginit.xhtml";
 	}
 
 	public String sendToRenew() {

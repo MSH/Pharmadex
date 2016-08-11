@@ -458,10 +458,13 @@ public class ProdRegAppMbean implements Serializable {
 				if (allChecklist==null) allChecklist=new  ArrayList <Checklist>();
 				if ( mChecklist!=null) {
 					 for (Checklist ch: mChecklist) {
-						 if (!allChecklist.contains(ch)) allChecklist.add(ch);
+						 if (!allChecklist.contains(ch))
+							 allChecklist.add(ch);
 					 }
-				 } 
-	
+				}
+				//variations checklists not found
+				if (allChecklist.size()==0)
+					allChecklist = checklistService.getChecklists(prodApplications,false);
 				if (allChecklist.size()==0) return;
 				ProdAppChecklist eachProdAppCheck;
 				if (allChecklist != null && allChecklist.size() > 0) {

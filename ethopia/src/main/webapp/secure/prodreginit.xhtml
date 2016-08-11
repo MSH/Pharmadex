@@ -27,8 +27,11 @@
             <p:panel header="Application Detail" rendered="#{prodRegInit.eligible}">
                 <h:panelGrid id="feepanel" columns="3" columnClasses="label value" cellspacing="10" cellpadding="10">
                     <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
-                    <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}" required="true"
-                                     requiredMessage="#{msgs.valid_prod_type}">
+                    <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}"
+                                     required="true" requiredMessage="#{msgs.valid_prod_type}"
+                                     rendered="#{prodRegInit.standardProcedureRecall}"
+                        >
+                        <p:outputLabel value="#{prodRegInit.prodAppType}" rendered="#{!prodRegInit.standardProcedureRecall}"/>
                         <f:selectItem itemLabel="-" itemValue=""/>
                         <f:selectItems value="#{prodRegInit.prodAppTypes}" var="prodcat"
                                        itemLabel="#{msgs[prodcat.key]}"/>
@@ -42,11 +45,11 @@
                                     completeMethod="#{prodRegInit.completeLicHolderList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
                                     converter="#{licHolderConverter}"
-                                    rendered="#{prodRegInit.fewLicHolders}">
+                                    rendered="#{prodRegInit.fewLicHolders and prodRegInit.standardProcedureRecall}">
                     <p:ajax event="itemSelect" listener="#{prodRegInit.onItemSelect}"/>
                     </p:autoComplete>
                     <p:outputLabel value="#{prodRegInit.selLicHolder.name}" style="font-weight: bold"
-                                   rendered="#{!prodRegInit.fewLicHolders}"/>
+                                   rendered="#{!prodRegInit.fewLicHolders or not prodRegInit.standardProcedureRecall}"/>
                     <p:message for="licname" showSummary="true" showDetail="false"/>
 
                     <p:outputLabel value="#{msgs.variationQuantityMj}" styleClass="fy-required-field"
@@ -63,16 +66,16 @@
 
                     <h:outputLabel value="#{msgs.search_prod}*: "
                                    rendered="#{prodRegInit.showProductChoice}"
-                                   for="prodTb"
+                                   for="prodTable"
                                    styleClass="fy-required-field"/>
-                    <p:autoComplete value="#{prodRegInit.prodTable}" id="prodTb"
+                    <p:autoComplete value="#{prodRegInit.prodTable}" id="prodTable"
                                     completeMethod="#{prodRegInit.completeProduct}"
                                     rendered="#{prodRegInit.showProductChoice}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}" forceSelection="true">
                         <p:ajax event="itemSelect" listener="#{prodRegInit.onItemSelect}"/>
                     </p:autoComplete>
-                    <p:message for="prodTb" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
+                    <p:message for="prodTable" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
 
                     <h:outputLabel value="#{msgs.variationSummary}" rendered="#{prodRegInit.showVariationType}"/>
                     <p:editor id="varDetails" value="#{prodRegInit.varSummary}" widgetVar="vardetails" height="100" width="550" rendered="#{prodRegInit.showVariationType}"/>
