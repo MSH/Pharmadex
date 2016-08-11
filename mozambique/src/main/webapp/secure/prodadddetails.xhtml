@@ -8,12 +8,12 @@
     				 style="width:100%;">
         <p:outputLabel value="#{msgs.prod_indications}" for="indication"/>
         <p:inputTextarea id="indication" value="#{prodRegAppMbean.product.indications}" required="true"
-        				requiredMessage="#{msgs.no_indications}" cols="100" maxlength="1000"/>
+        				requiredMessage="#{msgs.no_indications}" cols="100" maxlength="4096"/>
         <p:message for="indication" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.prod_posology}" for="posology"/>
         <p:inputTextarea id="posology" value="#{prodRegAppMbean.product.posology}" required="true"  
-        				requiredMessage="#{msgs.no_posology}" cols="100" maxlength="1000"/>
+        				requiredMessage="#{msgs.no_posology}" cols="100" maxlength="4096"/>
         <p:message for="posology" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_drug_type}" for="cbdrugtype"/>
