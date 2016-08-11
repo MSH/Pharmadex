@@ -56,7 +56,7 @@ public class CustomReviewDAO implements Serializable {
 				"        WHEN ri.reviewer_id = :reviewID THEN 'PRIMARY' " +
 				"        ELSE 'SECONDARY' " +
 				"    END AS rev_type, " +
-				"    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType, p.prod_name, pa.sra, pa.fastrack, pa.id, pa.regState " +
+				"    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType, p.prod_name, pa.sra, pa.fastrack, pa.id, pa.regState, ri.sec_reviewer_id, ri.secreview " +
 				"from review_info ri, prodapplications pa, product p " +
 				"where ri.prod_app_id = pa.id " +
 				"and pa.PROD_ID = p.id " +
@@ -83,6 +83,12 @@ public class CustomReviewDAO implements Serializable {
 			reviewInfoTable.setProdAppID(((BigInteger) objArr[11]).longValue());
 			String rst = (String)objArr[12];
 			reviewInfoTable.setRegState(RegState.valueOf(rst));
+			if(objArr[13] != null){
+				reviewInfoTable.setSecReviewerId(Long.valueOf("" + objArr[13]));
+			}else{
+				reviewInfoTable.setSecReviewerId(new Long(0));
+			}
+			reviewInfoTable.setSecondary(Boolean.valueOf("" + objArr[14]));
 			prodTables.add(reviewInfoTable);
 		}
 		return prodTables;
