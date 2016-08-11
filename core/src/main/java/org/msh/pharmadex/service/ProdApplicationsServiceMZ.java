@@ -317,7 +317,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	public String createDeficiencyLetterScr(ProdApplications prodApp){
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
-		Product prod = prodApp.getProduct();
+		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
 		try {
 			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
@@ -329,6 +329,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PROD_DETAILS, "", false);
+			
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);			
+			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+			
 			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");

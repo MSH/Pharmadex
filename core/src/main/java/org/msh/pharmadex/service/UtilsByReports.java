@@ -138,7 +138,7 @@ public class UtilsByReports implements Serializable {
 		}
 		if(k.equals(KEY_PRODSTRENGTH)){
 			str = (prod.getDosStrength() != null ? prod.getDosStrength() : "")
-					+ (prod.getDosUnit() != null ? prod.getDosUnit().getUom() : "");
+					+ (prod.getDosUnit() != null ? (" " + prod.getDosUnit().getUom()) : "");
 			param.put(k, str);
 		}
 		if(k.equals(KEY_DOSFORM)){
