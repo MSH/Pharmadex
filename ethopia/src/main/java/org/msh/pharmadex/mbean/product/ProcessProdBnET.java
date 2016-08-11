@@ -202,7 +202,10 @@ private String changedFields;
         this.showFeedBackButton = showFeedBackButton;
     }
 
-
+public List<ProdApplications> getAllAncestors(){
+	ProdApplications prod=processProdBn.getProdApplications();
+	return prodApplicationsServiceET.getAllAncestor(prod);
+}
     public ProcessProdBn getProcessProdBn() {
         return processProdBn;
     }
