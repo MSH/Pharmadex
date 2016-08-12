@@ -26,18 +26,23 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
 import org.msh.pharmadex.dao.ProductDAO;
 import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
+import org.msh.pharmadex.dao.iface.RevDeficiencyDAO;
+import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
@@ -45,6 +50,8 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.domain.enums.YesNoNA;
+import org.msh.pharmadex.mbean.product.ReviewInfoBn;
+import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -89,6 +96,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	@Autowired
 	private ProdAppChecklistService checkListService;
 
+	@Autowired
+	private ReviewInfoDAO reviewInfoDAO;
+	
 	private ProdApplications prodApp;
 	private Product product;
 	// pt_PT
@@ -96,6 +106,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	@Autowired
 	private UtilsByReports utilsByReports;
 
+	@Autowired
+	TimelineService timelineService;
+	
+	@Autowired
+	private RevDeficiencyDAO revDeficiencyDAO;
 	/**
 	 * Applications are in states by role users
 	 * They do not have other conditionals
@@ -527,6 +542,117 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			return "error";
 		}
+	}
+	
+	public RetObject createReviewDeficiencyLetter(ProdApplications prodApp,String com , RevDeficiency revDeficiency){
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
+		try {
+			ReviewInfo ri = reviewInfoDAO.findOne(revDeficiency.getReviewInfo().getId());
+			ri.setReviewStatus  (ReviewStatus.FIR_SUBMIT);
+			
+			
+			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
+			JasperPrint jasperPrint;
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			utilsByReports.init(param, prodApp, prod);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);	
+			
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_INN, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PACKSIZE, "", false);	
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+						
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);	
+			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,getSentComment(revDeficiency), true);
+					
+			String res ="";
+			if(prodApp != null){
+				ProdAppType type = prodApp.getProdAppType();
+				if(type!=null)
+					res = bundle.getString(prodApp.getProdAppType().getKey());							
+			}
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE,res,true);	
+
+			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
+			JRMapArrayDataSource source = createDeficiencySource(checkLists);
+			URL resource = getClass().getClassLoader().getResource("/reports/rev_def_letter.jasper");
+			if(source != null){
+				if(resource != null){
+					jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
+					net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(defScrPDF));
+					byte[] file = IOUtils.toByteArray(new FileInputStream(defScrPDF));
+					ProdAppLetter attachment = new ProdAppLetter();
+					attachment.setRegState(prodApp.getRegState());
+					attachment.setComment(com);
+					attachment.setFile(file);
+					attachment.setProdApplications(prodApp);
+					attachment.setFileName(defScrPDF.getName());
+					attachment.setTitle("Further Information Request");
+					attachment.setUploadedBy(prodApp.getCreatedBy());
+					attachment.setComment("Automatically generated Letter");					
+					attachment.setContentType("application/pdf");
+					
+					attachment.setReviewInfo(ri);	
+					
+					revDeficiency.setProdAppLetter(attachment);					
+					revDeficiency.setReviewInfo(ri);
+					revDeficiencyDAO.saveAndFlush(revDeficiency);
+									
+					TimeLine timeLine = new TimeLine();
+					timeLine.setComment("Status changes due to further information request");
+					timeLine.setRegState(RegState.FOLLOW_UP);
+					timeLine.setProdApplications(prodApp);
+					timeLine.setStatusDate(new Date());
+					timeLine.setUser(revDeficiency.getUser());
+					RetObject retObject = timelineService.saveTimeLine(timeLine);
+					if (retObject.getMsg().equals("persist")) {
+						timeLine = (TimeLine) retObject.getObj();
+						prodApp = timeLine.getProdApplications();
+						revDeficiency.getReviewInfo().setProdApplications(prodApp);
+					}
+					return saveReviewInfo(revDeficiency.getReviewInfo());
+			
+				}else{
+					return null;
+				}
+			}else{
+				return null;
+			}
+
+		} catch (JRException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return null;
+		} 
+	}
+	
+  private String getSentComment(RevDeficiency revDeficiency) {
+	  String result = "";	 
+			if(revDeficiency.getSentComment()!=null) 
+				if(revDeficiency.getSentComment().getComment() !=null)	  
+					result = revDeficiency.getSentComment().getComment() ;
+		return result;
+	}
+
+@Transactional
+	public RetObject saveReviewInfo(ReviewInfo reviewInfo) {
+		RetObject retObject = new RetObject();
+		ReviewInfo ri = reviewInfoDAO.saveAndFlush(reviewInfo);
+		Hibernate.initialize(ri.getReviewComments());
+		Hibernate.initialize(ri.getReviewDetails());
+		retObject.setObj(reviewInfo);
+		retObject.setMsg("success");
+		return retObject;
+	
 	}
 
 	public List<ProdApplications> getProcessProdAppList(UserSession userSession) {

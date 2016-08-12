@@ -77,6 +77,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_APPNUM = "appNum";/**номер в их системе (канцелярский номер) */
 	public static String KEY_APPUSERNAME = "appUserName"; /** ФИО */
 	public static String KEY_APPPOST = "appPost"; /**должность*/
+	public static String KEY_EXECSUMMARY = "execSummary"; /**заключение модератора*/
 	
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
