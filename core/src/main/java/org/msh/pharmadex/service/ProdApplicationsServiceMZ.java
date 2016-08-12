@@ -475,9 +475,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 
-		Product prod = prodApp.getProduct();
+		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
 		try {
-			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");
+			File invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_ack", ".pdf");
 
 			JasperPrint jasperPrint;
 

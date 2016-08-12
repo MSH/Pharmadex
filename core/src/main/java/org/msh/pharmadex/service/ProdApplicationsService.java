@@ -744,7 +744,7 @@ public class ProdApplicationsService implements Serializable {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public String createAckLetter(ProdApplications prodApp) {
-		Product prod = prodApp.getProduct();
+		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
 		Workspace workspace = workspaceDAO.findAll().get(0);
 		try {
 			File invoicePDF = File.createTempFile("" + prod.getProdName() + "_ack", ".pdf");

@@ -112,8 +112,7 @@ public class UtilsByReports implements Serializable {
 		}
 	}
 
-	private void putParamByProd(String k, String t){
-		
+	private void putParamByProd(String k, String t){ 
 		Hibernate.initialize(prod);
 		if(prod == null)
 			return ;

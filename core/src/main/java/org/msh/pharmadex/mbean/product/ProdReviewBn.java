@@ -10,6 +10,7 @@ import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.RetObject;
+import org.primefaces.context.RequestContext;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
@@ -187,6 +188,7 @@ public class ProdReviewBn implements Serializable {
     }
 
     public void initProcessorAdd() {
+    	//RequestContext.getCurrentInstance().reset(":reghome:processtab:prireviewac");
         review = new Review();
         review.setUser(new User());
         review.setProdApplications(processProdBn.getProdApplications());
@@ -198,6 +200,7 @@ public class ProdReviewBn implements Serializable {
         reviewInfo.setProdApplications(processProdBn.getProdApplications());
         reviewInfo.setAssignDate(new Date());
         reviewInfo.setReviewStatus(ReviewStatus.ASSIGNED);
+        
     }
 
     public void initProcessorChange(ReviewInfo ri) {
@@ -398,6 +401,9 @@ public class ProdReviewBn implements Serializable {
     }
 
     public ReviewComment getReviewComment() {
+    	if(reviewComment == null){
+    		reviewComment=new ReviewComment(reviewInfo, processProdBn.getUser(), RecomendType.COMMENT);
+    	}
         return reviewComment;
     }
 
