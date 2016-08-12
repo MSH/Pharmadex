@@ -293,7 +293,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		fl = false;
 		utilsByReports.putNotNull(UtilsByReports.KEY_GEN, fl);
-		
+
 		//
 		String str = "";
 		List<UseCategory> cats = product.getUseCategories();
@@ -303,7 +303,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			}
 		}
 		utilsByReports.putNotNull(UtilsByReports.KEY_USE_CATEGORY, str, true);
-		
+
 		utilsByReports.putNotNull(UtilsByReports.KEY_REG_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_EXPIRY_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_GESTOR, gestor);
@@ -329,11 +329,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PROD_DETAILS, "", false);
-			
+
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);			
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
-			
+
 			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");
@@ -632,23 +632,32 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	@Transactional
 	public String submitExecSummary(ProdApplications prodApplications, Long loggedInUser, List<ReviewInfo> reviewInfos) {
 		try {
+			String verification = verificationBeforeComplete(prodApplications, loggedInUser, reviewInfos);
+			if(verification.equals("ok")){
+				prodApplicationsService.saveApplication(prodApplications, loggedInUser);
+				return "persist";
+			}else 
+				return verification;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return "error";
+		}
+	}
+
+	public String verificationBeforeComplete(ProdApplications prodApplications, Long loggedInUser, List<ReviewInfo> reviewInfos){
+		try {
 			if (reviewInfos == null || prodApplications == null || loggedInUser == null)
 				return "empty";
 
-			boolean complete = false;
 			for (ReviewInfo reviewInfo : reviewInfos) {
 				if (!reviewInfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)) {
-					complete = false;
 					return "state_error";
-				} else {
-					complete = true;
 				}
 			}
 
 			if (prodApplications.getProdAppType().equals(ProdAppType.NEW_CHEMICAL_ENTITY)) {
 				// old version (!prodApplications.isClinicalRevReceived() || !prodApplications.isClinicalRevVerified() || prodApplications.getcRevAttach() == null)
 				if (!prodApplications.isClinicalRevReceived() || !prodApplications.isClinicalRevVerified()) {
-					complete = false;
 					return "clinical_review";
 				}
 			}
@@ -659,12 +668,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				}
 			}
 
-			if (complete) {
-				prodApplicationsService.saveApplication(prodApplications, loggedInUser);
-				return "persist";
-			} else {
-				return "state_error";
-			}
+			return "ok";
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "error";
@@ -682,6 +686,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
 		this.prodApplicationsService = prodApplicationsService;
 	}
-	
-	
+
+
 }

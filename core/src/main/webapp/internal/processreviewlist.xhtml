@@ -88,6 +88,7 @@
                                        ajax="false"
                                        style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
                             <f:param name="reviewInfoID" value="#{eachprod.id}"/>
+                            <f:param name="sourcePage" value="/internal/processreviewlist.faces" />
                         </p:commandLink>
                     </p:column>
 

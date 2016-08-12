@@ -66,6 +66,7 @@
 
                         <p:commandLink value="#{msgs.detail_review}" ajax="false"
                                        action="/internal/reviewInfo.faces">
+                            <f:param name="sourcePage" value="#{execSummaryBn.prodApplications.id}:/internal/execsumm.faces" />
                             <f:param name="reviewInfoID" value="#{each.id}"/>
                         </p:commandLink>
                     </h:panelGrid>

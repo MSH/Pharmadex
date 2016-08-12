@@ -17,7 +17,6 @@ import javax.faces.context.FacesContext;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -128,6 +127,23 @@ public class ProcessProdBnMZ implements Serializable {
 			}
 		}
 		return visibleExecSumeryBtn;
+	}
+	
+	public String executiveSummary(){
+		String result = prodApplicationsServiceMZ.verificationBeforeComplete(processProdBn.getProdApplications(), userSession.getLoggedINUserID(), processProdBn.getReviewInfos());
+        if (result.equals("ok")) {
+            return "/internal/execsumm.faces";
+        } else if (result.equals("state_error")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please accept the reviews before submitting the executive summary", ""));
+            return null;
+        } else if (result.equals("clinical_review")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clinical review not received or verified.", ""));
+            return null;
+        } else if (result.equals("lab_status")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Lab result not verified.", ""));
+            return null;
+        }
+		return "";
 	}
 	
 	public String deleteLetter(ProdAppLetter let) {

@@ -33,6 +33,7 @@
                         rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
                         action="/internal/reviewInfo" ajax="false">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="sourcePage" value="#{processProdBn.prodApplications.id}:/internal/processreg.faces" />
             </p:menuitem>
 
 
