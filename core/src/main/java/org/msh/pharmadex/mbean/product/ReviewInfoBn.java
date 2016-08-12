@@ -19,6 +19,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -81,6 +85,12 @@ public class ReviewInfoBn implements Serializable {
 
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
+    
+	@Temporal(TemporalType.DATE)
+    private Date submitDate;
+
+	 @Enumerated(EnumType.STRING)
+	 private ReviewStatus reviewStatus;
 
     private UploadedFile file;
     private ReviewInfo reviewInfo;
@@ -721,4 +731,24 @@ public class ReviewInfoBn implements Serializable {
 	public void setHeader2ActIndex(int header2ActIndex) {
 		this.header2ActIndex = header2ActIndex;
 	}
+
+	public Date getSubmitDate() {
+		return submitDate;
+	}
+
+	public void setSubmitDate(Date submitDate) {
+		this.submitDate = submitDate;
+	}
+
+	public ReviewStatus getReviewStatus() {
+		return reviewStatus;
+	}
+
+	public void setReviewStatus(ReviewStatus reviewStatus) {
+		this.reviewStatus = reviewStatus;
+	}
+
+	
+
+	
 }

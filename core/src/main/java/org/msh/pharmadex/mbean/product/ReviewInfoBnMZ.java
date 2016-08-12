@@ -5,6 +5,7 @@
 package org.msh.pharmadex.mbean.product;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
@@ -12,12 +13,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewServiceMZ;
@@ -87,6 +93,42 @@ public class ReviewInfoBnMZ implements Serializable {
 		}
 		return white;
 	}
+	
+	public String generateLetter() {
+        facesContext = FacesContext.getCurrentInstance();
+        bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        try {
+            getReviewInfoBn().getRevDeficiency().setSentComment(getReviewInfoBn().getReviewComment());
+            getReviewInfoBn().getRevDeficiency().setUser(getReviewInfoBn().getReviewComment().getUser());
+            getReviewInfoBn().setSubmitDate(new Date());
+            getReviewInfoBn().getReviewComments().add(getReviewInfoBn().getReviewComment());
+            getReviewInfoBn().setReviewStatus(ReviewStatus.FIR_SUBMIT);
+            getReviewInfoBn().getRevDeficiency().setReviewInfo(getReviewInfoBn().getReviewInfo());
+            getReviewInfoBn().getRevDeficiency().setCreatedDate(new Date());
+            String com = "";
+            if(getReviewInfoBn().getReviewComment()!=null)
+            	if(getReviewInfoBn().getReviewComment().getComment()!=null)
+            		com = getReviewInfoBn().getReviewComment().getComment();
+            
+            RetObject rez = prodApplicationsServiceMZ.
+            		createReviewDeficiencyLetter(getReviewInfoBn().getProdApplications(),com,
+            				getReviewInfoBn().getRevDeficiency());
+            
+            if (rez.getMsg().equals("success")) {
+            	getReviewInfoBn().setReviewInfo((ReviewInfo) rez.getObj());            	
+                facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
+                getReviewInfoBn().setReviewComments(getReviewInfoBn().getReviewComments()); 
+                getReviewInfoBn().setRevDeficiencies(null);
+            }else{
+            	javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+            }
+        
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
+        }
+        return "";
+    }
 
 	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
 		return prodApplicationsServiceMZ;
@@ -141,7 +183,7 @@ public class ReviewInfoBnMZ implements Serializable {
 	public void printReview(){
 		ProdApplications prodApplications = getReviewInfoBn().getProdApplications();
 		if(prodApplications != null){
-			String s =getProdApplicationsServiceMZ().createReviewDetails(prodApplications);
+			String s = getProdApplicationsServiceMZ().createReviewDetails(prodApplications);
 			if(!s.equals("persist")){
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
 			}else{
@@ -151,4 +193,5 @@ public class ReviewInfoBnMZ implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
 		}
 	}
+
 }
