@@ -105,8 +105,7 @@
 							<p:tab title="#{msgs.prod_comments}" id="commentTab"
 								rendered="#{!userSession.company and !userSession.lab and !userSession.clinical}">
 								<p:commandButton icon="ui-icon-document"
-									value="#{msgs.add_comment}" onclick="PF('dlgAjax').show()"
-										 />
+									value="#{msgs.add_comment}" onclick="PF('dlgAjax').show()" />
 
 								<p:dataTable id="commenttable" value="#{processProdBn.comments}"
 									var="it">
@@ -224,42 +223,43 @@
 							<p:tab title="#{msgs.letters}" id="lettertab">
 								<h:panelGrid columns="1" cellpadding="5" cellspacing="5">
 									<p:commandButton value="#{msgs.btn_create_ackletter}"
-													  action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}" 
-								                     oncomplete="PF('createAckLet').show()" update=":createAckLet"/>
+										action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}"
+										oncomplete="PF('createAckLet').show()" update=":createAckLet" />
 									<p:dataTable id="lettertable" value="#{processProdBn.letters}"
 										var="letter">
-	
+
 										<p:column headerText="#{msgs.title}">
 											<h:outputText value="#{letter.title}" />
 										</p:column>
-	
+
 										<p:column headerText="#{msgs.letter_type}">
 											<h:outputText value="#{msgs[letter.letterType.key]}" />
 										</p:column>
-	
+
 										<p:column headerText="#{msgs.filename}">
 											<h:outputText value="#{letter.fileName}" />
 										</p:column>
-	
+
 										<p:column headerText="#{msgs.uploaddate}">
 											<h:outputText converter="javax.faces.DateTime"
 												value="#{letter.createdDate}" />
 										</p:column>
-	
+
 										<p:column headerText="#{msgs.uploadedby}">
 											<h:outputText value="#{letter.uploadedBy.name}" />
 										</p:column>
-	
+
 										<p:column headerText="#{msgs.registration_status}">
 											<h:outputText value="#{msgs[letter.regState.key]}" />
 										</p:column>
-	
+
 										<p:column>
 											<p:commandButton id="downloadletter"
 												value="#{msgs.global_download}" ajax="false"
 												onclick="PrimeFaces.monitorDownload(start, stop)"
 												icon="ui-icon-arrowthichk-n">
-												<p:fileDownload value="#{processProdBn.fileDownload(letter)}" />
+												<p:fileDownload
+													value="#{processProdBn.fileDownload(letter)}" />
 											</p:commandButton>
 										</p:column>
 										<p:column style="width: 30px;">
@@ -466,20 +466,21 @@
 			resizable="false" id="createAckLet" modal="true" dynamic="true">
 			<h:form>
 				<ui:include src="/secure/formbylet.xhtml">
-					<ui:param name="prodApp" value="#{processProdBn.prodApplications}"/>
+					<ui:param name="prodApp" value="#{processProdBn.prodApplications}" />
 				</ui:include>
 				<h:panelGrid columns="2" style="margin-top:10px">
 					<p:commandButton id="createlet" value="#{msgs.label_create}"
-						oncomplete="PF('createAckLet').hide()" icon="ui-icon-check" ajax="false"
-						action="#{prodAckLetterFormMZ.createLetter(processProdBn.prodApplications)}" 
-						update="@form"/>
-					<p:commandButton id="cancellet" type="button" value="#{msgs.global_cancel}"
-						onclick="PF('createAckLet').hide()" icon="ui-icon-close"
-						ajax="false" />
+						oncomplete="PF('createAckLet').hide()" icon="ui-icon-check"
+						ajax="false"
+						action="#{prodAckLetterFormMZ.createLetter(processProdBn.prodApplications)}"
+						update="@form" />
+					<p:commandButton id="cancellet" type="button"
+						value="#{msgs.global_cancel}" onclick="PF('createAckLet').hide()"
+						icon="ui-icon-close" ajax="false" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
-		
+
 		<p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg"
 			resizable="false" id="moderatordlg" modal="true" dynamic="true"
 			rendered="#{userSession.head||userSession.admin||userSession.staff}">
@@ -824,8 +825,7 @@
 
 				<p:commandButton id="submitButtonA" value="#{msgs.global_submit}"
 					action="#{processProdBn.addCommentAjax}"
-					oncomplete="PF('dlgAjax').hide()"
-					ajax="true"
+					oncomplete="PF('dlgAjax').hide()" ajax="true"
 					update=":reghome:processtab:commenttable :reghome:messages" />
 			</h:form>
 		</p:dialog>
@@ -852,6 +852,7 @@
 			draggable="false" closable="false" resizable="false" dynamic="true">
 			<p:graphicImage value="/resources/images/ajax-loader.gif" />
 		</p:dialog>
+
 
 
 

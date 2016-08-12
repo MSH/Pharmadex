@@ -12,8 +12,14 @@
 
     <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
                      oncomplete="PF('assignreviewdlg').show()"
-                     action="#{prodReviewBn.initProcessorAdd}" id="assignProMI"
-                     rendered="#{userSession.moderator||userSession.admin}" update="reghome:processtab:assignreviewDlg"/>
+                     actionListener="#{prodReviewBn.initProcessorAdd}"
+                     ajax="true"
+                     rendered="#{userSession.moderator||userSession.admin}"
+                     update=":reghome:processtab:assignreviewDlg"
+                     process="@this"
+                     >
+                     <p:resetInput target=":reghome:processtab:assignreviewdlgForm" />
+    </p:commandButton>
 
     <p:commandButton value="#{msgs.execsummary}" icon="ui-icon-gear" ajax="false"
                      action="/internal/execsumm.faces" id="execsumm"
@@ -69,7 +75,7 @@
         <p:column>
             <p:commandButton id="deletereview" action="#{prodReviewBn.deleteReview(each)}"
                              icon="ui-icon-trash" ajax="true" immediate="true"
-                             update=":reghome:processtab:reviwertbl :reghome:processtab:assignreviewDlg :reghome:messages"
+                             update=":reghome:processtab:reviwertbl :reghome:messages"
                              rendered="#{empty each.recomendType}"/>
         </p:column>
     </p:dataTable>
@@ -149,162 +155,168 @@
             <p:commandButton icon="ui-icon-person" oncomplete="PF('changereviewdlg').show()"
                              action="#{prodReviewBn.initProcessorChange(reviewInfo)}" id="changeMI"
                              rendered="#{(userSession.moderator||userSession.admin||userSession.head) and !(reviewInfo.reviewStatus eq 'ACCEPTED')}"
-                             update="reghome:processtab:changereviewDlg"/>
+                             />
 
             <p:commandButton id="deletereviewinfo" action="#{prodReviewBn.deleteReviewInfo(reviewInfo)}"
-                             icon="ui-icon-trash" process="@form"
-                             update=":reghome:processtab:reviwerinfotbl :reghome:processtab:assignreviewDlg :reghome:messages"
+                             icon="ui-icon-trash"
+                             update=":reghome:processtab:reviwerinfotbl :reghome:messages"
                              rendered="#{empty reviewInfo.recomendType}"/>
         </p:column>
     </p:dataTable>
+		<p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg"
+			dynamic="true" id="assignreviewDlg" modal="true"
+			rendered="#{userSession.moderator||userSession.admin}" closable="false"
+			>
+				<p:panel id="assignreviewdlgForm">
+					<h:panelGrid id="reviewPG" columns="2" columnClasses="label value"
+						cellpadding="10" cellspacing="10">
+						<p:outputLabel value="Will there be a secondary reviewer?"
+							for="secreviewbb" />
+						<p:selectBooleanButton id="secreviewbb"
+							value="#{prodReviewBn.reviewInfo.secreview}"
+							onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+							onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
+							<p:ajax update=":reghome:processtab:assignreviewdlgForm"
+								listener="#{prodReviewBn.secreviewListener}" />
+						</p:selectBooleanButton>
 
-    <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"
-              id="assignreviewDlg" modal="true" rendered="#{userSession.moderator}" closable="false">
-        <p:messages id="messages"/>
-            <p:panel>
-                <h:panelGrid id="reviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
-                    <p:outputLabel value="Will there be a secondary reviewer?" for="secreviewbb"/>
-                    <p:selectBooleanButton id="secreviewbb" value="#{prodReviewBn.reviewInfo.secreview}" onLabel="#{msgs.global_yes}"
-                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close"
-                                           style="width:60px">
-                        <p:ajax update=":reghome:processtab:reviewPG" listener="#{prodReviewBn.secreviewListener}"/>
-                    </p:selectBooleanButton>
+						<p:outputLabel />
+						<p:outputLabel value="#{msgs.assigDlgLbl}" styleClass="hint" />
 
-                    <p:outputLabel/>
-                    <p:outputLabel value="#{msgs.assigDlgLbl}"
-                            styleClass="hint"/>
+						<p:outputLabel value="#{msgs.processor}" for="prireviewac"
+							escape="false" styleClass="label" />
 
-                    <p:outputLabel value="#{msgs.processor}" for="prireviewac"
-                                  escape="false"
-                                  styleClass="label"/>
+						<p:autoComplete id="prireviewac" value="#{prodReviewBn.reviewer}" cache="false"
+							completeMethod="#{globalEntityLists.completeProcessorList}"
+							dropdown="true" required="true" var="it" itemLabel="#{it.name}"
+							itemValue="#{it.userId}" forceSelection="true"
+							converter="#{userConverter}">
+						</p:autoComplete>
 
-                    <p:autoComplete id="prireviewac" value="#{prodReviewBn.reviewer}"
-                                    completeMethod="#{globalEntityLists.completeProcessorList}"
-                                    dropdown="true" required="true"
-                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                    forceSelection="true"
-                                    converter="#{userConverter}">
-                    </p:autoComplete>
+						<p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewer"
+							escape="false" styleClass="label"
+							rendered="#{userAccessMBean.detailReview and prodReviewBn.displaySecReview}" />
 
-                    <p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewer"
-                                  escape="false"
-                                   styleClass="label"
-                                   rendered="#{userAccessMBean.detailReview and prodReviewBn.displaySecReview}"/>
-
-                    <p:autoComplete id="sec_reviewer" value="#{prodReviewBn.secReviewer}"
-                                    rendered="#{userAccessMBean.detailReview and prodReviewBn.displaySecReview}"
-                                    completeMethod="#{globalEntityLists.completeProcessorList}"
-                                    dropdown="true" required="true"
-                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                    forceSelection="true"
-                                    converter="#{userConverter}">
-                    </p:autoComplete>
-
-
-                    <p:outputLabel value="#{msgs.checklist_module}" for="modulecb"/>
-                    <p:selectOneMenu id="modulecb" value="#{prodReviewBn.reviewInfo.ctdModule}"
-                             requiredMessage="#{msgs.recommendation_valid}" >
-                        <f:selectItem itemLabel="-"/>
-                        <f:selectItems value="#{globalLists.cTDModules}" var="type" itemLabel="#{msgs[type.key]}"/>
-                    </p:selectOneMenu>
+						<p:autoComplete id="sec_reviewer" cache="false"
+							value="#{prodReviewBn.secReviewer}"
+							rendered="#{userAccessMBean.detailReview and prodReviewBn.displaySecReview}"
+							completeMethod="#{globalEntityLists.completeProcessorList}"
+							dropdown="true" required="true" var="it" itemLabel="#{it.name}"
+							itemValue="#{it.userId}" forceSelection="true"
+							converter="#{userConverter}">
+						</p:autoComplete>
 
 
-                    <p:outputLabel value="#{msgs.global_duedate}" for="duedt" styleClass="label"
-                                   rendered="#{userAccessMBean.detailReview}"/>
-                    <p:calendar value="#{prodReviewBn.reviewInfo.dueDate}" id="duedt" showOn="button"
-                                rendered="#{userAccessMBean.detailReview}" required="true"
-                                pattern="#{userAccessMBean.workspace.datePattern}">
-                        <f:validator validatorId="futureDateValidator"/>
-                    </p:calendar>
+						<p:outputLabel value="#{msgs.checklist_module}" for="modulecb" />
+						<p:selectOneMenu id="modulecb"
+							value="#{prodReviewBn.reviewInfo.ctdModule}"
+							requiredMessage="#{msgs.recommendation_valid}">
+							<f:selectItem itemLabel="-" />
+							<f:selectItems value="#{globalLists.cTDModules}" var="type"
+								itemLabel="#{msgs[type.key]}" />
+						</p:selectOneMenu>
 
-                    <p:outputLabel value="#{msgs.global_duedate}" for="duedt2" styleClass="label"
-                                   rendered="#{!userAccessMBean.detailReview}"/>
-                    <p:calendar value="#{prodReviewBn.review.dueDate}" id="duedt2" showOn="button"
-                                rendered="#{!userAccessMBean.detailReview}" required="true"
-                                pattern="#{userAccessMBean.workspace.datePattern}">
-                        <f:validator validatorId="futureDateValidator"/>
-                    </p:calendar>
 
-                </h:panelGrid>
+						<p:outputLabel value="#{msgs.global_duedate}" for="duedt"
+							styleClass="label" rendered="#{userAccessMBean.detailReview}" />
+						<p:calendar value="#{prodReviewBn.reviewInfo.dueDate}" id="duedt"
+							showOn="button" rendered="#{userAccessMBean.detailReview}"
+							required="true"
+							pattern="#{userAccessMBean.workspace.datePattern}">
+							<f:validator validatorId="futureDateValidator" />
+						</p:calendar>
+
+						<p:outputLabel value="#{msgs.global_duedate}" for="duedt2"
+							styleClass="label" rendered="#{!userAccessMBean.detailReview}" />
+						<p:calendar value="#{prodReviewBn.review.dueDate}" id="duedt2"
+							showOn="button" rendered="#{!userAccessMBean.detailReview}"
+							required="true"
+							pattern="#{userAccessMBean.workspace.datePattern}">
+							<f:validator validatorId="futureDateValidator" />
+						</p:calendar>
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="2" style="margin-top:10px">
+						<p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+							action="#{prodReviewBn.assignReviewer}"
+							oncomplete="PF('assignreviewdlg').hide()"
+							ajax="true"
+							update=":reghome:messages :reghome:processtab:reviwerinfotbl"/>
+						<p:commandButton id="cancelButton1" type="button"
+							value="#{msgs.global_cancel}"
+							onclick="PF('assignreviewdlg').hide()"/>
+					</h:panelGrid>
+				</p:panel>
+		</p:dialog>
+
+		<p:dialog header="#{msgs.changereviewer}" widgetVar="changereviewdlg"
+			dynamic="true" id="changereviewDlg" modal="true"
+			rendered="#{userSession.moderator||userSession.admin}" closable="false">
+			<p:messages id="messages2" />
+			<p:panel>
+				<h:panelGrid id="changeReviewPG" columns="2"
+					columnClasses="label value" cellpadding="10" cellspacing="10">
+
+					<p:outputLabel value="#{msgs.processor}" for="prireviewchange"
+						escape="false" styleClass="label" />
+
+					<p:autoComplete id="prireviewchange"
+						value="#{prodReviewBn.reviewer}"
+						completeMethod="#{globalEntityLists.completeProcessorList}"
+						dropdown="true" required="true" var="it" itemLabel="#{it.name}"
+						itemValue="#{it.userId}" forceSelection="true"
+						converter="#{userConverter}">
+					</p:autoComplete>
+
+					<p:outputLabel value="#{msgs.sec_processor}"
+						for="sec_reviewerchange" escape="false" styleClass="label" />
+
+					<p:autoComplete id="sec_reviewerchange"
+						value="#{prodReviewBn.secReviewer}"
+						completeMethod="#{globalEntityLists.completeProcessorList}"
+						dropdown="true" required="true" var="it" itemLabel="#{it.name}"
+						itemValue="#{it.userId}" forceSelection="true"
+						converter="#{userConverter}">
+					</p:autoComplete>
+
+					<p:outputLabel value="#{msgs.global_duedate}" for="cduedt"
+						styleClass="label" rendered="#{userAccessMBean.detailReview}" />
+					<p:calendar value="#{prodReviewBn.reviewInfo.dueDate}" id="cduedt"
+						showOn="button" rendered="#{userAccessMBean.detailReview}"
+						required="true" pattern="#{userAccessMBean.workspace.datePattern}">
+						<f:validator validatorId="futureDateValidator" />
+					</p:calendar>
+
+					<p:outputLabel value="#{msgs.global_duedate}" for="cduedt2"
+						styleClass="label" rendered="#{!userAccessMBean.detailReview}" />
+					<p:calendar value="#{prodReviewBn.review.dueDate}" id="cduedt2"
+						showOn="button" rendered="#{!userAccessMBean.detailReview}"
+						required="true" pattern="#{userAccessMBean.workspace.datePattern}">
+						<f:validator validatorId="futureDateValidator" />
+					</p:calendar>
+
+					<p:outputLabel value="#{msgs.reviewer_change_reason}"
+						for="changesummary" styleClass="label" />
+					<p:editor value="#{prodReviewBn.reviewComment.comment}"
+						id="changesummary" required="true" width="700" />
+					<p:message for="changesummary" />
+
+
+				</h:panelGrid>
 
 				<h:panelGrid columns="2" style="margin-top:10px">
-                   <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
-                                 action="#{prodReviewBn.assignReviewer}"
-                                 oncomplete="if(!args.validationFailed)PF('assignreviewdlg').hide();"
-                                 ajax="true" update="@form"/>
-                   <p:commandButton id="cancelButton1" type="button" value="#{msgs.global_cancel}"
-                                     onclick="PF('assignreviewdlg').hide()"
-                                     ajax="false"/>
-                </h:panelGrid>
-            </p:panel>
-
-    </p:dialog>
-
-    <p:dialog header="#{msgs.changereviewer}" widgetVar="changereviewdlg" dynamic="true"
-              id="changereviewDlg" modal="true" rendered="#{userSession.moderator}" closable="false">
-        <p:messages id="messages2"/>
-        <p:panel>
-            <h:panelGrid id="changeReviewPG" columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
-
-                <p:outputLabel value="#{msgs.processor}" for="prireviewchange"
-                               escape="false"
-                               styleClass="label"/>
-
-                <p:autoComplete id="prireviewchange" value="#{prodReviewBn.reviewer}"
-                                completeMethod="#{globalEntityLists.completeProcessorList}"
-                                dropdown="true" required="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                forceSelection="true"
-                                converter="#{userConverter}">
-                </p:autoComplete>
-
-                <p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewerchange"
-                               escape="false"
-                               styleClass="label"
-                        />
-
-                <p:autoComplete id="sec_reviewerchange" value="#{prodReviewBn.secReviewer}"
-                                completeMethod="#{globalEntityLists.completeProcessorList}"
-                                dropdown="true" required="true"
-                                var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                forceSelection="true" converter="#{userConverter}">
-                </p:autoComplete>
-
-                <p:outputLabel value="#{msgs.global_duedate}" for="cduedt" styleClass="label"
-                               rendered="#{userAccessMBean.detailReview}"/>
-                <p:calendar value="#{prodReviewBn.reviewInfo.dueDate}" id="cduedt" showOn="button"
-                            rendered="#{userAccessMBean.detailReview}" required="true"
-                            pattern="#{userAccessMBean.workspace.datePattern}">
-                    <f:validator validatorId="futureDateValidator"/>
-                </p:calendar>
-
-                <p:outputLabel value="#{msgs.global_duedate}" for="cduedt2" styleClass="label"
-                               rendered="#{!userAccessMBean.detailReview}"/>
-                <p:calendar value="#{prodReviewBn.review.dueDate}" id="cduedt2" showOn="button"
-                            rendered="#{!userAccessMBean.detailReview}" required="true"
-                            pattern="#{userAccessMBean.workspace.datePattern}">
-                    <f:validator validatorId="futureDateValidator"/>
-                </p:calendar>
-
-                <p:outputLabel value="#{msgs.reviewer_change_reason}" for="changesummary" styleClass="label"/>
-                <p:editor value="#{prodReviewBn.reviewComment.comment}" id="changesummary" required="true"
-                          width="700"/>
-                <p:message for="changesummary"/>
-
-
-            </h:panelGrid>
-
-			<h:panelGrid columns="2" style="margin-top:10px">
-                   <p:commandButton id="changeRevBtn" value="#{msgs.global_submit}"
-                             action="#{prodReviewBn.changeReviewer}" process="@form" ajax="false"
-                             oncomplete="if (!args.validationFailed) PF('changereviewdlg').hide()"
-                             update="@form"/>
-                   <p:commandButton id="cancelButton2" immediate="true" value="#{msgs.global_cancel}" 
-                                     onclick="PF('changereviewdlg').hide()"
-                                     ajax="false" />
-                </h:panelGrid>
-        </p:panel>
-
-    </p:dialog>
+					<p:commandButton id="changeRevBtn" value="#{msgs.global_submit}"
+						action="#{prodReviewBn.changeReviewer}"
+						ajax="true"
+						oncomplete="PF('changereviewdlg').hide()"
+						 />
+					<p:commandButton id="cancelButton2" immediate="true"
+						value="#{msgs.global_cancel}"
+						onclick="PF('changereviewdlg').hide()"/>
+				</h:panelGrid>
+			</p:panel>
+		</p:dialog>
+ 
 
 </ui:composition>
