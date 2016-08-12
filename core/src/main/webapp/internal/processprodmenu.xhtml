@@ -17,7 +17,7 @@
             <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
                         action="/internal/reject.faces" ajax="false"
                         rendered="#{processProdBn.canReject}">
-                        <f:param name="product" value="#{prodRejectBn.prodApplications.product}"/>
+                        <f:param value="#{processProdBn.prodApplications.id}" name="prodAppID"/>
             </p:menuitem>
 
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"

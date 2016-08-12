@@ -1,0 +1,44 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <div style="width: 1054px;">
+            <h:form id="reviewHome" enctype="multipart/form-data">
+                <p:growl id="growl" showSummary="true"/>
+
+
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="prodApp" value="#{prodRejectBn.prodApplications}"/>
+                </ui:decorate>
+
+                <h:panelGrid columns="2" cellspacing="10" cellpadding="10">
+                    <p:outputLabel value="#{msgs.global_summary}" styleClass="label" style="width:200px;"/>
+                    <p:inputTextarea value="#{prodRejectBn.summary}" rows="6" cols="120"/>
+                </h:panelGrid>
+
+                <div style="height: 10px;"/>
+                <div align="left">
+
+                    <p:commandButton value="#{msgs.global_reject}"
+                                     ajax="false" actionListener="#{prodRejectBn.PDF}" />
+                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                                     ajax="false">
+                        <f:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </p:commandButton>
+                </div>
+            </h:form>
+        </div>
+
+        <div style="height: 10px;"/>
+
+    </ui:define>
+</ui:composition>
