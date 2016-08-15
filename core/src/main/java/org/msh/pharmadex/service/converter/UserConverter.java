@@ -47,29 +47,21 @@ public class UserConverter implements Converter, Serializable {
             try {
                 System.out.println("submittedValue == " + submittedValue);
                 Long number = Long.valueOf(submittedValue);
-//                for (User p : getUserList()) {
-//                    if (p.getUserId().equals(number)) {
-//                        System.out.println("user name = "+p.getUsername());
-//                        return p;
-//                    }
-//                }
                 return userService.findUser(number);
             } catch (NumberFormatException exception) {
-                return null;
-//                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid INN Code"));
-
+            	return null;
             }
         }
-
-//        return null;
     }
 
     public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
-        if (value == null || value.equals("")) {
-            return "";
-        } else {
-            return "" + value;
-        }
+    	if(value != null){
+    		if(value instanceof User)
+    			return String.valueOf(((User)value).getUserId());
+    		if(value instanceof Long)
+    			return String.valueOf(value);
+    	}
+    	return "";
     }
 }
 

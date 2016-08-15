@@ -11,6 +11,7 @@ import javax.faces.bean.ViewScoped;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserAccessService;
 
@@ -50,7 +51,10 @@ public class ReviewListMBeanMZ implements Serializable {
 				for(ReviewInfoTable item:list){
 					if(getNotRegisterStates().contains(item.getRegState()))
 						if(item.getSecReviewerId().equals(userSession.getLoggedINUserID())){
-							if(item.isSecondary()){ //very special case! Secondary can see review only in secondary stage!
+							//very special case! Secondary can see review only in secondary stage!
+							if(item.isSecondary() && 
+									(item.getReviewStatus().equals(ReviewStatus.SEC_REVIEW) || 
+											item.getReviewStatus().equals(ReviewStatus.FEEDBACK))){ 
 								reviewInfoTables.add(item);
 							}
 						}else{

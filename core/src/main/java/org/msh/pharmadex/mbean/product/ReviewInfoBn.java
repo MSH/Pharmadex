@@ -155,7 +155,7 @@ public class ReviewInfoBn implements Serializable {
     		String id = sourcePage.substring(0, index);
     		idProdAppSource = new Long(id);
     		sourcePage = sourcePage.substring(index + 1);
-    	}else
+    	}else if(prodApplications != null)
     		idProdAppSource = prodApplications.getId();
     }
 
