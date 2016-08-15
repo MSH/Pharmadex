@@ -506,29 +506,28 @@
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
-    <p:tab title="#{msgs.prev_applications}" rendered="#{empty processProdBnET.allAncestors}" id="parent">
+    <p:tab title="#{msgs.prev_applications}" rendered="#{!empty processProdBnET.allAncestors}" id="parent">
      <p:panel header="#{msgs.recieved_applications}">
+         <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnET.allAncestors}">
+             <p:column filterBy="#{eachprod.product.prodName}"
+                       sortBy="#{eachprod.product.prodName}">
+                 <f:facet name="header">
+                    <h:outputText value="#{msgs.prod_name}"/>
+                 </f:facet>
+                 <p:commandLink id="viewLink" value="#{eachprod.product.prodName}" action="/internal/processreg"
+                                ajax="false" style="#{eachprod.fastrack?'color: #a52a2a;':''}">
+                      <f:param name="prodAppID" value="#{eachprod.id}"/>
+                 </p:commandLink>
+             </p:column>
 
-                <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnET.allAncestors()}"                            >
-                   <p:column filterBy="#{eachprod.product.prodName}"
-                              sortBy="#{eachprod.product.prodName}">
-                        <f:facet name="header">
-                            <h:outputText value="#{msgs.prod_name}"/>
-                        </f:facet>
-                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}" action="/internal/processreg"
-                                       ajax="false" style="#{eachprod.fastrack?'color: #a52a2a;':''}">
-                            <f:param name="prodAppID" value="#{eachprod.id}"/>
-                        </p:commandLink>
-                    </p:column>
 
-
-                    <p:column filterBy="#{eachprod.product.genName}"
-                              sortBy="#{eachprod.product.genName}">
-                        <f:facet name="header">
-                            <h:outputText value="#{msgs.prodgenname}"/>
+             <p:column filterBy="#{eachprod.product.genName}"
+                       sortBy="#{eachprod.product.genName}">
+                 <f:facet name="header">
+                     <h:outputText value="#{msgs.prodgenname}"/>
                         </f:facet>
                         <h:outputText value="#{eachprod.product.genName}"/>
-                    </p:column>
+             </p:column>
 
                     <p:column filterBy="#{eachprod.prodAppNo}"
                               sortBy="#{eachprod.prodAppNo}">
