@@ -266,7 +266,7 @@
                             <p:outputLabel value="Head #{msgs.global_summary}" styleClass="label"/>
                             <p:outputLabel value="#{suspendDetailBnET.parentSuspension.finalSumm}" escape="false"/>
                         </h:panelGrid>
-                        <p:dataTable id="reviewtblprev" value="#{suspendDetailBnET.prevReviewInfo}" var="rev">
+                        <p:dataTable id="reviewtblprev" value="#{suspendDetailBnET.getPrevReviewInfo()}" var="rev">
                             <p:column headerText="#{msgs.processor}">
                                 <p:commandLink id="asmplink" value="#{rev.reviewer.name}"
                                                action="/internal/reviewInfo.faces"
