@@ -506,10 +506,10 @@
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
-    <p:tab title="#{msgs.prev_applications}" id="parent">
+    <p:tab title="#{msgs.prev_applications}" rendered="#{empty processProdBnET.allAncestors}" id="parent">
      <p:panel header="#{msgs.recieved_applications}">
 
-                <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnET.getAllAncestors()}"                            >
+                <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnET.allAncestors()}"                            >
                    <p:column filterBy="#{eachprod.product.prodName}"
                               sortBy="#{eachprod.product.prodName}">
                         <f:facet name="header">

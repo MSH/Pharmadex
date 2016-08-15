@@ -61,8 +61,8 @@
                                          rendered="#{userSession.admin||userSession.head}" id="assignModMI"/>
 
                         <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
-                                         oncomplete="PF('assignreviewdlg').show()"
                                          action="#{suspendDetailBnET.initAssignReviewer}" id="assignProMI"
+                                         oncomplete="PF('assignreviewdlg').show()"
                                          rendered="#{(userSession.moderator||userSession.admin)and (suspendDetailBnET.showSubmitButtonNo(1))}"
                                          update=":assignreviewdlg"/>
 
@@ -114,6 +114,7 @@
                             <p:calendar id="suspduedt" value="#{suspendDetailBnET.suspDetail.dueDate}"
                                         rendered="#{empty suspendDetailBnET.suspDetail.dueDate}"
                                         required="true"
+                                        requiredMessage="#{msgs.dueDateMissing}"
                                         style="width:100%" showButtonPanel="true"/>
                             <p:outputLabel/>
 
@@ -253,6 +254,36 @@
                             <h:outputText value="#{rev.recomendType}"/>
                         </p:column>
                     </p:dataTable>
+                </p:tab>
+
+                <p:tab title="#{msgs.history}" rendered="#{! empty suspendDetailBnET.parentSuspension}">
+                    <p:panel header="#{msgs.global_summary}">
+                        <h:panelGrid columns="2" cellspacing="5" cellpadding="5">
+                            <p:outputLabel value="#{msgs.recommendation}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.parentSuspension.decision}" styleClass="label"/>
+                            <p:outputLabel value="#{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.parentSuspension.moderatorSumm}" escape="false"/>
+                            <p:outputLabel value="Head #{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.parentSuspension.finalSumm}" escape="false"/>
+                        </h:panelGrid>
+                        <p:dataTable id="reviewtblprev" value="#{suspendDetailBnET.prevReviewInfo}" var="rev">
+                            <p:column headerText="#{msgs.processor}">
+                                <p:commandLink id="asmplink" value="#{rev.reviewer.name}"
+                                               action="/internal/reviewInfo.faces"
+                                               ajax="false">
+                                    <f:param name="reviewInfoID" value="#{rev.id}"/>
+                                    <f:param name="sourcePage" value="#{suspendDetailBnET.suspDetail.id}:/internal/suspenddetail.faces"/>
+                                </p:commandLink>
+                            </p:column>
+                            <p:column headerText="#{msgs.review_status}">
+                                <h:outputText value="#{rev.reviewStatus}"/>
+                            </p:column>
+                            <p:column headerText="#{msgs.recommendation}">
+                                <h:outputText value="#{rev.recomendType}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
                 </p:tab>
 
             </p:tabView>

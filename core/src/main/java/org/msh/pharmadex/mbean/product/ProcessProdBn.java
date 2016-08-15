@@ -25,9 +25,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.ProdAppType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.AmdmtService;
 import org.msh.pharmadex.service.CommentService;
@@ -63,7 +61,6 @@ import net.sf.jasperreports.engine.JRException;
 @ManagedBean
 @ViewScoped
 public class ProcessProdBn implements Serializable {
-
 	private static final long serialVersionUID = -6299219761842430835L;
 	public boolean showCert;
 	@ManagedProperty(value = "#{userSession}")
@@ -348,17 +345,35 @@ public class ProcessProdBn implements Serializable {
 		return "/internal/processprodlist";
 	}
 
-	public String sendSubmitToRenew(){
+	public String sendRenewAfterSuspension(){
+		Long appId = Scrooge.beanParam("appID");
+		prodApplications = prodApplicationsService.findProdApplications(appId);
+		suspDetails = suspendService.findSuspendByProd(appId);
+		SuspDetail suspApp = null;
+		for (SuspDetail susp:suspDetails){
+			if (susp.getSuspensionStatus().equals(SuspensionStatus.RESULT) && (susp.getDecision().equals(RecomendType.SUSPEND))){
+				suspApp = susp;
+				break;
+			}
+		}
+		if (suspApp==null) return "";
+		suspApp.setSuspensionStatus(SuspensionStatus.REQUESTED);
+		suspApp.setDecision(null);
+		suspApp.setDecisionDate(null);
+		suspApp.setCanceled(false);
+		suspApp.setComplete(false);
+		suspApp.setDueDate(null);
+		suspendService.saveSuspend(suspApp);
+		Scrooge.setBeanParam("prodAppID",appId);
+		Scrooge.setBeanParam("suspDetailID",suspApp.getId());
+		return "/internal/suspenddetail.faces";
+	}
+
+	public String sendToRenew() {
 		Scrooge.setBeanParam("StandardProcedure",(long) 0);
 		Scrooge.setBeanParam("prodID", Scrooge.beanParam("prodID"));
 		Scrooge.setBeanParam("appID", Scrooge.beanParam("appID"));
 		return "secure/prodreginit.xhtml";
-	}
-
-	public String sendToRenew() {
-		save();
-		return "renew";
-
 	}
 
 	public String sendMessage() {

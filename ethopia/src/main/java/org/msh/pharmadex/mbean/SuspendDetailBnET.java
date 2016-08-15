@@ -16,6 +16,7 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -97,57 +98,76 @@ public class SuspendDetailBnET implements Serializable {
     private ReviewInfo review;
     private ReviewComment curReviewComment;
     private JasperPrint jasperPrint;
+    private SuspDetail parentSuspension;
 
     @PostConstruct
     private void init() {
         try {
             facesContext = FacesContext.getCurrentInstance();
-            String suspID=null;
-            if (facesContext.getExternalContext().getFlash()!=null)
-                 suspID = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");
-            if (suspID==null){
-                if (facesContext.getExternalContext().getRequestParameterMap()!=null)
-               suspID = facesContext.getExternalContext().getRequestParameterMap().get("suspDetailID");
-            }
-            if (suspID==null){// this is new suspension record
-                Long prodAppID = Long.valueOf(facesContext.getExternalContext().getRequestParameterMap().get("prodAppID"));
+            Long suspID=Scrooge.beanParam("suspDetailID");
+            if (suspID==null) {// this is new suspension record
+                Long prodAppID = Scrooge.beanParam("prodAppID");
                 if (prodAppID != null) {
                     prodApplications = prodApplicationsService.findActiveProdAppByProd(prodAppID);
+                    if (prodApplications==null)
+                        prodApplications = prodApplicationsService.findProdApplications(prodAppID);
                     product = prodApplications.getProduct();
                     suspComments = new ArrayList<SuspComment>();
                     suspComment = new SuspComment();
                     suspDetail = new SuspDetail(prodApplications, suspComments);
+                    if (prodApplications.getRegState().equals(RegState.SUSPEND)){
+                        //this is restart of suspended procedures
+                        SuspDetail parentSuspDetail = findSuspendApplication(prodAppID);
+                        Scrooge.copyData(parentSuspDetail, suspDetail);
+                        suspDetail.setModeratorSumm(null);
+                        suspDetail.setFinalSumm(null);
+                        suspDetail.setModerator(null);
+                        suspDetail.setReviewer(null);
+                        suspDetail.setParentId(parentSuspDetail.getId());
+                    }
                     suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
                     suspDetail.setCreatedBy(getLoggedInUser());
                 }
             }else{
-                if (suspID != null && !suspID.equals("")) {
-                    getLoggedInUser();
-                    Long suspDetailID = Long.valueOf(suspID);
-                    suspDetail = suspendService.findSuspendDetail(suspDetailID);
-                    suspComments = suspDetail.getSuspComments();
-                    suspComment = new SuspComment();
-                    prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
-                    prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(prodApplications.getId());
-                    attachments = attachmentDAO.findByProdApplications_Id(prodApplications.getId());
-                    if (prodApplications.getProduct()!=null)
-                        Hibernate.initialize(prodApplications.getProduct());
-                    product = prodApplications.getProduct();
-                    if (prodApplications.getApplicant()!=null)
-                        Hibernate.initialize(prodApplications.getApplicant());
-                    if (suspDetail.getReviewer()!=null){
-                        checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
-         //               review = reviewService.findReviewInfoByUserAndProdApp(suspDetail.getReviewer().getUserId(), prodApplications.getId());
-                        review = reviewService.findReviewInfoByUserAndProdAppAfter(suspDetail.getReviewer().getUserId(), prodApplications.getId(),suspDetail.getCreatedDate());
-                    }
-                    isClosed();
+                 getLoggedInUser();
+                 suspDetail = suspendService.findSuspendDetail(suspID);
+                 suspComments = suspDetail.getSuspComments();
+                 suspComment = new SuspComment();
+                 prodApplications = prodApplicationsService.findProdApplications(suspDetail.getProdApplications().getId());
+                 prodAppLetters = prodAppLetterDAO.findByProdApplications_Id(prodApplications.getId());
+                 attachments = attachmentDAO.findByProdApplications_Id(prodApplications.getId());
+                 if (prodApplications.getProduct()!=null)
+                     Hibernate.initialize(prodApplications.getProduct());
+                 product = prodApplications.getProduct();
+                 if (prodApplications.getApplicant()!=null)
+                    Hibernate.initialize(prodApplications.getApplicant());
+                 if (suspDetail.getReviewer()!=null){
+                    checkReviewStatus(suspDetail.getReviewer().getUserId(), prodApplications.getId());
+                    review = reviewService.findReviewInfoByUserAndProdAppAfter(suspDetail.getReviewer().getUserId(), prodApplications.getId(),suspDetail.getCreatedDate());
                 }
+                isClosed();
             }
+            if (review==null)
+                initAssignReviewer();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * Return currently suspended application
+     * @param prodAppID - primary prod application
+     * @return
+     */
+    private SuspDetail findSuspendApplication(Long prodAppID){
+        List<SuspDetail> parentSuspDetails = suspendService.findSuspendByProd(prodAppID);
+        if (parentSuspDetails.size()==1) return parentSuspDetails.get(0);
+        for(SuspDetail parentSuspDetail:parentSuspDetails){
+            if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT))
+                return parentSuspDetail;
+        }
+        return parentSuspDetails.get(parentSuspDetails.size()-1);
+    }
 
     private void checkReviewStatus(long reviewerId, long appId){
         try {
@@ -301,6 +321,15 @@ public class SuspendDetailBnET implements Serializable {
         return res;
     }
 
+    public List<ReviewInfo> getPrevReviewInfo(){
+        User user = suspDetail.getReviewer();
+        List<ReviewInfo> res = null;
+        if (user!=null){
+            res = suspendService.findReviewListNew(user.getUserId(),getParentSuspension().getProdApplications().getId());
+        }
+        return res;
+    }
+
     public void initComment() {
         suspComment = new SuspComment();
     }
@@ -352,6 +381,10 @@ public class SuspendDetailBnET implements Serializable {
                 fm.setSeverity(FacesMessage.SEVERITY_ERROR);
                 facesContext.addMessage(null, fm);
                 return "";
+            }
+            if (suspDetail.getParentId()!=null){
+                if (review==null)
+                    initAssignReviewer();
             }
         }
 
@@ -839,4 +872,14 @@ public class SuspendDetailBnET implements Serializable {
         this.review = review;
     }
 
+    public SuspDetail getParentSuspension() {
+        if (suspDetail.getParentId()!=null){
+            parentSuspension = suspendService.findSuspDetail(suspDetail.getParentId());
+        }
+        return parentSuspension;
+    }
+
+    public void setParentSuspension(SuspDetail parentSuspension) {
+        this.parentSuspension = parentSuspension;
+    }
 }

@@ -95,6 +95,9 @@ public class SuspDetail extends CreationDetail {
     @Column(name = "orgReported", length = 500)
     private String orgReported;
 
+    @Column(name = "parentId")
+    private Long parentId;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date notifRecieveDt;
 
@@ -294,5 +297,13 @@ public class SuspDetail extends CreationDetail {
 
     public void setNotifRecieveDt(Date notifRecieveDt) {
         this.notifRecieveDt = notifRecieveDt;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 }

@@ -34,8 +34,6 @@ import static javax.faces.context.FacesContext.getCurrentInstance;
 @ManagedBean
 @ViewScoped
 public class ProcessProdBnET implements Serializable {
-
-
     @ManagedProperty(value = "#{processProdBn}")
     public ProcessProdBn processProdBn;
     @ManagedProperty(value = "#{userSession}")
@@ -44,11 +42,14 @@ public class ProcessProdBnET implements Serializable {
     public ProdApplicationsServiceET prodApplicationsServiceET;
     @ManagedProperty(value = "#{reviewService}")
     public ReviewService reviewService;
-private String changedFields;
+
+    private String changedFields;
     protected boolean displayVerify = false;
     private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
     private JasperPrint jasperPrint;
     private boolean showFeedBackButton;
+    private List<ProdApplications> allAncestors;
+    private String backTo;
 
     @PostConstruct
     private void init() {
@@ -202,10 +203,18 @@ private String changedFields;
         this.showFeedBackButton = showFeedBackButton;
     }
 
-public List<ProdApplications> getAllAncestors(){
-	ProdApplications prod=processProdBn.getProdApplications();
-	return prodApplicationsServiceET.getAllAncestor(prod);
-}
+    public List<ProdApplications> getAllAncestors(){
+        if (allAncestors==null) {
+            ProdApplications prod = processProdBn.getProdApplications();
+            allAncestors = getProdApplicationsServiceET().getAllAncestor(prod);
+        }
+	    return allAncestors;
+    }
+
+    public void setAllAncestors(List<ProdApplications> allAncestors) {
+        this.allAncestors = allAncestors;
+    }
+
     public ProcessProdBn getProcessProdBn() {
         return processProdBn;
     }
