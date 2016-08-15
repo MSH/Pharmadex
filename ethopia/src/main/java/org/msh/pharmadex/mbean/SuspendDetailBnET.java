@@ -124,6 +124,7 @@ public class SuspendDetailBnET implements Serializable {
                         suspDetail.setModerator(null);
                         suspDetail.setReviewer(null);
                         suspDetail.setParentId(parentSuspDetail.getId());
+                        suspDetail.setDecision(null);
                     }
                     suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
                     suspDetail.setCreatedBy(getLoggedInUser());
@@ -245,7 +246,7 @@ public class SuspendDetailBnET implements Serializable {
     public void initAssignReviewer(){
         review = new ReviewInfo();
         review.setReviewer(new User());
-        review.setProdApplications(suspDetail.getProdApplications());
+        if (suspDetail!=null) review.setProdApplications(suspDetail.getProdApplications());
         review.setAssignDate(new Date());
         review.setReviewStatus(ReviewStatus.ASSIGNED);
     }
@@ -325,7 +326,9 @@ public class SuspendDetailBnET implements Serializable {
         User user = suspDetail.getReviewer();
         List<ReviewInfo> res = null;
         if (user!=null){
-            res = suspendService.findReviewListNew(user.getUserId(),getParentSuspension().getProdApplications().getId());
+        	SuspDetail parent = getParentSuspension();
+        	if (parent!=null)
+        		res = suspendService.findReviewListNew(user.getUserId(),parent.getProdApplications().getId());
         }
         return res;
     }
@@ -367,6 +370,12 @@ public class SuspendDetailBnET implements Serializable {
                 FacesMessage fm = new FacesMessage("Please specify a moderator to process the request.");
                 fm.setSeverity(FacesMessage.SEVERITY_WARN);
                 facesContext.addMessage(null, fm);
+                //here
+                if (suspDetail.getParentId()!=null){
+                	SuspDetail old=suspendService.findSuspendDetail(suspDetail.getParentId());
+                	old.setSuspensionStatus(SuspensionStatus.ARCHIVE);
+                	suspendService.saveSuspend(old);
+                }
                 return "";
             }
             if (suspComments.size() == 0) {// head comment are mandatory
