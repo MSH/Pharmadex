@@ -63,7 +63,7 @@ public class SampleTestServiceMZ implements Serializable {
 		ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
 		Product product = prodApp.getProduct();
 		try {
-			File invoicePDF = File.createTempFile("" + product.getProdName() + "_samplerequest", ".pdf");
+			File invoicePDF = File.createTempFile("" + product.getProdName().split(" ")[0] + "_samplerequest", ".pdf");
 			JasperPrint jasperPrint = initSampleReq(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
 			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 			byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
