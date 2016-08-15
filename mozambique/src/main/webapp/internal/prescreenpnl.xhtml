@@ -51,12 +51,21 @@
             <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBn.prescreened}"/>
         </p:column>
         <p:column style="width:90px">
-            <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
-                             action="#{preScreenProdMBn.setProdAppChecklist(checkList)}"
-                             rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"/>
-
-            <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
+            <p:commandButton id="uploadLink"
+            				 actionListener="#{preScreenProdMBn.initProdAppChecklist(checkList)}"
+            				 icon="ui-icon-document"
+            				 immediate="true"
+            				 oncomplete="PF('moduledlg').show()" 
+                             ajax='true'
+                             process="@this"
+                             rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"
+                             update="@this"/>
+           
+            <p:commandButton id="downloadLink" value="#{msgs.global_download}"
                              onclick="PrimeFaces.monitorDownload(start, stop)"
+                             ajax="true"
+                             update="@this"
+                             immediate="true"
                              icon="ui-icon-arrowstop-1-s"
                              rendered="#{checkList.fileUploaded}">
                 <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
@@ -132,14 +141,14 @@
             >
         <p:fileUpload fileUploadListener="#{preScreenProdMBn.handleFileUpload}"
                       mode="advanced" auto="true"
-                      update=":reghome:growl :reghome:messages"
                       multiple="false"
-                      sizeLimit="100000000">
+                      sizeLimit="100000000"
+                      update="checkListTbl :reghome:messages">
 
         </p:fileUpload>
         <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.addModuleDoc}"
-                         oncomplete="PF('moduledlg').hide()" update=":reghome:growl :reghome:messages :reghome"
+                         oncomplete="PF('moduledlg').hide()"
                 />
     </p:dialog>
 
