@@ -487,9 +487,7 @@ public class ProcessProdBn implements Serializable {
 	public void changeClinicalReviewStatus() {
 		logger.error("Inside changeStatusListener");
 		try {
-			if (prodApplications.isClinicalRevReceived() || prodApplications.isClinicalRevVerified()) {
 				save();
-			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

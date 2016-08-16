@@ -17,7 +17,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
+            <p:ajax process="@this"
                     listener="#{processProdBn.changeClinicalReviewStatus}"/>
         </p:selectBooleanButton>
 
@@ -29,7 +29,7 @@
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax update=":reghome:growl :reghome"
+            <p:ajax process="@this"
                     listener="#{processProdBn.changeClinicalReviewStatus}"/>
         </p:selectBooleanButton>
     </h:panelGrid>

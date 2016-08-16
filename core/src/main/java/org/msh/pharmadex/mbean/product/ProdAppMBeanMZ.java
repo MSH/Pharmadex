@@ -62,8 +62,9 @@ public class ProdAppMBeanMZ implements Serializable {
     }
     
     public List<ProdApplications> getSubmmittedAppList() {
-		if(submmittedAppList == null)
+    	if(submmittedAppList == null){
 			submmittedAppList = prodApplicationsServiceMZ.getSubmittedApplications(userSession);
+    	}
 		return submmittedAppList;
 	}
 
