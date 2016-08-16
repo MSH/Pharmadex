@@ -89,40 +89,11 @@
         </p:commandButton>
     </h:panelGrid>
     
-    <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
-              id="completescreen" appendTo="@form"
-              rendered="#{userSession.head||userSession.admin||userSession.staff}">
-		<p:panel id="completeForm">
-	        <p:panelGrid columns="2" columnClasses="label value">
-	            <h:outputText value="#{msgs.moderator_name}: "
-	                          escape="false"
-	                          styleClass="text"/>
-	
-	            <p:autoComplete id="mod" value="#{preScreenProdMBn.moderator}"
-	                            completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
-	                            var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-	                            forceSelection="true" 
-	                            required="true" requiredMessage="#{msgs.choose_moderator}"
-	                            converter="#{userConverter}">
-	            </p:autoComplete>
-	
-	            <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc"/>
-	            <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"/>
-	
-	        </p:panelGrid>
-	
-	        <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
-	                         action="#{preScreenProdMBn.completeScreen}"
-	                         oncomplete="PF('completescreendlg').hide()" process="@form" ajax="true" 
-	                         update="btnpnlFirst modpnl checkListTbl btnpnlSecond :reghome:messages"/>
-        </p:panel>
-    </p:dialog>
 
     <p:dialog header="#{msgs.complete_screen}" widgetVar="archiveappdlg" resizable="false"
               id="archiveapp" modal="true" appendTo="@(body)"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
 
-        <h:form>
             <p:panelGrid columns="2" columnClasses="label value">
 
                 <p:outputLabel value="#{msgs.global_remark}" for="remarkarchive"/>
@@ -134,7 +105,6 @@
             <p:commandButton id="archiveappbtn" value="#{msgs.global_submit}"
                              action="#{preScreenProdMBn.archiveApp}"
                              oncomplete="PF('archiveappdlg').hide()" update=":reghome @form" process="@form"/>
-        </h:form>
     </p:dialog>
 
     <p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true"
@@ -143,12 +113,13 @@
                       mode="advanced" auto="true"
                       multiple="false"
                       sizeLimit="100000000"
-                      update="checkListTbl :reghome:messages">
+                      update=":reghome:messages">
 
         </p:fileUpload>
         <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.addModuleDoc}"
                          oncomplete="PF('moduledlg').hide()"
+                         update=":reghome:messages :reghome:processtab:checkListTbl"
                 />
     </p:dialog>
 
