@@ -10,6 +10,7 @@ import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.mbean.PIPReportItemBean;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by utkarsh on 1/8/15.
@@ -131,6 +133,7 @@ public class CustomPurOrderDAO {
 
     @Autowired
     private PurProdDAO purProdDAO;
+    
 // call from popreport
     public List<PurProd> findSelectedPurProds(Date startD, Date endD, Applicant applicant) {
         if (applicant==null) {
@@ -156,5 +159,66 @@ public class CustomPurOrderDAO {
                     .getResultList();
             return purProds;
         }
+    }
+    
+    public List<PIPReportItemBean> findAllPurProds(Map<String, Object> map) {
+    	Date startD = (Date) map.get("startDate");
+    	Date endD = (Date) map.get("endDate");
+    	Long applicantID = map.get("applicant") != null ? (Long)map.get("applicant") : null;
+    	String company = map.get("company") != null ? (String)map.get("company") : null;
+    	Long countryID = map.get("country") != null ? (Long)map.get("country") : null;
+    	String port = map.get("port") != null ? (String)map.get("port") : null;
+    	
+    	String query = "select p.productName, p.dosStrength, dunit.uom, dform.dosForm, p.productDesc, "
+    					+ "count(p.productName), sum(p.quantity), sum(p.totalPrice) from PurProd p "
+    					+ "left join p.purOrder ord "
+    					+ "left join p.dosUnit dunit "
+    					+ "left join p.dosForm dform ";
+    	
+    	String query_where = "where (ord.state = :state) AND (ord.approvalDate BETWEEN :startD AND :endD) ";
+    	if(applicantID != null && applicantID > 0)
+    		query_where +=  " AND ord.applicant.applcntId = " + applicantID;
+    	if(company != null && !company.equals(""))
+    		query_where +=  " AND p.manufName like '%" + company + "%'";
+    	if(countryID != null && countryID > 0){
+    		//query +=  "left join p.country cntr ";
+    		query_where +=  " AND p.country.id = " + countryID;
+    	}
+    	if(port != null && !port.equals(""))
+    		query_where +=  " AND ord.entryPort like '%" + port + "%'";
+    			
+    	query += query_where + " group by p.productName, p.dosStrength, dunit.id, dform.uid "
+    			+ "order by p.productName";
+
+    	List<Object[]> list = entityManager.createQuery(query)
+							.setParameter("state", AmdmtState.APPROVED)
+							.setParameter("startD", startD)
+							.setParameter("endD", endD)
+							.getResultList();
+
+    	List<PIPReportItemBean> purProds = new ArrayList<PIPReportItemBean>();
+    	if(list != null){
+    		int n = 1;
+    		for(Object obj:list){
+    			Object[] lst = (Object[]) obj;
+    			int s = lst.length;
+    			if(s > 0){
+    				PIPReportItemBean item = new PIPReportItemBean();
+    				item.setNn(n);
+    				item.setProdName((String)lst[0]);
+    				item.setDosStren((String)lst[1]);
+    				item.setUnit((String)lst[2]);
+    				item.setDosForm((String)lst[3]);
+    				item.setDescript((String)lst[4]);
+    				item.setCount((Long)lst[5]);
+    				item.setTotalQuan((Long)lst[6]);
+    				item.setTotalPrice((Double)lst[7]);
+    				purProds.add(item);
+    				
+    				n++;
+    			}
+    		}
+    	}
+    	return purProds;
     }
 }

@@ -7,7 +7,6 @@ import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.BackLog;
-import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceET;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.RetObject;
@@ -20,7 +19,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class ProcessProdBnET implements Serializable {
     private JasperPrint jasperPrint;
     private boolean showFeedBackButton;
     private List<ProdApplications> allAncestors;
-    private String backTo;
+    private String backTo = "";
 
     @PostConstruct
     private void init() {

@@ -1,15 +1,28 @@
 package org.msh.pharmadex.service;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+import java.util.ResourceBundle;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
@@ -17,14 +30,10 @@ import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
-import java.util.ResourceBundle;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +50,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
     private ProductCompanyDAO prodCompanyDAO;
     @Autowired
     private ProdApplicationsDAO prodApplicationsDAO;
-
+ 
     @Override
     public List<RegState> nextStepOptions(RegState regState, UserSession userSession, boolean reviewStatus) {
         RegState[] options = null;

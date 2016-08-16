@@ -380,7 +380,8 @@
                             >
                         <p:ajax event="itemSelect"
                                 update="orderdetailfrm"
-                                listener="#{purOrderBn.appChangeListenener}" partialSubmit="true" process="@this"/>
+                                listener="#{purOrderBn.appSelectListenener}" 
+                                partialSubmit="true" process="@this"/>
                         <p:ajax event="change" listener="#{purOrderBn.appChangeListenener}"
                                 update="orderdetailfrm"
                                 partialSubmit="true" process="@this"/>

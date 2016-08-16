@@ -1,15 +1,48 @@
 package org.msh.pharmadex.service;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
 import org.msh.pharmadex.dao.CustomLicHolderDAO;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
 import org.msh.pharmadex.dao.CustomPurOrderDAO;
-import org.msh.pharmadex.dao.iface.*;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.dao.iface.PIPOrderDAO;
+import org.msh.pharmadex.dao.iface.PIPOrderLookUpDAO;
+import org.msh.pharmadex.dao.iface.POrderChecklistDAO;
+import org.msh.pharmadex.dao.iface.POrderCommentDAO;
+import org.msh.pharmadex.dao.iface.POrderDocDAO;
+import org.msh.pharmadex.dao.iface.PipProdDAO;
+import org.msh.pharmadex.dao.iface.PurOrderDAO;
+import org.msh.pharmadex.dao.iface.PurProdDAO;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.ApplicantType;
+import org.msh.pharmadex.domain.PIPOrder;
+import org.msh.pharmadex.domain.PIPOrderLookUp;
+import org.msh.pharmadex.domain.PIPProd;
+import org.msh.pharmadex.domain.POrderBase;
+import org.msh.pharmadex.domain.POrderChecklist;
+import org.msh.pharmadex.domain.POrderComment;
+import org.msh.pharmadex.domain.POrderDoc;
+import org.msh.pharmadex.domain.PProdBase;
+import org.msh.pharmadex.domain.PurOrder;
+import org.msh.pharmadex.domain.PurProd;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.mbean.PIPReportItemBean;
@@ -20,13 +53,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.*;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Created by usrivastava on 01/16/2015.
@@ -633,7 +662,7 @@ public class POrderService implements Serializable {
     }
 
     @Transactional
-    public List<PIPReportItemBean>  findAllPIPProds(Map<String, Object> map/*Date startDate, Date endDate, Applicant applicant*/) {
+    public List<PIPReportItemBean>  findAllPIPProds(Map<String, Object> map) {
         RetObject retObject = new RetObject();
         List<PIPReportItemBean> pipProds = new ArrayList<PIPReportItemBean>();
         if(map == null)
@@ -656,6 +685,30 @@ public class POrderService implements Serializable {
       return pipProds;
     }
 
+    @Transactional
+    public List<PIPReportItemBean> findAllPurProds(Map<String, Object> map) {
+        RetObject retObject = new RetObject();
+        List<PIPReportItemBean> purProds = new ArrayList<PIPReportItemBean>();
+        if(map == null)
+        	return purProds;
+        
+        Date startDate = (Date)map.get("startDate");
+        Date endDate = (Date)map.get("endDate");
+        
+        if ((startDate == null) || (endDate == null)) 
+        	return purProds;
+        try {
+        	purProds = customPurOrderDAO.findAllPurProds(map);
+            retObject.setObj(purProds);
+            retObject.setMsg("persist");
+         } catch (Exception ex) {
+            ex.printStackTrace();
+            retObject.setMsg("error");
+            retObject.setObj(null);
+        }
+      return purProds;
+    }
+    
     @Transactional
     public List<PurProd>  findSelectedPurProds(Date startDate, Date endDate, Applicant applicant) {
         RetObject retObject = new RetObject();

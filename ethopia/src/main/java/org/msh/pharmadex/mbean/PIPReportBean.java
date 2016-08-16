@@ -40,7 +40,8 @@ public class PIPReportBean implements Serializable{
     private String port;
     
     private List<PIPReportItemBean> pipProds;
-    private List<PurProd> purProds;
+    private List<PIPReportItemBean> purProds;
+    //private List<PurProd> purProds;
     private LicenseHolder lic;
     
     private Double totalPrice = new Double(0);
@@ -209,17 +210,45 @@ public class PIPReportBean implements Serializable{
         	
             pipProds = pOrderService.findAllPIPProds(map);
             
-            calculateTotals();
+            calculateTotals(pipProds);
         }
         return pipProds;
     }
     
-    private void calculateTotals(){
+    public List<PIPReportItemBean> getPurProds(){
+    	/*if ((dateStart!=null && dateEnd!=null)) {
+    		purProds = pOrderService.findSelectedPurProds(dateStart, dateEnd, selectedApplicant);
+    	}
+    	return purProds;*/
+    	
+    	if ((dateStart != null && dateEnd != null)) {
+        	Map<String, Object> map = new HashMap<String, Object>();
+        	map.put("startDate", dateStart);
+        	map.put("endDate", dateEnd);
+        	if(selectedApplicant != null)
+        		map.put("applicant", selectedApplicant.getApplcntId());
+        	if(selectedCompany != null)
+        		map.put("company", selectedCompany.getCompanyName());
+        	if(selectedCountry != null)
+        		map.put("country", selectedCountry.getId());
+        	map.put("port", port);
+        	
+        	purProds = pOrderService.findAllPurProds(map);
+            
+            calculateTotals(purProds);
+        }
+        return purProds;
+    }
+    public void setPurProds(List<PIPReportItemBean> purProds) {
+    	this.purProds = purProds;
+    }
+    
+    private void calculateTotals(List<PIPReportItemBean> list){
     	totalPrice = new Double(0);
     	totalNumbers = 0;
     	Double sum = new Double(0);
-    	if(pipProds != null){
-    		for(PIPReportItemBean it:pipProds){
+    	if(list != null){
+    		for(PIPReportItemBean it:list){
     			totalPrice += it.getTotalPrice();
     			sum += it.getCount();
     		}
@@ -231,15 +260,6 @@ public class PIPReportBean implements Serializable{
     
     public void setPipProds(List<PIPReportItemBean> pipProds) {
         this.pipProds = pipProds;
-    }
-    public List<PurProd> getPurProds(){
-        if ((dateStart!=null && dateEnd!=null)) {
-            purProds = pOrderService.findSelectedPurProds(dateStart, dateEnd, selectedApplicant);
-        }
-        return purProds;
-    }
-    public void setPurProds(List<PurProd> purProds) {
-        this.purProds = purProds;
     }
 
    /* public void onSummaryRow(Object filter)

@@ -285,8 +285,8 @@ public class PurOrderBn extends POrderBn {
         return (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(purOrder);
     }
 
-    public void appChangeListenener(SelectEvent event) {
-        logger.error("inside appChangeListenener");
+    public void appSelectListenener(SelectEvent event) {
+        logger.error("inside appSelectListenener");
         gmpChangeListener();
 
 

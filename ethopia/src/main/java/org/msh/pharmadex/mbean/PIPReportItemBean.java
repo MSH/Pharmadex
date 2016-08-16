@@ -7,7 +7,7 @@ import javax.faces.bean.ViewScoped;
 
 /**
  * Created by dudchenko.
- * By PIP report table
+ * By PIP report and PO report table
  */
 @ManagedBean
 @ViewScoped
