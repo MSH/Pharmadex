@@ -1,132 +1,150 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="../templates/registration_layout.xhtml">
-    <ui:define name="regcontent">
-        <div class="post">
-            <h1 class="title ui-widget-header ui-corner-all">#{msgs.submitted_applications}</h1>
-        </div>
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="../templates/registration_layout.xhtml">
+	<ui:define name="regcontent">
+		<div class="post">
+			<h1 class="title ui-widget-header ui-corner-all">#{msgs.submitted_applications}</h1>
+		</div>
 
-        <h:form prependId="false">
-<!--            <h:panelGroup rendered="#{not empty prodAppMBean.pendingRenewals}"> -->
-            <h:panelGroup rendered="false">
-                <p:outputLabel value="#{msgs.pending_renewals}" style="font-weight: bolder;color: orangered;"/>
-                <p:dataTable id="renewals" var="eachprod" value="#{prodAppMBean.pendingRenewals}"
-                             rendered="#{not empty prodAppMBean.pendingRenewals}">
+		<h:form prependId="false">
+			<!--            <h:panelGroup rendered="#{not empty prodAppMBean.pendingRenewals}"> -->
+			<h:panelGroup rendered="false">
+				<p:outputLabel value="#{msgs.pending_renewals}"
+					style="font-weight: bolder;color: orangered;" />
+				<p:dataTable id="renewals" var="eachprod"
+					value="#{prodAppMBean.pendingRenewals}"
+					rendered="#{not empty prodAppMBean.pendingRenewals}"
+					filteredValue="#{prodAppMBeanMZ.filteredApps}">
 
-                    <p:column headerText="#{msgs.prod_name}">
-                        <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
-                                       action="/internal/processreg"
-                                       ajax="false">
-                            <f:param name="id" value="#{eachprod.id}"/>
-                        </p:commandLink>
-                    </p:column>
+					<p:column 
+						sortBy="#{eachprod.product.prodName}">
+						<f:facet name="header">
+							<h:outputText value="#{msgs.prod_name}" />
+						</f:facet>
+						<p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
+							action="/internal/processreg" ajax="false">
+							<f:param name="id" value="#{eachprod.id}" />
+						</p:commandLink>
+					</p:column>
 
-                    <p:column headerText="#{msgs.prodgenname}">
+					<p:column headerText="#{msgs.prodgenname}">
                         #{eachprod.product.genName}
                     </p:column>
 
-                    <p:column headerText="#{msgs.application_no}">
+					<p:column headerText="#{msgs.application_no}">
                         #{eachprod.prodAppNo}
                     </p:column>
 
-                    <p:column headerText="Registration Status">
+					<p:column headerText="Registration Status">
                         #{msgs[eachprod.regState.key]}
                     </p:column>
 
-                    <p:column headerText="#{msgs.prod_app_type}">
+					<p:column headerText="#{msgs.prod_app_type}">
                         #{msgs[eachprod.prodAppType.key]}
                     </p:column>
 
-                    <p:column headerText="#{msgs.prod_cat}">
+					<p:column headerText="#{msgs.prod_cat}">
                         #{msgs[eachprod.product.prodCategory.key]}
                     </p:column>
 
-                    <p:column headerText="Date Submitted">
-                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
-                    </p:column>
+					<p:column headerText="Date Submitted">
+						<h:outputLabel converter="javax.faces.DateTime"
+							value="#{eachprod.submitDate}" />
+					</p:column>
 
-                    <p:column headerText="Manufacturer Name">
+					<p:column headerText="Manufacturer Name">
                         #{eachprod.product.manufName}
                     </p:column>
 
-                </p:dataTable>
-                <p:separator/>
-            </h:panelGroup>
+				</p:dataTable>
+				<p:separator />
+			</h:panelGroup>
 
 
-            <h:outputFormat id="noRecordsFound" value="#{msgs.label_no_records_found}"
-                            rendered="#{empty prodAppMBeanMZ.submmittedAppList}">
-                <f:param value="#{msgs.lable_products}"/>
-            </h:outputFormat>
+			<h:outputFormat id="noRecordsFound"
+				value="#{msgs.label_no_records_found}"
+				rendered="#{empty prodAppMBeanMZ.submmittedAppList}">
+				<f:param value="#{msgs.lable_products}" />
+			</h:outputFormat>
 
-            <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBeanMZ.submmittedAppList}"
-                         rendered="#{not empty prodAppMBeanMZ.submmittedAppList}"
-                         paginator="true" rows="20" paginatorPosition="bottom"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="20,40,100">
-                <p:column >
-                	<f:facet name="header">
-                        <h:outputText value="#{msgs.prod_name}"/>
-                    </f:facet>
-                    <p:commandLink value="#{eachprod.product.prodName}"
-                                       action="/internal/processreg"
-                                       ajax="false">
-                    	<f:param name="prodAppID" value="#{eachprod.id}"/>
-                    </p:commandLink>
-                </p:column>
+			<p:dataTable id="applicantions" 
+			    var="eachprod"
+				value="#{prodAppMBeanMZ.submmittedAppList}"
+				rendered="#{not empty prodAppMBeanMZ.submmittedAppList}"
+				filteredValue="#{prodAppMBeanMZ.filteredApps}"
+				paginator="true" rows="20" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="20,40,100">
+				<p:column filterBy="#{eachprod.product.prodName}"
+						sortBy="#{eachprod.product.prodName}"
+						>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.prod_name}" />
+						</f:facet>
+					<p:commandLink value="#{eachprod.product.prodName}"
+						action="/internal/processreg" ajax="false">
+						<f:param name="prodAppID" value="#{eachprod.id}" />
+					</p:commandLink>
+				</p:column>
 
-                <p:column headerText="Generic Name">
-                	<h:outputText value="#{eachprod.product.genName}"/>
-                </p:column>
+				<p:column headerText="Generic Name">
+					<h:outputText value="#{eachprod.product.genName}" />
+				</p:column>
 
-                <p:column headerText="#{msgs.application_no}">
-                    <h:outputText value="#{eachprod.prodAppNo}"/>
-                </p:column>
+				<p:column headerText="#{msgs.application_no}">
+					<h:outputText value="#{eachprod.prodAppNo}" />
+				</p:column>
 
-                <p:column headerText="Registration Status">
-                    <h:outputText value="#{msgs[eachprod.regState.key]}"/>
-                </p:column>
+				<p:column headerText="Registration Status">
+					<h:outputText value="#{msgs[eachprod.regState.key]}" />
+				</p:column>
 
-                <p:column headerText="#{msgs.prod_cat}">
-                    <h:outputText value="#{msgs[eachprod.product.prodCategory.key]}"/>
-                </p:column>
+				<p:column headerText="#{msgs.prod_cat}">
+					<h:outputText value="#{msgs[eachprod.product.prodCategory.key]}" />
+				</p:column>
 
-                <p:column headerText="Date Submitted">
-                    <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
-                </p:column>
+				<p:column headerText="Date Submitted">
+					<h:outputLabel converter="javax.faces.DateTime"
+						value="#{eachprod.submitDate}" />
+				</p:column>
 
-                <p:column headerText="Manufacturer Name">
-                    <h:outputText value="#{eachprod.product.manufName}"/>
-                </p:column>
+				<p:column headerText="Manufacturer Name">
+					<h:outputText value="#{eachprod.product.manufName}" />
+				</p:column>
 
-            </p:dataTable>
-			
-			<h:panelGrid columns="2" width="100%" rendered="#{not empty prodAppMBeanMZ.submmittedAppList}">
-                <p:panel>
-                    <h:commandLink>
-                        <p:graphicImage value="/resources/images/excel.png"/>
-                        <p:dataExporter type="xls" target="applicantions" fileName="#{msgs.product_list}"/>
-                    </h:commandLink>
+			</p:dataTable>
 
-                    <h:commandLink>
-                        <p:graphicImage value="/resources/images/pdf.png"/>
-                        <p:dataExporter type="pdf" target="applicantions" fileName="#{msgs.product_list}"/>
-                    </h:commandLink>
+			<h:panelGrid columns="2" width="100%"
+				rendered="#{not empty prodAppMBeanMZ.submmittedAppList}">
+				<p:panel>
+					<h:commandLink>
+						<p:graphicImage value="/resources/images/excel.png" />
+						<p:dataExporter type="xls" target="applicantions"
+							fileName="#{msgs.product_list}" />
+					</h:commandLink>
 
-                    <h:commandLink>
-                        <p:graphicImage value="/resources/images/csv.png"/>
-                        <p:dataExporter type="csv" target="applicantions" fileName="#{msgs.product_list}"/>
-                    </h:commandLink>
+					<h:commandLink>
+						<p:graphicImage value="/resources/images/pdf.png" />
+						<p:dataExporter type="pdf" target="applicantions"
+							fileName="#{msgs.product_list}" />
+					</h:commandLink>
 
-                    <h:commandLink>
-                        <p:graphicImage value="/resources/images/xml.png"/>
-                        <p:dataExporter type="xml" target="applicantions" fileName="#{msgs.product_list}"/>
-                    </h:commandLink>
-                </p:panel>
-            </h:panelGrid>
-        </h:form>
-    </ui:define>
+					<h:commandLink>
+						<p:graphicImage value="/resources/images/csv.png" />
+						<p:dataExporter type="csv" target="applicantions"
+							fileName="#{msgs.product_list}" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage value="/resources/images/xml.png" />
+						<p:dataExporter type="xml" target="applicantions"
+							fileName="#{msgs.product_list}" />
+					</h:commandLink>
+				</p:panel>
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
 </ui:composition>
