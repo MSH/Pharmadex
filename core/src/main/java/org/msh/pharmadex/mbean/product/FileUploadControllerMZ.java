@@ -31,10 +31,21 @@ public class FileUploadControllerMZ implements Serializable {
 
     public StreamedContent regCertDownload() throws SQLException, IOException, JRException {
         ProdApplications prodApplications = processProdBnMZ.findProdApplications();
-        if(prodApplications != null){
+        if(prodApplications != null && prodApplications.getRegCert() != null){
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 	        Calendar c = Calendar.getInstance();
 	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
+	        return download;
+        }
+        return null;
+    }
+    
+    public StreamedContent rejectCertDownload() throws SQLException, IOException, JRException {
+        ProdApplications prodApplications = processProdBnMZ.findProdApplications();
+        if(prodApplications != null && prodApplications.getRejCert() != null){
+	        InputStream ist = new ByteArrayInputStream(prodApplications.getRejCert());
+	        Calendar c = Calendar.getInstance();
+	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
 	        return download;
         }
         return null;

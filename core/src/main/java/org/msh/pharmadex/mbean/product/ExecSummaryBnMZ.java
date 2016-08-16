@@ -62,7 +62,7 @@ public class ExecSummaryBnMZ implements Serializable {
                         return "";
                 	}
                     if (!ri.getRecomendType().equals(RecomendType.NOT_RECOMENDED)) {
-                        facesContext.addMessage(null, new FacesMessage("Invalid operation!", "Cannot recommend a product which is not recommended by the assessors. Send feedback to assessor to change there recommendation."));
+                        facesContext.addMessage(null, new FacesMessage("Invalid operation!", "Cannot not recommend a product which is recommended by the assessors. Send feedback to assessor to change there recommendation."));
                         return "";
                     }
                 }

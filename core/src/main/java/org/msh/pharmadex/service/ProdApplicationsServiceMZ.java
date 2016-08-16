@@ -50,7 +50,6 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.domain.enums.YesNoNA;
-import org.msh.pharmadex.mbean.product.ReviewInfoBn;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,7 +97,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 	@Autowired
 	private ReviewInfoDAO reviewInfoDAO;
-	
+
 	private ProdApplications prodApp;
 	private Product product;
 	// pt_PT
@@ -108,7 +107,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 	@Autowired
 	TimelineService timelineService;
-	
+
 	@Autowired
 	private RevDeficiencyDAO revDeficiencyDAO;
 	/**
@@ -325,6 +324,55 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		return JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 	}
+
+	public String createRejectCert(ProdApplications prodApp, String summary) {
+		this.prodApp = prodApp;
+		this.product = prodApp.getProduct();
+		try {
+			File invoicePDF = null;
+			invoicePDF = File.createTempFile("" + product.getProdName().split(" ")[0] + "_rejection", ".pdf");
+			JasperPrint jasperPrint = initRejectCert(summary);
+			if(jasperPrint != null){
+				net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+				prodApp.setRejCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
+				prodApplicationsDAO.updateApplication(prodApp);
+			}else
+				return "error";
+		} catch (JRException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates. 
+			return "error";
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates. 
+			// return "error"; 
+		}
+		return "created";
+	}
+
+	private JasperPrint initRejectCert(String summary) throws JRException {
+		URL resource = getClass().getResource("/reports/rejection_letter.jasper");
+		if(resource != null){
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			utilsByReports.init(param, prodApp, product);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, "New Medicine Registration", true);
+			utilsByReports.putNotNull(UtilsByReports.KEY_SUBJECT, "Rejection Letter  ", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_BODY, summary, true);
+
+			param.put("date", new Date());
+
+			return JasperFillManager.fillReport(resource.getFile(), param);
+		}
+		return null;
+	}
+
 	/**
 	 * Create deficiency letter and store it to letters
 	 * @return
@@ -543,7 +591,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			return "error";
 		}
 	}
-	
+
 	public RetObject createReviewDeficiencyLetter(ProdApplications prodApp,String com , RevDeficiency revDeficiency){
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
@@ -551,27 +599,27 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		try {
 			ReviewInfo ri = reviewInfoDAO.findOne(revDeficiency.getReviewInfo().getId());
 			ri.setReviewStatus  (ReviewStatus.FIR_SUBMIT);
-			
-			
+
+
 			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);	
-			
+
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_INN, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PACKSIZE, "", false);	
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
-						
+
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);	
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,getSentComment(revDeficiency), true);
-					
+
 			String res ="";
 			if(prodApp != null){
 				ProdAppType type = prodApp.getProdAppType();
@@ -598,13 +646,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					attachment.setUploadedBy(prodApp.getCreatedBy());
 					attachment.setComment("Automatically generated Letter");					
 					attachment.setContentType("application/pdf");
-					
+
 					attachment.setReviewInfo(ri);	
-					
+
 					revDeficiency.setProdAppLetter(attachment);					
 					revDeficiency.setReviewInfo(ri);
 					revDeficiencyDAO.saveAndFlush(revDeficiency);
-									
+
 					TimeLine timeLine = new TimeLine();
 					timeLine.setComment("Status changes due to further information request");
 					timeLine.setRegState(RegState.FOLLOW_UP);
@@ -618,7 +666,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 						revDeficiency.getReviewInfo().setProdApplications(prodApp);
 					}
 					return saveReviewInfo(revDeficiency.getReviewInfo());
-			
+
 				}else{
 					return null;
 				}
@@ -634,16 +682,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			return null;
 		} 
 	}
-	
-  private String getSentComment(RevDeficiency revDeficiency) {
-	  String result = "";	 
-			if(revDeficiency.getSentComment()!=null) 
-				if(revDeficiency.getSentComment().getComment() !=null)	  
-					result = revDeficiency.getSentComment().getComment() ;
+
+	private String getSentComment(RevDeficiency revDeficiency) {
+		String result = "";	 
+		if(revDeficiency.getSentComment()!=null) 
+			if(revDeficiency.getSentComment().getComment() !=null)	  
+				result = revDeficiency.getSentComment().getComment() ;
 		return result;
 	}
 
-@Transactional
+	@Transactional
 	public RetObject saveReviewInfo(ReviewInfo reviewInfo) {
 		RetObject retObject = new RetObject();
 		ReviewInfo ri = reviewInfoDAO.saveAndFlush(reviewInfo);
@@ -652,7 +700,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		retObject.setObj(reviewInfo);
 		retObject.setMsg("success");
 		return retObject;
-	
+
 	}
 
 	public List<ProdApplications> getProcessProdAppList(UserSession userSession) {

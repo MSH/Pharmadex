@@ -216,7 +216,7 @@ public class FileUploadController implements Serializable {
 		if(prodApplications != null){
 			InputStream ist = new ByteArrayInputStream(prodApplications.getRejCert());
 			Calendar c = Calendar.getInstance();
-			StreamedContent download = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR));
+			StreamedContent download = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
 			return download;
 		}
 		return null;
