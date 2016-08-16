@@ -322,12 +322,12 @@
 										value="#{fileUploadControllerMZ.regCertDownload()}" />
 								</p:commandButton>
 
-								<p:commandButton id="rejectdownload" value="#{msgs.reg_cert}"
+								<p:commandButton id="rejectdownload" value="#{msgs.reject_cert}"
 									rendered="#{!processProdBn.registered}"
 									onclick="PrimeFaces.monitorDownload(start, stop)"
 									icon="ui-icon-arrowthichk-n">
 									<p:fileDownload
-										value="#{fileUploadController.rejCertDownload()}" />
+										value="#{fileUploadControllerMZ.rejectCertDownload()}" />
 								</p:commandButton>
 
 								<p:panel header="#{msgs.prev_applications}">
