@@ -23,6 +23,7 @@
                     <p:commandLink id="viewLink" value="#{prodApps.prodName}"
                                    action="#{productMbean.goToDetails(prodApps.prodAppID)}"
                                    ajax="false">
+                        <f:param name = "backTo" value="\public\suspendedproducts.xhtml"/>
                     </p:commandLink>
 
                 </p:column>

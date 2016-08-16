@@ -256,7 +256,10 @@ public class ProcessProdBn implements Serializable {
 		facesContext = getCurrentInstance();
 		try {
 			String id;
-			Long prodAppID;
+			Long prodAppID = Scrooge.beanParam("prodAppID");
+			if (prodAppID==null)//call from another page
+				prodAppID = Scrooge.beanParam("Id");
+			/*
 			id = getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
 			if (id!=null){
 				prodAppID = Long.valueOf(id);
@@ -269,6 +272,7 @@ public class ProcessProdBn implements Serializable {
 					prodAppID = Long.parseLong(idStr);
 				}
 			}
+			*/
 			if (prodAppID != null) {
 				prodApplications = prodApplicationsService.findProdApplications(prodAppID);
 				setFieldValues();
@@ -888,7 +892,11 @@ public class ProcessProdBn implements Serializable {
 		facesContext = getCurrentInstance();
 		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 		WebUtils.setSessionAttribute(request, "processProdBn", null);
-		return "/public/registrationhome.faces";
+		String goBack = Scrooge.beanStrParam("goBack");
+		if (goBack!=null)
+			return goBack;
+		else
+			return "/public/registrationhome.faces";
 	}
 
 	public boolean isDisplaySample() {
@@ -1162,4 +1170,10 @@ public class ProcessProdBn implements Serializable {
     public void setAppType(String appType) {
         this.appType = appType;
     }
+	public boolean canChangeModerator(){
+		if (!(userSession.isStaff()||userSession.isAdmin())) return false;
+		if (isRegistered()||isSuspended()) return false;
+		return true;
+	}
+
 }

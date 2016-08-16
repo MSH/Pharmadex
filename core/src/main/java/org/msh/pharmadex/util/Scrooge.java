@@ -116,4 +116,35 @@ public class Scrooge {
         return null;
     }
 
+    public static String beanStrParam(String parameter){
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        String result=null;
+        if (facesContext.getExternalContext().getFlash()!=null) {
+            Object obj = facesContext.getExternalContext().getFlash().get(parameter);
+            if (obj!=null){
+                if (obj.getClass().getName().toLowerCase().endsWith("long"))
+                    return (String) obj;
+                else if (obj.getClass().getName().toLowerCase().endsWith("string")){
+                    result = (String) obj;
+                }
+            }}
+        if (result==null){
+            if (facesContext.getExternalContext().getRequestParameterMap()!=null)
+                result = facesContext.getExternalContext().getRequestParameterMap().get(parameter);
+        }
+        if (result!=null){
+            return result;
+        }
+        return null;
+    }
+
+    public static void setStrBeanParam(String paramName, String paramValue){
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        String prodAppId=null;
+        Flash flash = facesContext.getExternalContext().getFlash();
+        if (flash!=null) {
+            flash.put(paramName,paramValue);
+        }
+    }
+
 }

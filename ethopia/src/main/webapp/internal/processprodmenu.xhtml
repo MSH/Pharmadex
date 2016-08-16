@@ -51,7 +51,7 @@
 
             <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                         onclick="PF('moderatordlg').show()"
-                        rendered="#{userSession.admin||userSession.staff}" id="assignModMI"/>
+                        rendered="#{processProdBn.registered}" id="assignModMI"/>
 
             <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
                         oncomplete="PF('assignreviewdlg').show()"

@@ -6,9 +6,12 @@ import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.BackLog;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceET;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,10 +56,35 @@ public class ProcessProdBnET implements Serializable {
 
     @PostConstruct
     private void init() {
-    	ProdApplications pa= processProdBn.getProdApplications();
-    	if (pa!=null)changedFields=pa.getAppComment();
+        Long id = Scrooge.beanParam("Id");
+        ProdApplications pa;
+        if (id==null)
+    	    pa= processProdBn.getProdApplications();
+        else {
+            pa = processProdBn.getProdApplicationsService().findProdApplications(id);
+        }
+        if (pa!=null)changedFields=pa.getAppComment();
     	if (changedFields==null) changedFields="";
+        backTo = Scrooge.beanStrParam("backTo");
     }
+
+    public String addToBackTo(String param){
+        if (backTo!=null){
+            if (!"".equals(backTo)) {
+                backTo = backTo + ";" + param;
+                return backTo;
+            }
+        }
+        backTo = param;
+        return backTo;
+    }
+
+    public String gotoBack(){
+        BackLog.setBackTo(backTo);
+        String res = BackLog.goToBack();
+        return res;
+    }
+
     public boolean isDisplayVerify() {
         if (userSession.isAdmin() || userSession.isHead() || userSession.isModerator())
             return true;
@@ -204,12 +232,11 @@ public class ProcessProdBnET implements Serializable {
     }
 
     public List<ProdApplications> getAllAncestors(){
-        if (allAncestors==null) {
-            ProdApplications prod = processProdBn.getProdApplications();
-            allAncestors = getProdApplicationsServiceET().getAllAncestor(prod);
-        }
+        ProdApplications prod = processProdBn.getProdApplications();
+        allAncestors = getProdApplicationsServiceET().getAllAncestor(prod);
 	    return allAncestors;
     }
+
 
     public void setAllAncestors(List<ProdApplications> allAncestors) {
         this.allAncestors = allAncestors;
@@ -245,6 +272,14 @@ public class ProcessProdBnET implements Serializable {
 
     public void setReviewService(ReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    public String getBackTo() {
+        return backTo;
+    }
+
+    public void setBackTo(String backTo) {
+        this.backTo = backTo;
     }
 
 }
