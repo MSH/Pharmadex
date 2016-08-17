@@ -209,7 +209,6 @@ public class CustomReviewDAO implements Serializable {
 				.setParameter("prodAppId", prodAppId)
 				.getResultList();
 		if(listInfo != null && listInfo.size() > 0){
-			// TODO now onfy one ReviewInfo
 			for(ReviewInfo info:listInfo){
 				List<ReviewDetail> listDetail = entityManager
 						.createQuery("select rd from ReviewDetail rd where rd.reviewInfo.id=:revinfoId "
@@ -238,8 +237,15 @@ public class CustomReviewDAO implements Serializable {
 						item.setHeader2(det.getReviewQuestions().getHeader2());
 						item.setDetailId(det.getId());
 						item.setQuestionId(det.getReviewQuestions().getId());
-						if(det.getFile() != null)
-							item.setFile(det.getFile());
+						if(det.getFile() != null){
+							// only pictures
+							if(det.getFilename() != null && !det.getFilename().equals("")){
+								String fname = det.getFilename();
+								if(fname.endsWith(".png") || fname.endsWith(".bmp")
+										|| fname.endsWith(".jpeg") || fname.endsWith(".jpg"))
+									item.setFile(det.getFile());
+							}
+						}
 
 						if(list == null)
 							list = new ArrayList<ReviewItemReport>();
