@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-07-13T16:13:32 -->
+<!-- 2016-07-13T16:10:33 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="review_detail_report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ecd10e94-5bd5-48c4-9864-d88e8ef17d0d">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.util.JRLoader"/>
 	<parameter name="reviewInfoID" class="java.lang.String"/>
-	<parameter name="countryHead" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select rq.header1, rq.header2, rq.question, rd.other_comment, rd.answered, rd.sec_comment, rd.file, if(Length(rd.file)>0, true, false) as attach, rd.filename
 from review_info ri, review_detail rd, review_question rq
@@ -83,29 +82,11 @@ and ri.id = $P{reviewInfoID};]]>
 		<band/>
 	</background>
 	<title>
-		<band height="94">
+		<band height="171">
 			<frame>
-				<reportElement mode="Opaque" x="-19" y="0" width="594" height="92" backcolor="#FFFFFF" uuid="5930af02-052a-4624-a839-26f17f160927"/>
-				<image>
-					<reportElement x="475" y="1" width="100" height="68" uuid="c86f89a4-3fb5-4b97-a771-556309cd7759"/>
-					<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
-				</image>
+				<reportElement mode="Opaque" x="-19" y="-4" width="594" height="172" backcolor="#FFFFFF" uuid="5930af02-052a-4624-a839-26f17f160927"/>
 				<staticText>
-					<reportElement mode="Transparent" x="1" y="0" width="474" height="24" forecolor="#006666" uuid="d8d47a8f-d69e-4ba2-ac61-5c4355b4db7c"/>
-					<textElement textAlignment="Center">
-						<font size="18" isBold="true"/>
-					</textElement>
-					<text><![CDATA[FOOD, MEDICINE AND HEALTH CARE ]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="1" y="24" width="474" height="24" forecolor="#006666" uuid="30e7a1e7-51b4-4ac5-9a37-418537f075d8"/>
-					<textElement textAlignment="Center">
-						<font size="18" isBold="true"/>
-					</textElement>
-					<text><![CDATA[ADMINISTRATION AND CONTROL AUTHORITY OF ]]></text>
-				</staticText>
-				<staticText>
-					<reportElement mode="Opaque" x="-1" y="72" width="595" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="2589c16e-9272-486e-92ac-80857c9b8ad0"/>
+					<reportElement mode="Opaque" x="0" y="152" width="594" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="2589c16e-9272-486e-92ac-80857c9b8ad0"/>
 					<box>
 						<topPen lineWidth="0.5" lineColor="#000000"/>
 						<bottomPen lineWidth="0.5" lineColor="#000000"/>
@@ -116,15 +97,30 @@ and ri.id = $P{reviewInfoID};]]>
 					</textElement>
 					<text><![CDATA[Review Report]]></text>
 				</staticText>
+				<image>
+					<reportElement x="256" y="4" width="80" height="80" uuid="8d80a710-21c5-4996-aee6-4ba3a783d524"/>
+					<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
+				</image>
 				<staticText>
-					<reportElement x="1" y="48" width="474" height="24" forecolor="#006666" uuid="0eddc7cc-3fa6-4132-9727-2b8d60f3fb92">
-						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					</reportElement>
+					<reportElement x="0" y="133" width="594" height="17" uuid="81dc3ddf-2a08-4b4a-9272-6a64c040efd2"/>
 					<textElement textAlignment="Center">
-						<font size="18" isBold="true"/>
+						<font size="12" isBold="true"/>
 					</textElement>
-					<text><![CDATA[NAMIBIA]]></text>
+					<text><![CDATA[105-106 Motijheel Commercial Area, Dhaka-1000]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="112" width="594" height="21" forecolor="#006666" uuid="8a4a447a-abb4-4b1f-a09a-662e4675e3d7"/>
+					<textElement textAlignment="Center">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DIRECTORATE GENERAL OF DRUG ADMINISTRATION OF BANGLADESH]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="86" width="594" height="26" uuid="ce26d242-20bd-4edf-910e-6e8f320c57c0"/>
+					<textElement textAlignment="Center">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PEOPLE'S REPUBLIC OF BANGLADESH]]></text>
 				</staticText>
 			</frame>
 		</band>
