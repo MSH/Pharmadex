@@ -14,26 +14,26 @@
                  filteredValue="#{filteredprodlist}">
 
 
-        <p:column filterBy="#{eachprod.prod.prodName}"
-                  sortBy="#{eachprod.prod.prodName}">
+        <p:column filterBy="#{eachprod.product.prodName}"
+                  sortBy="#{eachprod.product.prodName}">
             <f:facet name="header">
                 <h:outputText value="#{msgs.prodName}"/>
             </f:facet>
-            <p:commandLink id="viewLink" value="#{eachprod.prod.prodName}" action="/internal/processreg"
+            <p:commandLink id="viewLink" value="#{eachprod.product.prodName}" action="/internal/processreg"
                            ajax="false">
                 <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
-                <f:setPropertyActionListener value="#{eachprod.prod}" target="#{userSession.product}"/>
-                <f:param name="id" value="#{eachprod.prod.id}"/>
+                <f:setPropertyActionListener value="#{eachprod.product}" target="#{userSession.product}"/>
+                <f:param name="id" value="#{eachprod.product.id}"/>
             </p:commandLink>
         </p:column>
 
 
-        <p:column filterBy="#{eachprod.prod.genName}"
-                  sortBy="#{eachprod.prod.genName}">
+        <p:column filterBy="#{eachprod.product.genName}"
+                  sortBy="#{eachprod.product.genName}">
             <f:facet name="header">
                 <h:outputText value="#{msgs.prodgenname}"/>
             </f:facet>
-            <h:outputText value="#{eachprod.prod.genName}"/>
+            <h:outputText value="#{eachprod.product.genName}"/>
         </p:column>
 
         <p:column filterBy="#{msgs[eachprod.regState.key]}"
@@ -51,12 +51,12 @@
             <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
         </p:column>
 
-        <p:column sortBy="#{eachprod.prod.applicant.appName}"
-                  filterBy="#{eachprod.prod.applicant.appName}">
+        <p:column sortBy="#{eachprod.applicant.appName}"
+                  filterBy="#{eachprod.applicant.appName}">
             <f:facet name="header">
                 <h:outputText value="#{msgs.manuf_name}"/>
             </f:facet>
-            <h:outputLabel value="#{eachprod.prod.applicant.appName}"/>
+            <h:outputLabel value="#{eachprod.applicant.appName}"/>
         </p:column>
 
     </p:dataTable>

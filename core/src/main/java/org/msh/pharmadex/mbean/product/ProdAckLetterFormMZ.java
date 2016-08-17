@@ -32,11 +32,6 @@ public class ProdAckLetterFormMZ implements Serializable {
 	
 	private FacesContext context;
 	private java.util.ResourceBundle bundle;
-	
-   // private String sender = "";
-   // private String prodappno = "";
-    
-    private ProdApplications productApp;
 
     public void initParametrs(ProdApplications prodApp) {
     	context = FacesContext.getCurrentInstance();
@@ -54,10 +49,7 @@ public class ProdAckLetterFormMZ implements Serializable {
 	}
     
     public void buildParametrs(ProdApplications prodApp) {
-    	/*if(getProdappno() == null  || getProdappno().trim().equals(""))
-        	setProdappno(prodApplicationsServiceMZ.getProdApplicationsService().generateAppNo(prodApp));
-    	prodApp.setProdAppNo(getProdappno());
-    	prodApp.setUsername(getSender());*/
+
     }
     
     public void createLetter(ProdApplications prodApp){
@@ -80,21 +72,4 @@ public class ProdAckLetterFormMZ implements Serializable {
     public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
     }
-
-    
-	/*public String getSender() {
-		return sender;
-	}
-
-	public void setSender(String sender) {
-		this.sender = sender;
-	}
-
-	public String getProdappno() {
-		return prodappno;
-	}
-
-	public void setProdappno(String prodappno) {
-		this.prodappno = prodappno;
-	}*/
 }

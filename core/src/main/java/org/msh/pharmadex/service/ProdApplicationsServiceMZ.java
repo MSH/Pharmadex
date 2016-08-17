@@ -50,6 +50,7 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.domain.enums.YesNoNA;
+import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,6 +95,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private ProdApplicationsService prodApplicationsService;
 	@Autowired
 	private ProdAppChecklistService checkListService;
+	@Autowired
+    private SampleTestService sampleTestService;
 
 	@Autowired
 	private ReviewInfoDAO reviewInfoDAO;
@@ -835,10 +838,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					return "clinical_review";
 				}
 			}
-
-			if (prodApplications.getProdAppType()!=ProdAppType.RENEW) {
-				if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
-					return "lab_status";
+		
+			if (prodApplications.getProdAppType() != ProdAppType.RENEW) {
+				List<SampleTest> list = sampleTestService.findSampleForProd(prodApplications.getId());
+				if(list != null && list.size() > 0){
+					if (prodApplications.getSampleTestRecieved() == null || !prodApplications.getSampleTestRecieved()) {
+						return "lab_status";
+					}
 				}
 			}
 
