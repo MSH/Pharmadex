@@ -1,0 +1,82 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="reviewerForm">
+		<h:panelGrid id="reviewPG" columns="2" columnClasses="label value"
+				cellpadding="10" cellspacing="10">
+			<p:outputLabel value="#{msgs.set_sec_reviewer}" for="secreviewbb" />
+			<p:selectBooleanButton id="secreviewbb" value="#{prodReviewBnMZ.reviewInfo.secreview}"
+					onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+					onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px"
+					disabled="#{prodReviewBnMZ.reviewInfo.secreview and !prodReviewBnMZ.assign}">
+				<p:ajax update=":reghome:processtab:reviewerForm"
+						listener="#{prodReviewBnMZ.secreviewListener}" />
+			</p:selectBooleanButton>
+
+			<p:outputLabel />
+			<p:outputLabel value="#{msgs.assigDlgLbl}" styleClass="hint" />
+
+			<p:outputLabel value="#{msgs.processor}" for="prireviewac"
+					escape="false" styleClass="label" />
+			<p:autoComplete id="prireviewac" value="#{prodReviewBnMZ.reviewInfo.reviewer}"
+					cache="false"
+					completeMethod="#{globalEntityLists.completeProcessorList}"
+					dropdown="true" required="true" var="it" itemLabel="#{it.name}"
+					itemValue="#{it.userId}" forceSelection="true"
+					converter="#{userConverter}">
+			</p:autoComplete>
+
+			<p:outputLabel value="#{msgs.sec_processor}" for="sec_reviewer"
+					escape="false" styleClass="label"
+					rendered="#{userAccessMBean.detailReview and prodReviewBnMZ.displaySecReview}" />
+			<p:autoComplete id="sec_reviewer" cache="false"
+					value="#{prodReviewBnMZ.reviewInfo.secReviewer}"
+					rendered="#{userAccessMBean.detailReview and prodReviewBnMZ.displaySecReview}"
+					completeMethod="#{globalEntityLists.completeProcessorList}"
+					dropdown="true" required="true" var="it" itemLabel="#{it.name}"
+					itemValue="#{it.userId}" forceSelection="true"
+					converter="#{userConverter}">
+			</p:autoComplete>
+
+			<p:outputLabel value="#{msgs.checklist_module}" for="modulecb" rendered="#{prodReviewBnMZ.assign}"/>
+			<p:selectOneMenu id="modulecb"
+					value="#{prodReviewBnMZ.reviewInfo.ctdModule}"
+					requiredMessage="#{msgs.recommendation_valid}" rendered="#{prodReviewBnMZ.assign}">
+					<f:selectItem itemLabel="-" />
+					<f:selectItems value="#{globalLists.cTDModules}" var="type"
+						itemLabel="#{msgs[type.key]}" />
+			</p:selectOneMenu>
+
+			<p:outputLabel value="#{msgs.global_duedate}" for="duedt"
+					styleClass="label" rendered="#{userAccessMBean.detailReview}" />
+			<p:calendar value="#{prodReviewBnMZ.reviewInfo.dueDate}" id="duedt"
+					showOn="button" rendered="#{userAccessMBean.detailReview}"
+					required="true" pattern="#{userAccessMBean.workspace.datePattern}">
+				<f:validator validatorId="futureDateValidator" />
+			</p:calendar>
+			
+			<p:outputLabel value="#{msgs.reviewer_change_reason}"
+					for="changesummary" styleClass="label" rendered="#{!prodReviewBnMZ.assign}"/>
+			<p:editor value="#{prodReviewBnMZ.reviewComment.comment}"
+					id="changesummary" required="true" width="700" rendered="#{!prodReviewBnMZ.assign}"/>
+		</h:panelGrid>
+
+		<h:panelGrid columns="2" style="margin-top:10px">
+			<p:commandButton id="submitButton" value="#{msgs.global_submit}"
+					action="#{prodReviewBnMZ.submitAssignDlg}"
+					oncomplete="PF('assignreviewdlg').hide()" ajax="true"
+					update=":reghome:processtab:reviwerinfotbl :reghome:messages @form" />
+			<p:commandButton id="cancelButton" type="button"
+					value="#{msgs.global_cancel}"
+					onclick="PF('assignreviewdlg').hide()" />
+		</h:panelGrid>
+	</p:panel>
+</ui:composition>

@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:panelGrid columns="2" cellpadding="10px" cellspacing="6px" id="companydetail" width="100%"
+                 columnClasses="col1, col2">
+
+        <p:outputLabel value="#{msgs.manuf_name}" for="companyname"/>
+        <p:autoComplete id="companyname" value="#{companyMBean.selectedCompany}" widgetVar="appac"
+                        completeMethod="#{companyMBean.completeCompany}" dropdown="true"
+                        var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}" forceSelection="false"
+                        required="true" requiredMessage="#{msgs.valid_value_req}" rendered="#{input}"
+                        converter="#{manufConverter}" minQueryLength="2" maxResults="10">
+            <p:ajax event="itemSelect" update="@form"
+                    listener="#{companyMBean.companyChangeEventListener}" partialSubmit="true"/>
+            <p:ajax event="change" listener="#{companyMBean.companyChangeEventListener}"
+                    update="@form" partialSubmit="true" onstart="if(PF('appac').panel.is(':visible')) {return false;}"/>
+        </p:autoComplete>
+        <h:outputLabel value="#{companydata.companyName}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+
+        <ui:decorate template="/templates/addrtempl.xhtml">
+            <ui:param name="addressdata" value="#{companydata.address}"/>
+            <ui:param name="input" value="#{input}"/>
+        </ui:decorate>
+
+
+        <p:outputLabel/>
+        <p:outputLabel/>
+
+
+        <p:outputLabel/>
+        <p:outputLabel/>
+
+        <p:outputLabel value="#{msgs.applicant_filenumber}" for="ref"/>
+        <p:inputText value="#{companydata.siteNumber}" rendered="#{input}" id="ref"/>
+        <h:outputLabel value="#{companydata.siteNumber}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right;" for="cphoneno"/>
+        <p:inputText value="#{companydata.phoneNo}" required="true" rendered="#{input}" id="cphoneno"/>
+        <h:outputLabel value="#{companydata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno"/>
+        <p:inputText value="#{companydata.faxNo}" rendered="#{input}" id="cfaxno"/>
+        <h:outputLabel value="#{companydata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_email}" for="email"/>
+        <p:inputText value="#{companydata.email}" rendered="#{input}" id="email"/>
+        <h:outputLabel value="#{companydata.email}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.company_type}" rendered="#{input}" for="grid"/>
+        <p:selectManyCheckbox id="grid" value="#{companyMBean.companyTypes}" layout="grid" columns="3"
+                              required="true" requiredMessage="Company type is missing">
+            <f:selectItems value="#{globalLists.companyType}" var="type" itemLabel="#{msgs[type.key]}"
+                           itemValue="#{type}"/>
+        </p:selectManyCheckbox>
+
+        <p:outputLabel value="#{msgs.gmpinsp_done}" for="gmpChkbox" styleClass="label"/>
+        <p:selectBooleanCheckbox value="#{companydata.gmpInsp}" id="gmpChkbox">
+        </p:selectBooleanCheckbox>
+
+        <p:outputLabel value="#{msgs.gmp_cert_no}" styleClass="label" for="gmpCertNo"/>
+        <p:inputText id="gmpCertNo" value="#{companydata.gmpCertNo}"/>
+
+        <p:outputLabel value="#{msgs.gmp_cert_date}" styleClass="label" for="gmpCertDt"/>
+        <p:calendar value="#{companydata.gmpInspDate}" id="gmpCertDt" showOn="button"
+                    pattern="#{userAccessMBean.workspace.datePattern}"/>
+    </h:panelGrid>
+
+
+</ui:composition>
