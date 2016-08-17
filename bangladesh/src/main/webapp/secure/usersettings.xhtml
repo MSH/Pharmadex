@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+
+    <ui:define name="content">
+        <h:form id="usersettingsform">
+
+            <h:panelGrid columns="2" columnClasses="menu,content">
+                    <p:menu style="width:198px">
+                        <p:submenu label="#{msgs.usersettings_preferences}">
+                            <p:menuitem value="#{msgs.userspreference}" action="#{userSettingBean.active}"
+                                        update="usersettingsform:contents" ajax="true" immediate="true">
+                                <f:setPropertyActionListener value="preference" target="#{userSettingBean.selection}"/>
+                            </p:menuitem>
+                            <p:menuitem value="#{msgs.User_changepwd}" action="#{userSettingBean.active}"
+                                        update="@form" process="@this">
+                                <f:setPropertyActionListener value="changePwd" target="#{userSettingBean.selection}"/>
+                            </p:menuitem>
+                            <ui:remove>
+	                            <p:menuitem value="#{msgs.User_changelanguage}" action="#{userSettingBean.active}"
+	                                        update="usersettingsform:contents" ajax="true" immediate="true">
+	                                <f:setPropertyActionListener value="language" target="#{userSettingBean.selection}"/>
+	                            </p:menuitem>
+                            </ui:remove>
+                        </p:submenu>
+                    </p:menu>
+
+                <h:panelGrid styleClass="ui-widget" id="contents" columns="1">
+
+                    <h:panelGroup layout="block" styleClass="content" rendered="#{userSettingBean.preference}">
+                        <div class="post" style="width: 1024px">
+                            <h1 class="title ui-widget-header ui-corner-all"> User Settings</h1>
+                        </div>
+
+                        <p:growl showDetail="true" showSummary="true"/>
+                        <p:panel header="#{msgs.user_details}">
+                            <p:messages showDetail="true" showSummary="true"/>
+                            <h:panelGrid cellspacing="10px" cellpadding="2px" columns="4" id="userdetails"
+                                         style="text-justify:auto;">
+                                <h:outputLabel value="#{msgs.User_username}" for="username"/>
+                                <p:inputText value="#{registerUserMbean.user.username}" id="username" required="true"/>
+
+                                <h:outputLabel value="#{msgs.User_name}" for="name"/>
+                                <p:inputText value="#{registerUserMbean.user.name}" id="name" required="true"/>
+
+                                <h:outputLabel value="#{msgs.User_email}" for="email"/>
+                                <p:inputText value="#{registerUserMbean.user.email}" id="email" required="true"/>
+
+                                <h:outputLabel value="#{msgs.User_usercompany}" for="usercompany"/>
+                                <p:inputText value="#{registerUserMbean.user.companyName}" id="usercompany"/>
+
+<!--                                <h:outputLabel value="#{msgs.User_comment}" for="comment"/>
+                                <p:inputText value="#{registerUserMbean.user.comments}" id="comment"/>
+-->
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+
+                            </h:panelGrid>
+
+                            <p:commandButton value="#{msgs.global_submit}" action="#{registerUserMbean.update}"
+                                             update="@form"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.global_cancel}" action="#{registerUserMbean.cancel}"
+                                             immediate="true" ajax="false"/>
+                        </p:panel>
+
+
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="content" rendered="#{userSettingBean.changePwd}">
+                        <div class="post" style="width: 1024px">
+                            <h1 class="title ui-widget-header ui-corner-all"> Change Password</h1>
+                        </div>
+
+                        <p:growl showDetail="true" showSummary="true"/>
+                        <p:panel header="Enter Password Details">
+                            <p:messages showDetail="true" showSummary="true"/>
+                            <h:panelGrid cellspacing="10px" cellpadding="2px" columns="4" id="pwddetails"
+                                         style="text-justify:auto;">
+                                <h:outputLabel for="oldpwd" value="#{msgs.changepwd_passinuse}"/>
+                                <p:password id="oldpwd" value="#{registerUserMbean.oldpwd}"
+                                            label="#{msgs.changepwd_newpass2}" required="true"/>
+
+                                <h:outputLabel for="newpwd1" value="#{msgs.changepwd_newpass}"/>
+                                <p:password id="newpwd1" value="#{registerUserMbean.newpwd1}" match="newpwd2"
+                                            label="#{msgs.changepwd_newpass}" required="true" feedback="true"/>
+
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+
+                                <h:outputLabel for="newpwd2" value="#{msgs.changepwd_newpass2}"/>
+                                <p:password id="newpwd2" value="#{registerUserMbean.newpwd2}"
+                                            label="#{msgs.changepwd_newpass2}" required="true"/>
+
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+
+
+                            </h:panelGrid>
+
+                            <p:commandButton value="#{msgs.global_submit}" action="#{registerUserMbean.changePwd}"
+                                             update="@form"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.global_cancel}"
+                                             actionListener="#{registerUserMbean.cancelPwdChange}"
+                                             immediate="true" ajax="false">
+                                <f:setPropertyActionListener value="preference" target="#{userSettingBean.selection}"/>
+                            </p:commandButton>
+                        </p:panel>
+
+
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="content" rendered="#{userSettingBean.language}">
+                        <div class="post" style="width: 1024px">
+                            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.User_changelanguage}</h1>
+                        </div>
+
+                        <p:growl showDetail="true" showSummary="true"/>
+                        <p:panel header="#{msgs.user_details}">
+                            <p:messages showDetail="true" showSummary="true"/>
+                            <h:panelGrid cellspacing="10px" cellpadding="2px" columns="4" id="languagedetails"
+                                         style="text-justify:auto;">
+
+                                <p:selectOneMenu id="laung" value="#{localeBean.selectedLocale}">
+                                    <f:selectItem itemLabel="-" itemValue=""/>
+                                    <f:selectItems value="#{localeBean.locales}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel/>
+                                <h:outputLabel/>
+
+                            </h:panelGrid>
+
+                            <p:commandButton value="#{msgs.global_submit}" action="#{localeBean.changeLanguage()}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.global_cancel}" actionListener="#{registerUserMbean.cancel}"
+                                             immediate="true"/>
+                        </p:panel>
+
+
+                    </h:panelGroup>
+
+                </h:panelGrid>
+
+
+            </h:panelGrid>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>
