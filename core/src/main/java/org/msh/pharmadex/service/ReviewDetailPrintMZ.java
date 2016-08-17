@@ -53,7 +53,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 		bundle = bun;
 		fillGeneralRS(res, prop, prodCompanyDAO);
 		fillGeneralText(res, prop, prodCompanyDAO);
-		fillItems(res, prop, customReviewDAO);
+		fillItems(res, customReviewDAO);
 		fillResolutionText(res, prop);
 		return new JRMapArrayDataSource(res.toArray());
 	}
@@ -94,7 +94,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 		fillItemRS(res, prop.getProperty("chapter3"), null, text, null);
 	}
 
-	private static void fillItems(List<Map<String, Object>> res, Properties prop, CustomReviewDAO customReviewDAO) {
+	private static void fillItems(List<Map<String, Object>> res, CustomReviewDAO customReviewDAO) {
 		Map<String, List<ReviewItemReport>> map = customReviewDAO.getReviewListByReportNew(prodApp.getId());
 		if(map != null && !map.isEmpty()){
 			Iterator<String> it = map.keySet().iterator();
