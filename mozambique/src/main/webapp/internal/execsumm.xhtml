@@ -86,17 +86,18 @@
             <p:panel header="#{msgs.executive_summary}">
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="inputgrid"
                              rendered="#{execSummaryBn.editExecSumm}">
+                             
                     <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
-
                     <p:selectOneMenu id="recomcb" value="#{execSummaryBn.prodApplications.regState}"
-                              requiredMessage="#{msgs.recommendation_valid}">
+                             required="true" requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
                         <f:selectItems value="#{execSummaryBn.nextSteps}" var="type"
                                        itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
 
-                    <p:outputLabel value="Summary"/>
-                    <p:editor value="#{execSummaryBn.prodApplications.execSummary}"/>
+                    <p:outputLabel value="#{msgs.summary}" for="summary"/>
+                    <p:editor id="summary" value="#{execSummaryBn.prodApplications.execSummary}"
+                    			required="true" requiredMessage="#{msgs.summary_empty_valid}"/>
 
                 </h:panelGrid>
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid"
