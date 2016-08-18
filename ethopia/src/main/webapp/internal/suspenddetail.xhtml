@@ -268,7 +268,7 @@
                         </h:panelGrid>
                         <p:dataTable id="reviewtblprev" value="#{suspendDetailBnET.getPrevReviewInfo()}" var="rev">
                             <p:column headerText="#{msgs.processor}">
-                                <p:commandLink id="asmplink" value="#{rev.reviewer.name}"
+                                <p:commandLink id="asmplink1" value="#{rev.reviewer.name}"
                                                action="/internal/reviewInfo.faces"
                                                ajax="false">
                                     <f:param name="reviewInfoID" value="#{rev.id}"/>

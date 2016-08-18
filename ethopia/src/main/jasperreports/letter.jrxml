@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-06-01T13:22:40 -->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-08-18T15:28:00 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="subject" class="java.lang.String">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="subject" class="java.lang.String"/>
 	<parameter name="body" class="java.lang.String"/>
 	<parameter name="footer" class="java.lang.String"/>
 	<parameter name="registrar" class="java.lang.String"/>
@@ -139,7 +138,7 @@ and p.id = $P{id}]]>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[This certificate only valid if the product registration status is valid]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="75" y="480" width="497" height="20" uuid="4ed05e4e-b872-45fe-a77a-f56c3f468cb8">

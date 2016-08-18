@@ -35,7 +35,8 @@
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
             </p:menuitem>
 
-            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" ajax="false"
+            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}"
+                        immediate="true" ajax="false"
                         icon="ui-icon-extlink"/>
             <p:menuitem value="Return to #{msgs.global_suspend}" icon="ui-icon-gear"
                         action="suspenddetail" ajax="false"

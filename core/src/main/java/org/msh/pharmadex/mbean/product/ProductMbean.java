@@ -52,9 +52,9 @@ public class ProductMbean implements Serializable {
     }
 
     public String goToDetails(Long id) {
-        System.out.println("Product App ID ==" + id);
         Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
         flash.put("prodAppID", id);
+        flash.put("backTo","/public/suspendedproducts.xhtml");
         return "/internal/processreg?faces-redirect=true";
     }
 

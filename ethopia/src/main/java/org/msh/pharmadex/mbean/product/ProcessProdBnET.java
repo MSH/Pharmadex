@@ -13,6 +13,7 @@ import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.util.Scrooge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.util.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -20,6 +21,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,37 +53,16 @@ public class ProcessProdBnET implements Serializable {
     private boolean showFeedBackButton;
     private List<ProdApplications> allAncestors;
     private String backTo = "";
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
 
     @PostConstruct
     private void init() {
-        Long id = Scrooge.beanParam("Id");
-        ProdApplications pa;
-        if (id==null)
-    	    pa= processProdBn.getProdApplications();
-        else {
-            pa = processProdBn.getProdApplicationsService().findProdApplications(id);
-        }
+        //Long id = Scrooge.beanParam("Id");
+   	    ProdApplications pa= processProdBn.getProdApplications();
         if (pa!=null)changedFields=pa.getAppComment();
     	if (changedFields==null) changedFields="";
-        backTo = Scrooge.beanStrParam("backTo");
     }
 
-    public String addToBackTo(String param){
-        if (backTo!=null){
-            if (!"".equals(backTo)) {
-                backTo = backTo + ";" + param;
-                return backTo;
-            }
-        }
-        backTo = param;
-        return backTo;
-    }
-
-    public String gotoBack(){
-        BackLog.setBackTo(backTo);
-        String res = BackLog.goToBack();
-        return res;
-    }
 
     public boolean isDisplayVerify() {
         if (userSession.isAdmin() || userSession.isHead() || userSession.isModerator())

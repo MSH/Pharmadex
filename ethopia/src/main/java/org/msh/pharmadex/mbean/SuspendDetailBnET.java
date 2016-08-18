@@ -125,9 +125,11 @@ public class SuspendDetailBnET implements Serializable {
                         suspDetail.setReviewer(null);
                         suspDetail.setParentId(parentSuspDetail.getId());
                         suspDetail.setDecision(null);
+                        suspDetail.setComplete(false);
                     }
                     suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
                     suspDetail.setCreatedBy(getLoggedInUser());
+                    suspDetail.setCreatedDate(Calendar.getInstance().getTime());
                 }
             }else{
                  getLoggedInUser();
@@ -258,7 +260,8 @@ public class SuspendDetailBnET implements Serializable {
             suspDetail.setUpdatedBy(getLoggedInUser());
             suspDetail.setReviewer(reviewer);
            // ReviewInfo srchReview = reviewService.findReviewInfoByUserAndProdApp(reviewer.getUserId(), suspDetail.getProdApplications().getId());
-            ReviewInfo srchReview = reviewService.findReviewInfoByUserAndProdAppAfter(suspDetail.getReviewer().getUserId(), prodApplications.getId(),suspDetail.getCreatedDate());
+            Long id = suspDetail.getProdApplications().getId();
+            ReviewInfo srchReview = reviewService.findReviewInfoByUserAndProdAppAfter(suspDetail.getReviewer().getUserId(), id,suspDetail.getCreatedDate());
             
             if (srchReview!=null){ // because review could be in registration process with same reviewers...
                 if (srchReview.getCreatedDate().before(suspDetail.getCreatedDate())) {
@@ -317,18 +320,34 @@ public class SuspendDetailBnET implements Serializable {
         User user = suspDetail.getReviewer();
         List<ReviewInfo> res = null;
         if (user!=null){
-            res = suspendService.findReviewListNew(user.getUserId(),suspDetail.getProdApplications().getId());
+            Long id = suspDetail.getProdApplications().getId();
+            List<ReviewInfo> rInfos = suspendService.findReviewListNew(user.getUserId(),id);
+            if (rInfos == null) return  null;
+            res = new ArrayList<ReviewInfo>();
+            for(ReviewInfo rInfo:rInfos){
+                if(rInfo.getCreatedDate().after(suspDetail.getCreatedDate()))
+                    res.add(rInfo);
+            }
         }
         return res;
     }
 
     public List<ReviewInfo> getPrevReviewInfo(){
-        User user = suspDetail.getReviewer();
-        List<ReviewInfo> res = null;
+        SuspDetail parent = getParentSuspension();
+        if (parent==null)
+            return null;
+        User user = parent.getReviewer();
+        List<ReviewInfo> res = new ArrayList<ReviewInfo>();
         if (user!=null){
-        	SuspDetail parent = getParentSuspension();
-        	if (parent!=null)
-        		res = suspendService.findReviewListNew(user.getUserId(),parent.getProdApplications().getId());
+        	if (parent!=null) {
+                Long id = suspDetail.getProdApplications().getId();
+                List<ReviewInfo> foundInfo = suspendService.findReviewListNew(user.getUserId(), id);
+                if (foundInfo==null) return  null;
+                for(ReviewInfo rInfo:foundInfo){
+                    if (rInfo.getCreatedDate().before(suspDetail.getCreatedDate()))
+                        res.add(rInfo);
+                }
+            }
         }
         return res;
     }

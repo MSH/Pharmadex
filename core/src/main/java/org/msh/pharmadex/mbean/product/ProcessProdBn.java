@@ -26,6 +26,7 @@ import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.mbean.BackLog;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.AmdmtService;
 import org.msh.pharmadex.service.CommentService;
@@ -136,6 +137,7 @@ public class ProcessProdBn implements Serializable {
 	private boolean displayFir;
 	private String suspId;
     private String appType;
+	private String backTo;
 
 	private List<ForeignAppStatus> foreignAppStatuses;
 
@@ -259,24 +261,11 @@ public class ProcessProdBn implements Serializable {
 			Long prodAppID = Scrooge.beanParam("prodAppID");
 			if (prodAppID==null)//call from another page
 				prodAppID = Scrooge.beanParam("Id");
-			/*
-			id = getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
-			if (id!=null){
-				prodAppID = Long.valueOf(id);
-			}else{
-				Flash flash = facesContext.getExternalContext().getFlash();
-				if (flash.get("prodAppID").getClass().getName().endsWith("Long")) {
-					prodAppID = (Long) flash.get("prodAppID");
-				}else {
-					String idStr = (String) flash.get("prodAppID");
-					prodAppID = Long.parseLong(idStr);
-				}
-			}
-			*/
 			if (prodAppID != null) {
 				prodApplications = prodApplicationsService.findProdApplications(prodAppID);
 				setFieldValues();
 			}
+			backTo = Scrooge.beanStrParam("backTo");
 		} catch (Exception ex) {
 			facesContext.addMessage(null, new FacesMessage("Use the link within the system to access this page."));
 		}
@@ -890,9 +879,12 @@ public class ProcessProdBn implements Serializable {
 		facesContext = getCurrentInstance();
 		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 		WebUtils.setSessionAttribute(request, "processProdBn", null);
-		String goBack = Scrooge.beanStrParam("goBack");
-		if (goBack!=null)
-			return goBack;
+		//String backTo = Scrooge.beanStrParam("backTo");
+		BackLog.setBackTo(backTo);
+		String res = BackLog.goToBack();
+		res=res+"?faces-redirect=true";
+		if (backTo!=null)
+			return backTo;
 		else
 			return "/public/registrationhome.faces";
 	}
@@ -1168,10 +1160,35 @@ public class ProcessProdBn implements Serializable {
     public void setAppType(String appType) {
         this.appType = appType;
     }
-	public boolean canChangeModerator(){
-		if (!(userSession.isStaff()||userSession.isAdmin())) return false;
-		if (isRegistered()||isSuspended()) return false;
+	public boolean canChangeModerator() {
+		if (!(userSession.isStaff() || userSession.isAdmin())) return false;
+		if (isRegistered() || isSuspended()) return false;
 		return true;
 	}
 
+	public String addToBackTo(String param){
+		if (backTo!=null){
+			if (!"".equals(backTo)) {
+				backTo = backTo + ";" + param;
+				return backTo;
+			}
+		}
+		backTo = param;
+		return backTo;
+	}
+
+	public String gotoBack(){
+		BackLog.setBackTo(backTo);
+		String res = BackLog.goToBack();
+		res=res+"?faces-redirect=true";
+		return res;
+	}
+
+	public String getBackTo() {
+		return backTo;
+	}
+
+	public void setBackTo(String backTo) {
+		this.backTo = backTo;
+	}
 }
