@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-19T16:39:23 -->
+<!-- 2016-08-19T19:14:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -22,13 +22,12 @@
 	<parameter name="genName" class="java.lang.String"/>
 	<parameter name="prodStrength" class="java.lang.String"/>
 	<parameter name="dosForm" class="java.lang.String"/>
-	<field name="itemNum" class="java.lang.String"/>
-	<field name="defItemName" class="java.lang.String"/>
+	<parameter name="execSummary" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="385" splitType="Stretch">
+		<band height="421" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="32" y="102" width="522" height="16" uuid="1f59944e-c6d5-4148-a209-fbea606c8a28">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -248,6 +247,13 @@
 				</textElement>
 				<text><![CDATA[DIRECTORATE GENERAL OF DRUG ADMINISTRATION (DGDA) OF BANGLADESH]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="32" y="401" width="524" height="20" uuid="87a038f6-80f4-47b1-9e83-b7202e2fb334"/>
+				<textElement markup="html">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{execSummary} == null ? "":$P{execSummary}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -258,18 +264,6 @@
 	<columnHeader>
 		<band height="1" splitType="Stretch"/>
 	</columnHeader>
-	<detail>
-		<band height="20" splitType="Stretch">
-			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="32" y="0" width="524" height="20" uuid="ffb97e9b-6e1f-485b-9c87-61ec5736b192"/>
-				<textElement markup="html">
-					<font fontName="SansSerif"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{itemNum}.concat(" <u>").concat($F{defItemName}).concat("</u>")]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
 	<columnFooter>
 		<band height="1" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
