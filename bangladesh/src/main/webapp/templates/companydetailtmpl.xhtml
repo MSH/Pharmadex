@@ -7,7 +7,7 @@
     <h:panelGrid columns="2" cellpadding="10px" cellspacing="6px" id="companydetail" width="100%"
                  columnClasses="col1, col2">
 
-        <p:outputLabel value="#{msgs.applicant_name}" for="companyname"/>
+        <p:outputLabel value="#{msgs.manuf_name}" for="companyname"/>
         <p:autoComplete id="companyname" value="#{companyMBean.selectedCompany}" widgetVar="appac"
                         completeMethod="#{companyMBean.completeCompany}" dropdown="true"
                         var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}" forceSelection="false"
