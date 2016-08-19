@@ -13,7 +13,11 @@
 
                 <p:dataTable id="revs" var="eachrev" value="#{reviewListMBeanMZ.reviewTables}"
                              filteredValue="#{reviewListMBeanMZ.filteredReviewInfos}"
-                             rowStyleClass="#{eachrev.pastDue?'colored':null}" rendered="#{!reviewListMBeanMZ.workspace.detailReview}">
+                             rowStyleClass="#{eachrev.pastDue?'colored':null}" 
+                             rendered="#{!reviewListMBeanMZ.workspace.detailReview}"
+                              paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,40,100">
 
 
                     <p:column filterBy="#{eachrev.prodName}"
@@ -89,6 +93,7 @@
                                        ajax="false"
                                        style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
                             <f:param name="reviewInfoID" value="#{eachprod.id}"/>
+                            <f:param name="sourcePage" value="/internal/processreviewlist.faces" />
                         </p:commandLink>
                     </p:column>
 

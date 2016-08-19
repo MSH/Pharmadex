@@ -322,12 +322,12 @@
 										value="#{fileUploadControllerMZ.regCertDownload()}" />
 								</p:commandButton>
 
-								<p:commandButton id="rejectdownload" value="#{msgs.reg_cert}"
+								<p:commandButton id="rejectdownload" value="#{msgs.reject_cert}"
 									rendered="#{!processProdBn.registered}"
 									onclick="PrimeFaces.monitorDownload(start, stop)"
 									icon="ui-icon-arrowthichk-n">
 									<p:fileDownload
-										value="#{fileUploadController.rejCertDownload()}" />
+										value="#{fileUploadControllerMZ.rejectCertDownload()}" />
 								</p:commandButton>
 
 								<p:panel header="#{msgs.prev_applications}">
@@ -484,7 +484,7 @@
 		<p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg"
 			resizable="false" id="moderatordlg" modal="true" dynamic="true"
 			rendered="#{userSession.head||userSession.admin||userSession.staff}">
-			<h:form>
+			<h:form id="moderatorForm">
 
 				<p:panelGrid columns="2" columnClasses="label value">
 					<h:outputText value="#{msgs.moderator_name}: " escape="false"
@@ -494,11 +494,10 @@
 						completeMethod="#{globalEntityLists.completeModeratorList}"
 						dropdown="true" var="it" itemLabel="#{it.name}"
 						itemValue="#{it.userId}" forceSelection="true"
-						converter="#{userConverter}">
+						converter="#{userConverter}"
+						required="true" requiredMessage="#{msgs.choose_moderator}">
 					</p:autoComplete>
-
 				</p:panelGrid>
-
 
 				<p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
 					action="#{processProdBn.assignModerator}"
@@ -852,10 +851,6 @@
 			draggable="false" closable="false" resizable="false" dynamic="true">
 			<p:graphicImage value="/resources/images/ajax-loader.gif" />
 		</p:dialog>
-
-
-
-
 
 	</ui:define>
 	<script type="text/javascript">

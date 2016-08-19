@@ -13,7 +13,7 @@
                                valueChangeListener="#{sampleTestBn.createConfirmLetter}"
                                onIcon="ui-icon-check"
                                offIcon="ui-icon-close" style="width:60px">
-            <p:ajax process=":reghome"
+            <p:ajax  update="@parent"
                     listener="#{processProdBn.changeSampleRecieved}"/>
         </p:selectBooleanButton>
     </h:panelGrid>

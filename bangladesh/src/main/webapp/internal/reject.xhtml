@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+
+<ui:define name="content">
+	<h:form id="reviewHome">
+		<p:growl id="growl" showSummary="true"/>
+		<p:messages showDetail="true" showSummary="true"/>
+
+		<div style="width:1054px">
+			<ui:decorate template="/templates/prodbannertempl.xhtml">
+				<ui:param name="prodApp" value="#{prodRejectBn.prodApplications}"/>
+			</ui:decorate>
+		</div>
+		<div style="height: 10px;"/>
+		<p:panel header="#{msgs.reject_summary}">
+			<h:panelGrid columns="3" cellspacing="10" cellpadding="10" columnClasses="label value label">
+				<p:outputLabel value="#{msgs.global_summary}" for="sum"/>
+				<p:inputTextarea id="sum" value="#{prodRejectBn.summary}" rows="6" cols="100"
+					required="true" requiredMessage="#{msgs.reject_summary}"/>
+				<p:message for="sum" />
+			</h:panelGrid>
+			<div style="height: 10px;"/>
+			<div align="left">
+				<p:commandButton value="#{msgs.global_reject}"
+                                 ajax="false" 
+                                 action="#{prodRejectBnMZ.rejectProdApp}"
+                                 update="@form messages">
+                    <f:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                </p:commandButton>
+				<p:commandButton value="#{msgs.global_back}" immediate="true" 
+								 action="/internal/processreg" ajax="false">
+					<f:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+				</p:commandButton>
+			</div>
+		</p:panel>
+	</h:form>
+</ui:define>
+</ui:composition>

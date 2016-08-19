@@ -7,7 +7,9 @@
 
 	<h:panelGrid id="btnpnlFirst" cellspacing="2" cellpadding="2" columns="4">
         <p:commandButton value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"/>
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check">
+               <p:resetInput target=":reghome:processtab:completescreen" />
+        </p:commandButton>
         <p:commandButton value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
@@ -49,12 +51,21 @@
             <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBn.prescreened}"/>
         </p:column>
         <p:column style="width:90px">
-            <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
-                             action="#{preScreenProdMBn.setProdAppChecklist(checkList)}"
-                             rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"/>
-
-            <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
+            <p:commandButton id="uploadLink"
+            				 actionListener="#{preScreenProdMBn.initProdAppChecklist(checkList)}"
+            				 icon="ui-icon-document"
+            				 immediate="true"
+            				 oncomplete="PF('moduledlg').show()" 
+                             ajax='true'
+                             process="@this"
+                             rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"
+                             update="@this"/>
+           
+            <p:commandButton id="downloadLink" value="#{msgs.global_download}"
                              onclick="PrimeFaces.monitorDownload(start, stop)"
+                             ajax="true"
+                             update="@this"
+                             immediate="true"
                              icon="ui-icon-arrowstop-1-s"
                              rendered="#{checkList.fileUploaded}">
                 <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
@@ -65,7 +76,9 @@
 
 	<h:panelGrid id="btnpnlSecond" cellspacing="2" cellpadding="2" columns="4">
         <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"/>
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check">
+               <p:resetInput target=":reghome:processtab:completescreen" />
+        </p:commandButton>
         <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
@@ -76,7 +89,7 @@
         </p:commandButton>
     </h:panelGrid>
     
-    <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
+       <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
               id="completescreen" appendTo="@form"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
 
@@ -108,7 +121,6 @@
               id="archiveapp" modal="true" appendTo="@(body)"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
 
-        <h:form>
             <p:panelGrid columns="2" columnClasses="label value">
 
                 <p:outputLabel value="#{msgs.global_remark}" for="remarkarchive"/>
@@ -120,21 +132,21 @@
             <p:commandButton id="archiveappbtn" value="#{msgs.global_submit}"
                              action="#{preScreenProdMBn.archiveApp}"
                              oncomplete="PF('archiveappdlg').hide()" update=":reghome @form" process="@form"/>
-        </h:form>
     </p:dialog>
 
     <p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true"
             >
         <p:fileUpload fileUploadListener="#{preScreenProdMBn.handleFileUpload}"
                       mode="advanced" auto="true"
-                      update=":reghome:growl :reghome:messages"
                       multiple="false"
-                      sizeLimit="100000000">
+                      sizeLimit="100000000"
+                      update=":reghome:messages">
 
         </p:fileUpload>
         <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.addModuleDoc}"
-                         oncomplete="PF('moduledlg').hide()" update=":reghome:growl :reghome:messages :reghome"
+                         oncomplete="PF('moduledlg').hide()"
+                         update=":reghome:messages :reghome:processtab:checkListTbl"
                 />
     </p:dialog>
 
