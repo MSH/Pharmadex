@@ -15,6 +15,8 @@ public class ReviewItemReport implements Serializable {
     private String secondRevName;
     private String firstRevComment;
     private String secondRevComment;
+    private String pages;
+    private String reviewQuestion;
     private byte[] file;
     
 	public Long getDetailId() {
@@ -70,6 +72,18 @@ public class ReviewItemReport implements Serializable {
 	}
 	public void setFile(byte[] file) {
 		this.file = file;
+	}
+	public String getPages() {
+		return pages;
+	}
+	public void setPages(String pages) {
+		this.pages = pages;
+	}
+	public String getReviewQuestion() {
+		return reviewQuestion;
+	}
+	public void setReviewQuestion(String reviewQuestion) {
+		this.reviewQuestion = reviewQuestion;
 	}
     
 	
