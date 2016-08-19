@@ -324,6 +324,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_REG_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_EXPIRY_DATE, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_GESTOR, gestor);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);		
 
 		return JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 	}
@@ -368,7 +371,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_BODY, summary, true);
-
+			
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
+			
+			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,summary, true);
 			param.put("date", new Date());
 
 			return JasperFillManager.fillReport(resource.getFile(), param);
