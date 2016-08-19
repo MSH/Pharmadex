@@ -65,33 +65,66 @@ public class ReviewDetailPrintMZ implements Serializable {
 	 * @param prodApplications current application
 	 */
 	private static void fillGeneralRS(List<Map<String, Object>> res, Properties prop, ProductCompanyDAO prodCompanyDAO) {
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_1"),fetchFullApplicant(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_2"),prodApp.getProduct().getGenName(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_3"),prodApp.getProduct().getProdName(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_4"),prodApp.getProduct().getDosStrength(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_5"),fetchExcipients(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_6"),prodApp.getProduct().getPackSize(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_7"),prodApp.getProduct().getDosForm().getDosForm(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_8"),prodApp.getProduct().getIndications(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_9"),prodApp.getProduct().getShelfLife(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_10"),prodApp.getProduct().getStorageCndtn(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_11"),prodApp.getProduct().getAdminRoute().getName(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_12"),bundle.getString(prodApp.getProdAppType().getKey()),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_13"),fetchATC_Names(),null);
-		fillItemRS(res,prop.getProperty("chapter1"),prop.getProperty("chapter1_14"),fetchManufacture(prodCompanyDAO, false),null);
+		if (prop.getProperty("chapter1_1") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_1"), fetchFullApplicant(), null,null,null,null);
+		if (prop.getProperty("chapter1_2") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_2"),
+					prodApp.getProduct().getGenName(), null,null,null,null);
+		if (prop.getProperty("chapter1_3") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_3"),
+					prodApp.getProduct().getProdName(), null,null,null,null);
+		if (prop.getProperty("chapter1_4") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_4"),
+					prodApp.getProduct().getDosStrength(), null,null,null,null);
+		if (prop.getProperty("chapter1_5") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_5"), fetchExcipients(), null,null,null,null);
+		if (prop.getProperty("chapter1_6") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_6"),
+					prodApp.getProduct().getPackSize(), null,null,null,null);
+		if (prop.getProperty("chapter1_7") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_7"),
+					prodApp.getProduct().getDosForm().getDosForm(), null,null,null,null);
+		if (prop.getProperty("chapter1_8") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_8"),
+					prodApp.getProduct().getIndications(), null,null,null,null);
+		if (prop.getProperty("chapter1_9") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_9"),
+					prodApp.getProduct().getShelfLife(), null,null,null,null);
+		if (prop.getProperty("chapter1_10") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_10"),
+					prodApp.getProduct().getStorageCndtn(), null,null,null,null);
+		if (prop.getProperty("chapter1_11") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_11"),
+					prodApp.getProduct().getAdminRoute().getName(), null,null,null,null);
+		if (prop.getProperty("chapter1_12") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_12"),
+					bundle.getString(prodApp.getProdAppType().getKey()), null,null,null,null);
+		if (prop.getProperty("chapter1_13") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_13"), fetchATC_Names(), null,null, null,null);
+		if (prop.getProperty("chapter1_14") != null)
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_14"),
+					fetchManufacture(prodCompanyDAO, false), null,null,null,null);
 	}
 
 	private static void fillGeneralText(List<Map<String, Object>> res, Properties prop, ProductCompanyDAO prodCompanyDAO) {
-		String chapter2t = prop.getProperty("chapter2_txt").replace("_APPLICANT_", prodApp.getApplicant().getAppName());
-		chapter2t = chapter2t.replace("_MANUFACTURER_", fetchManufacture(prodCompanyDAO, true));
-		fillItemRS(res,prop.getProperty("chapter2"),null,chapter2t,null);
+		String chapter2t ="";
+		if(prop.getProperty("chapter2_txt")!=null){
+			chapter2t = prop.getProperty("chapter2_txt").replace("_APPLICANT_", prodApp.getApplicant().getAppName());
+			chapter2t = chapter2t.replace("_MANUFACTURER_", fetchManufacture(prodCompanyDAO, true));				
+		}
+		if(prop.getProperty("chapter2")!=null)
+			fillItemRS(res,prop.getProperty("chapter2"),null,chapter2t,null,null,null,null);
+		
 	}
 	
 	private static void fillResolutionText(List<Map<String, Object>> res, Properties prop) {
 		String number = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():"";
-		String chapter3t = prop.getProperty("chapter3_txt").replace("_REGNUMBER_", number);
-		String text = (prodApp.getExecSummary() != null ? prodApp.getExecSummary() + "\n":"") + chapter3t;
-		fillItemRS(res, prop.getProperty("chapter3"), null, text, null);
+		String chapter3t = "";
+		if(prop.getProperty("chapter3_txt")!=null){
+			chapter3t = prop.getProperty("chapter3_txt").replace("_REGNUMBER_", number);
+		}	
+		String text = (prodApp.getExecSummary() != null ? prodApp.getExecSummary() + "\n":"") + chapter3t;		
+		fillItemRS(res, prop.getProperty("chapter3"), null, text, null,null,null,null);
 	}
 
 	private static void fillItems(List<Map<String, Object>> res, CustomReviewDAO customReviewDAO) {
@@ -133,8 +166,16 @@ public class ReviewDetailPrintMZ implements Serializable {
 		if(item.getFile() != null){
 			file = new ByteArrayInputStream(item.getFile());
 		}
-		if(!text.isEmpty() || file != null)
-			fillItemRS(res, chapter1, null, text, file);
+		if(!text.isEmpty() || file != null){
+			 String reviewItemHead = item.getHeader2();
+			 String pages = item.getPages();
+			 String reviewQuestion = item.getReviewQuestion();
+			 
+			 fillItemRS(res, chapter1, null, text, file,pages,reviewItemHead,reviewQuestion);
+				
+						
+			/* fillItemRS(res, chapter1, null, text, file, pages, null,null);*/
+		}
 	}
 
 	/**
@@ -144,14 +185,21 @@ public class ReviewDetailPrintMZ implements Serializable {
 	 * @param reviewItem
 	 * @param reviewItemData
 	 * @param reviewItemFile
+	 * @param file 
+	 * @param reviewQuestion 
+	 * @param pages 
 	 */
 	private static void fillItemRS(List<Map<String, Object>> res, String reviewChapter, String reviewItem,
-			String reviewItemData, Object reviewItemFile) {
-		Map<String,Object> map = new HashMap<String,Object>();
+				String reviewItemData, Object reviewItemFile, String pagesItem, String reviewItemHead,String reviewQuestion){
+	
+		Map<String,Object> map = new HashMap<String,Object>();		
 		map.put("reviewChapter",reviewChapter);
 		map.put("reviewItem",reviewItem);
-		map.put("reviewItemData",reviewItemData);
-		map.put("reviewItemFile",reviewItemFile);
+		map.put("pagesItem",pagesItem);
+		map.put("reviewItemHead",reviewItemHead);		
+		map.put("reviewItemData",reviewItemData);	
+		map.put("reviewItemFile",reviewItemFile);		
+		map.put("reviewQuestion",reviewQuestion);		
 		res.add(map);
 	}
 

@@ -475,6 +475,42 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.init(param, prodApp, prod);
 				utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_MODERNAME, "", false);
+				
+				utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_SUBMIT_DATE, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_DOSREC_DATE, "", false);
+				
+				int t = 0;
+				if(prodApp != null){
+					ProdAppType type = prodApp.getProdAppType();
+					if(type != null){
+						if(type.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
+							t = 1;
+						else if(type.equals(ProdAppType.GENERIC))
+							t = 2;
+						else if(type.equals(ProdAppType.RECOGNIZED))
+							t = 3;
+						else if(type.equals(ProdAppType.RENEW))
+							t = 4;
+					}
+				}
+				utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, t);
+				
+				utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_APPTELLFAX, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_APPEMAIL, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_INN, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_PROD_ROUTE_ADMINISTRATION, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_PHONE, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
+				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_EMAIL, "", false);
+				
 				utilsByReports.putNotNull(JRParameter.REPORT_LOCALE, locale);
 
 				//TODO chief name from properties!!
@@ -484,7 +520,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					if(resource != null){
 						jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
 						javax.servlet.http.HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-						httpServletResponse.addHeader("Content-disposition", "attachment; filename=" +prod.getProdName() + "_Review.pdf");
+						httpServletResponse.addHeader("Content-disposition", "attachment; filename=" +prod.getProdName().split(" ")[0] +  "_Review.pdf");
 						httpServletResponse.setContentType("application/pdf");
 						javax.servlet.ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
 						net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);

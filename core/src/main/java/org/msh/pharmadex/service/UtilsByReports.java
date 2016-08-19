@@ -48,6 +48,10 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_SAMPLEQTY = "sampleQty";
 	public static String KEY_DUEDATE = "DueDate";
 	public static String KEY_COMPANY_NAME = "companyName";
+	public static String KEY_COMPANY_PHONE = "companyPhone";
+	public static String KEY_COMPANY_FAX  = "companyFax";
+	public static String KEY_COMPANY_EMAIL  = "companyEmail";
+	
 	public static String KEY_REASON = "reason";
 	public static String KEY_BATCHNO = "batchNo";
 	public static String KEY_REPORT_DATE = "reportDate";
@@ -78,6 +82,9 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_APPUSERNAME = "appUserName"; /** ФИО */
 	public static String KEY_APPPOST = "appPost"; /**должность*/
 	public static String KEY_EXECSUMMARY = "execSummary"; /**заключение модератора*/
+	public static String KEY_APPTELLFAX = "appTellFax";
+	public static String KEY_APPEMAIL = "appEmail";
+	public static String KEY_PROD_ROUTE_ADMINISTRATION = "prodRouteAdministration";
 	
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
@@ -197,6 +204,13 @@ public class UtilsByReports implements Serializable {
 			}
 			param.put(k, str);
 		}
+		if(k.equals(KEY_PROD_ROUTE_ADMINISTRATION)){
+			if( prod.getAdminRoute()!= null )
+				if(prod.getAdminRoute().getName()!=null)
+					 str = prod.getAdminRoute().getName();
+			param.put(k, str);
+		}
+		
 	}
 	
 	private void putParamByProdApplications(String k, String t){
@@ -245,7 +259,22 @@ public class UtilsByReports implements Serializable {
 		}
 		if(k.equals(KEY_COMPANY_NAME)){
 			if(prodApps.getApplicant() != null)
-				str = prodApps.getApplicant().getAppName() != null ? prodApps.getApplicant().getAppName():"";
+				str = prodApps.getApplicant().getAppName() != null ? prodApps.getApplicant().getAppName():"";				
+				param.put(k, str);
+		}
+		if(k.equals(KEY_COMPANY_PHONE)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getPhoneNo() != null ? prodApps.getApplicant().getPhoneNo():"";
+				param.put(k, str);
+		}
+		if(k.equals(KEY_COMPANY_FAX)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getFaxNo() != null ? prodApps.getApplicant().getFaxNo():"";
+				param.put(k, str);
+		}
+		if(k.equals(KEY_COMPANY_EMAIL)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getEmail() != null ? prodApps.getApplicant().getEmail():"";
 				param.put(k, str);
 		}
 		if(k.equals(KEY_REG_DATE)){
@@ -288,6 +317,19 @@ public class UtilsByReports implements Serializable {
 			if(prodApps.getUsername()!=null)
 				str = prodApps.getUsername()!= null ? prodApps.getUsername():"";			
 				param.put(k, str);
+		}		
+		if(k.equals(KEY_APPTELLFAX)){			
+			if(prodApps.getApplicant() != null){				
+				str = prodApps.getApplicant().getPhoneNo()!=null? prodApps.getApplicant().getPhoneNo()+" / ":"";				
+				str += prodApps.getApplicant().getFaxNo()!=null?   prodApps.getApplicant().getFaxNo():"";
+				param.put(k, str);
+			}
+		}		
+		if(k.equals(KEY_APPEMAIL)){			
+			if(prodApps.getApplicant() != null){					
+				str = prodApps.getApplicant().getEmail()!=null? prodApps.getApplicant().getEmail():"";
+				param.put(k, str);
+			}
 		}
 
 	}
