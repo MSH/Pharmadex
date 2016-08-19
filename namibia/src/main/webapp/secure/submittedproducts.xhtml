@@ -78,12 +78,10 @@
 				paginator="true" rows="20" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="20,40,100">
-				<p:column filterBy="#{eachprod.product.prodName}"
+				<p:column 
 						sortBy="#{eachprod.product.prodName}"
+						headerText="#{msgs.prod_name}"
 						>
-						<f:facet name="header">
-							<h:outputText value="#{msgs.prod_name}" />
-						</f:facet>
 					<p:commandLink value="#{eachprod.product.prodName}"
 						action="/internal/processreg" ajax="false">
 						<f:param name="prodAppID" value="#{eachprod.id}" />
@@ -106,7 +104,9 @@
 					<h:outputText value="#{msgs[eachprod.product.prodCategory.key]}" />
 				</p:column>
 
-				<p:column headerText="Date Submitted">
+				<p:column headerText="Date Submitted"
+				sortBy="#{eachprod.submitDate}"
+				>
 					<h:outputLabel converter="javax.faces.DateTime"
 						value="#{eachprod.submitDate}" />
 				</p:column>

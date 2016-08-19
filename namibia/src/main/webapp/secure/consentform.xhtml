@@ -70,6 +70,27 @@
                                 <ui:include src="formbylet.xhtml">
                                 	<ui:param name="prodApp" value="#{prodConsentFormMZ.prodApplications}"/>
                                 </ui:include>
+                                <ui:remove>
+                                	<p:outputLabel value="#{msgs.number}" for="prodappno"/>
+                                	<p:inputText id="prodappno" value="#{prodConsentFormMZ.prodappno}"
+                                             required="true"/>
+                                	<p:message for="prodappno"/>
+                                
+                                	<p:outputLabel value="#{msgs.user_sender}" for="sender"/>
+                                	<p:inputText value="#{prodConsentFormMZ.sender}" id="sender"
+                                             required="true"/>
+                                	<p:message for="sender"/>
+                                
+                                	<p:outputLabel value="#{msgs.user_position}:" for="receiver"/>
+                                	<p:inputText value="#{prodConsentFormMZ.prodApplications.position}" id="receiver"
+                                             required="true"/>
+                                	<p:message for="receiver"/>
+
+                                
+                                	<p:outputLabel value="#{msgs.changepwd_passinuse}:" for="pass"/>
+                                	<p:password id="pass" value="#{prodConsentFormMZ.password}" required="true"/>
+                                	<p:message for="pass"/>
+                                </ui:remove>
                             </h:panelGrid>
                         </p:panel>
 

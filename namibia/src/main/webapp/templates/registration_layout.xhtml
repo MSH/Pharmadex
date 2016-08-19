@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+        >
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../templates/admin_layout.xhtml">
+
+    <ui:define name="content">
+        <table>
+            <tr>
+                <td style="vertical-align: top;">
+                    <ui:insert name="menu">
+                        <ui:include src="registration_menu.xhtml"/>
+                    </ui:insert>
+                </td>
+                <td style="width: 805px;vertical-align: top;">
+                    <h:panelGroup styleClass="ui-widget">
+                        <ui:insert name="regcontent"/>
+                    </h:panelGroup>
+                </td>
+            </tr>
+        </table>
+    </ui:define>
+</ui:composition>
+</html>
