@@ -237,6 +237,8 @@ public class CustomReviewDAO implements Serializable {
 						item.setHeader2(det.getReviewQuestions().getHeader2());
 						item.setDetailId(det.getId());
 						item.setQuestionId(det.getReviewQuestions().getId());
+						item.setReviewQuestion(det.getReviewQuestions().getQuestion());
+						item.setPages(det.getVolume());
 						if(det.getFile() != null){
 							// only pictures
 							if(det.getFilename() != null && !det.getFilename().equals("")){
