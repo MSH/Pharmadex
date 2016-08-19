@@ -555,7 +555,13 @@
                                     <h:outputText value="#{msgs[doc.regState.key]}"/>
                                 </p:column>
 
-
+                                <p:column>
+                                    <p:commandButton id="downloadLink" value="#{msgs.global_download}" ajax="false"
+                                                     onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                     icon="ui-icon-arrowthichk-s">
+                                        <p:fileDownload value="#{fileUploadController.fileDownload(doc)}"/>
+                                    </p:commandButton>
+                                </p:column>
                                 <p:column>
                                     <p:commandButton id="deleteattach"
                                                      action="#{prodRegAppMbean.deleteDoc(doc)}" ajax="false"
@@ -880,7 +886,7 @@
                     <p:outputLabel for="mktauthcert" value="#{msgs.mkt_auth_cert}"/>
                     <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
 
-                    <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
+                    <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}*"/>
                     <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate" 
                     			navigator="true" showOn="button" rendered="true"
                                 pattern="#{userAccessMBean.workspace.datePattern}">
