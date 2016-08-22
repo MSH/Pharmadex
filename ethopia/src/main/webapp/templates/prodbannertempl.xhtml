@@ -46,9 +46,10 @@
                 <td>
                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
                     <p:commandLink id="viewLink" value="#{prodApp.applicant.appName}"
-                                  action="/public/applicantdetail.faces"
+                                  action="/public/processapplicant.faces"
                                    ajax="false" style="color: darkblue;">
-                        <f:param name="applicantID" value="#{prodApp.applicant.applcntId}"/>
+               			<f:param name="sourcePage" value="/public/applicantlist.faces"/>
+               			<f:param name="appID" value="#{licHolder.applcntId}"/>
                     </p:commandLink>
                 </td>
                 <td align="right">

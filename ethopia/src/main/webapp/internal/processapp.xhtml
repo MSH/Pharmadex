@@ -29,34 +29,9 @@
                 </p:menu>
                                                
                 <h:panelGroup styleClass="ui-widget">
-                    <h1 class="title ui-widget-header ui-corner-all">
-                        <table class="banner">
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{processApplicantMBean.applicant.appName}" styleClass="title"
-                                                   style="font-weight: bold; font-size: 1.5em"/>
-                                </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.application_status}: "
-                                                   style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{processApplicantMBean.applicant.state}"
-                                                   style="font-weight: bold;color: #a52a2a;"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processApplicantMBean.applicant.applcntId}" styleClass="title"/>
-                                </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processApplicantMBean.applicant.submitDate}">
-                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                                    </h:outputFormat>
-                                </td>
-                            </tr>
-                        </table>
-                    </h1>
+                	<ui:include src="/templates/applicantbannertempl.xhtml">
+                    	<ui:param name="applic" value="#{processApplicantMBean.applicant}"/>
+                    </ui:include>
                     <p:messages id="messages" showDetail="true" showSummary="true"/>
 
                     <p:growl id="growl" showDetail="true" showSummary="true"/>
@@ -66,9 +41,9 @@
                                     dynamic="true">
 						<p:tab title="#{msgs.applicant_detail}" id="detailtab" >
                         	<ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                            	<ui:param name="applicantdata" value="#{processApplicantMBean.applicant}"></ui:param>
-                            	<ui:param name="input" value="true"/>
-                        	</ui:decorate>
+	                            <ui:param name="applicantdata" value="#{processApplicantMBean.applicant}"></ui:param>
+	                            <ui:param name="input" value="#{userSession.admin}"/>
+	                        </ui:decorate>
                         </p:tab>
                         <p:tab title="#{msgs.global_comment}" id="commenttab" >
                         	<h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
@@ -76,13 +51,6 @@
 		                	</h:panelGrid>
                         </p:tab>
                     </p:tabView>
-                   <!--  <p:panel header="#{msgs.applicant_detail}">
-                        <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                            <ui:param name="applicantdata" value="#{processApplicantMBean.applicant}"></ui:param>
-                            <ui:param name="input" value="true"/>
-                        </ui:decorate>
-
-                    </p:panel> -->
 
                     <h:panelGroup id="selectuser" rendered="#{userSession.staff}">
                         <p:panel header="#{msgs.person_responsible}">

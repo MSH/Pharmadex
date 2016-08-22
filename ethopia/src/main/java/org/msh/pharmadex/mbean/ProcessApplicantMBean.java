@@ -24,7 +24,7 @@ import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ApplicantState;
 import org.msh.pharmadex.domain.enums.UserRole;
 import org.msh.pharmadex.domain.enums.UserType;
-import org.msh.pharmadex.mbean.applicant.ProcessAppBn;
+import org.msh.pharmadex.mbean.applicant.ApplicantMBean;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.MailService;
@@ -40,7 +40,7 @@ import org.springframework.web.util.WebUtils;
  */
 @ManagedBean
 @ViewScoped
-public class ProcessApplicantMBean extends ProcessAppBn implements Serializable {
+public class ProcessApplicantMBean extends ApplicantMBean implements Serializable {
 	@ManagedProperty(value = "#{globalEntityLists}")
     GlobalEntityLists globalEntityLists;
     FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -71,6 +71,22 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
 
 	@PostConstruct
     private void init() {
+		String appID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("appID");
+		if(appID != null && !appID.equals("")) {
+			applicant = applicantService.findApplicant(Long.valueOf(appID));
+			if(applicant != null){
+				userList = new ArrayList<User>();
+				if(applicant.getUsers() != null && applicant.getUsers().size() > 0)
+					userList.addAll(applicant.getUsers());
+
+				//selectResponsable = addUserInList(findResponsableInDB(), usersByApplicant);
+			}
+		}else{
+			applicant = new Applicant();
+			userList = new ArrayList<User>();
+			//selectResponsable = new User();
+		}
+			
         if (user == null) {
             user = new User();
             user.getAddress().setCountry(new Country());
@@ -224,12 +240,13 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
     /** Checking of buttons visibility, depends from status (local agent actions) */
     public boolean renderItemsMenu(String btn){
     	boolean vis = !userSession.isCompany();// это условие было в xhtml 
-    	getApplicant();
+    	//getApplicant();
     	if(applicant != null){
     		User curUser = userSession.getUserAccess().getUser();
     		if(btn.equals("SAVE")){ // для любого состояния
-    			// видна в NEW_APPLICATION, SUSPENDED;
-    			vis = vis && (applicant.getState().equals(ApplicantState.NEW_APPLICATION) || applicant.getState().equals(ApplicantState.SUSPENDED));
+    			// видна в NEW_APPLICATION, SUSPENDED or by admin;
+    			vis = vis && (userSession.isAdmin() || 
+    					applicant.getState().equals(ApplicantState.NEW_APPLICATION) || applicant.getState().equals(ApplicantState.SUSPENDED));
     		}
     		if(btn.equals("REGISTER")){
     			// видна в NEW_APPLICATION, SUSPENDED;
@@ -268,7 +285,7 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
     }
     
     public Applicant getApplicant() {
-        if (applicant == null) {
+       /* if (applicant == null) {
             if (userSession.getApplcantID() != null) {
                 applicant = applicantService.findApplicant(userSession.getApplcantID());
                 if (applicant.getAddress() == null)
@@ -277,7 +294,7 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
                     applicant.getAddress().setCountry(new Country());
             } else 
                 applicant = null;
-        }
+        }*/
         return applicant;
     }
 
@@ -306,10 +323,10 @@ public class ProcessApplicantMBean extends ProcessAppBn implements Serializable 
     }
 
     public List<User> getUserList() {
-        if (userList == null) {
+        /*if (userList == null) {
             if (applicant != null)
                 userList = applicant.getUsers();
-        }
+        }*/
         return userList;
     }
 
