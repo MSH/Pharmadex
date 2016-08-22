@@ -149,9 +149,12 @@ public class UserDAO implements Serializable {
 	}
 
 	public User findByUsernameOrEmail(User u) throws NoResultException {
-		return (User) entityManager.createQuery("select u from User u left join fetch u.roles r left join fetch u.applicant a where u.username = :username or u.email = :email ")
+		List<User> list = entityManager.createQuery("select u from User u left join fetch u.roles r left join fetch u.applicant a where u.username = :username or u.email = :email ")
 				.setParameter("username", u.getUsername())
-				.setParameter("email", u.getEmail()).getSingleResult();
+				.setParameter("email", u.getEmail()).getResultList();
+		if(list != null && list.size() > 0)
+			return list.get(0);
+		return null;
 	}
 
 	public List<User> findProcessors() {

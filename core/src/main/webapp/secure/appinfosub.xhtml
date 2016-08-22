@@ -10,7 +10,7 @@
         <!-- Display the panel for company users -->
         <h:panelGroup rendered="#{userSession.company and  (empty regHomeData.applicant.applcntId)}">
             <h:outputLabel value="#{msgs.prodreghome_reg_info1}"/>
-            <p:commandLink action="appregistration.faces" ajax="false"
+            <p:commandLink action="applicantform.faces" ajax="false"
                            value="Please click here to register an applicant."
                            immediate="true"/>
             <h:outputLabel value="#{msgs.prodreghome_reg_info2}"/>
@@ -33,7 +33,7 @@
         <h:panelGroup rendered="#{not empty regHomeData.applicant.applcntId}">
             <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
                 <ui:param name="applicantdata" value="#{regHomeData.applicant}"/>
-                <ui:param name="input" value="false"/>
+                <ui:param name="input" value="#{false}"/>
             </ui:decorate>
         </h:panelGroup>
     </p:panel>

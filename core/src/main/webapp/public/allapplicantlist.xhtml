@@ -23,10 +23,10 @@
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_applicant}"/>
                     </f:facet>
-
-
                     <p:commandLink id="viewLink" value="#{licHolder.appName}" 
-                    		action="#{applicantMBean.sentToDetail(licHolder.applcntId)}" ajax="false">
+                    			action="#{applicantMBean.publicForm()}" ajax="false">
+                            <f:param name="sourcePage" value="/public/allapplicantlist.faces"/>
+               				<f:param name="appID" value="#{licHolder.applcntId}"/>
                     </p:commandLink>
                 </p:column>
 
@@ -59,16 +59,14 @@
 
 
                 <p:column filterBy="#{licHolder.phoneNo}" rendered="#{userSession.staff}"
-                          sortBy="#{licHolder.phoneNo}"
-                >
+                          sortBy="#{licHolder.phoneNo}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.applicant_phone}"/>
                     </f:facet>
                     <h:outputText value="#{licHolder.phoneNo}"/>
                 </p:column>
                 <p:column filterBy="#{licHolder.state}"
-                          sortBy="#{msgs[licHolder.state.key]}"
-                >
+                          sortBy="#{msgs[licHolder.state.key]}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.state}"/>
                     </f:facet>
@@ -102,14 +100,5 @@
             </h:panelGrid>
 
         </h:form>
-
-        <p:dialog header="#{msgs.applicant_detail}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
-                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
-            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
-                <ui:param name="input" value="#{false}"/>
-            </ui:decorate>
-        </p:dialog>
-
     </ui:define>
 </ui:composition>

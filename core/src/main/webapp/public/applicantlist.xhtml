@@ -24,23 +24,12 @@
                         <h:outputText value="#{msgs.registration_applicant}"/>
                     </f:facet>
 
-
-                   <!--  <p:commandLink id="viewLink" value="#{licHolder.appName}" 
-                    		action="#{applicantMBean.sentToDetail(licHolder.applcntId)}" ajax="false">
-                    </p:commandLink> -->
-                    <p:commandLink id="viewLink" value="#{licHolder.appName}" action="#{applicantMBean.sentToDetail(licHolder.applcntId)}"
-                                       ajax="false">
-                    	<f:setPropertyActionListener value="#{licHolder.applcntId}" target="#{userSession.applcantID}"/>
+                    <p:commandLink value="#{licHolder.appName}" 
+                    				action="#{applicantMBean.publicForm()}" ajax="false">
+                            <f:param name="sourcePage" value="/public/applicantlist.faces"/>
+               				<f:param name="appID" value="#{licHolder.applcntId}"/>
                     </p:commandLink>
                 </p:column>
-
-<!-- <p:column headerText="#{msgs.registration_applicant}">
-                        <p:commandLink value="#{licHolder.appName}" action="#{processAppListBn.goToAppDetail}"
-                                       ajax="false">
-                            <f:setPropertyActionListener value="#{licHolder.applcntId}"
-                                                         target="#{userSession.applcantID}"/>
-                        </p:commandLink>
-                    </p:column> -->
 
                 <p:column filterBy="#{licHolder.applicantType.name}"
                           sortBy="#{licHolder.applicantType.name}">
@@ -70,15 +59,12 @@
 
 
                 <p:column filterBy="#{licHolder.phoneNo}" rendered="#{userSession.staff}"
-                          sortBy="#{licHolder.phoneNo}"
-                >
+                          sortBy="#{licHolder.phoneNo}">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.applicant_phone}"/>
                     </f:facet>
                     <h:outputText value="#{licHolder.phoneNo}"/>
                 </p:column>
-
-
             </p:dataTable>
 
             <h:panelGrid columns="2" width="100%">
@@ -106,14 +92,5 @@
             </h:panelGrid>
 
         </h:form>
-
-        <p:dialog header="#{msgs.applicant_detail}" id="viewDlg" modal="true" widgetVar="viewDialog" dynamic="true"
-                  resizable="true" maximizable="true" showEffect="fade" hideEffect="explode">
-            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                <ui:param name="applicantdata" value="#{applicantHome.applicant}"/>
-                <ui:param name="input" value="#{false}"/>
-            </ui:decorate>
-        </p:dialog>
-
     </ui:define>
 </ui:composition>

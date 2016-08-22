@@ -78,11 +78,15 @@ public class ApplicantDAO implements Serializable {
     
     @Transactional
     public Applicant saveApplicant(Applicant applicant) {
-//        for (User u : applicant.getUsers()) {
-//            u.setApplicant(applicant);
-//            entityManager.merge(u);
-//        }
-
+    	 applicant.getAddress().setCountry(countryDAO.find(applicant.getAddress().getCountry().getId()));
+         List<User> list = applicant.getUsers();
+         if(list != null && list.size() > 0){
+         	for(User u:list){
+         		u.setApplicant(applicant);
+         		//entityManager.merge(u);
+         	}
+         }
+         
         Applicant a = entityManager.merge(applicant);
         entityManager.flush();
         return a;
@@ -95,7 +99,7 @@ public class ApplicantDAO implements Serializable {
         if(list != null && list.size() > 0){
         	for(User u:list){
         		u.setApplicant(applicant);
-        		entityManager.merge(u);
+        		//entityManager.merge(u);
         	}
         }
         Applicant a = entityManager.merge(applicant);

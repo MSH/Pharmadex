@@ -43,7 +43,7 @@ public class NavigationBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         WebUtils.setSessionAttribute(request, "applicantMBean", null);
-        return "/secure/appregistration.faces";
+        return "/secure/applicantform.faces";///secure/appregistration.faces";
 
     }
 

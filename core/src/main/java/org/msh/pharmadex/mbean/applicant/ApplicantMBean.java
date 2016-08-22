@@ -1,7 +1,5 @@
 package org.msh.pharmadex.mbean.applicant;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,14 +12,18 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.faces.event.ComponentSystemEvent;
 import javax.servlet.http.HttpServletRequest;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ApplicantType;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.domain.enums.UserRole;
 import org.msh.pharmadex.domain.enums.UserType;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.GlobalEntityLists;
@@ -43,153 +45,251 @@ public class ApplicantMBean implements Serializable {
 
 	private static final long serialVersionUID = -3983563460376543047L;
 	@ManagedProperty(value = "#{applicantService}")
-    ApplicantService applicantService;
-    @ManagedProperty(value = "#{userService}")
-    UserService userService;
-    @ManagedProperty(value = "#{globalEntityLists}")
-    GlobalEntityLists globalEntityLists;
-    FacesContext facesContext = FacesContext.getCurrentInstance();
-    ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-    private Applicant selectedApplicant;
-    private List<Applicant> allApplicant;
-    private List<Applicant> allStateApplicant;
-    private List<Applicant> filteredApplicant;
-    private User user;
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
-    private ArrayList<User> userList;
+	ApplicantService applicantService;
+	@ManagedProperty(value = "#{userService}")
+	UserService userService;
+	@ManagedProperty(value = "#{globalEntityLists}")
+	GlobalEntityLists globalEntityLists;
+	FacesContext facesContext = FacesContext.getCurrentInstance();
+	ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+	private Applicant selectedApplicant;
+	private List<Applicant> allApplicant;
+	private List<Applicant> allStateApplicant;
+	private List<Applicant> filteredApplicant;
+	private User user;
+	@ManagedProperty(value = "#{userSession}")
+	private UserSession userSession;
+	
+	@ManagedProperty(value = "#{roleDAO}")
+	private RoleDAO roleDAO;
 
-    private User selectResponsable;
-    
-    @PostConstruct
-    private void init() {
-        selectedApplicant = new Applicant();
-       /* if (userSession.isGeneral() || userSession.isCompany()) {
-            user = userService.findUser(userSession.getLoggedINUserID());
-            selectedApplicant.getAddress().setCountry(user.getAddress().getCountry());
-            selectedApplicant.setContactName(user != null ? user.getName() : null);
-            selectedApplicant.setEmail(user != null ? user.getEmail() : null);
-        }*/
-    }
+	private User selectResponsable;
+	/** use in form applicant */
+	private List<User> usersByApplicant;
+	
+	private String sourcePage="/home.faces";
+	
+	private List<ProdApplications> prodApplicationses;
+	private List<ProdApplications> prodNotRegApplicationses;
 
-    public void onRowSelect() {
-        facesContext = FacesContext.getCurrentInstance();
-        facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), "Selected " + selectedApplicant.getAppName()));
-    }
+	@PostConstruct
+	private void init() {
+		//appID
+		String appID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("appID");
+		if(appID != null && !appID.equals("")) {
+			selectedApplicant = applicantService.findApplicant(Long.valueOf(appID));
+			if(selectedApplicant != null){
+				usersByApplicant = new ArrayList<User>();
+				if(selectedApplicant.getUsers() != null && selectedApplicant.getUsers().size() > 0)
+					usersByApplicant.addAll(selectedApplicant.getUsers());
 
-    public String sentToDetail(Long id) {
-        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
-        flash.put("appID", id);
-        return "applicantdetail";
-    }
-
-    public void initNewUser() {
-        user = new User();
-        user.setType(UserType.COMPANY);
-        user.setEnabled(false);
-    }
-
-    /*public String submitApp() {
-        facesContext = FacesContext.getCurrentInstance();
-        try {
-            if(applicantService.isApplicantDuplicated(selectedApplicant.getAppName())){
-                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_applicant_exist"), ""));
-                return "";
-            }
-            if (selectedApplicant.getUsers() == null) {
-                FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
-                error.setSeverity(FacesMessage.SEVERITY_ERROR);
-                facesContext.addMessage(null, error);
-                return "";
-            }
-            if(getSelectResponsable() == null){
-            	FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
-                error.setSeverity(FacesMessage.SEVERITY_ERROR);
-                facesContext.addMessage(null, error);
-				return "";
+				selectResponsable = addUserInList(findResponsableInDB(), usersByApplicant);
 			}
-            selectedApplicant.setSubmitDate(new Date());
-            // set responsable
-            selectedApplicant.setContactName(getSelectResponsable() != null ? getSelectResponsable().getUsername() : "");
-            selectedApplicant.setUsers(getProcessAppBn().getUsersByApplicant());
-         			
-            selectedApplicant = applicantService.submitApp(selectedApplicant);
-            if (selectedApplicant != null) {
-                user.setApplicant(selectedApplicant);
-                if (userSession.isCompany()) {
-                    userSession.setApplcantID(selectedApplicant.getApplcntId());
-                    userSession.setDisplayAppReg(false);
-                    userSession.setApplcantID(selectedApplicant.getApplcntId());
-                }
-                selectedApplicant = new Applicant();
-                HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-                WebUtils.setSessionAttribute(request, "applicantMBean", null);
-                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_submit_success")));
-                return "/public/applicantlist.faces";
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
-            return null;
+		}else{
+			selectedApplicant = new Applicant();
+			usersByApplicant = new ArrayList<User>();
+			selectResponsable = new User();
+		}
+
+		String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
+        if (srcPage != null){
+            sourcePage = srcPage;
+            buildIdApp();
         }
-    }*/
+	}
 
-    public List<ApplicantType> completeApplicantTypeList(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getApplicantTypes());
+	private void buildIdApp(){
+    	int index = sourcePage.indexOf(":");
+    	if(index != -1){
+    		//String id = sourcePage.substring(0, index);
+    		//idAppSource = new Long(id);
+    		sourcePage = sourcePage.substring(index + 1);
+    	}
     }
+	
+	public List<User> completeUserList(String query) {
+		return JsfUtils.completeSuggestions(query, getUnregisteredUsers());
+	}
 
-    public void editApp() {
-        System.out.println("inside editUser");
-    }
+	public void onRowSelect() {
+		facesContext = FacesContext.getCurrentInstance();
+		facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), "Selected " + selectedApplicant.getAppName()));
+	}
 
-    public String cancelApp() {
-        selectedApplicant = new Applicant();
-        facesContext = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-        WebUtils.setSessionAttribute(request, "applicantMBean", null);
-        return "/home.faces";
-    }
+	public void initNewUser() {
+		user = new User();
+		user.setType(UserType.COMPANY);
+		user.setEnabled(false);
+	}
 
-    @Transactional
-    public void addUserToApplicant() {
-        if (userList == null)
-            userList = new ArrayList<User>();
-        userList.add(user);
-        selectedApplicant.setUsers(userList);
-//        applicantService.updateApp(selectedApplicant, user);
-        user = new User();
+	@Transactional
+	public void addSelectUserInList() {
+		if(user != null){
+			if(usersByApplicant == null)
+				usersByApplicant = new ArrayList<User>();
+			boolean flag = true;
+			for(User us:usersByApplicant){
+				if(us.getEmail().equals(user.getEmail()))
+					flag = false;
+			}
+			if(flag)
+				usersByApplicant.add(user);
+			else{
+				FacesMessage msg = new FacesMessage(resourceBundle.getString("Error.dublicateUser"), user.getUsername());
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+			user = new User();
+		}
+	}
 
-    }
+	public String submitApp() {
+		if(varificationApplicant(true)){
+			selectedApplicant.setSubmitDate(new Date());
+			applicantService.submitApp(selectedApplicant);
 
-    @Transactional
-    public void newUser() {
-        user.setEnabled(false);
-        user.setType(UserType.COMPANY);
-        String username = user.getName().replaceAll("\\s", "");
-        user.setUsername(username);
-        user.setPassword(username);
-        
-        user = userService.passwordGenerator(user);
-        
-        if (!userService.isEmailDuplicated(user.getEmail()) && !userService.isUsernameDuplicated(user.getUsername())) {
-            if (userList == null)
-                userList = new ArrayList<User>();
-            userList.add(user);
-            selectedApplicant.setUsers(userList);
-//        applicantService.updateApp(selectedApplicant, user);
-            user = new User();
-        } else {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            facesContext.validationFailed();
-            ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-            facesContext.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("valid_user_exist"), resourceBundle.getString("valid_user_exist")));
-        }
+			facesContext = FacesContext.getCurrentInstance();
+			HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+			WebUtils.setSessionAttribute(request, "applicantMBean", null);
+			facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
+			return sourcePage;
+		}
+		return null;
+	}
 
-    }
-    
-    public void validate(ComponentSystemEvent e) {
+	public String saveApp() {
+		if(varificationApplicant(false)){
+			selectedApplicant.setUpdatedDate(new Date());
+			applicantService.updateApp(selectedApplicant, null);
+
+			facesContext = FacesContext.getCurrentInstance();
+			HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+			WebUtils.setSessionAttribute(request, "applicantMBean", null);
+			facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
+			return sourcePage;
+		}
+		return null;
+	}
+
+	public String registerApplicant() {
+		if(varificationApplicant(false)){
+			applicantService.updateApp(selectedApplicant, ApplicantState.REGISTERED);
+			FacesContext context = FacesContext.getCurrentInstance();
+			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			WebUtils.setSessionAttribute(request, "applicantMBean", null);
+			return sourcePage;
+		}
+		return null;
+	}
+
+	private boolean varificationApplicant(boolean isSubmit){
+		try {
+			if (selectedApplicant == null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
+				return false;
+			}
+			if(isSubmit){
+				if(applicantService.isApplicantDuplicated(selectedApplicant.getAppName())){
+					FacesMessage error = new FacesMessage(resourceBundle.getString("valid_applicant_exist"));
+					error.setSeverity(FacesMessage.SEVERITY_ERROR);
+					FacesContext.getCurrentInstance().addMessage(null, error);
+					return false;
+				}
+			}
+			if (!(usersByApplicant != null && usersByApplicant.size() > 0)) {
+				FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
+				error.setSeverity(FacesMessage.SEVERITY_ERROR);
+				FacesContext.getCurrentInstance().addMessage(null, error);
+				return false;
+			}
+			if(selectResponsable == null){
+				FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
+				error.setSeverity(FacesMessage.SEVERITY_ERROR);
+				FacesContext.getCurrentInstance().addMessage(null, error);
+				return false;
+			}
+			// set or update responsable
+			selectedApplicant.setContactName(selectResponsable != null ? selectResponsable.getUsername() : "");
+			selectedApplicant.setUsers(usersByApplicant);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
+			return false;
+		}
+	}
+
+	public List<ApplicantType> completeApplicantTypeList(String query) {
+		return JsfUtils.completeSuggestions(query, globalEntityLists.getApplicantTypes());
+	}
+
+	public void editApp() {
+		System.out.println("inside editUser");
+	}
+
+	public String cancelApp() {
+		selectedApplicant = new Applicant();
+		facesContext = FacesContext.getCurrentInstance();
+		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+		WebUtils.setSessionAttribute(request, "applicantMBean", null);
+		//"/home.faces"
+		return sourcePage;
+	}
+
+	@Transactional
+	public void addUserToApplicant() {
+		if (usersByApplicant == null)
+			usersByApplicant = new ArrayList<User>();
+		usersByApplicant.add(user);
+		selectedApplicant.setUsers(usersByApplicant);
+		user = new User();
+
+	}
+
+	@Transactional
+	public void newUser() {
+		user.setEnabled(false);
+		user.setType(UserType.COMPANY);
+		String username = user.getName().replaceAll("\\s", "");
+		user.setUsername(username);
+		user.setPassword(username);
+
+		user = userService.passwordGenerator(user);
+		List<Role> roles = new ArrayList<Role>();
+		Role role = findRole(UserRole.ROLE_COMPANY);
+		if(role != null)
+			roles.add(role);
+		user.setRoles(roles);
+		
+		User verifUser = userService.findByUsernameOrEmail(user);
+		if(verifUser != null){// dublicate
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.validationFailed();
+			ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+			facesContext.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("valid_user_exist"), resourceBundle.getString("valid_user_exist")));
+			return ;
+		}
+
+		if (usersByApplicant == null)
+			usersByApplicant = new ArrayList<User>();
+		usersByApplicant.add(user);
+		selectedApplicant.setUsers(usersByApplicant);
+
+		user = new User();
+	}
+
+	private Role findRole(UserRole enumrole){
+		List<Role> allRoles = (List<Role>) roleDAO.findAll();
+		if(allRoles != null && allRoles.size() > 0){
+			for(Role r:allRoles){
+				if(r.getRolename().equals(enumrole))
+					return r;
+			}
+		}
+		return null;
+	}
+	
+	public void validate(ComponentSystemEvent e) {
 		if(selectResponsable == null){
 			FacesContext fc = FacesContext.getCurrentInstance();
 			fc.addMessage(null, new FacesMessage("Error selected user."));
@@ -197,131 +297,207 @@ public class ApplicantMBean implements Serializable {
 		}
 	}
 
-   /* public List<User> completeUserList(String query) {
-        return JsfUtils.completeSuggestions(query, getAvailableUsers());
-    }*/
-
-    public String cancelAddUser() {
-        user = new User();
-        return "";
-    }
-
-
-    public List<User> getAvailableUsers() {
-        return userService.findUnregisteredUsers();
-    }
-
-
-    public Applicant getSelectedApplicant() {
-//        init();
-        return selectedApplicant;
-    }
-
-    public void setSelectedApplicant(Applicant selectedApplicant) {
-        this.selectedApplicant = selectedApplicant;
-    }
-
-
-    public List<Applicant> getAllApplicant() {
-        if(allApplicant==null)
-                 allApplicant = applicantService.getRegApplicants();
-
-        return allApplicant;
-    }
-
-    public void setAllApplicant(List<Applicant> allApplicant) {
-        this.allApplicant = allApplicant;
-    }
-
-    public void setAllStateApplicant(List<Applicant> allStateApplicant) {
-        this.allStateApplicant = allStateApplicant;
-    }
-
-    public List<Applicant> getAllStateApplicant() {
-        if(allStateApplicant==null)
-
-                allStateApplicant = applicantService.findAllApplicants(null);
-
-        return allStateApplicant;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Applicant> getFilteredApplicant() {
-        return filteredApplicant;
-    }
-
-    public void setFilteredApplicant(List<Applicant> filteredApplicant) {
-        this.filteredApplicant = filteredApplicant;
-    }
-
-    public ArrayList<User> getUserList() {
-        if (userList == null) {
-            if (selectedApplicant != null && selectedApplicant.getApplcntId() != null)
-                userList = (ArrayList<User>) userService.findUserByApplicant(selectedApplicant.getApplcntId());
-            /*else{// create a new applicant
-            	userList = new ArrayList<User>();
-            	user = userService.findUser(userSession.getLoggedINUserID());
-            	userList.add(user);
-            }*/
-        }
-        return userList;
-    }
-    
-    public String userIsEnabled(User usRow){
-		if(usRow != null)
-			if(!usRow.isEnabled())
-				return "X";
+	public String cancelAddUser() {
+		user = new User();
 		return "";
 	}
 
-    public void setUserList(ArrayList<User> userList) {
-        this.userList = userList;
-    }
 
-    public ApplicantService getApplicantService() {
-        return applicantService;
-    }
+	public List<User> getAvailableUsers() {
+		return userService.findUnregisteredUsers();
+	}
 
-    public void setApplicantService(ApplicantService applicantService) {
-        this.applicantService = applicantService;
-    }
 
-    public UserService getUserService() {
-        return userService;
-    }
+	public Applicant getSelectedApplicant() {
+		return selectedApplicant;
+	}
 
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+	public void setSelectedApplicant(Applicant selectedApplicant) {
+		this.selectedApplicant = selectedApplicant;
+	}
 
-    public GlobalEntityLists getGlobalEntityLists() {
-        return globalEntityLists;
-    }
 
-    public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
-        this.globalEntityLists = globalEntityLists;
-    }
+	public List<Applicant> getAllApplicant() {
+		if(allApplicant==null)
+			allApplicant = applicantService.getRegApplicants();
 
-    public UserSession getUserSession() {
-        return userSession;
-    }
+		return allApplicant;
+	}
 
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
-    
-    public void setSelectResponsable(User us){
+	public void setAllApplicant(List<Applicant> allApplicant) {
+		this.allApplicant = allApplicant;
+	}
+
+	public void setAllStateApplicant(List<Applicant> allStateApplicant) {
+		this.allStateApplicant = allStateApplicant;
+	}
+
+	public List<Applicant> getAllStateApplicant() {
+		if(allStateApplicant==null)
+
+			allStateApplicant = applicantService.findAllApplicants(null);
+
+		return allStateApplicant;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public List<Applicant> getFilteredApplicant() {
+		return filteredApplicant;
+	}
+
+	public void setFilteredApplicant(List<Applicant> filteredApplicant) {
+		this.filteredApplicant = filteredApplicant;
+	}
+
+	public String userIsEnabled(boolean isEn){
+		if(!isEn)
+			return "X";
+		return "";
+	}
+
+	private User findResponsableInDB(){
+		User resp = null;
+		if(selectedApplicant != null && selectedApplicant.getApplcntId() != null){
+			String contactName = selectedApplicant.getContactName();
+			if(contactName != null && !contactName.equals("") && !contactName.equals("NOT SPECIFIED"))
+				resp = userService.findUserByUsername(contactName);
+		}
+		return resp;
+	}
+
+	private User addUserInList(User us, List<User> list){
+		if(us != null && list != null){
+			for(User u:list){
+				if(us.getUserId().intValue() == u.getUserId().intValue()){
+					return u;
+				}
+			}
+			list.add(us);
+		}
+		return us;
+	}
+
+	public List<User> getUnregisteredUsers() {
+		return userService.findUnregisteredUsers();
+	}
+
+	public ApplicantService getApplicantService() {
+		return applicantService;
+	}
+
+	public void setApplicantService(ApplicantService applicantService) {
+		this.applicantService = applicantService;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public GlobalEntityLists getGlobalEntityLists() {
+		return globalEntityLists;
+	}
+
+	public void setGlobalEntityLists(GlobalEntityLists globalEntityLists) {
+		this.globalEntityLists = globalEntityLists;
+	}
+
+	public UserSession getUserSession() {
+		return userSession;
+	}
+
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
+
+	public void setSelectResponsable(User us){
 		this.selectResponsable = us;
 	}
 
 	public User getSelectResponsable(){
 		return this.selectResponsable;
+	}
+	public List<User> getUsersByApplicant(){
+		return usersByApplicant;
+	}
+
+	public void setUsersByApplicant(List<User> list){
+		this.usersByApplicant = list;
+	}
+	
+	public List<ProdApplications> getProdApplicationses() {
+		if (prodApplicationses == null && getSelectedApplicant() != null)
+			prodApplicationses = applicantService.findRegProductForApplicant(getSelectedApplicant().getApplcntId());
+
+		return prodApplicationses;
+	}
+
+	public void setProdApplicationses(List<ProdApplications> prodApplicationses) {
+		this.prodApplicationses = prodApplicationses;
+	}
+
+	public List<ProdApplications> getProdNotRegApplicationses() {
+		if (prodNotRegApplicationses == null && getSelectedApplicant() != null)
+			prodNotRegApplicationses = applicantService.findProductNotRegForApplicant(getSelectedApplicant().getApplcntId());
+
+		return prodNotRegApplicationses;
+	}
+
+	public void setProdNotRegApplicationses(List<ProdApplications> prodNotRegApplicationses) {
+		this.prodNotRegApplicationses = prodNotRegApplicationses;
+	}
+	
+	public String getSourcePage() {
+    	return sourcePage;
+    }
+
+    public void setSourcePage(String sourcePage) {
+        this.sourcePage = sourcePage;
+    }
+
+	public RoleDAO getRoleDAO() {
+		return roleDAO;
+	}
+
+	public void setRoleDAO(RoleDAO roleDAO) {
+		this.roleDAO = roleDAO;
+	}
+
+	public boolean visibleDetailsgroupPnl(){
+		if((userSession.isAdmin() || userSession.isStaff() || userSession.isHead())
+				&& getSelectedApplicant().getState() != ApplicantState.NEW_APPLICATION)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean visibleProdlistPnl(){
+		if(getSelectedApplicant().getState() != ApplicantState.NEW_APPLICATION)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean visibleRegister(){
+		if(userSession.isAdmin() && getSelectedApplicant().getState() == ApplicantState.NEW_APPLICATION)
+			return true;
+		return false;
+	}
+	
+	public String publicForm(){//userSession.getLoggedINUserID()
+		if(userSession.getLoggedInUser() != null && !"".equals(userSession.getLoggedInUser()))
+			return "/internal/processapp.faces";
+		
+		return "/public/processapplicant.faces";
 	}
 }

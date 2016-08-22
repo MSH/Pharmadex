@@ -27,10 +27,10 @@
             <p:panel header="#{msgs.recieved_applications}">
                 <p:dataTable id="applicants" var="licHolder" value="#{processAppListBn.pendingApps}">
                     <p:column headerText="#{msgs.registration_applicant}">
-                        <p:commandLink value="#{licHolder.appName}" action="#{processAppListBn.goToAppDetail}"
+                        <p:commandLink value="#{licHolder.appName}" action="/internal/processapp.faces"
                                        ajax="false">
-                            <f:setPropertyActionListener value="#{licHolder.applcntId}"
-                                                         target="#{userSession.applcantID}"/>
+                            <f:param name="sourcePage" value="/internal/processapplist.faces"/>
+               				<f:param name="appID" value="#{licHolder.applcntId}"/>
                         </p:commandLink>
                     </p:column>
 

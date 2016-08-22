@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h1 class="title ui-widget-header ui-corner-all">
+		<table class="banner">
+			<tr>
+				<td>
+					<h:outputLabel value="#{applic.appName}"
+						styleClass="title" style="font-weight: bold; font-size: 1.5em" />
+				</td>
+				<td align="right">
+					<h:outputLabel value="#{msgs.application_status}: "
+						style="font-weight: bold;color: #a52a2a;" /> 
+					<h:outputLabel value="#{applic.state}"
+						style="font-weight: bold;color: #a52a2a;" /></td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputLabel value="#{msgs.application_no}: " styleClass="title" /> 
+					<h:outputFormat value="#{applic.applcntId}" styleClass="title" />
+				</td>
+				<td align="right">
+					<h:outputLabel value="#{msgs.submitted_date}: " styleClass="title" /> 
+					<h:outputFormat value="#{applic.submitDate}">
+						<f:convertDateTime pattern="MMM dd, yyyy" />
+					</h:outputFormat></td>
+			</tr>
+		</table>
+	</h1>
+</ui:composition>

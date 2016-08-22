@@ -186,7 +186,7 @@ public class ApplicantService implements Serializable {
     public Applicant submitApp(Applicant applicant) {
         applicant.setState(ApplicantState.NEW_APPLICATION);
 
-        Applicant a = applicantDAO.updateApplicant(applicant);
+        Applicant a = applicantDAO.saveApplicant(applicant);
         System.out.println("applicant id = " + applicant.getApplcntId());
         applicantConverter.setApplicantList(null);
         applicants = null;

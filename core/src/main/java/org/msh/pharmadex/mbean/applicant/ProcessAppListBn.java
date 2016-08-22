@@ -35,9 +35,9 @@ public class ProcessAppListBn implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
 
-    public String goToAppDetail() {
+   /* public String goToAppDetail() {
         return "/internal/processapp.faces";
-    }
+    }*/
 
     public List<Applicant> completeApplicantList(String query) {
         return JsfUtils.completeSuggestions(query, applicantService.findAllApplicants(null));

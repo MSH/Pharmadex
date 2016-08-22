@@ -34,11 +34,10 @@
                                     <p:submenu label="#{msgs.admin_loggedinuser}">
                                         <p:menuitem value="#{msgs.application_status}"
                                                     action="/secure/submittedapplications.faces" ajax="false"/>
-                                        <p:menuitem value="#{msgs.company_info}" action="/secure/appregistration.faces"
+                                        <p:menuitem value="#{msgs.company_info}" action="/public/processapplicant.faces"
                                                     ajax="false">
-                                            <f:setPropertyActionListener
-                                                    value="#{userSession.loggedInUserObj.applicant}"
-                                                    target="#{applicantMBean.selectedApplicant}"/>
+                                             	<f:param name="sourcePage" value="/public/applicantlist.faces"/>
+               									<f:param name="appID" value="#{userSession.applcantID}"/>
                                         </p:menuitem>
                                         <p:menuitem value="#{msgs.usersettings_preferences}"
                                                     action="/secure/usersettings.faces"

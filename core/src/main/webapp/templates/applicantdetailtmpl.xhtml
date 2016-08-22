@@ -2,13 +2,13 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+                
     <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
                  columnClasses="col1, col2, col1, col2">
         <p:outputLabel value="#{msgs.applicant_name}*" />
         <p:inputText value="#{applicantdata.appName}" rendered="#{input}"
                      onblur="value=value.toUpperCase()"
                      required="true" requiredMessage="#{msgs.valid_applicant_name}">
-<!--            <f:validator binding="#{applicantNameValidator}"/> -->
                 </p:inputText>
 
         <h:outputLabel value="#{applicantdata.appName}" rendered="#{!input}" style="font-weight: bold;"/>
@@ -55,12 +55,6 @@
         <p:outputLabel value="#{msgs.applicant_email}"/>
         <p:inputText value="#{applicantdata.email}" rendered="#{input}"/>
         <h:outputLabel value="#{applicantdata.email}" rendered="#{!input}" style="font-weight: bold;"/>
-        <!--
-                <h:outputLabel value="#{msgs.global_comment}"/>
-                <p:inputText value="#{applicantdata.comment}" rendered="#{input}"/>
-                <h:outputLabel value="#{applicantdata.comment}" rendered="#{!input}" style="font-weight: bold;"/>
-        -->
-
     </h:panelGrid>
 
 

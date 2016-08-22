@@ -2,128 +2,221 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
-                template="../templates/process_reg_layout.xhtml">
+                 xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/admin_layout.xhtml">
+                
     <ui:define name="content">
-
-        <h:form id="reghome">
-
+    	<h:form id="reghome">
             <h:panelGrid columns="2" columnClasses="menu,content" cellpadding="10px">
                 <p:menu style="width:198px">
                     <p:submenu label="#{msgs.Registration}">
                         <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk"
-                                    action="#{processAppBn.saveApp}" ajax="false"
+                                    action="#{applicantMBean.saveApp}" ajax="false"
                                    rendered="#{userSession.staff || userSession.admin}"/>
                         <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
-                                    action="#{processAppBn.registerApplicant}" ajax="false"
-                                    rendered="#{userSession.admin}"/>
+                                    action="#{applicantMBean.registerApplicant}" ajax="false"
+                                    rendered="#{applicantMBean.visibleRegister()}"/>
                         <p:menuitem value="#{msgs.global_cancel}" immediate="true"
                                     icon="ui-icon ui-icon-circle-triangle-w"
-                                    action="#{processAppBn.cancel}" ajax="false"/>
+                                    action="#{applicantMBean.cancelApp}" ajax="false"/>
                     </p:submenu>
                 </p:menu>
-
-
-                <h:panelGroup styleClass="ui-widget">
-                    <h1 class="title ui-widget-header ui-corner-all">
-                        <table class="banner">
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{processAppBn.applicant.appName}" styleClass="title"
-                                                   style="font-weight: bold; font-size: 1.5em"/>
-                                </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.application_status}: " style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{processAppBn.applicant.state}"
-                                                   style="font-weight: bold;color: #a52a2a;"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processAppBn.applicant.applcntId}" styleClass="title"/>
-                                </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{processAppBn.applicant.submitDate}">
-                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                                    </h:outputFormat>
-                                </td>
-                            </tr>
-                        </table>
-                    </h1>
-
+    
+    			<h:panelGroup styleClass="ui-widget">
+                    <ui:include src="/templates/applicantbannertempl.xhtml">
+                    	<ui:param name="applic" value="#{applicantMBean.selectedApplicant}"/>
+                    </ui:include>
+					
+					<p:messages id="messages" showDetail="true" showSummary="true"/>
                     <p:growl id="growl" showDetail="true" showSummary="true"/>
-
-                    <p:panel header="#{msgs.applicant_detail}">
+    
+    				<p:panel header="#{msgs.applicant_detail}">
                         <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-                            <ui:param name="applicantdata" value="#{processAppBn.applicant}"></ui:param>
-                            <ui:param name="input" value="true"/>
+                            <ui:param name="applicantdata" value="#{applicantMBean.selectedApplicant}"></ui:param>
+                            <ui:param name="input" value="#{userSession.admin}"/>
                         </ui:decorate>
-
                     </p:panel>
-
-                    <h:panelGroup id="selectuser" rendered="#{userSession.staff}">
+                    
+                    <h:panelGroup id="selectuser" rendered="#{userSession.staff || userSession.admin}">
                         <p:panel header="#{msgs.person_responsible}">
                             <h:panelGrid columns="1" cellpadding="10px">
-                            	<p:messages showSummary="true" showDetail="true" id="messages"/>
-                            	<p:commandLink value="#{processAppBn.loadUsersByApplicant()}" oncomplete="PF('addUserDlg').show()"
+                            	<p:commandLink value="#{msgs.user_lookup}" oncomplete="PF('addUserDlg').show()"
                                                immediate="true" style="font-weight: bolder; font-size: larger" 
-                                               update=":reghome:usertable :addUserFrm"/>
-                                <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"/>
-                                
-                                <p:commandLink value="#{msgs.user_add}" oncomplete="PF('newUserDlg').show()"
-                                               immediate="true" update=":newuser"
-                                               style="font-weight: bolder; font-size: larger"
-                                               action="#{processAppBn.initNewUser}"
-                                               rendered="#{userSession.admin}"/>
+                                               update=":addUser">
+                                      <p:resetInput target=":addUser" />
+                                </p:commandLink>
+		                        <p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"
+		                        				rendered="#{!userSession.admin}"/>
+		                        <p:commandLink value="#{msgs.user_add}" oncomplete="PF('newUserDlg').show()"
+		                                               immediate="true" update=":newuser"
+		                                               style="font-weight: bolder; font-size: larger"
+		                                               action="#{applicantMBean.initNewUser}"
+		                                               rendered="#{userSession.admin}"/>
                             </h:panelGrid>
 
-							<p:dataTable id="usertable" var="applicantUser" value="#{processAppBn.usersByApplicant}"
+							<p:dataTable id="usertable" var="applicantUser" value="#{applicantMBean.usersByApplicant}"
                                  style="width:100%;" selection="#{applicantMBean.selectResponsable}"
-                                 rowKey="#{applicantUser.userId}"
+                                 rowKey="#{applicantUser.username}" rowIndexVar="rowIndex"
                                  update=":reghome:usertable">
-		                        <p:ajax event="rowSelectRadio" listener="#{processAppBn.onRowSelect}"
-		                                update=":reghome:usertable :reghome:messages"/>
-								
-		                        <p:column headerText="#{msgs.responsable}" selectionMode="single" />
-		                        <p:column headerText="#{msgs.global_enable}" style="width:50px">
-		                        	<h:outputText value="#{applicantMBean.userIsEnabled(applicantUser)}" style="align:center; color:red"/>
-		                        </p:column>
-		                        <p:column headerText="#{msgs.User_name}">
-		                            <h:outputText value="#{applicantUser.name}"/>
-		                        </p:column>
-		
-		                        <p:column headerText="#{msgs.User_username}">
-		                            <h:outputText value="#{applicantUser.username}"/>
-		                        </p:column>
-		
-		                        <p:column headerText="#{msgs.User_email}">
-		                            <h:outputText value="#{applicantUser.email}"/>
-		                        </p:column>
-		                    </p:dataTable>
-
+				            	<p:ajax event="rowSelectRadio" listener="#{applicantMBean.onRowSelect}"
+				                    update=":reghome:usertable"/>
+										
+				            	<p:column headerText="#{msgs.responsable}" selectionMode="single" />
+				                <p:column headerText="#{msgs.global_enable}" style="width:50px">
+				                	<h:outputText value="#{applicantMBean.userIsEnabled(applicantUser.enabled)}" style="align:center; color:red"/>
+				                </p:column>
+				            	<p:column headerText="#{msgs.User_name}">
+				            		<h:outputText value="#{applicantUser.name}"/>
+				            	</p:column>
+				
+					            <p:column headerText="#{msgs.User_username}">
+					                 <h:outputText value="#{applicantUser.username}"/>
+					            </p:column>
+					
+					            <p:column headerText="#{msgs.User_email}">
+					                 <h:outputText value="#{applicantUser.email}"/>
+					            </p:column>
+				            </p:dataTable>
                         </p:panel>
                     </h:panelGroup>
-                </h:panelGroup>
+    			
+    				<p:outputPanel id="detailsgroup" autoUpdate="true">
+                        <p:panel header="#{msgs.regDetailsLabel}"
+                                 rendered="#{applicantMBean.visibleDetailsgroupPnl()}">
+                           <p:dataTable id="productsNotReg" var="prodAppsNotReg" value="#{applicantMBean.prodNotRegApplicationses}"
+                           		paginator="true" rows="10" paginatorPosition="bottom"
+                         		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         		rowsPerPageTemplate="10,20">
+	                            <p:column>
+	                                <f:facet name="header">
+	                                    <h:outputText value="#{msgs.prodName}"/>
+	                                </f:facet>
+	                                <p:commandLink id="viewLink" value="#{prodAppsNotReg.product.prodName}" 
+	                                				action="/public/productdetail.faces"
+	                                               ajax="false">
+	                                    <f:param name="prodAppID" value="#{prodAppsNotReg.id}"/>
+	                                </p:commandLink>
+	                            </p:column>
+	
+	                            <p:column>
+	                                <f:facet name="header">
+	                                    <h:outputText value="#{msgs.prodgenname}"/>
+	                                </f:facet>
+	                                <h:outputText value="#{prodAppsNotReg.product.genName}"/>
+	                            </p:column>
+	
+	                            <p:column>
+	                                <f:facet name="header">
+	                                    <h:outputText value="#{msgs.dos_form}"/>
+	                                </f:facet>
+	                                <h:outputText value="#{prodAppsNotReg.product.dosForm.dosForm}"/>
+	                            </p:column>
+	
+	                            <p:column>
+	                                <f:facet name="header">
+	                                    <h:outputText value="Dosage Strength"/>
+	                                </f:facet>
+	                                <h:outputText value="#{prodAppsNotReg.product.dosStrength}"/>
+	                            </p:column>
+								
+								<p:column>
+			                        <f:facet name="header">
+			                            <h:outputText value="#{msgs.registration_status}"/>
+			                        </f:facet>
+			                        <h:outputText value="#{msgs[prodAppsNotReg.regState.key]}"/>
+			                    </p:column>
+			
+			                    <p:column>
+			                        <f:facet name="header">
+			                            <h:outputText value="#{msgs.review_status}"/>
+			                        </f:facet>
+			                        <h:outputText value="#{msgs[prodAppsNotReg.reviewStatus.key]}"/>
+			                    </p:column>
+			
+			                    <p:column>
+			                        <f:facet name="header">
+			                            <h:outputText value="#{msgs.submitted_date}"/>
+			                        </f:facet>
+			                        <h:outputLabel converter="javax.faces.DateTime" value="#{prodAppsNotReg.submitDate}"/>
+			                    </p:column>
+                        	</p:dataTable>
+                        </p:panel>
+                    </p:outputPanel>
+    			
+    				<p:panel id="prodlist" header="#{msgs.product_list}" rendered="#{applicantMBean.visibleProdlistPnl()}">
+                        <p:dataTable id="products" var="prodApps" value="#{applicantMBean.prodApplicationses}"
+                        		paginator="true" rows="10" paginatorPosition="bottom"
+                         		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         		rowsPerPageTemplate="10,20">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodName}"/>
+                                </f:facet>
+                                <p:commandLink id="viewLink" value="#{prodApps.product.prodName}" 
+                                		action="/public/productdetail" ajax="false">
+                                    <f:param name="prodAppID" value="#{prodApps.id}"/>
+                                </p:commandLink>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodgenname}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.product.genName}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.dos_form}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.product.dosForm.dosForm}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Dosage Strength"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.product.dosStrength}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.registration_applicant}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.applicant.appName}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.registration_date}"/>
+                                </f:facet>
+                                <h:outputLabel converter="javax.faces.DateTime"
+                                               value="#{prodApps.registrationDate}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+    			</h:panelGroup>
             </h:panelGrid>
         </h:form>
-
-        <p:dialog header="#{msgs.user_add}" widgetVar="addUserDlg" id="addUserdlg" resizable="true" modal="true">
-            <h:form id="addUserFrm">
+    
+        <p:dialog header="#{msgs.user_add}" widgetVar="addUserDlg" id="addUserDlg" resizable="false" modal="true"
+        		height="100px" width="300px">
+            <h:form id="addUser">
+                <p:outputLabel value="#{msgs.userselect_info}" styleClass="hint"/>
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
-                    <h:outputLabel value="#{msgs.User_name}" for="username"/>
+                    <h:outputLabel value="#{msgs.User_username}" for="username"/>
                     <p:autoComplete id="username" value="#{applicantMBean.user}"
-                                    completeMethod="#{processAppBn.completeUserList}" dropdown="true"
+                                    completeMethod="#{applicantMBean.completeUserList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
                                     converter="#{userConverter}">
                     </p:autoComplete>
 
-                    <h:panelGroup>
-                        <p:commandButton actionListener="#{processAppBn.addSelectUserInList()}" value="#{msgs.global_add}"
+                    <h:panelGroup style="width:300px">
+                        <p:commandButton actionListener="#{applicantMBean.addSelectUserInList()}" value="#{msgs.global_add}"
                                          oncomplete="if (!args.validationFailed) PF('addUserDlg').hide()"
-                                         update=":reghome:usertable :addUserdlg :reghome:messages" process="@form"/>
-                        <p:commandButton action="#{processAppBn.cancelAddUser}" immediate="true"
+                                         update=":reghome:usertable :addUserDlg :reghome:messages" process="@form"/>
+
+                        <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
                                          value="#{msgs.global_cancel}" oncomplete="PF('addUserDlg').hide()"/>
                     </h:panelGroup>
                     <h:outputLabel/>
@@ -132,29 +225,29 @@
             </h:form>
         </p:dialog>
 
-		<p:dialog header="#{msgs.user_add}" widgetVar="newUserDlg" id="newUserdlg" resizable="true" modal="true">
+        <p:dialog header="#{msgs.user_add}" widgetVar="newUserDlg" id="newUserDlg" resizable="true" modal="true">
             <h:form id="newuser">
                 <p:growl showSummary="true"/>
                 <p:messages/>
 
                 <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                    <ui:param name="userdata" value="#{processAppBn.user}"/>
+                    <ui:param name="userdata" value="#{applicantMBean.user}"/>
                     <ui:param name="input" value="#{true}"/>
                 </ui:decorate>
 
+
                 <h:panelGroup>
-                    <p:commandButton action="#{processAppBn.newUser}"
+                    <p:commandButton action="#{applicantMBean.newUser}"
                                      value="#{msgs.global_add}"
                                      oncomplete="if (!args.validationFailed) PF('newUserDlg').hide()"
-                                     update=":reghome:usertable :newUserdlg :reghome:messages" process="@form" id="newUserBtn"/>
-                    <p:commandButton action="#{processAppBn.cancelAddUser}" immediate="true" ajax="true"
+                                     update=":reghome:usertable :newuser"/>
+                    <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
                                      value="#{msgs.global_cancel}" oncomplete="PF('newUserDlg').hide()"/>
                 </h:panelGroup>
 
-                <!-- <p:blockUI block=":newuser" trigger="newUserBtn">
-                    <p:graphicImage value="/resources/images/ajax-loader.gif"/>
-                </p:blockUI> -->
+
             </h:form>
         </p:dialog>
+
     </ui:define>
 </ui:composition>

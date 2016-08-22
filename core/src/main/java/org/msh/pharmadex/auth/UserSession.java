@@ -42,10 +42,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private UserAccess userAccess;
     private boolean displayMessagesKeys;
     private String loggedInUser;
-//    private User loggedInUserObj;
     private Long loggedINUserID;
-    //    private Long reviewID;
-//    private Long reviewInfoID;
     private Long applcantID;
     private Long prodID;
     private Long prodAppID;

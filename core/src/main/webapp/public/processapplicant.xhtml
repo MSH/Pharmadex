@@ -1,0 +1,97 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/admin_layout.xhtml">
+                
+    <ui:define name="content">
+    	<h:form id="reghome">
+            <h:panelGrid columns="2" columnClasses="menu,content" cellpadding="10px">
+                <p:menu style="width:198px">
+                    <p:submenu label="#{msgs.Registration}">
+                        <!-- <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk"
+                                    action="#{applicantMBean.saveApp}" ajax="false"
+                                   rendered="#{userSession.staff || userSession.admin}"/>
+                        <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
+                                    action="#{applicantMBean.registerApplicant}" ajax="false"
+                                    rendered="#{applicantMBean.visibleRegister()}"/> -->
+                        <p:menuitem value="#{msgs.global_exit}" immediate="true"
+                                    icon="ui-icon ui-icon-circle-triangle-w"
+                                    action="#{applicantMBean.cancelApp}" ajax="false"/>
+                    </p:submenu>
+                </p:menu>
+    
+    			<h:panelGroup styleClass="ui-widget">
+                    <ui:include src="/templates/applicantbannertempl.xhtml">
+                    	<ui:param name="applic" value="#{applicantMBean.selectedApplicant}"/>
+                    </ui:include>
+					
+					<p:messages id="messages" showDetail="true" showSummary="true"/>
+                    <p:growl id="growl" showDetail="true" showSummary="true"/>
+    
+    				<p:panel header="#{msgs.applicant_detail}">
+                        <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                            <ui:param name="applicantdata" value="#{applicantMBean.selectedApplicant}"></ui:param>
+                            <ui:param name="input" value="#{false}"/>
+                        </ui:decorate>
+                    </p:panel>
+                    
+    				<p:panel id="prodlist" header="#{msgs.product_list}" rendered="#{applicantMBean.visibleProdlistPnl()}">
+                        <p:dataTable id="products" var="prodApps" value="#{applicantMBean.prodApplicationses}"
+                        		paginator="true" rows="10" paginatorPosition="bottom"
+                         		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         		rowsPerPageTemplate="10,20">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodName}"/>
+                                </f:facet>
+                                <p:commandLink id="viewLink" value="#{prodApps.product.prodName}" 
+                                		action="/public/productdetail" ajax="false">
+                                    <f:param name="prodAppID" value="#{prodApps.id}"/>
+                                </p:commandLink>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.prodgenname}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.product.genName}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.dos_form}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.product.dosForm.dosForm}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Dosage Strength"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.product.dosStrength}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.registration_applicant}"/>
+                                </f:facet>
+                                <h:outputText value="#{prodApps.applicant.appName}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.registration_date}"/>
+                                </f:facet>
+                                <h:outputLabel converter="javax.faces.DateTime"
+                                               value="#{prodApps.registrationDate}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+    			</h:panelGroup>
+            </h:panelGrid>
+        </h:form>
+    
+    </ui:define>
+</ui:composition>

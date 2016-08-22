@@ -45,13 +45,6 @@
                 <td>
                     <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
                     <h:outputLabel value="#{prodApp.applicant.appName}" styleClass="title"/>
-                    <ui:remove>
-                   		<p:commandLink id="viewLink" value="#{prodApp.applicant.appName}"
-                                  action="/public/applicantdetail.faces"
-                                   ajax="false" style="color: darkblue;">
-                        	<f:param name="applicantID" value="#{prodApp.applicant.applcntId}"/>
-                    	</p:commandLink>
-                    </ui:remove>
                 </td>
                 <td align="right">
                     <h:outputLabel value="#{msgs.applicationResp}: " styleClass="title"/>
