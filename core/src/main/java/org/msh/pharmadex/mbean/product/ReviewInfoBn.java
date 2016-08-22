@@ -67,7 +67,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 @ViewScoped
 public class ReviewInfoBn implements Serializable {
 
-
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
@@ -111,7 +110,7 @@ public class ReviewInfoBn implements Serializable {
     private User loggedInUser;
     private boolean submitted=false;
     private String sourcePage="/internal/processreviewlist";
-    private Long idProdAppSource = null; 
+    private Long idProdAppSource = null;
 
     private int header1ActIndex = 0;
     private int header2ActIndex = 0;
@@ -747,8 +746,4 @@ public class ReviewInfoBn implements Serializable {
 	public void setReviewStatus(ReviewStatus reviewStatus) {
 		this.reviewStatus = reviewStatus;
 	}
-
-	
-
-	
 }

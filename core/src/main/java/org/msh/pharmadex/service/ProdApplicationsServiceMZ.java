@@ -388,7 +388,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * Create deficiency letter and store it to letters
 	 * @return
 	 */
-	public String createDeficiencyLetterScr(ProdApplications prodApp){
+	public String createDeficiencyLetterScr(ProdApplications prodApp, String days, Date dueDate){
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
@@ -407,6 +407,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);			
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_DAYS, days, true);
+			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
 
 			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
@@ -639,15 +641,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 	}
 
-	public RetObject createReviewDeficiencyLetter(ProdApplications prodApp,String com , RevDeficiency revDeficiency){
+	public RetObject createReviewDeficiencyLetter(ProdApplications prodApp, String com, RevDeficiency revDeficiency){
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
 		try {
 			ReviewInfo ri = reviewInfoDAO.findOne(revDeficiency.getReviewInfo().getId());
-			ri.setReviewStatus  (ReviewStatus.FIR_SUBMIT);
-
-
+			ri.setReviewStatus (ReviewStatus.FIR_SUBMIT);
+			
+			Date dueDate = revDeficiency.getDueDate();
+			
 			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
@@ -666,6 +669,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);	
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,getSentComment(revDeficiency), true);
+			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
 
 			String res ="";
 			if(prodApp != null){

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-12T17:45:46 -->
+<!-- 2016-08-22T17:46:05 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -25,6 +25,7 @@
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="manufName" class="java.lang.String"/>
 	<parameter name="execSummary" class="java.lang.String"/>
+	<parameter name="DueDate" class="java.util.Date"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -85,7 +86,7 @@
 				<textElement>
 					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DueDate} != null ? $P{DueDate} : new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="0" y="300" width="555" height="20" uuid="f554b4e1-98fc-4663-b821-7fc5677724cb"/>
@@ -365,7 +366,8 @@
 				<textElement textAlignment="Left">
 					<font fontName="DejaVu Serif" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[DEPARTAMENTO FARMACÊUTICO
+				<text><![CDATA[MINISTÉRIO DA SAÚDE
+DEPARTAMENTO FARMACÊUTICO
 C. Postal
 Av. Agostinho Neto/Salvador Allende 
 MAPUTO-MOÇAMBIQUE ]]></text>

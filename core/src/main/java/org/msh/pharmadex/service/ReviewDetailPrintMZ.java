@@ -74,8 +74,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_3"),
 					prodApp.getProduct().getProdName(), null,null,null,null);
 		if (prop.getProperty("chapter1_4") != null)
-			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_4"),
-					prodApp.getProduct().getDosStrength(), null,null,null,null);
+			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_4"), fetchFullDosStrength(), null,null,null,null);
 		if (prop.getProperty("chapter1_5") != null)
 			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_5"), fetchExcipients(), null,null,null,null);
 		if (prop.getProperty("chapter1_6") != null)
@@ -151,12 +150,13 @@ public class ReviewDetailPrintMZ implements Serializable {
 	
 	private static void printItemReview(List<Map<String, Object>> res, String chapter1, ReviewItemReport item){
 		String text = "";
-		
-		if(item.getFirstRevName() != null){
-			text = "<b>" + item.getFirstRevName() + "</b>:<br>" + item.getFirstRevComment() + "<br>";
+		//pri_processor
+		//sec_processor
+		if(item.getFirstRevName() != null){//item.getFirstRevName()
+			text = "<b>" + bundle.getString("pri_processor") + "</b>:<br>" + item.getFirstRevComment() + "<br>";
 		}
-		if(item.getSecondRevName() != null){
-			text += (text.isEmpty()?"":"<br>") + "<b>" + item.getSecondRevName() + "</b>:<br>" + item.getSecondRevComment() + "<br>";
+		if(item.getSecondRevName() != null){//item.getSecondRevName()
+			text += (text.isEmpty()?"":"<br>") + "<b>" + bundle.getString("sec_processor") + "</b>:<br>" + item.getSecondRevComment() + "<br>";
 		}
 
 		if(!text.isEmpty())
@@ -247,12 +247,28 @@ public class ReviewDetailPrintMZ implements Serializable {
 			List<Atc> atcs = prodApp.getProduct().getAtcs();
 			if(atcs != null && atcs.size() > 0){
 				for(Atc atc:atcs){
-					names += (names.isEmpty()?"":", ") + atc.getAtcName();
+					names += (names.isEmpty()?"":", ") + atc.getDisplayName();
 				}
 			}
 		}else
 			names = "N/A";
 		return names;
+	}
+	
+	private static String fetchFullDosStrength() {
+		String res = "";
+		if(prodApp != null && prodApp.getProduct() != null){
+			res = prodApp.getProduct().getDosStrength();
+			if(res != null && !res.equals("")){
+				if(prodApp.getProduct().getDosUnit() != null){
+					String unit = prodApp.getProduct().getDosUnit().getUom();
+					if(unit !=null && !unit.equals(""))
+						res += " " + unit;
+				}
+			}else
+				res = "";
+		}
+		return res;
 	}
 	
 	private static String fetchManufacture(ProductCompanyDAO prodCompanyDAO, boolean onlyName) {

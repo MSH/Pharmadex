@@ -84,6 +84,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_EXECSUMMARY = "execSummary"; /**заключение модератора*/
 	public static String KEY_APPTELLFAX = "appTellFax";
 	public static String KEY_APPEMAIL = "appEmail";
+	public static String KEY_DAYS = "repdays";
 	public static String KEY_PROD_ROUTE_ADMINISTRATION = "prodRouteAdministration";
 	
 	private HashMap<String, Object> param = null;

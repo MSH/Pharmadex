@@ -94,6 +94,14 @@ public class Atc extends CreationDetail implements Serializable
 
    		return s;
    	}
+   	
+   	/**
+   	 * AtcCode AtcName
+   	 */
+   	public String getDisplayName() {
+   		String s = getAtcCode() + " " + getAtcName();
+   		return s;
+   	}
 
     /**
      * Check if an atc code (passed as the code parameter) is a child of the current atc

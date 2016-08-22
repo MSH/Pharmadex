@@ -13,10 +13,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
@@ -111,8 +107,8 @@ public class ReviewInfoBnMZ implements Serializable {
             		com = getReviewInfoBn().getReviewComment().getComment();
             
             RetObject rez = prodApplicationsServiceMZ.
-            		createReviewDeficiencyLetter(getReviewInfoBn().getProdApplications(),com,
-            				getReviewInfoBn().getRevDeficiency());
+            		createReviewDeficiencyLetter(getReviewInfoBn().getProdApplications(),
+            				com, getReviewInfoBn().getRevDeficiency());
             
             if (rez.getMsg().equals("success")) {
             	getReviewInfoBn().setReviewInfo((ReviewInfo) rez.getObj());            	
