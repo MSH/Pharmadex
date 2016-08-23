@@ -18,7 +18,6 @@
                                value="#{msgs.prodreghome_reg_info1} #{msgs.prodreghome_reg_info2} #{msgs.prodreghome_reg_info3}"/>
             </h:panelGrid>
 
-
             <h:panelGrid columns="1" cellpadding="10" cellspacing="10" rendered="#{prodRegInit.eligible}">
                 <p:outputLabel styleClass="hint" value="#{msgs.prodreghome_reg_info4}"/>
             </h:panelGrid>
@@ -34,16 +33,11 @@
                     </p:selectOneMenu>
                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
 
-
-
                     <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
                     <p:outputLabel value="#{prodRegInit.fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
                     <p:outputLabel/>
-
-
-
                 </h:panelGrid>
 
                 <div style="height:10px"/>
@@ -56,21 +50,6 @@
 
             <div style="height:10px"/>
 
-<!--
-            <p:dataTable var="each" value="#{prodRegInit.checklists}" id="checklisttable"
-                         rendered="#{prodRegInit.displayfeepanel}">
-                <f:facet name="header">
-                    Required Documents
-                </f:facet>
-
-                <p:column headerText="#{msgs.checklist_moduleno}" width="100">
-                    <h:outputLabel value="#{each.moduleNo}"/>
-                </p:column>
-                <p:column headerText="#{msgs.checklist_name}">
-                    <h:outputLabel value="#{each.name}"/>
-                </p:column>
-            </p:dataTable>
--->
             <p:dataTable var="checkList" value="#{prodRegInit.checklists}" style="width:100%;"
                          rendered="#{prodRegInit.displayfeepanel}">
                 <f:facet name="header">

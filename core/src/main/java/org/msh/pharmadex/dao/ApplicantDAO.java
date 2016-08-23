@@ -106,6 +106,11 @@ public class ApplicantDAO implements Serializable {
         return a;
     }
 
+    @Transactional
+    public Applicant updateApplicantResp(Applicant applicant) {
+        Applicant a = entityManager.merge(applicant);
+        return a;
+    }
 
     public User findApplicantDefaultUser(Long applcntId) {
         return (User) entityManager.createQuery("select u from User u where u.applicant.applcntId = :appID")

@@ -59,6 +59,13 @@ public class GlobalLists implements Serializable {
         prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
         return Arrays.asList(ProdAppType.values());
     }
+    
+    public List<ProdAppType> getProdAppTypeShortList() {
+        List<ProdAppType> prodAppTypes = new ArrayList<ProdAppType>();
+        prodAppTypes.add(ProdAppType.GENERIC);
+        prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
+        return prodAppTypes;
+    }
 
     public List<ProdDrugType> getDrugTypes() {
         return Arrays.asList(ProdDrugType.values());

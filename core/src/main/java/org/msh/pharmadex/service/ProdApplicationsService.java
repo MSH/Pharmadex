@@ -418,7 +418,8 @@ public class ProdApplicationsService implements Serializable {
 				if(appl != null && applUs != null){
 					if(applUs.getUsername() != null){
 						appl.setContactName(prodApplications.getApplicantUser().getUsername());
-						applicantDAO.saveApplicant(appl);
+						//applicantDAO.saveApplicant(appl);
+						applicantDAO.updateApplicantResp(appl);
 					}
 				}
 				prodApplicationsDAO.saveApplication(prodApplications);
