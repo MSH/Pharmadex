@@ -26,6 +26,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -111,7 +112,7 @@ public class ProdDeficiencyBn implements Serializable {
 	}
 
 	public void createDeficiencyLetter(){
-		String s = getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications, days, dueDate);
+		String s = getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications, days, dueDate, getProdAppChecklistsToApplicant());
 		if(!s.equals("persist")){
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
 		}else{
@@ -138,6 +139,17 @@ public class ProdDeficiencyBn implements Serializable {
 		}
 		return prodAppChecklists;
 	}
+	
+	public List<ProdAppChecklist> getProdAppChecklistsToApplicant() {
+		List<ProdAppChecklist> ret = new ArrayList<ProdAppChecklist>();
+		for(ProdAppChecklist item : getProdAppChecklists()){
+			if(item.isSendToApp()){
+				ret.add(item);
+			}
+		}
+		return ret;
+	}
+	
 
 	public void setProdAppChecklists(List<ProdAppChecklist> prodAppChecklists) {
 		this.prodAppChecklists = prodAppChecklists;
@@ -163,7 +175,7 @@ public class ProdDeficiencyBn implements Serializable {
 				if(pacs.getStaffValue()!=null)
 					pacs.setSendToApp(pacs.getStaffValue().equals(YesNoNA.NO));
 				else
-					pacs.setSendToApp(true);
+					pacs.setSendToApp(pacs.getChecklist().isHeader());
 			}
 			FacesContext.getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
 		}
