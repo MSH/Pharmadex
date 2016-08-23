@@ -747,7 +747,8 @@ public class ProdRegAppMbean implements Serializable {
 				selectedInns = product.getInns();
 				selectedExipients = product.getExcipients();
 				selectedAtcs = product.getAtcs();
-				companies = product.getProdCompanies();
+				companies = companyService.findCompanyByProdID(product.getId());//product.getProdCompanies();
+				
 				applicant = prodApplications.getApplicant();
 
 				applicantUser = prodApplications.getApplicantUser();

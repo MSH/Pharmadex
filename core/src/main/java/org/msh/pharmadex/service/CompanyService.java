@@ -1,5 +1,6 @@
 package org.msh.pharmadex.service;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.dao.iface.CompanyDAO;
 import org.msh.pharmadex.dao.iface.ProdCompanyDAO;
 import org.msh.pharmadex.domain.Address;
@@ -120,6 +121,11 @@ public class CompanyService implements Serializable {
 	}
 
 	public List<ProdCompany> findCompanyByProdID(Long prodID) {
-		return prodCompanyDAO.findByProduct_Id(prodID);
+		List<ProdCompany> list = prodCompanyDAO.findByProduct_Id(prodID);
+		if(list != null && list.size() > 0){
+			for(ProdCompany pc:list)
+				Hibernate.initialize(pc.getCompany());
+		}
+		return list;
 	}
 }
