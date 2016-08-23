@@ -13,8 +13,10 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.service.SampleTestServiceMZ;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 
 /**
@@ -29,14 +31,17 @@ public class SampleTestBnMZ implements Serializable {
     
     @ManagedProperty(value = "#{sampleTestBn}")
     private SampleTestBn sampleTestBn;
-
+    
+    @ManagedProperty(value = "#{userSession}")
+    private UserSession userSession;
+    
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     public void addSample() {
         getSampleTestBn().createSample();
         
-        RetObject riRetObj = sampleTestServiceMZ.createSampleReqLetter(getSampleTestBn().getSampleTest());
+        RetObject riRetObj = sampleTestServiceMZ.createSampleReqLetter(getSampleTestBn().getSampleTest(),userSession.getLoggedINUserID() );
         if (!riRetObj.getMsg().equalsIgnoreCase("persist")) {
         	facesContext = FacesContext.getCurrentInstance();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
@@ -62,4 +67,13 @@ public class SampleTestBnMZ implements Serializable {
 	public void setSampleTestServiceMZ(SampleTestServiceMZ sampleTestServiceMZ) {
 		this.sampleTestServiceMZ = sampleTestServiceMZ;
 	}
+
+	public UserSession getUserSession() {
+		return userSession;
+	}
+
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
+
 }
