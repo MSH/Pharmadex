@@ -54,7 +54,7 @@ public class ProdAckLetterFormMZ implements Serializable {
     
     public void createLetter(ProdApplications prodApp){
     	buildParametrs(prodApp);
-    	prodApplicationsServiceMZ.createAckLetter(prodApp);
+    	prodApplicationsServiceMZ.createAckLetter(prodApp, userSession.getLoggedINUserID());
     }
     
     public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
