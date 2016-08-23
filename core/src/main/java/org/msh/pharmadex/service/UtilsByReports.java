@@ -25,8 +25,10 @@ public class UtilsByReports implements Serializable {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 	public static final String FLD_DEFICITEM_NAME = "defItemName";
-
+	
 	public static String KEY_MODERNAME = "moderName";
+	public static String KEY_MODINITIALS = "modInitials";
+	public static String KEY_SCRINITIALS = "scrInitials";
 	public static String KEY_APPNAME = "appName";
 	public static String KEY_ADDRESS1 = "address1";
 	public static String KEY_ADDRESS2 = "address2";
@@ -223,6 +225,18 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_MODERNAME)){
 			if(prodApps.getModerator() != null){
 				str= prodApps.getModerator().getName();
+				param.put(k, str);
+			}
+		}		
+		if(k.equals(KEY_MODINITIALS)){
+			if(prodApps.getModerator() != null){
+				if( prodApps.getModerator().getName()!=null){
+					String [] res = prodApps.getModerator().getName().split(" ");
+					for (String item : res) {
+						str+=item.substring(0, 1);
+					}
+				}			 
+			
 				param.put(k, str);
 			}
 		}

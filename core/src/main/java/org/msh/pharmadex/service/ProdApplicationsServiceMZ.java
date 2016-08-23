@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.Resource;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,6 +44,7 @@ import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
@@ -88,6 +90,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	@Autowired
 	private ProdAppLetterDAO prodAppLetterDAO;
 
+	@Autowired
+    UserService userService;
+	 
+	/*@ManagedProperty(value = "#{userService}")
+	private UserService userService;*/
+		
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -331,13 +339,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		return JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 	}
 
-	public String createRejectCert(ProdApplications prodApp, String summary) {
+	public String createRejectCert(ProdApplications prodApp, String summary , Long loggedINUserID ) {
 		this.prodApp = prodApp;
 		this.product = prodApp.getProduct();
 		try {
 			File invoicePDF = null;
 			invoicePDF = File.createTempFile("" + product.getProdName().split(" ")[0] + "_rejection", ".pdf");
-			JasperPrint jasperPrint = initRejectCert(summary);
+			JasperPrint jasperPrint = initRejectCert(summary,loggedINUserID );
 			if(jasperPrint != null){
 				net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 				prodApp.setRejCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
@@ -354,7 +362,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		return "created";
 	}
 
-	private JasperPrint initRejectCert(String summary) throws JRException {
+	private JasperPrint initRejectCert(String summary, Long loggedINUserID ) throws JRException {
 		URL resource = getClass().getResource("/reports/rejection_letter.jasper");
 		if(resource != null){
 			HashMap<String, Object> param = new HashMap<String, Object>();
@@ -376,7 +384,18 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
 			
-			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,summary, true);
+			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,summary, true);			
+			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
+			
+			if(loggedINUserID!=null){
+				User curuser = userService.findUser(loggedINUserID);
+				String res = "";
+				if(curuser!=null){	
+					if(prodApp!=null)
+						res = getUsername(curuser);														
+				}
+				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, res, true);				
+			}
 			param.put("date", new Date());
 
 			return JasperFillManager.fillReport(resource.getFile(), param);
@@ -583,8 +602,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @param prodApp current prodapplication
 	 * @return persist or error
 	 */
-	public String createAckLetter(ProdApplications prodApp) {
-		context = FacesContext.getCurrentInstance();
+	public String createAckLetter(ProdApplications prodApp, Long loggedINUserID) {
+		context = FacesContext.getCurrentInstance();		 
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
@@ -611,7 +630,19 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPPOST, "", false);				
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
-
+			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
+			
+			if(loggedINUserID!=null){
+				User curuser = userService.findUser(loggedINUserID);		
+				String res="";
+				if(curuser!=null){				
+					if(prodApp!=null)
+						res = getUsername(curuser);
+				}
+				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, res, true);
+			}
+		
+			
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
@@ -639,6 +670,19 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			return "error";
 		}
+	}
+
+	private String getUsername(User curuser ) {
+		String res = "";
+		if (curuser.getName() != null) {				
+			if (!curuser.getName().equals("Sultana Razaco")) {
+				String[] in = curuser.getName().split(" ");
+				for (String item : in) {
+					res += item.substring(0, 1).toLowerCase();
+				}
+			}			
+		}
+		return res;
 	}
 
 	public RetObject createReviewDeficiencyLetter(ProdApplications prodApp, String com, RevDeficiency revDeficiency){

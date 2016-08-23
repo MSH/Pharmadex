@@ -24,6 +24,7 @@ import org.msh.pharmadex.dao.iface.SampleTestDAO;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
@@ -57,14 +58,17 @@ public class SampleTestServiceMZ implements Serializable {
 	private UtilsByReports utilsByReports;
 	
 	@Autowired
-	private SampleTestService sampleTestService;
+	private SampleTestService sampleTestService;	
 
-	public RetObject createSampleReqLetter(SampleTest sampleTest){
+	@Autowired
+	UserService userService;
+		 
+	public RetObject createSampleReqLetter(SampleTest sampleTest,Long loggedINUserID  ){
 		ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
 		Product product = prodApp.getProduct();
 		try {
 			File invoicePDF = File.createTempFile("" + product.getProdName().split(" ")[0] + "_samplerequest", ".pdf");
-			JasperPrint jasperPrint = initSampleReq(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity());
+			JasperPrint jasperPrint = initSampleReq(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity(),loggedINUserID);
 			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 			byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 			
@@ -96,7 +100,7 @@ public class SampleTestServiceMZ implements Serializable {
 		}
 	}
 
-	public JasperPrint initSampleReq(ProdApplications prodApplications, SampleComment sampleComment, String quantity) throws JRException, SQLException {
+	public JasperPrint initSampleReq(ProdApplications prodApplications, SampleComment sampleComment, String quantity, Long loggedINUserID ) throws JRException, SQLException {
 		Product product = prodApplications.getProduct();
 		URL resource = getClass().getResource("/reports/sample_request.jasper");
 		//Connection conn = entityManager.unwrap(Session.class).connection();
@@ -120,7 +124,23 @@ public class SampleTestServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_PROD_DETAILS, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 		
-		
+		utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
+				
+		if(loggedINUserID!=null){
+			User curuser = userService.findUser(loggedINUserID);			
+			if(curuser!=null){
+				String res = "";
+				if (curuser.getName() != null) {					
+					if (!curuser.getName().equals("Sultana Razaco")) {
+						String[] in = curuser.getName().split(" ");
+						for (String item : in) {
+							res += item.substring(0, 1).toLowerCase();
+						}							
+					}
+				}
+				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, res, true);
+			}
+		}
 		/*utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
 		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
