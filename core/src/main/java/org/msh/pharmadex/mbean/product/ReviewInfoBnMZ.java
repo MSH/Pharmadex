@@ -190,4 +190,9 @@ public class ReviewInfoBnMZ implements Serializable {
 		}
 	}
 
+	public boolean visibleSubmitBtn(){
+		//userSession.reviewer and !reviewInfoBn.reviewInfo.submitted and reviewInfoBn.priReview
+		boolean vis = userSession.isReviewer() && !getReviewInfoBn().isSubmitted() && getReviewInfoBn().isPriReview();
+		return vis;
+	}
 }
