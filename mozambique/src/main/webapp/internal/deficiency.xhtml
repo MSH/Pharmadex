@@ -60,12 +60,8 @@
 				<h:panelGrid id="reviewgrid" columns="1" width="100%"
 					cellpadding="10" cellspacing="10">
 					<p:dataTable var="checkList"
-						value="#{prodDeficiencyBn.prodAppChecklists}" style="width:100%;"
+						value="#{prodDeficiencyBn.prodAppChecklistsToApplicant}" style="width:100%;"
 						id="checkListTbl">
-						<p:column headerText="#{msgs.UserType_STAFF}" style="width:40px;">
-							<p:selectBooleanCheckbox value="#{checkList.sendToApp}"
-								rendered="#{checkList.checklist.header}" />
-						</p:column>
 						<p:column headerText="" style="width:60px;">
 							<h:outputLabel value="#{checkList.checklist.moduleNo}" />
 						</p:column>
