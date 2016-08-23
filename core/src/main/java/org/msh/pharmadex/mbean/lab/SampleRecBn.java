@@ -283,14 +283,14 @@ public class SampleRecBn implements Serializable {
     }
 
     public boolean isDisplaySubmit() {
-        if (userSession.isLab() || userSession.isStaff()) {
+//        if (userSession.isLab() || userSession.isStaff()) {
             if (sampleTest.getSampleTestStatus().ordinal() < 2)
                 displaySubmit = true;
             else
                 displaySubmit = false;
-        } else {
-            displaySubmit = false;
-        }
+ //       } else {
+ //           displaySubmit = false;
+ //       }
 
         return displaySubmit;
     }

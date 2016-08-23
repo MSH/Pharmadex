@@ -314,13 +314,13 @@ public class SampleDetailBn implements Serializable {
     }
 
     public boolean isDisplayRec() {
-        if (userSession.isLab() || userSession.isStaff()) {
+//        if (userSession.isLab() || userSession.isStaff()) {
             if (sampleTest != null) {
                 displayRec = true;
             } else {
                 displayRec = false;
             }
-        }
+//        }
         return displayRec;
     }
 
