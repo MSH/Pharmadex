@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-22T17:45:09 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
+<!-- 2016-08-23T15:00:30 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6499b4e2-6ed0-423c-8082-f3978445c6ce">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="67"/>
@@ -14,7 +14,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="appPost" class="java.lang.String"/>
 	<parameter name="appAddress" class="java.lang.String"/>
@@ -28,25 +28,15 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="400" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-			<staticText>
-				<reportElement x="0" y="95" width="572" height="27" forecolor="#000000" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[_____________________________________________]]></text>
-			</staticText>
+		<band height="384" splitType="Stretch">
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="236" y="0" width="100" height="100" uuid="b94aef40-5b47-43d1-87ca-52fddd50615b">
+				<reportElement x="236" y="0" width="100" height="100" uuid="8d47c2fa-0b2d-4003-bbfa-541cceda29af">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="120" width="565" height="16" forecolor="#000000" uuid="30c1f4e9-fde5-43ec-8691-2cdadea7d354">
+				<reportElement x="0" y="120" width="565" height="16" forecolor="#000000" uuid="aac29409-1cd9-4a6f-b5b1-b9fe766ce261">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -56,27 +46,7 @@
 				<text><![CDATA[REPÚBLICA DE MOÇAMBIQUE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-1" y="142" width="572" height="16" uuid="27f4e9a2-30ef-4e9d-a5cb-95bec35d7e13">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[MINISTÉRIO DA SAÚDE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="160" width="572" height="16" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="11" isBold="true" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[Departamento Farmacêutico]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="306" y="180" width="248" height="16" uuid="9d8562d4-e78e-42be-a876-957d00f421b2">
+				<reportElement x="306" y="180" width="248" height="16" uuid="26611ed1-9df0-46b7-b5d9-6c90c79f6173">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -86,7 +56,7 @@
 				<text><![CDATA[Exmo Senhor]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="306" y="200" width="249" height="13" uuid="c4de58fc-e062-4138-b03a-1ea442e2d1fd">
+				<reportElement positionType="Float" x="306" y="200" width="249" height="13" uuid="17c845e0-712a-478c-882b-5a6c9ce841d1">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -97,7 +67,7 @@
 				<textFieldExpression><![CDATA[$P{appPost} == null ? "Director Técnico da":$P{appPost}.concat(" da")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="306" y="220" width="249" height="13" uuid="26565555-8d5c-4bbe-a489-5ae2ebf09d27">
+				<reportElement positionType="Float" x="306" y="220" width="249" height="13" uuid="b3c28430-af9c-4618-b2b4-da4eb838ec99">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -109,7 +79,7 @@
 				<textFieldExpression><![CDATA[$P{appName} == null ? "":$P{appName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="306" y="240" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
+				<reportElement positionType="Float" x="306" y="240" width="249" height="13" uuid="0e6218c5-4304-4254-88db-71492a116344">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -121,49 +91,49 @@
 				<textFieldExpression><![CDATA[$P{appAddress} == null ? "Maputo": ($P{appAddress}== ""?"Maputo" :$P{appAddress})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="270" width="380" height="17" uuid="2d4c9c75-a1b3-4cc0-b4f9-25e2d14dcac4"/>
+				<reportElement positionType="Float" x="0" y="270" width="380" height="17" uuid="ca3416c3-8152-4d68-9eca-183d36b73e37"/>
 				<textElement>
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<text><![CDATA[Refª Nº                  /                    /DF                                      Maputo,        de]]></text>
 			</staticText>
 			<textField pattern="MMM, yyyy">
-				<reportElement positionType="Float" x="380" y="270" width="100" height="18" uuid="34c21125-f6d7-40e1-9acb-dcb2fbeedd42"/>
+				<reportElement positionType="Float" x="380" y="270" width="100" height="18" uuid="b4b30bd2-36ef-4bba-9b8e-6b13b3325b5d"/>
 				<textElement>
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DueDate} != null ? $P{DueDate} : new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="300" width="60" height="20" uuid="3bd89e11-368c-41ae-bf60-32b8ea001c75"/>
+				<reportElement positionType="Float" x="0" y="300" width="60" height="20" uuid="97fe4bbc-02cc-4774-8728-928d309b4a48"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<text><![CDATA[Assunto:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="59" y="300" width="491" height="20" uuid="f554b4e1-98fc-4663-b821-7fc5677724cb"/>
+				<reportElement positionType="Float" x="59" y="300" width="491" height="20" uuid="d5065222-2d66-4cf2-827f-190c2d6a0e75"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Serif" isBold="true" isUnderline="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Pedido de elemento do produto ".concat($P{prodName})  == null ? "":$P{prodName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="6" y="332" width="544" height="20" uuid="1523de84-ac50-46eb-badc-c85639761375"/>
+				<reportElement positionType="Float" x="6" y="332" width="544" height="20" uuid="6facab37-4a46-48e8-9dcd-53089235d23a"/>
 				<textElement>
 					<font fontName="DejaVu Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Processo nº:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="5" y="360" width="550" height="24" uuid="0966b53c-0404-4bf5-bf0d-99e112ece84c"/>
+				<reportElement positionType="Float" x="5" y="360" width="550" height="24" uuid="64c8d0bd-d75a-4652-aefb-d0aa22436f4d"/>
 				<textElement markup="html">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Efectuadas as avaliações clínica e farmacêutica do produto acima referenciado, o Departamento Farmacêutico informa que, a aprovação desta especialidade farmacêutica (<b><u>".concat($P{fullName}).concat("</u></b>), fica condicionada a apresentação da informação que se segue:")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="320" width="551" height="1" uuid="8e2d0272-6f18-4433-a318-d9903276c17b">
+				<reportElement positionType="Float" x="0" y="320" width="551" height="1" uuid="22c87f91-13dd-40dd-9158-22fedc299f38">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -171,19 +141,10 @@
 			</textField>
 		</band>
 	</title>
-	<pageHeader>
-		<band splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-		</band>
-	</pageHeader>
-	<columnHeader>
-		<band height="1" splitType="Stretch"/>
-	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
-			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="555" height="20" uuid="ffb97e9b-6e1f-485b-9c87-61ec5736b192"/>
+				<reportElement x="0" y="0" width="555" height="20" uuid="8b5a9baf-ecfe-4aed-b63a-1e3902284f1e"/>
 				<textElement markup="html">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
@@ -192,17 +153,14 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="1" splitType="Stretch">
+		<band height="10" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="81" splitType="Stretch">
-			<line>
-				<reportElement x="0" y="0" width="572" height="2" uuid="557d0146-13a6-4abc-a0a9-6b6867e4d9f6"/>
-			</line>
+		<band height="76" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="5" width="285" height="71" uuid="4f3358e4-5eaa-4362-af95-137ada0bd0bc">
+				<reportElement x="0" y="5" width="285" height="71" uuid="f98deb71-91d3-4498-a4c4-d735a709ce57">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left">
@@ -215,7 +173,7 @@ Av. Agostinho Neto/Salvador Allende
 MAPUTO-MOÇAMBIQUE ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="285" y="5" width="285" height="71" uuid="f271c2ed-6fa9-4cd2-96c9-c7bc74c8a87d">
+				<reportElement x="285" y="5" width="285" height="71" uuid="afaa49e2-994c-4c3f-8fe2-dbfed9c5171d">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -227,13 +185,15 @@ MAPUTO-MOÇAMBIQUE ]]></text>
 TEL: 00258 21 303473
 FAX: 00258 21 326547]]></text>
 			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="572" height="2" uuid="0615c947-8ebb-4b86-8af5-0ee7f505db83"/>
+			</line>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="200" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="180" splitType="Stretch">
 			<staticText>
-				<reportElement x="120" y="80" width="300" height="20" uuid="0fe2c96c-9cef-4022-9637-5f1fc2db6834">
+				<reportElement x="120" y="80" width="300" height="20" uuid="d129f370-3fd2-462c-9f52-afecacbe6a8d">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -242,12 +202,12 @@ FAX: 00258 21 326547]]></text>
 				<text><![CDATA[A Chefe do Departamento]]></text>
 			</staticText>
 			<line>
-				<reportElement x="120" y="120" width="300" height="1" uuid="f64599aa-6d88-4396-ad02-73590f0d9ded">
+				<reportElement x="120" y="120" width="300" height="1" uuid="17319d54-edfd-4b64-9074-8c89a4f7c558">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="120" y="130" width="300" height="18" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
+				<reportElement positionType="Float" x="120" y="130" width="300" height="18" uuid="ae7e9852-840c-45cd-a8ee-a25c1707729f">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -258,24 +218,14 @@ FAX: 00258 21 326547]]></text>
 				<textFieldExpression><![CDATA[$P{appUserName} == null ? "Dra Tânia V. Sitoie":$P{appUserName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="120" y="160" width="300" height="20" uuid="15ff9fe7-fdcb-4075-9938-a3f874058b5b">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="12" isBold="false"/>
-				</textElement>
-				<text><![CDATA[(Farmacêutica MSc, SN)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="10" y="48" width="250" height="22" uuid="d51225b6-2888-4d3a-a67c-28851cb084d1"/>
+				<reportElement x="10" y="48" width="250" height="22" uuid="b5378e06-b599-4f9c-a335-8f4c95b2ab53"/>
 				<textElement>
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<text><![CDATA[Atenciosamente,]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="5" y="20" width="554" height="20" uuid="0e7b3d01-3a4a-44ce-889b-04fadc041581">
+				<reportElement x="5" y="20" width="554" height="20" uuid="f1886ae8-3dbd-4185-b9e8-ab79613dcb71">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -286,6 +236,16 @@ FAX: 00258 21 326547]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA["Em conformidade aguardamos que nos sejam enviadas as respostas no prazo de " + $P{repdays} + " dias "]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="120" y="160" width="300" height="20" uuid="1b13d3f5-84d0-44f4-9e88-84329855eea2">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(Farmacêutica MSc, SN)]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>
