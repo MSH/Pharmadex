@@ -402,10 +402,12 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 	public List<ProdApplications> getAllAncestor(ProdApplications proda) {
 		ProdApplications an=proda;
 		List<ProdApplications> ans=new ArrayList<ProdApplications> ();
-		while (an.getParentApplication()!=null) {
-			 an=	prodApplicationsDAO.findProdApplications(proda.getParentApplication().getId());
-			if (an!=null) ans.add(an);
-			
+		while (an!=null) {
+			an=	prodApplicationsDAO.findProdApplications(an.getParentApplication().getId());
+			if (an!=null) 
+			{ans.add(an);
+			an=an.getParentApplication();
+			}
 		}
 		return ans;
 	}
