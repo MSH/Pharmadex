@@ -188,12 +188,14 @@ ul.ui-menu-child {
 								id="_spring_security_remember_me" /></td>
 
 					</tr>
+<ui:remove>
 					<tr>
 						<td><p:commandLink action="#{userMBean.goToResetPwd}"
 								value="#{msgs.reset_password}" ajax="false" immediate="true" />
 						</td>
 
 					</tr>
+</ui:remove>
 					<tr>
 						<td><p:commandButton type="submit" id="login"
 								action="#{userAuthHandler.doLogin}" value="Login" ajax="false" />

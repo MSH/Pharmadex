@@ -52,7 +52,7 @@
                                  rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted}"/>
                 <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('reviewDlg').show()"
                                  ajax="true" action="#{reviewInfoBn.initComment}"
-                                 rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted and reviewInfoBn.priReview}"/>
+                                 rendered="#{reviewInfoBnMZ.visibleSubmitBtn()}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
                                  action="#{reviewInfoBn.getSourcePage}"
                                  ajax="false">

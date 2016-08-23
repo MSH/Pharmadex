@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+
+        <div class="post" style="width: 1024px">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.user_setting}</h1>
+        </div>
+
+        <p:panel>
+            <h:panelGrid columns="1">
+                <h:outputLabel value="#{msgs.loginmessage}"/>
+
+                <h:outputLink id="loginLink" value="javascript:void(0)" onclick="PF('logindlg').show()" title="login">
+                    <h:outputLabel value="#{msgs.clicktologin}"/>
+                </h:outputLink>
+                <div>
+                    <p><p:outputLabel value="#{msgs.registermessage}"/>
+<ui:remove>
+                        <h:link title="Register me" outcome="registeruser">
+                            <h:outputLabel value="#{msgs.registerme}"/>
+                        </h:link>
+</ui:remove>
+                    </p>
+                </div>
+            </h:panelGrid>
+        </p:panel>
+
+
+    </ui:define>
+</ui:composition>
