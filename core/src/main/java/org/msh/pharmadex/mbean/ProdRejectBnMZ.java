@@ -66,7 +66,7 @@ public class ProdRejectBnMZ implements Serializable {
         processProdBn.getTimeLineList().add(timeLine);
         getProdRejectBn().getProdApplications().setRegState(timeLine.getRegState());
 
-        String s = getProdApplicationsServiceMZ().createRejectCert(getProdRejectBn().getProdApplications(), getProdRejectBn().getSummary());
+        String s = getProdApplicationsServiceMZ().createRejectCert(getProdRejectBn().getProdApplications(), getProdRejectBn().getSummary(),userSession.getLoggedINUserID());
 		if(!s.equals("created")){
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
 		}else{
