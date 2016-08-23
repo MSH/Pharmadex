@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-10T16:05:03 -->
+<!-- 2016-08-22T12:45:37 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -271,7 +271,7 @@ Medicamento:
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right">
-					<font fontName="DejaVu Serif" size="7" isBold="true" isUnderline="true"/>
+					<font fontName="DejaVu Serif" size="8" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Excipiente (s):]]></text>
 			</staticText>
@@ -341,12 +341,10 @@ Medicamento:
 				<reportElement positionType="Float" x="0" y="317" width="135" height="20" uuid="dbd7a3e9-2796-48eb-a237-e3baaa6fd054">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Right">
-					<font fontName="DejaVu Serif" size="7" isBold="true" isUnderline="true"/>
+				<textElement textAlignment="Right" markup="html">
+					<font fontName="DejaVu Serif" size="8" isBold="true" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[Princípio (s) 
-Farmacêutico (s) Activo (s):
-]]></text>
+				<text><![CDATA[Substância(s)<br> Activa(s)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="152" width="555" height="14" uuid="91af28f0-26be-4eba-8cf5-e4af987d1f3d">
@@ -1264,8 +1262,7 @@ Farmacêutico (s) Activo (s):
 					<font fontName="DejaVu Serif" size="14"/>
 					<paragraph lineSpacingSize="1.0" leftIndent="0"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{usecat} == null ? "" : ($P{usecat}.contains("1" )? "X" : " ")
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{usecat} == null ? "" : ($P{usecat}.contains("1" )? "X" : " ")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="391" y="58" width="17" height="24" uuid="6fc24008-2da0-4bab-8006-2f5192a59e10">

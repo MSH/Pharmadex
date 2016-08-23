@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-04T11:21:40 -->
+<!-- 2016-08-23T11:14:50 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -19,6 +19,10 @@
 	<parameter name="manufName" class="java.lang.String"/>
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="appUserName" class="java.lang.String"/>
+	<parameter name="country" class="java.lang.String"/>
+	<parameter name="modInitials" class="java.lang.String"/>
+	<parameter name="scrInitials" class="java.lang.String"/>
+	<parameter name="body" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -213,10 +217,11 @@
 				<textElement textAlignment="Left">
 					<font fontName="DejaVu Serif" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[DEPARTAMENTO FARMACÊUTICO
-C. Postal
-Av. Agostinho Neto/Salvador Allende 
-MAPUTO-MOÇAMBIQUE ]]></text>
+				<text><![CDATA[MINISTÉRIO DA SAÚDE 
+DEPARTAMENTO FARMACÊUTICO 
+Av. Agostinho Neto/Av. Salvador Allende
+Caixa Postal 264
+Maputo - Moçambique]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="285" y="5" width="285" height="71" uuid="f271c2ed-6fa9-4cd2-96c9-c7bc74c8a87d">
@@ -226,24 +231,21 @@ MAPUTO-MOÇAMBIQUE ]]></text>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Serif" size="9"/>
 				</textElement>
-				<text><![CDATA[
-
-TEL: 00258 21 303473
-FAX: 00258 21 326547]]></text>
+				<text><![CDATA[Tel:  258 21 30 34 73
+Fax: 258 21 32 65 47]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="319" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="340" splitType="Stretch">
 			<staticText>
 				<reportElement positionType="Float" x="80" y="203" width="400" height="20" uuid="0fe2c96c-9cef-4022-9637-5f1fc2db6834">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font fontName="DejaVu Serif" size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[A Presidente da Comissão Técnica de Registo de Medicamentos]]></text>
+				<text><![CDATA[A Chefe do Departamento]]></text>
 			</staticText>
 			<line>
 				<reportElement positionType="Float" x="170" y="243" width="223" height="1" uuid="f64599aa-6d88-4396-ad02-73590f0d9ded">
@@ -259,7 +261,7 @@ FAX: 00258 21 326547]]></text>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Serif" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appUserName} == null ? "Dra. Sultana Razaco":$P{appUserName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{appUserName} == null ? "Dra. Tânia V.Sitoie":$P{appUserName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="127" y="273" width="300" height="20" uuid="15ff9fe7-fdcb-4075-9938-a3f874058b5b">
@@ -270,7 +272,7 @@ FAX: 00258 21 326547]]></text>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Serif" size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[(Farmacêutica)]]></text>
+				<text><![CDATA[ (Farmacêutica MSc, SN)]]></text>
 			</staticText>
 			<textField>
 				<reportElement positionType="Float" x="0" y="10" width="200" height="16" uuid="cc33550e-5cd8-49e0-8902-2439bf85033f">
@@ -292,13 +294,21 @@ FAX: 00258 21 326547]]></text>
 				<textElement textAlignment="Justified" markup="html">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Tendo sido concluído o processo de avaliação do pedido de registo do medicamento <b> ".concat($P{prodName} == null ? "":$P{prodName}).concat("</b> fabricado pela <b>").concat($P{manufName} == null ? "":$P{manufName}).concat(" </b>, a favor do requerente <b> ").concat($P{appName}== null ? "":$P{appName}).concat("</b> nos termos disposto no artigo 4 do Regulamento de Registo de Medicamentos, aprovado pelo Decreto nº 22/99, de 4 de Maio, a Comissão Técnica de Terapêutica e Farmácia recomenda a <b>").concat(" Não Aprovação ").concat("</b>do registo deste medicamento porque a relação risco beneficio é desfavorável tendo em conta outras formulações deste produto com dosagens mais seguras.")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Tendo sido concluído o processo de avaliação do pedido de registo do medicamento <b> ".concat($P{prodName} == null ? "":$P{prodName}).concat("</b> fabricado pela <b>").concat($P{manufName} == null ? "":$P{manufName}).concat( $P{country}== null ? "":", ".concat($P{country})).concat(" </b>, a favor do requerente <b> ").concat($P{appName}== null ? "":$P{appName}).concat("</b> nos termos disposto no artigo 4 do Regulamento de Registo de Medicamentos, aprovado pelo Decreto nº 22/99, de 4 de Maio, a Comissão Técnica de Terapêutica e Farmácia recomenda a <b>").concat(" Não Aprovação ").concat("</b>do registo deste medicamento porque " ).concat( $P{body}==null? "": $P{body})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="303" width="40" height="16" uuid="e7686bea-a23e-428e-865b-b40ae4bf1e12">
+				<reportElement positionType="Float" x="0" y="322" width="180" height="16" uuid="e7686bea-a23e-428e-865b-b40ae4bf1e12">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA["SR/"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["".concat($P{modInitials} == null ?"SR":$P{modInitials}).concat("/").concat($P{scrInitials} == null ?"":$P{scrInitials})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="306" width="200" height="16" uuid="4ed7dbbb-c50b-4e3b-998f-6cc2516e446b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["C/C: S.Excia Vice – Ministro da Saúde"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
