@@ -90,8 +90,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private ProdAppLetterDAO prodAppLetterDAO;
 
 	@Autowired
-    UserService userService;
-		
+	UserService userService;
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -100,7 +100,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	@Autowired
 	private ProdAppChecklistService checkListService;
 	@Autowired
-    private SampleTestService sampleTestService;
+	private SampleTestService sampleTestService;
 
 	@Autowired
 	private ReviewInfoDAO reviewInfoDAO;
@@ -375,14 +375,14 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_BODY, summary, true);
-			
+
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
-			
+
 			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,summary, true);			
 			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
-			
+
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);
 				String res = "";
@@ -403,7 +403,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * Create deficiency letter and store it to letters
 	 * @return
 	 */
-	public String createDeficiencyLetterScr(ProdApplications prodApp, String days, Date dueDate){
+	public String createDeficiencyLetterScr(ProdApplications prodApp, String days, Date dueDate, List<ProdAppChecklist> checkLists){
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
@@ -425,7 +425,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_DAYS, days, true);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
 
-			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");
 			if(source != null){
@@ -470,11 +469,10 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
 		if(checkLists != null){
 			for(ProdAppChecklist item : checkLists){
-				if(item.getStaffValue() == YesNoNA.NO || (item.getValue() == YesNoNA.NO) && item.getStaffValue() == YesNoNA.NA){
-					Map<String,String> mp = new HashMap<String,String>();
-					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
-					res.add(mp);
-				}
+
+				Map<String,String> mp = new HashMap<String,String>();
+				mp.put(UtilsByReports.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
+				res.add(mp);
 			}
 			return new JRMapArrayDataSource(res.toArray());
 		}else{
@@ -500,14 +498,14 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.init(param, prodApp, prod);
 				utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_MODERNAME, "", false);
-				
+
 				utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_SUBMIT_DATE, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_DOSREC_DATE, "", false);
-				
+
 				int t = 0;
 				if(prodApp != null){
 					ProdAppType type = prodApp.getProdAppType();
@@ -523,7 +521,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					}
 				}
 				utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, t);
-				
+
 				utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
@@ -535,7 +533,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_PHONE, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_EMAIL, "", false);
-				
+
 				utilsByReports.putNotNull(JRParameter.REPORT_LOCALE, locale);
 
 				//TODO chief name from properties!!
@@ -627,7 +625,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
-			
+
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);		
 				String res="";
@@ -637,8 +635,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				}
 				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, res, true);
 			}
-		
-			
+
+
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
@@ -688,9 +686,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		try {
 			ReviewInfo ri = reviewInfoDAO.findOne(revDeficiency.getReviewInfo().getId());
 			ri.setReviewStatus (ReviewStatus.FIR_SUBMIT);
-			
+
 			Date dueDate = revDeficiency.getDueDate();
-			
+
 			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
@@ -926,7 +924,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					return "clinical_review";
 				}
 			}
-		
+
 			if (prodApplications.getProdAppType() != ProdAppType.RENEW) {
 				List<SampleTest> list = sampleTestService.findSampleForProd(prodApplications.getId());
 				if(list != null && list.size() > 0){
