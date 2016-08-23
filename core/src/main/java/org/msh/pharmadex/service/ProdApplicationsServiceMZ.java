@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.Resource;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -92,9 +91,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 	@Autowired
     UserService userService;
-	 
-	/*@ManagedProperty(value = "#{userService}")
-	private UserService userService;*/
 		
 	@PersistenceContext
 	private EntityManager entityManager;

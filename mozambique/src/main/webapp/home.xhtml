@@ -35,7 +35,9 @@
                                                 action="/public/productlist.faces"/>
                                     <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
                                                 url="/public/applicantlist.faces"/>
+<ui:remove>
                                     <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false"/>
+</ui:remove>
                                 </p:submenu>
 
                                 <sec:isAuthenticated>

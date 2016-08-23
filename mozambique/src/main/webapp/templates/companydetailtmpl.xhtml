@@ -55,7 +55,7 @@
 
         <p:outputLabel value="#{msgs.company_type}" rendered="#{input}" for="grid"/>
         <p:selectManyCheckbox id="grid" value="#{companyMBean.companyTypes}" layout="grid" columns="3"
-                              required="true" requiredMessage="Company type is missing">
+                              required="true" requiredMessage="#{msgs.company_missing}">
             <f:selectItems value="#{globalLists.companyType}" var="type" itemLabel="#{msgs[type.key]}"
                            itemValue="#{type}"/>
         </p:selectManyCheckbox>

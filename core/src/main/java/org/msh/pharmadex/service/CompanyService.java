@@ -20,92 +20,106 @@ import java.util.List;
  */
 @Service
 public class CompanyService implements Serializable {
-    private static final long serialVersionUID = 4206260587337054237L;
+	private static final long serialVersionUID = 4206260587337054237L;
 
 
-    @Autowired
-    CompanyDAO companyDAO;
+	@Autowired
+	CompanyDAO companyDAO;
 
-    @Autowired
-    ProdCompanyDAO prodCompanyDAO;
+	@Autowired
+	ProdCompanyDAO prodCompanyDAO;
 
-    @Autowired
-    CountryService countryService;
+	@Autowired
+	CountryService countryService;
 
-    @Autowired
-    GlobalEntityLists globalEntityLists;
+	@Autowired
+	GlobalEntityLists globalEntityLists;
 
-    @Autowired
-    ProductService productService;
+	@Autowired
+	ProductService productService;
 
-    public List<Company> findAllManufacturers() {
-        return companyDAO.findAll();
-    }
+	public List<Company> findAllManufacturers() {
+		return companyDAO.findAll();
+	}
 
-    @Transactional
-    public String removeCompany(Company company) {
-        companyDAO.delete(company);
-        return "removed";
-    }
+	@Transactional
+	public String removeCompany(Company company) {
+		companyDAO.delete(company);
+		return "removed";
+	}
 
-    @Transactional
-    public List<ProdCompany> addCompany(Product prod, Company selectedCompany, List<String> companyTypes) {
-        if (companyTypes.size() < 1)
-            return null;
+	@Transactional
+	public List<ProdCompany> addCompany(Product prod, Company selectedCompany, List<String> companyTypes) {
+		if (companyTypes.size() < 1)
+			return null;
 
-        if (prod == null)
-            return null;
+		if (prod == null)
+			return null;
 
-        if (selectedCompany == null)
-            return null;
-        Address address = selectedCompany.getAddress();
-        if (address != null && address.getCountry() != null) {
-            selectedCompany.getAddress().setCountry(countryService.findCountryById(address.getCountry().getId()));
-        }
-        List<ProdCompany> prodCompanies = prod.getProdCompanies();
+		if (selectedCompany == null)
+			return null;
+		Address address = selectedCompany.getAddress();
+		if (address != null && address.getCountry() != null) {
+			selectedCompany.getAddress().setCountry(countryService.findCountryById(address.getCountry().getId()));
+		}
 
-        if (prodCompanies == null) {
-            prodCompanies = new ArrayList<ProdCompany>();
-        }
+		List<ProdCompany> prodCompanies = prod.getProdCompanies();
+		if (prodCompanies == null) {
+			prodCompanies = new ArrayList<ProdCompany>();
+		}
 
-        if(selectedCompany.getId()!=null)
-            selectedCompany = findCompanyById(selectedCompany.getId());
-        else {
-            selectedCompany = saveCompany(selectedCompany);
-            globalEntityLists.setManufacturers(null);
-        }
+		if(selectedCompany.getId() != null)
+			selectedCompany = findCompanyById(selectedCompany.getId());
+		else {
+			selectedCompany = saveCompany(selectedCompany);
+			globalEntityLists.setManufacturers(null);
+		}
 
-        for (String ct : companyTypes) {
-            if(ct!=null&&ct!=""&&CompanyType.valueOf(ct).equals(CompanyType.FIN_PROD_MANUF))
-                prod.setManufName(selectedCompany.getCompanyName());
-            ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
-            if (!prodCompanies.contains(prodCompany))
-                prodCompanies.add(prodCompany);
-        }
-        prod.setProdCompanies(prodCompanies);
+		for (String ct : companyTypes) {
+			if(ct != null&&ct != "" && CompanyType.valueOf(ct).equals(CompanyType.FIN_PROD_MANUF))
+				prod.setManufName(selectedCompany.getCompanyName());
+			ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
+			/*if (!prodCompanies.contains(prodCompany))
+				prodCompanies.add(prodCompany);*/
+			if(!containsProdCompany(prodCompanies, prodCompany))
+				prodCompanies.add(prodCompany);
+		}
+		prod.setProdCompanies(prodCompanies);
 
-        //prodCompanies = prodCompanyDAO.save(prodCompanies);
-        //productService.updateProduct(prod);
-        prodCompanyDAO.flush();
-        return prod.getProdCompanies();
-    }
+		prodCompanyDAO.flush();
+		return prod.getProdCompanies();
+	}
 
-    @Transactional
-    public Company saveCompany(Company company) {
-        return companyDAO.save(company);
-    }
+	private boolean containsProdCompany(List<ProdCompany> list, ProdCompany value){
+		if(list != null && list.size() > 0){
+			if(value != null){
+				for(ProdCompany pc: list){
+					if(pc.getCompany().getId().intValue() == value.getCompany().getId().intValue()
+							&& 
+							pc.getCompanyType().equals(value.getCompanyType()))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    @Transactional
-    public Company findCompanyById(Long id) {
-        return companyDAO.findOne(id);
-    }
+	@Transactional
+	public Company saveCompany(Company company) {
+		return companyDAO.save(company);
+	}
 
-    public String removeProdCompany(ProdCompany selectedCompany) {
-        prodCompanyDAO.delete(selectedCompany);
-        return "removed";
-    }
+	@Transactional
+	public Company findCompanyById(Long id) {
+		return companyDAO.findOne(id);
+	}
 
-    public List<ProdCompany> findCompanyByProdID(Long prodID) {
-        return prodCompanyDAO.findByProduct_Id(prodID);
-    }
+	public String removeProdCompany(ProdCompany selectedCompany) {
+		prodCompanyDAO.delete(selectedCompany);
+		return "removed";
+	}
+
+	public List<ProdCompany> findCompanyByProdID(Long prodID) {
+		return prodCompanyDAO.findByProduct_Id(prodID);
+	}
 }
