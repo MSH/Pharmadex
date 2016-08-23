@@ -2,6 +2,7 @@ package org.msh.pharmadex.bean;
 
 import org.aspectj.lang.annotation.Before;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.msh.pharmadex.mbean.DBResourceMbn;
@@ -13,7 +14,7 @@ import sun.tools.jar.Main;
 
 import java.net.URLClassLoader;
 import java.util.Arrays;
-
+@Ignore
 @ContextConfiguration("/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class DBResourceBundleTest {
