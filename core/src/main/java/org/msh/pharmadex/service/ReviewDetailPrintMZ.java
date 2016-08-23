@@ -117,13 +117,15 @@ public class ReviewDetailPrintMZ implements Serializable {
 	}
 	
 	private static void fillResolutionText(List<Map<String, Object>> res, Properties prop) {
-		String number = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():"";
+		/*String number = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():"";
 		String chapter3t = "";
 		if(prop.getProperty("chapter3_txt")!=null){
 			chapter3t = prop.getProperty("chapter3_txt").replace("_REGNUMBER_", number);
-		}	
+		}
 		String text = (prodApp.getExecSummary() != null ? prodApp.getExecSummary() + "\n":"") + chapter3t;		
-		fillItemRS(res, prop.getProperty("chapter3"), null, text, null,null,null,null);
+		fillItemRS(res, prop.getProperty("chapter3"), null, text, null,null,null,null);*/
+		String text = prodApp.getExecSummary() != null ? prodApp.getExecSummary():"";
+		fillItemRS(res, prop.getProperty("chapter3"), null, text, null, null, null, null);
 	}
 
 	private static void fillItems(List<Map<String, Object>> res, CustomReviewDAO customReviewDAO) {

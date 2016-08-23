@@ -254,7 +254,7 @@ public class ExecSummaryBn implements Serializable {
 		if(prodApplications != null && prodApplications.getModerator() != null){
 			if(userSession.isModerator() && prodApplications.getModerator().getUserId().intValue() == userSession.getLoggedINUserID().intValue())
 				if(prodApplications.getRegState() != null && !(prodApplications.getRegState().equals(RegState.RECOMMENDED)
-						|| RegState.RECOMMENDED.equals(RegState.NOT_RECOMMENDED)))
+						|| prodApplications.getRegState().equals(RegState.NOT_RECOMMENDED)))
 					editExecSumm = true;
 		}
 		return editExecSumm;

@@ -86,7 +86,7 @@
                            <p:dataTable id="productsNotReg" var="prodAppsNotReg" value="#{applicantMBean.prodNotRegApplicationses}"
                            		paginator="true" rows="10" paginatorPosition="bottom"
                          		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         		rowsPerPageTemplate="10,20">
+                         		rowsPerPageTemplate="20">
 	                            <p:column>
 	                                <f:facet name="header">
 	                                    <h:outputText value="#{msgs.prodName}"/>
@@ -147,7 +147,7 @@
                         <p:dataTable id="products" var="prodApps" value="#{applicantMBean.prodApplicationses}"
                         		paginator="true" rows="10" paginatorPosition="bottom"
                          		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         		rowsPerPageTemplate="10,20">
+                         		rowsPerPageTemplate="20">
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.prodName}"/>

@@ -35,7 +35,7 @@
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_save}" action="#{reviewDetailBn.saveReview(false)}"
                                  rendered="#{reviewDetailBnMZ.visibleSaveBtn()}"
-                                 update=":reviewHome:growl reviewHome:reviewChkPnl" ajax="true">
+                                 update=":reviewHome:growl reviewHome:filePnl" ajax="true">
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_submit}"
                                  action="#{reviewDetailBn.submitReview}"
@@ -53,7 +53,7 @@
                     <h:outputText value="#{reviewDetailBn.reviewDetail.reviewQuestions.question}" escape="false"/>
                 </div>
 
-                <h:panelGrid columns="3" columnClasses="label value" cellspacing="5px" id="reviewChkPnl">
+                <h:panelGrid columns="3" columnClasses="label value" cellspacing="5px">
                     <p:outputLabel value="#{msgs.volumes}:"/>
                     <p:inputText value="#{reviewDetailBn.reviewDetail.volume}" rendered="#{reviewDetailBnMZ.visibleSaveBtn()}"/>
 					<p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.volume}"
@@ -63,11 +63,12 @@
                     <p:outputLabel value="#{msgs.reviewer_response}: " styleClass="label"/>
                     <p:outputLabel/>
                     <p:outputLabel/>
-
+                </h:panelGrid>
+                <h:panelGrid columns="3" columnClasses="label value" cellspacing="5px" id="filePnl">
                     <p:outputLabel value="#{msgs.upload_file}:"/>
                     <p:fileUpload fileUploadListener="#{reviewDetailBn.handleFileUpload}" mode="advanced"
                                   dragDropSupport="true" disabled="#{reviewDetailBnMZ.hideComponents()}" 
-                                  update=":reviewHome:reviewChkPnl :reviewHome:imgpnl :reviewHome:imggr growl" sizeLimit="100000000"/>
+                                  update=":reviewHome:filePnl :reviewHome:imgpnl :reviewHome:imggr growl" sizeLimit="100000000"/>
                     <p:outputLabel/>
                     
                     <p:outputLabel/>
@@ -81,7 +82,7 @@
                                      action="#{fileUploadController.deleteReviewDetail(reviewDetailBn.reviewDetail)}"
                                      ajax="false"
                                      icon="ui-icon-trash"
-                                     update=":reviewHome:reviewChkPnl"
+                                     update=":reviewHome:filePnl"
                                      rendered="#{reviewDetailBn.visibleBtnDownload() and reviewDetailBnMZ.visibleSaveBtn()}"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
