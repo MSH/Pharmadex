@@ -26,9 +26,6 @@
                     <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
             </p:menuitem>
 
-            <!-- <p:menuitem value="#{msgs.open_app}" action="#{processProdBn.initOpenToApp()}" rendered="#{userSession.staff}"
-                        ajax="true" icon="ui-icon-extlink" oncomplete="PF('openAppDlg').show()" /> -->
-
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
                         action="/internal/reviewInfo" ajax="false">
@@ -36,10 +33,8 @@
                 <f:param name="sourcePage" value="#{processProdBn.prodApplications.id}:/internal/processreg.faces" />
             </p:menuitem>
 
-
             <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" 
             			ajax="false" icon="ui-icon-extlink"/>
-
 
             <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
                         oncomplete="PF('regDlg').show()" id="registerMI" action="#{processProdBn.initRegistration}"
@@ -55,6 +50,7 @@
                         action="/public/productdetail" ajax="false">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
             </p:menuitem>
+<ui:remove>
             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
                         action="#{processProdBn.sendToRenew}" ajax="false">
                 <f:param name="prodID" value="#{processProdBn.product.id}"/>
@@ -80,9 +76,7 @@
             <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
                         oncomplete="PF('dlgAmdment').show()"
                         rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>
-            <!--        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" ajax="false" action="amdmtCategory.faces"
-                                rendered="#{userSession.company||userSession.admin}" />
-             -->
+</ui:remove>
         </p:submenu>
     </p:menu>
 

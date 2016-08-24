@@ -57,8 +57,10 @@
                                     <h:outputLabel value="#{productDisplay.applicant.appName}" styleClass="title"/>
                     				<ui:remove>
 	                                    <p:commandLink id="viewLink" value="#{productDisplay.applicant.appName}"
-	                                                   action="#{productDisplay.sentToDetail}"
+	                                                   action="/public/processapplicant.faces"
 	                                                   ajax="false" style="color: darkblue;">
+                            				<f:param name="sourcePage" value="/public/allapplicantlist.faces"/>
+               								<f:param name="appID" value="#{productDisplay.applicant.applcntId}"/>
 	                                    </p:commandLink>
                                     </ui:remove>
 								</td>

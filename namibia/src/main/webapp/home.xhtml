@@ -33,9 +33,11 @@
                                 <p:submenu label="#{msgs.home_quicklinks}">
                                     <p:menuitem value="#{msgs.registration_product}" action="/public/productlist.faces" ajax="false"/>
                                     <p:menuitem value="#{msgs.registration_applicant}" url="/public/applicantlist.faces" ajax="false"/>
+<ui:remove>
                                     <sec:isAnonymous>
                                         <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false" />
                                     </sec:isAnonymous>
+</ui:remove>
                                 </p:submenu>
 
                                 <sec:isAuthenticated>

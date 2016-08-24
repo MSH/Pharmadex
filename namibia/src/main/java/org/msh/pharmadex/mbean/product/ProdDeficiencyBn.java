@@ -26,6 +26,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -60,6 +61,8 @@ public class ProdDeficiencyBn implements Serializable {
 
     private List<ProdAppChecklist> prodAppChecklists;
     private String summary;
+    private String days;
+	private Date dueDate;
     private FacesContext context;
     private JasperPrint jasperPrint;
     private ProdApplications prodApplications;
@@ -109,7 +112,7 @@ public class ProdDeficiencyBn implements Serializable {
     }
     
     public void createDeficiencyLetter(){
-    	String s =getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications);
+    	String s = getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications, days, dueDate, getProdAppChecklistsToApplicant());
     	if(!s.equals("persist")){
     		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
     	}else{
@@ -117,6 +120,16 @@ public class ProdDeficiencyBn implements Serializable {
     	}
     }
 
+    public List<ProdAppChecklist> getProdAppChecklistsToApplicant() {
+		List<ProdAppChecklist> ret = new ArrayList<ProdAppChecklist>();
+		for(ProdAppChecklist item : getProdAppChecklists()){
+			if(item.isSendToApp()){
+				ret.add(item);
+			}
+		}
+		return ret;
+	}
+    
     public String sendToHome(){
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", prodApplications.getId());
         return "/internal/processreg";
@@ -232,4 +245,18 @@ public class ProdDeficiencyBn implements Serializable {
     public void setProdAppLetterDAO(ProdAppLetterDAO prodAppLetterDAO) {
         this.prodAppLetterDAO = prodAppLetterDAO;
     }
+    public String getDays() {
+		return days;
+	}
+
+	public void setDays(String days) {
+		this.days = days;
+	}
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
 }

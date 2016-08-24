@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
+        </div>
+
+        <h:form id="reghome">
+            <p:messages id="messages" showDetail="true"/>
+            <p:growl id="growl" showSummary="true"/>
+
+            <h:panelGrid columns="1" cellpadding="10" cellspacing="10" rendered="#{!prodRegInit.eligible}">
+                <p:outputLabel styleClass="hint"
+                               value="#{msgs.prodreghome_reg_info1} #{msgs.prodreghome_reg_info2} #{msgs.prodreghome_reg_info3}"/>
+            </h:panelGrid>
+
+            <h:panelGrid columns="1" cellpadding="10" cellspacing="10" rendered="#{prodRegInit.eligible}">
+                <p:outputLabel styleClass="hint" value="#{msgs.prodreghome_reg_info4}"/>
+            </h:panelGrid>
+
+            <p:panel header="Application Detail" rendered="#{prodRegInit.eligible}">
+                <h:panelGrid id="feepanel" columns="3" columnClasses="label value" cellspacing="10" cellpadding="10">
+                    <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
+                    <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}" required="true"
+                                     requiredMessage="#{msgs.valid_prod_type}">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalLists.getProdAppTypeShortList()}" var="prodcat"
+                                       itemLabel="#{msgs[prodcat.key]}"/>
+                    </p:selectOneMenu>
+                    <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
+
+                    <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel value="#{prodRegInit.fee}" styleClass="label"
+                                   rendered="#{prodRegInit.displayfeepanel}"/>
+                    <p:outputLabel/>
+                </h:panelGrid>
+
+                <div style="height:10px"/>
+
+                <p:commandButton value="#{msgs.calculate_fee}" action="#{prodRegInit.calculate}"
+                                 update=":reghome" />
+                <p:commandButton action="#{prodRegInit.regApp}" ajax="false"
+                                 value="#{msgs.product_registration_form}" rendered="#{prodRegInit.eligible}"/>
+            </p:panel>
+
+            <div style="height:10px"/>
+
+            <p:dataTable var="checkList" value="#{prodRegInit.checklists}" style="width:100%;"
+                         rendered="#{prodRegInit.displayfeepanel}">
+                <f:facet name="header">
+                    Required Documents
+                </f:facet>
+
+                <p:column headerText="#{msgs.checklist_moduleno}" colspan="2" rendered="#{!checkList.header}" style="background-color: bisque;font-weight: bolder;">
+                    <h:outputLabel value="#{checkList.name}" />
+                </p:column>
+
+                <p:column headerText="#{msgs.checklist_moduleno}" rendered="#{checkList.header}">
+                    <h:outputLabel value="#{checkList.moduleNo}" />
+                </p:column>
+                <p:column headerText="#{msgs.checklist_name}" rendered="#{checkList.header}">
+                    <h:outputLabel value="#{checkList.name}"/>
+                </p:column>
+            </p:dataTable>
+
+        </h:form>
+
+
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
+                  resizable="false">
+            <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
+        </p:dialog>
+
+    </ui:define>
+    <script type="text/javascript">
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+    </script>
+</ui:composition>

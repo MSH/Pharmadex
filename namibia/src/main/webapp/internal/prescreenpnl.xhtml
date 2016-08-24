@@ -13,8 +13,10 @@
         <p:commandButton value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
+<ui:remove>
         <p:commandButton value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp" icon="ui-icon-cancel"
                          rendered="#{preScreenProdMBn.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
+</ui:remove>
         <p:commandButton value="#{msgs.global_print}" type="button" icon="ui-icon-print">
             <p:printer target="checkListTbl"/>
         </p:commandButton>
@@ -82,8 +84,10 @@
         <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
+<ui:remove>
         <p:commandButton id="feedback" value="#{msgs.global_archive}" update=":reghome:processtab:archiveapp" icon="ui-icon-cancel"
                          rendered="#{preScreenProdMBn.displayScreenAction}" oncomplete="PF('archiveappdlg').show()"/>
+</ui:remove>
         <p:commandButton value="Print" type="button" icon="ui-icon-print">
             <p:printer target="checkListTbl"/>
         </p:commandButton>
