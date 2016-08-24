@@ -129,7 +129,7 @@ public class SampleTestBn implements Serializable {
             ProdAppLetter letter = null;
             if (letters!=null){
                 for(ProdAppLetter let:letters){
-                       if (let.getLetterType().equals(LetterType.SAMPLE_TEST_RESULT)){
+                       if (let.getLetterType() != null && let.getLetterType().equals(LetterType.SAMPLE_TEST_RESULT)){
                            letter = let;
                            break;
                        }
