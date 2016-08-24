@@ -4,19 +4,15 @@
 
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import org.apache.commons.io.IOUtils;
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.LetterType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.YesNoNA;
-import org.msh.pharmadex.service.*;
-import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
-import org.msh.pharmadex.util.RetObject;
-import org.primefaces.context.RequestContext;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -25,10 +21,29 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+
+import org.apache.commons.io.IOUtils;
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.YesNoNA;
+import org.msh.pharmadex.service.ProdAppChecklistService;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
+import org.msh.pharmadex.service.ReportService;
+import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.util.RetObject;
+import org.primefaces.context.RequestContext;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Backing bean to capture review of products
@@ -60,6 +75,8 @@ public class ProdDeficiencyBn implements Serializable {
 
     private List<ProdAppChecklist> prodAppChecklists;
     private String summary;
+    private String days;
+	private Date dueDate;
     private FacesContext context;
     private JasperPrint jasperPrint;
     private ProdApplications prodApplications;
@@ -109,13 +126,23 @@ public class ProdDeficiencyBn implements Serializable {
     }
     
     public void createDeficiencyLetter(){
-    	String s =getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications);
+    	String s = getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications, days, dueDate, getProdAppChecklistsToApplicant());
     	if(!s.equals("persist")){
     		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
     	}else{
     		RequestContext.getCurrentInstance().execute("PF('letterSuccessDlg').show()");
     	}
     }
+    
+    public List<ProdAppChecklist> getProdAppChecklistsToApplicant() {
+		List<ProdAppChecklist> ret = new ArrayList<ProdAppChecklist>();
+		for(ProdAppChecklist item : getProdAppChecklists()){
+			if(item.isSendToApp()){
+				ret.add(item);
+			}
+		}
+		return ret;
+	}
 
     public String sendToHome(){
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("prodAppID", prodApplications.getId());
@@ -232,4 +259,18 @@ public class ProdDeficiencyBn implements Serializable {
     public void setProdAppLetterDAO(ProdAppLetterDAO prodAppLetterDAO) {
         this.prodAppLetterDAO = prodAppLetterDAO;
     }
+    public String getDays() {
+		return days;
+	}
+
+	public void setDays(String days) {
+		this.days = days;
+	}
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
 }

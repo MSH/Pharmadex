@@ -52,7 +52,7 @@
                                  rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted}"/>
                 <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('reviewDlg').show()"
                                  ajax="true" action="#{reviewInfoBn.initComment}"
-                                 rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted and reviewInfoBn.priReview}"/>
+                                 rendered="#{reviewInfoBnMZ.visibleSubmitBtn()}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
                                  action="#{reviewInfoBn.getSourcePage}"
                                  ajax="false">
@@ -233,17 +233,18 @@
         <p:dialog header="#{msgs.generate_report}" widgetVar="attachDlg" id="attachDlg"
                   modal="true" dynamic="true">
             <h:form prependId="false">
-                <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <p:outputLabel value="#{msgs.global_duedate}:" styleClass="label" for="duedate"/>
+                <h:panelGrid columns="3" cellspacing="10" cellpadding="10">
+					<p:outputLabel value="#{msgs.global_duedate}:" styleClass="label" for="duedate"/>
                     <p:calendar value="#{reviewInfoBn.revDeficiency.dueDate}" id="duedate" showOn="button"
-                                pattern="#{userAccessMBean.workspace.datePattern}" required="true"/>
+                                pattern="#{userAccessMBean.workspace.datePattern}" 
+                                required="true" requiredMessage="#{msgs.global_duedate}"/>
                     <p:message for="duedate"/>
-
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="attachcomment" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="attachcomment" required="true"
+					
+                    <p:outputLabel value="#{msgs.global_summary}" for="sum" styleClass="label"/>
+                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="sum" required="true"
                               width="700"/>
-                    <p:message for="attachcomment"/>
-                </h:panelGrid>
+                    <p:message for="sum"/>
+				</h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBnMZ.generateLetter}"
                                  oncomplete="PF('attachDlg').hide()" ajax="false"/>
             </h:form>

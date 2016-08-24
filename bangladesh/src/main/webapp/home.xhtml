@@ -33,7 +33,6 @@
                                             action="/public/productlist.faces"/>
                                 <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
                                             url="/public/applicantlist.faces"/>
-<!--                                <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false"/> -->
                                 <p:menuitem value="#{msgs.Home_download}" url="/public/downloads.faces" ajax="false"/>
                             </p:submenu>
 
@@ -41,8 +40,10 @@
                                 <p:submenu label="#{msgs.admin_loggedinuser}">
                                     <p:menuitem value="#{msgs.application_status}"
                                                 action="/secure/submittedproducts.faces" ajax="false" rendered="#{userSession.company}"/>
-                                    <p:menuitem value="#{msgs.applicant_detail}" action="/internal/processapp.faces"
-                                                ajax="false" rendered="#{userSession.company}">
+                                    <p:menuitem value="#{msgs.applicant_detail}" action="/public/processapplicant.faces"
+                                                    ajax="false" rendered="#{userSession.company}">
+                                          		<f:param name="sourcePage" value="/public/applicantlist.faces"/>
+               									<f:param name="appID" value="#{userSession.applcantID}"/>
                                     </p:menuitem>
                                     <p:menuitem value="#{msgs.usersettings_preferences}"
                                                 action="/secure/usersettings.faces"

@@ -46,7 +46,7 @@
                                            rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
                             <p:inputText id="nceInput" value="#{prodRegAppMbean.product.newChemicalName}"
                                          style="width:100%;"  
-                                         required="true" requiredMessage="New Chemical Entity Name is missing"                                         
+                                         required="true" requiredMessage="#{msgs.newChemName_missing}"                                         
                                          rendered="#{prodRegAppMbean.product.newChemicalEntity}"/>
 
                             <h:outputLabel value="#{msgs.active_substance}" style="width: 60px;" styleClass="label"/>

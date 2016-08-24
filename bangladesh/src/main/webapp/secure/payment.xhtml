@@ -9,7 +9,7 @@
 
         <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
         <p:inputText id="bankname" value="#{prodRegAppMbean.prodApplications.bankName}" required="true"
-        				requiredMessage="Bank name is missing" style="width: 400px;"/>
+        				requiredMessage="#{msgs.bank_missing}" style="width: 400px;"/>
 
         <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
         <p:inputText id="receiptno" value="#{prodRegAppMbean.prodApplications.receiptNo}"/>
