@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-24T16:59:02 -->
+<!-- 2016-08-25T15:55:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="355b4245-79d2-44b4-b421-c0e09801e04f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -15,19 +15,54 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="c47bdb35-fbb1-4e23-86b4-9a5be5192892">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+		<property name="net.sf.jasperreports.data.adapter" value="NEW_DATAADAPTER.xml"/>
+		<field name="prodName" class="java.lang.String"/>
+		<field name="regNumber" class="java.lang.String"/>
+		<group name="prodName">
+			<groupExpression><![CDATA[$F{prodName}]]></groupExpression>
+		</group>
+	</subDataset>
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="address1" class="java.lang.String"/>
 	<parameter name="address2" class="java.lang.String"/>
 	<parameter name="country" class="java.lang.String"/>
 	<parameter name="companyFax" class="java.lang.String"/>
-	<parameter name="prodName" class="java.lang.String"/>
-	<parameter name="regNumber" class="java.lang.String"/>
 	<parameter name="regDate" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="280" splitType="Stretch">
+		<band height="380" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
 				<reportElement positionType="Float" x="32" y="132" width="523" height="28" uuid="46bb8eac-6ea5-40c7-9b26-335a0ff7b343">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -101,34 +136,11 @@
 				</reportElement>
 				<textFieldExpression><![CDATA["The Responsible Pharmacist"]]></textFieldExpression>
 			</textField>
-		</band>
-	</title>
-	<summary>
-		<band height="300" splitType="Stretch">
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="64" width="523" height="32" uuid="7cc27531-ae10-4616-ae06-43b16fbd4af1">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["I wish to inform you that at the Council meeting of <b><i> ".concat($P{regDate} == null ? "":$P{regDate}).concat("</i></b> the following products which were in the registration process were approved as listed below;")]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="191" width="523" height="30" uuid="a0b01568-5eeb-4979-9df4-6b97d9d68057"/>
-				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["You are required to pay its registration fee and thereafter instruct your local representative to collect the registration certificate.<br><br><br>Yours Faithfully;"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="260" width="348" height="30" uuid="b9792670-f47c-406d-93ed-9650e188edf3"/>
-				<textElement markup="html">
-					<font size="12" isBold="true" isItalic="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["REGISTRAR OF MEDICINES"]]></textFieldExpression>
-			</textField>
 			<textField>
-				<reportElement x="32" y="16" width="523" height="16" uuid="6f98d254-8423-4f23-8be4-d8bc1c0133a4">
+				<reportElement x="32" y="312" width="523" height="16" uuid="f1424025-779a-4878-ba59-38546ef7ab87">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true" isUnderline="true"/>
@@ -136,61 +148,120 @@
 				<textFieldExpression><![CDATA["NOTICE OF REGISTRATION OF A PRODUCT"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="32" y="128" width="38" height="16" uuid="47cae0e7-836e-4656-a377-cbd82cbb5f75">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font isBold="true" isUnderline="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["S/N"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="70" y="128" width="310" height="16" uuid="6d03fc85-b81c-466b-b581-72838ba9ecbc">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font isBold="true" isUnderline="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["PROPRIETARY NAME OF PRODUCT"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="380" y="128" width="130" height="16" uuid="7cb0ca1c-98b0-4519-bbe3-5e84840c1874">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font isBold="true" isUnderline="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["REG. NUMBER"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="32" y="144" width="38" height="16" uuid="28c2098a-b9df-4fc5-9120-8b551a85670d">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font isBold="true" isUnderline="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["1."]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="70" y="144" width="310" height="16" uuid="abb89d02-0806-4dd2-967c-1b8996a62a0a">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<reportElement positionType="Float" x="32" y="344" width="523" height="32" uuid="416b5243-ff7e-4087-ad67-e94b422f7867">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textElement>
-					<font isBold="true" isUnderline="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{prodName} == null ? "":$P{prodName}]]></textFieldExpression>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["I wish to inform you that at the Council meeting of <b><i> ".concat($P{regDate} == null ? "":$P{regDate}).concat("</i></b> the following products which were in the registration process were approved as listed below;")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="80">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<componentElement>
+				<reportElement x="30" y="10" width="520" height="70" uuid="c29110cb-eda5-42c3-8d9a-c64fae433a18">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset1" uuid="cdcc31fd-ebbc-47ce-b5e1-02d88d8133a8">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="40" uuid="9d1cae05-ea82-4f53-9883-63f654210f41">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<textField>
+								<reportElement positionType="Float" x="0" y="0" width="40" height="30" uuid="c78b73a0-7030-48b1-9179-55442268f793"/>
+								<textElement textAlignment="Center">
+									<font isBold="true" isUnderline="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["S/N"]]></textFieldExpression>
+							</textField>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true">
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="30" uuid="6cf98627-1964-4fbf-bece-16f1c6a6b37f"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["1."]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="340" uuid="604614f5-3cd2-4eee-94c3-d80232d4d19d">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" x="0" y="0" width="340" height="30" uuid="f691882b-5622-4a6e-8082-a5f294d25a50"/>
+								<textElement textAlignment="Center">
+									<font isBold="true" isUnderline="true"/>
+								</textElement>
+								<text><![CDATA[PROPRIETARY NAME OF PRODUCT]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="340" height="30" uuid="b3510f7c-017f-4201-baa7-d8c0c6f8bb1d">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+									<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+								</reportElement>
+								<box>
+									<topPen lineWidth="0.0" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Left">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{prodName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="d9c22c9d-62fd-4a84-a365-ec8f89fa18f9">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" x="0" y="0" width="130" height="30" uuid="06d238eb-1827-42d0-9a7a-c056a45d2b38"/>
+								<textElement textAlignment="Center">
+									<font isBold="true" isUnderline="true"/>
+								</textElement>
+								<text><![CDATA[REG. NUMBER]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="a1a881f2-7631-428a-83c6-7958b1f188c9">
+									<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+								</reportElement>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{regNumber}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<summary>
+		<band height="120" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="32" y="21" width="523" height="30" uuid="a0b01568-5eeb-4979-9df4-6b97d9d68057"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["You are required to pay its registration fee and thereafter instruct your local representative to collect the registration certificate.<br><br><br>Yours Faithfully;"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="380" y="145" width="130" height="16" uuid="3d9de714-6068-4536-ba42-c09f2017a4ca">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font isBold="true" isUnderline="false"/>
+				<reportElement positionType="Float" x="32" y="90" width="348" height="30" uuid="b9792670-f47c-406d-93ed-9650e188edf3"/>
+				<textElement markup="html">
+					<font size="12" isBold="true" isItalic="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{regNumber} == null ? "":$P{regNumber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["REGISTRAR OF MEDICINES"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
