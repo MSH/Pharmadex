@@ -7,17 +7,17 @@
 
     <h1 class="title ui-widget-header ui-corner-all">
         <table class="banner">
-            <tr>
-                <td>
+        	<tr>
+                <td colspan="2">
                     <p:outputLabel value="#{prodApp.product.prodName}"
                                    styleClass="title"
                                    style="font-weight: bold;  font-size: 1.5em;
                                    #{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}"/>
-                    <p:outputLabel value="#{prodApp.prodAppType}"
-                                   styleClass="title"
-                                   style="font-weight: bold;  font-size: 1.5em;
-                                   #{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}"/>
-                    <p:outputLabel value="#{msgs.variationType_minor} #{prodApp.mnVarQnt}"
+                </td>
+            </tr>
+            <tr>
+                <td>
+                	<p:outputLabel value="#{msgs.variationType_minor} #{prodApp.mnVarQnt}"
                                    rendered="#{prodApp.mnVarQnt>0 and prodApp.mjVarQnt==0}"/>
                     <p:outputLabel value="#{msgs.variationType_major} #{prodApp.mjVarQnt}"
                                    rendered="#{prodApp.mnVarQnt==0 and prodApp.mjVarQnt>0}"/>
@@ -33,12 +33,25 @@
             </tr>
             <tr>
                 <td>
-                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                    <h:outputFormat value="#{prodApp.prodAppNo}" styleClass="title"/>
+                	<h:outputLabel value="#{msgs.prod_app_type}:  " styleClass="title"/>
+                    <p:outputLabel value="#{prodApp.prodAppType}"
+                                   styleClass="title"
+                                   style="font-weight: bold;  font-size: 1.5em;
+                                   #{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}"/>
                 </td>
                 <td align="right">
                     <h:outputLabel value="#{msgs.submitted_by}: " styleClass="title"/>
                     <h:outputLabel value="#{prodApp.createdBy.name}" styleClass="title"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
+                    <h:outputLabel value="#{prodApp.prodAppNo}" styleClass="title"/>
+                </td>
+                <td align="right">
+                    <h:outputLabel value="#{msgs.applicationResp}: " styleClass="title"/>
+                    <h:outputLabel value="#{prodApp.applicantUser.name}" styleClass="title"/>
                 </td>
             </tr>
              <tr>
@@ -47,38 +60,26 @@
                     <h:outputLabel value="#{prodApp.applicant.appName}" styleClass="title"/>
                 </td>
                 <td align="right">
-                    <h:outputLabel value="#{msgs.applicationResp}: " styleClass="title"/>
-                    <h:outputLabel value="#{prodApp.applicantUser.name}" styleClass="title"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <h:outputLabel value="#{msgs.manuf_name}: " styleClass="title"/>
-                    <h:outputLabel value="#{prodApp.product.manufName}"/>
-				</td>
-                <td align="right">
-                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
+                    <h:outputLabel value="#{msgs.submitted_date}:  " styleClass="title"/>
                     <h:outputFormat value="#{prodApp.submitDate}">
                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                     </h:outputFormat>
-
                 </td>
             </tr>
             <tr>
                 <td>
-
-                </td>
+                    <h:outputLabel value="#{msgs.manuf_name}:  " styleClass="title"/>
+                    <h:outputLabel value="#{prodApp.product.manufName}" styleClass="title"/>
+				</td>
                 <td align="right">
-                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
+                    <h:outputLabel value="#{msgs.expiry_date}:  " styleClass="title"
                                    rendered="#{not empty prodApp.regExpiryDate}"/>
                     <h:outputFormat value="#{prodApp.regExpiryDate}"
                                     rendered="#{not empty prodApp.regExpiryDate}">
                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                     </h:outputFormat>
                 </td>
-                </tr>
+            </tr>
         </table>
     </h1>
-
-
 </ui:composition>

@@ -21,9 +21,7 @@
             </f:facet>
             <p:commandLink id="viewLink" value="#{eachprod.product.prodName}" action="/internal/processreg"
                            ajax="false">
-                <f:setPropertyActionListener value="#{eachprod}" target="#{userSession.prodApplications}"/>
-                <f:setPropertyActionListener value="#{eachprod.product}" target="#{userSession.product}"/>
-                <f:param name="id" value="#{eachprod.product.id}"/>
+                <f:param name="prodAppID" value="#{eachprod.id}"/>
             </p:commandLink>
         </p:column>
 

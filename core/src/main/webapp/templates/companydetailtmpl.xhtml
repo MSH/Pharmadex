@@ -43,7 +43,8 @@
         <h:outputLabel value="#{companydata.siteNumber}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right;" for="cphoneno"/>
-        <p:inputText value="#{companydata.phoneNo}" required="true" rendered="#{input}" id="cphoneno"/>
+        <p:inputText value="#{companydata.phoneNo}" required="true" 
+        			requiredMessage="#{msgs.valid_value_req}" rendered="#{input}" id="cphoneno"/>
         <h:outputLabel value="#{companydata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <p:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno"/>
@@ -56,7 +57,7 @@
 
         <p:outputLabel value="#{msgs.company_type}" rendered="#{input}" for="grid"/>
         <p:selectManyCheckbox id="grid" value="#{companyMBean.companyTypes}" layout="grid" columns="3"
-                              required="true">
+                              required="true" requiredMessage="#{msgs.company_missing}">
             <f:selectItems value="#{globalLists.companyType}" var="type" itemLabel="#{msgs[type.key]}"
                            itemValue="#{type}"/>
         </p:selectManyCheckbox>
