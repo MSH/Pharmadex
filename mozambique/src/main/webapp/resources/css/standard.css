@@ -278,7 +278,7 @@ body {
 }
 
 .title {
-    height: 85px;
+    height: auto;
     padding: 10px 10px 10px 10px;
 }
 
