@@ -11,62 +11,9 @@
             <h:panelGrid columns="1" cellpadding="10px">
 
                 <h:panelGroup styleClass="ui-widget">
-                    <h1 class="title ui-widget-header ui-corner-all">
-                        <table class="banner">
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{productDisplay.product.prodName}"
-                                                   styleClass="title"
-                                                   style="font-weight: bold; font-size: 1.5em"/>
-                                </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.registration_status}: " style="font-weight: bold;color: #a52a2a;"/>
-                                    <h:outputLabel value="#{productDisplay.prodApplications.regState}"
-                                                   style="font-weight: bold;color: #a52a2a;"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{msgs.reg_number}: " styleClass="title"/>
-                                    <h:outputFormat value="#{productDisplay.prodApplications.prodRegNo}" styleClass="title"/>
-                                </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
-                                    <h:outputFormat value="#{productDisplay.prodApplications.submitDate}">
-                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                                    </h:outputFormat>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                                    <h:outputFormat value="#{productDisplay.prodApplications.prodAppNo}" styleClass="title"/>
-                                </td>
-                                <td align="right">
-                                    <h:outputLabel value="#{msgs.expiry_date}: " styleClass="title"
-                                                   rendered="#{not empty productDisplay.prodApplications.regExpiryDate}"/>
-                                    <h:outputFormat value="#{productDisplay.prodApplications.regExpiryDate}"
-                                                    rendered="#{not empty productDisplay.prodApplications.regExpiryDate}">
-                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                                    </h:outputFormat>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h:outputLabel value="#{msgs.applicant_name}: " styleClass="title"/>
-                                    <h:outputLabel value="#{productDisplay.applicant.appName}" styleClass="title"/>
-                    				<ui:remove>
-	                                    <p:commandLink id="viewLink" value="#{productDisplay.applicant.appName}"
-	                                                   action="/public/processapplicant.faces"
-	                                                   ajax="false" style="color: darkblue;">
-                            				<f:param name="sourcePage" value="/public/allapplicantlist.faces"/>
-               								<f:param name="appID" value="#{productDisplay.applicant.applcntId}"/>
-	                                    </p:commandLink>
-                                    </ui:remove>
-								</td>
-                            </tr>
-                        </table>
-                    </h1>
+                    <ui:include src="/templates/prodbannertempl.xhtml">
+                    	<ui:param name="prodApp" value="#{productDisplay.prodApplications}"/>
+                    </ui:include>
                 </h:panelGroup>
                 <p:messages id="messages" showDetail="true" showSummary="true"/>
 

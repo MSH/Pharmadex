@@ -61,63 +61,12 @@
             <p:menuitem value="#{msgs.label_home}" url="/home.faces" icon="ui-icon-home"/>
 
             <p:submenu label="#{msgs.Registration}">
-                <p:menuitem value="#{msgs.Registration}" icon="ui-icon-home" url="/public/registrationhome.faces"
+				<p:menuitem value="#{msgs.Registration}" icon="ui-icon-home" url="/public/registrationhome.faces"
                             ajax="false"/>
-                <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-document"
-                            url="/public/applicantlist.faces"
-                            ajax="false"/>
-                <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
-                            ajax="false"/>
-                <p:menuitem value="#{msgs.susp_prod}" icon="ui-icon-document" url="/public/suspendedproducts.faces"
-                            ajax="false"/>
-                <p:menuitem value="#{msgs.revoke_prod}" icon="ui-icon-document" url="/public/revokedproducts.faces"
-                            ajax="false"/>
-                <p:separator/>
-                <sec:isAuthenticated>
-                    <p:submenu label="#{msgs.registration_form}"
-                               rendered="#{userSession.general||userSession.company||userSession.admin||userSession.staff}">
-                        <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
-                                    url="/secure/prodreginit.faces" ajax="false"/>
-                        <p:menuitem value="#{msgs.applicant_registration_form}"
-								icon="ui-icon-gear" url="/secure/applicantform.faces"
-								ajax="false" rendered="#{userSessionService.displayAppReg(userSession)}" >
-						</p:menuitem>
-                    </p:submenu>
-
-
-                    <p:separator/>
-                    <p:submenu label="#{msgs.current_applications}"
-                               rendered="#{userSession.company||userSession.admin}">
-                        <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
-                                    url="/secure/submittedproducts.faces"/>
-                        <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
-                                    url="/secure/savedproducts.faces"/>
-                    </p:submenu>
-
-                    <p:separator/>
-                    <p:submenu label="#{msgs.reg_processing}"
-                               rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
-                        <p:menuitem value="#{msgs.process_review_list}" icon="ui-icon-document"
-                                    url="/internal/processreviewlist.faces" rendered="#{userSession.reviewer}"/>
-                        <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document" rendered="#{!userSession.reviewer}"
-                                    url="/internal/processprodlist.faces"/>
-                        <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
-                                    url="/internal/processapplist.faces"/>
-                    </p:submenu>
-
-                    <p:separator/>
-                    <p:submenu label="#{msgs.post_reg_proces}"
-                               rendered="#{userSession.admin||userSession.staff||userSession.moderator}">
-                        <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
-                                    url="/internal/amdmtlist.faces"/>
-                        <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-document"
-                                    url="/internal/regexpiring.faces"/>
-                        <p:menuitem value="#{msgs.payment_notfied}" icon="ui-icon-document"
-                                    url="/internal/paymentnotified.faces"/>
-                        <p:menuitem value="#{msgs.reg_expired}" icon="ui-icon-document"
-                                    url="/internal/expiredreg.faces"/>
-                    </p:submenu>
-                </sec:isAuthenticated>
+                            
+				<ui:decorate template="/templates/registration_menu.xhtml">
+            		<ui:param name="isleftmenu" value="#{false}"/>
+        		</ui:decorate>
             </p:submenu>
 
             <sec:isAuthenticated>
