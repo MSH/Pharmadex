@@ -23,16 +23,13 @@
         <h:outputLabel/>
         <h:outputLabel/>
 
-
         <ui:decorate template="/templates/addrtempl.xhtml">
             <ui:param name="addressdata" value="#{companydata.address}"/>
             <ui:param name="input" value="#{input}"/>
         </ui:decorate>
 
-
         <p:outputLabel/>
         <p:outputLabel/>
-
 
         <p:outputLabel/>
         <p:outputLabel/>
@@ -42,7 +39,8 @@
         <h:outputLabel value="#{companydata.siteNumber}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right;" for="cphoneno"/>
-        <p:inputText value="#{companydata.phoneNo}" required="true" rendered="#{input}" id="cphoneno"/>
+        <p:inputText value="#{companydata.phoneNo}" required="true" 
+        			requiredMessage="#{msgs.valid_value_req}" rendered="#{input}" id="cphoneno"/>
         <h:outputLabel value="#{companydata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
 
         <p:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno"/>

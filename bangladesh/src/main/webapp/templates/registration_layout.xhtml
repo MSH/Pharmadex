@@ -3,7 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-        >
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="../templates/admin_layout.xhtml">
@@ -12,9 +14,16 @@
         <table>
             <tr>
                 <td style="vertical-align: top;">
-                    <ui:insert name="menu">
-                        <ui:include src="registration_menu.xhtml"/>
-                    </ui:insert>
+                	<h:form name="menu">
+        				<p:menu style="width:220px;margin-right: 10px;">
+        				
+        				<p:submenu label="#{msgs.Registration}">
+	        				<ui:decorate template="/templates/registration_menu.xhtml">
+			            		<ui:param name="isleftmenu" value="#{true}"/>
+			        		</ui:decorate>
+        				</p:submenu>
+                    	</p:menu>
+    				</h:form>
                 </td>
                 <td style="width: 805px;vertical-align: top;">
                     <h:panelGroup styleClass="ui-widget">

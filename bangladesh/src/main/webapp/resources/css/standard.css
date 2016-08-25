@@ -279,7 +279,7 @@ body {
 }
 
 .title {
-    height: 85px;
+    height: auto;
     padding: 0px 10px 0px 10px;
     color: #025402;
 }
