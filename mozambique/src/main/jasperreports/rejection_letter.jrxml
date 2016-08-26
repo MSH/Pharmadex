@@ -279,7 +279,7 @@ Fax: 258 21 32 65 47]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA["Senhora Vice Ministra da Saúde"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Senhor Vice Ministro da Saúde"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="0" y="32" width="200" height="16" uuid="7aa7de35-a95c-442e-9683-da3b441b765b">
