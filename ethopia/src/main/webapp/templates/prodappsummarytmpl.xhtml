@@ -119,19 +119,23 @@
                 <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodAppData.product.excipients}"
                              style="width:100%;">
                     <p:column headerText="#{msgs.active_substance}">
-                        <h:outputText value="#{prodExp.excipient.name}" style="#{processProdBnET.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+                        <h:outputText value="#{prodExp.excipient.name}"
+                                      style="#{processProdBnET.findExcipientChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>
 
                     <p:column headerText="#{msgs.dos_strength}">
-                        <h:outputText value="#{prodExp.dosStrength}" style="#{processProdBnET.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+                        <h:outputText value="#{prodExp.dosStrength}"
+                                      style="#{processProdBnET.findExcipientChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>
 
                     <p:column headerText="#{msgs.dos_unit}">
-                        <h:outputText value="#{prodExp.dosUnit.uom}" style="#{processProdBnET.findExcipientsChanged()?('color:red;'):('color:black;')}"/>
+                        <h:outputText value="#{prodExp.dosUnit.uom}"
+                                      style="#{processProdBnET.findExcipientChanged?('color:red;'):('color:black;')}"/>
                     </p:column>
 
                     <p:column headerText="#{msgs.inn_ref}">
-                        <h:outputText value="#{prodExp.refStd}" style="#{processProdBnET.findExcipientsChanged()?('color:red;'):('color:black;')}"/>
+                        <h:outputText value="#{prodExp.refStd}"
+                                      style="#{processProdBnET.findExcipientChanged?('color:red;'):('color:black;')}"/>
                     </p:column>
                 </p:dataTable>
 

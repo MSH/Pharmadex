@@ -188,7 +188,7 @@ public class ProdRegInit implements Serializable {
         } else if (prodAppType==ProdAppType.RENEW){
             if (this.prodTable==null) {
                 String errString = getBundle().getString("variationProductRequired");
-                context.addMessage(null, new FacesMessage(errString));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,getBundle().getString("error_incorrect_data"),errString));
                 displayfeepanel = false;
                 return;
             }
@@ -213,22 +213,34 @@ public class ProdRegInit implements Serializable {
         }
         calculate(prodAppType.name());
         populateChecklist();
-        displayfeepanel = true;
+        displayfeepanel = ! displayfeepanel;
     }
 
     public void populateChecklist() {
         ProdApplications prodApplications = new ProdApplications();
         prodApplications.setProdAppType(prodAppType);
-        if (selSRA.length > 0)
-            prodApplications.setSra(true);
-        else
-            prodApplications.setSra(false);
         if (prodAppType.equals(ProdAppType.VARIATION)){
-            if (this.getMajorQuantity()>0)
-                checklists = checklistService.getETChecklists(prodApplications, true);
-            else
-                checklists = checklistService.getETChecklists(prodApplications, false);
+            List<Checklist> mjChecklists=null;
+            List<Checklist> mnChecklists=null;
+            if (this.getMajorQuantity()>0) {
+                mjChecklists = checklistService.getETChecklists(prodApplications, true);
+                checklists = mjChecklists;
+            }else if (this.getMajorQuantity()>0){
+                mnChecklists = checklistService.getETChecklists(prodApplications, false);
+                checklists = mnChecklists;
+            }
+            if (mjChecklists!=null && mnChecklists!=null){
+                for (Checklist ch: mjChecklists) {
+                    checklists.add(ch);
+                }
+            }
         }else if (prodAppType.equals(ProdAppType.RENEW)){
+            checklists = checklistService.getChecklists(prodApplications,true);
+        }else{
+            if (selSRA.length > 0)
+                prodApplications.setSra(true);
+            else
+                prodApplications.setSra(false);
             checklists = checklistService.getChecklists(prodApplications,true);
         }
     }

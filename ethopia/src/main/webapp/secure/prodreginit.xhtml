@@ -128,7 +128,7 @@
                 <div style="height:10px"/>
 
                 <p:commandButton value="#{msgs.calculate_fee}" action="#{prodRegInit.checkAndCalculate}"
-                                 update=":reghome:feePanel" process="@form">
+                                 update="@form :reghome:feePanel :reghome:checklisttable" process="@form">
                     <f:param name="prodAppID" value="#{prodRegInit.prodTable.id}"/>
                 </p:commandButton>
                 <p:commandButton action="#{prodRegInit.regApp}" ajax="false"
@@ -139,8 +139,10 @@
             <div style="height:10px"/>
 
 
-            <p:dataTable var="each" value="#{prodRegInit.checklists}" id="checklisttable"
-                         rendered="#{prodRegInit.displayfeepanel}">
+            <p:dataTable var="each" value="#{prodRegInit.checklists}"
+                         id="checklisttable"
+                         rendered="#{prodRegInit.displayfeepanel}"
+                         >
                 <f:facet name="header">
                     Required Documents
                 </f:facet>

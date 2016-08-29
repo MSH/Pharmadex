@@ -197,8 +197,10 @@ public class ProcessProdBnET implements Serializable {
    
    public boolean findExcipientChanged(){
 	  	  //получим список из review_info.changedFields  если в списке нет, то false
-	       	if (changedFields.contains("excipients")) return true;
-	      	return false;
+	       	if (changedFields.contains("excipients"))
+                return true;
+            else
+	      	    return false;
 	    }
    public boolean findAtcChanged(){
 	  	  //получим список из review_info.changedFields  если в списке нет, то false
