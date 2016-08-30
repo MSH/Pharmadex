@@ -11,6 +11,7 @@ import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.Review;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,10 @@ public class UtilsByReports implements Serializable {
 	
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+	public static final String FTR_DATASOUTCE = "filterDataSource";
 	public static final String FLD_DEFICITEM_NAME = "defItemName";
+	public static final String FLD_PROD_NAME = "prodName";
+	public static final String FLD_REG_NUMBER = "regNumber";
 	
 	public static String KEY_MODERNAME = "moderName";
 	public static String KEY_MODINITIALS = "modInitials";
@@ -88,6 +92,8 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_APPEMAIL = "appEmail";
 	public static String KEY_DAYS = "repdays";
 	public static String KEY_PROD_ROUTE_ADMINISTRATION = "prodRouteAdministration";
+	public static String KEY_CURUSER = "curUser" ;
+	public static String KEY_APPRESPONSIBLE = "appResponsible";
 	
 	public static String KEY_CHEIFNAME = "cheifName";
 	public static String KEY_FIRSTNAME = "firstNames";

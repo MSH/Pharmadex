@@ -63,6 +63,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 
 /**
@@ -330,9 +332,24 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_GESTOR, gestor);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);		
-
-		return JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
+		utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);	
+		
+	
+		String regNum = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():""; //"2019/08";//
+		String prodName = product.getProdName() != null ? product.getProdName():""; //"AMPICILLIN";//
+		JRMapArrayDataSource source = createRegLetterSource(prodName, regNum);
+		
+		 Map[] masterData = new Map[1];
+		 masterData[0] = new HashMap();
+         masterData[0].put(UtilsByReports.FTR_DATASOUTCE, source);
+	  	
+		JasperPrint jasperPrint;
+		if(source != null){
+			
+			jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(masterData));
+			return jasperPrint;
+		}else
+			return  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 	}
 
 	public String createRejectCert(ProdApplications prodApp, String summary , Long loggedINUserID ) {
@@ -393,7 +410,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, res, true);				
 			}
 			param.put("date", new Date());
-
+			utilsByReports.putNotNull(UtilsByReports.KEY_REG_NUMBER, "", false);
+			
 			return JasperFillManager.fillReport(resource.getFile(), param);
 		}
 		return null;
@@ -424,7 +442,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DAYS, days, true);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
-
+			
+			if(prodApp.getApplicant() != null){
+				if(prodApp.getApplicant().getContactName()!=null){
+					setAppResponsibleUser(prodApp.getApplicant().getContactName());							
+				}
+			}
+			
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/deficiency.jasper");
 			if(source != null){
@@ -469,9 +493,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
 		if(checkLists != null){
 			for(ProdAppChecklist item : checkLists){
-
 				Map<String,String> mp = new HashMap<String,String>();
-				mp.put(UtilsByReports.FLD_DEFICITEM_NAME, item.getChecklist().getModule() + ". " + item.getChecklist().getName());
+				String appRemark="";
+				if(item.getAppRemark()!=null){
+					if(!"".equals(item.getAppRemark()))
+						appRemark= "<li> "+item.getAppRemark()+"</li><br>";
+				}
+				mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b>"+appRemark);
 				res.add(mp);
 			}
 			return new JRMapArrayDataSource(res.toArray());
@@ -479,6 +507,18 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			return null;
 		}
 	}
+	
+	private JRMapArrayDataSource createRegLetterSource(String prodName, String regNumber) {
+		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
+				Map<String,String> mp = new HashMap<String,String>();
+				mp.put(UtilsByReports.FLD_PROD_NAME, prodName);
+				mp.put(UtilsByReports.FLD_REG_NUMBER, regNumber);				
+				res.add(mp);
+			
+			return new JRMapArrayDataSource(res.toArray());
+		
+	}
+
 
 	/**
 	 * Create review details and save it to letters (one point to find all generated documents)
@@ -533,7 +573,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_PHONE, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
 				utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_EMAIL, "", false);
-
+						
 				utilsByReports.putNotNull(JRParameter.REPORT_LOCALE, locale);
 
 				//TODO chief name from properties!!
@@ -628,15 +668,22 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);		
-				String res="";
-				if(curuser!=null){				
+				String res = "", resIn="";
+				if(curuser!=null){
+					res = curuser.getName()!=null?curuser.getName():"";					
 					if(prodApp!=null)
-						res = getUsername(curuser);
-				}
-				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, res, true);
+						resIn = getUsername(curuser);
+				}	
+				utilsByReports.putNotNull(UtilsByReports.KEY_CURUSER,res, true);
+				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, resIn, true);
 			}
-
-
+			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+						
+			if(prodApp.getApplicant() != null){
+				if(prodApp.getApplicant().getContactName()!=null){
+					setAppResponsibleUser(prodApp.getApplicant().getContactName());													
+				}
+			}
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
@@ -666,6 +713,19 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 	}
 
+	/**
+	 * set parameter applicant responsible
+	 * @param contName - applicant contactName 
+	 */
+	private void setAppResponsibleUser(String contName) {			
+		User respUser = userService.findUserByUsername(contName);	
+		if(respUser!=null){
+			String res = respUser.getName()!=null?respUser.getName():"";						
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPRESPONSIBLE,res, true);		
+		}
+		
+	}
+
 	private String getUsername(User curuser ) {
 		String res = "";
 		if (curuser.getName() != null) {				
@@ -688,7 +748,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			ri.setReviewStatus (ReviewStatus.FIR_SUBMIT);
 
 			Date dueDate = revDeficiency.getDueDate();
-
+		
 			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
@@ -716,6 +776,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					res = bundle.getString(prodApp.getProdAppType().getKey());							
 			}
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE,res,true);	
+			
+			if(prodApp.getApplicant() != null){
+				if(prodApp.getApplicant().getContactName()!=null){
+					setAppResponsibleUser(prodApp.getApplicant().getContactName());													
+				}
+			}
 
 			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);

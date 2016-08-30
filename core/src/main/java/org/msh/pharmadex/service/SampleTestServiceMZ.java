@@ -141,6 +141,17 @@ public class SampleTestServiceMZ implements Serializable {
 				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, res, true);
 			}
 		}
+		if(prodApplications.getApplicant() != null){
+			if(prodApplications.getApplicant().getContactName()!=null){
+				String contName = prodApplications.getApplicant().getContactName();					
+				User respUser = userService.findUserByUsername(contName);	
+				if(respUser!=null){
+					String res = respUser.getName()!=null?respUser.getName():"";						
+					utilsByReports.putNotNull(UtilsByReports.KEY_APPRESPONSIBLE,res, true);		
+				}								
+			}
+		}
+		
 		/*utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
 		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
