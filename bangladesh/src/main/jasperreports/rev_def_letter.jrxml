@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-19T13:07:37 -->
+<!-- 2016-08-30T13:43:00 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -16,6 +16,7 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
 	<parameter name="appName" class="java.lang.String"/>
+	<parameter name="appResponsible" class="java.lang.String"/>
 	<parameter name="appAddress" class="java.lang.String"/>
 	<parameter name="appNum" class="java.lang.String"/>
 	<parameter name="prodName" class="java.lang.String"/>
@@ -23,6 +24,7 @@
 	<parameter name="prodStrength" class="java.lang.String"/>
 	<parameter name="dosForm" class="java.lang.String"/>
 	<parameter name="execSummary" class="java.lang.String"/>
+	<parameter name="DueDate" class="java.util.Date"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -67,23 +69,23 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA["Attention: ".concat( "____________________").concat("(e.g. Regulatory Affairs Manager)")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Attention: ".concat( $P{appResponsible} == null ? "____________________":$P{appResponsible}).concat(" (e.g. Regulatory Affairs Manager)")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="406" y="146" width="50" height="16" uuid="ae4a7214-f0ee-475e-ac84-d7448a101f01">
+				<reportElement positionType="Float" x="406" y="146" width="34" height="16" uuid="ae4a7214-f0ee-475e-ac84-d7448a101f01">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["Date:"]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="461" y="146" width="96" height="16" uuid="e4a08ebe-e69b-4ab4-829a-c5604e6f8d09">
+			<textField pattern="dd.MM.yyyy">
+				<reportElement positionType="Float" x="445" y="146" width="96" height="16" uuid="e4a08ebe-e69b-4ab4-829a-c5604e6f8d09">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DueDate} != null ? $P{DueDate} : new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="212" y="417" width="344" height="16" uuid="7480eae7-8f1e-4225-93af-1c2f4317d782">
@@ -253,6 +255,24 @@
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 		</band>
 	</columnFooter>
+	<pageFooter>
+		<band height="76" splitType="Stretch">
+			<staticText>
+				<reportElement x="270" y="5" width="285" height="71" uuid="f271c2ed-6fa9-4cd2-96c9-c7bc74c8a87d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="9"/>
+				</textElement>
+				<text><![CDATA[Directorate General of Drug Administration
+Aushad Bhavan, Mohakhali, Dhaka-1212, Bangladesh
+Tel : 8802 9880803, 9880864, 9880897, 9880924
+Fax : 8802 9880854, E-mail : dgda.gov@gmail.com
+Website: www.dgda.gov.bd]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
 	<summary>
 		<band height="212" splitType="Stretch">
 			<staticText>
