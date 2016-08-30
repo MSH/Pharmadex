@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-23T15:00:30 -->
+<!-- 2016-08-30T16:28:33 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6499b4e2-6ed0-423c-8082-f3978445c6ce">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -148,7 +148,7 @@
 				<textElement markup="html">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA["<li>" + $F{defItemName} + "</li>"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["".concat($F{defItemName} != null ?$F{defItemName}:"").concat("")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
