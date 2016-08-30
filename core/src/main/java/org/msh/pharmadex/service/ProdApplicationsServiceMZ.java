@@ -492,16 +492,22 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private JRMapArrayDataSource createDeficiencySource(List<ProdAppChecklist> checkLists) {
 		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
 		if(checkLists != null){
-			for(ProdAppChecklist item : checkLists){
-				Map<String,String> mp = new HashMap<String,String>();
-				String appRemark="";
-				if(item.getAppRemark()!=null){
-					if(!"".equals(item.getAppRemark()))
-						appRemark= "<li> "+item.getAppRemark()+"</li><br>";
+			if(checkLists.size()>0){
+				for(ProdAppChecklist item : checkLists){
+					Map<String,String> mp = new HashMap<String,String>();
+					String appRemark="";
+					if(item.getAppRemark()!=null){
+						if(!"".equals(item.getAppRemark()))
+							appRemark= "<li> "+item.getAppRemark()+"</li><br>";
+					}
+					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b>"+appRemark);
+					res.add(mp);
 				}
-				mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b>"+appRemark);
+			}else{
+				Map<String,String> mp = new HashMap<String,String>();
+				mp.put(UtilsByReports.FLD_DEFICITEM_NAME,"");
 				res.add(mp);
-			}
+			}			
 			return new JRMapArrayDataSource(res.toArray());
 		}else{
 			return null;
