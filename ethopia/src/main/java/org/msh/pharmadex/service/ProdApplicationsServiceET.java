@@ -21,6 +21,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
+import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.ProdAppType;
@@ -50,6 +51,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
     private ProductCompanyDAO prodCompanyDAO;
     @Autowired
     private ProdApplicationsDAO prodApplicationsDAO;
+    @Autowired
+	private ReviewInfoDAO reviewInfoDAO;
  
     @Override
     public List<RegState> nextStepOptions(RegState regState, UserSession userSession, boolean reviewStatus) {
@@ -348,7 +351,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
                 utilsByReports.putNotNull(UtilsByReports.KEY_MODERNAME, "", false);
 
                 //TODO chief name from properties!!
-                JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO);
+                JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
                 URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report.jasper");
                 if(source != null){
                     if(resource != null){

@@ -241,7 +241,7 @@
                     <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
-                <p:tab id="applicationStatus" title="#{msgs.appl_status_country}">
+                <p:tab id="applicationStatus" title="#{msgs.appl_status_country}" rendered="#{prodRegAppMbeanMZ.visibleForeignTab}">
                     <p:panel header="#{msgs.appl_status_country}" id="statusPnl">
                         <p:messages/>
                         <h:panelGrid columns="1" cellspacing="10" id="foreignstatusgrid" width="100%">
@@ -367,28 +367,28 @@
                         <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
                             <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
                             <p:inputText id="msrp" value="#{prodRegAppMbean.pricing.msrp}"
-                                         title="#{msgs.product_pricing_max}"                                         
-                                    >
-                            </p:inputText>
-                            <p:message for="msrp" showSummary="true" showDetail="false"/>
+                                         title="#{msgs.product_pricing_max}"
+                                         style="width: 350px;"/>
+                            <p:outputLabel value="#{msgs.product_packsize}: #{prodRegAppMbean.product.packSize}" 
+                            				style = "text-align: left;"/>
 
                             <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
                             <p:inputText id="priceperdose" value="#{prodRegAppMbean.pricing.pricePerDose}"
-                                         title="#{msgs.product_pricing_perdose}">
-                            </p:inputText>
-                            <p:message for="priceperdose" showSummary="true" showDetail="false"/>
+                                         title="#{msgs.product_pricing_perdose}"
+                                         style="width: 350px;"/>
+                            <p:outputLabel />
 
                             <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
                             <p:inputText id="priceperday" value="#{prodRegAppMbean.pricing.pricePerDay}"
-                                         title="#{msgs.product_pricing_perdose}">
-                            </p:inputText>
-                            <p:message for="priceperday" showSummary="true" showDetail="false"/>
+                                         title="#{msgs.product_pricing_perdose}"
+                                         style="width: 350px;"/>
+                            <p:outputLabel />
 
                             <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
                             <p:inputText id="treatcost" value="#{prodRegAppMbean.pricing.treatCost}"
-                                         title="#{msgs.product_pricing_perdose}">
-                            </p:inputText>
-                            <p:message for="treatcost" showSummary="true" showDetail="false"/>
+                                         title="#{msgs.product_pricing_perdose}"
+                                         style="width: 350px;"/>
+                            <p:outputLabel />
 
                         </h:panelGrid>
                     </p:panel>

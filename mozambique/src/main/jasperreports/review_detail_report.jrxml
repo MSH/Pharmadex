@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-22T13:51:33 -->
+<!-- 2016-08-29T08:43:22 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -15,7 +15,8 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<parameter name="moderName" class="java.lang.String"/>
+	<parameter name="firstNames" class="java.lang.String"/>
+	<parameter name="secondNames" class="java.lang.String"/>
 	<parameter name="prodName" class="java.lang.String"/>
 	<parameter name="cheifName" class="java.lang.String">
 		<parameterDescription><![CDATA[Who has approved]]></parameterDescription>
@@ -206,45 +207,74 @@ FAX: 00258 21 326547]]></text>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="200" splitType="Stretch">
+		<band height="300" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
-				<reportElement x="0" y="70" width="555" height="20" uuid="365367c3-d9c4-4075-8a4a-4b99850bfe74"/>
+				<reportElement x="0" y="30" width="555" height="20" uuid="365367c3-d9c4-4075-8a4a-4b99850bfe74">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Maputo de ________________________________________________"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="6" y="100" width="224" height="17" uuid="2dc0616d-9aba-4899-a504-e3a1e7f55b91"/>
+				<reportElement x="6" y="80" width="224" height="17" uuid="2dc0616d-9aba-4899-a504-e3a1e7f55b91">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center">
-					<font isBold="true"/>
+					<font fontName="DejaVu Serif" isBold="false"/>
 				</textElement>
-				<text><![CDATA[O Avaliador Farmacêutico]]></text>
+				<text><![CDATA[O Avaliador Primário]]></text>
 			</staticText>
 			<line>
-				<reportElement x="30" y="150" width="137" height="1" uuid="07d0dbbc-7168-46f4-9acb-64bea57ab392"/>
+				<reportElement x="30" y="130" width="137" height="1" uuid="07d0dbbc-7168-46f4-9acb-64bea57ab392"/>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="6" y="160" width="224" height="15" uuid="c02b0eb9-592e-4ac4-b024-1f6c460a4015"/>
-				<textElement textAlignment="Center">
+				<reportElement x="6" y="140" width="224" height="15" uuid="c02b0eb9-592e-4ac4-b024-1f6c460a4015">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="none">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{moderName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{firstNames} != null ? $P{firstNames}:""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="285" y="104" width="260" height="13" uuid="323fc863-67ef-4fe7-ba41-0dcd01dccbfa"/>
+				<reportElement x="285" y="80" width="260" height="17" uuid="323fc863-67ef-4fe7-ba41-0dcd01dccbfa">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" isBold="true"/>
+					<font fontName="DejaVu Serif" isBold="false"/>
 				</textElement>
-				<text><![CDATA[A Presidente de CTRM]]></text>
+				<text><![CDATA[O Avaliador Secundário]]></text>
 			</staticText>
 			<line>
-				<reportElement x="359" y="150" width="137" height="1" uuid="419768cb-aeb7-415d-b084-d34cdd4bc63a"/>
+				<reportElement x="359" y="130" width="137" height="1" uuid="419768cb-aeb7-415d-b084-d34cdd4bc63a"/>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="315" y="160" width="224" height="15" uuid="379efc3d-6062-4dc7-98fe-df1e0851f76b"/>
+				<reportElement x="315" y="140" width="224" height="15" uuid="379efc3d-6062-4dc7-98fe-df1e0851f76b">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="none">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{secondNames} != null ?$P{secondNames}:""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="140" y="170" width="260" height="17" uuid="02848f2f-bec9-4230-9648-23cd3610de4c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" isBold="false"/>
+				</textElement>
+				<text><![CDATA[A Presidente do CTRM]]></text>
+			</staticText>
+			<line>
+				<reportElement x="200" y="220" width="137" height="1" uuid="9857ec63-239d-4155-8b64-d9509635bbaf"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="160" y="230" width="224" height="15" uuid="b516b2a2-3d2c-48eb-bd60-c4e83a2097a7"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Serif"/>
 				</textElement>

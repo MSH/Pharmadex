@@ -33,7 +33,8 @@
         <p:message for="shelflife" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_packsize}" for="inpacksize"/>
-        <p:inputText id="inpacksize" value="#{prodRegAppMbean.product.packSize}" style="width:30%;"/>
+        <p:inputText id="inpacksize" value="#{prodRegAppMbean.product.packSize}" style="width:30%;"
+        				required="true"  requiredMessage="#{msgs.product_packsize}"/>
         <p:message for="inpacksize" showSummary="true" showDetail="false"/>
 
 

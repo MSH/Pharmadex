@@ -13,7 +13,7 @@
                         onclick="PF('dlg').show()" id="addCommentMI"/>
             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
                         onclick="PF('stepDlg').show()" id="nextStepMI"
-                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.staff||userSession.moderator}"/>
+                        rendered="#{processProdBn.canNextStep}"/>
             <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
                         action="/internal/reject.faces" ajax="false"
                         rendered="#{processProdBn.canReject}">
@@ -41,7 +41,7 @@
                         rendered="#{processProdBn.canRegister}"/>
             <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                         onclick="PF('moderatordlg').show()"
-                        rendered="#{userSession.admin||userSession.staff}" id="assignModMI">
+                        rendered="#{processProdBn.canChangeModerator}" id="assignModMI">
                         <p:resetInput target="moderatorForm" />
             </p:menuitem>
         </p:submenu>
