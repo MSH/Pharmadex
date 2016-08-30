@@ -56,10 +56,10 @@ public class RegProdMbn implements Serializable {
     }
 
     public String searchProduct() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (prodTable == null)
-            return null;
-        return "/secure/prodrereg.faces";
+       // FacesContext facesContext = FacesContext.getCurrentInstance();
+       // if (prodTable == null)
+      //      return null;
+        return "/internal/processreg.faces";
     }
 
 

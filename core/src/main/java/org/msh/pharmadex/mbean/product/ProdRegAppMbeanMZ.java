@@ -11,6 +11,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.msh.pharmadex.domain.enums.ApplicantType;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 /**
@@ -30,6 +32,7 @@ public class ProdRegAppMbeanMZ implements Serializable {
 	private String currentStep = "";
 	private boolean visibleSave = false;
 	private boolean visibleSubmit = false;
+	private boolean visibleForeignTab = false;
 	
 	private static Map<String, Integer> mapNumTabs = new HashMap<String, Integer>(){
 		{
@@ -121,5 +124,19 @@ public class ProdRegAppMbeanMZ implements Serializable {
 
 	public void setVisibleSubmit(boolean visibleSubmit) {
 		this.visibleSubmit = visibleSubmit;
+	}
+
+	public boolean isVisibleForeignTab() {
+		if(prodRegAppMbean.getApplicant() != null){
+			if(prodRegAppMbean.getApplicant().getApplicantType() != null){
+				if(prodRegAppMbean.getApplicant().getApplicantType().getName().equalsIgnoreCase(ApplicantType.IMPORTER.name()))
+					visibleForeignTab = true;
+			}
+		}
+		return visibleForeignTab;
+	}
+
+	public void setVisibleForeignTab(boolean visibleForeignTab) {
+		this.visibleForeignTab = visibleForeignTab;
 	}
 }

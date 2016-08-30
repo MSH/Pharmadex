@@ -89,6 +89,10 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_DAYS = "repdays";
 	public static String KEY_PROD_ROUTE_ADMINISTRATION = "prodRouteAdministration";
 	
+	public static String KEY_CHEIFNAME = "cheifName";
+	public static String KEY_FIRSTNAME = "firstNames";
+	public static String KEY_SECONDNAME = "secondNames";
+	
 	private HashMap<String, Object> param = null;
 	private ProdApplications prodApps = null;
 	private Product prod = null;

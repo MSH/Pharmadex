@@ -32,52 +32,61 @@ import net.sf.jasperreports.engine.JRException;
 @ViewScoped
 public class ProdRejectBnMZ implements Serializable {
 
-    @ManagedProperty(value = "#{processProdBn}")
-    private ProcessProdBn processProdBn;
+	@ManagedProperty(value = "#{processProdBn}")
+	private ProcessProdBn processProdBn;
 
-    @ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
+	@ManagedProperty(value = "#{userSession}")
+	private UserSession userSession;
 
-    @ManagedProperty(value = "#{userService}")
-    private UserService userService;
+	@ManagedProperty(value = "#{userService}")
+	private UserService userService;
 
-    @ManagedProperty(value = "#{prodApplicationsServiceMZ}")
-    private ProdApplicationsServiceMZ prodApplicationsServiceMZ;
-    
-    @ManagedProperty(value = "#{prodRejectBn}")
-    private ProdRejectBn prodRejectBn;
+	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
+	private ProdApplicationsServiceMZ prodApplicationsServiceMZ;
 
-    private FacesContext facesContext = FacesContext.getCurrentInstance();
-    private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+	@ManagedProperty(value = "#{prodRejectBn}")
+	private ProdRejectBn prodRejectBn;
 
-    public String rejectProdApp() throws JRException, IOException {
-        facesContext = FacesContext.getCurrentInstance();
-        if (!getProdRejectBn().getProdApplications().getRegState().equals(RegState.NOT_RECOMMENDED)) {
-            facesContext.addMessage(null, new FacesMessage("Invalid operation!", bundle.getString("Error.headNotReject")));
-            return "";
-        }
-        
-        TimeLine timeLine = new TimeLine();
-        timeLine.setRegState(RegState.REJECTED);
-        timeLine.setProdApplications(getProdRejectBn().getProdApplications());
-        timeLine.setStatusDate(new Date());
-        timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
-        timeLine.setComment(getProdRejectBn().getSummary());
-        processProdBn.getTimeLineList().add(timeLine);
-        getProdRejectBn().getProdApplications().setRegState(timeLine.getRegState());
+	private FacesContext facesContext = FacesContext.getCurrentInstance();
+	private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
-        String s = getProdApplicationsServiceMZ().createRejectCert(getProdRejectBn().getProdApplications(), getProdRejectBn().getSummary(),userSession.getLoggedINUserID());
-		if(!s.equals("created")){
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+	public String rejectProdApp() throws JRException, IOException {
+		if(getProdRejectBn().getProdApplications().getRegState().equals(RegState.REJECTED)){
+			String s = getProdApplicationsServiceMZ().createRejectCert(getProdRejectBn().getProdApplications(), getProdRejectBn().getSummary(),userSession.getLoggedINUserID());
+			if(!s.equals("created")){
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+			}else{
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("status_change_success")));
+			}
 		}else{
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("status_change_success")));
-		}
-		timeLine = new TimeLine();
-		return "/internal/processreg";
-    }
+			facesContext = FacesContext.getCurrentInstance();
+			if (!getProdRejectBn().getProdApplications().getRegState().equals(RegState.NOT_RECOMMENDED)) {
+				facesContext.addMessage(null, new FacesMessage("Invalid operation!", bundle.getString("Error.headNotReject")));
+				return "";
+			}
 
-    
-    public ProdRejectBn getProdRejectBn() {
+			TimeLine timeLine = new TimeLine();
+			timeLine.setRegState(RegState.REJECTED);
+			timeLine.setProdApplications(getProdRejectBn().getProdApplications());
+			timeLine.setStatusDate(new Date());
+			timeLine.setUser(userService.findUser(userSession.getLoggedINUserID()));
+			timeLine.setComment(getProdRejectBn().getSummary());
+			processProdBn.getTimeLineList().add(timeLine);
+			getProdRejectBn().getProdApplications().setRegState(timeLine.getRegState());
+
+			String s = getProdApplicationsServiceMZ().createRejectCert(getProdRejectBn().getProdApplications(), getProdRejectBn().getSummary(),userSession.getLoggedINUserID());
+			if(!s.equals("created")){
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+			}else{
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("status_change_success")));
+			}
+			timeLine = new TimeLine();
+		}
+		return "/internal/processreg";
+	}
+
+
+	public ProdRejectBn getProdRejectBn() {
 		return prodRejectBn;
 	}
 
@@ -86,20 +95,20 @@ public class ProdRejectBnMZ implements Serializable {
 	}
 
 	public UserSession getUserSession() {
-        return userSession;
-    }
+		return userSession;
+	}
 
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
 
-    public UserService getUserService() {
-        return userService;
-    }
+	public UserService getUserService() {
+		return userService;
+	}
 
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 
 	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
 		return prodApplicationsServiceMZ;
@@ -118,5 +127,5 @@ public class ProdRejectBnMZ implements Serializable {
 	public void setProcessProdBn(ProcessProdBn processProdBn) {
 		this.processProdBn = processProdBn;
 	}
-    
+
 }

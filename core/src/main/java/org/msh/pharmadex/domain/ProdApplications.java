@@ -538,6 +538,7 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     public ReviewStatus getReviewStatus() {
         if(regState.equals(RegState.REVIEW_BOARD)){
+        	reviewInfos = this.getReviewInfos();
             if(reviewInfos==null)
                 reviewStatus = ReviewStatus.NOT_ASSIGNED;
             else if(reviewInfos.size()<1)

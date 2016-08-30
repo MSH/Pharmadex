@@ -537,7 +537,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.putNotNull(JRParameter.REPORT_LOCALE, locale);
 
 				//TODO chief name from properties!!
-				JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO);
+				JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
 				URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report.jasper");
 				if(source != null){
 					if(resource != null){

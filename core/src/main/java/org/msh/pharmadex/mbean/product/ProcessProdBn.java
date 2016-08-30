@@ -18,14 +18,34 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Attachment;
+import org.msh.pharmadex.domain.Comment;
+import org.msh.pharmadex.domain.ForeignAppStatus;
+import org.msh.pharmadex.domain.Invoice;
+import org.msh.pharmadex.domain.Mail;
+import org.msh.pharmadex.domain.ProdAppAmdmt;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdAppLetter;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.Review;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.SuspDetail;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.domain.enums.ProdAppType;
+import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.mbean.BackLog;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.AmdmtService;
@@ -127,6 +147,8 @@ public class ProcessProdBn implements Serializable {
 	private List<ProdAppLetter> letters;
 	private List<ReviewInfo> reviewInfos;
 	private boolean registered;
+	private boolean createRegCert;
+	private boolean createRejCert;
 	private boolean prescreened;
 	private List<ProdApplications> prevProdApps;
 	private List<SuspDetail> suspDetails;
@@ -136,7 +158,7 @@ public class ProcessProdBn implements Serializable {
 	private boolean disableVerify;
 	private boolean displayFir;
 	private String suspId;
-    private String appType;
+	private String appType;
 	private String backTo;
 
 	private List<ForeignAppStatus> foreignAppStatuses;
@@ -476,7 +498,7 @@ public class ProcessProdBn implements Serializable {
 	public void changeClinicalReviewStatus() {
 		logger.error("Inside changeStatusListener");
 		try {
-				save();
+			save();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -522,7 +544,6 @@ public class ProcessProdBn implements Serializable {
 	public String addTimeline() {
 		facesContext = getCurrentInstance();
 		try {
-
 			timeLine.setStatusDate(new Date());
 			timeLine.setUser(loggedInUser);
 			RetObject paObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
@@ -654,11 +675,42 @@ public class ProcessProdBn implements Serializable {
 	}
 
 	public boolean isRegistered() {
+		registered = false;
 		if (prodApplications != null) {
 			if (prodApplications.getRegState().equals(RegState.REGISTERED))
-				return true;
+				registered = true;
 		}
-		return false;
+		return registered;
+	}
+
+	public boolean isCreateRegCert() {
+		createRegCert = false;
+		if (prodApplications != null) {
+			if (prodApplications.getRegState().equals(RegState.REGISTERED)){
+				if(prodApplications.getRegCert() == null)
+					createRegCert = true;
+			}
+		}
+		return createRegCert;
+	}
+
+	public void setCreateRegCert(boolean createRegCert) {
+		this.createRegCert = createRegCert;
+	}
+	
+	public boolean isCreateRejCert() {
+		createRejCert = false;
+		if (prodApplications != null) {
+			if (prodApplications.getRegState().equals(RegState.REJECTED)){
+				if(prodApplications.getRejCert() == null)
+					createRejCert = true;
+			}
+		}
+		return createRejCert;
+	}
+
+	public void setCreateRejCert(boolean createRejCert) {
+		this.createRejCert = createRejCert;
 	}
 
 	public  boolean isSuspended(){
@@ -1140,26 +1192,26 @@ public class ProcessProdBn implements Serializable {
 	}
 
 
-    public String getAppType() {
-        String res = resourceBundle.getString(prodApplications.getProdAppType().getKey());
-        if (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
-            if (prodApplications.getMjVarQnt()>0){
-                res = res + resourceBundle.getString("variationType_major").toLowerCase() + " " + String.valueOf(prodApplications.getMjVarQnt());
-            }
-            if (prodApplications.getMnVarQnt()>0 && (prodApplications.getMjVarQnt()>0)){
-                res = res + " " + "/" + " ";
-            }
-            if (prodApplications.getMnVarQnt()>0){
-                res = res + " " + resourceBundle.getString("variationType_minor").toLowerCase() + " " + String.valueOf(prodApplications.getMnVarQnt());
-            }
-        }
-        appType = "("+res+")";
-        return appType;
-    }
+	public String getAppType() {
+		String res = resourceBundle.getString(prodApplications.getProdAppType().getKey());
+		if (prodApplications.getProdAppType().equals(ProdAppType.VARIATION)){
+			if (prodApplications.getMjVarQnt()>0){
+				res = res + resourceBundle.getString("variationType_major").toLowerCase() + " " + String.valueOf(prodApplications.getMjVarQnt());
+			}
+			if (prodApplications.getMnVarQnt()>0 && (prodApplications.getMjVarQnt()>0)){
+				res = res + " " + "/" + " ";
+			}
+			if (prodApplications.getMnVarQnt()>0){
+				res = res + " " + resourceBundle.getString("variationType_minor").toLowerCase() + " " + String.valueOf(prodApplications.getMnVarQnt());
+			}
+		}
+		appType = "("+res+")";
+		return appType;
+	}
 
-    public void setAppType(String appType) {
-        this.appType = appType;
-    }
+	public void setAppType(String appType) {
+		this.appType = appType;
+	}
 	public boolean canChangeModerator() {
 		if (!(userSession.isStaff() || userSession.isAdmin())) return false;
 		if (isRegistered() || isSuspended()) return false;
@@ -1190,5 +1242,34 @@ public class ProcessProdBn implements Serializable {
 
 	public void setBackTo(String backTo) {
 		this.backTo = backTo;
+	}
+
+	public boolean getCanNextStep() {
+		if((userSession.isAdmin() || getCheckReviewStatus() || userSession.isStaff()
+				|| userSession.isModerator()) && !prodApplications.getRegState().equals(RegState.REGISTERED)
+				 && !prodApplications.getRegState().equals(RegState.REJECTED))
+			return true;
+		return false;
+	}
+	
+	public boolean getCanChangeModerator() {
+		if((userSession.isAdmin() || userSession.isStaff())
+				&& !prodApplications.getRegState().equals(RegState.REGISTERED)
+				 && !prodApplications.getRegState().equals(RegState.REJECTED))
+			return true;
+		return false;
+	}
+
+	public String buildStringByRegDlg(boolean isheader){
+		if(prodApplications != null){
+			if(prodApplications.getRegState().equals(RegState.REGISTERED)){
+				if(isheader)
+					return resourceBundle.getString("reg_cert_create");
+				else
+					return resourceBundle.getString("label_create");
+			}
+		}
+
+		return resourceBundle.getString("register_product");
 	}
 }

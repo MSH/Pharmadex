@@ -7,21 +7,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
+import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.mbean.product.ReviewItemReport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
@@ -38,6 +43,9 @@ public class ReviewDetailPrintMZ implements Serializable {
 
 	private static ProdApplications prodApp;
 	private static ResourceBundle bundle = null;
+	
+	@Autowired
+	private static ReviewService reviewService;
 
 	/**
 	 * Create data source for review detail report. Portuguese language only!!!!
@@ -47,7 +55,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 	 * @return at least empty map!
 	 */	
 	public static JRMapArrayDataSource createReviewSourcePorto(ProdApplications prodApplications, ResourceBundle bun, Properties prop, ProductCompanyDAO prodCompanyDAO,
-			CustomReviewDAO customReviewDAO) {
+			CustomReviewDAO customReviewDAO, ReviewInfoDAO reviewInfoDAO, HashMap<String, Object> param) {
 		List<Map<String,Object>> res = new ArrayList<Map<String,Object>>();
 		prodApp = prodApplications;
 		bundle = bun;
@@ -55,6 +63,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 		fillGeneralText(res, prop, prodCompanyDAO);
 		fillItems(res, customReviewDAO);
 		fillResolutionText(res, prop);
+		fillSignersText(res, prop, reviewInfoDAO, param);
 		return new JRMapArrayDataSource(res.toArray());
 	}
 
@@ -128,6 +137,40 @@ public class ReviewDetailPrintMZ implements Serializable {
 		fillItemRS(res, prop.getProperty("chapter3"), null, text, null, null, null, null);
 	}
 
+	private static void fillSignersText(List<Map<String, Object>> res, Properties prop, ReviewInfoDAO reviewInfoDAO, HashMap<String, Object> param) {
+		String firstNames = "";
+		String secondNames = "";
+		String cheifName = "";
+		
+		Set<String> listFirstNames = new HashSet<String>(); // only uniq values
+		Set<String> listSecondNames = new HashSet<String>();
+		
+		List<ReviewInfo> list = reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(prodApp.getId());
+		if(list != null && list.size() > 0){
+			for(ReviewInfo revinf:list){
+				if(revinf.getReviewer() != null)
+					listFirstNames.add(revinf.getReviewer().getName());
+				if(revinf.getSecReviewer() != null)
+					listSecondNames.add(revinf.getSecReviewer().getName());
+			}
+		}
+		if(listFirstNames != null && listFirstNames.size() > 0){
+			for(String name:listFirstNames){
+				firstNames += name + "\n";
+			}
+		}
+		
+		if(listSecondNames != null && listSecondNames.size() > 0){
+			for(String name:listSecondNames){
+				secondNames += name + "\n";
+			}
+		}
+		
+		param.put(UtilsByReports.KEY_FIRSTNAME, firstNames);
+		param.put(UtilsByReports.KEY_SECONDNAME, secondNames);
+		param.put(UtilsByReports.KEY_CHEIFNAME, cheifName);
+	}
+	
 	private static void fillItems(List<Map<String, Object>> res, CustomReviewDAO customReviewDAO) {
 		Map<String, List<ReviewItemReport>> map = customReviewDAO.getReviewListByReportNew(prodApp.getId());
 		if(map != null && !map.isEmpty()){
@@ -154,6 +197,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 		String text = "";
 		//pri_processor
 		//sec_processor
+		
 		if(item.getFirstRevName() != null){//item.getFirstRevName()
 			text = "<b>" + bundle.getString("pri_processor") + "</b>:<br>" + item.getFirstRevComment() + "<br>";
 		}
@@ -174,9 +218,6 @@ public class ReviewDetailPrintMZ implements Serializable {
 			 String reviewQuestion = item.getReviewQuestion();
 			 
 			 fillItemRS(res, chapter1, null, text, file,pages,reviewItemHead,reviewQuestion);
-				
-						
-			/* fillItemRS(res, chapter1, null, text, file, pages, null,null);*/
 		}
 	}
 
