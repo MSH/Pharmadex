@@ -206,6 +206,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 		}
 
 		if(!text.isEmpty())
+			text = text.replaceAll("strong>", "b>");  //for CKEditor
 			text += "<br>";
 		// file
 		InputStream file = null;

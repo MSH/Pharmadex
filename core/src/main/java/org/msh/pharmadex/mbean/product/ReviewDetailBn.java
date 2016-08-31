@@ -25,6 +25,7 @@ import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.FileUploadEvent;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Backing bean to capture review of products
@@ -116,6 +117,7 @@ public class ReviewDetailBn implements Serializable {
      * Reviewer press "Submit"
      * @return result
      */
+    @Transactional   //2016-08-31 AK
     public String submitReview() {
         FacesMessage msg;
         facesContext = FacesContext.getCurrentInstance();
