@@ -404,17 +404,18 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 
 	public List<ProdApplications> getAllAncestor(ProdApplications proda) {
 		ProdApplications an=proda;
-		List<ProdApplications> ans=new ArrayList<ProdApplications> ();
-		if (an.getParentApplication()!=null)
-		while (an!=null) {
-		if (an.getParentApplication()==null)  return ans;
-			an=	prodApplicationsDAO.findProdApplications(an.getParentApplication().getId());
-			if (an!=null) 
-			{ans.add(an);
-			an=an.getParentApplication();
-			}
-		
-		}
+        List<ProdApplications> ans = null;
+        if (an.getParentApplication()!=null){
+            ans=new ArrayList<ProdApplications> ();
+            while (an!=null) {
+            if (an.getParentApplication()==null)  return ans;
+                an=	prodApplicationsDAO.findProdApplications(an.getParentApplication().getId());
+                if (an!=null){
+                    ans.add(an);
+                    an=an.getParentApplication();
+                }
+            }
+        }
 		return ans;
 	}
 }

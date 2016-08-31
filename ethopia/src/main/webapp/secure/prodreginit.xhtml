@@ -1,176 +1,180 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core" xmlns:H="http://java.sun.com/jsf/html"
-                template="../templates/registration_layout.xhtml">
-    <ui:define name="regcontent">
-        <div class="post">
-            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
-        </div>
+    <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                    xmlns:h="http://java.sun.com/jsf/html"
+                    xmlns:ui="http://java.sun.com/jsf/facelets"
+                    xmlns:p="http://primefaces.org/ui"
+                    xmlns:f="http://java.sun.com/jsf/core" xmlns:H="http://java.sun.com/jsf/html"
+                    template="../templates/registration_layout.xhtml">
+        <ui:define name="regcontent">
+            <div class="post">
+                <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
+            </div>
 
-        <h:form id="reghome">
-            <p:messages id="messages"/>
-            <p:growl id="growl" showSummary="true"/>
+            <h:form id="reghome">
+                <p:messages id="messages"/>
+                <p:growl id="growl" showSummary="true"/>
 
-            <h:panelGrid columns="1" cellpadding="10" cellspacing="10" rendered="#{!prodRegInit.eligible}">
-                <p:outputLabel styleClass="hint" value="In order to register a product you need to register your company and an agency agreement
-                form as a first agent. If you think you have recieved this message in error, please contact FMHACA."/>
-            </h:panelGrid>
-
-
-            <h:panelGrid columns="1" cellpadding="10" cellspacing="10" rendered="#{prodRegInit.eligible}">
-                <p:outputLabel styleClass="hint" value="Please select the option below to find the total fees required for your application.
-            If you have all the information about the product then you can click next to start the Product Registratrion Process"/>
-            </h:panelGrid>
-
-            <p:panel header="Application Detail" rendered="#{prodRegInit.eligible}">
-                <h:panelGrid id="feepanel" columns="3" columnClasses="label value" cellspacing="10" cellpadding="10">
-                    <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
-                    <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}"
-                                     required="true" requiredMessage="#{msgs.valid_prod_type}"
-                                     rendered="#{prodRegInit.standardProcedureRecall}"
-                        >
-                        <p:outputLabel value="#{prodRegInit.prodAppType}" rendered="#{!prodRegInit.standardProcedureRecall}"/>
-                        <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{prodRegInit.prodAppTypes}" var="prodcat"
-                                       itemLabel="#{msgs[prodcat.key]}"/>
-                        <f:ajax listener="#{prodRegInit.ajaxListener}"/>
-                    </p:selectOneMenu>
-                    <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
-
-                    <p:outputLabel value="#{msgs.license_holder}" for="licname"/>
-                    <p:autoComplete id="licname" value="#{prodRegInit.selLicHolder}" required="true"
-                                    requiredMessage="#{msgs.lic_holder_required}"
-                                    completeMethod="#{prodRegInit.completeLicHolderList}" dropdown="true"
-                                    var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
-                                    converter="#{licHolderConverter}"
-                                    rendered="#{prodRegInit.fewLicHolders and prodRegInit.standardProcedureRecall}">
-                    <p:ajax event="itemSelect" listener="#{prodRegInit.onItemSelect}"/>
-                    </p:autoComplete>
-                    <p:outputLabel value="#{prodRegInit.selLicHolder.name}" style="font-weight: bold"
-                                   rendered="#{!prodRegInit.fewLicHolders or not prodRegInit.standardProcedureRecall}"/>
-                    <p:message for="licname" showSummary="true" showDetail="false"/>
-
-                    <p:outputLabel value="#{msgs.variationQuantityMj}" styleClass="fy-required-field"
-                                   for="majorQuantity"
-                                   rendered="#{prodRegInit.showVariationType}"/>
-                    <p:inputText id="majorQuantity" value="#{prodRegInit.majorQuantity}" rendered="#{prodRegInit.showVariationType}"/>
-                    <p:message for="majorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
-
-                    <p:outputLabel value="#{msgs.variationQuantityMn}" styleClass="fy-required-field"
-                                   for="minorQuantity"
-                                   rendered="#{prodRegInit.showVariationType}"/>
-                    <p:inputText id="minorQuantity" value="#{prodRegInit.minorQuantity}"
-                                 rendered="#{prodRegInit.showVariationType}"/>
-                    <p:message for="minorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
-
-                    <h:outputLabel value="#{msgs.search_prod}*: "
-                                   rendered="#{prodRegInit.showProductChoice}"
-                                   for="prodTable"
-                                   styleClass="fy-required-field"/>
-                    <p:autoComplete value="#{prodRegInit.prodTable}" id="prodTable"
-                                    completeMethod="#{prodRegInit.completeProduct}"
-                                    rendered="#{prodRegInit.showProductChoice  and prodRegInit.standardProcedureRecall}"
-                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
-                                    converter="#{productConverter}" forceSelection="true">
-                        <p:ajax event="itemSelect" listener="#{prodRegInit.onItemSelect}"/>
-                    </p:autoComplete>
-                    <p:outputLabel value="#{prodRegInit.prodTable.prodName}"
-                                   rendered="#{prodRegInit.showProductChoice  and !prodRegInit.standardProcedureRecall}"/>
-                    <p:message for="prodTable" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
-
-                    <h:outputLabel value="#{msgs.variationSummary}" rendered="#{prodRegInit.showVariationType}"/>
-                    <p:editor id="varDetails" value="#{prodRegInit.varSummary}" height="100" width="550" rendered="#{prodRegInit.showVariationType}"/>
-                    <p:message for="varDetails" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
-
-                    <p:outputLabel
-                            value="#{msgs.sra_msg}"/>
-                    <h:panelGroup>
-                        <p:selectManyCheckbox id="regauth" value="#{prodRegInit.selSRA}" layout="grid" columns="2">
-                            <f:selectItems value="#{globalEntityLists.sras}" var="cntry" itemValue="#{cntry.country}"
-                                           itemLabel="#{cntry.country}"/>
-                        </p:selectManyCheckbox>
-                    </h:panelGroup>
-                    <p:message for="regauth"/>
-
-                    <p:outputLabel/>
-                    <p:outputLabel value="#{msgs.sra_msg2}" styleClass="hint"/>
-                    <p:outputLabel/>
-
-                    <p:panelGrid columns="3" styleClass="panelNoBorder" id="feePanel" >
-                        <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"
-                                       rendered="#{prodRegInit.displayfeepanel}"/>
-                        <h:outputText value="#{prodRegInit.prescreenfee}" styleClass="value"
-                                       rendered="#{prodRegInit.displayfeepanel}">
-                            <f:convertNumber type="currency" pattern="¤#,##0.00" currencySymbol="$"/>
-                        </h:outputText>
-                        <p:outputLabel/>
-
-                        <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
-                                       rendered="#{prodRegInit.displayfeepanel}"/>
-                        <h:outputText value="#{prodRegInit.fee}" styleClass="value"
-                                       rendered="#{prodRegInit.displayfeepanel}">
-                            <f:convertNumber type="currency" pattern="¤#,##0.00" currencySymbol="$"/>
-                        </h:outputText>
-                        <p:outputLabel/>
-
-                        <p:outputLabel value="#{msgs.total_fee}" styleClass="label"
-                                       rendered="#{prodRegInit.displayfeepanel}"/>
-                        <h:outputText value="#{prodRegInit.totalfee}" styleClass="label"
-                                       rendered="#{prodRegInit.displayfeepanel}">
-                            <f:convertNumber type="currency" pattern="¤#,##0.00" currencySymbol="$"/>
-                        </h:outputText>
-                        <p:outputLabel/>
-                    </p:panelGrid>
+                <h:panelGrid columns="1" cellpadding="10" cellspacing="10" rendered="#{!prodRegInit.eligible}">
+                    <p:outputLabel styleClass="hint" value="In order to register a product you need to register your company and an agency agreement
+                    form as a first agent. If you think you have recieved this message in error, please contact FMHACA."/>
                 </h:panelGrid>
+
+
+                <h:panelGrid columns="1" cellpadding="10" cellspacing="10" rendered="#{prodRegInit.eligible}">
+                    <p:outputLabel styleClass="hint" value="Please select the option below to find the total fees required for your application.
+                If you have all the information about the product then you can click next to start the Product Registratrion Process"/>
+                </h:panelGrid>
+
+                <p:panel header="Application Detail" rendered="#{prodRegInit.eligible}">
+                    <h:panelGrid id="feepanel" columns="3" columnClasses="label value" cellspacing="10" cellpadding="10">
+                        <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
+                        <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}"
+                                         required="true" requiredMessage="#{msgs.valid_prod_type}"
+                                         rendered="#{prodRegInit.standardProcedureRecall}"
+                            >
+                            <p:outputLabel value="#{prodRegInit.prodAppType}" rendered="#{!prodRegInit.standardProcedureRecall}"/>
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{prodRegInit.prodAppTypes}" var="prodcat"
+                                           itemLabel="#{msgs[prodcat.key]}"/>
+                            <f:ajax listener="#{prodRegInit.ajaxListener}"/>
+                        </p:selectOneMenu>
+                        <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
+
+                        <p:outputLabel value="#{msgs.license_holder}" for="licname"/>
+                        <p:autoComplete id="licname" value="#{prodRegInit.selLicHolder}" required="true"
+                                        requiredMessage="#{msgs.lic_holder_required}"
+                                        completeMethod="#{prodRegInit.completeLicHolderList}" dropdown="true"
+                                        var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
+                                        converter="#{licHolderConverter}"
+                                        rendered="#{prodRegInit.fewLicHolders and prodRegInit.standardProcedureRecall}">
+                        <p:ajax event="itemSelect" listener="#{prodRegInit.onItemSelect}"/>
+                        </p:autoComplete>
+                        <p:outputLabel value="#{prodRegInit.selLicHolder.name}" style="font-weight: bold"
+                                       rendered="#{!prodRegInit.fewLicHolders or not prodRegInit.standardProcedureRecall}"/>
+                        <p:message for="licname" showSummary="true" showDetail="false"/>
+
+                        <p:outputLabel value="#{msgs.variationQuantityMj}" styleClass="fy-required-field"
+                                       for="majorQuantity"
+                                       rendered="#{prodRegInit.showVariationType}"/>
+                        <p:inputText id="majorQuantity" value="#{prodRegInit.majorQuantity}" rendered="#{prodRegInit.showVariationType}"/>
+                        <p:message for="majorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
+
+                        <p:outputLabel value="#{msgs.variationQuantityMn}" styleClass="fy-required-field"
+                                       for="minorQuantity"
+                                       rendered="#{prodRegInit.showVariationType}"/>
+                        <p:inputText id="minorQuantity" value="#{prodRegInit.minorQuantity}"
+                                     rendered="#{prodRegInit.showVariationType}"/>
+                        <p:message for="minorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
+
+                        <h:outputLabel value="#{msgs.search_prod}*: "
+                                       rendered="#{prodRegInit.showProductChoice}"
+                                       for="prodTable"
+                                       styleClass="fy-required-field"/>
+                        <p:autoComplete value="#{prodRegInit.prodTable}" id="prodTable"
+                                        completeMethod="#{prodRegInit.completeProduct}"
+                                        rendered="#{prodRegInit.showProductChoice  and prodRegInit.standardProcedureRecall}"
+                                        var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                        converter="#{productConverter}" forceSelection="true">
+                            <p:ajax event="itemSelect" listener="#{prodRegInit.onItemSelect}"/>
+                        </p:autoComplete>
+                        <p:outputLabel value="#{prodRegInit.prodTable.prodName}"
+                                       rendered="#{prodRegInit.showProductChoice  and !prodRegInit.standardProcedureRecall}"/>
+                        <p:message for="prodTable" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
+
+                        <h:outputLabel value="#{msgs.variationSummary}" rendered="#{prodRegInit.showVariationType}"/>
+                        <p:editor id="varDetails" value="#{prodRegInit.varSummary}" height="100" width="550" rendered="#{prodRegInit.showVariationType}"/>
+                        <p:message for="varDetails" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
+
+                        <p:outputLabel
+                                value="#{msgs.sra_msg}"/>
+                        <h:panelGroup>
+                            <p:selectManyCheckbox id="regauth" value="#{prodRegInit.selSRA}" layout="grid" columns="2">
+                                <f:selectItems value="#{globalEntityLists.sras}" var="cntry" itemValue="#{cntry.country}"
+                                               itemLabel="#{cntry.country}"/>
+                            </p:selectManyCheckbox>
+                        </h:panelGroup>
+                        <p:message for="regauth"/>
+
+                        <p:outputLabel/>
+                        <p:outputLabel value="#{msgs.sra_msg2}" styleClass="hint"/>
+                        <p:outputLabel/>
+                        <!-- here was fee panel grid-->
+                    </h:panelGrid>
+
+                    <div style="height:10px"/>
+
+                    <!--update="@form :reghome:feePanel :reghome:checklisttable" process="@form"> -->
+                    <p:commandButton value="#{msgs.calculate_fee}"
+                                     action="#{prodRegInit.checkAndCalculate}"
+                                     update=":reghome:additionalPanel :reghome:feePanel :reghome:checklisttable" process="@form"
+                                     ajax="false">
+                        <f:param name="prodAppID" value="#{prodRegInit.prodTable.id}"/>
+                    </p:commandButton>
+                    <p:commandButton action="#{prodRegInit.regApp}"
+                                     ajax="false"
+                                     value="Product Registration Application"
+                                     rendered="#{prodRegInit.eligible}">
+                    </p:commandButton>
+                </p:panel>
 
                 <div style="height:10px"/>
 
-                <p:commandButton value="#{msgs.calculate_fee}" action="#{prodRegInit.checkAndCalculate}"
-                                 update="@form :reghome:feePanel :reghome:checklisttable" process="@form">
-                    <f:param name="prodAppID" value="#{prodRegInit.prodTable.id}"/>
-                </p:commandButton>
-                <p:commandButton action="#{prodRegInit.regApp}" ajax="false"
-                                 value="Product Registration Application"
-                                 rendered="#{prodRegInit.eligible}"/>
-            </p:panel>
+                <p:panelGrid columns="1" id="additionalPanel" rendered="#{prodRegInit.displayfeepanel}">
+                   <p:panelGrid columns="3" styleClass="panelNoBorder" id="feePanel" >
+                        <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"
+                              rendered="#{prodRegInit.displayfeepanel}"/>
+                        <h:outputText value="#{prodRegInit.prescreenfee}" styleClass="value"
+                             rendered="#{prodRegInit.displayfeepanel}">
+                   <f:convertNumber type="currency" pattern="¤#,##0.00" currencySymbol="$"/>
+               </h:outputText>
+               <p:outputLabel/>
 
-            <div style="height:10px"/>
+               <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
+                              rendered="#{prodRegInit.displayfeepanel}"/>
+               <h:outputText value="#{prodRegInit.fee}" styleClass="value"
+                             rendered="#{prodRegInit.displayfeepanel}">
+                   <f:convertNumber type="currency" pattern="¤#,##0.00" currencySymbol="$"/>
+               </h:outputText>
+               <p:outputLabel/>
 
-
+               <p:outputLabel value="#{msgs.total_fee}" styleClass="label"
+                              rendered="#{prodRegInit.displayfeepanel}"/>
+               <h:outputText value="#{prodRegInit.totalfee}" styleClass="label"
+                             rendered="#{prodRegInit.displayfeepanel}">
+                   <f:convertNumber type="currency" pattern="¤#,##0.00" currencySymbol="$"/>
+               </h:outputText>
+               <p:outputLabel/>
+            </p:panelGrid>
             <p:dataTable var="each" value="#{prodRegInit.checklists}"
                          id="checklisttable"
-                         rendered="#{prodRegInit.displayfeepanel}"
-                         >
+                         rendered="#{prodRegInit.displayfeepanel}">
                 <f:facet name="header">
-                    Required Documents
+                   Required Documents
                 </f:facet>
 
                 <p:column headerText="#{msgs.checklist_moduleno}" width="100">
-                    <h:outputLabel value="#{each.moduleNo}"/>
+                <h:outputLabel value="#{each.moduleNo}"/>
                 </p:column>
                 <p:column headerText="#{msgs.checklist_name}">
                     <h:outputLabel value="#{each.name}"/>
                 </p:column>
             </p:dataTable>
+        </p:panelGrid>
+    </h:form>
 
-        </h:form>
 
-
-        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
-                  resizable="false">
-            <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
-        </p:dialog>
+    <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
+     resizable="false">
+    <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
+    </p:dialog>
 
     </ui:define>
     <script type="text/javascript">
-        function start() {
-            PF('statusDialog').show();
-        }
+    function start() {
+    PF('statusDialog').show();
+    }
 
-        function stop() {
-            PF('statusDialog').hide();
-        }
+    function stop() {
+    PF('statusDialog').hide();
+    }
     </script>
-</ui:composition>
+    </ui:composition>

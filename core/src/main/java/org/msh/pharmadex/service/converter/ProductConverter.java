@@ -61,8 +61,20 @@ public class ProductConverter implements Converter, Serializable {
         if (value == null || value.equals("")) {
             return "";
         } else {
-            return String.valueOf(value);
+            if (value instanceof Long){
+                return String.valueOf(value);
+            }else if (value instanceof  Product){
+                return String.valueOf(((Product) value).getId());
+            }else if (value instanceof  ProdTable){
+                ProdTable prodTable = (ProdTable) value;
+                return String.valueOf(prodTable.getId());
+            }else if (value instanceof  String){
+                Product prod = productService.findOneByName((String) value);
+                if (prod!=null)
+                    return String.valueOf(prod.getId());
+            }
         }
+        return "";
     }
 }
 

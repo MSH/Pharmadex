@@ -507,6 +507,7 @@ public class ReviewInfoBn implements Serializable {
             recomendTypes.add(RecomendType.NOT_RECOMENDED);
             recomendTypes.add(RecomendType.FEEDBACK);
         }else{
+
             recomendTypes.add(RecomendType.REGISTER);
             recomendTypes.add(RecomendType.SUSPEND);
             recomendTypes.add(RecomendType.CANCEL);

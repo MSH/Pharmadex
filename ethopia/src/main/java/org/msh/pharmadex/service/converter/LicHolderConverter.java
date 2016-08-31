@@ -67,8 +67,18 @@ public class LicHolderConverter implements Converter, Serializable {
         if (value == null || value.equals("")) {
             return "";
         } else {
-            return String.valueOf(value);
+            if (value instanceof Long)
+                return String.valueOf(value);
+            else if (value instanceof String){
+                LicenseHolder lc = licenseHolderService.findByName(((String) value));
+                if (lc!=null){
+                    return String.valueOf(lc.getId());
+                }
+            }else if (value instanceof LicenseHolder){
+                return String.valueOf(((LicenseHolder) value).getId());
+            }
         }
+        return "";
     }
 }
 

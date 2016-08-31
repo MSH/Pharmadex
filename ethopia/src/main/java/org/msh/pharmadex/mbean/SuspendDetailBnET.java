@@ -108,9 +108,9 @@ public class SuspendDetailBnET implements Serializable {
             if (suspID==null) {// this is new suspension record
                 Long prodAppID = Scrooge.beanParam("prodAppID");
                 if (prodAppID != null) {
-                    prodApplications = prodApplicationsService.findActiveProdAppByProd(prodAppID);
-                    if (prodApplications==null)
-                        prodApplications = prodApplicationsService.findProdApplications(prodAppID);
+                    //prodApplications = prodApplicationsService.findActiveProdAppByProd(prodAppID);
+                    //if (prodApplications==null)
+                    prodApplications = prodApplicationsService.findProdApplications(prodAppID);
                     product = prodApplications.getProduct();
                     suspComments = new ArrayList<SuspComment>();
                     suspComment = new SuspComment();
@@ -118,14 +118,16 @@ public class SuspendDetailBnET implements Serializable {
                     if (prodApplications.getRegState().equals(RegState.SUSPEND)){
                         //this is restart of suspended procedures
                         SuspDetail parentSuspDetail = findSuspendApplication(prodAppID);
-                        Scrooge.copyData(parentSuspDetail, suspDetail);
-                        suspDetail.setModeratorSumm(null);
-                        suspDetail.setFinalSumm(null);
-                        suspDetail.setModerator(null);
-                        suspDetail.setReviewer(null);
-                        suspDetail.setParentId(parentSuspDetail.getId());
-                        suspDetail.setDecision(null);
-                        suspDetail.setComplete(false);
+                        if (parentSuspDetail!=null) {
+                            Scrooge.copyData(parentSuspDetail, suspDetail);
+                            suspDetail.setModeratorSumm(null);
+                            suspDetail.setFinalSumm(null);
+                            suspDetail.setModerator(null);
+                            suspDetail.setReviewer(null);
+                            suspDetail.setParentId(parentSuspDetail.getId());
+                            suspDetail.setDecision(null);
+                            suspDetail.setComplete(false);
+                        }
                     }
                     suspDetail.setSuspensionStatus(SuspensionStatus.REQUESTED);
                     suspDetail.setCreatedBy(getLoggedInUser());
@@ -164,6 +166,8 @@ public class SuspendDetailBnET implements Serializable {
      */
     private SuspDetail findSuspendApplication(Long prodAppID){
         List<SuspDetail> parentSuspDetails = suspendService.findSuspendByProd(prodAppID);
+        if (parentSuspDetails.size()==0)
+            return null;
         if (parentSuspDetails.size()==1) return parentSuspDetails.get(0);
         for(SuspDetail parentSuspDetail:parentSuspDetails){
             if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT))
@@ -708,6 +712,7 @@ public class SuspendDetailBnET implements Serializable {
      */
     public boolean showSubmitButtonNo(int no){
         if (suspDetail==null) return false;
+        if (suspDetail.getId()==null) return false;
         if (suspDetail.isComplete()) return false;
         if (no==1) {//moderator, before reviewing by assesor
             if (!(userSession.isModerator()||(userSession.isHead()))) return false;

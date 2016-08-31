@@ -85,6 +85,13 @@ public class ProductService implements Serializable {
         return productDAO.findProductByFilter(params);
     }
 
+    public Product findOneByName(String name){
+        List<Product> found = productDAO.findByName(name);
+        if (found!=null)
+            return  found.get(0);
+        return null;
+    }
+
     public List<Atc> findAtcsByProduct(Long id) {
         return productDAO.findAtcsByProduct(id);
     }

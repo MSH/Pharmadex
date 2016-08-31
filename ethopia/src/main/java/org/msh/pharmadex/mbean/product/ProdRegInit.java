@@ -140,8 +140,7 @@ public class ProdRegInit implements Serializable {
                     numFee = Tools.currencyToDouble(fee) * majorQuantity;
             }
             if (!("".equals(prescreenfee) || "0".equals(prescreenfee))) {
-                //numPreScrFee = Tools.currencyToDouble(prescreenfee) * majorQuantity;
-                numPreScrFee = Tools.currencyToDouble(prescreenfee) * majorQuantity;
+                numPreScrFee = Tools.currencyToDouble(prescreenfee);
             }
         }
         if (minorQuantity > 0){
@@ -154,8 +153,7 @@ public class ProdRegInit implements Serializable {
                 numFee = numFee + numFee2;
             }
             if (!("".equals(fee) || "0".equals(fee))) {
-                //Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee) * minorQuantity;
-                Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee)* minorQuantity;
+                Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee);
                 numPreScrFee = numPreScrFee2 + numPreScrFee;
             }
         }
@@ -188,7 +186,7 @@ public class ProdRegInit implements Serializable {
         } else if (prodAppType==ProdAppType.RENEW){
             if (this.prodTable==null) {
                 String errString = getBundle().getString("variationProductRequired");
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,getBundle().getString("error_incorrect_data"),errString));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,errString,""));
                 displayfeepanel = false;
                 return;
             }
@@ -208,12 +206,14 @@ public class ProdRegInit implements Serializable {
                 addFee();
                 populateChecklist();
                 displayfeepanel = true;
+                //RequestContext.getCurrentInstance().update("additionalPanel");
                 return;
             }
         }
         calculate(prodAppType.name());
         populateChecklist();
         displayfeepanel = ! displayfeepanel;
+        //RequestContext.getCurrentInstance().update("additionalPanel");
     }
 
     public void populateChecklist() {
@@ -222,16 +222,20 @@ public class ProdRegInit implements Serializable {
         if (prodAppType.equals(ProdAppType.VARIATION)){
             List<Checklist> mjChecklists=null;
             List<Checklist> mnChecklists=null;
-            if (this.getMajorQuantity()>0) {
-                mjChecklists = checklistService.getETChecklists(prodApplications, true);
-                checklists = mjChecklists;
-            }else if (this.getMajorQuantity()>0){
-                mnChecklists = checklistService.getETChecklists(prodApplications, false);
-                checklists = mnChecklists;
+            if (this.getMinorQuantity()==0&&this.getMajorQuantity()==0) {
+                checklists = null;
+            }else if (this.getMinorQuantity()>0&&this.getMajorQuantity()==0){
+                checklists = checklistService.getETChecklists(prodApplications, false);
             }
-            if (mjChecklists!=null && mnChecklists!=null){
-                for (Checklist ch: mjChecklists) {
-                    checklists.add(ch);
+            else if (this.getMajorQuantity()>0&&this.getMinorQuantity()==0) {
+                checklists = checklistService.getETChecklists(prodApplications, true);
+            }else {
+                checklists = checklistService.getETChecklists(prodApplications, false);
+                mjChecklists = checklistService.getETChecklists(prodApplications, true);
+                if (mjChecklists != null && checklists != null) {
+                    for (Checklist ch : mjChecklists) {
+                        checklists.add(ch);
+                    }
                 }
             }
         }else if (prodAppType.equals(ProdAppType.RENEW)){
@@ -247,7 +251,7 @@ public class ProdRegInit implements Serializable {
 
     public String regApp() {
         checkAndCalculate();
-        if (!displayfeepanel) return "";
+        //if (!displayfeepanel) return "";
         ProdAppInit prodAppInit = new ProdAppInit();
         prodAppInit.setEml(eml);
         prodAppInit.setProdAppType(prodAppType);
@@ -307,7 +311,8 @@ public class ProdRegInit implements Serializable {
         prodApp.setMnVarQnt(paInit.getMnVarQnt());
         prodAppRenew=clone(prodApp,newtype,false);
         prodAppRenew.setProdAppDetails(paInit.getVarSummary());
-        prodAppRenew.setFeeAmt(null);
+        prodAppRenew.setPrescreenfeeAmt(paInit.getPrescreenfee());
+        prodAppRenew.setFeeAmt(paInit.getFee());
         prodAppRenew.setFeeReceived(false);
         prodAppRenew.setFeeSubmittedDt(null);
         prodAppRenew.setBankName(null);

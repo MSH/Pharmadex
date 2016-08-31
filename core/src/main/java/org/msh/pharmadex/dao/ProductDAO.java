@@ -89,6 +89,17 @@ public class ProductDAO implements Serializable {
         return deleted;
     }
 
+
+    public List<Product> findByName(String name){
+        String q = "select p.id as id, p.prod_name as prodName, p.gen_name as genName "
+                + "from product as p "
+                + "where p.gen_name = :prodName or p.prod_name = :prodName";
+        List<Product> products = entityManager
+                        .createNativeQuery(q)
+                        .setParameter("prodName", name)
+                        .getResultList();
+        return products;
+    }
     /**
      * In DB Bangladesh in table prodApplications no field 'active'
      * @return

@@ -49,6 +49,14 @@ public class LicenseHolderService implements Serializable {
             return null;
     }
 
+    public LicenseHolder findByName(String name){
+        if (name==null) return  null;
+        if ("".equals(name)) return null;
+        List<LicenseHolder> found = licenseHolderDAO.findByName(name);
+        LicenseHolder res = found.get(0);
+        return res;
+    }
+
     public List<AgentInfo> findAllAgents(Long id) {
         return agentInfoDAO.findByLicenseHolder_Id(id);
 

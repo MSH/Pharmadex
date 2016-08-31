@@ -20,7 +20,7 @@
                     </p:autoComplete>
                     <p:commandButton value="#{msgs.global_submit}" action="/internal/suspenddetail.faces" ajax="false">
                     <!--<p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">-->
-                        <f:param name="prodAppID" value="#{regProdMbn.prodTable.id}"/>
+                        <f:param name="prodAppID" value="#{regProdMbn.prodTable.prodAppID}"/>
                     </p:commandButton>
                 </h:panelGrid>
             </p:panel>
