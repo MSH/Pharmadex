@@ -106,7 +106,7 @@ public class PreScreenProdMBn implements Serializable {
 			}
 
 		}
-		return "";
+		return "/internal/processprodlist";
 	}
 
 

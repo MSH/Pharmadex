@@ -140,7 +140,6 @@ public class ReviewDetailPrintMZ implements Serializable {
 	private static void fillSignersText(List<Map<String, Object>> res, Properties prop, ReviewInfoDAO reviewInfoDAO, HashMap<String, Object> param) {
 		String firstNames = "";
 		String secondNames = "";
-		String cheifName = "";
 		
 		Set<String> listFirstNames = new HashSet<String>(); // only uniq values
 		Set<String> listSecondNames = new HashSet<String>();
@@ -168,7 +167,6 @@ public class ReviewDetailPrintMZ implements Serializable {
 		
 		param.put(UtilsByReports.KEY_FIRSTNAME, firstNames);
 		param.put(UtilsByReports.KEY_SECONDNAME, secondNames);
-		param.put(UtilsByReports.KEY_CHEIFNAME, cheifName);
 	}
 	
 	private static void fillItems(List<Map<String, Object>> res, CustomReviewDAO customReviewDAO) {

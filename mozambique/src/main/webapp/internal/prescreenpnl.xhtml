@@ -117,10 +117,9 @@
 
         <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.completeScreen}"
-                         oncomplete="PF('completescreendlg').hide()" process="@form" ajax="true" 
-                         update="btnpnlFirst modpnl checkListTbl btnpnlSecond"/>
+                         oncomplete="PF('completescreendlg').hide()" process="@form" ajax="false"/>
     </p:dialog>
-
+<ui:remove>
     <p:dialog header="#{msgs.complete_screen}" widgetVar="archiveappdlg" resizable="false"
               id="archiveapp" modal="true" appendTo="@(body)"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
@@ -137,7 +136,7 @@
                              action="#{preScreenProdMBn.archiveApp}"
                              oncomplete="PF('archiveappdlg').hide()" update=":reghome @form" process="@form"/>
     </p:dialog>
-
+</ui:remove>
     <p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true"
             >
         <p:fileUpload fileUploadListener="#{preScreenProdMBn.handleFileUpload}"

@@ -23,7 +23,10 @@ import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.ReviewServiceMZ;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -44,6 +47,12 @@ public class ProcessProdBnMZ implements Serializable {
 
 	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
 	protected ProdApplicationsServiceMZ prodApplicationsServiceMZ;
+
+	@ManagedProperty(value = "#{prodApplicationsService}")
+	protected ProdApplicationsService prodApplicationsService;
+
+	@ManagedProperty(value = "#{reviewService}")
+	protected ReviewService reviewService;
 
 	@ManagedProperty(value = "#{userService}")
 	private UserService userService;
@@ -70,7 +79,13 @@ public class ProcessProdBnMZ implements Serializable {
 		}
 	}
 
-	public String addTimeline() {
+	public List<RegState> getRegSate() {
+		if (getProcessProdBn().getProdApplications() != null)
+			return prodApplicationsServiceMZ.nextStepOptions();
+		return null;
+	}
+
+	public void addTimeline() {
 		facesContext = getCurrentInstance();
 		try {
 			getProcessProdBn().getTimeLine().setStatusDate(new Date());
@@ -79,23 +94,23 @@ public class ProcessProdBnMZ implements Serializable {
 			getProcessProdBn().setProdApplications((ProdApplications) paObject.getObj());
 			getProcessProdBn().getTimeLine().setProdApplications(getProcessProdBn().getProdApplications());
 
-			String retValue = getProcessProdBn().getTimelineService().validateStatusChange(getProcessProdBn().getTimeLine());
+			//String retValue = getProcessProdBn().getTimelineService().validateStatusChange(getProcessProdBn().getTimeLine());
 
-			if (retValue.equalsIgnoreCase("success")) {
-				getProcessProdBn().getProdApplications().setRegState(getProcessProdBn().getTimeLine().getRegState());
-				RetObject retObject = getProcessProdBn().getProdApplicationsService().updateProdApp(getProcessProdBn().getProdApplications(), loggedInUser.getUserId());
-				if (retObject.getMsg().equals("persist")) {
-					getProcessProdBn().setProdApplications((ProdApplications) retObject.getObj());
-					changeStateReviewInfo();
-					getProcessProdBn().setFieldValues();
-					getProcessProdBn().getTimeLine().setProdApplications(getProcessProdBn().getProdApplications());
-					getProcessProdBn().getTimelineService().saveTimeLine(getProcessProdBn().getTimeLine());
-					getProcessProdBn().getTimeLineList().add(getProcessProdBn().getTimeLine());
-					facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
-				} else {
-					facesContext.addMessage(null, new FacesMessage(retObject.getMsg()));
-				}
-			} else if (retValue.equalsIgnoreCase("fee_not_recieved")) {
+			//if (retValue.equalsIgnoreCase("success")) {
+			getProcessProdBn().getProdApplications().setRegState(getProcessProdBn().getTimeLine().getRegState());
+			RetObject retObject = getProcessProdBn().getProdApplicationsService().updateProdApp(getProcessProdBn().getProdApplications(), loggedInUser.getUserId());
+			if (retObject.getMsg().equals("persist")) {
+				getProcessProdBn().setProdApplications((ProdApplications) retObject.getObj());
+				//changeStateReviewInfo();
+				getProcessProdBn().setFieldValues();
+				getProcessProdBn().getTimeLine().setProdApplications(getProcessProdBn().getProdApplications());
+				getProcessProdBn().getTimelineService().saveTimeLine(getProcessProdBn().getTimeLine());
+				getProcessProdBn().getTimeLineList().add(getProcessProdBn().getTimeLine());
+				facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
+			} else {
+				facesContext.addMessage(null, new FacesMessage(retObject.getMsg()));
+			}
+			/*} else if (retValue.equalsIgnoreCase("fee_not_recieved")) {
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
 			} else if (retValue.equalsIgnoreCase("app_not_verified")) {
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("fee_not_recieved")));
@@ -105,27 +120,71 @@ public class ProcessProdBnMZ implements Serializable {
 				facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_assign_moderator")));
 			} else if (retValue.equalsIgnoreCase("valid_assign_reviewer")) {
 				facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_assign_reviewer")));
-			}
+			}*/
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
 		}
 		getProcessProdBn().setTimeLine(new TimeLine());
-		return "/internal/processprodlist";  //To change body of created methods use File | Settings | File Templates.
+		//return "/internal/processprodlist";  //To change body of created methods use File | Settings | File Templates.
+	}
+
+	public String nextStep(){
+		ProdApplications prodApp = getProcessProdBn().getProdApplications();
+		if(prodApp != null){
+			RegState curRegState = prodApp.getRegState();
+			switch (curRegState) {
+			case SCREENING:
+				backToSCREENING(prodApp);
+				break;
+			case REVIEW_BOARD:
+				changeStateReviewInfo();
+				break;
+			}
+
+			addTimeline();
+		}
+		return "/internal/processprodlist";
+	}
+
+	private void backToSCREENING(ProdApplications prodApp){
+		prodApp.setModerator(null);
+		prodApplicationsService.updateProdApp(prodApp, userSession.getLoggedINUserID());
 	}
 
 	private void changeStateReviewInfo(){
-		if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.FOLLOW_UP)){
-			List<ReviewInfo> infos = getProcessProdBn().getProdApplications().getReviewInfos();
-			if(infos != null && infos.size() > 0){
-				for(ReviewInfo rev:infos){
-					rev.setReviewStatus(ReviewStatus.ASSIGNED);
-					rev.setRecomendType(null);
-					prodApplicationsServiceMZ.saveReviewInfo(rev);
-				}
+		List<ReviewInfo> infos = reviewService.findReviewInfos(getProcessProdBn().getProdApplications().getId());
+		if(infos != null && infos.size() > 0){
+			for(ReviewInfo rev:infos){
+				rev.setReviewStatus(ReviewStatus.ASSIGNED);
+				rev.setRecomendType(null);
+				prodApplicationsServiceMZ.saveReviewInfo(rev);
 			}
 		}
+	}
+
+	public boolean getCanChangeModerator() {
+		RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
+		if(userSession.isAdmin() && !curRegState.equals(RegState.REGISTERED)
+				&& !curRegState.equals(RegState.REJECTED))
+			return true;
+
+		if(userSession.isStaff() && !curRegState.equals(RegState.REGISTERED)
+				&& !curRegState.equals(RegState.REJECTED) && getProcessProdBn().getProdApplications().getModerator() != null){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean getCanNextStep() {
+		RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
+
+		if((userSession.isAdmin() || userSession.isModerator()) 
+				&& !curRegState.equals(RegState.REGISTERED) && !curRegState.equals(RegState.REJECTED)
+				&& !curRegState.equals(RegState.FOLLOW_UP))
+			return true;
+		return false;
 	}
 
 	public List<ProdAppLetter> getLetters() {
@@ -236,6 +295,22 @@ public class ProcessProdBnMZ implements Serializable {
 
 	public void setProdApplicationsServiceMZ(ProdApplicationsServiceMZ service){
 		this.prodApplicationsServiceMZ = service;
+	}
+
+	public ProdApplicationsService getProdApplicationsService(){
+		return prodApplicationsService;
+	}
+
+	public void setProdApplicationsService(ProdApplicationsService service){
+		this.prodApplicationsService = service;
+	}
+
+	public ReviewService getReviewService() {
+		return reviewService;
+	}
+
+	public void setReviewService(ReviewService reviewService) {
+		this.reviewService = reviewService;
 	}
 
 	public UserSession getUserSession() {

@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -50,7 +51,6 @@ import org.msh.pharmadex.domain.enums.ProdDrugType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
-import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +63,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 
 /**
@@ -637,6 +635,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		return props;
 	}
 
+	/**
+	 * 31.08.2016 only one FOLLOW_UP
+	 * @return
+	 */
+	public List<RegState> nextStepOptions() {
+		RegState[] options = new RegState[1];
+		options[0] = RegState.FOLLOW_UP;
+		return Arrays.asList(options);
+	}
+	
 	/**
 	 * Create application acknowledgement letter and store it to letters!
 	 * @param prodApp current prodapplication

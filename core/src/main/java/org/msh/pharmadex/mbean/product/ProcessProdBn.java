@@ -938,7 +938,7 @@ public class ProcessProdBn implements Serializable {
 		if (backTo!=null)
 			return backTo;
 		else
-			return "/public/registrationhome.faces";
+			return "/internal/processprodlist";
 	}
 
 	public boolean isDisplaySample() {

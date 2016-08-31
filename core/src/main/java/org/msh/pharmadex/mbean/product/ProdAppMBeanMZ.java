@@ -1,11 +1,14 @@
 package org.msh.pharmadex.mbean.product;
 
+import static javax.faces.context.FacesContext.getCurrentInstance;
+
 import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
@@ -26,6 +29,10 @@ public class ProdAppMBeanMZ implements Serializable {
 	protected List<ProdApplications> submmittedAppList;
     protected List<ProdApplications> processProdAppList;
     private List<ProdApplications> filteredApps;
+    
+    protected FacesContext facesContext = getCurrentInstance();
+	protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+	
 
     public List<ProdApplications> getProcessProdAppList() {
     	if(processProdAppList == null)
@@ -70,5 +77,12 @@ public class ProdAppMBeanMZ implements Serializable {
 
 	public void setSubmmittedAppList(List<ProdApplications> submmittedAppList) {
 		this.submmittedAppList = submmittedAppList;
+	}
+	
+	public String buildColReviewStatus(ProdApplications prodApp){
+		if(prodApp != null && prodApp.getReviewStatus() != null){
+			return resourceBundle.getString(prodApp.getReviewStatus().getKey());
+		}
+		return "";
 	}
 }

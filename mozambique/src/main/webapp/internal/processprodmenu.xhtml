@@ -11,9 +11,11 @@
                         ajax="false"/>
             <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" rendered="#{userSession.staff}"
                         onclick="PF('dlg').show()" id="addCommentMI"/>
+                        
             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
                         onclick="PF('stepDlg').show()" id="nextStepMI"
-                        rendered="#{processProdBn.canNextStep}"/>
+                        rendered="#{processProdBnMZ.canNextStep}"/>
+                         
             <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
                         action="/internal/reject.faces" ajax="false"
                         rendered="#{processProdBn.canReject}">
@@ -33,17 +35,17 @@
                 <f:param name="sourcePage" value="#{processProdBn.prodApplications.id}:/internal/processreg.faces" />
             </p:menuitem>
 
-            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" 
-            			ajax="false" icon="ui-icon-extlink"/>
-
             <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
                         oncomplete="PF('regDlg').show()" id="registerMI" action="#{processProdBn.initRegistration}"
                         rendered="#{processProdBn.canRegister}"/>
             <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                         onclick="PF('moderatordlg').show()"
-                        rendered="#{processProdBn.canChangeModerator}" id="assignModMI">
+                        rendered="#{processProdBnMZ.canChangeModerator}" id="assignModMI">
                         <p:resetInput target="moderatorForm" />
             </p:menuitem>
+             
+            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" 
+            			ajax="false" icon="ui-icon-extlink"/>
         </p:submenu>
         <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
        		<p:menuitem value="#{msgs.global_showPrint}" icon="ui-icon-print"

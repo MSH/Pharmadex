@@ -8,7 +8,7 @@
         <h:panelGrid columns="2" style="margin-bottom:10px">
             <h:outputLabel for="statuscb" value="#{msgs.registration_status}: "/>
             <p:selectOneMenu id="statuscb" value="#{processProdBn.timeLine.regState}">
-                <f:selectItems value="#{processProdBn.regSate}" var="type"
+                <f:selectItems value="#{processProdBnMZ.regSate}" var="type"
                                itemLabel="#{msgs[type.key]}"/>
             </p:selectOneMenu>
             <h:outputLabel for="steptext" value="#{msgs.global_comment}:"/>
@@ -17,7 +17,7 @@
         </h:panelGrid>
 
         <p:commandButton id="submittimeline" value="#{msgs.global_submit}"
-                         action="#{processProdBnMZ.addTimeline}"
+                         action="#{processProdBnMZ.nextStep}"
                          oncomplete="PF('stepDlg').hide()" ajax="false"/>
     </h:form>
 
