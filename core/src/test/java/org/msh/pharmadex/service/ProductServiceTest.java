@@ -3,6 +3,7 @@ package org.msh.pharmadex.service;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.msh.pharmadex.domain.Product;
@@ -20,6 +21,7 @@ import java.util.List;
  * Time: 3:21 PM
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 @ContextConfiguration("/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ProductServiceTest {
