@@ -11,8 +11,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.msh.pharmadex.domain.enums.ApplicantType;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 /**
@@ -129,7 +127,7 @@ public class ProdRegAppMbeanMZ implements Serializable {
 	public boolean isVisibleForeignTab() {
 		if(prodRegAppMbean.getApplicant() != null){
 			if(prodRegAppMbean.getApplicant().getApplicantType() != null){
-				if(prodRegAppMbean.getApplicant().getApplicantType().getName().equalsIgnoreCase(ApplicantType.IMPORTER.name()))
+				if(prodRegAppMbean.getApplicant().getApplicantType().getName().equalsIgnoreCase("Importer"))
 					visibleForeignTab = true;
 			}
 		}

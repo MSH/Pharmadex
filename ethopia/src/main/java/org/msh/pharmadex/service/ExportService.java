@@ -7,7 +7,7 @@ import org.msh.pharmadex.auth.PassPhrase;
 import org.msh.pharmadex.dao.*;
 import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
-
+import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.utils.ExcelTools;
 import org.springframework.beans.factory.annotation.Autowired;
