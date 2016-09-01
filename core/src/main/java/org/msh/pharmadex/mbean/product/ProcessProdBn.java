@@ -432,40 +432,7 @@ public class ProcessProdBn implements Serializable {
 		this.timeLine = timeLine;
 	}
 
-	//    public String submitReview() {
-	//        facesContext = FacesContext.getCurrentInstance();
-	//        if (reviewComment.isEmpty()) {
-	//            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-	//                    resourceBundle.getString("global_fail"), resourceBundle.getString("review_comment_empty_valid")));
-	//            return "";
-	//        }
-	//        initProcessor();
-	//        if (module.getModule1().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-	//            module.setModule1SubmitDt(new Date());
-	//            module.setReview1(reviewComment);
-	//        }
-	//        if (module.getModule2().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-	//            module.setModule2SubmitDt(new Date());
-	//            module.setReview2(reviewComment);
-	//        }
-	//        if (module.getModule3().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-	//            module.setModule3SubmitDt(new Date());
-	//            module.setReview3(reviewComment);
-	//        }
-	//        if (module.getModule4().getUserId() == userSession.getLoggedInUserObj().getUserId()) {
-	//            module.setModule4SubmitDt(new Date());
-	//            module.setReview4(reviewComment);
-	//        }
-	//
-	//        if (module.getModule1SubmitDt() != null && module.getModule2SubmitDt() != null && module.getModule3SubmitDt() != null && module.getModule4SubmitDt() != null)
-	//            module.setComplete(true);
-	//
-	//        prodApplicationsService.saveProcessors(module);
-	//        return "";
-	//    }
-
 	public void changeStatusListener() {
-		logger.error("Inside changeStatusListener");
 		try {
 			if (prodApplications.getRegState().equals(RegState.NEW_APPL)) {
 				if (prodApplications.isFeeReceived()) {
@@ -486,7 +453,7 @@ public class ProcessProdBn implements Serializable {
 	}
 
 	public void changeDCC() {
-		logger.error("Inside changeDCC");
+		logger.error("Inside changeStatusListener");
 		try {
 			save();
 		} catch (Exception ex) {
