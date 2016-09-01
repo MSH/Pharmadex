@@ -5,7 +5,9 @@
 package org.msh.pharmadex.mbean.product;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
@@ -19,6 +21,8 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
@@ -195,4 +199,18 @@ public class ReviewInfoBnMZ implements Serializable {
 		boolean vis = userSession.isReviewer() && !getReviewInfoBn().isSubmitted() && getReviewInfoBn().isPriReview();
 		return vis;
 	}
+	
+	public List<RecomendType> getRevRecomendTypes() {
+        List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
+        if (!getReviewInfoBn().getProdApplications().getRegState().equals(RegState.SUSPEND)){
+            recomendTypes.add(RecomendType.RECOMENDED);
+            recomendTypes.add(RecomendType.NOT_RECOMENDED);
+            //recomendTypes.add(RecomendType.FEEDBACK);
+        }else{
+            recomendTypes.add(RecomendType.REGISTER);
+            recomendTypes.add(RecomendType.SUSPEND);
+            recomendTypes.add(RecomendType.CANCEL);
+        }
+        return recomendTypes;
+    }
 }
