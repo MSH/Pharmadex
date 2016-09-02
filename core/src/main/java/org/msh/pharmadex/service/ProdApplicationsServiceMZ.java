@@ -493,12 +493,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			if(checkLists.size()>0){
 				for(ProdAppChecklist item : checkLists){
 					Map<String,String> mp = new HashMap<String,String>();
-					String appRemark="";
-					if(item.getAppRemark()!=null){
-						if(!"".equals(item.getAppRemark()))
-							appRemark= "<li> "+item.getAppRemark()+"</li><br>";
+					String staffRemark="";
+					if(item.getStaffComment()!=null){
+						if(!"".equals(item.getStaffComment()))
+							staffRemark= "<li> "+item.getStaffComment()+"</li><br>";
 					}
-					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b>"+appRemark);
+					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b>"+staffRemark);
 					res.add(mp);
 				}
 			}else{
