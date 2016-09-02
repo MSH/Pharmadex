@@ -66,6 +66,8 @@ public class ExecSummaryBnMZ implements Serializable {
                         return "";
                     }
                 }
+            }else if (getExecSummaryBn().getProdApplications().getRegState().equals(RegState.FOLLOW_UP)) {
+            	prodApplicationsServiceMZ.changeStateReviewInfo(getExecSummaryBn().getProdApplications().getId());
             }
             
             String result = prodApplicationsServiceMZ.submitExecSummary(getExecSummaryBn().getProdApplications(), userSession.getLoggedINUserID(), getExecSummaryBn().getReviewInfos());

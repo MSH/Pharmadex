@@ -139,7 +139,7 @@ public class ProcessProdBnMZ implements Serializable {
 				backToSCREENING(prodApp);
 				break;
 			case REVIEW_BOARD:
-				changeStateReviewInfo();
+				prodApplicationsServiceMZ.changeStateReviewInfo(getProcessProdBn().getProdApplications().getId());
 				break;
 			}
 
@@ -151,17 +151,6 @@ public class ProcessProdBnMZ implements Serializable {
 	private void backToSCREENING(ProdApplications prodApp){
 		prodApp.setModerator(null);
 		prodApplicationsService.updateProdApp(prodApp, userSession.getLoggedINUserID());
-	}
-
-	private void changeStateReviewInfo(){
-		List<ReviewInfo> infos = reviewService.findReviewInfos(getProcessProdBn().getProdApplications().getId());
-		if(infos != null && infos.size() > 0){
-			for(ReviewInfo rev:infos){
-				rev.setReviewStatus(ReviewStatus.ASSIGNED);
-				rev.setRecomendType(null);
-				prodApplicationsServiceMZ.saveReviewInfo(rev);
-			}
-		}
 	}
 
 	public boolean getCanChangeModerator() {

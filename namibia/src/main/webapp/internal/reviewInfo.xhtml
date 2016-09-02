@@ -133,7 +133,7 @@
 
 
                 </p:tab>
-                <p:tab title="#{msgs.deficiency_reports}" rendered="#{userSession.moderator}">
+                <p:tab title="#{msgs.deficiency_reports}" rendered="#{userSession.moderator || userSession.reviewer}">
                     <p:commandButton icon="ui-icon-document" value="#{msgs.generate_report}"
                                      oncomplete="PF('attachDlg').show()" action="#{reviewInfoBn.initRevDef}"/>
 
@@ -156,7 +156,7 @@
                         </p:column>
 
                         <p:column>
-                            <p:commandButton id="downloadLink" value="#{msgs.download_attach}"
+                            <p:commandButton id="downloadLink" value="#{msgs.global_download}"
                             				 ajax="false"
                                              onclick="PrimeFaces.monitorDownload(start, stop)"
                                              icon="ui-icon-arrowthichk-n">
@@ -201,7 +201,7 @@
                     <p:selectOneMenu id="recomcb" value="#{reviewInfoBn.reviewComment.recomendType}" required="true"
                                      requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
-                        <f:selectItems value="#{reviewInfoBn.getRevRecomendTypes()}" var="type"
+                        <f:selectItems value="#{reviewInfoBnMZ.revRecomendTypes}" var="type"
                                        itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
                     <p:message for="recomcb"/>

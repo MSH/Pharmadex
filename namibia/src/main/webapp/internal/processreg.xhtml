@@ -132,7 +132,7 @@
 							</p:tab>
 
 							<p:tab title="#{msgs.timeline}"
-								rendered="#{userSession.admin||userSession.head||userSession.moderator||userSession.reviewer}"
+								rendered="#{userSession.admin||userSession.head||userSession.moderator||userSession.reviewer||userSession.staff}"
 								id="timelinetab">
 
 								<p:dataTable id="timelinetbl" var="timeline"
@@ -159,8 +159,6 @@
                                         #{timeline.comment}
                                     </p:column>
 								</p:dataTable>
-
-
 							</p:tab>
 
 							<p:tab title="#{msgs.attachments}" id="attachtab"
@@ -313,54 +311,10 @@
 
 							<p:tab title="#{msgs.reg_cert}" id="regcerttab"
 								rendered="#{processProdBn.showCert}">
-
-								<p:commandButton id="regdownload" value="#{msgs.reg_cert}"
-									rendered="#{processProdBn.registered}"
-									onclick="PrimeFaces.monitorDownload(start, stop)"
-									icon="ui-icon-arrowthichk-n">
-									<p:fileDownload
-										value="#{fileUploadControllerMZ.regCertDownload()}" />
-								</p:commandButton>
-
-								<p:commandButton id="rejectdownload" value="#{msgs.reject_cert}"
-									rendered="#{!processProdBn.registered}"
-									onclick="PrimeFaces.monitorDownload(start, stop)"
-									icon="ui-icon-arrowthichk-n">
-									<p:fileDownload
-										value="#{fileUploadControllerMZ.rejectCertDownload()}" />
-								</p:commandButton>
-
-								<p:panel header="#{msgs.prev_applications}">
-									<p:dataTable id="pa" value="#{processProdBn.prevProdApps}"
-										var="pa">
-
-										<p:column headerText="#{msgs.application_no}">
-											<p:commandLink id="viewLink" value="#{pa.prodAppNo}"
-												action="processproddetail" ajax="false"
-												style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
-												<f:param name="prodAppID" value="#{pa.id}" />
-											</p:commandLink>
-										</p:column>
-
-										<p:column headerText="#{msgs.reg_number}">
-											<h:outputText value="#{pa.prodRegNo}" />
-										</p:column>
-
-										<p:column headerText="#{msgs.prod_app_type}">
-											<h:outputText value="#{pa.prodAppType}" />
-										</p:column>
-
-										<p:column headerText="#{msgs.registration_date}">
-											<h:outputText value="#{pa.registrationDate}" />
-										</p:column>
-
-										<p:column headerText="#{msgs.expiry_date}">
-											<h:outputText value="#{pa.regExpiryDate}" />
-										</p:column>
-
-									</p:dataTable>
-
-								</p:panel>
+								<ui:include src="tabcertificates.xhtml">
+									<ui:param name="prodAppID" value="#{processProdBn.prodApplications}"/>
+								</ui:include>
+								
 							</p:tab>
 
 							<p:tab title="#{msgs.assessment}" id="process"
@@ -751,7 +705,7 @@
 		</p:dialog>
 
 
-		<p:dialog header="#{msgs.register_product}" widgetVar="regDlg"
+		<p:dialog header="#{processProdBn.buildStringByRegDlg(true)}" widgetVar="regDlg"
 			resizable="false" id="regdlg" modal="true" dynamic="true">
 			<h:form id="regdatedlg">
 				<h:panelGrid columns="3" style="margin-bottom:10px">
@@ -785,7 +739,7 @@
 					<p:outputLabel />
 				</h:panelGrid>
 
-				<p:commandButton id="regBtn" value="#{msgs.register_product}"
+				<p:commandButton id="regBtn" value="#{processProdBn.buildStringByRegDlg(false)}"
 					action="#{processProdBnMZ.registerProduct(processProdBn.prodApplications)}"
 					oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"
 					update=":reghome:growl :reghome:messages :reghome :regdatedlg" />

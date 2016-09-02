@@ -869,7 +869,17 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		retObject.setObj(reviewInfo);
 		retObject.setMsg("success");
 		return retObject;
-
+	}
+	
+	public void changeStateReviewInfo(Long prodAppID){
+		List<ReviewInfo> infos = reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(prodAppID);
+		if(infos != null && infos.size() > 0){
+			for(ReviewInfo rev:infos){
+				rev.setReviewStatus(ReviewStatus.ASSIGNED);
+				rev.setRecomendType(null);
+				saveReviewInfo(rev);
+			}
+		}
 	}
 
 	public List<ProdApplications> getProcessProdAppList(UserSession userSession) {

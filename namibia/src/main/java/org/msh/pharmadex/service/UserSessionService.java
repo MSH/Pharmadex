@@ -17,7 +17,7 @@ public class UserSessionService implements Serializable {
 	
 	@Autowired
 	private UserService userService;
-
+	
 	/**
 	 * show Item menu Applicant Registration Form
 	 * show by user STAFF and Admin
@@ -93,7 +93,9 @@ public class UserSessionService implements Serializable {
 				for(Role r:roles){
 					if (r.getRolename().equalsIgnoreCase("ROLE_HEAD"))
 						return false;
-					if (r.getRolename().equalsIgnoreCase("ROLE_ADMIN") || r.getRolename().equalsIgnoreCase("ROLE_STAFF")
+					if (r.getRolename().equalsIgnoreCase("ROLE_ADMIN"))
+						return false;
+					if (r.getRolename().equalsIgnoreCase("ROLE_STAFF")
 							|| r.getRolename().equalsIgnoreCase("ROLE_COMPANY"))
 						return true;
 				}
