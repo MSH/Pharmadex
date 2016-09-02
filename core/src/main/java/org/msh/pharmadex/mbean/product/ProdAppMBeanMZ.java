@@ -14,29 +14,44 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 
-@ManagedBean
+@ManagedBean(name="prodAppMBeanMZ")
 @ViewScoped
 public class ProdAppMBeanMZ implements Serializable {
 
 	private static final long serialVersionUID = -2169563442954064204L;
-	
+
 	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
-    ProdApplicationsServiceMZ prodApplicationsServiceMZ;
+	ProdApplicationsServiceMZ prodApplicationsServiceMZ;
 
 	@ManagedProperty(value = "#{userSession}")
 	protected UserSession userSession;
-	
-	protected List<ProdApplications> submmittedAppList;
-    protected List<ProdApplications> processProdAppList;
-    private List<ProdApplications> filteredApps;
-    
-    protected FacesContext facesContext = getCurrentInstance();
-	protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-	
 
-    public List<ProdApplications> getProcessProdAppList() {
-    	if(processProdAppList == null)
-    		processProdAppList = prodApplicationsServiceMZ.getProcessProdAppList(userSession);
+	protected List<ProdApplications> submmittedAppList;
+	protected List<ProdApplications> processProdAppList;
+	private List<ProdApplications> filteredApps;
+
+	protected FacesContext facesContext = getCurrentInstance();
+	protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+
+	//public LazyDataModel<ProdApplications> lazyModel;
+
+	/*@PostConstruct
+    public void init() {
+        lazyModel = new ProdAppDataModel(prodApplicationsServiceMZ.getProcessProdAppList(userSession), prodApplicationsServiceMZ.getProdApplicationsService());
+    }
+
+	public LazyDataModel<ProdApplications> getLazyModel() {
+		return lazyModel;
+	}
+
+	public void setLazyModel(LazyDataModel<ProdApplications> lazyModel) {
+		this.lazyModel = lazyModel;
+	}
+*/
+
+	public List<ProdApplications> getProcessProdAppList() {
+		if(processProdAppList == null)
+			processProdAppList = prodApplicationsServiceMZ.getProcessProdAppList(userSession);
 		return processProdAppList;
 	}
 
@@ -45,40 +60,40 @@ public class ProdAppMBeanMZ implements Serializable {
 	}
 
 	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
-        return prodApplicationsServiceMZ;
-    }
+		return prodApplicationsServiceMZ;
+	}
 
-    public void setProdApplicationsServiceMZ(ProdApplicationsServiceMZ prodApplicationsServiceMZ) {
-        this.prodApplicationsServiceMZ = prodApplicationsServiceMZ;
-    }
-    
-    public UserSession getUserSession() {
-        return userSession;
-    }
+	public void setProdApplicationsServiceMZ(ProdApplicationsServiceMZ prodApplicationsServiceMZ) {
+		this.prodApplicationsServiceMZ = prodApplicationsServiceMZ;
+	}
 
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
-    
-    public List<ProdApplications> getFilteredApps() {
-        return filteredApps;
-    }
+	public UserSession getUserSession() {
+		return userSession;
+	}
 
-    public void setFilteredApps(List<ProdApplications> filteredApps) {
-        this.filteredApps = filteredApps;
-    }
-    
-    public List<ProdApplications> getSubmmittedAppList() {
-    	if(submmittedAppList == null){
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
+
+	public List<ProdApplications> getFilteredApps() {
+		return filteredApps;
+	}
+
+	public void setFilteredApps(List<ProdApplications> filteredApps) {
+		this.filteredApps = filteredApps;
+	}
+
+	public List<ProdApplications> getSubmmittedAppList() {
+		if(submmittedAppList == null){
 			submmittedAppList = prodApplicationsServiceMZ.getSubmittedApplications(userSession);
-    	}
+		}
 		return submmittedAppList;
 	}
 
 	public void setSubmmittedAppList(List<ProdApplications> submmittedAppList) {
 		this.submmittedAppList = submmittedAppList;
 	}
-	
+
 	public String buildColReviewStatus(ProdApplications prodApp){
 		if(prodApp != null && prodApp.getReviewStatus() != null){
 			return resourceBundle.getString(prodApp.getReviewStatus().getKey());

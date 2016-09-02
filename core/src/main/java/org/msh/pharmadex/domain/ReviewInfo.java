@@ -246,4 +246,12 @@ public class ReviewInfo extends CreationDetail implements Serializable {
     public void setSecreview(boolean secreview) {
         this.secreview = secreview;
     }
+
+	@Override
+	public String toString() {
+		return "ReviewInfo [id=" + id + ", reviewer=" + reviewer + ", secReviewer=" + secReviewer + ", reviewStatus="
+				+ reviewStatus + "]";
+	}
+    
+    
 }
