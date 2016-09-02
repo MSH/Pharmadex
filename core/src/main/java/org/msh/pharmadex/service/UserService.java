@@ -43,7 +43,6 @@ public class UserService implements Serializable {
     @Autowired
     private ReflectionSaltSource saltSource;
 
-    @Transactional
     public User findUser(Long id) {
         return userDAO.findUser(id);
     }
