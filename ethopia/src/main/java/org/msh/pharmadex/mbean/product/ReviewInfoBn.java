@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.iface.SuspendDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -70,6 +71,12 @@ public class ReviewInfoBn implements Serializable {
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
 
+    @ManagedProperty(value = "#{suspendDAO}")
+    SuspendDAO suspendDAO;
+
+    @ManagedProperty(value = "#{userAccessMBean}")
+    private UserAccessMBean userAccessMBean;
+
     private UploadedFile file;
     private ReviewInfo reviewInfo;
     private Product product;
@@ -82,8 +89,6 @@ public class ReviewInfoBn implements Serializable {
     private List<ReviewComment> reviewComments;
     private RevDeficiency revDeficiency;
     private List<RevDeficiency> revDeficiencies;
-    @ManagedProperty(value = "#{userAccessMBean}")
-    private UserAccessMBean userAccessMBean;
     private String revType;
     private boolean priReview;
     private User loggedInUser;
@@ -92,6 +97,7 @@ public class ReviewInfoBn implements Serializable {
     private String sourcePage="/internal/processreviewlist.faces";
     private int header1ActIndex=0;
     private int header2ActIndex=0;
+    private boolean prevSuspended = false;
 
     @PostConstruct
     private void init() {
@@ -118,6 +124,23 @@ public class ReviewInfoBn implements Serializable {
                 String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
                 if (srcPage!=null)
                     sourcePage = srcPage;
+            }
+
+            if (prodApplications.getRegState().equals(RegState.SUSPEND)) {
+                if (prodApplications != null) {
+                    List<SuspDetail> suspDetailsList = suspendDAO.findByProdApplications_Id(prodApplications.getId());
+                    if (suspDetailsList != null) {
+                        for (SuspDetail suspDetail : suspDetailsList) {
+                            if (!suspDetail.isComplete()) {
+                                if (suspDetail.getParentId() != null) {
+                                    prevSuspended = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -498,7 +521,7 @@ public class ReviewInfoBn implements Serializable {
             recomendTypes.add(RecomendType.FIR);
         }else{
             recomendTypes.add(RecomendType.REGISTER);
-            recomendTypes.add(RecomendType.SUSPEND);
+            if (!prevSuspended) recomendTypes.add(RecomendType.SUSPEND);
             recomendTypes.add(RecomendType.CANCEL);
         }
         return recomendTypes;

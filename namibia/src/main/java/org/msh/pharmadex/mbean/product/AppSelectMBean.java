@@ -16,21 +16,14 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.swing.event.ChangeEvent;
 
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.Atc;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ProdCompany;
-import org.msh.pharmadex.domain.ProdExcipient;
-import org.msh.pharmadex.domain.ProdInn;
-import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.ProductDAO;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.service.ApplicantService;
-import org.msh.pharmadex.service.CountryService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.ProductService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.SelectEvent;
@@ -45,6 +38,9 @@ import org.slf4j.LoggerFactory;
 @ViewScoped
 public class AppSelectMBean implements Serializable {
 	private static final Logger logger = LoggerFactory.getLogger(AppSelectMBean.class);
+
+	@ManagedProperty(value = "#{userSession}")
+	private UserSession userSession;
 
 	@ManagedProperty(value = "#{prodRegAppMbean}")
 	ProdRegAppMbean prodRegAppMbean;
@@ -62,13 +58,21 @@ public class AppSelectMBean implements Serializable {
 	UserService userService;
 	 
 	@ManagedProperty(value = "#{productService}")
-	    ProductService productService;
+	ProductService productService;
+
+	@ManagedProperty(value = "#{prodApplicationsService}")
+	ProdApplicationsService prodApplicationsService;
+
+	@ManagedProperty(value = "#{productDAO}")
+	private ProductDAO productDAO;
 
 	private Applicant selectedApplicant;
 	private org.msh.pharmadex.domain.User applicantUser;
-
 	private FacesContext facesContext = FacesContext.getCurrentInstance();
 	private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+	private User curUser;
+	private Product selectedProduct;
+	private ProdApplications prodappl;
 
 	/** flag by visible panel with info by Applicant */
 	private boolean showApp;
@@ -85,33 +89,13 @@ public class AppSelectMBean implements Serializable {
 
 	private ProdAppType prodAppType;
 	private ProdTable prodTable;
-	 private boolean showProductChoice;
-	public ProductService getProductService() {
-		return productService;
-	}
-
-	public void setProductService(ProductService productService) {
-		this.productService = productService;
-	}
-
-	public ProdTable getProdTable() {
-		return prodTable;
-	}
-
-	public void setProdTable(ProdTable prodTable) {
-		this.prodTable = prodTable;
-	}
+	private boolean showProductChoice;
 
 	@PostConstruct
 	public void init() {
 		System.out.println("Initialize AppSelectMBean");
-		//cancelAddApplicant();
 		prodAppType=prodRegAppMbean.getProdApplications().getProdAppType();
-		//ProdApplications prodApp = prodApplicationsService.findProdApplications(appId);
-		//Product product = productDAO.findProduct(prodId);
-		//prodTable = createProdTableRecord(product);
-		
-		//userSession.getApplcantID
+		curUser = getUserSession().getUserService().findUser(userSession.getLoggedINUserID());
 	}
 
 	@PreDestroy
@@ -224,7 +208,13 @@ public class AppSelectMBean implements Serializable {
 				FacesContext.getCurrentInstance().renderResponse();
 				return null;
 			} else {
-				startReregVar
+				if (prodTable!=null) {
+					selectedProduct = productDAO.findProduct(prodTable.getId());
+					prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
+					prodRegAppMbean.setProduct(selectedProduct);
+					prodRegAppMbean.setProdApplications(prodappl);
+					ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
+				}
 				applicantUser = userService.findUser(selectedUser.getUserId());
 				prodRegAppMbean.setApplicant(selectedApplicant);
 				//prodRegAppMbean.getApplicant().setContactName(applicantUser.getUsername());
@@ -283,82 +273,89 @@ public class AppSelectMBean implements Serializable {
 	        return pt;
 	    }
 	 private ProdApplications getLastProductApplication(Product p){
-	        List<ProdApplications> prodApps = p.getProdApplicationses();
-	        if (prodApps==null) return null;
-//	        if (prodApps.size()==1) return prodApps.get(0);
-	        for(ProdApplications pa:prodApps){
-	            if (pa.getRegState().equals(RegState.REGISTERED))
-	                return pa;
-	        }
-	        return null;
-	    }
-	 
-	public List<ProdTable> completeProduct(String query) {
-     List<ProdTable> suggestions = new ArrayList<ProdTable>();
-     List<ProdTable> prods;
-     
-     if (selectedApplicant == null){
-    	 selectedApplicant= prodRegAppMbean.getApplicant();
-    	 //prods = applicantService.findAllRegisteredProduct(applicant.getApplcntId());
- //    	prods = productService.findAllRegisteredProduct();
-  //   	return prods;
-    }
-      List<ProdApplications> paList;
-      Long a=selectedApplicant.getApplcntId();
-      paList=applicantService.findRegProductForApplicant(a);
-     Calendar minDate = Calendar.getInstance();
-     minDate.add(Calendar.DAY_OF_YEAR,120);
-     
-   
-  
-     if (paList!=null){
-        for (ProdApplications pa : paList) {
-             if (pa!=null){
-                if (prodAppType == ProdAppType.RENEW){
-                    //ProdApplications ppred = getLastProductApplication(pa.getProduct());
-                    //include product to list only if expiration time have not came and no more 120 days before
-                     if (pa.getRegExpiryDate()!=null)
-                         if (!(pa.getRegExpiryDate().before(minDate.getTime())&&(pa.getRegExpiryDate().after(Calendar.getInstance().getTime()))))
-                             continue;
-                }else if (prodAppType == ProdAppType.VARIATION){
-                	 // ProdApplications ppred = getLastProductApplication(pa.getProduct());
-                    //if product is expired - ommit it, check next
-                    if (pa.getRegExpiryDate()!=null)
-                        if (pa.getRegExpiryDate().before(Calendar.getInstance().getTime()))
-                            continue;
-                }
-                if (" ".equals(query))
-                    suggestions.add(createProdTableRecord(pa.getProduct()));
-                else {
-                    Product p=pa.getProduct();
-             	   if (p.getProdName() != null) {
-                        if (p.getProdName().toLowerCase().startsWith(query)) {
-                            suggestions.add(createProdTableRecord(p));
-                            continue;
-                        }
-                    }
-                    if (p.getGenName() != null) {
-                       if (p.getGenName().toLowerCase().startsWith(query)) {
-                            suggestions.add(createProdTableRecord(p));
+	     List<ProdApplications> prodApps = p.getProdApplicationses();
+	     if (prodApps==null) return null;
+	     for(ProdApplications pa:prodApps){
+	     	if (pa.getRegState().equals(RegState.REGISTERED))
+	        	return pa;
+		 }
+	     return null;
+	 }
 
-                       }
-                    }
-                }
-            }
-        }
-     }
-     return suggestions;
- }
+	public List<ProdTable> completeProduct(String query) {
+		 List<ProdTable> suggestions = new ArrayList<ProdTable>();
+		 List<ProdTable> prods;
+
+		 if (selectedApplicant == null){
+			 selectedApplicant= prodRegAppMbean.getApplicant();
+		 }
+		 List<ProdApplications> paList;
+		 Long a=selectedApplicant.getApplcntId();
+		 paList=applicantService.findRegProductForApplicant(a);
+		 Calendar minDate = Calendar.getInstance();
+		 minDate.add(Calendar.DAY_OF_YEAR,120);
+
+		 if (paList==null) return suggestions;
+
+		 for (ProdApplications pa : paList) {
+		 	  if (pa!=null) {
+				  if (prodAppType == ProdAppType.RENEW) {
+					  //include product to list only if expiration time have not came and no more 120 days before
+					  if (pa.getRegExpiryDate() != null) {
+						  if (!(pa.getRegExpiryDate().before(minDate.getTime()) && (pa.getRegExpiryDate().after(Calendar.getInstance().getTime())))) {
+							  continue;
+						  }
+					  }
+				  } else if (prodAppType == ProdAppType.VARIATION) {
+						 //if product is expired - ommit it, check next
+					  if (pa.getRegExpiryDate() != null) {
+						  if (pa.getRegExpiryDate().before(Calendar.getInstance().getTime())) {
+							  continue;
+						  }
+					  }
+				  }
+
+				  if (" ".equals(query))
+					 suggestions.add(createProdTableRecord(pa.getProduct()));
+				  else {
+					 Product p=pa.getProduct();
+					 if (p.getProdName() != null) {
+						if (p.getProdName().toLowerCase().startsWith(query)) {
+							suggestions.add(createProdTableRecord(p));
+							continue;
+						}
+					 }
+					 if (p.getGenName() != null) {
+						 if (p.getGenName().toLowerCase().startsWith(query)) {
+							 suggestions.add(createProdTableRecord(p));
+						 }
+					 }
+				  }
+			  }
+		 }
+
+		return suggestions;
+ 	}
+
+	public void onItemChange(AjaxBehaviorEvent event){
+		if (event.getSource() instanceof ProdTable){
+			ProdTable prodTableCh = (ProdTable) event.getSource();
+		}
+	}
+
 	public void onItemSelect(SelectEvent event) {
         if(event.getObject() instanceof ProdTable){
             ProdTable prodTableCh = (ProdTable) event.getObject();
             setProdTable(prodTableCh);
-            //createProdTableRecord(product);
+			if (prodTable!=null) {
+				selectedProduct = productDAO.findProduct(prodTable.getId());
+				prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
+				prodRegAppMbean.setProduct(selectedProduct);
+				prodRegAppMbean.setProdApplications(prodappl);
+				//ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
+			}
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
-        }  /* elseif(event.getObject() instanceof LicenseHolder){
-            LicenseHolder lc = (LicenseHolder) event.getObject();
-            setSelLicHolder(lc);
-        }*/
+        }
     }
 	public boolean isShowApp() {
 		return showApp;
@@ -471,8 +468,8 @@ public class AppSelectMBean implements Serializable {
 		public void setShowProductChoice(boolean showProductChoice) {
 			this.showProductChoice = showProductChoice;
 		}
-		//вызвать из 
-		public String startReregVar(ProdAppType newtype, Long parentAppId, ProdAppInit paInit){
+
+		public ProdApplications startReregVar(ProdAppType newtype, Long parentAppId, ProdAppInit paInit){
 	        //create copy of inital application and product
 	        ProdApplications prodAppRenew;
 	        ProdApplications prodApp = prodApplicationsService.findProdApplications(parentAppId);
@@ -493,14 +490,13 @@ public class AppSelectMBean implements Serializable {
 	        prodAppRenew.setFeeReceipt(null);
 	        prodAppRenew.setReceiptNo(null);
 	        prodAppRenew.setPrescreenReceiptNo(null);
+			prodAppRenew.setParentApplication(prodApp);
 	        prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
 
-	        Long prodAppId = prodAppRenew.getId();
-	        context.getExternalContext().getFlash().put("prodAppID",prodAppId);
-	        context.getExternalContext().getFlash().put("parentAppId",parentAppId);
-	        return "/secure/prodreghome.xhtml";
+	        return prodAppRenew;
 	    }
-		private ProdApplications clone(ProdApplications src, ProdAppType type, boolean isMajor) {
+
+	private ProdApplications clone(ProdApplications src, ProdAppType type, boolean isMajor) {
 	        ProdApplications paNew = new ProdApplications();
 	        paNew.setDosRecDate(src.getDosRecDate());
 	        Long parentProdId = src.getProduct().getId();
@@ -600,4 +596,51 @@ public class AppSelectMBean implements Serializable {
 	        return paNew;
 	    }
 
+	public ProductService getProductService() {
+		return productService;
+	}
+
+	public void setProductService(ProductService productService) {
+		this.productService = productService;
+	}
+
+	public ProdTable getProdTable() {
+		return prodTable;
+	}
+
+	public void setProdTable(ProdTable prodTable) {
+		this.prodTable = prodTable;
+	}
+
+	public UserSession getUserSession() {
+		return userSession;
+	}
+
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
+
+	public ProdApplicationsService getProdApplicationsService() {
+		return prodApplicationsService;
+	}
+
+	public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+		this.prodApplicationsService = prodApplicationsService;
+	}
+
+	public User getCurUser() {
+		return curUser;
+	}
+
+	public void setCurUser(User curUser) {
+		this.curUser = curUser;
+	}
+
+	public ProductDAO getProductDAO() {
+		return productDAO;
+	}
+
+	public void setProductDAO(ProductDAO productDAO) {
+		this.productDAO = productDAO;
+	}
 }

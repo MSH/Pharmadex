@@ -59,7 +59,7 @@
                                     rendered="#{appSelectMBean.showProductChoice}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
                                     converter="#{productConverter}" forceSelection="true">
-                        <p:ajax event="itemSelect" listener="#{appSelectMBean.onItemSelect}"/>
+                        <p:ajax event="itemSelect" listener="#{appSelectMBean.onItemSelect}" update="@this"/>
                     </p:autoComplete>
                     <p:outputLabel value="#{appSelectMBean.prodTable.prodName}"
                                    rendered="#{appSelectMBean.showProductChoice }"/>

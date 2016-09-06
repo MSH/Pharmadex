@@ -5,10 +5,7 @@
 package org.msh.pharmadex.mbean.lab;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -31,6 +28,7 @@ import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.SampleTestService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 
 /**
  * Backing bean to capture review of products
@@ -102,6 +100,7 @@ public class SampleTestBn implements Serializable {
         }
 
         sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
+        sampleTest.setCreatedDate(Calendar.getInstance().getTime());
         sampleTest.setSampleTestStatus(SampleTestStatus.REQUESTED);
         sampleTest.setReqDt(new Date());
         sampleComment.setSampleTestStatus(SampleTestStatus.REQUESTED);
@@ -109,7 +108,7 @@ public class SampleTestBn implements Serializable {
         sampleComment.setDate(new Date());
         sampleComment.setUser(sampleTest.getCreatedBy());
         sampleTest.getSampleComments().add(sampleComment);
-        sampleTest.setCreatedBy(userService.findUser(userSession.getLoggedINUserID()));
+
     }
 
     public void initSampleAdd() {

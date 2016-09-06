@@ -70,7 +70,7 @@ public class ExportService implements Serializable {
     private DosageFormDAO dosageFormDAO;
     private Row currrow;
     private  boolean errorDetected;
-    ApplicantType at=null;
+    private ApplicantType at=null;
     User user=null;
     boolean isNewUom;
     boolean isNewATC;

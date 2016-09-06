@@ -248,7 +248,7 @@ public class RenewalMbn implements Serializable {
             prodAppChecklists = prodApplicationsService.findAllProdChecklist(prodApplications.getId());
             if(prodAppChecklists!=null&&prodAppChecklists.size()<1) {
                 prodAppChecklists = new ArrayList<ProdAppChecklist>();
-                List<Checklist> allChecklist = checklistService.getChecklists(prodApplications, true);
+                List<Checklist> allChecklist = checklistService.getETChecklists(prodApplications, true);
                 ProdAppChecklist eachProdAppCheck;
                 if (allChecklist != null && allChecklist.size() > 0) {
                     for (int i = 0; allChecklist.size() > i; i++) {

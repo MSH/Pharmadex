@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-08-18T15:28:00 -->
+<!-- 2016-08-31T09:50:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="subject" class="java.lang.String"/>
 	<parameter name="body" class="java.lang.String"/>
 	<parameter name="footer" class="java.lang.String"/>
@@ -84,7 +83,22 @@ and p.id = $P{id}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement x="50" y="5" width="520" height="25" uuid="b1bb7a85-ac1d-44f9-b743-f87c88622d81"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product application acknowledgement letter for]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="50" y="30" width="520" height="30" uuid="cc206975-0ab9-41ef-8532-a63ab2cf85aa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subject}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="500" splitType="Stretch">

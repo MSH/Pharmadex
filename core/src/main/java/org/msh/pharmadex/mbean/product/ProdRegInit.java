@@ -13,12 +13,11 @@ import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.springframework.web.util.WebUtils;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
@@ -82,7 +81,7 @@ public class ProdRegInit implements Serializable {
             prodApplications.setSra(true);
         else
             prodApplications.setSra(false);
-        checklists = checklistService.getChecklists(prodApplications, true);
+        checklists = checklistService.getETChecklists(prodApplications, true);
     }
 
     public String regApp() {

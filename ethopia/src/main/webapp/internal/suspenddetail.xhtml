@@ -245,6 +245,7 @@
                                            ajax="false">
                                 <f:param name="reviewInfoID" value="#{rev.id}"/>
                                 <f:param name="sourcePage" value="#{suspendDetailBnET.suspDetail.id}:/internal/suspenddetail.faces"/>
+                                <f:param name="parentSuspension" value="#{suspendDetailBnET.parentSuspension}"/>
                             </p:commandLink>
                         </p:column>
                         <p:column headerText="#{msgs.review_status}">

@@ -32,33 +32,37 @@
                                        itemLabel="#{msgs[prodcat.key]}"/>
                                         <f:ajax listener="#{prodRegInit.ajaxListener}"/>
                     </p:selectOneMenu>
-                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
+                    <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
                     <p:outputLabel value="#{msgs.variationQuantityMj}" styleClass="fy-required-field"
                                    for="majorQuantity"
                                    rendered="#{prodRegInit.showVariationType}"/>
-                    <p:inputText id="majorQuantity" value="#{prodRegInit.majorQuantity}" rendered="#{prodRegInit.showVariationType}"/>
+                    <p:inputText id="majorQuantity" value="#{prodRegInit.majorVars}" rendered="#{prodRegInit.showVariationType}"/>
                     <p:message for="majorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
 
                     <p:outputLabel value="#{msgs.variationQuantityMn}" styleClass="fy-required-field"
                                    for="minorQuantity"
                                    rendered="#{prodRegInit.showVariationType}"/>
-                    <p:inputText id="minorQuantity" value="#{prodRegInit.minorQuantity}"
+                    <p:inputText id="minorQuantity" value="#{prodRegInit.minorVars}"
                                  rendered="#{prodRegInit.showVariationType}"/>
                     <p:message for="minorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
                   
-               
 
+                    <!--
                     <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
+                                   update=":reghome"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
                     <p:outputLabel value="#{prodRegInit.fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
                     <p:outputLabel/>
+                    -->
                 </h:panelGrid>
 
                 <div style="height:10px"/>
 
-                <p:commandButton value="#{msgs.calculate_fee}" action="#{prodRegInit.calculate}"
-                                 update=":reghome" />
+                <p:commandButton value="#{msgs.calculate_fee}"
+                                 action="#{prodRegInit.calculate}"
+                                 ajax="false"
+                                  />
                 <p:commandButton action="#{prodRegInit.regApp}" ajax="false"
                                  value="#{msgs.product_registration_form}" rendered="#{prodRegInit.eligible}"/>
             </p:panel>

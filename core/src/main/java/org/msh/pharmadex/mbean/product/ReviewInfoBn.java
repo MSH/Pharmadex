@@ -114,6 +114,7 @@ public class ReviewInfoBn implements Serializable {
 
     private int header1ActIndex = 0;
     private int header2ActIndex = 0;
+
    	
     @PostConstruct
     private void init() {
@@ -124,9 +125,10 @@ public class ReviewInfoBn implements Serializable {
                 if(reviewInfoID!=null&&!reviewInfoID.equals("")) {
                     reviewInfo = reviewService.findReviewInfo(Long.valueOf(reviewInfoID));
                 }else{
-                    String prodAppID = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID");
-                    if(prodAppID!=null&&!prodAppID.equals("")) {
-                        reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), Long.valueOf(prodAppID));
+                    Long prodAppID = Scrooge.beanParam("prodAppID");
+                    if(prodAppID!=null) {
+                        reviewInfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), prodAppID);
+                        prodApplications = prodApplicationsService.findProdApplications(prodAppID);
                     }
                 }
                 if(reviewInfo!=null) {

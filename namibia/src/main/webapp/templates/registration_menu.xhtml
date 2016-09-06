@@ -6,8 +6,9 @@
         
            <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-home" url="/public/applicantlist.faces"
                             ajax="false"/>
-           <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
-                            ajax="false"/>
+           <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document"
+                       url="/public/productlist.faces"
+                       ajax="false"/>
            <p:menuitem value="#{msgs.susp_prod}" icon="ui-icon-document" url="/public/suspendedproducts.faces"
                             ajax="false"/>
            <p:menuitem value="#{msgs.revoke_prod}" icon="ui-icon-document" url="/public/revokedproducts.faces"
@@ -18,7 +19,7 @@
                 <p:submenu label="#{msgs.registration_form}" 
                            rendered="#{userSessionService.displayRegistrationFormItem(userSession.loggedINUserID)}">
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
-                                action="/secure/prodreginit.faces" ajax="false"/>
+                                url="/secure/prodreginit.faces" ajax="false"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                 action="#{navigationBean.regApplicantAction}"
                                 ajax="false" rendered="#{userSessionService.displayAppReg(userSession.loggedINUserID)}"/>

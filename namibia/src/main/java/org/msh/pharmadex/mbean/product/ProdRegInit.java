@@ -13,16 +13,13 @@ import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.primefaces.context.RequestContext;
-import org.springframework.web.util.WebUtils;
-
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.view.ViewScoped;
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,37 +52,18 @@ public class ProdRegInit implements Serializable {
     private boolean eligible;
     private List<Checklist> checklists;
     private boolean showVariationType;
-   
-    private int minorQuantity=0;
-    private int majorQuantity=0;
     private List<ProdAppType> prodAppTypes;
-    
-   
+    private int majorVars;
+    private int minorVars;
 
-	
- public int getMinorQuantity() {
-		return minorQuantity;
-	}
-
-	public void setMinorQuantity(int minorQuantity) {
-		this.minorQuantity = minorQuantity;
-	}
-
-	public int getMajorQuantity() {
-		return majorQuantity;
-	}
-
-	public void setMajorQuantity(int majorQuantity) {
-		this.majorQuantity = majorQuantity;
-	}
-	public boolean isShowVariationType() {
-		  showVariationType = (prodAppType==ProdAppType.VARIATION);
-	        return showVariationType;
-	}
-
-	public void setShowVariationType(boolean showVariationType) {
-		this.showVariationType = showVariationType;
-	}
+    @PostConstruct
+    public void init() {
+        prodAppTypes = new ArrayList<ProdAppType>();
+        prodAppTypes.add(ProdAppType.GENERIC);
+        prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
+        prodAppTypes.add(ProdAppType.RENEW);
+        prodAppTypes.add(ProdAppType.VARIATION);
+    }
 
     public void calculate() {
         context = FacesContext.getCurrentInstance();
@@ -114,11 +92,35 @@ public class ProdRegInit implements Serializable {
     private void populateChecklist() {
         ProdApplications prodApplications = new ProdApplications();
         prodApplications.setProdAppType(prodAppType);
-        if (selSRA != null && selSRA.length > 0)
-            prodApplications.setSra(true);
-        else
-            prodApplications.setSra(false);
-        checklists = checklistService.getChecklists(prodApplications, true);
+        if (prodAppType.equals(ProdAppType.VARIATION)){
+            List<Checklist> mjChecklists=null;
+            List<Checklist> mnChecklists=null;
+            if (minorVars==0&&majorVars==0) {
+                checklists = null;
+            }else if (minorVars>0&&this.majorVars==0){
+                checklists = checklistService.getETChecklists(prodApplications, false);
+            }
+            else if (majorVars>0&&minorVars==0) {
+                checklists = checklistService.getETChecklists(prodApplications, true);
+            }else {
+                checklists = checklistService.getETChecklists(prodApplications, false);
+                mjChecklists = checklistService.getETChecklists(prodApplications, true);
+                if (mjChecklists != null && checklists != null) {
+                    for (Checklist ch : mjChecklists) {
+                        checklists.add(ch);
+                    }
+                }
+            }
+        }else if (prodAppType.equals(ProdAppType.RENEW)){
+            checklists = checklistService.getChecklists(prodApplications,true);
+        }else{
+            if (selSRA.length > 0)
+                prodApplications.setSra(true);
+            else
+                prodApplications.setSra(false);
+            checklists = checklistService.getChecklists(prodApplications,true);
+        }
+
     }
 
     public String regApp() {
@@ -133,8 +135,8 @@ public class ProdRegInit implements Serializable {
             prodAppInit.setSRA(selSRA.length > 0);
         else
             prodAppInit.setSRA(false);
-        prodAppInit.setMnVarQnt(minorQuantity);
-        prodAppInit.setMjVarQnt(majorQuantity);
+        prodAppInit.setMnVarQnt(minorVars);
+        prodAppInit.setMjVarQnt(majorVars);
     
         userSession.setProdAppInit(prodAppInit);
         return "/secure/prodreghome";
@@ -247,20 +249,10 @@ public class ProdRegInit implements Serializable {
         this.checklistService = checklistService;
     }
     
-    @PostConstruct
-    public void init() {
-    	prodAppTypes = new ArrayList<ProdAppType>();
-    		prodAppTypes.add(ProdAppType.GENERIC);
-    		prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
-    		prodAppTypes.add(ProdAppType.RENEW);
-    		prodAppTypes.add(ProdAppType.VARIATION);
-    }	
+
     public void ajaxListener(AjaxBehaviorEvent event){
         isShowVariationType();
-         this.majorQuantity=0;
-        this.minorQuantity=0;
-      
-           RequestContext.getCurrentInstance().update("reghome");
+        RequestContext.getCurrentInstance().update("reghome");
     }
 
 	public List<ProdAppType> getProdAppTypes() {
@@ -270,4 +262,30 @@ public class ProdRegInit implements Serializable {
 	public void setProdAppTypes(List<ProdAppType> prodAppTypes) {
 		this.prodAppTypes = prodAppTypes;
 	}
+
+    public int getMajorVars() {
+        return majorVars;
+    }
+
+    public void setMajorVars(int majorVars) {
+        this.majorVars = majorVars;
+    }
+
+    public int getMinorVars() {
+        return minorVars;
+    }
+
+    public void setMinorVars(int minorVars) {
+        this.minorVars = minorVars;
+    }
+    public boolean isShowVariationType() {
+        showVariationType = (prodAppType==ProdAppType.VARIATION);
+        return showVariationType;
+    }
+
+    public void setShowVariationType(boolean showVariationType) {
+        this.showVariationType = showVariationType;
+    }
+
+
 }

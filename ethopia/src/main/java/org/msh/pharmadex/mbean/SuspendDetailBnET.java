@@ -47,7 +47,6 @@ import java.util.ResourceBundle;
 @ViewScoped
 public class SuspendDetailBnET implements Serializable {
 
-
     @ManagedProperty(value = "#{globalEntityLists}")
     private GlobalEntityLists globalEntityLists;
 
@@ -154,6 +153,7 @@ public class SuspendDetailBnET implements Serializable {
             }
             if (review==null)
                 initAssignReviewer();
+            getParentSuspension();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -712,7 +712,7 @@ public class SuspendDetailBnET implements Serializable {
      */
     public boolean showSubmitButtonNo(int no){
         if (suspDetail==null) return false;
-        if (suspDetail.getId()==null) return false;
+        //if (suspDetail.getId()==null) return false;
         if (suspDetail.isComplete()) return false;
         if (no==1) {//moderator, before reviewing by assesor
             if (!(userSession.isModerator()||(userSession.isHead()))) return false;

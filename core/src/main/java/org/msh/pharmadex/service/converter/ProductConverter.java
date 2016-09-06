@@ -44,7 +44,6 @@ public class ProductConverter implements Converter, Serializable {
             return null;
         } else {
             try {
-//                int number = Integer.parseInt(submittedValue);
                 for (ProdTable p : getProducts()) {
                     if (String.valueOf(p.getId()).equalsIgnoreCase(submittedValue))
                         return p;
