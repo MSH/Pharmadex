@@ -5,6 +5,7 @@ import static javax.faces.context.FacesContext.getCurrentInstance;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -33,25 +34,16 @@ public class ProdAppMBeanMZ implements Serializable {
 	protected FacesContext facesContext = getCurrentInstance();
 	protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
-	//public LazyDataModel<ProdApplications> lazyModel;
-
-	/*@PostConstruct
-    public void init() {
-        lazyModel = new ProdAppDataModel(prodApplicationsServiceMZ.getProcessProdAppList(userSession), prodApplicationsServiceMZ.getProdApplicationsService());
+	@PostConstruct
+    private void init() {
+		processProdAppList = prodApplicationsServiceMZ.getProcessProdAppList(userSession);
+		for(ProdApplications prodapp:processProdAppList){
+			prodapp.getReviewInfos();
+			prodapp.getReviewStatus();
+		}
     }
-
-	public LazyDataModel<ProdApplications> getLazyModel() {
-		return lazyModel;
-	}
-
-	public void setLazyModel(LazyDataModel<ProdApplications> lazyModel) {
-		this.lazyModel = lazyModel;
-	}
-*/
-
+	
 	public List<ProdApplications> getProcessProdAppList() {
-		if(processProdAppList == null)
-			processProdAppList = prodApplicationsServiceMZ.getProcessProdAppList(userSession);
 		return processProdAppList;
 	}
 

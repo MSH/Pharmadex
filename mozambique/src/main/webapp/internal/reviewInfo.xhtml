@@ -31,10 +31,9 @@
                                  ajax="false">
                         <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
                 </p:commandButton>
-                <p:commandButton value="#{msgs.global_print}"
+                <p:commandButton id="printBtn" value="#{msgs.global_print}"
                                  action="#{reviewInfoBnMZ.printReview}"
-                                 ajax="false"
-                                 immediate="true" icon="ui-icon-print"/>
+                                 ajax=false immediate="true" icon="ui-icon-print"/>
                 <!-- 25072016
                 <p:commandButton value="#{msgs.approve_review}"
                                  action="#{reviewInfoBn.approveReview}"
@@ -173,8 +172,11 @@
                     </p:dataTable>
                 </p:tab>
             </p:tabView>
-
-
+	
+			<p:blockUI block="detailtab"
+						trigger=":reviewHome:detailtab">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+			</p:blockUI>
         </h:form>
 
         <p:dialog header="#{msgs.review_feedback}" widgetVar="feedbackDlg" id="feedbackdlg"
@@ -280,6 +282,6 @@
                                  oncomplete="PF('reviewDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
-
+        
     </ui:define>
 </ui:composition>

@@ -104,8 +104,8 @@
 
 							<p:tab title="#{msgs.prod_comments}" id="commentTab"
 								rendered="#{!userSession.company and !userSession.lab and !userSession.clinical}">
-								<p:commandButton icon="ui-icon-document"
-									value="#{msgs.add_comment}" onclick="PF('dlgAjax').show()" />
+								<p:commandButton icon="ui-icon-document" id="addCommentintab"
+									value="#{msgs.add_comment}" oncomplete="PF('dlgAjax').show()" />
 
 								<p:dataTable id="commenttable" value="#{processProdBn.comments}"
 									var="it">
@@ -406,7 +406,8 @@
 						<p:blockUI block="processtab"
 							trigger=":reghome:processtab :reghome:saveMenuItem :reghome:addCommentMI :reghome:nextStepMI :reghome:registerMI :reghome:assignModMI
             :reghome:processtab:feerecieved :reghome:processtab:appverify :reghome:processtab:prodverify :reghome:processtab:dosscomplete
-            :reghome:processtab:addDocBtn :addCommentFrm:submitButton">
+            :reghome:processtab:addDocBtn :addCommentFrm:submitButton :reghome:processtab:addCommentintab :addCommentFrmA:submitButtonA
+            :reghome:processtab:completef :reghome:processtab:complete">
 							<p:graphicImage value="/resources/images/ajax-loader.gif" />
 						</p:blockUI>
 
@@ -624,57 +625,6 @@
 			</h:form>
 		</p:dialog>
 
-		<!--
-                <p:dialog header="#{msgs.renew}" widgetVar="renewdlg" resizable="true" id="renewdlg"
-                          modal="true" dynamic="true">
-                <h:form>
-                    <h:panelGrid columns="4" columnClasses="col1 col2 col1 col2" cellpadding="10"
-                                 cellspacing="10">
-                        <p:outputLabel value="#{msgs.reg_number}"/>
-                        <h:outputText value="#{renewalMbn.selProductApp.prodRegNo}"/>
-
-                        <p:outputLabel value="#{msgs.prodName}"/>
-                        <h:outputText value="#{renewalMbn.selProd.prodName}"/>
-
-                        <p:outputLabel value="#{msgs.prodgenname}"/>
-                        <h:outputText value="#{renewalMbn.selProd.genName}"/>
-
-                        <p:outputLabel value="#{msgs.applicant_name}"/>
-                        <h:outputText value="#{renewalMbn.selProductApp.applicant.appName}"/>
-
-                        <p:outputLabel value="#{msgs.expiry_date}"/>
-                        <h:outputText value="#{renewalMbn.selProductApp.regExpiryDate}"/>
-
-                        <p:outputLabel value="#{msgs.new_ecpiry_date}"/>
-                        <h:outputText value="#{renewalMbn.invoice.newExpDate}"/>
-
-                        <p:outputLabel value="#{msgs.invoice_amt}"/>
-                        <h:outputText value="#{renewalMbn.invoice.invoiceAmt}"/>
-
-                        <p:outputLabel value="#{msgs.invoice_no}"/>
-                        <h:outputText value="#{renewalMbn.invoice.invoiceNumber}"/>
-
-                        <p:outputLabel value="#{msgs.payment_amt}"/>
-                        <h:outputText value="#{renewalMbn.payment.paymentAmt}"/>
-
-                        <p:outputLabel value="#{msgs.reciept_no}"/>
-                        <h:outputText value="#{renewalMbn.payment.receiptNo}"/>
-
-                        <p:outputLabel value="#{msgs.tracking_no}"/>
-                        <h:outputText value="#{renewalMbn.payment.trackingNo}"/>
-
-                    </h:panelGrid>
-
-                    <h:panelGrid columns="2" style="margin-top:10px">
-                        <p:commandButton value="#{msgs.global_submit}" oncomplete="renewdlg.hide()"
-                                         icon="ui-icon-disk" ajax="false" action="#{renewalMbn.renew}"/>
-                        <p:commandButton type="button" value="Clear" onclick="('renewdlg').hide()"
-                                         icon="ui-icon-close" ajax="false"/>
-                    </h:panelGrid>
-                </h:form>
-                </p:dialog>
-        -->
-
 		<p:dialog header="#{msgs.amendment}" widgetVar="dlgAmdment"
 			showEffect="fade" hideEffect="fade" modal="true" dynamic="true"
 			id="dlgAmdment" width="800px" height="500px">
@@ -764,6 +714,7 @@
 					ajax="false" />
 			</h:form>
 		</p:dialog>
+		
 		<p:dialog header="#{msgs.add_comment}" widgetVar="dlgAjax"
 			resizable="false" id="commentdlgA" modal="true" dynamic="true">
 			<h:form id="addCommentFrmA">
