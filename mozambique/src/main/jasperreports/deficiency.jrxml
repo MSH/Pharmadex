@@ -148,7 +148,7 @@
 				<textElement markup="html">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA["".concat($F{defItemName} != null ?$F{defItemName}:"").concat("")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<br>".concat($F{defItemName} != null ?$F{defItemName}:"").concat("")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
