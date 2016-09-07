@@ -105,37 +105,37 @@ public class ProductDAO implements Serializable {
      * @return
      */
     public List<ProdTable> findProductsByState(RegState regState) {
-        String q = "select p.id as id, p.prod_name as prodName, p.gen_name as genName, "
-                + "p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, "
-                + "c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID " +
-                "from prodApplications pa, product p, applicant a, prod_company pc, company c " +
-                "where pa.PROD_ID = p.id " +
-                "and a.applcntId = pa.APP_ID " +
-                "and c.id = pc.company_id " +
-                "and pc.prod_id = p.id " +
-                "and pa.regState = :regState " +
-                "and pc.companyType = :companyType";
+    	String q = "select p.id as id, p.prod_name as prodName, p.gen_name as genName, "
+				+ "p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, "
+				+ "c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID " +
+        "from prodApplications pa, product p, applicant a, prod_company pc, company c " +
+        "where pa.PROD_ID = p.id " +
+        "and a.applcntId = pa.APP_ID " +
+        "and c.id = pc.company_id " +
+        "and pc.prod_id = p.id " +
+        "and pa.regState = :regState " +
+        "and pc.companyType = :companyType";
 
-        Workspace w = workspaceDAO.findAll().get(0);
-        String workspName = (w != null ? w.getName():"");
-
+    	Workspace w = workspaceDAO.findAll().get(0);
+    	String workspName = (w != null ? w.getName():"");
+    	
         List<Object[]> products = null;
-        if(!workspName.equals("Ethiopia")){
-            q += " ;";
-            products = entityManager
-                    .createNativeQuery(q)
+        /*if(workspName.equals("Bangladesh")){
+        	q += " ;";
+        	products = entityManager
+            		.createNativeQuery(q)
                     .setParameter("regState", "" + regState)
                     .setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
                     .getResultList();
-        }else{
-            q += " and pa.active = :active ;";
-            products = entityManager
-                    .createNativeQuery(q)
-                    .setParameter("active", true)
+        }else{*/
+        	q += " and pa.active = :active ;";
+        	products = entityManager
+            		.createNativeQuery(q)
+            		.setParameter("active", true)
                     .setParameter("regState", "" + regState)
                     .setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
                     .getResultList();
-        }
+       //}
 
         List<ProdTable> prodTables = new ArrayList<ProdTable>();
         ProdTable prodTable;
