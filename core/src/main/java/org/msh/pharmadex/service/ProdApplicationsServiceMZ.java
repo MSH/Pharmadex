@@ -329,8 +329,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_GESTOR, gestor);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);	
+		utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
 		
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);		
 	
 		String regNum = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():""; //"2019/08";//
 		String prodName = product.getProdName() != null ? product.getProdName():""; //"AMPICILLIN";//
@@ -440,6 +441,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_DAYS, days, true);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
 			
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
 			if(prodApp.getApplicant() != null){
 				if(prodApp.getApplicant().getContactName()!=null){
 					setAppResponsibleUser(prodApp.getApplicant().getContactName());							
@@ -678,6 +681,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
+			
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
 
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);		

@@ -152,6 +152,8 @@ public class SampleTestServiceMZ implements Serializable {
 			}
 		}
 		
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
 		/*utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
 		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
