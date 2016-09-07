@@ -70,7 +70,7 @@ public class CompanyService implements Serializable {
 		}
 
 		if(selectedCompany.getId() != null)
-			selectedCompany = findCompanyById(selectedCompany.getId());
+			selectedCompany = saveCompany(selectedCompany);// findCompanyById(selectedCompany.getId());
 		else {
 			selectedCompany = saveCompany(selectedCompany);
 			globalEntityLists.setManufacturers(null);
@@ -80,13 +80,11 @@ public class CompanyService implements Serializable {
 			if(ct != null&&ct != "" && CompanyType.valueOf(ct).equals(CompanyType.FIN_PROD_MANUF))
 				prod.setManufName(selectedCompany.getCompanyName());
 			ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
-			/*if (!prodCompanies.contains(prodCompany))
-				prodCompanies.add(prodCompany);*/
 			if(!containsProdCompany(prodCompanies, prodCompany))
 				prodCompanies.add(prodCompany);
 		}
 		prod.setProdCompanies(prodCompanies);
-
+		
 		prodCompanyDAO.flush();
 		return prod.getProdCompanies();
 	}

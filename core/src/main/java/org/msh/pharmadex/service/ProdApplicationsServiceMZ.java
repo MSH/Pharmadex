@@ -227,19 +227,19 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public String createRegCert(ProdApplications prodApp, String gestorDeCTRM) throws IOException, JRException, SQLException {
+	public String createRegCert(ProdApplications prodApp, String gestorDeCTRM, boolean isGeneric) throws IOException, JRException, SQLException {
 		this.prodApp = prodApp;
 		this.product = prodApp.getProduct();
 		File invoicePDF = null;
 		invoicePDF = File.createTempFile("" + product.getProdName().split(" ")[0] + "_registration", ".pdf");
-		JasperPrint jasperPrint = initRegCert(gestorDeCTRM);
+		JasperPrint jasperPrint = initRegCert(gestorDeCTRM, isGeneric);
 		net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 		prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
 		prodApplicationsDAO.updateApplication(prodApp);
 		return "created";
 	}
 
-	public JasperPrint initRegCert(String gestor) throws JRException, SQLException {
+	public JasperPrint initRegCert(String gestor, boolean isGeneric) throws JRException, SQLException {
 		product = productDAO.findProduct(prodApp.getProduct().getId());
 		URL resource = getClass().getResource("/reports/reg_letter.jasper");
 
@@ -312,8 +312,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 		utilsByReports.putNotNull(UtilsByReports.KEY_SUBACT, fl);
 
-		fl = false;
-		utilsByReports.putNotNull(UtilsByReports.KEY_GEN, fl);
+		utilsByReports.putNotNull(UtilsByReports.KEY_GEN, isGeneric);
 
 		//
 		String str = "";

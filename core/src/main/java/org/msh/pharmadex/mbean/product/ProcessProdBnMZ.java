@@ -26,7 +26,6 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewService;
-import org.msh.pharmadex.service.ReviewServiceMZ;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -64,6 +63,7 @@ public class ProcessProdBnMZ implements Serializable {
 
 	public User loggedInUser;
 	private String gestorDeCTRM = resourceBundle.getString("gestorDeCTRM_value");
+	private boolean generic = false;
 
 	private boolean visibleExecSumeryBtn = false;
 	private boolean disableCheckSample = false;
@@ -184,7 +184,7 @@ public class ProcessProdBnMZ implements Serializable {
 		facesContext = getCurrentInstance();
 		try {
 			if(prodApplications.getRegState().equals(RegState.REGISTERED))
-				prodApplicationsServiceMZ.createRegCert(prodApplications, getGestorDeCTRM());
+				prodApplicationsServiceMZ.createRegCert(prodApplications, getGestorDeCTRM(), isGeneric());
 			else{
 				if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
 					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
@@ -199,7 +199,7 @@ public class ProcessProdBnMZ implements Serializable {
 
 				String retValue = prodApplicationsServiceMZ.registerProd(prodApplications);
 				if(retValue.equals("created")) {
-					prodApplicationsServiceMZ.createRegCert(prodApplications, getGestorDeCTRM());
+					prodApplicationsServiceMZ.createRegCert(prodApplications, getGestorDeCTRM(), isGeneric());
 					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
 				}else{
 					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
@@ -332,6 +332,14 @@ public class ProcessProdBnMZ implements Serializable {
 
 	public void setGestorDeCTRM(String gestorDeCTRM) {
 		this.gestorDeCTRM = gestorDeCTRM;
+	}
+
+	public boolean isGeneric() {
+		return generic;
+	}
+
+	public void setGeneric(boolean generic) {
+		this.generic = generic;
 	}
 
 	public boolean isDisableCheckSample() {
