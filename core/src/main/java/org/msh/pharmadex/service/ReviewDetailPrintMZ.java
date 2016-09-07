@@ -23,6 +23,7 @@ import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.mbean.product.ReviewItemReport;
@@ -62,7 +63,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 		fillGeneralRS(res, prop, prodCompanyDAO);
 		fillGeneralText(res, prop, prodCompanyDAO);
 		fillItems(res, customReviewDAO);
-		fillResolutionText(res, prop);
+		fillResolutionText(res, prop, reviewInfoDAO);
 		fillSignersText(res, prop, reviewInfoDAO, param);
 		return new JRMapArrayDataSource(res.toArray());
 	}
@@ -125,7 +126,7 @@ public class ReviewDetailPrintMZ implements Serializable {
 		
 	}
 	
-	private static void fillResolutionText(List<Map<String, Object>> res, Properties prop) {
+	private static void fillResolutionText(List<Map<String, Object>> res, Properties prop, ReviewInfoDAO reviewInfoDAO) {
 		/*String number = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():"";
 		String chapter3t = "";
 		if(prop.getProperty("chapter3_txt")!=null){
@@ -133,7 +134,37 @@ public class ReviewDetailPrintMZ implements Serializable {
 		}
 		String text = (prodApp.getExecSummary() != null ? prodApp.getExecSummary() + "\n":"") + chapter3t;		
 		fillItemRS(res, prop.getProperty("chapter3"), null, text, null,null,null,null);*/
-		String text = prodApp.getExecSummary() != null ? prodApp.getExecSummary():"";
+		String text = "";
+		List<ReviewInfo> list = reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(prodApp.getId());
+		if(list != null && list.size() > 0){
+			for(ReviewInfo revinf:list){
+				List<ReviewComment>	listRC=	revinf.getReviewComments();
+				for(ReviewComment com:listRC){
+					if(com.getComment()!=null){
+						if(com.isFinalSummary()){
+							if(revinf.getReviewer()!=null){
+								if(com.getUser()!=null){
+									if(revinf.getReviewer().equals(com.getUser())){
+										text = "<b>" + bundle.getString("pri_processor") + "</b>:<br>" + com.getComment()+"<br>";
+									}
+								}
+							}
+							if(revinf.getSecReviewer()!=null){
+								if(com.getUser()!=null){
+									if(revinf.getSecReviewer().equals(com.getUser())){
+										text += (text.isEmpty()?"":"<br>") + "<b>" + bundle.getString("sec_processor") + "</b>:<br>" + com.getComment()+ "<br>";
+									}
+								}
+							}						
+						}
+					}
+				}	
+			
+			}
+		}
+		if(prodApp.getExecSummary() != null)
+			text += (text.isEmpty()?"":"<br>") + "<b>" + bundle.getString("mod_comment") + "</b>:<br>" +  prodApp.getExecSummary()+ "<br>";
+		
 		fillItemRS(res, prop.getProperty("chapter3"), null, text, null, null, null, null);
 	}
 
