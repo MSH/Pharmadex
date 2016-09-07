@@ -325,7 +325,7 @@
                                                    process="@form :addcompany">
                                     </p:commandLink>
                                 </f:facet>
-                                <p:column headerText="#{msgs.applicant_name}">
+                                <p:column headerText="#{msgs.manuf_name}">
                                     <h:outputText value="#{company.company.companyName}"/>
                                 </p:column>
 
@@ -333,7 +333,7 @@
                                     <h:outputText value="#{company.company.address.country.countryName}"/>
                                 </p:column>
 
-                                <p:column headerText="#{msgs.applicant_type}">
+                                <p:column headerText="#{msgs.manuf_type}">
                                     <h:outputText value="#{msgs[company.companyType.key]}"/>
                                 </p:column>
 
