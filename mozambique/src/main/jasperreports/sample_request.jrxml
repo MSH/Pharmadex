@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-23T10:19:42 -->
+<!-- 2016-09-07T17:39:47 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -17,17 +17,19 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="appPost" class="java.lang.String"/>
-	<parameter name="appAddress" class="java.lang.String"/>
 	<parameter name="prodName" class="java.lang.String"/>
 	<parameter name="fullName" class="java.lang.String"/>
 	<parameter name="appUserName" class="java.lang.String"/>
 	<parameter name="modInitials" class="java.lang.String"/>
 	<parameter name="scrInitials" class="java.lang.String"/>
+	<parameter name="address1" class="java.lang.String"/>
+	<parameter name="address2" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="388" splitType="Stretch">
+		<band height="401" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement x="0" y="95" width="572" height="27" forecolor="#000000" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
@@ -103,7 +105,7 @@
 				<textElement>
 					<font fontName="DejaVu Serif" size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appAddress} == null ? "Maputo": ($P{appAddress}== ""?"Maputo" :$P{appAddress})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{address1} == null ? "": $P{address1}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="192" width="390" height="17" uuid="2d4c9c75-a1b3-4cc0-b4f9-25e2d14dcac4"/>
@@ -138,8 +140,9 @@
 				<textFieldExpression><![CDATA["Pedido de Amostras do Medicamento ".concat($P{prodName}  == null ? "":$P{prodName}).concat(" para Controlo de Qualidade")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
-				<reportElement positionType="Float" x="0" y="357" width="550" height="24" uuid="0966b53c-0404-4bf5-bf0d-99e112ece84c">
+				<reportElement positionType="Float" x="0" y="377" width="550" height="24" uuid="0966b53c-0404-4bf5-bf0d-99e112ece84c">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement markup="html">
 					<font fontName="DejaVu Serif"/>
@@ -152,6 +155,18 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="306" y="353" width="249" height="13" uuid="3ec46b32-9fb8-44c4-aeb2-0fc6b9b7adcb">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Serif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address2} == null ? "Maputo": ("".equals($P{address2})?"Maputo" :$P{address2})]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

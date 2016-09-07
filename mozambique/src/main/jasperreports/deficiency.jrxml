@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-30T16:28:33 -->
+<!-- 2016-09-07T17:47:02 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6499b4e2-6ed0-423c-8082-f3978445c6ce">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -17,18 +17,20 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="appPost" class="java.lang.String"/>
-	<parameter name="appAddress" class="java.lang.String"/>
 	<parameter name="prodName" class="java.lang.String"/>
 	<parameter name="fullName" class="java.lang.String"/>
 	<parameter name="appUserName" class="java.lang.String"/>
 	<parameter name="repdays" class="java.lang.String"/>
 	<parameter name="DueDate" class="java.util.Date"/>
+	<parameter name="address1" class="java.lang.String"/>
+	<parameter name="address2" class="java.lang.String"/>
 	<field name="defItemName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="384" splitType="Stretch">
+		<band height="414" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="236" y="0" width="100" height="100" uuid="8d47c2fa-0b2d-4003-bbfa-541cceda29af">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -88,56 +90,68 @@
 				<textElement>
 					<font fontName="DejaVu Serif" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appAddress} == null ? "Maputo": ($P{appAddress}== ""?"Maputo" :$P{appAddress})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{address1} == null ? "": $P{address1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="270" width="380" height="17" uuid="ca3416c3-8152-4d68-9eca-183d36b73e37"/>
+				<reportElement positionType="Float" x="0" y="300" width="380" height="17" uuid="ca3416c3-8152-4d68-9eca-183d36b73e37"/>
 				<textElement>
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<text><![CDATA[Refª Nº                  /                    /DF                                      Maputo,        de]]></text>
 			</staticText>
 			<textField pattern="MMM, yyyy">
-				<reportElement positionType="Float" x="380" y="270" width="100" height="18" uuid="b4b30bd2-36ef-4bba-9b8e-6b13b3325b5d"/>
+				<reportElement positionType="Float" x="380" y="300" width="100" height="18" uuid="b4b30bd2-36ef-4bba-9b8e-6b13b3325b5d"/>
 				<textElement>
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DueDate} != null ? $P{DueDate} : new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="300" width="60" height="20" uuid="97fe4bbc-02cc-4774-8728-928d309b4a48"/>
+				<reportElement positionType="Float" x="0" y="330" width="60" height="20" uuid="97fe4bbc-02cc-4774-8728-928d309b4a48"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<text><![CDATA[Assunto:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="59" y="300" width="491" height="20" uuid="d5065222-2d66-4cf2-827f-190c2d6a0e75"/>
+				<reportElement positionType="Float" x="59" y="330" width="491" height="20" uuid="d5065222-2d66-4cf2-827f-190c2d6a0e75"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Serif" isBold="true" isUnderline="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Pedido de elemento do produto ".concat($P{prodName})  == null ? "":$P{prodName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="6" y="332" width="544" height="20" uuid="6facab37-4a46-48e8-9dcd-53089235d23a"/>
+				<reportElement positionType="Float" x="6" y="362" width="544" height="20" uuid="6facab37-4a46-48e8-9dcd-53089235d23a"/>
 				<textElement>
 					<font fontName="DejaVu Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Processo nº:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="5" y="360" width="550" height="24" uuid="64c8d0bd-d75a-4652-aefb-d0aa22436f4d"/>
+				<reportElement positionType="Float" x="5" y="390" width="550" height="24" uuid="64c8d0bd-d75a-4652-aefb-d0aa22436f4d"/>
 				<textElement markup="html">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Efectuadas as avaliações clínica e farmacêutica do produto acima referenciado, o Departamento Farmacêutico informa que, a aprovação desta especialidade farmacêutica (<b><u>".concat($P{fullName}).concat("</u></b>), fica condicionada a apresentação da informação que se segue:")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="320" width="551" height="1" uuid="22c87f91-13dd-40dd-9158-22fedc299f38">
+				<reportElement positionType="Float" x="0" y="350" width="551" height="1" uuid="22c87f91-13dd-40dd-9158-22fedc299f38">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="306" y="260" width="249" height="13" uuid="f33a55fe-3cf6-428f-bf2f-af6415cd0a40">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Serif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address2} == null ? "Maputo": ("".equals($P{address2})?"Maputo" :$P{address2})]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
