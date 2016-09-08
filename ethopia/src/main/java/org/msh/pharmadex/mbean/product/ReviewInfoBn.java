@@ -737,4 +737,12 @@ public class ReviewInfoBn implements Serializable {
     public void setProdApplicationsServiceET(ProdApplicationsServiceET prodApplicationsServiceET) {
         this.prodApplicationsServiceET = prodApplicationsServiceET;
     }
+
+    public SuspendDAO getSuspendDAO() {
+        return suspendDAO;
+    }
+
+    public void setSuspendDAO(SuspendDAO suspendDAO) {
+        this.suspendDAO = suspendDAO;
+    }
 }

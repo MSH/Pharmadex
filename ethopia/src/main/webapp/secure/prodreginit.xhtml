@@ -2,7 +2,8 @@
                     xmlns:h="http://java.sun.com/jsf/html"
                     xmlns:ui="http://java.sun.com/jsf/facelets"
                     xmlns:p="http://primefaces.org/ui"
-                    xmlns:f="http://java.sun.com/jsf/core" xmlns:H="http://java.sun.com/jsf/html"
+                    xmlns:f="http://java.sun.com/jsf/core"
+                    xmlns:pe="http://primefaces.org/ui/extensions"
                     template="../templates/registration_layout.xhtml">
         <ui:define name="regcontent">
             <div class="post">
@@ -81,7 +82,10 @@
                         <p:message for="prodTable" showSummary="true" showDetail="false" rendered="#{prodRegInit.showProductChoice}"/>
 
                         <h:outputLabel value="#{msgs.variationSummary}" rendered="#{prodRegInit.showVariationType}"/>
-                        <p:editor id="varDetails" value="#{prodRegInit.varSummary}" height="100" width="550" rendered="#{prodRegInit.showVariationType}"/>
+                        <pe:ckEditor id="varDetails" value="#{prodRegInit.varSummary}"
+                                     height="100" width="550"
+                                     toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+                                     rendered="#{prodRegInit.showVariationType}"/>
                         <p:message for="varDetails" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
 
                         <p:outputLabel

@@ -203,7 +203,7 @@
                     <p:selectOneMenu id="recomcb" value="#{reviewInfoBn.reviewComment.recomendType}" required="true"
                                      requiredMessage="#{msgs.recommendation_valid}">
                         <f:selectItem itemLabel="-"/>
-                        <f:selectItems value="#{reviewInfoBnET.revRecommendTypes}" var="type"
+                        <f:selectItems value="#{reviewInfoBn.getRevRecomendTypes()}" var="type"
                                        itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
                     <p:message for="recomcb"/>
