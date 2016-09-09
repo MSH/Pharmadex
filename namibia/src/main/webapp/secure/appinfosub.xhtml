@@ -64,6 +64,12 @@
                     <p:outputLabel value="#{appSelectMBean.prodTable.prodName}"
                                    rendered="#{appSelectMBean.showProductChoice }"/>
                     <p:message for="prodTable" showSummary="true" showDetail="false" rendered="#{appSelectMBean.showProductChoice}"/>
+                      <p:commandButton value="#{msgs.global_save}" action="#{appSelectMBean.addProdToRegistration()}"
+                    				oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()"                    
+                                    rendered="#{appSelectMBean.showSaveBtn}"
+                              
+                                    />
+               
       </h:panelGroup>
     <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantdlg">
             <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
@@ -154,11 +160,13 @@
                 	 <!-- <p:inputText id="nameseluser" value="#{appSelectMBean.nameSelectedUSer}" styleClass="label">
                      	<f:validator validatorId="applicantResponsableValidator"/>
                      </p:inputText> -->
-                	 
+                	                           <!-- rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect and appSelectMBean.showSaveBtn}" -->
+          
                     <p:commandButton value="#{msgs.global_save}" action="#{appSelectMBean.addApptoRegistration()}"
                     				oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()"
                                     update=":reghome" process=":reghome:addapplicantdlg" 
-                                    rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect and appSelectMBean.showSaveBtn}"/>
+                                    rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect and appSelectMBean.showSaveBtn}"
+                                    />
                     <p:commandButton action="#{appSelectMBean.cancelAddApplicant}" immediate="true"
                                      value="#{msgs.global_cancel}" update=":reghome:addapplicantdlg" 
                                      oncomplete="PF('addapplicantDlg').hide()"/>
