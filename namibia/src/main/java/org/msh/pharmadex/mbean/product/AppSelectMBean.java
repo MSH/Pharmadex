@@ -26,6 +26,7 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.Scrooge;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.slf4j.Logger;
@@ -173,6 +174,7 @@ public class AppSelectMBean implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		logger.error("Selected User is " + ((UserDTO) event.getObject()).getUsername());
 		showSaveBtn = (selectedUser != null);
+		RequestContext.getCurrentInstance().update("reghome");
 	}
 	
 	public void validate(ComponentSystemEvent e) {
@@ -226,9 +228,26 @@ public class AppSelectMBean implements Serializable {
 			ex.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
 		}
-
 		return "";
 	}
+		public void addProdToRegistration() {
+			try{
+	
+					if (prodTable!=null) {
+						selectedProduct = productDAO.findProduct(prodTable.getId());
+						prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
+						prodRegAppMbean.setProduct(selectedProduct);
+						prodRegAppMbean.setProdApplications(prodappl);
+						ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
+					}
+		
+				
+			} catch (Exception ex){
+				ex.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
+			}
+
+		}
 
 	public void cancelAddApplicant() {
 		selectedApplicant = new Applicant();
@@ -352,6 +371,8 @@ public class AppSelectMBean implements Serializable {
 				prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
 				prodRegAppMbean.setProduct(selectedProduct);
 				prodRegAppMbean.setProdApplications(prodappl);
+				showSaveBtn=true;
+				RequestContext.getCurrentInstance().update("reghome");
 				//ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
 			}
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
