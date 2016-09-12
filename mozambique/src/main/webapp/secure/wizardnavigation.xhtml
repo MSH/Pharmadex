@@ -10,11 +10,11 @@
         	<td align="left">
         		<p:commandButton value="#{msgs.global_cancel}" immediate="true" icon="ui-icon-extlink" 
 						 		 action="#{prodRegAppMbean.cancel}" ajax="false"
-						 		 rendered="#{!showexit}"/>
+						 		 rendered="#{!userSession.admin}"/>
 				<p:commandButton value="#{msgs.global_exit}" action="/internal/processreg.faces" 
 								 ajax="false" icon="ui-icon-extlink"
-								 rendered="#{showexit}">
-								 <f:param name="prodAppID" value="#{prodAppID}"/>
+								 rendered="#{userSession.admin}">
+								 <f:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
 				</p:commandButton>
 			</td>
 			<td align="right" >
@@ -23,7 +23,7 @@
 								 rendered="#{prodRegAppMbeanMZ.visibleSave}"/>
 				<p:commandButton value="#{msgs.global_submit}" action="#{prodRegAppMbean.validateApp}"
                                  ajax="false"
-                                 rendered="#{prodRegAppMbeanMZ.visibleSubmit and !showexit}"/>
+                                 rendered="#{prodRegAppMbeanMZ.visibleSubmit and !userSession.admin}"/>
 			</td>
         </tr>
     </table>

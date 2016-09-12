@@ -137,6 +137,7 @@ public class ProdRegAppMbean implements Serializable {
 	private void init() {
 		Long prodAppID;
 		try {
+			userSession.setProdAppID(null);
 			//prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
 			prodAppID = getParam("prodAppID");
 		} catch (NumberFormatException nfe) {
@@ -206,6 +207,7 @@ public class ProdRegAppMbean implements Serializable {
 		System.out.println("------ProdRegAppMbean Bean destroyed-----");
 		System.out.println("--------------------------------------");
 	}
+	
 	private Long getParam(String parameter){
 		context = FacesContext.getCurrentInstance();
 		String procId=null;

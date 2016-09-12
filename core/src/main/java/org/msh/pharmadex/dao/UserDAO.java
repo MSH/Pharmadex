@@ -35,7 +35,6 @@ public class UserDAO implements Serializable {
 	@Autowired
 	ApplicantDAO applicantDAO;
 
-	//@Transactional
 	public User findUser(Long id) {
 		User user = null;
 		List<User> list = entityManager.createQuery("select u from User u where u.userId = :userid")
@@ -52,35 +51,17 @@ public class UserDAO implements Serializable {
 
 	@Transactional
 	public List<User> allUsers() {
-		List<Object> objs = entityManager.createNativeQuery("select u.userId, u.name, u.username, u.email, u.type, u.enabled, a.appName " +
-				"from user u left join applicant a ON a.applcntId = u.applcntId;").getResultList();
-		ArrayList<User> users = new ArrayList<User>();
-		User user;
-		for (Object obj : objs) {
-			Object[] o = (Object[]) obj;
-			user = new User();
-			user.setUserId(Long.valueOf("" + o[0]));
-			user.setName("" + o[1]);
-			user.setUsername("" + o[2]);
-			user.setEmail("" + o[3]);
-			if(o[4] != null)
-				user.setType(UserType.valueOf((String) o[4]));
-			user.setEnabled((Boolean) o[5]);
-			String companyName = (String) o[6];
-			user.setCompanyName(companyName);
-			users.add(user);
-		}
+		List<User> users = entityManager.createQuery("select u from User u where not isnull(u.applcntId)")
+				.getResultList();
 		return users;
 	}
 
-	//@Transactional
 	public List<User> findNotRegistered() {
 		return entityManager.createQuery("select u from User u where u.applicant is null and u.type = :userType")
 				.setParameter("userType", UserType.COMPANY)
 				.getResultList();
 	}
 
-	//@Transactional
 	public List<User> findByApplicant(Long id) {
 		List<User> u = entityManager.createQuery("select u from User u where u.applicant.applcntId = :applicantId ")
 				.setParameter("applicantId", id)
@@ -89,7 +70,6 @@ public class UserDAO implements Serializable {
 		return u;
 	}
 
-	//@Transactional
 	public List<User> findByRxSite(Long id) {
 		return entityManager.createQuery("select u from User u join u.pharmacySites ps where ps.id = :siteId ")
 				.setParameter("siteId", id)

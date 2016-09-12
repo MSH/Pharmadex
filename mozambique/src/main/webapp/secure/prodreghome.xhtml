@@ -30,20 +30,14 @@
 	                	<ui:param name="displayLH" value="#{userSession.ethiopia}"/>
 	                </ui:decorate>
 
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="proddetails" title="#{msgs.product_details}">
                     <p:panel header="#{msgs.product_details}">
 						<ui:include src="proddetails.xhtml"/>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="appdetails" title="#{msgs.application_detail}">
@@ -247,10 +241,7 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="applicationStatus" title="#{msgs.appl_status_country}" rendered="#{prodRegAppMbeanMZ.visibleForeignTab}">
@@ -316,10 +307,7 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
@@ -372,10 +360,7 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.displayPricing}">
@@ -443,10 +428,7 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="payment" title="#{msgs.payment_info}">
@@ -455,10 +437,7 @@
                             <ui:param name="prodApp" value="#{prodRegAppMbean.prodApplications}"/>
                         </ui:decorate>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="attach" title="#{msgs.attachments}">
@@ -512,10 +491,7 @@
                             </p:dataTable>
                         </h:panelGrid>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="prodAppChecklist" title="#{msgs.checklist}">
@@ -524,10 +500,7 @@
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
                         </ui:decorate>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
                 <p:tab id="summary" title="Summary">
@@ -543,10 +516,7 @@
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
                         </ui:decorate>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml">
-                    	<ui:param name="showexit" value="#{userSession.admin}"/>
-                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
-                    </ui:include>
+                    <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
             </p:wizard>
