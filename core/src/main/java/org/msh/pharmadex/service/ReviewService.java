@@ -266,8 +266,9 @@ public class ReviewService implements Serializable {
 		}
 
 		ReviewDetail reviewDetail;
+		User curUser = userService.findUser(loggedInUser);
 		for (ReviewQuestion reviewQuestion : reviewQuestions) {
-			reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false, userService.findUser(loggedInUser));
+			reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false, curUser);
 			reviewDetails.add(reviewDetail);
 		}
 

@@ -35,7 +35,7 @@ public class UserDAO implements Serializable {
 	@Autowired
 	ApplicantDAO applicantDAO;
 
-	@Transactional
+	//@Transactional
 	public User findUser(Long id) {
 		User user = null;
 		List<User> list = entityManager.createQuery("select u from User u where u.userId = :userid")
@@ -73,14 +73,14 @@ public class UserDAO implements Serializable {
 		return users;
 	}
 
-	@Transactional
+	//@Transactional
 	public List<User> findNotRegistered() {
 		return entityManager.createQuery("select u from User u where u.applicant is null and u.type = :userType")
 				.setParameter("userType", UserType.COMPANY)
 				.getResultList();
 	}
 
-	@Transactional
+	//@Transactional
 	public List<User> findByApplicant(Long id) {
 		List<User> u = entityManager.createQuery("select u from User u where u.applicant.applcntId = :applicantId ")
 				.setParameter("applicantId", id)
@@ -89,7 +89,7 @@ public class UserDAO implements Serializable {
 		return u;
 	}
 
-	@Transactional
+	//@Transactional
 	public List<User> findByRxSite(Long id) {
 		return entityManager.createQuery("select u from User u join u.pharmacySites ps where ps.id = :siteId ")
 				.setParameter("siteId", id)

@@ -33,7 +33,6 @@ public class ApplicantDAO implements Serializable {
     @Autowired
     CountryDAO countryDAO;
 
-    @Transactional
     public Applicant findApplicant(long id) {
     	if(id <= 0)
     		return null;

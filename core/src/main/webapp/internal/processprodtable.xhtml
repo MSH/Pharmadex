@@ -11,7 +11,10 @@
     </div>
 
     <p:dataTable id="prodtable" var="eachprod" value="#{prodlist}"
-                 filteredValue="#{filteredprodlist}">
+                 filteredValue="#{filteredprodlist}"
+                 paginator="true" rows="20" paginatorPosition="bottom"
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="20,40,100">
 
 
         <p:column filterBy="#{eachprod.product.prodName}"

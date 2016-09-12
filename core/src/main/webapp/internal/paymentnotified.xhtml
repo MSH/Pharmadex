@@ -9,7 +9,7 @@
         <h:form prependId="false">
 
             <ui:include src="/internal/processprodtable.xhtml">
-                <ui:param name="panelheader" value="#{msgs.expiring_prod}"/>
+                <ui:param name="panelheader" value="#{msgs.payment_notfied}"/>
                 <ui:param name="prodlist" value="#{expProdMBean.notifiedPayProd}"/>
                 <ui:param name="filteredprodlist" value="#{expProdMBean.filteredApps}"/>
                 <ui:param name="prodbean" value="#{expProdMBean}"/>
