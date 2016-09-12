@@ -15,12 +15,9 @@
             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
                         onclick="PF('stepDlg').show()" id="nextStepMI"
                         rendered="#{processProdBnMZ.canNextStep}"/>
-                         
             <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
-                        action="/internal/reject.faces" ajax="false"
-                        rendered="#{processProdBn.canReject}">
-                        <f:param value="#{processProdBn.prodApplications.id}" name="prodAppID"/>
-            </p:menuitem>
+                        onclick="PF('rejectDlg').show()" id="rejectMI" 
+                        rendered="#{processProdBn.canReject}"/>
 
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
                         rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
@@ -36,14 +33,20 @@
             </p:menuitem>
 
             <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
-                        oncomplete="PF('regDlg').show()" id="registerMI" action="#{processProdBn.initRegistration}"
+                        oncomplete="PF('regDlg').show()" id="registerMI" 
+                        action="#{processProdBn.initRegistration}"
                         rendered="#{processProdBn.canRegister}"/>
             <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
                         onclick="PF('moderatordlg').show()"
                         rendered="#{processProdBnMZ.canChangeModerator}" id="assignModMI">
                         <p:resetInput target="moderatorForm" />
             </p:menuitem>
-             
+            <p:menuitem value="#{msgs.edit_product}" icon="ui-icon-gear"
+                        action="/secure/prodreghome.faces" ajax="false"
+                        rendered="#{userSession.admin}">
+                    <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+            </p:menuitem>
+            
             <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" 
             			ajax="false" icon="ui-icon-extlink"/>
         </p:submenu>

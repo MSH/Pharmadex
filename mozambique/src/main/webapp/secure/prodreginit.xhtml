@@ -71,12 +71,10 @@
         </h:form>
 
 
-        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
-                  resizable="false">
-            <p:graphicImage value="/demo/images/ajaxloadingbar.gif"/>
-        </p:dialog>
-
-    </ui:define>
+       <p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
     <script type="text/javascript">
         function start() {
             PF('statusDialog').show();
@@ -86,4 +84,5 @@
             PF('statusDialog').hide();
         }
     </script>
+    </ui:define>
 </ui:composition>

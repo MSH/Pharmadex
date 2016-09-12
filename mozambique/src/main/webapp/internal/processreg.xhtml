@@ -404,7 +404,7 @@
 						</p:tabView>
 
 						<p:blockUI block="processtab"
-							trigger=":reghome:processtab :reghome:saveMenuItem :reghome:addCommentMI :reghome:nextStepMI :reghome:registerMI :reghome:assignModMI
+							trigger=":reghome:processtab :reghome:saveMenuItem :reghome:addCommentMI :reghome:nextStepMI :reghome:registerMI :reghome:rejectMI :reghome:assignModMI
             :reghome:processtab:feerecieved :reghome:processtab:appverify :reghome:processtab:prodverify :reghome:processtab:dosscomplete
             :reghome:processtab:addDocBtn :addCommentFrm:submitButton :reghome:processtab:addCommentintab :addCommentFrmA:submitButtonA
             :reghome:processtab:completef :reghome:processtab:complete">
@@ -425,9 +425,9 @@
 				</ui:include>
 				<h:panelGrid columns="2" style="margin-top:10px">
 					<p:commandButton id="createlet" value="#{msgs.label_create}"
-						oncomplete="PF('createAckLet').hide()" icon="ui-icon-check"
-						ajax="false"
-						action="#{prodAckLetterFormMZ.createLetter(processProdBn.prodApplications)}"
+						ajax="false" icon="ui-icon-check"
+						onclick="PrimeFaces.monitorDownload(start, stop);"
+						actionListener="#{prodAckLetterFormMZ.createLetter(processProdBn.prodApplications)}"
 						update="@form" />
 					<p:commandButton id="cancellet" type="button"
 						value="#{msgs.global_cancel}" onclick="PF('createAckLet').hide()"
@@ -698,11 +698,29 @@
 				</h:panelGrid>
 
 				<p:commandButton id="regBtn" value="#{processProdBn.buildStringByRegDlg(false)}"
-					action="#{processProdBnMZ.registerProduct(processProdBn.prodApplications)}"
-					oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"
+					icon="ui-icon-gear" ajax="false"
+					onclick="PrimeFaces.monitorDownload(start, stop);"
+					actionListener="#{processProdBnMZ.registerProduct(processProdBn.prodApplications)}"
 					update=":reghome:growl :reghome:messages :reghome :regdatedlg" />
 			</h:form>
-
+		</p:dialog>
+		
+		<p:dialog header="#{msgs.reject_summary}" widgetVar="rejectDlg"
+			resizable="false" id="rejectdlg" modal="true" dynamic="true">
+			<h:form id="rejectdatedlg">
+				<h:panelGrid columns="3" cellspacing="10" cellpadding="10" columnClasses="label value label">
+					<p:outputLabel value="#{msgs.global_summary}" for="sum"/>
+					<p:inputTextarea id="sum" value="#{processProdBnMZ.rejectSumm}" rows="6" cols="100"
+						required="true" requiredMessage="#{msgs.reject_summary}"/>
+					<p:message for="sum" />
+				</h:panelGrid>
+				
+				<p:commandButton id="rejectBtn" value="#{msgs.global_reject}"
+                                 icon="ui-icon-gear" ajax="false"
+                                 onclick="PrimeFaces.monitorDownload(start, stop);"
+                                 actionListener="#{processProdBnMZ.rejectProduct(processProdBn.prodApplications)}"
+                                 update=":reghome:growl :reghome:messages :reghome :rejectdatedlg"/>
+			</h:form>
 		</p:dialog>
 
 		<p:dialog header="#{msgs.add_comment}" widgetVar="dlg"
@@ -760,19 +778,19 @@
 		</p:dialog>
 
 
-		<p:dialog modal="true" widgetVar="statusDialog" header="Status"
-			draggable="false" closable="false" resizable="false" dynamic="true">
-			<p:graphicImage value="/resources/images/ajax-loader.gif" />
+		<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
 		</p:dialog>
-
+		
+		<script type="text/javascript">
+			function start() {
+			PF('statusDialog').show();
+			}
+				
+			function stop() {
+			PF('statusDialog').hide();
+			}
+		</script>
 	</ui:define>
-	<script type="text/javascript">
-        function start() {
-            PF('statusDialog').show();
-        }
-
-        function stop() {
-            PF('statusDialog').hide();
-        }
-    </script>
 </ui:composition>

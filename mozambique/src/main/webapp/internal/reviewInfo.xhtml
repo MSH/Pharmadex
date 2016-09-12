@@ -9,8 +9,10 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
                 template="../templates/process_reg_layout.xhtml">
+                
     <ui:define name="content">
 
+    	
         <h:form id="reviewHome" enctype="multipart/form-data">
             <p:growl id="growl" showSummary="true"/>
             <p:messages showDetail="true" showSummary="true"/>
@@ -31,9 +33,13 @@
                                  ajax="false">
                         <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
                 </p:commandButton>
+                <!--  -->
                 <p:commandButton id="printBtn" value="#{msgs.global_print}"
-                                 action="#{reviewInfoBnMZ.printReview}"
-                                 ajax="false" immediate="true" icon="ui-icon-print"/>
+                                 onclick="PrimeFaces.monitorDownload(start, stop);"
+                                 actionListener="#{reviewInfoBnMZ.createFileReviewDetail()}"
+                                 ajax="false" icon="ui-icon-arrowthick-1-s">
+                	<p:fileDownload value="#{reviewInfoBnMZ.fileReviewDetail}" />
+               	</p:commandButton>
                 <!-- 25072016
                 <p:commandButton value="#{msgs.approve_review}"
                                  action="#{reviewInfoBn.approveReview}"
@@ -283,5 +289,19 @@
             </h:form>
         </p:dialog>
         
-    </ui:define>
+        <p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+	
+		<script type="text/javascript">
+	        function start() {
+	        	PF('statusDialog').show();
+	        }
+	
+	        function stop() {
+	        	PF('statusDialog').hide();
+	        }
+	    </script>
+	</ui:define>
 </ui:composition>

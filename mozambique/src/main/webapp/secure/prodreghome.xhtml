@@ -7,7 +7,10 @@
                 template="../templates/admin_layout.xhtml">
     <ui:define name="content">
         <div class="post">
-            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
+            <h1 class="title ui-widget-header ui-corner-all"> 
+            	<p:outputLabel value="#{msgs.product_reg}" rendered="#{!userSession.admin}"/>
+            	<p:outputLabel value="#{msgs.header_edit_app}" rendered="#{userSession.admin}"/>
+            </h1>
         </div>
 
         <h:form id="reghome" enctype="multipart/form-data">
@@ -27,14 +30,20 @@
 	                	<ui:param name="displayLH" value="#{userSession.ethiopia}"/>
 	                </ui:decorate>
 
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="proddetails" title="#{msgs.product_details}">
                     <p:panel header="#{msgs.product_details}">
 						<ui:include src="proddetails.xhtml"/>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="appdetails" title="#{msgs.application_detail}">
@@ -238,7 +247,10 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="applicationStatus" title="#{msgs.appl_status_country}" rendered="#{prodRegAppMbeanMZ.visibleForeignTab}">
@@ -304,7 +316,10 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
@@ -357,7 +372,10 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="pricing" title="#{msgs.product_pricing}" rendered="#{userSession.displayPricing}">
@@ -425,7 +443,10 @@
                             <p:graphicImage name="/resources/images/ajax-loader.gif"/>
                         </p:blockUI>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="payment" title="#{msgs.payment_info}">
@@ -434,7 +455,10 @@
                             <ui:param name="prodApp" value="#{prodRegAppMbean.prodApplications}"/>
                         </ui:decorate>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="attach" title="#{msgs.attachments}">
@@ -488,7 +512,10 @@
                             </p:dataTable>
                         </h:panelGrid>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="prodAppChecklist" title="#{msgs.checklist}">
@@ -497,20 +524,29 @@
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
                         </ui:decorate>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab id="summary" title="Summary">
                     <p:panel header="Summary">
-                        <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                    	<div align="right">
+					        <p:commandButton icon="ui-icon-print" value="#{msgs.global_print}" type="button">
+					            <p:printer target="prodsummaccpnl"/>
+					        </p:commandButton>
+					    </div>
+                        <ui:decorate template="/templates/summerytabtmpl.xhtml">
                             <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
                             <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
-                            <ui:param name="showfull" value="#{prodRegAppMbean.showfull}"/>
-                            <ui:param name="showexit" value="#{false}"/>
                         </ui:decorate>
                     </p:panel>
-                    <ui:include src="wizardnavigation.xhtml"/>
+                    <ui:include src="wizardnavigation.xhtml">
+                    	<ui:param name="showexit" value="#{userSession.admin}"/>
+                    	<ui:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
+                    </ui:include>
                 </p:tab>
 
             </p:wizard>
@@ -755,7 +791,6 @@
             </h:form>
         </p:dialog>
 
-
         <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg"
                   resizable="true" dynamic="true"
                   modal="true">
@@ -815,22 +850,22 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
-                  resizable="false">
-            <p:graphicImage value="/demo/images/ajaxloadingbar.gif"/>
-        </p:dialog>
+    	<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+	    <script type="text/javascript">
+	        function start() {
+	            PF('statusDialog').show();
+	        }
+	
+	        function stop() {
+	            PF('statusDialog').hide();
+	        }
+	
+	        function expandAccPnl(){
+	            $('#accordian').find('a[tabIndex=-1]:first').click();
+	        }
+	    </script>
     </ui:define>
-    <script type="text/javascript">
-        function start() {
-            PF('statusDialog').show();
-        }
-
-        function stop() {
-            PF('statusDialog').hide();
-        }
-
-        function expandAccPnl(){
-            $('#accordian').find('a[tabIndex=-1]:first').click();
-        }
-    </script>
 </ui:composition>
