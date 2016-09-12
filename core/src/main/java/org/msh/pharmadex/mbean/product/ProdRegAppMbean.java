@@ -700,9 +700,9 @@ public class ProdRegAppMbean implements Serializable {
 	}
 
 	public String cancel() {
+		context = FacesContext.getCurrentInstance();
 		try {
 			userSession.setProdAppID(null);
-			context = FacesContext.getCurrentInstance();
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 			WebUtils.setSessionAttribute(request, "regHomeMbean", null);
 			return "/public/registrationhome.faces";

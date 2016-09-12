@@ -63,6 +63,7 @@ public class ProcessProdBnMZ implements Serializable {
 
 	public User loggedInUser;
 	private String gestorDeCTRM = resourceBundle.getString("gestorDeCTRM_value");
+	private String rejectSumm = "";
 	private boolean generic = false;
 
 	private boolean visibleExecSumeryBtn = false;
@@ -199,6 +200,7 @@ public class ProcessProdBnMZ implements Serializable {
 
 				String retValue = prodApplicationsServiceMZ.registerProd(prodApplications);
 				if(retValue.equals("created")) {
+					getProcessProdBn().setTimeLineList(null);
 					prodApplicationsServiceMZ.createRegCert(prodApplications, getGestorDeCTRM(), isGeneric());
 					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
 				}else{
@@ -221,6 +223,30 @@ public class ProcessProdBnMZ implements Serializable {
 		return null;
 	}
 
+	public String rejectProduct(ProdApplications prodApplications) {
+		facesContext = getCurrentInstance();
+		if(prodApplications.getRegState().equals(RegState.REJECTED)){
+			prodApplicationsServiceMZ.createRejectCert(prodApplications, getRejectSumm(), userSession.getLoggedINUserID());
+		}else{
+			if (!prodApplications.getRegState().equals(RegState.NOT_RECOMMENDED)) {
+				facesContext.addMessage(null, new FacesMessage("Invalid operation!", resourceBundle.getString("Error.headNotReject")));
+				return "";
+			}
+
+			prodApplications.setUpdatedBy(loggedInUser);
+			
+			String retValue = prodApplicationsServiceMZ.rejectedProd(prodApplications, getRejectSumm());
+			if(retValue.equals("created")) {
+				getProcessProdBn().setTimeLineList(null);
+				prodApplicationsServiceMZ.createRejectCert(prodApplications, getRejectSumm(), userSession.getLoggedINUserID());
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+			}else{
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error rejecting the product"));
+			}
+		}
+		return null;
+	}
+	
 	public boolean isVisibleExecSumeryBtn() {
 		// (userSession.moderator||userSession.admin||userSession.head)and userAccessMBean.detailReview
 		if((userSession.isModerator() || userSession.isAdmin() || userSession.isHead()) 
@@ -332,6 +358,14 @@ public class ProcessProdBnMZ implements Serializable {
 
 	public void setGestorDeCTRM(String gestorDeCTRM) {
 		this.gestorDeCTRM = gestorDeCTRM;
+	}
+
+	public String getRejectSumm() {
+		return rejectSumm;
+	}
+
+	public void setRejectSumm(String rejectSumm) {
+		this.rejectSumm = rejectSumm;
 	}
 
 	public boolean isGeneric() {

@@ -588,6 +588,30 @@ public class ProdApplicationsService implements Serializable {
 			return "error";
 		}
 	}
+	
+	@Transactional
+	public String rejectProd(ProdApplications _prodApp, String com) {
+		this.prodApp = _prodApp;
+		this.product = prodApp.getProduct();
+
+		try {
+			TimeLine timeLine = new TimeLine();
+			timeLine.setRegState(RegState.REJECTED);
+			timeLine.setProdApplications(prodApp);
+			timeLine.setStatusDate(new Date());
+			timeLine.setUser(prodApp.getUpdatedBy());
+			timeLine.setComment(com);
+			prodApp.setRegState(timeLine.getRegState());
+
+			prodApplicationsDAO.updateApplication(prodApp);
+			timelineService.saveTimeLine(timeLine);
+			
+			return "created";
+		}catch  (Exception ex){
+			ex.printStackTrace();
+			return "error";
+		}
+	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public String createRegCert(ProdApplications prodApp) throws IOException, JRException, SQLException {

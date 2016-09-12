@@ -28,27 +28,28 @@ public class FileUploadControllerMZ implements Serializable {
 	
 	@ManagedProperty(value = "#{processProdBnMZ}")
     private ProcessProdBnMZ processProdBnMZ;
+	
+	private StreamedContent regcert = null;
+	private StreamedContent rejectcert = null;
 
-    public StreamedContent regCertDownload() throws SQLException, IOException, JRException {
+    public StreamedContent getRegcert() throws SQLException, IOException, JRException {
         ProdApplications prodApplications = processProdBnMZ.findProdApplications();
         if(prodApplications != null && prodApplications.getRegCert() != null){
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRegCert());
 	        Calendar c = Calendar.getInstance();
-	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
-	        return download;
+	        regcert = new DefaultStreamedContent(ist, "pdf", "registration_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
         }
-        return null;
+        return regcert;
     }
     
-    public StreamedContent rejectCertDownload() throws SQLException, IOException, JRException {
+    public StreamedContent getRejectcert() throws SQLException, IOException, JRException {
         ProdApplications prodApplications = processProdBnMZ.findProdApplications();
         if(prodApplications != null && prodApplications.getRejCert() != null){
 	        InputStream ist = new ByteArrayInputStream(prodApplications.getRejCert());
 	        Calendar c = Calendar.getInstance();
-	        StreamedContent download = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
-	        return download;
+	        rejectcert = new DefaultStreamedContent(ist, "pdf", "rejection_" + prodApplications.getId() + "_" + c.get(Calendar.YEAR)+".pdf");
         }
-        return null;
+        return rejectcert;
     }
     
     public ProcessProdBnMZ getProcessProdBnMZ() {

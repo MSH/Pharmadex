@@ -247,7 +247,7 @@ public class ProcessProdBn implements Serializable {
 	}
 
 	public boolean isShowCert() {
-		if (prodApplications != null && prodApplications.getRegState() != null && !userSession.isCompany()) {
+		if (prodApplications != null && prodApplications.getRegState() != null && (!userSession.isCompany() || userSession.isAdmin())) {
 			if (prodApplications.getRegState().equals(RegState.REGISTERED) || prodApplications.getRegState().equals(RegState.REJECTED))
 				showCert = true;
 			else

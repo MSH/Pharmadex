@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -37,6 +39,15 @@ public class TimelineService implements Serializable {
 
     public List<TimeLine> findTimelineByApp(Long prodApplications_Id) {
         timeLineList = timelineDAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
+        if(timeLineList != null && timeLineList.size() > 0)
+	        Collections.sort(timeLineList, new Comparator<TimeLine>() {
+				@Override
+				public int compare(TimeLine o1, TimeLine o2) {
+					Long id1 = o1.getId();
+					Long id2 = o2.getId();
+					return -id1.compareTo(id2);
+				}
+			});
         return timeLineList;
     }
 

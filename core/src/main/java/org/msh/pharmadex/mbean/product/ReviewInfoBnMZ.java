@@ -28,6 +28,7 @@ import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewServiceMZ;
 import org.msh.pharmadex.util.RetObject;
+import org.primefaces.model.StreamedContent;
 
 /**
  * Backing bean to capture review of products
@@ -52,6 +53,7 @@ public class ReviewInfoBnMZ implements Serializable {
 	private FacesContext facesContext = FacesContext.getCurrentInstance();
 	private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
+	private StreamedContent fileReviewDetail;
 
 	public String submitComment() {
 		facesContext = FacesContext.getCurrentInstance();
@@ -213,4 +215,18 @@ public class ReviewInfoBnMZ implements Serializable {
         }
         return recomendTypes;
     }
+
+	public void createFileReviewDetail(){
+		ProdApplications prodApplications = getReviewInfoBn().getProdApplications();
+		fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications);
+	}
+	
+	public StreamedContent getFileReviewDetail() {
+		return fileReviewDetail;
+	}
+
+	public void setFileReviewDetail(StreamedContent fileReviewDetail) {
+		this.fileReviewDetail = fileReviewDetail;
+	}
+	
 }
