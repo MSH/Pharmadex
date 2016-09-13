@@ -26,7 +26,7 @@
             </p:menuitem>
 
             <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
-                        rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
+                        rendered="#{processProdBnMZ.getCanCompleteReview(userAccessMBean)}"
                         action="/internal/reviewInfo" ajax="false">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
                 <f:param name="sourcePage" value="#{processProdBn.prodApplications.id}:/internal/processreg.faces" />
