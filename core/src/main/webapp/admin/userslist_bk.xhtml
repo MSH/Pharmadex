@@ -149,7 +149,6 @@
                     <p:graphicImage value="/resources/images/ajax-loader.gif"/>
                 </p:blockUI>
 
-<!-- immediate="true" -->
                 <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" id="saveuserbtn"
                                  ajax="false"
                                  oncomplete="if (!args.validationFailed) PF('adduser').hide()"

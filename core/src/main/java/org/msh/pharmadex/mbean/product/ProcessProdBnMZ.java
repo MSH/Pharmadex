@@ -23,6 +23,7 @@ import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewService;
@@ -176,7 +177,28 @@ public class ProcessProdBnMZ implements Serializable {
 			return true;
 		return false;
 	}
-
+	
+	public boolean getCanCompleteReview(UserAccessMBean useracMBean) {
+		boolean res = false;
+		ProdApplications prodApp = getProcessProdBn().getProdApplications();
+		if(!prodApp.getRegState().equals(RegState.REGISTERED) && !prodApp.getRegState().equals(RegState.REJECTED)){
+			List<ReviewInfo> infos = prodApp.getReviewInfos();
+			if(infos != null && infos.size() > 0){
+				for(ReviewInfo inf:infos){
+					if(inf.getReviewer() != null && inf.getReviewer().getUserId().intValue() == userSession.getLoggedINUserID().intValue()){
+						res = userSession.isReviewer() && useracMBean.isDetailReview() && true;
+						return res;
+					}
+					if(inf.getSecReviewer() != null && inf.getSecReviewer().getUserId().intValue() == userSession.getLoggedINUserID().intValue()){
+						res = userSession.isReviewer() && useracMBean.isDetailReview() && true;
+						return res;
+					}
+				}
+			}
+		}
+		return res;
+	}
+	
 	public List<ProdAppLetter> getLetters() {
 		return processProdBn.getLetters();
 	}
