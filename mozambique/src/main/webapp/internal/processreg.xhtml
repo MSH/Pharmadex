@@ -318,9 +318,9 @@
 							</p:tab>
 
 							<p:tab title="#{msgs.assessment}" id="process"
-								rendered="#{userSession.moderator||userSession.head||userSession.admin}">
+								rendered="#{processProdBnMZ.showAssessment}">
 								<ui:include src="reviewertable.xhtml" />
-								<f:param name="sourcePage"
+								<f:param name="sourcePage" 
 									value="/internal/processreg.faces:#{each.prodApplications.id}" />
 							</p:tab>
 

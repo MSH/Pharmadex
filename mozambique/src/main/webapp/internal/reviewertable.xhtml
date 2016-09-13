@@ -94,7 +94,7 @@
 			<p:commandButton icon="ui-icon-person"
 				oncomplete="PF('assignreviewdlg').show()"
 				actionListener="#{prodReviewBnMZ.initProcessorChange(reviewInfo)}" ajax="true"
-				rendered="#{(userSession.moderator||userSession.admin||userSession.head) and !(reviewInfo.reviewStatus eq 'ACCEPTED')}"
+				rendered="#{(userSession.moderator||userSession.admin) and !(reviewInfo.reviewStatus eq 'ACCEPTED')}"
 				update=":reghome:processtab:assignreviewDlg" process="@this">
 				<p:resetInput target=":reghome:processtab:reviewerForm" />
 			</p:commandButton>
