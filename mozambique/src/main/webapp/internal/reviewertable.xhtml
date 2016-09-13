@@ -103,7 +103,7 @@
 				action="#{prodReviewBnMZ.deleteReviewInfo(reviewInfo)}"
 				icon="ui-icon-trash"
 				update="@form :reghome:messages"
-				rendered="#{empty reviewInfo.recomendType}" />
+				rendered="#{empty reviewInfo.recomendType and (userSession.moderator||userSession.admin)}" />
 		</p:column>
 	</p:dataTable>
 
