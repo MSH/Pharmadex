@@ -905,6 +905,11 @@ public class ProcessProdBn implements Serializable {
 		if (backTo!=null)
 			return backTo;
 		else
+			if(loggedInUser != null){
+				if(userSession.isReviewer()){
+					return "/secure/submittedproducts";
+				}
+			}
 			return "/internal/processprodlist";
 	}
 

@@ -169,13 +169,17 @@ public class ProcessProdBnMZ implements Serializable {
 	}
 
 	public boolean getCanNextStep() {
-		RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
+		try {
+			RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
 
-		if((userSession.isAdmin() || userSession.isModerator()) 
-				&& !curRegState.equals(RegState.REGISTERED) && !curRegState.equals(RegState.REJECTED)
-				&& !curRegState.equals(RegState.FOLLOW_UP))
-			return true;
-		return false;
+			if((userSession.isAdmin() || userSession.isModerator()) 
+					&& !curRegState.equals(RegState.REGISTERED) && !curRegState.equals(RegState.REJECTED)
+					&& !curRegState.equals(RegState.FOLLOW_UP))
+				return true;
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public List<ProdAppLetter> getLetters() {
