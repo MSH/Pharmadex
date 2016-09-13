@@ -23,7 +23,6 @@ import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewService;
@@ -69,6 +68,7 @@ public class ProcessProdBnMZ implements Serializable {
 
 	private boolean visibleExecSumeryBtn = false;
 	private boolean disableCheckSample = false;
+	private boolean showAssessment = false;
 
 	@PostConstruct
 	private void init() {
@@ -176,27 +176,6 @@ public class ProcessProdBnMZ implements Serializable {
 				&& !curRegState.equals(RegState.FOLLOW_UP))
 			return true;
 		return false;
-	}
-	
-	public boolean getCanCompleteReview(UserAccessMBean useracMBean) {
-		boolean res = false;
-		ProdApplications prodApp = getProcessProdBn().getProdApplications();
-		if(!prodApp.getRegState().equals(RegState.REGISTERED) && !prodApp.getRegState().equals(RegState.REJECTED)){
-			List<ReviewInfo> infos = prodApp.getReviewInfos();
-			if(infos != null && infos.size() > 0){
-				for(ReviewInfo inf:infos){
-					if(inf.getReviewer() != null && inf.getReviewer().getUserId().intValue() == userSession.getLoggedINUserID().intValue()){
-						res = userSession.isReviewer() && useracMBean.isDetailReview() && true;
-						return res;
-					}
-					if(inf.getSecReviewer() != null && inf.getSecReviewer().getUserId().intValue() == userSession.getLoggedINUserID().intValue()){
-						res = userSession.isReviewer() && useracMBean.isDetailReview() && true;
-						return res;
-					}
-				}
-			}
-		}
-		return res;
 	}
 	
 	public List<ProdAppLetter> getLetters() {
@@ -409,4 +388,20 @@ public class ProcessProdBnMZ implements Serializable {
 	public void setDisableCheckSample(boolean checkSample) {
 		this.disableCheckSample = checkSample;
 	}
+
+	public boolean isShowAssessment() {
+		// userSession.moderator||userSession.head||userSession.admin
+		ProdApplications prodApp = processProdBn.getProdApplications();
+		if(userSession.isReviewer()){
+			ReviewInfo revinfo = reviewService.findReviewInfoByUserAndProdApp(userSession.getLoggedINUserID(), prodApp.getId());
+			showAssessment = (revinfo != null);
+		}else if(userSession.isModerator() || userSession.isHead() || userSession.isAdmin())
+			showAssessment = true;
+		return showAssessment;
+	}
+
+	public void setShowAssessment(boolean showAssessment) {
+		this.showAssessment = showAssessment;
+	}
+	
 }

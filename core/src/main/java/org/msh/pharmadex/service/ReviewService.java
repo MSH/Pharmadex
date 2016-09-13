@@ -147,21 +147,17 @@ public class ReviewService implements Serializable {
 		return reviewDAO.findByUser_UserIdAndProdApplications_Id(userId, prodAppID);
 	}
 
-	@Transactional
 	public ReviewInfo findReviewInfoByUserAndProdApp(Long userId, Long prodAppID) {
-		ReviewInfo reviewInfo= null;
-		List<ReviewInfo> li= reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
-		if (li==null)  return reviewInfo;
-		if (li.size()==1) reviewInfo=li.get(0); 
-		else {
-			Date dt = new Date("1.1.2000");
-			for (int i = 0; li.size() > i; i++) {
-				if (!li.get(i).getCreatedDate().after(dt)) reviewInfo=li.get(i);
-			}
+		ReviewInfo reviewInfo = null;
+		List<ReviewInfo> li = reviewInfoDAO.findByProdApplications_IdAndReviewer_UserIdOrSecReviewer_UserId(prodAppID, userId, userId);
+		if(li != null && li.size() > 0){
+			reviewInfo = li.get(0);
+			Hibernate.initialize(reviewInfo.getReviewDetails());
+			Hibernate.initialize(reviewInfo.getReviewer());
+			Hibernate.initialize(reviewInfo.getSecReviewer());
+			Hibernate.initialize(reviewInfo.getReviewComments());
 		}
-		Hibernate.initialize(reviewInfo.getReviewDetails());
-		Hibernate.initialize(reviewInfo.getReviewer());
-		Hibernate.initialize(reviewInfo.getSecReviewer());
+		
 		return reviewInfo;
 	}
 
@@ -169,7 +165,6 @@ public class ReviewService implements Serializable {
 		reviewDAO.delete(review);
 	}
 
-	@Transactional
 	public ReviewInfo findReviewInfo(Long reviewInfoID) {
 		if (reviewInfoID == null)
 			return null;
