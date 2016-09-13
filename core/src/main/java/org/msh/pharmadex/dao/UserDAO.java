@@ -49,9 +49,9 @@ public class UserDAO implements Serializable {
 		return user;
 	}
 
-	@Transactional
 	public List<User> allUsers() {
-		List<User> users = entityManager.createQuery("select u from User u where not isnull(u.applcntId)")
+		//where not(u.applicant is null)
+		List<User> users = entityManager.createQuery("select u from User u ")
 				.getResultList();
 		return users;
 	}
