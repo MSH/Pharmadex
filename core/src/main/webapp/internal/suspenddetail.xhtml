@@ -8,6 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -293,8 +294,10 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.global_comment}" for="addcomment" styleClass="label"/>
-                    <p:editor value="#{suspendDetailBn.suspComment.comment}" id="addcomment" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="addcomment" value="#{suspendDetailBn.suspComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="addcomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitComment}"
@@ -341,8 +344,10 @@
                     <p:message for="recomcb"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="decsummary" styleClass="label"/>
-                    <p:editor value="#{suspendDetailBn.curReviewComment.comment}" id="decsummary" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="decsummary" value="#{suspendDetailBn.curReviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="decsummary"/>
                     </h:panelGrid>
                     <p:commandButton value="#{msgs.global_submit}"
@@ -366,8 +371,10 @@
                     <p:message for="recomcb"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
-                    <p:editor value="#{suspendDetailBn.suspDetail.finalSumm}" id="revsummary" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="revsummary" value="#{suspendDetailBn.suspDetail.finalSumm}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBn.submitSuspend}"

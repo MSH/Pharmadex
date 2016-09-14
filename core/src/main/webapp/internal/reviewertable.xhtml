@@ -7,7 +7,8 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
 
 
     <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
@@ -283,11 +284,11 @@
                 </p:calendar>
 
                 <p:outputLabel value="#{msgs.reviewer_change_reason}" for="changesummary" styleClass="label"/>
-                <p:editor value="#{prodReviewBn.reviewComment.comment}" id="changesummary" required="true"
-                          width="700"/>
+                <pe:ckEditor id="changesummary" value="#{prodReviewBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                 <p:message for="changesummary"/>
-
-
             </h:panelGrid>
 
 

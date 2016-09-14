@@ -8,6 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -100,14 +101,19 @@
 
                 <h:panelGrid id="reviewgrid" columns="2" cellpadding="10" cellspacing="10" width="100%">
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary"/>
-                    <p:editor value="#{reviewBn.review.reviewerSummary}" id="revsummary" required="true"
-                              width="700" rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
+                    <pe:ckEditor id="revsummary" value="#{reviewBn.review.reviewerSummary}"
+								 height="500" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" 
+								 rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
                     <h:outputText value="#{reviewBn.review.reviewerSummary}" escape="false"
                                   rendered="#{userSession.moderator||userSession.head}"/>
 
                     <p:outputLabel value="#{msgs.mod_comment}" for="modcomment"/>
-                    <p:editor value="#{reviewBn.review.modComment}" id="modcomment"
-                              width="700" rendered="#{userSession.moderator}"/>
+                    <pe:ckEditor id="modcomment" value="#{reviewBn.review.modComment}"
+								 height="500" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 rendered="#{userSession.moderator}" />
                     <h:outputText value="#{reviewBn.review.modComment}" escape="false"
                                   rendered="#{userSession.reviewer||userSession.head}"/>
                 </h:panelGrid>

@@ -6,8 +6,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:pe="http://primefaces.org/ui/extensions" xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions" 
+                xmlns:o="http://omnifaces.org/ui"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -40,8 +42,10 @@
 
             <h:panelGrid columns="3" style="margin-bottom:10px">
                 <p:outputLabel value="#{msgs.global_comment}" for="addcomment" styleClass="label"/>
-                <p:editor value="#{firSubmitBn.reviewComment.comment}" id="addcomment" required="true"
-                          width="700"/>
+                <pe:ckEditor id="addcomment" value="#{firSubmitBn.reviewComment.comment}"
+								 height="500" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                 <p:message for="addcomment"/>
             </h:panelGrid>
 

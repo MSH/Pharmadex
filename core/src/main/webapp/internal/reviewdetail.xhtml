@@ -6,7 +6,9 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -86,15 +88,19 @@
                 </h:panelGrid>
                 <h:panelGrid columns="2" columnClasses="label value" cellspacing="5px">
                     <p:outputLabel value="#{msgs.pri_processor}:" styleClass="label"/>
-                    <p:editor value="#{reviewDetailBn.reviewDetail.otherComment}" width="700"
-                              rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}"/>
+                    <pe:ckEditor value="#{reviewDetailBn.reviewDetail.otherComment}"
+								 height="500" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}" />
                     <p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.otherComment}"
                                    rendered="#{!userSession.reviewer or !reviewDetailBn.priReviewer}"></p:outputLabel>
 
                     <p:outputLabel value="#{msgs.sec_review_comment}:" styleClass="label"
                                    rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview}"/>
-                    <p:editor value="#{reviewDetailBn.reviewDetail.secComment}" width="700"
-                              rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}"/>
+                    <pe:ckEditor value="#{reviewDetailBn.reviewDetail.secComment}"
+								 height="500" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}" />
                     <p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.secComment}"
                                    rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and (!userSession.reviewer or !reviewDetailBn.secReviewer)}"></p:outputLabel>
                 </h:panelGrid>
