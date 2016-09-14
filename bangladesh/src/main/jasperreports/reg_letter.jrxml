@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-30T13:41:48 -->
+<!-- 2016-09-12T18:07:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="marketing_authorization" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ede1d88-e4a3-4012-a97f-fcb8fdec872e">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -14,7 +14,70 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTERreg_letter.xml"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_TH" mode="Opaque">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="aa11dff9-a215-4c72-a3fc-d871f83b9a90">
+		<field name="appType" class="java.lang.String"/>
+		<field name="appName" class="java.lang.String"/>
+		<field name="address1" class="java.lang.String"/>
+		<field name="country" class="java.lang.String"/>
+		<group name="appName">
+			<groupExpression><![CDATA[$F{appName}]]></groupExpression>
+		</group>
+	</subDataset>
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="appAddress" class="java.lang.String"/>
 	<parameter name="appNum" class="java.lang.String"/>
@@ -25,6 +88,20 @@
 	<parameter name="regNumber" class="java.lang.String"/>
 	<parameter name="regDate" class="java.lang.String"/>
 	<parameter name="expiryDate" class="java.lang.String"/>
+	<parameter name="Subreport_1" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="Subreport_2" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="Subreport_3" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="Subreport_4" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="Subreport_A1" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="Subreport_A2" class="net.sf.jasperreports.engine.JasperReport"/>
+	<field name="filterF8DataSource" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
+	<field name="filterF9DataSource" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
+	<field name="filterF16DataSource" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
+	<field name="filterF13DataSource" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
+	<field name="filterA1DataSource" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
+	<field name="filterA2DataSource" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
+	<field name="filterDataSource1" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
+	<field name="filterDataSource2" class="net.sf.jasperreports.engine.data.JRMapArrayDataSource"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -318,10 +395,9 @@ Website: www.dgda.gov.bd]]></text>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="348" splitType="Immediate">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="802" splitType="Immediate">
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="16" width="524" height="88" uuid="b0b1749d-2373-4e94-9916-334551b228ea">
+				<reportElement positionType="Float" x="32" y="11" width="524" height="94" uuid="b0b1749d-2373-4e94-9916-334551b228ea">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -330,30 +406,30 @@ Website: www.dgda.gov.bd]]></text>
 "<br><br>A.	General conditions applying to all registered products: ").concat("<ul><li>The product(s) must conform with all the details provided in your application and as modified in subsequent correspondence. </li> <li>	No changes may be made to the product without prior approval of the DIRECTORATE GENERAL OF DRUG ADMINISTRATION. </li><li>The approved sites of manufacturer and shelf-life are stated in Attachment 1. </li><li>The only Product Information (PI) that may be supplied with or for this product must be the PI that is approved. Attachment 2 is a copy of the approved PI. </li></ul>")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="114" width="524" height="100" uuid="9857f565-21fb-4c6f-b5a8-dad5742ad960">
+				<reportElement positionType="Float" x="32" y="123" width="524" height="100" uuid="9857f565-21fb-4c6f-b5a8-dad5742ad960">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement markup="html"/>
 				<textFieldExpression><![CDATA["<ul><li> Attachment 3 is the License to Manufacture drugs (Form -13 or -16), as applicable. </li><li>	Attachment 4 is the Licence to Sell, Stock, and Exhibit for Sale and Distribute Drugs (Form -8 or -9), as applicable. </li><li>	The Product Information (PI) may not be altered without prior approval of DGDA. </li><li>	The product information must include the registration number and the date from which registration is authorized. This information should appear in the top right hand corner of the first page of the product information. </li></ul>"]]></textFieldExpression>
 			</textField>
 			<break>
-				<reportElement x="0" y="109" width="543" height="1" uuid="c6fea491-e176-4536-ae6c-cab2808e8617"/>
+				<reportElement x="0" y="118" width="543" height="1" uuid="c6fea491-e176-4536-ae6c-cab2808e8617"/>
 			</break>
 			<textField>
-				<reportElement positionType="Float" x="32" y="216" width="180" height="16" uuid="79a55081-c2e1-4fd0-8a13-94251ccb9327">
+				<reportElement positionType="Float" x="32" y="225" width="180" height="16" uuid="79a55081-c2e1-4fd0-8a13-94251ccb9327">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["Yours Faithfully, "]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="294" y="250" width="100" height="16" uuid="89897872-9d84-4bce-b73f-bba70dfbe1b8">
+				<reportElement positionType="Float" x="294" y="259" width="100" height="16" uuid="89897872-9d84-4bce-b73f-bba70dfbe1b8">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="281" y="268" width="272" height="80" uuid="b96c5b6d-7614-4c04-8e85-c95fce9f4188">
+				<reportElement positionType="Float" x="281" y="277" width="272" height="80" uuid="b96c5b6d-7614-4c04-8e85-c95fce9f4188">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -361,6 +437,237 @@ Website: www.dgda.gov.bd]]></text>
 				<textElement textAlignment="Right" markup="html"/>
 				<textFieldExpression><![CDATA["Director General,<br>Directorate General of Drug Administration<br>&<br>Licencing Authority (Drugs)<br>Government of the People’s Republic of Bangladesh"]]></textFieldExpression>
 			</textField>
+			<break>
+				<reportElement x="0" y="377" width="543" height="1" uuid="cb46aacc-9bae-439c-9179-c17fa00ec191"/>
+			</break>
+			<subreport>
+				<reportElement key="subreport-3" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="642" width="550" height="21" uuid="ddad414a-278d-46bd-8a1f-8c6e344f794a"/>
+				<dataSourceExpression><![CDATA[$F{filterF8DataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{Subreport_3}]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="666" width="543" height="1" uuid="7d677b18-17dd-4f06-8d9b-1dfed6b549e2"/>
+			</break>
+			<subreport>
+				<reportElement key="subreport-1" x="0" y="584" width="550" height="20" uuid="4cab5a9e-330b-4fae-b90c-bf842e62a16a">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$F{filterF16DataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{Subreport_1}]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="610" width="543" height="1" uuid="6d534c04-8a7b-437a-85db-8dd00a9d3575"/>
+			</break>
+			<subreport>
+				<reportElement key="subreport-4" x="0" y="670" width="550" height="26" uuid="6425f445-45d8-4c3b-9ede-a759c505b38b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$F{filterF9DataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{Subreport_4}]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="643" width="543" height="1" uuid="c7a0a045-2791-4922-86c2-adbd9f01abd4"/>
+			</break>
+			<subreport>
+				<reportElement key="subreport-A1" positionType="Float" x="0" y="383" width="550" height="20" uuid="af3f733e-3e65-4434-928d-3a3d548d865a">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$F{filterA1DataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{Subreport_A1}]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="581" width="543" height="1" uuid="25980a70-589d-48ac-a010-af092aa19441"/>
+			</break>
+			<subreport>
+				<reportElement x="0" y="614" width="550" height="21" uuid="370f80d3-51dc-40b6-a9fe-2fcafaf8c961">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$F{filterF13DataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{Subreport_2}]]></subreportExpression>
+			</subreport>
+			<componentElement>
+				<reportElement positionType="Float" x="32" y="403" width="523" height="70" uuid="37480c4c-db7d-4a46-9691-77c98702224b">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="Dataset1" uuid="f2940bcb-0dc0-4689-a2c3-985de25445ef">
+						<dataSourceExpression><![CDATA[$F{filterDataSource1}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="130" uuid="9b9b8c51-e7d1-4ca5-8822-9678f323f4d7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="98b983a6-512c-4aec-b2a4-710d884fc522">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Product stage]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="494bdd67-3cba-45b6-8fc3-21794983be96"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA[$F{appType}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="f763bacb-9a59-47fc-ad9d-35d58c3254b4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="42e05804-7e75-41be-bcac-e68bf3048525"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Name of site]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="a06cecf4-4b8d-4072-af1e-8ba232294f72"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="cde55eb3-d250-45b5-9949-cfec1feeaea7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="dadec13d-d584-46ab-9b11-6a954cc157e8"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Street address of site]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="beadca50-b341-4cdf-bf16-d7cbe1851826"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA[$F{address1}.concat(", ").concat($F{country})]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="2a16185c-1b2c-4c79-9379-ddf865014682">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="4c5a331f-3a2d-497d-9bad-93494e7ae074"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Manufacturing step]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="36dbdf94-469f-498f-86ef-5c790118674f"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA[""]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="474" width="550" height="30" uuid="2e7254b3-c8a9-4c9b-8b21-9f055dbaa80c">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$F{filterA2DataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{Subreport_A2}]]></subreportExpression>
+			</subreport>
+			<componentElement>
+				<reportElement positionType="Float" x="32" y="504" width="523" height="70" uuid="e5264f05-1074-424e-955a-f203db41570b">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="Dataset1" uuid="2e73a800-4798-4344-9cdb-d55be7079d63">
+						<dataSourceExpression><![CDATA[$F{filterDataSource2}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="130" uuid="fc4cd28b-e22c-4980-9282-96241fbe0e50">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table 1_CH" height="30">
+							<staticText>
+								<reportElement positionType="Float" x="0" y="0" width="130" height="30" uuid="a8d000ac-277a-425b-ad90-ac81c20a8304"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Product stage]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="8c7a8bff-4e89-41a1-b41e-dffddffa4c14"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA[""]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="bc4932c1-9990-4abe-b117-dcdf351d44ab">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table 1_CH" height="30">
+							<staticText>
+								<reportElement positionType="Float" x="0" y="0" width="130" height="30" uuid="f29c93bd-c749-497b-9248-44af0a6665c0"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Name of site]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="e9fdff7b-1f29-4421-a20b-e5c8d5fd793e"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA[$F{appName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="bce3904b-f2a3-46eb-b2bd-9954876b4092">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table 1_CH" height="30">
+							<staticText>
+								<reportElement positionType="Float" x="0" y="0" width="130" height="30" uuid="e470d430-d463-4ea6-805c-501244f0279c"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Street address of site]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="5c103c5f-c6fd-4c68-a449-6d10b7c5e87d"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA["".concat($F{address1}).concat(", ").concat($F{country})]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="2e459367-608a-4ff9-974e-40e79b642c6a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table 1_CH" height="30">
+							<staticText>
+								<reportElement positionType="Float" x="0" y="0" width="130" height="30" uuid="2eedad20-13f3-44fc-9e4e-93c77a6c98aa"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<text><![CDATA[Manufacturing step]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="130" height="30" uuid="91a1c120-f9fd-4ec4-a935-8cd7ce7c00bd"/>
+								<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="1"/>
+								<textElement markup="html"/>
+								<textFieldExpression><![CDATA[""]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<break>
+				<reportElement x="0" y="579" width="543" height="1" uuid="d04b4224-32bd-4c99-a6eb-f64cf6fd88c6"/>
+			</break>
 		</band>
 	</summary>
 </jasperReport>

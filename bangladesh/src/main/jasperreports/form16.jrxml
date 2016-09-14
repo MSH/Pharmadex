@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-09-12T16:12:17 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="form13" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="395d8715-444f-481e-a21b-281d8738da54">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="67"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<field name="regNumber" class="java.lang.String"/>
+	<field name="appName" class="java.lang.String"/>
+	<field name="regDate" class="java.lang.String"/>
+	<field name="regHead" class="java.lang.String"/>
+	<field name="approvedExpert" class="java.lang.String"/>
+	<field name="designation" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="203" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="80" y="27" width="400" height="48" uuid="4241f0ca-544c-49ad-85a6-96daca7d5599">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="html">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FORM -16 <br><br>Licence to manufacture Biological and other special products."]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="10" y="91" width="522" height="64" uuid="352eaf39-3975-4ade-b704-f586996d9963">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["Licence No. ".concat( $F{regNumber} == null ? "… … … … … … … … … … ..":$F{regNumber}).concat( " issued on ").concat($F{appName} == null ? " … … … … … … … … … … … … … … … …":$F{appName}	).concat(" . is hereby licensed to manufacture at the premises situated at … … … … … … … … … … … … … … … … … … … … … … … … … …… … … … … … … … … … … … … … …  the following drugs, being drugs specified in Schedules C and C(1) to the Drugs Rules, 1946 :")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="10" y="5" width="100" height="16" uuid="78a3f83e-60ea-4bfc-aa5c-eb42d0cc651f">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Attachment 3"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="187" width="249" height="16" uuid="3997e6af-281f-47e8-b88b-8621de2aa908">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["1. Names of approved expert staff."]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="8" y="0" width="525" height="16" uuid="2d1aec04-8ddf-44d4-bfe7-6f5a69e30a71">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["<ol><li>".concat($F{approvedExpert} == null ? "":$F{approvedExpert}).concat("</li></ol>")]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="293" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="10" y="206" width="522" height="67" uuid="6ee2fed2-e54c-45dd-928e-489a6a2482bb">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["<ol><li>This Licence and any Certificate of renewal in force shall be kept on the approved premises and shall be produced at request of an Inspector appointed under the Drugs Act, 1940.</li><li> If the Licensee wishes to undertake during the currency of the Licence the manufacture of any drug specified in Schedule C or C(1), not included above, he should apply to the Licensing authority for permission to manufacture the drug. This Licence will be deemed to authorise the manufacture of any drug in respect of which such permission has been given. </li><li> Any change in the expert staff shall be forthwith reported to the Licensing Authority.</li></ol>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="158" y="190" width="200" height="16" uuid="eb38b591-7b6c-421b-86ae-b4d2e260c10c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Conditions"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="10" width="522" height="96" uuid="b80a9fa7-5f44-4988-89d5-6eb71bb2fdea">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["2. The Licence authorises the sale by way of wholesale dealing and storage for sale by the Licensee of the products manufactured under the Licence subject to the conditions applicable to licences for sale.<br><br>3. The Licence will be in force a period of two years from the date of issue. <br><br>4. The Licence is subject to the conditions stated below and to such other conditions as may be specified in the Rules for the time-being in force under the Drugs Act, 1940."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="258" y="120" width="274" height="16" uuid="56fe1c06-4f0c-41c1-86da-db4de043272b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Signature ".concat($F{regHead} == null ? "… … … … … … …":$F{regHead}).concat(" . Dated : ").concat($F{regDate} == null ? "…":$F{regDate})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="259" y="136" width="274" height="16" uuid="4b7516c7-2cf1-4433-a329-89bf98051d11">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Designation : ".concat($F{designation} == null ? "… … … … … …":$F{designation})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="136" width="274" height="16" uuid="000b0f8e-6e59-4909-82b2-793d408537c0">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["… … … … … … … … … … … … … …"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
