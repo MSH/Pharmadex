@@ -156,14 +156,16 @@ public class ProcessProdBnMZ implements Serializable {
 	}
 
 	public boolean getCanChangeModerator() {
-		RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
-		if(userSession.isAdmin() && !curRegState.equals(RegState.REGISTERED)
-				&& !curRegState.equals(RegState.REJECTED))
-			return true;
+		if(getProcessProdBn().getProdApplications() != null){
+			RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
+			if(userSession.isAdmin() && !curRegState.equals(RegState.REGISTERED)
+					&& !curRegState.equals(RegState.REJECTED))
+				return true;
 
-		if(userSession.isStaff() && !curRegState.equals(RegState.REGISTERED)
-				&& !curRegState.equals(RegState.REJECTED) && getProcessProdBn().getProdApplications().getModerator() != null){
-			return true;
+			if(userSession.isStaff() && !curRegState.equals(RegState.REGISTERED)
+					&& !curRegState.equals(RegState.REJECTED) && getProcessProdBn().getProdApplications().getModerator() != null){
+				return true;
+			}
 		}
 		return false;
 	}
@@ -181,7 +183,7 @@ public class ProcessProdBnMZ implements Serializable {
 			return false;
 		}
 	}
-	
+
 	public List<ProdAppLetter> getLetters() {
 		return processProdBn.getLetters();
 	}
@@ -239,7 +241,7 @@ public class ProcessProdBnMZ implements Serializable {
 			}
 
 			prodApplications.setUpdatedBy(loggedInUser);
-			
+
 			String retValue = prodApplicationsServiceMZ.rejectedProd(prodApplications, getRejectSumm());
 			if(retValue.equals("created")) {
 				getProcessProdBn().setTimeLineList(null);
@@ -251,7 +253,7 @@ public class ProcessProdBnMZ implements Serializable {
 		}
 		return null;
 	}
-	
+
 	public boolean isVisibleExecSumeryBtn() {
 		// (userSession.moderator||userSession.admin||userSession.head)and userAccessMBean.detailReview
 		if((userSession.isModerator() || userSession.isAdmin() || userSession.isHead()) 
@@ -407,5 +409,5 @@ public class ProcessProdBnMZ implements Serializable {
 	public void setShowAssessment(boolean showAssessment) {
 		this.showAssessment = showAssessment;
 	}
-	
+
 }

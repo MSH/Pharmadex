@@ -31,6 +31,7 @@ public class FileUploadControllerMZ implements Serializable {
 	
 	private StreamedContent regcert = null;
 	private StreamedContent rejectcert = null;
+	private boolean visRegcert = false;
 
     public StreamedContent getRegcert() throws SQLException, IOException, JRException {
         ProdApplications prodApplications = processProdBnMZ.findProdApplications();
@@ -52,7 +53,19 @@ public class FileUploadControllerMZ implements Serializable {
         return rejectcert;
     }
     
-    public ProcessProdBnMZ getProcessProdBnMZ() {
+    public boolean isVisRegcert() {
+    	ProdApplications prodApplications = processProdBnMZ.findProdApplications();
+        if(prodApplications != null && prodApplications.getRegCert() != null)
+        	visRegcert = true;
+        
+		return visRegcert;
+	}
+
+	public void setVisRegcert(boolean visRegcert) {
+		this.visRegcert = visRegcert;
+	}
+
+	public ProcessProdBnMZ getProcessProdBnMZ() {
         return processProdBnMZ;
     }
 
