@@ -26,6 +26,14 @@ public class UtilsByReports implements Serializable {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 	public static final String FTR_DATASOUTCE = "filterDataSource";
+	public static final String FTR_DATASOUTCE1  = "filterDataSource1";
+	public static final String FTR_DATASOUTCE2  = "filterDataSource2";
+	public static final String FTR_A1DATASOUTCE ="filterA1DataSource";
+	public static final String FTR_A2DATASOUTCE = "filterA2DataSource";
+	public static final String FTR_F16DATASOUTCE = "filterF16DataSource";
+	public static final String FTR_F13DATASOUTCE = "filterF13DataSource";
+	public static final String FTR_F8DATASOUTCE = "filterF8DataSource";
+	public static final String FTR_F9DATASOUTCE = "filterF9DataSource";
 	public static final String FLD_DEFICITEM_NAME = "defItemName";
 	public static final String FLD_PROD_NAME = "prodName";
 	public static final String FLD_REG_NUMBER = "regNumber";
@@ -74,6 +82,9 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_SUBACT = "subact";
 	public static String KEY_GEN = "gen";
 	public static String KEY_REG_DATE = "regDate";
+	public static String KEY_REG_HEAD = "regHead";
+	public static String KEY_APPROVED_EXPERT="approvedExpert";
+	public static String KEY_DESIGNATION ="designation";
 	public static String KEY_EXPIRY_DATE = "expiryDate";
 	public static String KEY_REG_NUMBER = "regNumber";
 	public static String KEY_SUBMIT_DATE = "submitDate";
@@ -100,6 +111,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_SECONDNAME = "secondNames";
 	
 	private HashMap<String, Object> param = null;
+	private HashMap<String, Object> field = null;
 	private ProdApplications prodApps = null;
 	private Product prod = null;
 	
@@ -107,6 +119,14 @@ public class UtilsByReports implements Serializable {
 		this.param = _param;
 		if(param == null)
 			param = new HashMap<String, Object>();
+		
+		this.prodApps = _prodApps;
+		this.prod = _prod;
+	}
+	public void initField(HashMap<String, Object> _field, ProdApplications _prodApps, Product _prod){
+		this.field = _field;
+		if(field == null)
+			field = new HashMap<String, Object>();
 		
 		this.prodApps = _prodApps;
 		this.prod = _prod;
@@ -130,6 +150,20 @@ public class UtilsByReports implements Serializable {
 		}else{
 			putParamByProd(key, text);
 			putParamByProdApplications(key, text);
+		}
+	}
+	/** onlyStr - true - add in map just string, without considering prodApps or(and) prod*/
+	public void putFieldNotNull(String key, String text, boolean onlyStr){
+		if(field == null)
+			return;
+		if(onlyStr){
+			if(text != null)
+				field.put(key, text);
+			else
+				field.put(key, "");
+		}else{
+			putFieldProd(key, text);
+			putFieldProdApplications(key, text);
 		}
 	}
 
@@ -358,7 +392,230 @@ public class UtilsByReports implements Serializable {
 		}
 
 	}
-	
+	private void putFieldProd(String k, String t) {
+		Hibernate.initialize(prod);
+		if(prod == null)
+			return ;
+		String str = "";
+		if(k.equals(KEY_PRODNAME) || k.equals(FLD_PROD_NAME) ){
+			str = prod.getProdName() != null ? prod.getProdName():"";
+			field.put(k, str);
+		}		
+		if(k.equals(KEY_PROD_DETAILS)){
+			str = prod.getProdName() != null ? prod.getProdName():"";
+			if(str.length()>0){
+				if(prod.getProdDesc() != null){
+					str = str +", "+prod.getProdDesc();
+				}
+			}
+			field.put(k, str);
+		}
+		if(k.equals(KEY_GENNAME)){
+			str = prod.getGenName() != null ? prod.getGenName():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_PRODSTRENGTH)){
+			str = (prod.getDosStrength() != null ? prod.getDosStrength() : "")
+					+ (prod.getDosUnit() != null ? (" " + prod.getDosUnit().getUom()) : "");
+			field.put(k, str);
+		}
+		if(k.equals(KEY_DOSFORM)){
+			str = (prod.getDosForm() != null && prod.getDosForm().getDosForm() != null) ? prod.getDosForm().getDosForm():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_MANUFNAME)){
+			if(prod.getManufName() == null)
+				str = takeManufacturerName();
+			else
+				str = prod.getManufName();
+			str = str != null?str:"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_SUBJECT)){
+			str = t + prod.getProdName() != null ? prod.getProdName():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_SHELFINE)){
+			str = prod.getShelfLife() != null ? prod.getShelfLife():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_PACKSIZE)){
+			str = prod.getPackSize() != null ? prod.getPackSize():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_STORAGE)){
+			str = prod.getStorageCndtn() != null ? prod.getStorageCndtn():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_INN)){
+			List<ProdInn> inns = prod.getInns();
+			if(inns != null && inns.size() > 0){
+				for(int i = 0; i < inns.size(); i++){
+					if(inns.get(i).getInn() != null){
+						if(i == (inns.size() - 1))
+							str += inns.get(i).getInn().getName();
+						else
+							str += inns.get(i).getInn().getName() + " + ";
+					}
+				}
+				field.put(k, str);
+			}
+		}
+		if(k.equals(KEY_EXCIPIENT)){
+			List<ProdExcipient> exps = prod.getExcipients();
+			if(exps != null && exps.size() > 0){
+				for(int i = 0; i < exps.size(); i++){
+					if(exps.get(i).getExcipient() != null){
+						if(i == (exps.size() - 1))
+							str += exps.get(i).getExcipient().getName();
+						else
+							str += exps.get(i).getExcipient().getName() + ", "; //"<br>"
+					}
+				}
+			}
+			field.put(k, str);
+		}
+		if(k.equals(KEY_PROD_ROUTE_ADMINISTRATION)){
+			if( prod.getAdminRoute()!= null )
+				if(prod.getAdminRoute().getName()!=null)
+					 str = prod.getAdminRoute().getName();
+			field.put(k, str);
+		}		
+		
+	}
+
+	private void putFieldProdApplications(String k, String text) {
+		
+		if(prodApps == null)
+			return ;
+		String str = "";
+		Hibernate.initialize(prodApps);
+		if(k.equals(KEY_MODERNAME)){
+			if(prodApps.getModerator() != null){
+				str= prodApps.getModerator().getName();
+				field.put(k, str);
+			}
+		}		
+		if(k.equals(KEY_MODINITIALS)){
+			if(prodApps.getModerator() != null){
+				if( prodApps.getModerator().getName()!=null){
+					String [] res = prodApps.getModerator().getName().split(" ");
+					for (String item : res) {
+						str+=item.substring(0, 1);
+					}
+				}			 
+			
+				field.put(k, str);
+			}
+		}
+		if(k.equals(KEY_APPNAME)){
+			str = (prodApps.getApplicant() != null && prodApps.getApplicant().getAppName() != null)?prodApps.getApplicant().getAppName():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_ADDRESS1)){
+			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
+				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
+				field.put(k, str);
+		}
+		if(k.equals(KEY_ADDRESS2)){
+			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
+				str = prodApps.getApplicant().getAddress().getAddress2() != null ? prodApps.getApplicant().getAddress().getAddress2():"";
+				field.put(k, str);
+		}
+		if(k.equals(KEY_COUNTRY)){
+			if(prodApps.getApplicant() != null && 
+					prodApps.getApplicant().getAddress() != null &&
+					prodApps.getApplicant().getAddress().getCountry() != null)
+				str = prodApps.getApplicant().getAddress().getCountry().getCountryName() != null ? prodApps.getApplicant().getAddress().getCountry().getCountryName():"";
+				field.put(k, str);
+		}
+		if(k.equals(KEY_APPNUMBER)){
+			str = prodApps.getProdAppNo() != null ? prodApps.getProdAppNo():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_REG_NUMBER) || k.equals(FLD_REG_NUMBER) ){
+			str = prodApps.getProdRegNo() != null ? prodApps.getProdRegNo():"";
+			field.put(k, str);
+		}
+		if(k.equals(KEY_ID)){
+			field.put(k, prodApps.getId());
+		}
+		if(k.equals(KEY_COMPANY_NAME)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getAppName() != null ? prodApps.getApplicant().getAppName():"";				
+				field.put(k, str);
+		}
+		if(k.equals(KEY_COMPANY_PHONE)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getPhoneNo() != null ? prodApps.getApplicant().getPhoneNo():"";
+				field.put(k, str);
+		}
+		if(k.equals(KEY_COMPANY_FAX)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getFaxNo() != null ? prodApps.getApplicant().getFaxNo():"";
+				field.put(k, str);
+		}
+		if(k.equals(KEY_COMPANY_EMAIL)){
+			if(prodApps.getApplicant() != null)
+				str = prodApps.getApplicant().getEmail() != null ? prodApps.getApplicant().getEmail():"";
+				field.put(k, str);
+		}
+		if(k.equals(KEY_REG_DATE)){
+			if(prodApps.getRegistrationDate() != null)
+				str = dateFormat.format(prodApps.getRegistrationDate());
+			field.put(k, str);
+		}
+		if(k.equals(KEY_EXPIRY_DATE)){
+			if(prodApps.getRegExpiryDate() != null)
+				str = dateFormat.format(prodApps.getRegExpiryDate());
+			field.put(k, str);
+		}
+		if(k.equals(KEY_SUBMIT_DATE)){
+			if(prodApps.getSubmitDate() != null)
+				str = dateFormat.format(prodApps.getSubmitDate());
+			field.put(k, str);
+		}
+		if(k.equals(KEY_DOSREC_DATE)){
+			if(prodApps.getDosRecDate() != null)
+				str = dateFormat.format(prodApps.getDosRecDate());
+			field.put(k, str);
+		}
+		/** letter*/	
+		if(k.equals(KEY_APPNUM)){
+			if(prodApps.getProdAppNo()!=null)
+				str = prodApps.getProdAppNo()!= null ? prodApps.getProdAppNo():"";
+				field.put(k, str);
+		}		
+		if(k.equals(KEY_APPPOST)){			
+			if(prodApps.getPosition()!=null)
+				str = prodApps.getPosition()!= null ? prodApps.getPosition():"";			
+				field.put(k, str);
+		}		
+		if(k.equals(KEY_APPADDRESS)){
+			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
+				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
+				field.put(k, str);
+		}		
+		if(k.equals(KEY_APPUSERNAME)){			
+			if(prodApps.getUsername()!=null)
+				str = prodApps.getUsername()!= null ? prodApps.getUsername():"";			
+				field.put(k, str);
+		}		
+		if(k.equals(KEY_APPTELLFAX)){			
+			if(prodApps.getApplicant() != null){				
+				str = prodApps.getApplicant().getPhoneNo()!=null? prodApps.getApplicant().getPhoneNo()+" / ":"";				
+				str += prodApps.getApplicant().getFaxNo()!=null?   prodApps.getApplicant().getFaxNo():"";
+				field.put(k, str);
+			}
+		}		
+		if(k.equals(KEY_APPEMAIL)){			
+			if(prodApps.getApplicant() != null){					
+				str = prodApps.getApplicant().getEmail()!=null? prodApps.getApplicant().getEmail():"";
+				field.put(k, str);
+			}
+		}
+
+	}
 	private String takeManufacturerName(){        
 		String manufName = "";
 		List<ProdCompany> companyList = prod.getProdCompanies();
