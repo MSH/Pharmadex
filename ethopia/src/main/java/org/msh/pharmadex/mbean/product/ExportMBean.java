@@ -199,11 +199,8 @@ public class ExportMBean implements Serializable {
             try {
                 wb = WorkbookFactory.create(new FileInputStream(filename));
                 Sheet sheet = wb.getSheetAt(0);
-//                if (sheet == null) return "";
                 taskStatus=loadingApplicants(sheet);
-//                if (!taskStatus.endsWith("success")) return taskStatus;
-//                setIgnore(success+failure);
-                File outf = new File("C:/Temp/res.xlsx");
+                File outf = new File("C:/Temp/res_users.xlsx");
                 FileOutputStream out = new FileOutputStream(outf);
                 wb.write(out);
                 out.close();
@@ -241,7 +238,7 @@ public class ExportMBean implements Serializable {
                     }
                 }
                 setIgnore(success + failure);
-                File outf = new File("C:/Temp/res.xlsx");
+                File outf = new File("C:/Temp/comp_res.xlsx");
                 FileOutputStream out = new FileOutputStream(outf);
                 wb.write(out);
                 out.close();
@@ -276,7 +273,7 @@ public class ExportMBean implements Serializable {
 //                if (!taskStatus.endsWith("success")) return taskStatus;
 
                 setIgnore(success+failure);
-                File outf = new File("C:/Temp/lh_res.xlsx");
+                File outf = new File("C:/Temp/app_res.xlsx");
                 FileOutputStream out = new FileOutputStream(outf);
                 wb.write(out);
                 out.close();

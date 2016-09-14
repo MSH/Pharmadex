@@ -112,10 +112,6 @@ public class ExportService implements Serializable {
             Applicant a = null;
             Address addr = null;
             Company co=null;
-            //LicenseHolder lic = new LicenseHolder();
-            //Applicant a = new Applicant();
-            //Address addr = new Address();
-            //Company co=new Company();
             ProdApplications pa = new ProdApplications();
             pa.setProdAppType(ProdAppType.GENERIC);
             cell = row.getCell(curCol);   // A Presentation -   prod description
@@ -146,11 +142,8 @@ public class ExportService implements Serializable {
             if (cell != null) {
                 if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC){
                     prod.setDosStrength(String.valueOf(cell.getNumericCellValue()));
-                    // prod.setDosUnit(findDocUnit("%",curCol));
                 }else {
                     prod.setDosStrength(cell.getStringCellValue().trim());
-                    //  prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
-                    //if (prod.getD ()==null) prod.setDosStrength(cell.getStringCellValue());
                 }
             }
             curCol++;
@@ -185,30 +178,19 @@ public class ExportService implements Serializable {
             if (cell!=null) pa.setRegExpiryDate(getDateValue(cell));
             curCol++;
             cell = row.getCell(curCol);//R Manufacturer/Actual site/
-            String addrStr="";
             if (cell != null) {
-                String all=getCellValue(cell);
-                int pos=all.indexOf(",");
-                if (pos==-1) {
-                    co= findCompany(all);
-                }else{
-                    co= findCompany(all.substring(0,pos));
-                    addr = co.getAddress();
-                    if (co.getAddress()==null) {
-                        addrStr = all.substring(pos + 1);
-                        addr.setAddress1(addrStr);
-                        co.setAddress(addr);
-                    }
-                }
+                String all = getCellValue(cell);
+                co = findCompany(all);
             }
-          
             curCol++;
- //           cell = row.getCell(curCol); //S Country of Origin
- //           if (cell != null){
- //               String cntrName = cell.getStringCellValue();
- //               Country country = findCountry(cntrName,curCol);
- //               addr.setCountry(country);
- //           }
+            cell = row.getCell(curCol);//S Address
+            String addrStr=getCellValue(cell);
+            addr = co.getAddress();
+            if (co.getAddress()==null) {
+                addr.setAddress1(addrStr);
+                co.setAddress(addr);
+            }
+            curCol++;
             pa = (ProdApplications) updateRecInfo(pa);
             List<User> aUsers = a.getUsers();
             if (aUsers!=null){
@@ -219,10 +201,6 @@ public class ExportService implements Serializable {
                 }
             }
             if (errorDetected) return false;
-//            addr = co.getAddress();
-//            if (addr.getAddress1()==null)
-//                addr.setAddress1(addr.getCountry().getCountryName());
-//            co.setAddress(addr);
             Product oldprod=findExistingProd(prod);
             if(oldprod!=null)  prod=oldprod;
             curCol++;
@@ -410,7 +388,7 @@ public class ExportService implements Serializable {
         if (r!=null)return r;
         //r=new Company();
         //r.setCompanyName(s);
-        ExcelTools.setCellBackground(currrow.getCell(17), IndexedColors.GREY_25_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(1), IndexedColors.GREY_25_PERCENT.getIndex());
         errorDetected=true;
     
         return r;
@@ -573,7 +551,7 @@ public class ExportService implements Serializable {
         }
         a= (Applicant) updateRecInfo(a);
         a.setAppName(s);
-        Cell cell = currrow.getCell(12);
+        Cell cell = currrow.getCell(1);
         ExcelTools.setCellBackground(cell, IndexedColors.GREY_25_PERCENT.getIndex());
         return a;
     }
@@ -843,13 +821,17 @@ public class ExportService implements Serializable {
         for(String agentName:locAgents) {
             localAgent = agentName;
             Applicant applicant = findApplicant(localAgent); //local agent
-            if (applicant.getApplcntId() != null) {
-                result = result +":"+String.valueOf(applicant.getApplcntId());
-                List<AgentInfo> agInfoList = lh.getAgentInfos();
-                if (agInfoList == null)
-                    agInfoList = new ArrayList<AgentInfo>();
-                boolean found = false;
-                if (agInfoList.size() > 0) {// search, if this local agent present in list
+            if (applicant.getApplcntId() == null) {
+                updateRecInfo(applicant);
+                applicantDAO.saveApplicant(applicant);
+            }
+
+            result = result +":"+String.valueOf(applicant.getApplcntId());
+            List<AgentInfo> agInfoList = lh.getAgentInfos();
+            if (agInfoList == null)
+                agInfoList = new ArrayList<AgentInfo>();
+            boolean found = false;
+            if (agInfoList.size() > 0) {// search, if this local agent present in list
                     for (AgentInfo a : agInfoList) {
                         if (a.getApplicant().getApplcntId() == applicant.getApplcntId() &&
                             a.getLicenseHolder().getId() == lh.getId()){
@@ -857,8 +839,8 @@ public class ExportService implements Serializable {
                             break;
                         }
                     }
-                }
-                if (!found) {
+            }
+            if (!found) {
                     count++;
                     AgentInfo ai = new AgentInfo();
                     ai.setApplicant(applicant);
@@ -873,10 +855,15 @@ public class ExportService implements Serializable {
                     ai = (AgentInfo) updateRecInfo(ai);
                     agInfoList.add(ai);
                     lh.setAgentInfos(agInfoList);
-                    licenseHolderDAO.save(lh);
-                }
+                    try {
+                        licenseHolderDAO.save(lh);
+                    }catch (Exception e){
+                        System.out.println("Error: "+licenseHolder);
+                        result = "fail";
+                    }
             }
         }
+
         if (count>0) {
             System.out.println("License holder " + lh.getName() + " created and " + count + " agents");
         }else{
@@ -887,35 +874,28 @@ public class ExportService implements Serializable {
     }
 
 
-    public  String importCompanies(Row row, int mode, int colNo){
+    public  String importCompanies(Row row, int mode, int colNo) {
         currrow = row;
-        //11,12,13,14,17,18 - LH,LA1,LA2,LA3,M,Country
+        //11,12,13,14,17,18,19 - LH,LA1,LA2,LA3,M,Address,Country
         init();
-        String manuf="";
-        String addr="";
-        String countryName="";
-        String companyName="";
-        Company company=null;
+        String manuf = "";
+        String addr = "";
+        String countryName = "";
+        String companyName = "";
+        Company company = null;
         manuf = getCellValue(colNo);
-        countryName = getCellValue(18);
+        addr = getCellValue(18);
+        countryName = getCellValue(19);
         if (!"".equals(countryName))
             countryName = countryName.trim();
-        if ("".equals(manuf)) return  "";
-        String[] parts = manuf.split(",");
-        companyName=parts[0].trim();
+        if ("".equals(manuf)) return "";
+        companyName = manuf;
         company = findCompany(companyName);
-        if (company.getId()!=null) return "";
-        if (company.getAddress().getCountry()!=null) return "";//exists, nothing to do
-        if (parts.length==1)
-            company = createUpdateCompanyPrimary(companyName,"",countryName);
-        else if (parts.length==2){
-            company = createUpdateCompanyPrimary(companyName,parts[1],countryName);
-        }else {
-            for (int j=1;j<parts.length;j++) {
-                addr = "".equals(addr) ? parts[j] : addr + ", " + parts[j];
-            }
-            company = createUpdateCompanyPrimary(companyName,addr,countryName);
+        if (company != null){
+            if (company.getId() != null) return "";
+            if (company.getAddress().getCountry() != null) return "";//exists, nothing to do
         }
+        company = createUpdateCompanyPrimary(companyName,addr,countryName);
         if (company!=null)
             return "";
         else
@@ -930,12 +910,12 @@ public class ExportService implements Serializable {
         currrow = row;
         String firstName = getCellValue(1);
         String lastName = getCellValue(2);
-        String email = getCellValue(7);
+        String email = getCellValue(3);
         String login = getLogin(email);
         String address1 = getCellValue(4);
         String poBox = getCellValue(5);
         String zipCode = "";
-        String orgName = getCellValue(6);
+        String orgName = getCellValue(7);
         String phone = getCellValue(8);
         String jobTittle = getCellValue(9);
         String role = getCellValue(10);
@@ -953,14 +933,15 @@ public class ExportService implements Serializable {
         company.setAddress(cAddr);
         companyDAO.saveAndFlush(company);
         Applicant applicant = findApplicant(orgName);
-        if (applicant == null) return "Error: applicant not found";
+        if (applicant == null) {
+            createUpdateApplicant(orgName,company);
+        }
         Address aAddr = applicant.getAddress();
         aAddr.setAddress1(address1);
         aAddr.setAddress2(poBox);
         aAddr.setCountry(ourCountry);
         applicant.setAddress(aAddr);
-
-        User user = createUpdateUser(firstName, lastName, email, phone, cAddr, company, applicant, role, password);
+        User user = createUpdateUser(firstName, lastName, email, phone, cAddr, company, applicant, role, "");
         if (user == null) return "Error registration of user";
         if (applicant != null) {
             List<User> users;
@@ -969,7 +950,7 @@ public class ExportService implements Serializable {
             users.add(user);
             applicant.setUsers(users);
             try {
-                applicantDAO.updateApplicant(applicant);
+                //applicantDAO.updateApplicant(applicant);
                 result = company.getId() + ":" + applicant.getApplcntId() + ":" + user.getUserId();
             } catch (Exception e) {
                 result = e.getMessage();
@@ -1028,7 +1009,8 @@ public class ExportService implements Serializable {
         obj.setUpdatedBy(admin);
         obj.setCreatedBy(admin);
         Date today = getInstance().getTime();
-        obj.setCreatedDate(today);
+        if (obj.getCreatedDate()==null)
+            obj.setCreatedDate(today);
         obj.setUpdatedDate(today);
         return obj;
     }
