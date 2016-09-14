@@ -8,6 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/process_reg_layout.xhtml">
                 
     <ui:define name="content">
@@ -190,8 +191,10 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary1" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="revsummary1" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="revsummary1" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.reviewerFeedback}"
@@ -215,8 +218,10 @@
                     <p:message for="recomcb"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="revsummary" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="revsummary" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBnMZ.submitComment}"
@@ -229,8 +234,10 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="addcomment" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="addcomment" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="addcomment" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="addcomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitComment}"
@@ -249,8 +256,10 @@
                     <p:message for="duedate"/>
 					
                     <p:outputLabel value="#{msgs.global_summary}" for="sum" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="sum" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="sum" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="sum"/>
 				</h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBnMZ.generateLetter}"
@@ -280,8 +289,10 @@
                     <p:message for="acksubmitdt"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revcommsummary" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.revDeficiency.ackComment.comment}" id="revcommsummary" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="revcommsummary" value="#{reviewInfoBn.revDeficiency.ackComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="revcommsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.revDefAck}"
