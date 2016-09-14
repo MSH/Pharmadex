@@ -8,9 +8,12 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/process_reg_layout.xhtml">
+                
     <ui:define name="content">
 
+    	
         <h:form id="reviewHome" enctype="multipart/form-data">
             <p:growl id="growl" showSummary="true"/>
             <p:messages showDetail="true" showSummary="true"/>
@@ -31,10 +34,13 @@
                                  ajax="false">
                         <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
                 </p:commandButton>
-                <p:commandButton value="#{msgs.global_print}"
-                                 action="#{reviewInfoBnMZ.printReview}"
-                                 ajax="false"
-                                 immediate="true" icon="ui-icon-print"/>
+                <!--  -->
+                <p:commandButton id="printBtn" value="#{msgs.global_print}"
+                                 onclick="PrimeFaces.monitorDownload(start, stop);"
+                                 actionListener="#{reviewInfoBnMZ.createFileReviewDetail()}"
+                                 ajax="false" icon="ui-icon-arrowthick-1-s">
+                	<p:fileDownload value="#{reviewInfoBnMZ.fileReviewDetail}" />
+               	</p:commandButton>
                 <!-- 25072016
                 <p:commandButton value="#{msgs.approve_review}"
                                  action="#{reviewInfoBn.approveReview}"
@@ -173,8 +179,11 @@
                     </p:dataTable>
                 </p:tab>
             </p:tabView>
-
-
+	
+			<p:blockUI block="detailtab"
+						trigger=":reviewHome:detailtab">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+			</p:blockUI>
         </h:form>
 
         <p:dialog header="#{msgs.review_feedback}" widgetVar="feedbackDlg" id="feedbackdlg"
@@ -182,8 +191,10 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary1" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="revsummary1" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="revsummary1" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.reviewerFeedback}"
@@ -207,8 +218,10 @@
                     <p:message for="recomcb"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="revsummary" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="revsummary" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBnMZ.submitComment}"
@@ -221,8 +234,10 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="addcomment" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="addcomment" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="addcomment" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="addcomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitComment}"
@@ -241,8 +256,10 @@
                     <p:message for="duedate"/>
 					
                     <p:outputLabel value="#{msgs.global_summary}" for="sum" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="sum" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="sum" value="#{reviewInfoBn.reviewComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="sum"/>
 				</h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBnMZ.generateLetter}"
@@ -272,14 +289,30 @@
                     <p:message for="acksubmitdt"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revcommsummary" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.revDeficiency.ackComment.comment}" id="revcommsummary" required="true"
-                              width="700"/>
+                    <pe:ckEditor id="revcommsummary" value="#{reviewInfoBn.revDeficiency.ackComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" />
                     <p:message for="revcommsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.revDefAck}"
                                  oncomplete="PF('reviewDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
-
-    </ui:define>
+        
+        <p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+	
+		<script type="text/javascript">
+	        function start() {
+	        	PF('statusDialog').show();
+	        }
+	
+	        function stop() {
+	        	PF('statusDialog').hide();
+	        }
+	    </script>
+	</ui:define>
 </ui:composition>

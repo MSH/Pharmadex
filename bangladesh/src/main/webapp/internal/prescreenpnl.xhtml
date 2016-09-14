@@ -6,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
 	<h:panelGrid id="btnpnlFirst" cellspacing="2" cellpadding="2" columns="4">
-        <p:commandButton value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
+        <p:commandButton id="completef" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
                          rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
@@ -94,7 +94,7 @@
     </h:panelGrid>
     
        <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
-              id="completescreen" appendTo="@form"
+              id="completescreen" appendTo="@form" modal="true" dynamic="true"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
 
         <p:panelGrid columns="2" columnClasses="label value">
