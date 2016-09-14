@@ -67,7 +67,9 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 /**
  */
@@ -340,23 +342,131 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
-
-		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);		
-
+		
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);	
+		
+		JasperReport  jasperMasterReport =  (JasperReport)JRLoader.loadObject(new File(resource.getFile())); 
+		Map reportfields = new HashMap(); 
+		if(jasperMasterReport!=null){
+			JRMapArrayDataSource source = createRegLetterSource("table", product, prodApp);
+			if(source!=null) 
+				reportfields.put(UtilsByReports.FTR_DATASOUTCE, source);			
+		}
+				
+		//subReport, set fields
+        URL subresourceA1 = getClass().getResource("/reports/attachment1.jasper");
+        if(subresourceA1!=null){
+        	//attachment1 table 1 			
+			JRMapArrayDataSource sourceTable1 = createRegLetterSource("table1", product, prodApp);
+			if(sourceTable1!=null) 
+				reportfields.put(UtilsByReports.FTR_DATASOUTCE1, sourceTable1);	
+			
+    		//attachment1 table 2	
+			JRMapArrayDataSource sourceTable2 = createRegLetterSource("table2", product, prodApp);
+			if(sourceTable2!=null)
+				reportfields.put(UtilsByReports.FTR_DATASOUTCE2, sourceTable2);
+				
+				JasperReport  jasperSubReportA1 = (JasperReport)JRLoader.loadObject(new File(subresourceA1.getFile()));
+		        if(jasperSubReportA1!=null){ 
+		        	//attachment1    	
+		    		JRMapArrayDataSource sourceFormA1 = createRegLetterSource("attachment1", product, prodApp);
+		    		if(sourceFormA1!=null){
+		    			reportfields.put(UtilsByReports.FTR_A1DATASOUTCE, sourceFormA1);	 	
+		        		param.put("Subreport_A1", jasperSubReportA1); 
+		    		}    		
+		        }		  
+        	
+        }
+        URL subresourceA2 = getClass().getResource("/reports/attachment2.jasper");
+        if(subresourceA2!=null){
+        	        	
+        	JasperReport  jasperSubReportA2 = (JasperReport)JRLoader.loadObject(new File(subresourceA2.getFile()));
+	        if(jasperSubReportA2!=null){
+	        	//attachment1 sub 2	    		
+	    		JRMapArrayDataSource sourceFormA2 = createRegLetterSource("attachment2", product, prodApp);
+	    		if(sourceFormA2!=null){
+	    			reportfields.put(UtilsByReports.FTR_A2DATASOUTCE, sourceFormA2);
+	        		param.put("Subreport_A2", jasperSubReportA2); 
+	    		}    		
+	        }  
+        }
+        URL subresourceF16 = getClass().getResource("/reports/form16.jasper");
+        if(subresourceF16!=null){
+            JasperReport jasperSubReportF16 = (JasperReport)JRLoader.loadObject(new File(subresourceF16.getFile()));
+            if(jasperSubReportF16!=null){
+            	//form 16        		
+        		JRMapArrayDataSource sourceForm16 = createRegLetterSource("form16", product, prodApp);
+        		if(sourceForm16!=null){
+        			reportfields.put(UtilsByReports.FTR_F16DATASOUTCE, sourceForm16);
+            		param.put("Subreport_1", jasperSubReportF16); 
+        		}    		
+            } 
+        }
+           
+        URL subresourceF13 = getClass().getResource("/reports/form13.jasper");
+        if(subresourceF13!=null){
+	        JasperReport jasperSubReportF13 = (JasperReport)JRLoader.loadObject(new File(subresourceF13.getFile()));
+	        if(subresourceF13!=null){
+	    		//form 13	    	
+	    		JRMapArrayDataSource sourceForm13 = createRegLetterSource("form13", product, prodApp);
+	    		if(sourceForm13!=null){
+	    			reportfields.put(UtilsByReports.FTR_F13DATASOUTCE, sourceForm13);  
+	        		param.put("Subreport_2", jasperSubReportF13);
+	    		}    		  
+	        }        
+        }
+        
+        URL subresourceF8 = getClass().getResource("/reports/form8.jasper");
+        if(subresourceF8!=null){
+        	JasperReport jasperSubReportF8 = (JasperReport)JRLoader.loadObject(new File(subresourceF8.getFile()));
+            if(jasperSubReportF8!=null){
+            	//form 8        	
+        		JRMapArrayDataSource sourceForm8 = createRegLetterSource("form8", product, prodApp);
+        		if(sourceForm8!=null){
+        			reportfields.put(UtilsByReports.FTR_F8DATASOUTCE , sourceForm8);
+            		param.put("Subreport_3", jasperSubReportF8);
+        		}        		
+            } 
+        }
+                
+        URL subresourceF9 = getClass().getResource("/reports/form9.jasper");
+        if(subresourceF9!=null){
+        	 JasperReport jasperSubReportF9 = (JasperReport)JRLoader.loadObject(new File(subresourceF9.getFile()));
+             if(jasperSubReportF9!=null){
+             	//form 9         		
+         		JRMapArrayDataSource sourceForm9 = createRegLetterSource("form9", product, prodApp);
+         		if(sourceForm9!=null){
+         			reportfields.put(UtilsByReports.FTR_F9DATASOUTCE , sourceForm9);  
+                     param.put("Subreport_4", jasperSubReportF9);
+         		}    		
+             }	
+        }
+       
+        JasperPrint jasperPrint;
+        /*if(reportfields.size()>0)
+        	if(reportfields.size()==1)
+        		jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(new Object[] { reportfields}));
+        	else
+        		jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(new Object[] { reportfields}));      	      
+        else
+        	jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));*/
+        jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(new Object[] { reportfields})); 
+        return jasperPrint;
+	/*
 		String regNum = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():""; //"2019/08";//
 		String prodName = product.getProdName() != null ? product.getProdName():""; //"AMPICILLIN";//
 		JRMapArrayDataSource source = createRegLetterSource(prodName, regNum);
-
-		Map[] masterData = new Map[1];
-		masterData[0] = new HashMap();
-		masterData[0].put(UtilsByReports.FTR_DATASOUTCE, source);
-
+		
+		 Map[] masterData = new Map[1];
+		 masterData[0] = new HashMap();
+         masterData[0].put(UtilsByReports.FTR_DATASOUTCE, source);
+	  	
 		JasperPrint jasperPrint;
 		if(source != null){
 			jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(masterData));
 			return jasperPrint;
 		}else
-			return  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
+			return  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));*/
 	}
 
 	public String createRejectCert(ProdApplications prodApp, String summary , Long loggedINUserID ) {
@@ -523,16 +633,81 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 	}
 
-	private JRMapArrayDataSource createRegLetterSource(String prodName, String regNumber) {
+/*	private JRMapArrayDataSource createRegLetterSource(String prodName, String regNumber) {
 		List<Map<String,String>> res = new ArrayList<Map<String,String>>();
-		Map<String,String> mp = new HashMap<String,String>();
-		mp.put(UtilsByReports.FLD_PROD_NAME, prodName);
-		mp.put(UtilsByReports.FLD_REG_NUMBER, regNumber);				
-		res.add(mp);
-
-		return new JRMapArrayDataSource(res.toArray());
-
+				Map<String,String> mp = new HashMap<String,String>();
+				mp.put(UtilsByReports.FLD_PROD_NAME, prodName);
+				mp.put(UtilsByReports.FLD_REG_NUMBER, regNumber);				
+				res.add(mp);
+			
+			return new JRMapArrayDataSource(res.toArray());
+		
 	}
+*/
+	private JRMapArrayDataSource createRegLetterSource(String name, Product product, ProdApplications prodApp){
+	
+		HashMap<String, Object> field = new HashMap<String, Object>();
+		utilsByReports.initField(field, prodApp, product);
+		if("table".equals(name)){			
+			utilsByReports.putFieldNotNull(UtilsByReports.FLD_PROD_NAME,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.FLD_REG_NUMBER,"",false);
+		}
+		
+		if("table1".equals(name)){
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPTYPE,"",false);		
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);	
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_ADDRESS1,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COUNTRY,"",false);			
+		}
+		if("table2".equals(name)){
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);	
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_ADDRESS1,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COUNTRY,"",false);	
+		}
+		if("attachment1".equals(name)){
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_PRODNAME,"",false);	 
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_GENNAME,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_PRODSTRENGTH,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_DOSFORM,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_NUMBER,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_DATE,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_EXPIRY_DATE,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPTYPE,"",false);	
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);	
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_ADDRESS1,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COUNTRY,"",false);
+		}
+		if("attachment2".equals(name)){
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_SHELFINE,"",false);		
+		}
+		if("form16".equals(name)){
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_NUMBER,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_DATE,"",false);	
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPROVED_EXPERT,"",false);	
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_HEAD,"",false);	
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_DESIGNATION,"",false);	
+		}
+		if("form13".equals(name)){
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_NUMBER,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPROVED_EXPERT,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_HEAD,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_REG_DATE,"",false);				
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_DESIGNATION,"",false);
+		}
+		if("form8".equals(name)){				
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);	
+		}
+		if("form9".equals(name)){			
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);	
+		}
+		List<Map<String, Object>> res = new ArrayList<Map<String, Object>>();
+		res.add(field);		
+		return	new JRMapArrayDataSource(res.toArray());	
+		
+	}
+			
 
 
 	/**
