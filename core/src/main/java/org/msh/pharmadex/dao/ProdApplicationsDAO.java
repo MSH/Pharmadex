@@ -18,6 +18,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.dao.iface.DosageFormDAO;
 import org.msh.pharmadex.domain.Company;
@@ -49,13 +50,13 @@ public class ProdApplicationsDAO implements Serializable {
 
     @Transactional
     public ProdApplications findProdApplications(long id) {
-        ProdApplications prodApp = (ProdApplications) entityManager.createQuery("select pa from ProdApplications pa where pa.id = :prodId ")
+    	ProdApplications prodApp = (ProdApplications) entityManager.createQuery("select pa from ProdApplications pa where pa.id = :prodId ")
                 .setParameter("prodId", id)
                 .getSingleResult();
-       // Hibernate.initialize(prodApp);
-       // Hibernate.initialize(prodApp.getProduct());
-//        Hibernate.initialize(prodApp.getProduct().getDosForm());
-//        Hibernate.initialize(prodApp.getProduct().getDosUnit());
+    	  Hibernate.initialize(prodApp);
+          Hibernate.initialize((prodApp).getProduct());
+ //      Hibernate.initialize(prodApp.getProduct().getDosForm());
+  //      Hibernate.initialize(prodApp.getProduct().getDosUnit());
 //        Hibernate.initialize(prodApp.getProduct().getAdminRoute());
 //        Hibernate.initialize(prodApp.getProduct().getInns());
 //        Hibernate.initialize(prodApp.getProduct().getExcipients());
@@ -66,9 +67,8 @@ public class ProdApplicationsDAO implements Serializable {
 //            Hibernate.initialize(prodApp.getProduct().getPricing());
 //            Hibernate.initialize(prodApp.getProduct().getPricing().getDrugPrices());
 //        }
-
-
-            return prodApp;
+       
+        return prodApp;
     }
 
     public ProdApplications findActiveProdAppByProd(Long prodID){
