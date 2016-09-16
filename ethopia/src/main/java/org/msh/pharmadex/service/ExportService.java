@@ -9,6 +9,7 @@ import org.msh.pharmadex.dao.iface.*;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.enums.*;
+import org.msh.pharmadex.util.Scrooge;
 import org.msh.pharmadex.utils.ExcelTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -95,6 +96,14 @@ public class ExportService implements Serializable {
         return true;
     }
 
+    private  Company updateAddress(Company company, Address newAddr){
+        Address addr = company.getAddress();
+        if (!(Scrooge.FieldEquals(addr,newAddr,"Address1")&&Scrooge.FieldEquals(addr,newAddr,"Address2")&&Scrooge.FieldEquals(addr,newAddr,"ZipCod"))){
+            company.setAddress(newAddr);
+            company = companyDAO.saveAndFlush(company);
+        }
+        return company;
+    }
     public boolean importRow(Row row, boolean importData) {
         errorDetected=false;
         int rowNo=0;
@@ -120,8 +129,12 @@ public class ExportService implements Serializable {
             curCol++;
             cell = row.getCell(curCol);  // B Route Of Admin  catalog   in table adminroute
             if (cell != null) {
-                prod.setAdminRoute(fingAdminRouteAcc(cell.getStringCellValue(), curCol));
-                if (prod.getAdminRoute()==null) prod.setIndications(cell.getStringCellValue());
+                AdminRoute route = fingAdminRouteAcc(cell.getStringCellValue(), curCol);
+                if (route==null){
+                    throw new Exception("Error: Route of administration not found");
+                    //prod.setIndications(cell.getStringCellValue());
+                }
+                prod.setAdminRoute(route);
             }
             curCol++;
             cell = row.getCell(curCol);  //C Therapeutic Group    ATC name
@@ -129,8 +142,15 @@ public class ExportService implements Serializable {
             if (cell != null) atc=cell.getStringCellValue().trim();
             cell = row.getCell(curCol+1);  //D Therapeutic Group    ATC code
             String atccode="";
-            if (cell != null) atccode=cell.getStringCellValue().trim();
-            prod.setAtcs(findAtcList(atccode,atc,curCol+1));
+            if (cell != null)
+                atccode=cell.getStringCellValue().trim();
+            List<Atc> codes = findAtcList(atccode, atc, curCol + 1);
+            if (codes.size()>0){
+                prod.setAtcs(codes);
+            }else{
+                throw new Exception("Error: ATC code not found");
+            }
+
             curCol=curCol+2;
             cell = row.getCell(curCol);// E Brand Name
             if (cell != null) prod.setProdName(cell.getStringCellValue());
@@ -148,11 +168,19 @@ public class ExportService implements Serializable {
             }
             curCol++;
             cell = row.getCell(curCol); //h - DosUnit
-            prod.setDosUnit(findDocUnit(cell.getStringCellValue(), curCol));
+            DosUom dosUnits = findDocUnit(cell.getStringCellValue(), curCol);
+            if (dosUnits!=null){
+                prod.setDosUnit(dosUnits);
+            }else{
+                throw new Exception("Error: dos unit not found");
+            }
            
             curCol++;
             cell = row.getCell(curCol);  //I Dosage Form
-            prod.setDosForm(findDosFormAcc(cell.getStringCellValue(),curCol));
+            DosageForm dosForm = findDosFormAcc(cell.getStringCellValue(), curCol);
+            if (dosForm==null) throw new Exception("Error: Dosage form not found");
+            if (dosForm.getUid()==null) throw new Exception("Error: Dosage form not found");
+            prod.setDosForm(dosForm);
 
             curCol++;
             cell = row.getCell(curCol);//J prod_desc -  conttype
@@ -163,11 +191,15 @@ public class ExportService implements Serializable {
             curCol++;
             cell = row.getCell(curCol);  //L Licence Holder/manufacturer
             if (cell != null) lic = findLicHolderByName(getCellValue(cell));
-            if (lic!=null) prod.setManufName(lic.getName());
+            if (lic!=null)
+                prod.setManufName(lic.getName());
+            else
+                throw new Exception("Error: license holder not found");
             //if (cell != null) co=findCompany(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol); //M Local Agent 1
             if (cell != null) a= findApplicant(getCellValue(cell));
+            if (a==null) throw new Exception("Error: applicant not found");
             curCol++;
             curCol++; // ommit 2 cols, only for dictionary
             curCol++;
@@ -178,19 +210,30 @@ public class ExportService implements Serializable {
             if (cell!=null) pa.setRegExpiryDate(getDateValue(cell));
             curCol++;
             cell = row.getCell(curCol);//R Manufacturer/Actual site/
+            String all="";
             if (cell != null) {
-                String all = getCellValue(cell);
+                all = getCellValue(cell);
                 co = findCompany(all);
             }
+            if (co==null)
+                throw new Exception("Error: Company not found("+all+")");
             curCol++;
             cell = row.getCell(curCol);//S Address
             String addrStr=getCellValue(cell);
             addr = co.getAddress();
-            if (co.getAddress()==null) {
-                addr.setAddress1(addrStr);
-                co.setAddress(addr);
-            }
+            addr.setAddress1(addrStr);
+            co.setAddress(addr);
             curCol++;
+            cell = row.getCell(curCol);//T Country
+            String countryName = getCellValue(cell);
+            if (countryName!=null){
+                Country mnfCountry = countryDAO.findCountryByName(countryName);
+                if (mnfCountry!=null)
+                    addr.setCountry(mnfCountry);
+            }
+            if (!"".equals(addrStr)){
+                co = updateAddress(co,addr);
+            }
             pa = (ProdApplications) updateRecInfo(pa);
             List<User> aUsers = a.getUsers();
             if (aUsers!=null){
@@ -214,11 +257,11 @@ public class ExportService implements Serializable {
             else return true;
         }catch (Exception e){
             String colNo="";
-            if (cell!=null)   colNo = String.valueOf(cell.getColumnIndex());
-            Cell erCell = currrow.createCell(curCol);
-            erCell.setCellValue(String.valueOf(rowNo)+" " + colNo + " " + e.getMessage());
+            if (cell!=null) colNo = String.valueOf(cell.getColumnIndex());
+            System.out.println(String.valueOf(currrow.getRowNum())+" " + colNo + " " + e.getMessage());
+            Cell erCell = currrow.createCell(currrow.getLastCellNum());
+            erCell.setCellValue(String.valueOf(currrow.getRowNum())+" " + colNo + " " + e.getMessage());
             ExcelTools.setCellBackground(currrow.getCell(curCol), IndexedColors.GREY_25_PERCENT.getIndex());
-            System.out.println(String.valueOf(rowNo)+" " + colNo + " " + e.getMessage());
             return false;
         }
     }
@@ -397,11 +440,14 @@ public class ExportService implements Serializable {
     public LicenseHolder findLicHolderByName(String s){
         LicenseHolder  r=customLicHolderDAO.findLicHolderByName(s);
 
-        if (r!=null)return r;
-        r=new LicenseHolder();
-        r.setName(s);
+        if (r!=null)
+            return r;
+        else
+            return null;
 
-        return r;
+        //r=new LicenseHolder();
+        //r.setName(s);
+        //return r;
     }
     public DosageForm findDosFormAcc(String s, int col) {
         s=s.trim();
@@ -569,7 +615,7 @@ public class ExportService implements Serializable {
             if (cell.getStringCellValue()==null) return res;
             res=cell.getStringCellValue().trim();
             lastCol = cell.getColumnIndex();
-            return res;
+            return res.trim();
         }else if (cell.getCellType()==Cell.CELL_TYPE_NUMERIC){
             double num = cell.getNumericCellValue();
             if (num!=0){
@@ -593,9 +639,9 @@ public class ExportService implements Serializable {
         company.setCompanyName(name.toUpperCase());
         Country country=null;
         if (!"".equals(countryName)){
-            country = findCountry(countryName,16);
+            country = findCountry(countryName,19);
         }else{
-            country = countryDAO.find((long) 76);
+            country = ourCountry;
         }
         Address addr = new Address();
         addr.setCountry(country);
@@ -607,7 +653,7 @@ public class ExportService implements Serializable {
             company = companyDAO.save(company);
             companyDAO.flush();
         }catch (DataIntegrityViolationException e){
-            //nothing to do
+            System.out.println("Error: company didn't save");
         }
         return  company;
     }
@@ -749,6 +795,10 @@ public class ExportService implements Serializable {
             company = findCompany(name);
             if (company.getId()==null)
                 return null;
+            if (company.getAddress().getCountry()==null){
+                company.getAddress().setCountry(ourCountry);
+            }
+
 /*
             if (company!=null) {
                 app.setAddress(company.getAddress());
@@ -803,51 +853,53 @@ public class ExportService implements Serializable {
         List<String> locAgents = new ArrayList<String>();
         String licenseHolder=getCellValue(11);
         String localAgent=getCellValue(12);
+        if (localAgent!=null) localAgent = localAgent.trim();
+        if (licenseHolder!=null) licenseHolder = licenseHolder.trim();
         locAgents.add(localAgent);
         localAgent=getCellValue(13);
         if (!"".equals(localAgent)) locAgents.add(localAgent);
         localAgent=getCellValue(14);
         if (!"".equals(localAgent)) locAgents.add(localAgent);
-        LicenseHolder lh = customLicHolderDAO.findLicHolderByName(licenseHolder);
-        if (lh==null){
-            lh = new LicenseHolder();
-            lh.setName(licenseHolder);
-            lh.setState(UserState.ACTIVE);
-            lh = (LicenseHolder) this.updateRecInfo(lh);
-            lh = licenseHolderDAO.save(lh);
-        }
-        String result = String.valueOf(lh.getId());
-        int count=0;
-        for(String agentName:locAgents) {
-            localAgent = agentName;
-            Applicant applicant = findApplicant(localAgent); //local agent
-            if (applicant.getApplcntId() == null) {
-                updateRecInfo(applicant);
-                applicantDAO.saveApplicant(applicant);
+        String result;
+        try {
+            LicenseHolder lh = customLicHolderDAO.findLicHolderByName(licenseHolder);
+            if (lh == null) {
+                lh = new LicenseHolder();
+                lh.setName(licenseHolder);
+                lh.setState(UserState.ACTIVE);
+                lh = (LicenseHolder) this.updateRecInfo(lh);
+                lh = licenseHolderDAO.save(lh);
             }
-
-            result = result +":"+String.valueOf(applicant.getApplcntId());
-            List<AgentInfo> agInfoList = lh.getAgentInfos();
-            if (agInfoList == null)
-                agInfoList = new ArrayList<AgentInfo>();
-            boolean found = false;
-            if (agInfoList.size() > 0) {// search, if this local agent present in list
+            result = String.valueOf(lh.getId());
+            int count = 0;
+            for (String agentName : locAgents) {
+                localAgent = agentName;
+                Applicant applicant = createUpdateApplicant(localAgent,null);
+                if (applicant.getApplcntId() == null) {
+                    applicantDAO.saveApplicant(applicant);
+                }
+                result = result + ":" + String.valueOf(applicant.getApplcntId());
+                List<AgentInfo> agInfoList = lh.getAgentInfos();
+                if (agInfoList == null)
+                    agInfoList = new ArrayList<AgentInfo>();
+                boolean found = false;
+                if (agInfoList.size() > 0) {// search, if this local agent present in list
                     for (AgentInfo a : agInfoList) {
                         if (a.getApplicant().getApplcntId() == applicant.getApplcntId() &&
-                            a.getLicenseHolder().getId() == lh.getId()){
+                                a.getLicenseHolder().getId() == lh.getId()) {
                             found = true;
                             break;
                         }
                     }
-            }
-            if (!found) {
+                }
+                if (!found) {
                     count++;
                     AgentInfo ai = new AgentInfo();
                     ai.setApplicant(applicant);
                     ai.setLicenseHolder(lh);
-                    if (count==1)
+                    if (count == 1)
                         ai.setAgentType(AgentType.FIRST);
-                    else if (count==2)
+                    else if (count == 2)
                         ai.setAgentType(AgentType.SECOND);
                     else
                         ai.setAgentType(AgentType.THIRD);
@@ -857,20 +909,26 @@ public class ExportService implements Serializable {
                     lh.setAgentInfos(agInfoList);
                     try {
                         licenseHolderDAO.save(lh);
-                    }catch (Exception e){
-                        System.out.println("Error: "+licenseHolder);
-                        result = "fail";
+                    } catch (Exception e) {
+                        System.out.println("Error: " + licenseHolder);
+                        result = "Error: agent info";
                     }
+                }
             }
+            if (count > 0) {
+                System.out.println("License holder " + lh.getName() + " created and " + count + " agents");
+            } else {
+                result = "omitted";
+            }
+            System.out.println(row.getRowNum() + ". " + licenseHolder + " -> " + result);
+            saveResultOfRowImport(row, result);
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println(row.getRowNum() + ". " + licenseHolder + " -> " + e.getMessage());
+            result = "Error: create license holder";
+            return result;
         }
-
-        if (count>0) {
-            System.out.println("License holder " + lh.getName() + " created and " + count + " agents");
-        }else{
-            result = "omitted";
-        }
-        saveResultOfRowImport(row,result);
-        return result;
     }
 
 
@@ -893,7 +951,7 @@ public class ExportService implements Serializable {
         company = findCompany(companyName);
         if (company != null){
             if (company.getId() != null) return "";
-            if (company.getAddress().getCountry() != null) return "";//exists, nothing to do
+            //if (company.getAddress().getCountry() != null) return "";//exists, nothing to do
         }
         company = createUpdateCompanyPrimary(companyName,addr,countryName);
         if (company!=null)
@@ -941,7 +999,7 @@ public class ExportService implements Serializable {
         aAddr.setAddress2(poBox);
         aAddr.setCountry(ourCountry);
         applicant.setAddress(aAddr);
-        User user = createUpdateUser(firstName, lastName, email, phone, cAddr, company, applicant, role, "");
+        User user = createUpdateUser(firstName, lastName, email, phone, cAddr, company, applicant, role, password);
         if (user == null) return "Error registration of user";
         if (applicant != null) {
             List<User> users;

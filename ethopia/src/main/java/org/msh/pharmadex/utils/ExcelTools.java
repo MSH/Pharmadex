@@ -170,6 +170,7 @@ public class ExcelTools {
 
 	
 	public static void setCellBackground(Cell cell, short color){
+		if (cell==null) return;
 		Workbook wb = cell.getSheet().getWorkbook();
 		CellStyle style = wb.createCellStyle();
 		style.setFillForegroundColor(color);
