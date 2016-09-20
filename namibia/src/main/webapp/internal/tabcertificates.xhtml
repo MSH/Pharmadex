@@ -10,29 +10,26 @@
 			<p:commandButton id="regcreate" value="#{msgs.reg_cert_create}"
 				icon="ui-icon-gear" oncomplete="PF('regDlg').show()" 
 				action="#{processProdBn.initRegistration}"
-				rendered="#{processProdBn.createRegCert}">
-			</p:commandButton>
+				rendered="#{userSession.admin || processProdBn.createRegCert}"/>
 			
 			<p:commandButton id="regdownload" value="#{msgs.reg_cert}"
-				onclick="PrimeFaces.monitorDownload(start, stop)"
-				icon="ui-icon-arrowthichk-n"
-				rendered="#{!processProdBn.createRegCert}">
-				<p:fileDownload value="#{fileUploadControllerMZ.regCertDownload()}" />
+				onclick="PrimeFaces.monitorDownload(start, stop);"
+				ajax="false" icon="ui-icon-arrowthick-1-s"
+				rendered="#{!processProdBn.createRegCert || userSession.admin}">
+				<p:fileDownload value="#{fileUploadControllerMZ.regcert}" />
 			</p:commandButton>
 		</h:panelGrid>
 	
 		<h:panelGrid columns="1" rendered="#{!processProdBn.registered}">
 			<p:commandButton id="rejectcreate" value="#{msgs.reject_cert_create}"
-				icon="ui-icon-document" ajax="false"
-                action="/internal/reject.faces" 
-				rendered="#{processProdBn.createRejCert}">
-				<f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
-			</p:commandButton>
+				icon="ui-icon-document" onclick="PF('rejectDlg').show()"
+				rendered="#{processProdBn.createRejCert}"/>
+				
 			<p:commandButton id="rejectdownload" value="#{msgs.reject_cert}"
-				rendered="#{!processProdBn.createRejCert}"
-				onclick="PrimeFaces.monitorDownload(start, stop)"
-				icon="ui-icon-arrowthichk-n">
-				<p:fileDownload value="#{fileUploadControllerMZ.rejectCertDownload()}" />
+				onclick="PrimeFaces.monitorDownload(start, stop);"
+				ajax="false" icon="ui-icon-arrowthick-1-s"
+				rendered="#{!processProdBn.createRejCert}">
+				<p:fileDownload value="#{fileUploadControllerMZ.rejectcert}" />
 			</p:commandButton>
 		</h:panelGrid>
 	

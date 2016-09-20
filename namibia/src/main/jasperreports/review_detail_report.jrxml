@@ -340,7 +340,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA["FIRST GENERIC (New Product in Bangladesh)"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["FIRST GENERIC (New Product in )"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="42" y="370" width="220" height="16" uuid="c386f4ba-97b5-45c8-9638-45e5f1257660">
@@ -349,7 +349,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Top"/>
-				<textFieldExpression><![CDATA["GENERIC (Existing Product in Bangladesh)"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["GENERIC (Existing Product in Namibia)"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="42" y="388" width="220" height="16" uuid="bd366679-6ea3-44c2-bd0b-c915e054ea53">
