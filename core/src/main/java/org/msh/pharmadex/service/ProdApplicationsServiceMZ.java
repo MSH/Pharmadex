@@ -285,13 +285,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		if(prodApp != null){
 			ProdAppType type = prodApp.getProdAppType();
 			if(type != null){
-				if(type.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
+				if(type.toString().equals("NEW_CHEMICAL_ENTITY"))
 					t = 1;
-				else if(type.equals(ProdAppType.GENERIC))
+				else if(type.toString().equals("GENERIC"))
 					t = 2;
-				else if(type.equals(ProdAppType.RECOGNIZED))
+				else if(type.toString().equals("RECOGNIZED"))
 					t = 3;
-				else if(type.equals(ProdAppType.RENEW))
+				else if(type.toString().equals("RENEW"))
 					t = 4;
 			}
 		}
@@ -738,17 +738,17 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 				int t = 0;
 				if(prodApp != null){
-					ProdAppType type = prodApp.getProdAppType();
-					if(type != null){
-						if(type.equals(ProdAppType.NEW_CHEMICAL_ENTITY))
-							t = 1;
-						else if(type.equals(ProdAppType.GENERIC))
-							t = 2;
-						else if(type.equals(ProdAppType.RECOGNIZED))
-							t = 3;
-						else if(type.equals(ProdAppType.RENEW))
-							t = 4;
-					}
+						ProdAppType type = prodApp.getProdAppType();
+						if(type != null){
+							if(type.toString().equals("NEW_CHEMICAL_ENTITY"))
+								t = 1;
+							else if(type.toString().equals("GENERIC"))
+								t = 2;
+							else if(type.toString().equals("RECOGNIZED"))
+								t = 3;
+							else if(type.toString().equals("RENEW"))
+								t = 4;
+						}
 				}
 				utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, t);
 

@@ -37,11 +37,12 @@ public class UserDAO implements Serializable {
 
 	public User findUser(Long id) {
 		User user = null;
-		List<User> list = entityManager.createQuery("select u from User u where u.userId = :userid")
+/*		List<User> list = entityManager.createQuery("select u from User u where u.userId = :userid")
 				.setParameter("userid", id)
 				.getResultList();
 		if(list != null && list.size() > 0)
-			user = list.get(0);
+			user = list.get(0);*/
+		user = entityManager.find(User.class, id);
 		if(user != null){
 			Hibernate.initialize(user.getRoles());
 			Hibernate.initialize(user.getAddress().getCountry());
