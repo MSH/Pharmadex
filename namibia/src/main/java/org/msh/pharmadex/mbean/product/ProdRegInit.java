@@ -114,11 +114,10 @@ public class ProdRegInit implements Serializable {
         }else if (prodAppType.equals(ProdAppType.RENEW)){
             checklists = checklistService.getChecklists(prodApplications,true);
         }else{
-            if (selSRA.length > 0)
-                prodApplications.setSra(true);
-            else
-                prodApplications.setSra(false);
-            checklists = checklistService.getChecklists(prodApplications,true);
+        	prodApplications.setSra(false);
+        	if (selSRA!=null)
+        		if (selSRA.length > 0) prodApplications.setSra(true);   
+        	checklists = checklistService.getChecklists(prodApplications,true);
         }
 
     }
