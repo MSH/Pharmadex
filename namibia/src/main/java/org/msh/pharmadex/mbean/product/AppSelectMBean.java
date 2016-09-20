@@ -214,8 +214,10 @@ public class AppSelectMBean implements Serializable {
 					selectedProduct = productDAO.findProduct(prodTable.getId());
 					prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
 					prodRegAppMbean.setProduct(selectedProduct);
-					prodRegAppMbean.setProdApplications(prodappl);
+					//prodRegAppMbean.setProdApplications(prodappl);
 					ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
+					prodRegAppMbean.setProdApplications(newAppl);
+					
 				}
 				applicantUser = userService.findUser(selectedUser.getUserId());
 				prodRegAppMbean.setApplicant(selectedApplicant);
@@ -230,15 +232,17 @@ public class AppSelectMBean implements Serializable {
 		}
 		return "";
 	}
-		public void addProdToRegistration() {
+	//save for prod	
+	public void addProdToRegistration() {
 			try{
 	
 					if (prodTable!=null) {
 						selectedProduct = productDAO.findProduct(prodTable.getId());
 						prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
 						prodRegAppMbean.setProduct(selectedProduct);
-						prodRegAppMbean.setProdApplications(prodappl);
+						//prodRegAppMbean.setProdApplications(prodappl);
 						ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
+						prodRegAppMbean.setProdApplications(newAppl);
 					}
 		
 				
