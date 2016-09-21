@@ -78,5 +78,9 @@ public class Tools {
         return res;
     }
 
+    public static boolean isEmptyString(String str){
+        if (str==null) return true;
+        return "".equals(str);
+    }
 
 }

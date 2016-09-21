@@ -11,6 +11,7 @@ import org.msh.pharmadex.domain.ApplicantType;
 import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.util.Scrooge;
 import org.msh.pharmadex.utils.ExcelTools;
+import org.msh.pharmadex.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.MailSendException;
@@ -82,6 +83,7 @@ public class ExportService implements Serializable {
     private  Role staffRole;
     private Role companyRole;
     private List<ApplicantType> atList;
+    private int rowNo=0;
 
     private boolean init(){
         ourCountry = countryDAO.findCountryByName("Ethiopia");
@@ -106,7 +108,7 @@ public class ExportService implements Serializable {
     }
     public boolean importRow(Row row, boolean importData) {
         errorDetected=false;
-        int rowNo=0;
+        rowNo=0;
         int curCol=0;
         Cell cell = null;
         isNewATC=false;
@@ -144,11 +146,16 @@ public class ExportService implements Serializable {
             String atccode="";
             if (cell != null)
                 atccode=cell.getStringCellValue().trim();
-            List<Atc> codes = findAtcList(atccode, atc, curCol + 1);
-            if (codes.size()>0){
-                prod.setAtcs(codes);
-            }else{
-                throw new Exception("Error: ATC code not found");
+            if (!Tools.isEmptyString(atccode)&&!!Tools.isEmptyString(atc)) {
+                List<Atc> codes = findAtcList(atccode, atc, curCol + 1);
+                if (codes.size() > 0) {
+                    prod.setAtcs(codes);
+                } else {
+                    prod.setAtcs(null);
+                    throw new Exception("Error: ATC code not found");
+                }
+            }else {
+                System.out.println("atc missed");
             }
 
             curCol=curCol+2;
@@ -187,7 +194,8 @@ public class ExportService implements Serializable {
             if (cell != null) prod.setContType(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol);  //K shelf_life(Months)
-            if (cell != null) prod.setShelfLife(cell.getStringCellValue());
+            if (cell != null)
+                prod.setShelfLife(cell.getStringCellValue());
             curCol++;
             cell = row.getCell(curCol);  //L Licence Holder/manufacturer
             if (cell != null) lic = findLicHolderByName(getCellValue(cell));
@@ -232,7 +240,7 @@ public class ExportService implements Serializable {
                     addr.setCountry(mnfCountry);
             }
             if (!"".equals(addrStr)){
-                co = updateAddress(co,addr);
+                //co = updateAddress(co,addr);
             }
             pa = (ProdApplications) updateRecInfo(pa);
             List<User> aUsers = a.getUsers();
@@ -253,14 +261,16 @@ public class ExportService implements Serializable {
                 if (! cell.getStringCellValue().equalsIgnoreCase(""))importData=false;
             }
 
-            if (importData) return addToDatabase(currrow.getRowNum(),prod, co, a, pa, lic);
-            else return true;
+            if (importData)
+                return addToDatabase(currrow.getRowNum(),prod, co, a, pa, lic);
+            else
+                return true;
         }catch (Exception e){
             String colNo="";
             if (cell!=null) colNo = String.valueOf(cell.getColumnIndex());
-            System.out.println(String.valueOf(currrow.getRowNum())+" " + colNo + " " + e.getMessage());
-            Cell erCell = currrow.createCell(currrow.getLastCellNum());
-            erCell.setCellValue(String.valueOf(currrow.getRowNum())+" " + colNo + " " + e.getMessage());
+            System.out.println(String.valueOf(currrow.getRowNum())+" " + curCol + " " + e.getMessage());
+            Cell erCell = currrow.createCell(21);
+            erCell.setCellValue(String.valueOf(currrow.getRowNum())+" " + curCol + " " + e.getMessage());
             ExcelTools.setCellBackground(currrow.getCell(curCol), IndexedColors.GREY_25_PERCENT.getIndex());
             return false;
         }
@@ -283,8 +293,11 @@ public class ExportService implements Serializable {
             }
             if (isNewATC){
                 List<Atc> la=prod.getAtcs();
-                if (la.get(0)!=null)
-                    atcDAO.save(la.get(0));
+                Atc curAtc = la.get(0);
+                if (curAtc!=null) {
+                    if (!Tools.isEmptyString(curAtc.getAtcName())&&!Tools.isEmptyString(curAtc.getAtcCode()))
+                        atcDAO.save(la.get(0));
+                }
             }
             if (isNewForm){
                 DosageForm d=prod.getDosForm();
@@ -314,33 +327,25 @@ public class ExportService implements Serializable {
             comlist.add(com);
             prod.setProdCompanies(comlist);
             String s = prodApplicationsDAO.saveApplication(pa);
-            // arent_info
-  /*          List<AgentInfo> agInfoList=lic.getAgentInfos();
-            if (agInfoList==null) agInfoList=new  ArrayList<AgentInfo>();
-            AgentInfo ai=new AgentInfo();
-            ai.setApplicant(a);
-            ai.setLicenseHolder(lic);
-            ai.setAgentType(AgentType.FIRST);
-            ai.setStartDate(pa.getRegistrationDate());
-            ai.setEndDate(pa.getRegExpiryDate());
-            lic=licenseHolderDAO.save(lic);
-            ai.setCreatedBy(user);
-            agInfoList.add(ai);
-            //agentInfoDAO.save(ai);
-            lic.setAgentInfos(agInfoList);
-*/
-            //if (cell != null) lic.setFirstAgent(cell.getStringCellValue());
+
             List<Product> old=lic.getProducts();
             if (old==null) old=new ArrayList<Product>();
             old.add(prod);
             lic.setProducts(old);
-            if(lic.getAddress()==null)lic.setAddress(co.getAddress());
-            else             if (lic.getAddress().getAddress1()==null)lic.setAddress(co.getAddress());
-            if (lic.getCreatedBy()==null) lic.setCreatedBy(user);
-            lic=licenseHolderDAO.save(lic);
+            if(lic.getAddress()==null)
+                lic.setAddress(co.getAddress());
+            else {
+                if (lic.getAddress().getAddress1() == null) {
+                    lic.setAddress(co.getAddress());
+                }
+            }
+            if (lic.getCreatedBy()==null)
+                lic.setCreatedBy(user);
+            licenseHolderDAO.save(lic);
             t=currrow.createCell(lastCol);
             t.setCellValue("Done");
         }  catch (Exception ex) {
+            System.out.println(ex.getMessage());
             t.setCellValue(ex.getMessage());
             return false;
         }
@@ -634,7 +639,35 @@ public class ExportService implements Serializable {
         cell.setCellValue(result);
     }
 
-    private Company createUpdateCompanyPrimary(String name, String address, String countryName){
+    private Company updateCompanyPrimary(Company company, String address, String countryName){
+        Country country=null;
+        if (!"".equals(countryName)){
+            country = findCountry(countryName,19);
+        }else{
+            if (company.getAddress()==null)
+                country = ourCountry;
+            else{
+                if (company.getAddress().getCountry()==null)
+                    country = ourCountry;
+            }
+
+        }
+        Address addr = new Address();
+        addr.setCountry(country);
+        if (!"".equals(address))
+            addr.setAddress1(address.trim());
+        company.setAddress(addr);
+        company = (Company) updateRecInfo(company);
+        try {
+            company = companyDAO.save(company);
+            companyDAO.flush();
+        }catch (DataIntegrityViolationException e){
+            System.out.println("Error: company didn't save");
+        }
+        return company;
+    }
+
+    private Company createUpdateCompany(String name, String address, String countryName){
         Company company = new Company();
         company.setCompanyName(name.toUpperCase());
         Country country=null;
@@ -950,10 +983,13 @@ public class ExportService implements Serializable {
         companyName = manuf;
         company = findCompany(companyName);
         if (company != null){
-            if (company.getId() != null) return "";
-            //if (company.getAddress().getCountry() != null) return "";//exists, nothing to do
-        }
-        company = createUpdateCompanyPrimary(companyName,addr,countryName);
+            if (company.getId() != null)
+                updateCompanyPrimary(company,addr,countryName);
+            else
+                company = createUpdateCompany(companyName,addr,countryName);
+        }else
+            company = createUpdateCompany(companyName,addr,countryName);
+
         if (company!=null)
             return "";
         else
@@ -1051,9 +1087,7 @@ public class ExportService implements Serializable {
         mail.setMessage("Your password has been successfully reset in order to access the system please use the username '" + user.getUsername() + "' and password '" + password + "' ");
         try {
             userService.passwordGenerator(user);
-            //user = userService.updateUser(userService.passwordGenerator(user));
-            //TODO Убрать комментарий с отправки почты
-            mailService.sendMail(mail, false);
+            mailService.sendMailFromSender(mail, false,"epharmadex@gmail.com");
             return user;
         } catch (MailSendException me){
             return user;

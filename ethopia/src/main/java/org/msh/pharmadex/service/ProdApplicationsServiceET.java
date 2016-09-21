@@ -269,13 +269,14 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
         }
         if (prodApp.getProdAppType().equals(ProdAppType.RENEW)) {
             appType = "REN";
-        }
-        if (prodApp.getProdAppType().equals(ProdAppType.VARIATION)) {
+        }else if (prodApp.getProdAppType().equals(ProdAppType.VARIATION)) {
             appType = "VAR";
+        }else {
+            appType = "NMR";
         }
 
-
-        return registrationUtil.generateAppNo(prodApp.getId(), "NMR");
+        //return registrationUtil.generateAppNo(prodApp.getId(), "NMR");
+        return registrationUtil.generateAppNo(prodApp.getId(), appType);
 
     }
 

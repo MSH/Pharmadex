@@ -52,6 +52,20 @@ public class MailService implements Serializable {
             mailDAO.saveAndFlush(mailObj);
     }
 
+    public void sendMailFromSender(Mail mailObj, boolean saveMail,String sender) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(sender);
+        message.setTo(mailObj.getMailto());
+        message.setSubject(mailObj.getSubject());
+        message.setText(mailObj.getMessage());
+        message.setSentDate(mailObj.getDate());
+
+        mailSender.send(message);
+        if (saveMail)
+            mailDAO.saveAndFlush(mailObj);
+    }
+
+
     public String sendMailWithAttach(Mail mailObj, boolean saveMail, byte[] attach) throws MessagingException {
         JavaMailSenderImpl sender = (JavaMailSenderImpl) mailSender;
         MimeMessage message = sender.createMimeMessage();

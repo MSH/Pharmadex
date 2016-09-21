@@ -620,6 +620,7 @@ public class ProdApplicationsService implements Serializable {
 		File invoicePDF = null;
 		invoicePDF = File.createTempFile("" + product.getProdName() + "_registration", ".pdf");
 		JasperPrint jasperPrint = initRegCert();
+		jasperPrint.removePage(1);
 		net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 		prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
 		prodApplicationsDAO.updateApplication(prodApp);
@@ -791,6 +792,7 @@ public class ProdApplicationsService implements Serializable {
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
+				jasperPrint.removePage(1);
 				net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 				byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 

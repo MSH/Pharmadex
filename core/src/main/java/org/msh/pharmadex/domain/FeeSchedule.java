@@ -27,6 +27,9 @@ public class FeeSchedule extends CreationDetail implements Serializable {
     @Column(length = 255, nullable = false)
     private String preScreenFee;
 
+    @Column(length = 45, nullable = false)
+    private String labFee;
+
     @Column(length = 255, nullable = false)
     private String totalFee;
 
@@ -91,5 +94,13 @@ public class FeeSchedule extends CreationDetail implements Serializable {
 
     public void setTotalFee(String totalFee) {
         this.totalFee = totalFee;
+    }
+
+    public String getLabFee() {
+        return labFee;
+    }
+
+    public void setLabFee(String labFee) {
+        this.labFee = labFee;
     }
 }

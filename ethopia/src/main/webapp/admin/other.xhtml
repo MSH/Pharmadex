@@ -45,12 +45,19 @@
 
                     <p:commandButton action="#{exportMBean.loadingCompanies}"
                                    id = "imprtcompany"
-                                   value="Company" ajax="false">
+                                   value="Companies" ajax="false">
                     </p:commandButton>
                     <p:message for="imprtcompany"/>
                     <h:outputLabel/>
 
-                    <h:outputLabel/>
+                  <p:commandButton action="#{exportMBean.loadingManufacturers}"
+                                   id = "imprtManuf"
+                                   value="Manufacturers" ajax="false">
+                  </p:commandButton>
+                  <p:message for="imprtManuf"/>
+                  <h:outputLabel/>
+
+                  <h:outputLabel/>
 
                     <h:outputText id="imprtuser" value="#{exportMBean.taskStatus}"/>
 

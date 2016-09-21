@@ -36,6 +36,7 @@ public class TestReportsBn {
         ProdApplications prodApp = prodApplicationsService.findProdApplications(id);
         try {
             prodApplicationsService.createRegCert(prodApp);
+            prodApplicationsService.createAckLetter(prodApp);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JRException e) {

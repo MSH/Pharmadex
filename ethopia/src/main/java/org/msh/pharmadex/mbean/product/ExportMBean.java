@@ -106,8 +106,10 @@ public class ExportMBean implements Serializable {
     public String startExport(boolean importData) throws FileNotFoundException {
         if (!initProcess()) setFilename("Initialisation failure");
         if (f.isFile()) try {
-            wb = WorkbookFactory.create(new FileInputStream(filename));
+            FileInputStream infile = new FileInputStream(filename);
+            wb = WorkbookFactory.create(infile);
             Sheet sheet = wb.getSheetAt(0);
+            infile.close();
             if (sheet == null) return "";
             boolean res;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -251,6 +253,41 @@ public class ExportMBean implements Serializable {
             setFilename("file not found");
 
            return "";
+    }
+
+    public String loadingManufacturers(){
+        if (!initProcess()) setFilename("Error. Initialisation failure");
+        if (f.isFile()) {
+            try {
+                wb = WorkbookFactory.create(new FileInputStream(filename));
+                Sheet sheet = wb.getSheetAt(0);
+                if (sheet == null) return "";
+                String res;
+                success = 0;
+                failure = 0;
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                        Row row = sheet.getRow(i);
+                        res = exportService.importCompanies(row, 1, 17);
+                        if (!res.startsWith("Error")) {
+                            success++;
+                            ExcelTools.setCellBackground(sheet.getRow(i).getCell(1), IndexedColors.GREEN.getIndex());
+                        } else
+                            failure++;
+                }
+                setIgnore(success + failure);
+                File outf = new File("C:/Temp/comp_res.xlsx");
+                FileOutputStream out = new FileOutputStream(outf);
+                wb.write(out);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InvalidFormatException e) {
+                setFilename("file not found");
+            }
+        }else
+            setFilename("file not found");
+
+        return "";
     }
 
     public String loadingOrganisations(){

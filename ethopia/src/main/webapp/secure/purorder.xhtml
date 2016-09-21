@@ -229,6 +229,7 @@
                     <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
                                  oncomplete="PF('attachdlg').show()" rendered="#{!purOrderBn.showWithdrawn}"
                                  action="#{purOrderBn.prepareUpload}"
+                                 sizelimit="4196304"
                                  update=":attachdlg" id="addDocBtn"/>
 
                 <p:dataTable id="attachtable" value="#{purOrderBn.pOrderDocs}" var="doc">

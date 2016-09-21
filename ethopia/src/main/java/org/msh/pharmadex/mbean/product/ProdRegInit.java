@@ -65,6 +65,7 @@ public class ProdRegInit implements Serializable {
     private String fee;
     private String prescreenfee;
     private String totalfee;
+    private String labFee;
     private ProdAppType prodAppType;
     private List<ProdAppType> prodAppTypes;
     private FacesContext context;
@@ -130,48 +131,54 @@ public class ProdRegInit implements Serializable {
     private void addFee() {
         Pattern feePattern = Pattern.compile("^\\$(([1-9]\\d{0,2}(,\\d{3})*)|(([1-9]\\d*)?\\d))([\\.\\,]\\d?\\d?)?$?");
         Matcher feeStr;
-        Double numFee = 0.0;
+        Double numLabFee = 0.0;
+        Double numProcessFee1 = 0.0;
+        Double numProcessFee2 = 0.0;
         Double numPreScrFee = 0.0;
+
         if (majorQuantity > 0){
             calculate("VARIATION_MAJOR");
-            feeStr = feePattern.matcher(fee);
             if (!("".equals(fee) || "0".equals(fee))) {
+                feeStr = feePattern.matcher(fee);
                 if (feeStr.matches())
-                    numFee = Tools.currencyToDouble(fee) * majorQuantity;
+                    numProcessFee1 = Tools.currencyToDouble(fee) * majorQuantity;
             }
             if (!("".equals(prescreenfee) || "0".equals(prescreenfee))) {
                 numPreScrFee = Tools.currencyToDouble(prescreenfee);
             }
+            if (!("".equals(labFee) || "0".equals(labFee))) {
+                numLabFee = Tools.currencyToDouble(labFee);
+            }
+
         }
         if (minorQuantity > 0){
             calculate("VARIATION_MINOR");
+            if (!("".equals(prescreenfee) || "0".equals(prescreenfee))) {
+                numPreScrFee = Tools.currencyToDouble(prescreenfee);
+            }
             feeStr = feePattern.matcher(fee);
             if (!("".equals(fee) || "0".equals(fee))) {
-                Double numFee2=0.0;
                 if (feeStr.matches())
-                    numFee2 = Tools.currencyToDouble(fee) * minorQuantity;
-                numFee = numFee + numFee2;
-            }
-            if (!("".equals(fee) || "0".equals(fee))) {
-                Double numPreScrFee2 = Tools.currencyToDouble(prescreenfee);
-                numPreScrFee = numPreScrFee2 + numPreScrFee;
+                    numProcessFee2 = Tools.currencyToDouble(fee) * minorQuantity;
             }
         }
-        if ((numFee+numPreScrFee)>0){
-            fee = String.valueOf(numFee.doubleValue());
+        if ((numLabFee+numPreScrFee+numProcessFee1+numProcessFee2)>0){
             prescreenfee = String.valueOf(numPreScrFee.doubleValue());
-            Double total = numFee + numPreScrFee;
+            Double fullProcessFee = numLabFee + numProcessFee1 + numProcessFee2;
+            fee = String.valueOf(fullProcessFee.doubleValue());
+            Double total = numPreScrFee + fullProcessFee;
             totalfee = String.valueOf(total.doubleValue());
         }
     }
 
     public void calculate(String prodAppTypeName) {
-        totalfee="0"; fee="0";prescreenfee="0";
+        totalfee="0"; fee="0";prescreenfee="0"; labFee="0";
         for (FeeSchedule feeSchedule : globalEntityLists.getFeeSchedules()) {
             if (feeSchedule.getAppType().equals(prodAppTypeName)) {
                 totalfee = feeSchedule.getTotalFee();
                 fee = feeSchedule.getFee();
                 prescreenfee = feeSchedule.getPreScreenFee();
+                labFee = feeSchedule.getLabFee();
                 break;
             }
         }
@@ -818,5 +825,13 @@ public class ProdRegInit implements Serializable {
 
     public void setStandardProcedureRecall(boolean standardProcedureRecall) {
         this.standardProcedureRecall = standardProcedureRecall;
+    }
+
+    public String getLabFee() {
+        return labFee;
+    }
+
+    public void setLabFee(String labFee) {
+        this.labFee = labFee;
     }
 }

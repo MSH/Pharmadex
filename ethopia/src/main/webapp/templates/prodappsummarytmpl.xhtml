@@ -94,7 +94,7 @@
         <p:tab title="#{msgs.inn_header}" rendered="#{showfull}">
             <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
                 <h:outputLabel value="#{msgs.inn_header}:"/>
-           
+
                 <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}"  >
                 
                     <p:column headerText="#{msgs.active_substance}">
@@ -117,11 +117,12 @@
             </h:panelGrid>
 
             <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
-                <h:outputLabel value="#{msgs.product_active}:"/>
+                <h:outputLabel value="#{msgs.inn_header}:"/>
                 
-                <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodAppData.product.excipients}"
+                <p:dataTable id="expsummarytbl" var="prodExp"
+                             value="#{prodAppData.product.excipients}"
                              style="width:100%;">
-                    <p:column headerText="#{msgs.active_substance}">
+                    <p:column headerText="#{msgs.inactive_substance}">
                         <h:outputText value="#{prodExp.excipient.name}"
                                       style="#{processProdBnET.findExcipientChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>

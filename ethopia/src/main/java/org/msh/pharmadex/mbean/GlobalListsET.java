@@ -1,8 +1,8 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.SRA;
+import org.msh.pharmadex.domain.enums.AgeGroup;
 import org.msh.pharmadex.domain.enums.AgentType;
-
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.Arrays;
@@ -19,6 +19,10 @@ public class GlobalListsET {
 
     public List<AgentType> getAgentTypes() {
         return Arrays.asList(AgentType.values());
+    }
+
+    public List<AgeGroup> getAgeGroupes() {
+        return Arrays.asList(AgeGroup.values());
     }
 
 }
