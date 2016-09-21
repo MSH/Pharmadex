@@ -7,6 +7,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ViewExpiredException;
@@ -17,6 +18,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
@@ -95,7 +98,27 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 } finally {
                     i.remove();
                 }
-            } else {
+            }else if(t instanceof FacesException) {
+            	FacesException vee = (FacesException) t;
+                try {
+                	String url = facesContext.getExternalContext().getRequestContextPath();
+					facesContext.getExternalContext().redirect(url + "/home.faces");
+				} catch (IOException e) {
+					e.printStackTrace();
+                } finally {
+                    i.remove();
+                }
+			}else if(t instanceof ELException){
+				try {
+		    		String url = facesContext.getExternalContext().getRequestContextPath();
+		    		facesContext.getExternalContext().redirect(url + "/home.faces");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				finally {
+                    i.remove();
+                }
+			}else {
                 //log error ?
                 log.log(Level.SEVERE, "Critical Exception!", t);
                 //redirect error page
@@ -104,7 +127,6 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 facesContext.renderResponse();
             }
         }
-
         // At this point, the queue will not contain any ViewExpiredEvents. Therefore, let the parent handle them.
         getWrapped().handle();
     }

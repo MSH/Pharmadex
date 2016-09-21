@@ -28,6 +28,7 @@ import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewServiceMZ;
 import org.msh.pharmadex.util.RetObject;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
 
 /**
@@ -95,42 +96,46 @@ public class ReviewInfoBnMZ implements Serializable {
 		}
 		return white;
 	}
-	
+
 	public String generateLetter() {
-        facesContext = FacesContext.getCurrentInstance();
-        bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-        try {
-            getReviewInfoBn().getRevDeficiency().setSentComment(getReviewInfoBn().getReviewComment());
-            getReviewInfoBn().getRevDeficiency().setUser(getReviewInfoBn().getReviewComment().getUser());
-            getReviewInfoBn().setSubmitDate(new Date());
-            getReviewInfoBn().getReviewComments().add(getReviewInfoBn().getReviewComment());
-            getReviewInfoBn().setReviewStatus(ReviewStatus.FIR_SUBMIT);
-            getReviewInfoBn().getRevDeficiency().setReviewInfo(getReviewInfoBn().getReviewInfo());
-            getReviewInfoBn().getRevDeficiency().setCreatedDate(new Date());
-            String com = "";
-            if(getReviewInfoBn().getReviewComment()!=null)
-            	if(getReviewInfoBn().getReviewComment().getComment()!=null)
-            		com = getReviewInfoBn().getReviewComment().getComment();
-            
-            RetObject rez = prodApplicationsServiceMZ.
-            		createReviewDeficiencyLetter(getReviewInfoBn().getProdApplications(),
-            				com, getReviewInfoBn().getRevDeficiency());
-            
-            if (rez.getMsg().equals("success")) {
-            	getReviewInfoBn().setReviewInfo((ReviewInfo) rez.getObj());            	
-                facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
-                getReviewInfoBn().setReviewComments(getReviewInfoBn().getReviewComments()); 
-                getReviewInfoBn().setRevDeficiencies(null);
-            }else{
-            	javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
-            }
-        
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
-        }
-        return "";
-    }
+		facesContext = FacesContext.getCurrentInstance();
+		bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+		try {
+			getReviewInfoBn().getRevDeficiency().setSentComment(getReviewInfoBn().getReviewComment());
+			getReviewInfoBn().getRevDeficiency().setUser(getReviewInfoBn().getReviewComment().getUser());
+			getReviewInfoBn().setSubmitDate(new Date());
+			getReviewInfoBn().getReviewComments().add(getReviewInfoBn().getReviewComment());
+			getReviewInfoBn().setReviewStatus(ReviewStatus.FIR_SUBMIT);
+			getReviewInfoBn().getRevDeficiency().setReviewInfo(getReviewInfoBn().getReviewInfo());
+			getReviewInfoBn().getRevDeficiency().setCreatedDate(new Date());
+			String com = "";
+			if(getReviewInfoBn().getReviewComment()!=null)
+				if(getReviewInfoBn().getReviewComment().getComment()!=null)
+					com = getReviewInfoBn().getReviewComment().getComment();
+
+			RetObject rez = prodApplicationsServiceMZ.
+					createReviewDeficiencyLetter(getReviewInfoBn().getProdApplications(),
+							com, getReviewInfoBn().getRevDeficiency());
+
+			if (rez.getMsg().equals("success")) {
+				getReviewInfoBn().setReviewInfo((ReviewInfo) rez.getObj());            	
+				facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
+				getReviewInfoBn().setReviewComments(getReviewInfoBn().getReviewComments()); 
+				getReviewInfoBn().setRevDeficiencies(null);
+			}else{
+				javax.faces.context.FacesContext.getCurrentInstance().responseComplete();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
+		}
+		return "";
+	}
+
+	public void onTabChange(TabChangeEvent event) {
+		if(getReviewInfoBn().getReviewInfo() == null)
+			getReviewInfoBn().goToHome();
+	}
 
 	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
 		return prodApplicationsServiceMZ;
@@ -201,26 +206,29 @@ public class ReviewInfoBnMZ implements Serializable {
 		boolean vis = userSession.isReviewer() && !getReviewInfoBn().isSubmitted() && getReviewInfoBn().isPriReview();
 		return vis;
 	}
-	
+
 	public List<RecomendType> getRevRecomendTypes() {
-        List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
-        if (!getReviewInfoBn().getProdApplications().getRegState().equals(RegState.SUSPEND)){
-            recomendTypes.add(RecomendType.RECOMENDED);
-            recomendTypes.add(RecomendType.NOT_RECOMENDED);
-            //recomendTypes.add(RecomendType.FEEDBACK);
-        }else{
-            recomendTypes.add(RecomendType.REGISTER);
-            recomendTypes.add(RecomendType.SUSPEND);
-            recomendTypes.add(RecomendType.CANCEL);
-        }
-        return recomendTypes;
-    }
+		List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
+		if (!getReviewInfoBn().getProdApplications().getRegState().equals(RegState.SUSPEND)){
+			recomendTypes.add(RecomendType.RECOMENDED);
+			recomendTypes.add(RecomendType.NOT_RECOMENDED);
+			//recomendTypes.add(RecomendType.FEEDBACK);
+		}else{
+			recomendTypes.add(RecomendType.REGISTER);
+			recomendTypes.add(RecomendType.SUSPEND);
+			recomendTypes.add(RecomendType.CANCEL);
+		}
+		return recomendTypes;
+	}
 
 	public void createFileReviewDetail(){
 		ProdApplications prodApplications = getReviewInfoBn().getProdApplications();
-		fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications);
+		if(prodApplications == null)
+			getReviewInfoBn().goToHome();
+		else
+			fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications);
 	}
-	
+
 	public StreamedContent getFileReviewDetail() {
 		return fileReviewDetail;
 	}
@@ -228,5 +236,5 @@ public class ReviewInfoBnMZ implements Serializable {
 	public void setFileReviewDetail(StreamedContent fileReviewDetail) {
 		this.fileReviewDetail = fileReviewDetail;
 	}
-	
+
 }
