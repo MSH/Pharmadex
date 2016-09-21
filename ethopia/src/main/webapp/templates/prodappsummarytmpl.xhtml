@@ -274,24 +274,24 @@
             </p:dataTable>
 
         </p:tab>
-
+//ProdCompanies
         <p:tab title="#{msgs.manufacturer_detail}">
             <p:dataTable id="companyTable" var="company" value="#{prodAppData.product.prodCompanies}"
                          style="width:100%;">
                 <p:column headerText="#{msgs.applicant_name}">
-                    <h:outputText value="#{company.company.companyName}"/>
+                    <h:outputText value="#{company.company.companyName}" style="#{processProdBnET.findCompaniesChanged()?('color:red;'):('color:black;')}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_country}">
-                    <h:outputText value="#{company.company.address.country.countryName}"/>
+                    <h:outputText value="#{company.company.address.country.countryName}" style="#{processProdBnET.findCompaniesChanged()?('color:red;'):('color:black;')}" />
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_type}">
-                    <h:outputText value="#{msgs[company.companyType.key]}"/>
+                    <h:outputText value="#{msgs[company.companyType.key]}" style="#{processProdBnET.findCompaniesChanged()?('color:red;'):('color:black;')}"/>
                 </p:column>
 
                 <p:column headerText="#{msgs.applicant_phone}">
-                    <h:outputText value="#{company.company.phoneNo}"/>
+                    <h:outputText value="#{company.company.phoneNo}" style="#{processProdBnET.findCompaniesChanged()?('color:red;'):('color:black;')}"/>
                 </p:column>
 
             </p:dataTable>
