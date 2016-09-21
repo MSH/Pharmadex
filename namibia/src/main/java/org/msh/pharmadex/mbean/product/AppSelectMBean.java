@@ -11,19 +11,29 @@ import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.swing.event.ChangeEvent;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.ProductDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Applicant;
+import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ProdInn;
+import org.msh.pharmadex.domain.Product;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.service.CountryService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.context.RequestContext;
@@ -174,7 +184,6 @@ public class AppSelectMBean implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		logger.error("Selected User is " + ((UserDTO) event.getObject()).getUsername());
 		showSaveBtn = (selectedUser != null);
-		RequestContext.getCurrentInstance().update("reghome");
 	}
 	
 	public void validate(ComponentSystemEvent e) {
