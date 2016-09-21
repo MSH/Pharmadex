@@ -6,7 +6,9 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -96,9 +98,10 @@
                     </p:selectOneMenu>
 
                     <p:outputLabel value="#{msgs.summary}" for="summary"/>
-                    <p:editor id="summary" value="#{execSummaryBn.prodApplications.execSummary}"
-                    			required="true" requiredMessage="#{msgs.summary_empty_valid}"/>
-
+                    <pe:ckEditor id="summary" value="#{execSummaryBn.prodApplications.execSummary}"
+								 height="500" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 required="true" requiredMessage="#{msgs.summary_empty_valid}"/>
                 </h:panelGrid>
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid"
                              rendered="#{!execSummaryBn.editExecSumm}">
