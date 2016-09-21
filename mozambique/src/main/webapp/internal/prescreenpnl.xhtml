@@ -65,9 +65,7 @@
            
             <p:commandButton id="downloadLink" value="#{msgs.global_download}"
                              onclick="PrimeFaces.monitorDownload(start, stop)"
-                             ajax="true"
-                             update="@this"
-                             immediate="true"
+                             ajax="false"
                              icon="ui-icon-arrowstop-1-s"
                              rendered="#{checkList.fileUploaded}">
                 <p:fileDownload value="#{fileUploadController.moduleDocDownload(checkList)}"/>
