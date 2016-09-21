@@ -182,31 +182,33 @@ public class ProcessProdBnET implements Serializable {
     }
 
    public boolean isFieldChanged(String fieldname){
-	  //получим список из review_info.changedFields  если в списке нет, то false
- //   	 String fieldname = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("fieldvalue");
-    	   
-    	if (changedFields.contains(fieldname)) return true;
+	  if (changedFields.contains(fieldname)) return true;
     	return false;
     }
     
    public boolean findInnChanged(){
-  	  //получим список из review_info.changedFields  если в списке нет, то false
+  	  
        	if (changedFields.contains("inns")) return true;
       	return false;
     }
    
    public boolean findExcipientChanged(){
-	  	  //получим список из review_info.changedFields  если в списке нет, то false
+	  	
 	       	if (changedFields.contains("excipients"))
                 return true;
             else
 	      	    return false;
 	    }
    public boolean findAtcChanged(){
-	  	  //получим список из review_info.changedFields  если в списке нет, то false
+	
 	       	if (changedFields.contains("Atc")) return true;
 	      	return false;
 	    }
+   public boolean findCompaniesChanged(){
+		if (changedFields.contains("ProdCompanies")) return true;
+      	return false;
+   }
+   
     
     public void setShowFeedBackButton(boolean showFeedBackButton) {
         this.showFeedBackButton = showFeedBackButton;

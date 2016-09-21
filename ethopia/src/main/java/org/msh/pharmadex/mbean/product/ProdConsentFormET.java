@@ -7,6 +7,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
@@ -151,11 +152,35 @@ public class ProdConsentFormET extends ProdConsentForm implements Serializable {
   		} else{
   			if(!product.getStorageCndtn().equalsIgnoreCase(oldPr.getStorageCndtn())) comment=comment+"Posology";
   		}
+  	//check manufacturer
+  		List<ProdCompany> colist = product.getProdCompanies();
+  		List<ProdCompany> oldCoList = oldPr.getProdCompanies();
+  		if 	(colist.isEmpty() & oldCoList.isEmpty()){
+
+  		} else if (!colist.isEmpty() & !oldCoList.isEmpty()){
+  			if (a.size()!=oldCoList.size()) {
+  				comment=comment+"ProdCompanies"; 
+  			} else{
+  				for (int i=0; i<inns.size();i++) {
+  					if(findDifferenceCo(colist.get(i),oldCoList.get(i))){
+  						comment=comment+"ProdCompanies"; 
+  						break;
+
+  					}
+  				}
+  			}
+  		} else {
+  			comment=comment+"ProdCompanies"; 
+  		} 
   		curA.setAppComment(comment);
   	  }
         return super.submitApp();
     }
     
+    private boolean findDifferenceCo(ProdCompany co, ProdCompany oldCo){
+    	if (co.getCompany()!=oldCo.getCompany()) return true;
+    	return false;
+    }
     private boolean findDifferenceIn(ProdInn in,ProdInn oldin ){
     	  if(!in.getDosStrength().equalsIgnoreCase(oldin.getDosStrength())) return true;
      	  if(in.getDosUnit()!=oldin.getDosUnit()) return true;	
