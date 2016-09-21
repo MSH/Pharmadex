@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.auth.PassPhrase;
 import org.msh.pharmadex.dao.iface.RoleDAO;
+import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.Address;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Letter;
@@ -28,6 +29,7 @@ import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.model.DualListModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -50,6 +52,9 @@ public class UserMBean implements Serializable {
     RoleDAO roleDAO;
     @ManagedProperty(value = "#{letterService}")
     LetterService letterService;
+    @ManagedProperty(value = "#{workspaceDAO}")
+    WorkspaceDAO workspaceDAO;
+
     FacesContext facesContext = FacesContext.getCurrentInstance();
     java.util.ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
     private User selectedUser;
@@ -248,7 +253,12 @@ public class UserMBean implements Serializable {
             return "";
         } else {
             try {
-                mailService.sendMail(mail, false);
+                String sender = workspaceDAO.findAll().get(0).getRegistraremail();
+                if (sender==null)
+                    sender = "info@msh.org";
+                else if ("".equals(sender))
+                    sender = "info@msh.org";
+                mailService.sendMailFromSender(mail, false,sender);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("send_password_success")));
                 FacesContext context = FacesContext.getCurrentInstance();
                 HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();

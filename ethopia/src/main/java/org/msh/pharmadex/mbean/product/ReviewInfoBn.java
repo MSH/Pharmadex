@@ -125,7 +125,8 @@ public class ReviewInfoBn implements Serializable {
                 if (srcPage!=null)
                     sourcePage = srcPage;
             }
-
+            if (prodApplications==null) return;
+            if (prodApplications.getRegState()==null) return;
             if (prodApplications.getRegState().equals(RegState.SUSPEND)) {
                 if (prodApplications != null) {
                     List<SuspDetail> suspDetailsList = suspendDAO.findByProdApplications_Id(prodApplications.getId());

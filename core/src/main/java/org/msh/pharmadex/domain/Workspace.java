@@ -46,6 +46,9 @@ public class Workspace extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String registrarName;
 
+    @Column(length = 255)
+    private String registraremail;
+
     public String getName() {
         return name;
     }
@@ -124,5 +127,13 @@ public class Workspace extends CreationDetail implements Serializable {
 
     public void setRegistrarName(String registrarName) {
         this.registrarName = registrarName;
+    }
+
+    public String getRegistraremail() {
+        return registraremail;
+    }
+
+    public void setRegistraremail(String registraremail) {
+        this.registraremail = registraremail;
     }
 }

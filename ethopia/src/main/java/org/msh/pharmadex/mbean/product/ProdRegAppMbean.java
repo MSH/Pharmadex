@@ -345,6 +345,7 @@ public class ProdRegAppMbean implements Serializable {
 		try {
 			if(attachment != null && attachment.getFile() != null){
 				int len = attachment.getFile().length;
+				/*
 				if(len > 4194304){// в БД используем LONGBLOB = 4194304 - maximum
 					msg = new FacesMessage("Error! " + bundle.getString("Error.bigSizeFile"));
 					facesContext.addMessage(null, msg);
@@ -354,14 +355,17 @@ public class ProdRegAppMbean implements Serializable {
 					msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
 					facesContext.addMessage(null, msg);
 				}
+				*/
+				attachmentDAO.save(attachment);
+				setAttachments(null);
+				msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+				facesContext.addMessage(null, msg);
 			}
 		} catch (Exception ex) {
 			if (ex instanceof PacketTooBigException) {
-				msg = new FacesMessage("Error! " + bundle.getString("Error.bigSizeFile"));
-				//msg = new FacesMessage("Upload file size is too big!!");
+				msg = new FacesMessage("Error!",bundle.getString("Error.bigSizeFile"));
 			} else {
-				msg = new FacesMessage("Error! " + bundle.getString("Error.uploadFile"));
-				// msg = new FacesMessage("Error uploading file");
+				msg = new FacesMessage("Error!", bundle.getString("Error.uploadFile"));
 			}
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
