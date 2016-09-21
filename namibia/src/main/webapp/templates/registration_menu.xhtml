@@ -6,25 +6,25 @@
         
            <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-home" url="/public/applicantlist.faces"
                             ajax="false"/>
-           <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document"
-                       url="/public/productlist.faces"
-                       ajax="false"/>
+           <p:menuitem value="#{msgs.registration_product}" icon="ui-icon-document" url="/public/productlist.faces"
+                            ajax="false"/>
            <p:menuitem value="#{msgs.susp_prod}" icon="ui-icon-document" url="/public/suspendedproducts.faces"
                             ajax="false"/>
            <p:menuitem value="#{msgs.revoke_prod}" icon="ui-icon-document" url="/public/revokedproducts.faces"
                             ajax="false"/>
-
+			
             <sec:isAuthenticated>
             	<p:separator rendered="#{!isleftmenu and userSessionService.displayRegistrationFormItem(userSession.loggedINUserID)}"/>
                 <p:submenu label="#{msgs.registration_form}" 
                            rendered="#{userSessionService.displayRegistrationFormItem(userSession.loggedINUserID)}">
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
-                                url="/secure/prodreginit.faces" ajax="false"/>
+                                url="/secure/prodreginit.faces" ajax="false"
+                                rendered="#{!userSession.admin}"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                 action="#{navigationBean.regApplicantAction}"
                                 ajax="false" rendered="#{userSessionService.displayAppReg(userSession.loggedINUserID)}"/>
                 </p:submenu>
-				
+                
 				<p:separator rendered="#{!isleftmenu and (userSession.company||userSession.staff||userSession.admin)}"/>
                 <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff||userSession.admin}">
                     <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
@@ -33,7 +33,7 @@
                                 url="/secure/savedproducts.faces"
                                 rendered="#{userSessionService.displaySavedItem(userSession.loggedINUserID)}"/>
                 </p:submenu>
-				
+                
 				<p:separator rendered="#{!isleftmenu and (userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator)}"/>
                 <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator}">
                     <p:menuitem value="#{msgs.process_review_list}" icon="ui-icon-document"
@@ -44,7 +44,7 @@
                                 url="/internal/processapplist.faces"
                                 rendered="#{userSessionService.displayListAppOnReg(userSession.loggedINUserID)}"/>
                 </p:submenu>
-				
+                
 				<p:separator rendered="#{!isleftmenu and (userSession.admin||userSession.staff)}"/>
                 <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff}">
                     <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-document"
