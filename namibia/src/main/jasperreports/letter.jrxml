@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-24T14:06:12 -->
+<!-- 2016-08-25T17:07:41 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="355b4245-79d2-44b4-b421-c0e09801e04f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -72,8 +72,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA["<br>Harvey Street"]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="32" y="169" width="180" height="16" uuid="907a89db-0978-445f-8351-96348feea36a">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="32" y="169" width="228" height="16" uuid="907a89db-0978-445f-8351-96348feea36a">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -82,7 +82,7 @@
 				<textElement markup="html">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA["<b>Enquiry:</b> "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<b>Enquiry:</b> ".concat($P{appUserName} == null ? "" :$P{appUserName})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="260" y="169" width="68" height="16" uuid="b2f108bc-6738-4da3-85f1-e39dc4ff0818">
