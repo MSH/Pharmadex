@@ -309,6 +309,9 @@
 		<script type="text/javascript">
 	        function start() {
 	        	PF('statusDialog').show();
+	        	setTimeout(function() {
+					PF('statusDialog').hide();
+				}, 3000);
 	        }
 	
 	        function stop() {

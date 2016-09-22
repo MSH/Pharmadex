@@ -999,11 +999,14 @@
 		
 		<script type="text/javascript">
 			function start() {
-			PF('statusDialog').show();
+				PF('statusDialog').show();
+				setTimeout(function() {
+					PF('statusDialog').hide();
+				}, 3000);
 			}
 				
 			function stop() {
-			PF('statusDialog').hide();
+				PF('statusDialog').hide();
 			}
 		</script>
 	</ui:define>
