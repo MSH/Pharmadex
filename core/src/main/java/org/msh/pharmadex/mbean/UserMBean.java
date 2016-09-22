@@ -402,4 +402,13 @@ public class UserMBean implements Serializable {
     public void setLetterService(LetterService letterService) {
         this.letterService = letterService;
     }
+
+	public WorkspaceDAO getWorkspaceDAO() {
+		return workspaceDAO;
+	}
+
+	public void setWorkspaceDAO(WorkspaceDAO workspaceDAO) {
+		this.workspaceDAO = workspaceDAO;
+	}
+    
 }
