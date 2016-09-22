@@ -79,7 +79,12 @@ public class ProcessProdBnNA implements Serializable {
   	      	return false;
   	    }
       
-      public void setShowFeedBackButton(boolean showFeedBackButton) {
+     public boolean findCompaniesChanged(){
+ 		if (changedFields.contains("ProdCompanies")) return true;
+       	return false;
+    }
+     
+     public void setShowFeedBackButton(boolean showFeedBackButton) {
           this.showFeedBackButton = showFeedBackButton;
       }
 
