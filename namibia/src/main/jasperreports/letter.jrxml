@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-25T17:07:41 -->
+<!-- 2016-09-22T12:43:20 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="355b4245-79d2-44b4-b421-c0e09801e04f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -29,7 +29,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="620" splitType="Stretch">
+		<band height="606" splitType="Stretch">
 			<textField>
 				<reportElement positionType="Float" x="180" y="103" width="200" height="16" uuid="46bb8eac-6ea5-40c7-9b26-335a0ff7b343">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -94,7 +94,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA["Ref:"]]></textFieldExpression>
 			</textField>
-			<textField pattern="MMM, yyyy">
+			<textField pattern="dd.MM.yyyy">
 				<reportElement positionType="Float" x="440" y="169" width="115" height="16" uuid="aa0c0a84-5825-4f81-8261-62a023fc87f1">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -184,7 +184,7 @@
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="32" y="512" width="348" height="30" uuid="44d0c777-bfe3-4d85-837e-d346474794aa"/>
 				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["<b>".concat($P{curUser} == null ? "":$P{curUser}).concat("<br>REGISTRAR OF MEDICINES")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<b>Johannes Gaeseb".concat("<br>REGISTRAR OF MEDICINES")]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMM, yyyy">
 				<reportElement positionType="Float" x="383" y="590" width="175" height="16" uuid="f7299b96-5e62-4c92-a6c6-78201e7f458c">
