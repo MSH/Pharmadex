@@ -495,7 +495,7 @@ public class AppSelectMBean implements Serializable {
 		this.prodRegAppMbean = prodRegAppMbean;
 	}
 	 public boolean isShowProductChoice() {
-	 	   showProductChoice = (prodAppType==ProdAppType.VARIATION) || (prodAppType==ProdAppType.RENEW);
+	 	   showProductChoice = ((prodAppType==ProdAppType.VARIATION) || (prodAppType==ProdAppType.RENEW)) && (prodRegAppMbean.getProduct().getId()==null);
 	        return showProductChoice;
 		}
 
