@@ -26,7 +26,7 @@ import java.util.List;
  */
 @ManagedBean
 @RequestScoped
-public class ProdConsentFormNA extends ProdConsentForm implements Serializable {
+public class ProdConsentFormNA extends ProdConsentFormMZ implements Serializable {
 
     java.util.ResourceBundle bundle;
     private FacesContext context;
