@@ -1030,6 +1030,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
+		Properties prop = fetchReviewDetailsProperties();
 		try {
 			ReviewInfo ri = reviewInfoDAO.findOne(revDeficiency.getReviewInfo().getId());
 			ri.setReviewStatus (ReviewStatus.FIR_SUBMIT);
@@ -1055,7 +1056,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,getSentComment(revDeficiency), true);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
-
+			
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);		
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_ADDRESS1,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_ADDRESS2,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COUNTRY,"",false);
 			String res ="";
 			if(prodApp != null){
 				ProdAppType type = prodApp.getProdAppType();
@@ -1069,9 +1074,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					setAppResponsibleUser(prodApp.getApplicant().getContactName());													
 				}
 			}
+			//TODO	
+			/*List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
+			JRMapArrayDataSource source = createDeficiencySource(checkLists);*/
+			JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApp,bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
 
-			List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
-			JRMapArrayDataSource source = createDeficiencySource(checkLists);
 			URL resource = getClass().getClassLoader().getResource("/reports/rev_def_letter.jasper");
 			if(source != null){
 				if(resource != null){
