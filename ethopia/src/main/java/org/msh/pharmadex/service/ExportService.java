@@ -80,10 +80,11 @@ public class ExportService implements Serializable {
     private int lastCol=0;
     private Country ourCountry;
     private User admin;
-    private  Role staffRole;
+    private Role staffRole;
     private Role companyRole;
     private List<ApplicantType> atList;
     private int rowNo=0;
+    private int curCol;
 
     private boolean init(){
         ourCountry = countryDAO.findCountryByName("Ethiopia");
@@ -1106,5 +1107,146 @@ public class ExportService implements Serializable {
         obj.setUpdatedDate(today);
         return obj;
     }
+
+    public boolean checkProductInRow(Row row){
+        errorDetected=false;
+        rowNo=0;
+        lastCol=21;
+        Cell cell = null;
+        isNewATC=false;
+        isNewUom=false;
+        isNewForm=false;
+        try {
+            currrow = row;
+            rowNo++;
+            errorDetected = false;
+            Product prod = new Product();
+            LicenseHolder lic=null;
+            Applicant a = null;
+            Address addr = null;
+            Company co=null;
+            curCol=1;
+            cell = row.getCell(curCol);  // B Route Of Admin  catalog   in table adminroute
+            if (cell != null) {
+                AdminRoute route = fingAdminRouteAcc(cell.getStringCellValue(), curCol);
+                if (route==null){
+                    markItWrong("Error: Route of administration not found");
+                }
+            }else
+                markItWrong("Error: Route of administration not found");
+
+            curCol++;//C Therapeutic Group    ATC name
+            curCol++;//D ATS code
+            curCol++;
+            cell = row.getCell(curCol);// E Brand Name
+            if (cell == null) markItWrong("No Brand name");
+            curCol++;
+            cell = row.getCell(curCol);  // f Generic Name
+            if (cell == null) markItWrong("no Generic name");
+            curCol++;
+            cell = row.getCell(curCol);  //G Dose strength
+            if (cell == null) markItWrong("No dosage strength");
+            curCol++;
+
+            String val="";
+            val = getCellValue(curCol); //h - DosUnit
+            if ("".equals(val)) markItWrong("dos unit is empty");
+            DosUom dosUnits = findDocUnit(cell.getStringCellValue(), curCol);
+            if (dosUnits==null) markItWrong("dosage unit not found");
+            curCol++;
+            cell = row.getCell(curCol);  //I Dosage Form
+            if (cell==null) markItWrong("dosage form is empty");
+            DosageForm dosForm = findDosFormAcc(cell.getStringCellValue(), curCol);
+            if (dosForm==null) markItWrong("dosage form not found");
+            if (dosForm.getUid()==null) markItWrong("dosage form not found");
+            curCol++;//J prod_desc -  conttype
+            curCol++;
+            cell = row.getCell(curCol);  //K shelf_life(Months)
+            String shelfLife = getCellValue(cell);
+            if (Tools.isEmptyString(shelfLife)) markItWrong("shelf lif is empty");
+            cell = row.getCell(curCol);  //L Licence Holder/manufacturer
+            if (cell != null)
+                lic = findLicHolderByName(getCellValue(cell));
+            else
+                markItWrong("license holder is empty");
+            if (lic==null) markItWrong("license holder not found");
+            if (lic != null)
+                co=findCompany(cell.getStringCellValue());
+            if (co==null) markItWrong("Company of license holder not found",22);
+            curCol++;
+            cell = row.getCell(curCol); //M Local Agent 1
+            if (cell==null) markItWrong("applicant is empty");
+            if (cell != null) {
+                a = findApplicant(getCellValue(cell));
+                if (a==null) markItWrong("applicant not found");
+                co=findCompany(cell.getStringCellValue());
+                if (co==null) markItWrong("Company of applicant not found",22);
+            }
+            curCol++;// second agent
+            if (cell != null) {
+                a = findApplicant(getCellValue(cell));
+                if (a==null) markItWrong("applicant (2 agent) not found");
+                co=findCompany(cell.getStringCellValue());
+                if (co==null) markItWrong("Company of second agent not found",22);
+            }
+            curCol++; // ommit 2 cols, only for dictionary
+            if (cell != null) {
+                a = findApplicant(getCellValue(cell));
+                if (a==null) markItWrong("applicant (3 agent) not found");
+                co=findCompany(cell.getStringCellValue());
+                if (co==null) markItWrong("Company of third agent not found",22);
+            }
+            curCol++; //P date
+            curCol++;//Q Expiry Date
+            curCol++;
+            cell = row.getCell(curCol);//R Manufacturer/Actual site/
+            String all="";
+            if (cell != null) {
+                all = getCellValue(cell);
+                co = findCompany(all);
+                if (co==null) markItWrong("company of manufacturer not found",22);
+            }else
+                markItWrong("Manufacturer is empty");
+            curCol++;//S Address
+            curCol++;//T Country
+            cell = row.getCell(curCol);//T Country
+            String countryName = getCellValue(cell);
+            if (countryName!=null){
+                Country mnfCountry = countryDAO.findCountryByName(countryName);
+                if (mnfCountry==null) markItWrong("Country not found");
+            }else{
+                markItWrong("country is empty");
+            }
+            Product oldprod=findExistingProd(prod);
+            if(oldprod!=null){
+                markItDone();
+            }
+
+            curCol++;//additional comment
+            return true;
+        }catch (Exception e){
+            markItWrong(e.getMessage());
+            return false;
+        }
+   }
+
+    private void markItWrong(String msg) {
+        markItWrong(msg,21);
+    }
+
+    private void markItWrong(String msg, Integer collToMsg){
+        errorDetected=true;
+        System.out.println(String.valueOf(currrow.getRowNum())+" " + curCol + " " + msg);
+        if (collToMsg==null) collToMsg=21;
+        Cell erCell = currrow.createCell(collToMsg);
+        erCell.setCellValue(String.valueOf(currrow.getRowNum())+" " + curCol + " " + msg);
+        ExcelTools.setCellBackground(currrow.getCell(curCol), IndexedColors.GREY_25_PERCENT.getIndex());
+        ExcelTools.setCellBackground(currrow.getCell(0), IndexedColors.GREY_25_PERCENT.getIndex());
+    }
+
+    private void markItDone(){
+        ExcelTools.setCellBackground(currrow.getCell(0), IndexedColors.GREEN.getIndex());
+    }
+
 
 }

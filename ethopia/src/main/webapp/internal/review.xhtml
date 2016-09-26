@@ -83,7 +83,7 @@
                     </p:selectOneMenu>
 
                     <h:outputText value="#{msgs.upload_file}"/>
-                    <p:fileUpload value="#{reviewBn.file}" mode="simple" rendered="#{!reviewBn.attach}"/>
+                    <p:fileUpload value="#{reviewBn.file}" mode="simple" sizeLimit="4194304" rendered="#{!reviewBn.attach}"/>
 
                     <h:outputText value=""/>
                     <p:commandLink value="#{msgs.global_upload}" ajax="false"

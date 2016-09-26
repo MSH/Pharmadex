@@ -446,7 +446,7 @@ public abstract class ProcessPOrderBn implements Serializable {
                 displayReviewComment = true;
             else
                 displayReviewComment = false;
-            if (userSession.isCsd()) {
+            if (userSession.isCsd() || userSession.isCst()) {
                 if (pOrderBase.getState().equals(AmdmtState.SUBMITTED)) {
                     displayReviewComment = true;
                 }

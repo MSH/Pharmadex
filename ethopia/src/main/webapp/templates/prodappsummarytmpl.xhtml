@@ -1,7 +1,9 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <div align="right">
         <p:panel id="buttons" align="right" >
@@ -10,11 +12,20 @@
             </p:commandButton>
             <h:outputLabel value=" "/>
             <p:commandButton id="regdownload" value="#{msgs.reg_cert}"
+                             onclick="PrimeFaces.monitorDownload(start, stop)"
                              rendered="#{userSession.head and empty dialogMode}"
                              icon="ui-icon-arrowthichk-n">
                 <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
             </p:commandButton>
             <h:outputLabel value=" "/>
+            <!--if certificate didn't generate on approving stage - generate it-->
+            <p:commandButton id="createCert" value="#{msgs.reg_cert}" ajax="true"
+                             onclick="#{productDisplay.generateCertificate()}"
+                             rendered="#{userSession.staff and empty dialogMode}"
+                             update="regdownload"
+                            >
+                <p:fileDownload value="#{fileUploadController.regCertDownload(prodAppData)}"/>
+            </p:commandButton>
             <p:commandButton id="showregdetails" value="#{msgs.Global_details}"
                              action="/internal/processreg"
                              rendered="#{(showfull||userSession.inspector) and empty dialogMode}"
@@ -47,6 +58,15 @@
             </ui:decorate>
         </p:tab>
 
+        <p:tab title="#{msgs.variationSummary}" rendered="#{not empty prodAppData.prodAppDetails}">
+            <h:panelGrid columns="1" cellspacing="10" columnClasses="col1">
+                <pe:ckEditor id="varDetails" value="#{prodAppData.prodAppDetails}"
+                             readOnly="true"
+                             height="100" width="550"
+                             toolbar="[]"
+                             rendered="#{not empty prodAppData.prodAppDetails}"/>
+            </h:panelGrid>
+        </p:tab>
         <p:tab title="#{msgs.product_details}">
             <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
 
@@ -86,8 +106,6 @@
                 <h:outputLabel value="#{msgs.prod_desc}"/>
                 <h:outputLabel value="#{prodAppData.product.prodDesc}"/>
 
-                <h:outputLabel value="#{msgs.variationSummary}"/>
-                <h:outputLabel value="#{prodAppData.prodAppDetails}"/>
             </h:panelGrid>
         </p:tab>
 

@@ -57,6 +57,14 @@
                   <p:message for="imprtManuf"/>
                   <h:outputLabel/>
 
+                  <p:commandButton action="#{exportMBean.checkProducts}"
+                                   id="chkprod"
+                                   value="Check products" ajax="false">
+                  </p:commandButton>
+                  <p:message for="chkapp"/>
+                  <h:outputLabel/>
+
+
                   <h:outputLabel/>
 
                     <h:outputText id="imprtuser" value="#{exportMBean.taskStatus}"/>

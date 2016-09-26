@@ -7,12 +7,15 @@
         <p:commandButton icon="ui-icon-print" value="#{msgs.global_print}" type="button">
             <p:printer target="prodsummaccpnl"/>
         </p:commandButton>
+
         <p:commandButton id="regdownload" value="#{msgs.reg_cert}" ajax="true"
                          onclick="PrimeFaces.monitorDownload(start, stop)"
                          icon="ui-icon-arrowthichk-n"
-                         rendered="#{fileUploadController.visibleCertDownload(prodAppData)}">
+                         rendered="#{fileUploadController.visibleCertDownload(prodAppData)}"
+                         >
             <p:fileDownload value="#{fileUploadController.regCertDownload(prodAppData)}"/>
         </p:commandButton>
+
         <p:commandButton value="#{msgs.global_exit}" immediate="true"
         				 action="#{productDisplay.goToBack()}" ajax="false" icon="ui-icon-extlink"
         				 rendered="#{showexit}"/>

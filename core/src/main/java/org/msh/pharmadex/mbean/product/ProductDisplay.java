@@ -1,7 +1,9 @@
 package org.msh.pharmadex.mbean.product;
 
+import net.sf.jasperreports.engine.JRException;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.TimelineService;
@@ -10,12 +12,15 @@ import org.primefaces.extensions.model.timeline.TimelineEvent;
 import org.primefaces.extensions.model.timeline.TimelineModel;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +118,30 @@ public class ProductDisplay implements Serializable {
             product = prodApplications.getProduct();
             applicant = prodApplications.getApplicant();
             getCurrentInstance().getExternalContext().getFlash().keep("prodAppID");
+        }
+    }
+
+    //if certificate didn't generate on previous stage, do it
+    public void generateCertificate(){
+        String result = "";
+        try {
+            if (prodApplications.getRegCert()==null)
+                result = prodApplicationsService.createRegCert(prodApplications);
+            else
+                result = "created";
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if ("created".equals(result)){
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error","Certificate didn't create"));
+        }else{
+            FacesContext.getCurrentInstance().addMessage(null,new FacesMessage("Success","Just open certificate by 'Certificate' button"));
         }
     }
 

@@ -410,5 +410,5 @@ public class UserMBean implements Serializable {
 	public void setWorkspaceDAO(WorkspaceDAO workspaceDAO) {
 		this.workspaceDAO = workspaceDAO;
 	}
-    
+
 }

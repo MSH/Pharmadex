@@ -23,7 +23,6 @@ import java.nio.file.Paths;
 
 @ManagedBean
 @ViewScoped
-
 public class ExportMBean implements Serializable {
     private String filename;
     public static Workbook wb;
@@ -101,6 +100,43 @@ public class ExportMBean implements Serializable {
         if (f == null) return false;
         Path path = Paths.get(filename);
         return true;
+    }
+
+    public String checkProducts() throws FileNotFoundException {
+        if (!initProcess()) setFilename("Initialisation failure");
+        if (f.isFile()) try {
+            FileInputStream infile = new FileInputStream(filename);
+            wb = WorkbookFactory.create(infile);
+            Sheet sheet = wb.getSheetAt(0);
+            infile.close();
+            if (sheet == null) return "";
+            boolean res;
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                res = exportService.checkProductInRow(sheet.getRow(i));
+                if (res) {
+                    success++;
+                    ExcelTools.setCellBackground(sheet.getRow(i).getCell(3), IndexedColors.GREEN.getIndex());
+                } else failure++;
+
+            }
+            setIgnore(success + failure);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidFormatException e) {
+            setFilename("file not found");
+        } finally{
+            File outf = new File("C:/Temp/res_prod.xlsx");
+            FileOutputStream out = new FileOutputStream(outf);
+            try {
+                wb.write(out);
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            setFilename("file not found");
+        return "";
     }
 
     public String startExport(boolean importData) throws FileNotFoundException {
