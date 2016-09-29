@@ -71,6 +71,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -520,7 +521,8 @@ public class ProdApplicationsService implements Serializable {
 		System.out.println("params filled");
 		JasperPrint result = null;
 		try {
-			result = JasperFillManager.fillReport(resource.getFile(), param, conn);
+			//result = JasperFillManager.fillReport(resource.getFile(), param, conn);
+			result = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource());
 			System.out.println("filled report");
 		} catch (JRException e) {
 			e.printStackTrace();
