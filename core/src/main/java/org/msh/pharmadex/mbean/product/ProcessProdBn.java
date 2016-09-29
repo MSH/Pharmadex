@@ -566,8 +566,7 @@ public class ProcessProdBn implements Serializable {
 	}
 
 	public String registerProduct() {
-		facesContext = getCurrentInstance();
-		try {
+			facesContext = getCurrentInstance();
 			if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
 				return "";
@@ -581,27 +580,15 @@ public class ProcessProdBn implements Serializable {
 
 			String retValue = prodApplicationsService.registerProd(prodApplications);
 			if(retValue.equals("created")) {
+				System.out.println("Product moved to registered");
 				prodApplicationsService.createRegCert(prodApplications);
 				timeLineList = null;
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
 			}else{
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Product registered but error generating certificate."));
-		} catch (JRException e) {
-			e.printStackTrace();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Product registered but error generating certificate."));
-		} catch (SQLException e) {
-			e.printStackTrace();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Product registered but error generating certificate."));
-		} catch (Exception ex){
-			ex.printStackTrace();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
-		}
-		timeLine = new TimeLine();
-		return null;
+			timeLine = new TimeLine();
+			return null;
 	}
 
 	public List<Mail> getMails() {

@@ -216,7 +216,8 @@ public class ProcessProdBnET implements Serializable {
 
     public List<ProdApplications> getAllAncestors(){
         ProdApplications prod = processProdBn.getProdApplications();
-        allAncestors = getProdApplicationsServiceET().getAllAncestor(prod);
+        if (prod==null) return null;
+        allAncestors = prodApplicationsServiceET.getAllAncestor(prod);
 	    return allAncestors;
     }
 
@@ -264,5 +265,6 @@ public class ProcessProdBnET implements Serializable {
     public void setBackTo(String backTo) {
         this.backTo = backTo;
     }
+
 
 }

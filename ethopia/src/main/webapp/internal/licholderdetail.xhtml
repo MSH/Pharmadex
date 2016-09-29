@@ -132,6 +132,7 @@
                                 <p:commandLink id="viewLink" value="#{prodApps.prodName}"
                                                action="#{applicantHome.sentToDetail(prodApps.id)}"
                                                ajax="false">
+                                    <f:param name = "licHolderID" value="#{licHolderBn.licenseHolder.id}"/>
                                 </p:commandLink>
                             </p:column>
 

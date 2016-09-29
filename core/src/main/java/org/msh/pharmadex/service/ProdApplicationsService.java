@@ -485,19 +485,25 @@ public class ProdApplicationsService implements Serializable {
 		return prodApplicationsDAO.findPendingRenew(params);
 	}
 
-	public JasperPrint initRegCert() throws JRException, SQLException {
+	public JasperPrint initRegCert(){
 		product = productDAO.findProduct(prodApp.getProduct().getId());
 
+		System.out.println("product found");
 		String regDt = DateFormat.getDateInstance().format(prodApp.getRegistrationDate());
 		String expDt = DateFormat.getDateInstance().format(prodApp.getRegExpiryDate());
 
 		Connection conn = entityManager.unwrap(Session.class).connection();
+		System.out.println("connection ready");
 		URL resource = getClass().getResource("/reports/reg_letter.jasper");
+		System.out.println("resource found");
 		HashMap param = new HashMap();
 		param.put("prodappid", prodApp.getId());
-		String certNo = "0000000000"+String.valueOf(prodApp.getId())+String.valueOf(prodApp.getProduct().getId());
-		certNo = certNo.substring(certNo.length()-10,certNo.length());
-		String fullNo=prodApp.getProdAppType()+"/"+certNo;
+		String fullNo = prodApp.getProdRegNo();
+		if (fullNo==null) {
+			String certNo = "0000000000" + String.valueOf(prodApp.getId()) + String.valueOf(prodApp.getProduct().getId());
+			certNo = certNo.substring(certNo.length() - 10, certNo.length());
+			fullNo = prodApp.getProdAppType() + "/" + certNo;
+		}
 		//param.put("containerType",prodApp.getProduct().getContType());
 		param.put("cert_no",fullNo);
 		param.put("productDescription",prodApp.getProduct().getProdDesc());
@@ -511,7 +517,15 @@ public class ProdApplicationsService implements Serializable {
 			}
 		}
 		param.put("prescription",catStr.toLowerCase());
-		return JasperFillManager.fillReport(resource.getFile(), param, conn);
+		System.out.println("params filled");
+		JasperPrint result = null;
+		try {
+			result = JasperFillManager.fillReport(resource.getFile(), param, conn);
+			System.out.println("filled report");
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	public JasperPrint initRejCert(String summary) throws JRException {
@@ -614,17 +628,25 @@ public class ProdApplicationsService implements Serializable {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public String createRegCert(ProdApplications prodApp) throws IOException, JRException, SQLException {
+	public String createRegCert(ProdApplications prodApp) {
 		this.prodApp = prodApp;
 		this.product = prodApp.getProduct();
 		File invoicePDF = null;
-		invoicePDF = File.createTempFile("" + product.getProdName() + "_registration", ".pdf");
-		JasperPrint jasperPrint = initRegCert();
-		jasperPrint.removePage(1);
-		net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
-		prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
-		prodApplicationsDAO.updateApplication(prodApp);
-		return "created";
+		try {
+			invoicePDF = File.createTempFile("" + product.getProdName() + "_registration", ".pdf");
+			JasperPrint jasperPrint = initRegCert();
+			if (jasperPrint==null)
+				throw new JRException("Error during creation of certificate");
+			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+			prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
+			prodApplicationsDAO.updateApplication(prodApp);
+			return "created";
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 

@@ -34,16 +34,8 @@ public class TestReportsBn {
     public void startCheckingRegCertificate(){
         long id = Long.parseLong(recId);
         ProdApplications prodApp = prodApplicationsService.findProdApplications(id);
-        try {
-            prodApplicationsService.createRegCert(prodApp);
-            prodApplicationsService.createAckLetter(prodApp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JRException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        prodApplicationsService.createRegCert(prodApp);
+        prodApplicationsService.createAckLetter(prodApp);
     }
 
 

@@ -11,20 +11,22 @@
                 <p:printer target="prodsummaccpnl"/>
             </p:commandButton>
             <h:outputLabel value=" "/>
+            <!--
             <p:commandButton id="regdownload" value="#{msgs.reg_cert}"
                              onclick="PrimeFaces.monitorDownload(start, stop)"
                              rendered="#{userSession.head and empty dialogMode}"
                              icon="ui-icon-arrowthichk-n">
                 <p:fileDownload value="#{fileUploadController.regCertDownload()}"/>
             </p:commandButton>
+            -->
             <h:outputLabel value=" "/>
+
             <!--if certificate didn't generate on approving stage - generate it-->
             <p:commandButton id="createCert" value="#{msgs.reg_cert}" ajax="true"
-                             onclick="#{productDisplay.generateCertificate()}"
+                             onclick="PrimeFaces.monitorDownload(start, stop)"
                              rendered="#{userSession.staff and empty dialogMode}"
-                             update="regdownload"
                             >
-                <p:fileDownload value="#{fileUploadController.regCertDownload(prodAppData)}"/>
+                <p:fileDownload value="#{productDisplay.generateCertificate()}"/>
             </p:commandButton>
             <p:commandButton id="showregdetails" value="#{msgs.Global_details}"
                              action="/internal/processreg"
@@ -35,6 +37,10 @@
             <p:commandButton id="closeDialog" value="#{msgs.global_close}"
                              rendered="#{dialogMode}"
                              oncomplete="PF('parentAppDlg').hide()"
+            />
+            <p:commandButton id="gotoBack" value="#{msgs.global_back}"
+                             ajax="false"
+                             action="#{productDisplay.goToBack()}"
             />
         </p:panel>
     </div>

@@ -28,8 +28,9 @@
                                 url="/secure/prodreginit.faces" ajax="false"
                                 rendered="#{userSession.company||userSession.admin||userSession.staff}"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
-                                url="/secure/appregistration.faces"
-                                ajax="false" rendered="#{userSession.displayAppReg}"/>
+                                url="/secure/applicantform.faces"
+                                ajax="false"
+                                rendered="#{userSession.displayAppReg}"/>
                 </p:submenu>
 
 

@@ -7,6 +7,8 @@ import org.msh.pharmadex.domain.Country;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.service.ApplicantService;
+import org.msh.pharmadex.util.Scrooge;
+import org.msh.pharmadex.util.StrTools;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -15,6 +17,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +44,16 @@ public class ApplicantHome implements Serializable {
     private List<ProdApplications> filteredProdNotRegApplicationses;
     
     public String sentToDetail(Long id) {
-        Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
-        flash.put("prodAppID", id);
-        return "productdetail";
+        Scrooge.setBeanParam("prodAppID", id);
+        Long licHolderID = Scrooge.beanParam("licHolderID");
+        if (licHolderID==null)
+            licHolderID = Scrooge.beanParam("appID");
+        String idParam = String.valueOf(licHolderID);
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String url = request.getRequestURL().toString();
+        url = StrTools.right(url,"ethiopia/");
+        Scrooge.setStrBeanParam("SourcePage",idParam+":"+url);
+        return "/public/productdetail";
     }
 
     public List<ProdApplications> getProdApplicationses() {
