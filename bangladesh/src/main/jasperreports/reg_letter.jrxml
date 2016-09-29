@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-09-12T18:07:34 -->
+<!-- 2016-09-28T18:33:23 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="marketing_authorization" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ede1d88-e4a3-4012-a97f-fcb8fdec872e">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -109,34 +109,15 @@
 		<band height="493" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement x="32" y="25" width="524" height="16" uuid="54e80138-3f02-4fd8-9a03-8f36b428e504">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<reportElement x="32" y="5" width="524" height="48" uuid="202b1e57-5723-4018-8f15-9aa9e9658027">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font fontName="SansSerif" size="11" isBold="true" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[DIRECTORATE GENERAL OF DRUG ADMINISTRATION (DGDA) OF BANGLADESH]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="32" y="5" width="524" height="16" uuid="202b1e57-5723-4018-8f15-9aa9e9658027">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[PEOPLE’S REPUBLIC OF BANGLADESH]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="32" y="45" width="524" height="16" uuid="487c9eaf-1ad0-4c33-8362-95cff5334e2f">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[Mohakhali, Dhaka]]></text>
+				<text><![CDATA[Government of the Peoples Republic of Bangladesh
+Directorate General of Drug Administration (DGDA)
+Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 			</staticText>
 			<textField>
 				<reportElement positionType="Float" x="32" y="87" width="180" height="16" uuid="44f3ed1d-2adc-40f6-9112-54070fb2f0a7">
@@ -182,7 +163,7 @@
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="32" y="164" width="280" height="16" uuid="c952ae28-73ce-460a-a9de-14e343aa0f23">
+				<reportElement positionType="Float" x="32" y="164" width="348" height="16" uuid="c952ae28-73ce-460a-a9de-14e343aa0f23">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -190,7 +171,7 @@
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Subject: Approval Letter for the Registration of Drug"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Subject: APPROVAL LETTER FOR THE REGISTRATION OF DRUG"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="32" y="196" width="180" height="16" uuid="c7f8be4f-f1f5-476a-86a8-6125926f9fc4">
@@ -378,6 +359,7 @@
 	</title>
 	<pageFooter>
 		<band height="76" splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
 			<staticText>
 				<reportElement x="269" y="5" width="285" height="71" uuid="f271c2ed-6fa9-4cd2-96c9-c7bc74c8a87d">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -397,7 +379,7 @@ Website: www.dgda.gov.bd]]></text>
 	<summary>
 		<band height="802" splitType="Immediate">
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="11" width="524" height="94" uuid="b0b1749d-2373-4e94-9916-334551b228ea">
+				<reportElement positionType="Float" x="31" y="11" width="524" height="94" uuid="b0b1749d-2373-4e94-9916-334551b228ea">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-30T13:40:28 -->
+<!-- 2016-09-28T18:27:01 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -27,8 +27,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="129" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="199" splitType="Stretch">
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="236" y="5" width="100" height="100" uuid="b94aef40-5b47-43d1-87ca-52fddd50615b">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -36,14 +35,25 @@
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="32" y="113" width="524" height="16" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<reportElement x="32" y="113" width="524" height="48" uuid="fda74fa2-fbf2-4774-ac48-840e40cf8b46">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="html">
 					<font fontName="DejaVu Sans" size="11" isBold="true" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[Directorate General of Drug Administration of Bangladesh]]></text>
+				<text><![CDATA[Government of the Peoples Republic of Bangladesh<br>Directorate General of Drug Administration (DGDA)<br>Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="32" y="177" width="524" height="16" uuid="3ef98568-b503-46e5-a8e0-abc01195c2a6">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="html">
+					<font fontName="DejaVu Sans" size="11" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Dossier Acknowledgement Letter]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -241,6 +251,7 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="76" splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
 			<staticText>
 				<reportElement x="270" y="5" width="285" height="71" uuid="f271c2ed-6fa9-4cd2-96c9-c7bc74c8a87d">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -258,13 +269,13 @@ Website: www.dgda.gov.bd]]></text>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="146" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="211" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="256" y="99" width="300" height="18" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
+				<reportElement positionType="Float" x="256" y="99" width="300" height="32" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="12"/>
@@ -279,10 +290,11 @@ Website: www.dgda.gov.bd]]></text>
 				<textFieldExpression><![CDATA["Your application has been accepted for evaluation. It is anticipated that the evaluation will be completed by approximately 1 year from the date of submission. The anticipated date of completion of the evaluation has been provided for your convenience and it is an estimate only.".concat("<br><br>If you have any queries as to the meaning of this letter, you should contact the undersigned immediately. ").concat("<br><br>Yours faithfully ")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="256" y="121" width="300" height="16" uuid="080cc243-00d5-4bf8-9c97-e069c8505a6b">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<reportElement x="256" y="131" width="300" height="80" uuid="080cc243-00d5-4bf8-9c97-e069c8505a6b">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textElement textAlignment="Right" markup="html"/>
+				<textFieldExpression><![CDATA["Director General,<br>Directorate General of Drug Administration<br>&<br>Licencing Authority (Drugs)<br>Government of the People’s Republic of Bangladesh"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

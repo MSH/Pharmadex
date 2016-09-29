@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-30T13:42:39 -->
+<!-- 2016-09-28T18:34:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -134,7 +134,7 @@
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Subject: Rejection Letter for the Registration of Drug"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Subject: REJECTION LETTER FOR THE REGISTRATION OF DRUG"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="32" y="186" width="180" height="16" uuid="38c501ea-c6e5-4dc6-9a0b-76fecf22f1ad">
@@ -179,17 +179,6 @@
 				</reportElement>
 				<textFieldExpression><![CDATA["Dosage form   "]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="32" y="37" width="522" height="16" uuid="d8c24777-6288-46e2-af61-b1d225d319f3">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[Mohakhali, Dhaka]]></text>
-			</staticText>
 			<textField>
 				<reportElement positionType="Float" x="32" y="216" width="524" height="30" uuid="25cd91d6-5703-4242-b1e0-7d65015cdf4b"/>
 				<textFieldExpression><![CDATA["In response to your application as per the above mentioned reference number for registration of the following product; DGDA hereby inform you that the evaluation of the application has been completed."]]></textFieldExpression>
@@ -226,26 +215,13 @@
 				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="32" y="5" width="522" height="16" uuid="2f21b5cc-e64d-449a-af66-c2b99b88ef6f">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<reportElement x="32" y="5" width="522" height="64" uuid="2f21b5cc-e64d-449a-af66-c2b99b88ef6f">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="html">
 					<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[PEOPLE’S REPUBLIC OF BANGLADESH]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="32" y="21" width="522" height="16" uuid="b5dace2c-05d9-437b-ac94-1133bc42497f">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[DIRECTORATE GENERAL OF DRUG ADMINISTRATION (DGDA) OF BANGLADESH]]></text>
+				<text><![CDATA[Government of the Peoples Republic of Bangladesh<br>Directorate General of Drug Administration (DGDA)<br>Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="32" y="401" width="524" height="20" uuid="87a038f6-80f4-47b1-9e83-b7202e2fb334"/>
@@ -271,6 +247,7 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="76" splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
 			<staticText>
 				<reportElement x="269" y="5" width="285" height="71" uuid="f271c2ed-6fa9-4cd2-96c9-c7bc74c8a87d">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
