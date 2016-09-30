@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+
+        <p:messages id="messages" showDetail="true"/>
+        <h:form prependId="false">
+
+            <p:panel header="#{msgs.registration_product}" rendered="#{userSession.head || userSession.admin}">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <p:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
+                    <p:autoComplete value="#{regProdMbn.prodTable}" id="basicPojo"
+                                    completeMethod="#{regProdMbn.completeProduct}"
+                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                    converter="#{productConverter}" forceSelection="true" >
+                        <p:ajax event="itemSelect" listener="#{regProdMbn.onItemSelect}" update="@form" process="@form"/>
+                    </p:autoComplete>
+                    <p:commandButton value="#{msgs.open_app}"
+                                     action="/internal/processreg.faces" ajax="false">
+                        <f:param name="prodAppID" value="#{regProdMbn.prodTable.prodAppID}"/>
+                        <f:param name="sourcePage" value="/internal/processcancellist.faces"/>
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:panel>
+
+            <p:panel header="#{msgs.suspcancel_applications}">
+                <p:dataTable id="susptable" value="#{suspAppMBeanMZ.suspList}" var="susp"
+                			filteredValue="#{suspAppMBeanMZ.filteredList}" 
+                            paginator="true" rows="20" paginatorPosition="bottom"
+                         	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         	rowsPerPageTemplate="20,40,100">
+                    <p:column headerText="#{msgs.application_no}">
+                       <p:commandLink id="susplink" value="#{susp.suspNo}"
+                                       action="#{suspAppMBeanMZ.openSuspForm(susp.id)}" ajax="false">
+                            <f:param name="suspDetailID" value="#{susp.id}"/>
+                            <f:param name="sourcePage" value="/internal/processcancellist.faces" />
+                        </p:commandLink>
+                    </p:column>
+                    
+                    <p:column headerText="#{msgs.prod_name}">
+                        <h:outputText value="#{susp.prodApplications.product.prodName}"/>
+                    </p:column>
+					
+					<p:column headerText="#{msgs.decision_date}">
+						<h:outputText value="#{susp.decisionDate}">
+							<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}" />
+						</h:outputText>
+					</p:column>
+                    <!-- <p:column headerText="#{msgs.moderator_name}">
+                        <h:outputText value="#{susp.moderator.name}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.processor}">
+                        <h:outputText value="#{susp.reviewer.name}"/>
+                    </p:column> -->
+
+                    <p:column headerText="#{msgs.global_curr_status}">
+                        <h:outputText value="#{susp.decision}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.dec_date}">
+                        <h:outputText value="#{susp.decisionDate}" >
+                        	<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}" />
+                        </h:outputText>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

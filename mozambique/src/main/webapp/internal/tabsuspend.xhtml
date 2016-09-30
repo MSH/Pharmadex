@@ -1,0 +1,46 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<h:panelGrid columns="1" cellpadding="5" cellspacing="5">
+		<p:dataTable id="suspdet" value="#{processProdBnMZ.suspDetails}" var="suspd">
+				<!-- <p:column headerText="#{msgs.batch_no}">
+					<p:commandLink id="suspLink" value="#{suspd.batchNo}"
+						action="/internal/suspenddetail.faces" ajax="false">
+						<f:param name="suspDetailID" value="#{suspd.id}"/>
+                		<f:param name="sourcePage" value="/internal/processreg.faces" />
+					</p:commandLink>
+				</p:column> -->
+				
+				<p:column headerText="#{msgs.application_no}">
+	                <p:commandLink id="susplink" value="#{suspd.suspNo}"
+	                               action="#{suspAppMBeanMZ.openSuspForm(suspd.id)}" ajax="false">
+		                <f:param name="suspDetailID" value="#{suspd.id}"/>
+		                <f:param name="sourcePage" value="/internal/processreg.faces" />
+	                </p:commandLink>
+                </p:column>
+                    <!-- #{suspAppMBeanMZ.openSuspForm(suspd.id)} -->
+				<p:column headerText="#{msgs.susp_report_org}">
+					<h:outputText value="#{suspd.orgReported}" />
+				</p:column>
+	
+				<p:column headerText="#{msgs.decision_date}">
+					<h:outputText value="#{suspd.decisionDate}">
+						<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="#{msgs.global_decision}">
+					<h:outputText value="#{msgs[suspd.decision.key]}" />
+				</p:column>
+	
+				<p:column headerText="#{msgs.suspStatus}">
+					<h:outputText value="#{msgs[suspd.suspensionStatus.key]}" />
+				</p:column>
+	
+			</p:dataTable>
+	</h:panelGrid>
+</ui:composition>

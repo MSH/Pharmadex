@@ -10,7 +10,7 @@
                             ajax="false"/>
            <p:menuitem value="#{msgs.susp_prod}" icon="ui-icon-document" url="/public/suspendedproducts.faces"
                             ajax="false"/>
-           <p:menuitem value="#{msgs.revoke_prod}" icon="ui-icon-document" url="/public/revokedproducts.faces"
+           <p:menuitem value="#{msgs.cancel_prod}" icon="ui-icon-document" url="/public/canceledproducts.faces"
                             ajax="false"/>
 			
             <sec:isAuthenticated>
@@ -43,6 +43,9 @@
                     <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-document"
                                 url="/internal/processapplist.faces"
                                 rendered="#{userSessionService.displayListAppOnReg(userSession.loggedINUserID)}"/>
+                    <p:menuitem value="#{msgs.process_suspcancel}" icon="ui-icon-document"
+                                url="/internal/processcancellist.faces"
+                                rendered="#{userSession.head || userSession.admin}"/>
                 </p:submenu>
                 
 				<p:separator rendered="#{!isleftmenu and (userSession.admin||userSession.staff)}"/>
