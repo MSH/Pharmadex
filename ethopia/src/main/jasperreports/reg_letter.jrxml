@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-08-10T23:03:52 -->
+<!-- 2016-09-30T10:38:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
     <property name="ireport.zoom" value="1.1"/>
     <property name="ireport.x" value="0"/>
@@ -323,7 +323,7 @@ and p.id = $P{prodappid}]]>
                 </textElement>
                 <text><![CDATA[Signature of Authority]]></text>
             </staticText>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="1" y="327" width="569" height="20" uuid="0691ac57-f308-4666-9c93-3b412b1dc898"/>
                 <textElement textAlignment="Center">
                     <font size="12" isBold="true"/>
@@ -622,7 +622,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 1_TD" height="20" rowSpan="1">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="179" height="20" uuid="f4033164-112b-46c5-939b-0e26acabb5f2"/>
                                 <textElement textAlignment="Left"/>
                                 <textFieldExpression><![CDATA[$F{inn}]]></textFieldExpression>
@@ -639,7 +639,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 1_TD" height="20" rowSpan="1">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="90" height="20" uuid="39665921-4878-4406-91de-5ae918c65824"/>
                                 <textElement textAlignment="Center" verticalAlignment="Top"/>
                                 <textFieldExpression><![CDATA[$F{RefStd}]]></textFieldExpression>
@@ -660,7 +660,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 1_TD" height="20">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="71" height="20" uuid="bdb743cc-13d7-4297-a104-1fbec58de3e8">
                                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
                                 </reportElement>
@@ -679,7 +679,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 1_TD" height="20">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="40" height="20" uuid="5b58b97f-6de6-4f57-a376-43f073d4686f"/>
                                 <textElement textAlignment="Center" verticalAlignment="Top"/>
                                 <textFieldExpression><![CDATA[$F{UOM}]]></textFieldExpression>
@@ -707,7 +707,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 2_TD" height="20" rowSpan="1">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="179" height="20" uuid="31c4d00f-2558-4f71-b84d-a9d595331f04"/>
                                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
                             </textField>
@@ -723,7 +723,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 2_TD" height="20" rowSpan="1">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="90" height="20" uuid="a2484d0d-b5f9-4090-88c4-7ca1d11e49e9"/>
                                 <textElement textAlignment="Center"/>
                                 <textFieldExpression><![CDATA[$F{RefStd}]]></textFieldExpression>
@@ -742,7 +742,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 2_TD" height="20">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="71" height="20" uuid="113418bb-0a03-47ca-85de-25eb55c9c3a2"/>
                                 <textElement textAlignment="Center"/>
                                 <textFieldExpression><![CDATA[$F{Dosage_strength}]]></textFieldExpression>
@@ -761,7 +761,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 2_TD" height="20">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="40" height="20" uuid="637077bb-cf03-4b2f-910f-ff847fae0c5e"/>
                                 <textElement textAlignment="Center"/>
                                 <textFieldExpression><![CDATA[$F{UOM}]]></textFieldExpression>
@@ -790,7 +790,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 4_TD" height="20" rowSpan="1">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="177" height="20" uuid="be2be89c-97d1-4c52-baf6-9cd9816ffb77"/>
                                 <textElement textAlignment="Center"/>
                                 <textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
@@ -808,7 +808,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 4_TD" height="20" rowSpan="1">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="214" height="20" uuid="6617e6dd-6da3-455b-b930-7d37486f8cca"/>
                                 <textFieldExpression><![CDATA[$F{addr}]]></textFieldExpression>
                             </textField>
@@ -823,7 +823,7 @@ and p.id = $P{prodappid}]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="table 4_TD" height="20" rowSpan="1">
-                            <textField>
+                            <textField isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="175" height="20" uuid="c382844f-bd2b-4394-ade4-7045f3608615"/>
                                 <textElement textAlignment="Center"/>
                                 <textFieldExpression><![CDATA[$F{companyType}]]></textFieldExpression>

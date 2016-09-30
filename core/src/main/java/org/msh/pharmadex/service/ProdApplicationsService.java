@@ -493,8 +493,6 @@ public class ProdApplicationsService implements Serializable {
 		String regDt = DateFormat.getDateInstance().format(prodApp.getRegistrationDate());
 		String expDt = DateFormat.getDateInstance().format(prodApp.getRegExpiryDate());
 
-		Connection conn = entityManager.unwrap(Session.class).connection();
-		System.out.println("connection ready");
 		URL resource = getClass().getResource("/reports/reg_letter.jasper");
 		System.out.println("resource found");
 		HashMap param = new HashMap();
@@ -521,8 +519,10 @@ public class ProdApplicationsService implements Serializable {
 		System.out.println("params filled");
 		JasperPrint result = null;
 		try {
-			//result = JasperFillManager.fillReport(resource.getFile(), param, conn);
-			result = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource());
+			Connection conn = entityManager.unwrap(Session.class).connection();
+			System.out.println("connection ready");
+			result = JasperFillManager.fillReport(resource.getFile(), param, conn);
+			//result = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource());
 			System.out.println("filled report");
 		} catch (JRException e) {
 			e.printStackTrace();

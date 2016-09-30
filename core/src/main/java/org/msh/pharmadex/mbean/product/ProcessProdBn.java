@@ -48,17 +48,7 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.mbean.BackLog;
 import org.msh.pharmadex.mbean.UserAccessMBean;
-import org.msh.pharmadex.service.AmdmtService;
-import org.msh.pharmadex.service.CommentService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.MailService;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.ProductService;
-import org.msh.pharmadex.service.ReviewService;
-import org.msh.pharmadex.service.SampleTestService;
-import org.msh.pharmadex.service.SuspendService;
-import org.msh.pharmadex.service.TimelineService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -90,6 +80,10 @@ public class ProcessProdBn implements Serializable {
 	protected ProdApplicationsService prodApplicationsService;
 	@ManagedProperty(value = "#{productService}")
 	protected ProductService productService;
+	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
+	protected ProdApplicationsServiceMZ prodApplicationsServiceMZ;
+
+
 	protected ProdApplications prodApplications;
 	protected Product product;
 	protected List<TimeLine> timeLineList;
@@ -1230,5 +1224,13 @@ public class ProcessProdBn implements Serializable {
 		}
 
 		return resourceBundle.getString("register_product");
+	}
+
+	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
+		return prodApplicationsServiceMZ;
+	}
+
+	public void setProdApplicationsServiceMZ(ProdApplicationsServiceMZ prodApplicationsServiceMZ) {
+		this.prodApplicationsServiceMZ = prodApplicationsServiceMZ;
 	}
 }
