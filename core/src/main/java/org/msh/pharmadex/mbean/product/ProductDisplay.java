@@ -65,13 +65,13 @@ public class ProductDisplay implements Serializable {
     private void init() {
         try {
             Long prodAppID = Scrooge.beanParam("prodAppID");
-            /*
-            if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("prodAppID"))
+            
+            /*if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("prodAppID"))
                 prodAppID = Long.valueOf(Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID")));
             else{
                 prodAppID = (Long) getCurrentInstance().getExternalContext().getFlash().get("prodAppID");
-            }
-            */
+            }*/
+           
 
             if (prodAppID != null) {
                 prodApplications = prodApplicationsService.findProdApplications(prodAppID);

@@ -14,21 +14,28 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.SuspDetail;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.SuspendServiceMZ;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
+import org.primefaces.event.TabChangeEvent;
+import org.springframework.web.util.WebUtils;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -52,7 +59,7 @@ public class ProcessProdBnMZ implements Serializable {
 
 	@ManagedProperty(value = "#{reviewService}")
 	protected ReviewService reviewService;
-
+	
 	@ManagedProperty(value = "#{userService}")
 	private UserService userService;
 	@ManagedProperty(value = "#{userSession}")
@@ -69,18 +76,30 @@ public class ProcessProdBnMZ implements Serializable {
 	private boolean visibleExecSumeryBtn = false;
 	private boolean disableCheckSample = false;
 	private boolean showAssessment = false;
-
+	
+	private List<SuspDetail> suspDetails;
+	private String sourcePage = "/public/registrationhome.faces";
+	
 	@PostConstruct
 	private void init() {
 		try {
-			//facesContext = FacesContext.getCurrentInstance();
-
 			loggedInUser = userService.findUser(userSession.getLoggedINUserID());
+			String str = Scrooge.beanStrParam("sourcePage");
+			if(str != null && !str.equals(""))
+				sourcePage = str;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-
+	
+	public String cancel() {
+		facesContext = getCurrentInstance();
+		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+		WebUtils.setSessionAttribute(request, "processProdBn", null);
+		
+		return sourcePage + "?faces-redirect=true";
+	}
+	
 	public List<RegState> getRegSate() {
 		if (getProcessProdBn().getProdApplications() != null)
 			return prodApplicationsServiceMZ.nextStepOptions();
@@ -335,6 +354,14 @@ public class ProcessProdBnMZ implements Serializable {
 		this.reviewService = reviewService;
 	}
 
+	/*public SuspendServiceMZ getSuspendServiceMZ() {
+		return suspendServiceMZ;
+	}
+
+	public void setSuspendService(SuspendServiceMZ suspendService) {
+		this.suspendServiceMZ = suspendService;
+	}*/
+
 	public UserSession getUserSession() {
 		return userSession;
 	}
@@ -409,5 +436,47 @@ public class ProcessProdBnMZ implements Serializable {
 	public void setShowAssessment(boolean showAssessment) {
 		this.showAssessment = showAssessment;
 	}
+	
+	public void onTabChange(TabChangeEvent event) {
+		if(processProdBn.getProdApplications() == null)
+			Scrooge.goToHome();
+	}
+	
+	public List<SuspDetail> getSuspDetails() {
+		suspDetails = getProcessProdBn().getSuspendServiceMZ().findSuspendByProd(getProcessProdBn().getProdApplications().getId());
+		return suspDetails;
+	}
 
+	public void setSuspDetails(List<SuspDetail> list){
+		suspDetails = list;
+	}
+	
+	public boolean visibleSuspCancelMenu(){
+		ProdApplications pApp = getProcessProdBn().getProdApplications();
+		if (pApp != null) {
+			if(userSession.isHead() || userSession.isAdmin()){
+				if(pApp.getRegState().equals(RegState.SUSPEND) ||
+						pApp.getRegState().equals(RegState.CANCEL))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public String revertToRegistered(){
+		ProdApplications pApp = getProcessProdBn().getProdApplications();
+		if (pApp != null) {
+			RecomendType recType = RecomendType.SUSPEND;
+			if(pApp.getRegState().equals(RegState.SUSPEND))
+				recType = RecomendType.SUSPEND;
+			else if(pApp.getRegState().equals(RegState.CANCEL))
+				recType = RecomendType.CANCEL;
+			
+			pApp.setRegState(RegState.REGISTERED);
+			getProcessProdBn().getSuspendServiceMZ().setCompletedPrevSuspDetail(pApp.getId(), recType);
+			prodApplicationsService.createTimeLine(RegState.REGISTERED, pApp);
+			prodApplicationsService.updateProdApp(pApp, userSession.getLoggedINUserID());
+		}
+		return "/internal/processcancellist.faces" + "?faces-redirect=true";
+	}
 }

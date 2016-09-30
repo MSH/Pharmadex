@@ -47,6 +47,7 @@ import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
@@ -225,6 +226,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		return prodApplicationses;
 	}
+
 
 	@Transactional
 	public String registerProd(ProdApplications prodApp) {

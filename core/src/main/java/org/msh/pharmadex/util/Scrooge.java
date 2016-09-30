@@ -2,6 +2,8 @@ package org.msh.pharmadex.util;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -147,4 +149,16 @@ public class Scrooge {
         }
     }
 
+    /**
+     * go to Home page
+     */
+    public static void goToHome() {
+		try {
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			String url = facesContext.getExternalContext().getRequestContextPath();
+			facesContext.getExternalContext().redirect(url + "/home.faces");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

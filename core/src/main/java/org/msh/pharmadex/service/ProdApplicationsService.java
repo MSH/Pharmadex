@@ -71,7 +71,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -603,6 +602,15 @@ public class ProdApplicationsService implements Serializable {
 			ex.printStackTrace();
 			return "error";
 		}
+	}
+	
+	public void createTimeLine(RegState regSt, ProdApplications prApp){
+		TimeLine timeLine = new TimeLine();
+		timeLine.setRegState(regSt);
+		timeLine.setProdApplications(prApp);
+		timeLine.setStatusDate(new Date());
+		timeLine.setUser(prApp.getUpdatedBy());
+		timelineService.saveTimeLine(timeLine);
 	}
 	
 	@Transactional

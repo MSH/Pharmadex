@@ -109,7 +109,7 @@ public class ReviewInfoBn implements Serializable {
 	private boolean priReview;
 	private User loggedInUser;
 	private boolean submitted=false;
-	private String sourcePage="/internal/processreviewlist";
+	private String backTo="/internal/processreviewlist";
 	private Long idProdAppSource = null;
 
 	private int header1ActIndex = 0;
@@ -141,7 +141,7 @@ public class ReviewInfoBn implements Serializable {
 				loggedInUser = userService.findUser(userSession.getLoggedINUserID());
 				String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
 				if (srcPage != null){
-					sourcePage = srcPage;
+					backTo = srcPage;
 					buildIdApp();
 				}
 			}
@@ -151,11 +151,11 @@ public class ReviewInfoBn implements Serializable {
 	}
 
 	private void buildIdApp(){
-		int index = sourcePage.indexOf(":");
+		int index = backTo.indexOf(":");
 		if(index != -1){
-			String id = sourcePage.substring(0, index);
+			String id = backTo.substring(0, index);
 			idProdAppSource = new Long(id);
-			sourcePage = sourcePage.substring(index + 1);
+			backTo = backTo.substring(index + 1);
 		}else if(prodApplications != null)
 			idProdAppSource = prodApplications.getId();
 	}
@@ -203,7 +203,7 @@ public class ReviewInfoBn implements Serializable {
 			if(reviewInfo != null)
 				reviewInfo.setReviewComments(new ArrayList<ReviewComment>());
 			else
-				goToHome();
+				Scrooge.goToHome();
 		}
 
 		reviewComment.setUser(loggedInUser);
@@ -249,7 +249,7 @@ public class ReviewInfoBn implements Serializable {
 
 	public String saveReview() {
 		if(reviewInfo == null){
-			goToHome();
+			Scrooge.goToHome();
 			return "";
 		}
 			
@@ -437,16 +437,6 @@ public class ReviewInfoBn implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
 		}
 		return "";
-	}
-
-	public void goToHome() {
-		try {
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			String url = facesContext.getExternalContext().getRequestContextPath();
-			facesContext.getExternalContext().redirect(url + "/home.faces");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public ReviewInfo getReviewInfo() {
@@ -684,12 +674,12 @@ public class ReviewInfoBn implements Serializable {
 		this.priReview = priReview;
 	}
 
-	public String getSourcePage() {
-		return sourcePage;
+	public String getBackTo() {
+		return backTo;
 	}
 
-	public void setSourcePage(String sourcePage) {
-		this.sourcePage = sourcePage;
+	public void setBackTo(String sourcePage) {
+		this.backTo = sourcePage;
 	}
 
 	public String buildStyleClassName(DisplayReviewInfo q){
@@ -775,4 +765,14 @@ public class ReviewInfoBn implements Serializable {
 	public void setReviewStatus(ReviewStatus reviewStatus) {
 		this.reviewStatus = reviewStatus;
 	}
+
+	/*public void goToHome() {
+		try {
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			String url = facesContext.getExternalContext().getRequestContextPath();
+			facesContext.getExternalContext().redirect(url + "/home.faces");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}*/
 }

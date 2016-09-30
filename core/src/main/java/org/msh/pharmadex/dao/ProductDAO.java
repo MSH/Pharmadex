@@ -120,14 +120,6 @@ public class ProductDAO implements Serializable {
     	String workspName = (w != null ? w.getName():"");
     	
         List<Object[]> products = null;
-        /*if(workspName.equals("Bangladesh")){
-        	q += " ;";
-        	products = entityManager
-            		.createNativeQuery(q)
-                    .setParameter("regState", "" + regState)
-                    .setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
-                    .getResultList();
-        }else{*/
         	q += " and pa.active = :active ;";
         	products = entityManager
             		.createNativeQuery(q)
@@ -135,7 +127,6 @@ public class ProductDAO implements Serializable {
                     .setParameter("regState", "" + regState)
                     .setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
                     .getResultList();
-       //}
 
         List<ProdTable> prodTables = new ArrayList<ProdTable>();
         ProdTable prodTable;

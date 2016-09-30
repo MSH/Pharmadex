@@ -4,10 +4,8 @@ import static javax.faces.context.FacesContext.getCurrentInstance;
 import static org.msh.pharmadex.domain.enums.RegState.FEE;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +46,19 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.SuspensionStatus;
 import org.msh.pharmadex.mbean.BackLog;
 import org.msh.pharmadex.mbean.UserAccessMBean;
-import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.service.AmdmtService;
+import org.msh.pharmadex.service.CommentService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.MailService;
+import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
+import org.msh.pharmadex.service.ProductService;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.SampleTestService;
+import org.msh.pharmadex.service.SuspendService;
+import org.msh.pharmadex.service.SuspendServiceMZ;
+import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -62,8 +72,6 @@ import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.util.WebUtils;
-
-import net.sf.jasperreports.engine.JRException;
 
 /**
  * Backing bean to process the application made for registration
@@ -82,7 +90,6 @@ public class ProcessProdBn implements Serializable {
 	protected ProductService productService;
 	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
 	protected ProdApplicationsServiceMZ prodApplicationsServiceMZ;
-
 
 	protected ProdApplications prodApplications;
 	protected Product product;
@@ -112,6 +119,9 @@ public class ProcessProdBn implements Serializable {
 	private SampleTestService sampleTestService;
 	@ManagedProperty(value = "#{suspendService}")
 	private SuspendService suspendService;
+	@ManagedProperty(value = "#{suspendServiceMZ}")
+    private SuspendServiceMZ suspendServiceMZ;
+	
 	@ManagedProperty(value = "#{attachmentDAO}")
 	private AttachmentDAO attachmentDAO;
 	@ManagedProperty(value = "#{prodRegAppMbean}")
@@ -169,7 +179,7 @@ public class ProcessProdBn implements Serializable {
 				if (facesContext.getExternalContext().getFlash()!=null)
 					suspId = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");
 			}
-
+			
 			loggedInUser = userService.findUser(userSession.getLoggedINUserID());
 			mail.setUser(loggedInUser);
 			timeLine.setUser(loggedInUser);
@@ -661,14 +671,13 @@ public class ProcessProdBn implements Serializable {
 		this.createRejCert = createRejCert;
 	}
 
-	public  boolean isSuspended(){
+	public boolean isSuspended(){
 		if (prodApplications != null) {
 			if (prodApplications.getRegState().equals(RegState.SUSPEND))
 				return true;
 		}
 		return false;
 	}
-
 
 	public void setRegistered(boolean registered) {
 		this.registered = registered;
@@ -1027,6 +1036,14 @@ public class ProcessProdBn implements Serializable {
 
 	public void setSuspendService(SuspendService suspendService) {
 		this.suspendService = suspendService;
+	}
+	
+	public SuspendServiceMZ getSuspendServiceMZ() {
+		return suspendServiceMZ;
+	}
+
+	public void setSuspendServiceMZ(SuspendServiceMZ suspendService) {
+		this.suspendServiceMZ = suspendService;
 	}
 
 	public List<Attachment> getClinicalRevs() {

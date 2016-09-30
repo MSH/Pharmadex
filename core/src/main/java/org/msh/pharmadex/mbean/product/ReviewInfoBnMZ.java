@@ -28,6 +28,7 @@ import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewServiceMZ;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -134,7 +135,7 @@ public class ReviewInfoBnMZ implements Serializable {
 
 	public void onTabChange(TabChangeEvent event) {
 		if(getReviewInfoBn().getReviewInfo() == null)
-			getReviewInfoBn().goToHome();
+			Scrooge.goToHome();
 	}
 
 	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
@@ -224,7 +225,7 @@ public class ReviewInfoBnMZ implements Serializable {
 	public void createFileReviewDetail(){
 		ProdApplications prodApplications = getReviewInfoBn().getProdApplications();
 		if(prodApplications == null)
-			getReviewInfoBn().goToHome();
+			Scrooge.goToHome();
 		else
 			fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications);
 	}
