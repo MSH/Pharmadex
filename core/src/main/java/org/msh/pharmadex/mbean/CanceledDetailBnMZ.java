@@ -131,7 +131,7 @@ public class CanceledDetailBnMZ implements Serializable {
      */
     public String submitCanceled() {
         facesContext = FacesContext.getCurrentInstance();
-        if (userSession.isHead()) {//head user (director)
+        if (userSession.isHead() || userSession.isAdmin()) {//head user (director)
         	suspDetail.setCanceled(true);
         	//suspDetail.setComplete(true);
             RetObject retObject = suspendServiceMZ.submitHead(suspDetail, userSession.getLoggedINUserID(), RegState.CANCEL);

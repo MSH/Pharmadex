@@ -130,7 +130,7 @@ public class SuspendDetailBnMZ implements Serializable {
      */
     public String submitSuspend() {
         facesContext = FacesContext.getCurrentInstance();
-        if (userSession.isHead()) {//head user (director)
+        if (userSession.isHead() || userSession.isAdmin()) {//head user (director)
             RetObject retObject = suspendServiceMZ.submitHead(suspDetail, userSession.getLoggedINUserID(), RegState.SUSPEND);
             if (retObject.getMsg().equals("error")) {
                 FacesMessage fm = new FacesMessage("Error");
