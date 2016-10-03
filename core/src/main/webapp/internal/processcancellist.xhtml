@@ -19,7 +19,6 @@
                             <p:ajax event="itemSelect" listener="#{regProdMbn.onItemSelect}" update="@form" process="@form"/>
                     </p:autoComplete>
                     <p:commandButton value="#{msgs.global_submit}" action="/internal/suspenddetail.faces" ajax="false">
-                    <!--<p:commandButton value="#{msgs.global_submit}" action="#{regProdMbn.searchProduct}" ajax="false">-->
                         <f:param name="prodAppID" value="#{regProdMbn.prodTable.prodAppID}"/>
                     </p:commandButton>
                 </h:panelGrid>
