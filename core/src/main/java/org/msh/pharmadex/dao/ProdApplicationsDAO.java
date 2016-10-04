@@ -326,6 +326,7 @@ public class ProdApplicationsDAO implements Serializable {
             } else if (param.getKey().equals("prodAppType") && param.getValue() != null) {
                 p = cb.equal(prodApp.<Date>get("prodAppType"), param.getValue());
             }
+            predicateList.add(p);
         }
 
         Predicate[] predicates = new Predicate[predicateList.size()];
