@@ -488,7 +488,15 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		String t = "";
 		if(prodApp != null){						
 			if(prodApp.getProdAppType() != null){
-				t = prodApp.getProdAppType().toString();
+				if( prodApp.getProdAppType().equals(ProdAppType.GENERIC)){
+					t = "Generic with bio equivalency";
+				}
+				else if( prodApp.getProdAppType().equals(ProdAppType.GENERIC_NO_BE)){
+					t = "Generic without bio equivalency";
+				}
+				else{ 
+					t = prodApp.getProdAppType().toString();
+				}
 			}
 		}
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_APPTYPE, t);
@@ -497,6 +505,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_DATE,"",false);		
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_SHELFINE,"",false);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_PROD_ROUTE_ADMINISTRATION,"",false);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_EXPIRY_DATE,"",false);
+		
 		
 		/** licenseHolder*/			
 		licenseHolder = customLicHolderDAO.findLicHolderByProduct(product.getId());

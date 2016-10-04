@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-10-04T12:50:04 -->
+<!-- 2016-10-04T18:39:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -129,6 +129,7 @@
 	<parameter name="dosForm" class="java.lang.String"/>
 	<parameter name="regNumber" class="java.lang.String"/>
 	<parameter name="regDate" class="java.lang.String"/>
+	<parameter name="expiryDate" class="java.lang.String"/>
 	<parameter name="packsize" class="java.lang.String"/>
 	<parameter name="shelfine" class="java.lang.String"/>
 	<parameter name="appType" class="java.lang.String"/>
@@ -539,7 +540,7 @@
 		<band splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="404">
+		<band height="744">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="90" width="180" height="31" uuid="2c3254a2-0a48-4916-94d3-0fc366d55214"/>
@@ -581,19 +582,12 @@
 				<text><![CDATA[Approval date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="318" width="265" height="20" uuid="6e2a42c8-872d-42e4-b852-89fb5faceb60"/>
+				<reportElement positionType="Float" x="0" y="339" width="265" height="20" uuid="6e2a42c8-872d-42e4-b852-89fb5faceb60"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
 				</textElement>
 				<text><![CDATA[Agent in Ethiopia]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="3" y="358" width="570" height="46" uuid="2ed7458a-9180-427f-8fb5-65afb14ff150"/>
-				<textElement>
-					<font size="14" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Note: This Certificate, unless previously suspended, revoked or varied as to the period of its validity, will continue in force until the end of a period of four years from the date of issue.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="256" width="265" height="20" uuid="9512aea7-4278-4473-b557-ff7563d8b063"/>
@@ -633,7 +627,7 @@
 				<textFieldExpression><![CDATA[$P{regNumber} == null ? "":$P{regNumber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="264" y="318" width="309" height="20" uuid="6886cc6c-3982-46d9-b2c0-15dbe5a5468d"/>
+				<reportElement positionType="Float" x="264" y="339" width="309" height="20" uuid="6886cc6c-3982-46d9-b2c0-15dbe5a5468d"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -908,6 +902,34 @@
 			<textField>
 				<reportElement positionType="Float" x="5" y="212" width="570" height="3" uuid="07ec2e11-8a9e-423f-9d20-803381d8fbac"/>
 				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="319" width="265" height="20" uuid="62cd180a-8c36-48af-a611-6ed774ebf6e2"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Сertificate validity time]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="263" y="319" width="310" height="20" uuid="93811cd8-cc59-4e77-8c7c-85d4ff2bfd39">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{expiryDate} == null ? "":$P{expiryDate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="383" width="570" height="30" uuid="09d9ab37-8a47-4e20-9e51-3921cd1e8e01">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Note: This Certificate, unless previously suspended, revoked or varied as to the period of its validity, will continue in force until the end of a period of four years from the date of issue."]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
