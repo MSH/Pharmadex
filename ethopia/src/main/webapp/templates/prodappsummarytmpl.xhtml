@@ -26,7 +26,7 @@
                              onclick="PrimeFaces.monitorDownload(start, stop)"
                              rendered="#{userSession.staff and empty dialogMode}"
                             >
-                <p:fileDownload value="#{productDisplay.generateCertificate()}"/>
+                <p:fileDownload value="#{productDisplayET.generateCertificate()}"/>
             </p:commandButton>
             <p:commandButton id="showregdetails" value="#{msgs.Global_details}"
                              action="/internal/processreg"
