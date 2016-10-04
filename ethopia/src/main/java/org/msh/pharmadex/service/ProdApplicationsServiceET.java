@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -18,23 +20,32 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.CustomLicHolderDAO;
 import org.msh.pharmadex.dao.CustomReviewDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
+import org.msh.pharmadex.domain.LicenseHolder;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,6 +56,9 @@ import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
  */
 @Service
 public class ProdApplicationsServiceET extends ProdApplicationsService {
+	
+	private LicenseHolder licenseHolder;
+	 
     @Autowired
     private CustomReviewDAO customReviewDAO;
     @Autowired
@@ -54,6 +68,15 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
     @Autowired
 	private ReviewInfoDAO reviewInfoDAO;
  
+    @Autowired
+	private UtilsByReportsET utilsByReports;
+    
+/*  @ManagedProperty(value = "#{licenseHolderService}")
+    private LicenseHolderService licenseHolderService;
+    */
+    @Autowired
+    private CustomLicHolderDAO customLicHolderDAO;
+      	
     @Override
     public List<RegState> nextStepOptions(RegState regState, UserSession userSession, boolean reviewStatus) {
         RegState[] options = null;
@@ -346,10 +369,10 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
             try {
                 JasperPrint jasperPrint;
                 HashMap<String, Object> param = new HashMap<String, Object>();
-                UtilsByReports utilsByReports = new UtilsByReports();
+                UtilsByReportsET utilsByReports = new UtilsByReportsET();
                 utilsByReports.init(param, prodApp, prod);
-                utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
-                utilsByReports.putNotNull(UtilsByReports.KEY_MODERNAME, "", false);
+                utilsByReports.putNotNull(UtilsByReportsET.KEY_PRODNAME, "", false);
+                utilsByReports.putNotNull(UtilsByReportsET.KEY_MODERNAME, "", false);
 
                 //TODO chief name from properties!!
                 JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApplications,bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
@@ -419,4 +442,219 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
         }
 		return ans;
 	}
+	
+	public JasperPrint initRegCert(){
+		product = productDAO.findProduct(prodApp.getProduct().getId());
+		JasperPrint jasperPrint = null;
+		System.out.println("product found");
+		String regDt = DateFormat.getDateInstance().format(prodApp.getRegistrationDate());
+		String expDt = DateFormat.getDateInstance().format(prodApp.getRegExpiryDate());
+
+		URL resource = getClass().getResource("/reports/reg_letter.jasper");
+		System.out.println("resource found");
+		
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		utilsByReports.init(param, prodApp, product);
+		param.put("prodappid", prodApp.getId());
+		String fullNo = prodApp.getProdRegNo();
+		if (fullNo==null) {
+			String certNo = "0000000000" + String.valueOf(prodApp.getId()) + String.valueOf(prodApp.getProduct().getId());
+			certNo = certNo.substring(certNo.length() - 10, certNo.length());
+			fullNo = prodApp.getProdAppType() + "/" + certNo;
+		}
+		
+		param.put("cert_no",fullNo);
+		param.put("productDescription",prodApp.getProduct().getProdDesc());
+		List<UseCategory> cats = product.getUseCategories();
+		String catStr="";
+		for(UseCategory cat:cats){
+			if (!"".equals(cat)){
+				catStr = cat.name();
+			}else{
+				catStr = catStr +"," + cat.name();
+			}
+		}
+		param.put("prescription",catStr.toLowerCase());
+		
+		/*** add param */
+		
+		//TODO
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_PRODNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_GENNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_DOSFORM, "", false);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_PRODSTRENGTH, "", false);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_PACKSIZE, "", false);
+		
+		String t = "";
+		if(prodApp != null){						
+			if(prodApp.getProdAppType() != null){
+				t = prodApp.getProdAppType().toString();
+			}
+		}
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_APPTYPE, t);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_APPNAME, "", false);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_NUMBER, prodApp.getProdAppNo()!=null? prodApp.getProdAppNo():"",true);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_DATE,"",false);		
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_SHELFINE,"",false);
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_PROD_ROUTE_ADMINISTRATION,"",false);
+		
+		/** licenseHolder*/			
+		licenseHolder = customLicHolderDAO.findLicHolderByProduct(product.getId());
+		if(licenseHolder!=null){			
+			
+			String lhName="";
+			if(licenseHolder!=null){
+				lhName = licenseHolder.getName();
+			}
+			utilsByReports.putNotNull(UtilsByReportsET.KEY_LICH_NAME,lhName,true);
+			
+			String licAdr = "";
+			if(licenseHolder.getAddress()!=null){
+				licAdr += licenseHolder.getAddress().getAddress1()!=null?licenseHolder.getAddress().getAddress1()+", ":"";
+				licAdr += licenseHolder.getAddress().getAddress2()!=null?licenseHolder.getAddress().getAddress2()+", ":"";
+				licAdr += licenseHolder.getAddress().getCountry()!=null?licenseHolder.getAddress().getCountry():"";
+			}
+			
+			utilsByReports.putNotNull(UtilsByReportsET.KEY_LICH_ADDRESS,licAdr,true);
+		}
+		/** */		
+		String ind = product.getIndications()!=null?product.getIndications():"";
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_INDICATION,ind,true);
+		
+		String ct = product.getContType()!=null? product.getContType():"";
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_CONTTYPE,ct,true);
+		
+		//TODO				
+		 ArrayList<Manufac> dataList = new ArrayList<Manufac>();
+		 ArrayList<ActiveIngredient> dataList1 = new ArrayList<ActiveIngredient>();
+		 ArrayList<InactiveIngredient> dataList2 = new ArrayList<InactiveIngredient>();
+		 
+		if(product.getProdCompanies()!=null){
+			List<ProdCompany> companyList = product.getProdCompanies();
+			
+			if (companyList != null){				
+				for(ProdCompany company:companyList){
+					Manufac manuf = new Manufac();	
+				  if(company.getCompany()!=null){
+					  String nameComp = company.getCompany().getCompanyName()!=null?company.getCompany().getCompanyName():"";
+					  manuf.setcompanyName(nameComp);
+					
+					String addr="";
+					if(company.getCompany().getAddress()!=null){
+						if(company.getCompany().getAddress().getAddress1()!=null){
+							if(!"".equals(company.getCompany().getAddress().getAddress1())){
+								addr+=company.getCompany().getAddress().getAddress1()+", ";
+							}							
+						}
+						if(company.getCompany().getAddress().getAddress2()!=null){
+							if(!"".equals(company.getCompany().getAddress().getAddress2())){
+								addr+=company.getCompany().getAddress().getAddress2()+", ";
+							}
+						}
+						if(company.getCompany().getAddress().getZipcode()!=null){
+							if(!"".equals(company.getCompany().getAddress().getZipcode())){
+								addr+=company.getCompany().getAddress().getZipcode()+", ";
+							}
+						}
+						if(company.getCompany().getAddress().getCountry()!=null){
+							if(!"".equals(company.getCompany().getAddress().getCountry())){
+								addr+=company.getCompany().getAddress().getCountry();
+							}
+						}
+					}
+					manuf.setaddr(addr);
+				
+					String typeName = "", type="";	
+					  if(company.getCompanyType()!=null){
+						  typeName = company.getCompanyType().name()!=null?company.getCompanyType().name():"";					  	
+										
+						if("API_MANUF".equals(typeName)) type = "API Manufacturer";
+						if("FIN_PROD_MANUF".equals(typeName)) type = "Final Product Manufacturer";
+						if("BULK_MANUF".equals(typeName)) type ="Bulk Manufacturer";
+						if("PRI_PACKAGER".equals(typeName)) type = "Primary Packager";
+						if("SEC_PACKAGER".equals(typeName)) type = "Secondary Packager";
+						if("FPRC".equals(typeName)) type = "Finish Product Release Controller";
+						if("FPRR".equals(typeName)) type = "Finish Product Release Responsibility";						 
+					  }
+					  manuf.setcompanyType(type);					 
+				  }	
+				  dataList.add(manuf);
+				}
+			}			
+			JRBeanCollectionDataSource dataSource = new  JRBeanCollectionDataSource(dataList);
+			param.put(UtilsByReportsET.FTR_DATASOUTCE,dataSource);
+		
+			/**	Active Ingredient(s) */	
+			List<ProdInn> prodInn = product.getInns();
+			if(prodInn!=null){				
+				for(ProdInn el:prodInn){
+					ActiveIngredient ai = new ActiveIngredient();
+					if(el!=null){
+						String inn = "", dosStrength="", uom ="", refStd="";
+						if(el.getInn()!=null){
+							inn = el.getInn().getName()!=null?el.getInn().getName():"";
+						}							
+						dosStrength = el.getDosStrength()!=null?el.getDosStrength():"";	
+						refStd = el.getRefStd()!=null?el.getRefStd():"";
+						if(el.getDosUnit()!=null){
+							uom = el.getDosUnit().getUom()!=null?el.getDosUnit().getUom():"";
+						}					
+					
+						ai.setinn(inn);
+						ai.setdosage_strength(dosStrength);
+						ai.setrefStd(refStd);
+						ai.setuom(uom);
+					}
+					dataList1.add(ai);
+				}
+			}			
+			JRBeanCollectionDataSource dataSource1 = new  JRBeanCollectionDataSource(dataList1);
+			param.put(UtilsByReportsET.FTR_DATASOUTCE1,dataSource1);
+			
+			/**	Inactive Ingredient(s) */		
+			List<ProdExcipient> prodExcipient = product.getExcipients();
+			if(prodExcipient!=null){	
+				for(ProdExcipient p: prodExcipient){
+					InactiveIngredient inA = new InactiveIngredient();
+					if(p!=null){						
+						String excipient="", dosStr="", uom = "", refStd="";
+						if(p.getExcipient()!=null){
+							excipient = p.getExcipient().getName()!=null?p.getExcipient().getName():"";
+						}	
+						dosStr = p.getDosStrength()!=null?p.getDosStrength():"";
+						if(p.getDosUnit()!=null){	
+							uom = p.getDosUnit().getUom()!=null?p.getDosUnit().getUom():"";
+						}
+						refStd = p.getRefStd()!=null?p.getRefStd():"";					
+						
+						inA.setname(excipient);
+						inA.setrefStd(refStd);
+						inA.setdosage_strength(dosStr);
+						inA.setuom(uom);
+					}
+					dataList2.add(inA);
+				}				
+			}
+			
+			JRBeanCollectionDataSource dataSource2 = new  JRBeanCollectionDataSource(dataList2);
+			param.put(UtilsByReportsET.FTR_DATASOUTCE2,dataSource2);
+						
+			try {			
+				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource());
+			} catch (JRException e) {				
+				e.printStackTrace();
+			} 
+
+		}
+		return jasperPrint;	
+	}
+
+	public LicenseHolder getLicenseHolder() {
+		return licenseHolder;
+	}
+
+	public void setLicenseHolder(LicenseHolder licenseHolder) {
+		this.licenseHolder = licenseHolder;
+	}
+
 }
