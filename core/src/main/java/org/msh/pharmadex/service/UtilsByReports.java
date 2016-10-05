@@ -35,6 +35,7 @@ public class UtilsByReports implements Serializable {
 	public static final String FTR_F8DATASOUTCE = "filterF8DataSource";
 	public static final String FTR_F9DATASOUTCE = "filterF9DataSource";
 	public static final String FLD_DEFICITEM_NAME = "defItemName";
+	public static final String FLD_DEFICITEM_NAMEMZ = "defItemNameMZ";
 	public static final String FLD_PROD_NAME = "prodName";
 	public static final String FLD_REG_NUMBER = "regNumber";
 	

@@ -559,7 +559,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);			
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
-			utilsByReports.putNotNull(UtilsByReports.KEY_DAYS, days, true);
+			utilsByReports.putNotNull(UtilsByReports.KEY_DAYS, days, true);		
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
 
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
@@ -568,6 +568,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				if(prodApp.getApplicant().getContactName()!=null){
 					setAppResponsibleUser(prodApp.getApplicant().getContactName());							
 				}
+			}
+		
+			Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+			if(locale!=null){
+				param.put( JRParameter.REPORT_LOCALE,locale );
 			}
 
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);
@@ -619,8 +624,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					String staffRemark="";
 					if(item.getStaffComment()!=null){
 						if(!"".equals(item.getStaffComment()))
-							staffRemark= "<li> "+item.getStaffComment()+"</li><br>";
+							staffRemark= item.getStaffComment()+"<br>";
 					}
+					mp.put(UtilsByReports.FLD_DEFICITEM_NAMEMZ,item.getStaffComment()+"</li>");
 					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b>"+staffRemark);
 					res.add(mp);
 				}
