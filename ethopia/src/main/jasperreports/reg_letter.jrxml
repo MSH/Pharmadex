@@ -907,9 +907,9 @@
 				<reportElement positionType="Float" x="0" y="319" width="265" height="20" uuid="62cd180a-8c36-48af-a611-6ed774ebf6e2"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
+					<paragraph leftIndent="0" rightIndent="10"/>
 				</textElement>
-				<text><![CDATA[Сertificate validity time]]></text>
+				<text><![CDATA[Certificate validity time]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="263" y="319" width="310" height="20" uuid="93811cd8-cc59-4e77-8c7c-85d4ff2bfd39">
