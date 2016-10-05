@@ -9,6 +9,9 @@ import java.util.Locale;
 public class RegistrationUtil {
 
     public static String formatString(String dosForm) {
+    	if(dosForm==null){
+    		return "";
+    	}
         String value = dosForm.trim();
         value = value.toUpperCase();
         value = value.replaceAll(", ", "_");

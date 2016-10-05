@@ -826,6 +826,7 @@ public class ProdRegAppMbean implements Serializable {
 		try {
 			if (prodApplications != null && prodApplications.getProduct() != null) {
 				product = productService.findProduct(prodApplications.getProduct().getId());
+				adjustProduct();
 				selectedInns = product.getInns();
 				selectedExipients = product.getExcipients();
 				selectedAtcs = product.getAtcs();
@@ -848,6 +849,20 @@ public class ProdRegAppMbean implements Serializable {
 			context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
 		}
 
+	}
+	/**
+	 * Some product may have not mandatory data
+	 */
+	private void adjustProduct() {
+		if(getProduct().getDosForm() == null){
+			product.setDosForm(new DosageForm());
+		}
+		if(getProduct().getDosUnit() == null){
+			product.setDosUnit(new DosUom());
+		}
+		if(getProduct().getAdminRoute() == null){
+			product.setAdminRoute(new AdminRoute());
+		}
 	}
 
 	public Applicant getApplicant() {
