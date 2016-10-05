@@ -651,6 +651,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 						
 			try {			
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource());
+                if (jasperPrint.getPages().size()>1)
+                    jasperPrint.removePage(jasperPrint.getPages().size()-1);
 			} catch (JRException e) {				
 				e.printStackTrace();
 			} 
