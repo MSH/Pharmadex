@@ -41,7 +41,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     private Logger log = LoggerFactory.getLogger(DBControl.class);
     private UserAccess userAccess;
     private boolean displayMessagesKeys;
-    private String loggedInUser;
+   // private String loggedInUser;
     private Long loggedINUserID;
     private Long applcantID;
     private Long prodID;
@@ -90,9 +90,9 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
             return "";
     }
 
-    public void setLoggedInUser(String loggedInUser) {
+   /* public void setLoggedInUser(String loggedInUser) {
         this.loggedInUser = loggedInUser;
-    }
+    }*/
 
     public String editUser() {
         return "/secure/usersettings.faces";
@@ -579,4 +579,58 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
     public void setLabHead(boolean labHead) {
         this.labHead = labHead;
     }
+    
+    /**
+     * Used in Mozambique
+	 * show submenu registration_form and menuItem registration_form
+	 * show by user STAFF and Admin and Company
+	 * by HEAD do not show item (role HEAD = HEAD+Staff)
+	 */
+	public boolean displayRegistrationFormItemMZ() {
+		if(isHead())
+			return false;
+		if(isAdmin() || isStaff() || isCompany())
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Used in Mozambique
+	 * show Item menu Applicant Registration Form
+	 * show by user STAFF and Admin
+	 */
+	public boolean displayAppRegMZ() {
+		if(isAdmin() || isStaff())
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Used in Mozambique
+	 * show Item menu Pending Applicants
+	 * show by user STAFF and Admin
+	 */
+	public boolean displayListAppOnRegMZ() {
+		if(isAdmin() || isStaff())
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Used in Mozambique
+	 * show menuItem saved applications
+	 * show by user STAFF and Admin and Company
+	 * by HEAD do not show item (role HEAD = HEAD+Staff)
+	 */
+	public boolean displaySavedItemMZ() {
+		if(isHead() || isAdmin())
+			return false;
+		if(isStaff() || isCompany())
+			return true;
+		
+		return false;
+	}
 }

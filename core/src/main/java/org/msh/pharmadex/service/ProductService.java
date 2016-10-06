@@ -218,6 +218,10 @@ public class ProductService implements Serializable {
 
     }
 
+    public void removeDrugPricing(DrugPrice drprice){
+    	drugPriceDAO.delete(drprice);
+    }
+    
     public Pricing savePricing(Pricing pricing) {
         return pricingDAO.save(pricing);
     }

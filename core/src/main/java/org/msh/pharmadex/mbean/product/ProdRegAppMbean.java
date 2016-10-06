@@ -677,6 +677,7 @@ public class ProdRegAppMbean implements Serializable {
 		context = FacesContext.getCurrentInstance();
 		try {
 			drugPrices.remove(drugPrice);
+			productService.removeDrugPricing(drugPrice);
 			context.addMessage(null, new FacesMessage(bundle.getString("drugprice_removed")));
 		} catch (Exception ex) {
 			ex.printStackTrace();

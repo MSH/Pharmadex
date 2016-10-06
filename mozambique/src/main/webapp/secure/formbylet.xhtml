@@ -10,6 +10,12 @@
 		<p:inputText id="prodappno" value="#{prodApp.prodAppNo}" required="true" />
 		<p:message for="prodappno" />
 
+		<p:outputLabel value="#{msgs.dosRecDate}" for="dosrecdate"/>
+        <p:calendar value="#{prodApp.dosRecDate}" id="dosrecdate" showOn="button"
+                pattern="#{userAccessMBean.workspace.datePattern}"
+                required="true" requiredMessage="#{msgs.dosRecDate}: #{msgs.valueReq}"/>
+        <p:message for="dosrecdate" showSummary="true" showDetail="false"/>
+         
 		<p:outputLabel value="#{msgs.user_sender}" for="sender" />
 		<p:inputText value="#{prodApp.username}" id="sender" required="true" />
 		<p:message for="sender" />

@@ -7,7 +7,6 @@ package org.msh.pharmadex.mbean.product;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -48,12 +47,7 @@ public class ProdAckLetterFormMZ implements Serializable {
     	prodApp.setUsername(send);
 	}
     
-    public void buildParametrs(ProdApplications prodApp) {
-
-    }
-    
     public void createLetter(ProdApplications prodApp){
-    	buildParametrs(prodApp);
     	prodApplicationsServiceMZ.createAckLetter(prodApp, userSession.getLoggedINUserID());
     }
     

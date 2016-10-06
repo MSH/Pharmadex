@@ -223,7 +223,8 @@
 								<h:panelGrid columns="1" cellpadding="5" cellspacing="5">
 									<p:commandButton value="#{msgs.btn_create_ackletter}"
 										action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}"
-										oncomplete="PF('createAckLet').show()" update=":createAckLet" />
+										oncomplete="PF('createAckLet').show()" update=":createAckLet" 
+										rendered="#{!userSession.company}"/>
 									<p:dataTable id="lettertable" value="#{processProdBn.letters}"
 										var="letter">
 
@@ -261,11 +262,11 @@
 													value="#{processProdBn.fileDownload(letter)}" />
 											</p:commandButton>
 										</p:column>
-										<p:column style="width: 30px;">
+										<p:column style="width: 30px;" rendered="#{!userSession.company}">
 											<p:commandButton id="deletelet"
 												action="#{processProdBnMZ.deleteLetter(letter)}"
 												icon="ui-icon-trash" ajax="true" immediate="true"
-												update=":reghome:processtab:lettertable :reghome:messages" />
+												update=":reghome:processtab:lettertable :reghome:messages"/>
 										</p:column>
 									</p:dataTable>
 								</h:panelGrid>

@@ -64,7 +64,7 @@
                             </ol>
                         </p>
 
-                        <p:panel header="#{msgs.Lbl_ackLetter}">
+                        <p:panel header="#{msgs.Lbl_ackLetter}" rendered="#{!userSession.company}">
                             <h:panelGrid cellspacing="10" cellpadding="10" columns="3"
                                          columnClasses="label value label">
                                 <ui:include src="formbylet.xhtml">

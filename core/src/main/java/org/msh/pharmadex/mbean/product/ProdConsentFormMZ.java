@@ -119,14 +119,6 @@ public class ProdConsentFormMZ implements Serializable {
         if (!userService.verifyUser(userSession.getLoggedINUserID(), password)) {
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
         }
-        
-        getProdAckLetterFormMZ().buildParametrs(prodApplications);
-        /*if(getProdAckLetterFormMZ().getProdappno() == null  || getProdAckLetterFormMZ().getProdappno().equals(""))
-        	getProdAckLetterFormMZ().setProdappno(prodApplicationsService.generateAppNo(prodApplications));
-        prodApplications.setProdAppNo(getProdAckLetterFormMZ().getProdappno());
-        prodApplications.setUsername(getProdAckLetterFormMZ().getSender());*/
-       // if (prodApplications.getProdAppNo() == null || prodApplications.getProdAppNo().equals(""))
-          //  prodApplications.setProdAppNo(prodApplicationsService.generateAppNo(prodApplications));
 
         TimeLine timeLine = new TimeLine();
         timeLine.setComment(bundle.getString("timeline_newapp"));
@@ -140,7 +132,8 @@ public class ProdConsentFormMZ implements Serializable {
         RetObject retObject = prodApplicationsService.submitProdApp(prodApplications, userSession.getLoggedINUserID());
         if (retObject.getMsg().equals("persist")) {
             prodApplications = (ProdApplications) retObject.getObj();
-            prodApplicationsServiceMZ.createAckLetter(prodApplications, userSession.getLoggedINUserID());
+            if(!userSession.isCompany())
+            	prodApplicationsServiceMZ.createAckLetter(prodApplications, userSession.getLoggedINUserID());
             timeLine.setProdApplications(prodApplications);
             timeLineService.saveTimeLine(timeLine);
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));
