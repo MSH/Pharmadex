@@ -385,7 +385,7 @@ public class AppSelectMBean implements Serializable {
 				prodRegAppMbean.setProduct(selectedProduct);
 				prodRegAppMbean.setProdApplications(prodappl);
 				showSaveBtn=true;
-				RequestContext.getCurrentInstance().update("reghome");
+				//RequestContext.getCurrentInstance().update("@form @this :reghome:prod");
 				//ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
 			}
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
