@@ -63,8 +63,15 @@ public class ManufConverter implements Converter, Serializable {
         if (value == null || value.equals("")) {
             return "";
         } else {
-            return String.valueOf(value);
+            if (value instanceof Long) {
+                return String.valueOf(value);
+            }else if (value instanceof String) {
+                return String.valueOf(value);
+            }else if (value instanceof Company){
+                return String.valueOf(((Company) value).getId());
+            }
         }
+        return "";
     }
 }
 
