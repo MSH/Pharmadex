@@ -826,7 +826,8 @@ public class ProdRegAppMbean implements Serializable {
 	private void setFieldValues() {
 		try {
 			if (prodApplications != null && prodApplications.getProduct() != null) {
-				product = productService.findProduct(prodApplications.getProduct().getId());
+				if (prodApplications.getProduct().getId()==null) product=prodApplications.getProduct();
+				else product = productService.findProduct(prodApplications.getProduct().getId());
 				adjustProduct();
 				selectedInns = product.getInns();
 				selectedExipients = product.getExcipients();
