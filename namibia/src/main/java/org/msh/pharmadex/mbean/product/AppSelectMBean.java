@@ -382,11 +382,18 @@ public class AppSelectMBean implements Serializable {
 			if (prodTable!=null) {
 				selectedProduct = productDAO.findProduct(prodTable.getId());
 				prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
-				prodRegAppMbean.setProduct(selectedProduct);
-				prodRegAppMbean.setProdApplications(prodappl);
-				showSaveBtn=true;
+				//prodRegAppMbean.setProduct(selectedProduct);
+				//prodRegAppMbean.setProdApplications(prodappl);
+				//showSaveBtn=true;
 				//RequestContext.getCurrentInstance().update("@form @this :reghome:prod");
 				//ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
+				//selectedProduct = productDAO.findProduct(prodTable.getId());
+				//prodappl = prodApplicationsService.findActiveProdAppByProd(selectedProduct.getId());
+				//prodRegAppMbean.setProduct(selectedProduct);
+				//prodRegAppMbean.setProdApplications(prodappl);
+				ProdApplications newAppl = startReregVar(prodAppType, prodappl.getId(), userSession.getProdAppInit());
+				prodRegAppMbean.setProdApplications(newAppl);
+				prodRegAppMbean.setProduct(newAppl.getProduct());
 			}
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodTable.getProdName()));
         }
@@ -525,7 +532,7 @@ public class AppSelectMBean implements Serializable {
 	        prodAppRenew.setReceiptNo(null);
 	        prodAppRenew.setPrescreenReceiptNo(null);
 			prodAppRenew.setParentApplication(prodApp);
-	        prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
+	        //prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
 
 	        return prodAppRenew;
 	    }
