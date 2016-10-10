@@ -34,14 +34,42 @@
                     <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
             </p:menuitem>
             
-            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" 
-            			ajax="false" icon="ui-icon-extlink"/>
+            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBnMZ.cancel}" immediate="true" 
+            			ajax="false" icon="ui-icon-extlink">
+            		<f:param name="prodAppID" value="#{null}"/>
+            </p:menuitem>
         </p:submenu>
         <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered}">
        		<p:menuitem value="#{msgs.global_showPrint}" icon="ui-icon-print"
                         action="/public/productdetail" ajax="false">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
             </p:menuitem>
+            <p:menuitem value="#{msgs.global_suspend}" icon="ui-icon-gear"
+                        action="/internal/suspenddetail.faces" ajax="false"
+                        rendered="#{userSession.admin||userSession.head}">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="sourcePage" value="/internal/processreg.faces" />
+            </p:menuitem>
+            <p:menuitem value="#{msgs.global_cancel}" icon="ui-icon-gear"
+                        action="/internal/canceleddetail.faces" ajax="false"
+                        rendered="#{userSession.admin||userSession.head}">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="sourcePage" value="/internal/processreg.faces" />
+            </p:menuitem>
+        </p:submenu>
+        <p:submenu label="#{msgs.suspend_info}" rendered="#{processProdBnMZ.visibleSuspCancelMenu()}">
+        	<p:menuitem value="#{msgs.global_cancel}" icon="ui-icon-gear"
+                        action="/internal/canceleddetail.faces" ajax="false"
+                        rendered="#{processProdBn.suspended}">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="sourcePage" value="/internal/processreg.faces" />
+            </p:menuitem>
+            <p:menuitem value="#{msgs.global_revertToRegist}" icon="ui-icon-gear"
+                        action="#{processProdBnMZ.revertToRegistered()}" ajax="false"/>
+                <!-- <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="sourcePage" value="/internal/processreg.faces" />
+            </p:menuitem> -->
+        </p:submenu>
 <ui:remove>
             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
                         action="#{processProdBn.sendToRenew}" ajax="false">
@@ -69,7 +97,7 @@
                         oncomplete="PF('dlgAmdment').show()"
                         rendered="#{userSession.company||userSession.admin}" update=":reghome:growl"/>
 </ui:remove>
-        </p:submenu>
+        
     </p:menu>
 
 

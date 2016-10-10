@@ -60,12 +60,11 @@
                                  ajax="true" action="#{reviewInfoBn.initComment}"
                                  rendered="#{reviewInfoBnMZ.visibleSubmitBtn()}"/>
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
-                                 action="#{reviewInfoBn.getSourcePage}"
+                                 action="#{reviewInfoBn.getBackTo()}"
                                  ajax="false">
                                 <f:param name="prodAppID" value="#{reviewInfoBn.idProdAppSource}"/>
                 </p:commandButton>
             </div>
-
 
             <p:tabView dynamic="true" id="detailtab" style="width: 99%;" cache="false">
             	<p:ajax event="tabChange" listener="#{reviewInfoBnMZ.onTabChange}" />
