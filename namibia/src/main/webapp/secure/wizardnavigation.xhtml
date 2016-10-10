@@ -12,7 +12,7 @@
 						 		 action="#{prodRegAppMbean.cancel}" ajax="false"
 						 		 rendered="#{!userSession.admin}"/>
 				<p:commandButton value="#{msgs.global_exit}" action="/internal/processreg.faces" 
-								 ajax="false" icon="ui-icon-extlink"
+								 ajax="false" icon="ui-icon-extlink" immediate="true"
 								 rendered="#{userSession.admin}">
 								 <f:param name="prodAppID" value="#{prodRegAppMbean.prodApplications.id}"/>
 				</p:commandButton>
