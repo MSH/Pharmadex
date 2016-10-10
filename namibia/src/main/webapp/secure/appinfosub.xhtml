@@ -62,8 +62,8 @@
                     <p:outputLabel value="#{appSelectMBean.prodTable.prodName}"
                                    rendered="#{appSelectMBean.showProductChoice }"/>
                     <p:message for="prodTable" showSummary="true" showDetail="false"/>
-                    <p:commandButton value="#{msgs.global_save}" action="#{appSelectMBean.addProdToRegistration()}"
-                    				oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()" />
+                 <!--    <p:commandButton value="#{msgs.global_save}" action="#{appSelectMBean.addProdToRegistration()}"
+                    		oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()" /> -->
      </h:panelGroup>
     <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantdlg">
             <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
