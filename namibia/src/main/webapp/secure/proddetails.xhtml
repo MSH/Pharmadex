@@ -14,7 +14,7 @@
         					required="true" requiredMessage="#{msgs.valid_prod_type}"
         					rendered="#{userSession.admin}">
 	        <f:selectItem itemLabel="-" itemValue=""/>
-	        <f:selectItems value="#{globalLists.getProdAppTypeShortList()}" var="prodcat"
+	        <f:selectItems value="#{prodRegInit.prodAppTypes}" var="prodcat"
 	                       itemLabel="#{msgs[prodcat.key]}"/>
         </p:selectOneMenu>
         <p:outputLabel/>
