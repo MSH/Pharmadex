@@ -15,11 +15,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Hibernate;
-import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.DosUom;
-import org.msh.pharmadex.domain.Pricing;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.CompanyType;
@@ -110,7 +108,7 @@ public class ProductDAO implements Serializable {
 	public List<ProdTable> findProductsByState(RegState regState) {
 		String q = "select p.id as id, p.prod_name as prodName, p.gen_name as genName, "
 				+ "p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, "
-				+ "c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID " +
+				+ "c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID, p.fnm as fnm " +
 				"from prodApplications pa, product p, applicant a, prod_company pc, company c " +
 				"where pa.PROD_ID = p.id " +
 				"and a.applcntId = pa.APP_ID " +
@@ -146,6 +144,7 @@ public class ProductDAO implements Serializable {
 			prodTable.setRegNo((String) objArr[8]);
 			prodTable.setProdDesc((String) objArr[9]);
 			prodTable.setProdAppID(Long.valueOf("" + objArr[10]));
+			prodTable.setFnm((String) objArr[11]);
 			prodTables.add(prodTable);
 		}
 		return prodTables;

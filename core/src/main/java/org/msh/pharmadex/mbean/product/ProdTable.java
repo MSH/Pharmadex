@@ -21,6 +21,7 @@ public class ProdTable implements Serializable {
     private String manufName;
     private String prodDesc;
     private Long prodAppID;
+    private String fnm;
 
     public Long getId() {
         return id;
@@ -109,4 +110,13 @@ public class ProdTable implements Serializable {
     public void setProdAppID(Long prodAppID) {
         this.prodAppID = prodAppID;
     }
+
+	public String getFnm() {
+		return fnm;
+	}
+
+	public void setFnm(String fnm) {
+		this.fnm = fnm;
+	}
+    
 }
