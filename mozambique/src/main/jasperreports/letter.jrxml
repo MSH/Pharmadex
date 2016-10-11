@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-09-07T17:38:27 -->
+<!-- 2016-10-11T17:46:13 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -34,7 +34,8 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="350" splitType="Stretch">
+		<band height="287" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement x="0" y="95" width="572" height="27" forecolor="#000000" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
@@ -117,10 +118,10 @@
 				<textElement>
 					<font fontName="DejaVu Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appPost} == null ? "Director Técnico da":$P{appPost}.concat(" da ").concat($P{appName})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["".concat($P{appPost} == null ? "Director Técnico ":$P{appPost}).concat(" da ").concat($P{appName})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="280" y="275" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
+				<reportElement positionType="Float" x="280" y="260" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -132,7 +133,7 @@
 				<textFieldExpression><![CDATA[$P{address1} == null ? "": $P{address1}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="280" y="310" width="249" height="13" uuid="f9a253a5-f832-4e9a-8d09-2b17a902495e">
+				<reportElement positionType="Float" x="280" y="274" width="249" height="13" uuid="f9a253a5-f832-4e9a-8d09-2b17a902495e">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
