@@ -278,7 +278,7 @@ public class ApplicantMBean implements Serializable {
 		user = new User();
 	}
 
-	private Role findRole(UserRole enumrole){
+	public Role findRole(UserRole enumrole){
 		List<Role> allRoles = (List<Role>) roleDAO.findAll();
 		if(allRoles != null && allRoles.size() > 0){
 			for(Role r:allRoles){
