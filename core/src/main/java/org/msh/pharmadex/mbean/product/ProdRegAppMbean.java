@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.hibernate.Hibernate;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.AttachmentDAO;
 import org.msh.pharmadex.domain.AdminRoute;
@@ -690,6 +691,7 @@ public class ProdRegAppMbean implements Serializable {
 		context = FacesContext.getCurrentInstance();
 		try {
 			companies.remove(selectedCompany);
+			product.setProdCompanies(companies);
 			companyService.removeProdCompany(selectedCompany);
 
 			context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
@@ -832,7 +834,11 @@ public class ProdRegAppMbean implements Serializable {
 				selectedInns = product.getInns();
 				selectedExipients = product.getExcipients();
 				selectedAtcs = product.getAtcs();
-				companies = companyService.findCompanyByProdID(product.getId());//product.getProdCompanies();
+				companies = product.getProdCompanies();//companyService.findCompanyByProdID(product.getId());
+				if(companies != null && companies.size() > 0){
+					for(ProdCompany pc:companies)
+						Hibernate.initialize(pc.getCompany());
+				}
 				
 				applicant = prodApplications.getApplicant();
 

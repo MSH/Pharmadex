@@ -112,6 +112,17 @@ public class CompanyService implements Serializable {
 	public Company findCompanyById(Long id) {
 		return companyDAO.findOne(id);
 	}
+	
+	@Transactional
+	public Company findCompanyByName(String name) {
+		List<Company> list = companyDAO.findAll();
+		
+		for (Company c : list) {
+            if (c.getCompanyName().equalsIgnoreCase(name))
+                return c;
+        }
+		return null;
+	}
 
 	public String removeProdCompany(ProdCompany selectedCompany) {
 		prodCompanyDAO.delete(selectedCompany);
@@ -121,8 +132,9 @@ public class CompanyService implements Serializable {
 	public List<ProdCompany> findCompanyByProdID(Long prodID) {
 		List<ProdCompany> list = prodCompanyDAO.findByProduct_Id(prodID);
 		if(list != null && list.size() > 0){
-			for(ProdCompany pc:list)
+			for(ProdCompany pc:list){
 				Hibernate.initialize(pc.getCompany());
+			}
 		}
 		return list;
 	}

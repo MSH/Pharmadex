@@ -118,7 +118,7 @@ public class CompanyMBean implements Serializable {
     }
 
     public List<Company> completeCompany(String query) {
-        return JsfUtils.completeSuggestions(query, globalEntityLists.getManufacturers());
+       return JsfUtils.completeSuggestions(query, globalEntityLists.getManufacturers());
     }
 
     public List<String> getCompanyTypes() {
