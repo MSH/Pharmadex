@@ -532,6 +532,7 @@ public class AppSelectMBean implements Serializable {
 	        prodAppRenew.setReceiptNo(null);
 	        prodAppRenew.setPrescreenReceiptNo(null);
 			prodAppRenew.setParentApplication(prodApp);
+			prodAppRenew.setCreatedBy(curUser);
 	        //prodAppRenew = prodApplicationsService.saveApplication(prodAppRenew,curUser.getUserId());
 
 	        return prodAppRenew;
