@@ -1,0 +1,172 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <p:panel header="#{msgs.applicant_detail}">
+
+        <!-- Display the panel for company users -->
+        <h:panelGroup rendered="#{userSession.company and  (empty regHomeData.applicant.applcntId)}">
+            <h:outputLabel value="#{msgs.prodreghome_reg_info1}"/>
+            <p:commandLink action="applicantform.faces" ajax="false"
+                           value="Please click here to register an applicant."
+                           immediate="true"/>
+            <h:outputLabel value="#{msgs.prodreghome_reg_info2}"/>
+            <h:outputLabel
+                    value="#{msgs.prodreghome_reg_info3}"/>
+        </h:panelGroup>
+
+        <!-- Display the panel for staff users to select the applicant for which the application is being made -->
+        <h:panelGroup rendered="#{userSession.staff and (empty regHomeData.applicant.applcntId)}">
+            <h:outputLabel value="#{msgs.select_applicant_list}"/>
+            <h:panelGrid columns="1" cellpadding="10px">
+                <p:commandLink value="#{msgs.applicant_lookup}" oncomplete="PF('addapplicantDlg').show()"
+                               immediate="true" style="font-weight: bolder; font-size: larger"/>
+                <p:outputLabel value="#{msgs.applicant_lookup_info}" styleClass="hint"/>
+
+            </h:panelGrid>
+        </h:panelGroup>
+
+
+        <h:panelGroup rendered="#{not empty regHomeData.applicant.applcntId}">
+            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                <ui:param name="applicantdata" value="#{regHomeData.applicant}"/>
+                <ui:param name="input" value="#{false}"/>
+            </ui:decorate>
+        </h:panelGroup>
+    </p:panel>
+
+
+    <h:panelGroup rendered="#{not empty regHomeData.applicant.applcntId}">
+        <p:panel header="#{msgs.person_responsible}">
+            <h:panelGroup id="userdetail">
+                <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                    <ui:param name="userdata" value="#{regHomeData.applicantUser}"/>
+                    <ui:param name="input" value="#{false}"/>
+                </ui:decorate>
+            </h:panelGroup>
+        </p:panel>
+    </h:panelGroup>
+     <h:panelGroup id="prod"  rendered="#{appSelectMBean.showProductChoice}">
+   					<h:outputLabel value="#{msgs.search_prod}*: "
+                                   for="prodTable"
+                                   styleClass="fy-required-field"/>
+                    <p:autoComplete value="#{appSelectMBean.prodTable}" id="prodTable"
+                                    completeMethod="#{appSelectMBean.completeProduct}"
+                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                    converter="#{productConverter}" forceSelection="true">
+                        <p:ajax event="itemSelect" listener="#{appSelectMBean.onItemSelect}" />
+                    </p:autoComplete>
+                    <p:outputLabel value="#{appSelectMBean.prodTable.prodName}"
+                                   rendered="#{appSelectMBean.showProductChoice }"/>
+                    <p:message for="prodTable" showSummary="true" showDetail="false"/>
+                   <!--  <p:commandButton type="submit" value="#{msgs.global_save}" action="#{appSelectMBean.addProdToRegistration()}"
+                    				 immediate="true" ajax="true"/> -->
+     </h:panelGroup>
+    <p:dialog header="#{msgs.user_add}" widgetVar="addapplicantDlg" id="addapplicantdlg">
+            <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+                <h:outputLabel value="#{msgs.applicant_name}" for="appname"/>
+                <p:autoComplete id="appname" value="#{appSelectMBean.selectedApplicant}"
+                                completeMethod="#{appSelectMBean.completeApplicantList}" dropdown="true"
+                                var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" forceSelection="true"
+                                converter="#{applicantConverter}">
+                    <p:ajax event="itemSelect"
+                            update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
+                            listener="#{appSelectMBean.appChangeListenener}" partialSubmit="true" 
+                            process=":reghome:appname"/>
+                    <p:ajax event="change" listener="#{appSelectMBean.appChangeListenener}"
+                            update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
+                            partialSubmit="true" process=":reghome:appname"/>
+                </p:autoComplete>
+            </h:panelGrid>
+
+            <h:panelGroup id="appdetaildlg">
+                <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" width="100%"
+                             columnClasses="col1, col2, col1, col2" rendered="#{appSelectMBean.showApp}">
+                    <p:outputLabel value="#{msgs.applicant_name}"/>
+                    <p:outputLabel value="#{appSelectMBean.selectedApplicant.appName}" style="font-weight: bold;"/>
+
+                    <h:outputLabel/>
+                    <h:outputLabel/>
+
+                    <ui:decorate template="/templates/addrtempl.xhtml">
+                        <ui:param name="addressdata" value="#{appSelectMBean.selectedApplicant.address}"/>
+                        <ui:param name="input" value="false"/>
+                    </ui:decorate>
+
+                    <h:outputLabel/>
+                    <h:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.applicant_type}*"/>
+                    <p:outputLabel value="#{appSelectMBean.selectedApplicant.applicantType}"
+                                   style="font-weight: bold;"/>
+
+                    <h:outputLabel/>
+                    <h:outputLabel/>
+
+                    <p:outputLabel value="#{msgs.applicant_filenumber}"/>
+                    <p:outputLabel value="#{appSelectMBean.selectedApplicant.fileNumber}" style="font-weight: bold;"/>
+
+                    <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right"/>
+                    <p:outputLabel value="#{appSelectMBean.selectedApplicant.phoneNo}" style="font-weight: bold;"/>
+
+                    <p:outputLabel value="#{msgs.applicant_faxno}"/>
+                    <p:outputLabel value="#{appSelectMBean.selectedApplicant.faxNo}" style="font-weight: bold;"/>
+
+                    <p:outputLabel value="#{msgs.applicant_website}"/>
+                    <p:outputLabel value="#{appSelectMBean.selectedApplicant.website}" style="font-weight: bold;"/>
+
+                </h:panelGrid>
+            </h:panelGroup>
+
+            <p:panel header="#{msgs.person_responsible}" id="contact" >
+				<h:panelGrid columns="1" columnClasses="label" rendered="#{appSelectMBean.showLblNoUsers}">
+				 	<p:outputLabel value="#{msgs.error_noUsersInApplicant}" styleClass="hint"/>
+				</h:panelGrid>
+                <h:panelGroup id="multipleuser1" rendered="#{appSelectMBean.showUserSelect}">
+                    <p:dataTable id="usertable" var="applicantUser" value="#{appSelectMBean.users}"
+                                 style="width:100%;" selection="#{appSelectMBean.selectedUser}"
+                                 rowKey="#{applicantUser.userId}">
+                        <p:ajax event="rowSelectRadio" listener="#{appSelectMBean.onRowSelect}"
+                                update=":reghome:messages :reghome:btnpnl"/>
+
+                        <p:column headerText="#{msgs.responsable}" selectionMode="single" />
+                        
+                        <p:column headerText="#{msgs.User_name}">
+                            <h:outputText value="#{applicantUser.name}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.User_username}">
+                            <h:outputText value="#{applicantUser.username}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.User_email}">
+                            <h:outputText value="#{applicantUser.email}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+            </p:panel>
+  
+            <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid">
+                <h:panelGroup id="btnpnl">
+                	 <!-- <p:inputText id="nameseluser" value="#{appSelectMBean.nameSelectedUSer}" styleClass="label">
+                     	<f:validator validatorId="applicantResponsableValidator"/>
+                     </p:inputText> -->
+                	                           <!-- rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect and appSelectMBean.showSaveBtn}" -->
+          
+                    <p:commandButton value="#{msgs.global_save}" action="#{appSelectMBean.addApptoRegistration()}"
+                    				oncomplete="!if(args.validationFailed) PF('addapplicantDlg').hide()"
+                                    update=":reghome" process=":reghome:addapplicantdlg" 
+                                    rendered="#{!appSelectMBean.showLblNoUsers and appSelectMBean.showUserSelect and appSelectMBean.showSaveBtn}"
+                                    />
+                    <p:commandButton action="#{appSelectMBean.cancelAddApplicant}" immediate="true"
+                                     value="#{msgs.global_cancel}" update=":reghome:addapplicantdlg" 
+                                     oncomplete="PF('addapplicantDlg').hide()"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:panelGrid>
+    </p:dialog>
+
+</ui:composition>

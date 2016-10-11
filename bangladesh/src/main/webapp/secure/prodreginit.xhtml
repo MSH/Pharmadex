@@ -28,11 +28,24 @@
                     <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}" required="true"
                                      requiredMessage="#{msgs.valid_prod_type}">
                         <f:selectItem itemLabel="-" itemValue=""/>
-                        <f:selectItems value="#{globalLists.getProdAppTypeShortList()}" var="prodcat"
+                     <f:selectItems value="#{prodRegInit.prodAppTypes}" var="prodcat"
                                        itemLabel="#{msgs[prodcat.key]}"/>
+                                        <f:ajax listener="#{prodRegInit.ajaxListener}"/>
                     </p:selectOneMenu>
                     <p:message for="apptypeCb" showSummary="true" showDetail="false"/>
+                    <p:outputLabel value="#{msgs.variationQuantityMj}" styleClass="fy-required-field"
+                                   for="majorQuantity"
+                                   rendered="#{prodRegInit.showVariationType}"/>
+                    <p:inputText id="majorQuantity" value="#{prodRegInit.majorVars}" rendered="#{prodRegInit.showVariationType}"/>
+                    <p:message for="majorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
 
+                    <p:outputLabel value="#{msgs.variationQuantityMn}" styleClass="fy-required-field"
+                                   for="minorQuantity"
+                                   rendered="#{prodRegInit.showVariationType}"/>
+                    <p:inputText id="minorQuantity" value="#{prodRegInit.minorVars}"
+                                 rendered="#{prodRegInit.showVariationType}"/>
+                    <p:message for="minorQuantity" showSummary="true" showDetail="false" rendered="#{prodRegInit.showVariationType}"/>
+                  
                     <p:outputLabel value="#{msgs.application_fee}" styleClass="label"
                                    rendered="#{prodRegInit.displayfeepanel}"/>
                     <p:outputLabel value="#{prodRegInit.fee}" styleClass="label"
