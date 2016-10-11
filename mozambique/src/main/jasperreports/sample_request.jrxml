@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-09-07T17:39:47 -->
+<!-- 2016-10-11T18:40:33 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -229,17 +229,6 @@ Fax: 21326547]]></text>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 			</line>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="120" y="104" width="300" height="18" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Serif" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{appUserName} == null ? "":$P{appUserName}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="122" y="143" width="300" height="32" uuid="15ff9fe7-fdcb-4075-9938-a3f874058b5b">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
