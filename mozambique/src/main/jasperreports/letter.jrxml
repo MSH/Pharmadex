@@ -117,22 +117,10 @@
 				<textElement>
 					<font fontName="DejaVu Serif" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appPost} == null ? "Director Técnico da":$P{appPost}.concat(" da")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{appPost} == null ? "Director Técnico da":$P{appPost}.concat(" da ").concat($P{appName})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="280" y="270" width="249" height="13" uuid="26565555-8d5c-4bbe-a489-5ae2ebf09d27">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Serif" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{appName} == null ? "":$P{appName}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="280" y="290" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
+				<reportElement positionType="Float" x="280" y="275" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
