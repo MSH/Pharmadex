@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -40,7 +42,17 @@ public class CompanyService implements Serializable {
 	ProductService productService;
 
 	public List<Company> findAllManufacturers() {
-		return companyDAO.findAll();
+		List<Company> list = companyDAO.findAll();
+		if(list != null && list.size() > 0)
+			Collections.sort(list, new Comparator<Company>() {
+				@Override
+				public int compare(Company o1, Company o2) {
+					String n1 = (o1 != null ? o1.getCompanyName() : "");
+					String n2 = (o2 != null ? o2.getCompanyName() : "");
+					return n1.compareTo(n2);
+				}
+			});
+		return list;
 	}
 
 	@Transactional

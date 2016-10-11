@@ -111,7 +111,7 @@ public class ProdRegAppMbean implements Serializable {
 	private List<ProdExcipient> selectedExipients;
 	private List<Atc> selectedAtcs;
 	private List<ProdAppChecklist> prodAppChecklists;
-	private List<ProdCompany> companies;
+	//private List<ProdCompany> companies;
 	private List<ForeignAppStatus> foreignAppStatuses;
 	private List<DrugPrice> drugPrices;
 	private Applicant applicant;
@@ -462,8 +462,12 @@ public class ProdRegAppMbean implements Serializable {
 		} else if (currentWizardStep.equals("applicationStatus")) {
 
 		} else if (currentWizardStep.equals("manufdetail")) {
-			product.setProdCompanies(companyService.findCompanyByProdID(product.getId()));
-
+			//product.setProdCompanies(companyService.findCompanyByProdID(product.getId()));
+			List<ProdCompany> list = product.getProdCompanies();
+			if(list != null && list.size() > 0){
+				for(ProdCompany pc:list)
+					Hibernate.initialize(pc.getCompany());
+			}
 		} else if (currentWizardStep.equals("pricing")) {
 			RetObject retObject = productService.findDrugPriceByProd(product.getId());
 			if (retObject.getMsg().equals("persist")) {
@@ -690,8 +694,7 @@ public class ProdRegAppMbean implements Serializable {
 	public void removeCompany(ProdCompany selectedCompany) {
 		context = FacesContext.getCurrentInstance();
 		try {
-			companies.remove(selectedCompany);
-			product.setProdCompanies(companies);
+			product.getProdCompanies().remove(selectedCompany);
 			companyService.removeProdCompany(selectedCompany);
 
 			context.addMessage(null, new FacesMessage(bundle.getString("company_removed")));
@@ -834,11 +837,17 @@ public class ProdRegAppMbean implements Serializable {
 				selectedInns = product.getInns();
 				selectedExipients = product.getExcipients();
 				selectedAtcs = product.getAtcs();
-				companies = product.getProdCompanies();//companyService.findCompanyByProdID(product.getId());
+				List<ProdCompany> list = product.getProdCompanies();
+				if(list != null && list.size() > 0){
+					for(ProdCompany pc:list)
+						Hibernate.initialize(pc.getCompany());
+				}
+				//product.setProdCompanies(companyService.findCompanyByProdID(product.getId()));
+				/*companies = product.getProdCompanies();//companyService.findCompanyByProdID(product.getId());
 				if(companies != null && companies.size() > 0){
 					for(ProdCompany pc:companies)
 						Hibernate.initialize(pc.getCompany());
-				}
+				}*/
 				
 				applicant = prodApplications.getApplicant();
 
@@ -967,14 +976,6 @@ public class ProdRegAppMbean implements Serializable {
 
 	public void setApplicantUser(User applicantUser) {
 		this.applicantUser = applicantUser;
-	}
-
-	public List<ProdCompany> getCompanies() {
-		return companies;
-	}
-
-	public void setCompanies(List<ProdCompany> companies) {
-		this.companies = companies;
 	}
 
 	public List<ForeignAppStatus> getForeignAppStatuses() {

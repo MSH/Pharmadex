@@ -57,7 +57,8 @@ public class CompanyMBean implements Serializable {
             if (prodCompanies == null) {
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("valid_value_req")));
             } else {
-                prodRegAppMbean.setCompanies(prodCompanies);
+                prodRegAppMbean.getProduct().setProdCompanies(prodCompanies);//setCompanies(prodCompanies);
+                prodRegAppMbean.saveApp();
             }
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("company_add_success")));
         } catch (Exception e) {
