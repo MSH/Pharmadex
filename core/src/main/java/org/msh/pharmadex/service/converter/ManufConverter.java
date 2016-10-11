@@ -60,7 +60,7 @@ public class ManufConverter implements Converter, Serializable {
     }
 
     public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
-        if (value == null || "".equals(value) || ("null".equals(value))) {
+    	if (value == null || "".equals(value) || ("null".equals(value))) {
             return null;
         } else {
             if (value instanceof Long) {
@@ -69,7 +69,7 @@ public class ManufConverter implements Converter, Serializable {
                 return String.valueOf(value);
             }else if (value instanceof Company){
                 Company company = (Company) value;
-                if (company.getId()!=null)
+                if (company.getId() != null)
                     return String.valueOf(company.getId());
                 else
                     return company.getCompanyName();
