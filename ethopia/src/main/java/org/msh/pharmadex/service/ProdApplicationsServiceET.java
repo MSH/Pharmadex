@@ -456,14 +456,20 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		utilsByReports.init(param, prodApp, product);
 		param.put("prodappid", prodApp.getId());
-		String fullNo = prodApp.getProdRegNo();
-		if (fullNo==null) {
-			String certNo = "0000000000" + String.valueOf(prodApp.getId()) + String.valueOf(prodApp.getProduct().getId());
-			certNo = certNo.substring(certNo.length() - 10, certNo.length());
-			fullNo = prodApp.getProdAppType() + "/" + certNo;
-		}
 		
-		param.put("cert_no",fullNo);
+		String fullNo = prodApp.getProdRegNo();	
+		if (fullNo==null) {	
+			fullNo=String.valueOf(prodApp.getProduct().getId())+"/"+generateAppNo(prodApp);
+			//fullNo =  String.valueOf(prodApp.getId())  +"/" + String.valueOf(prodApp.getProduct().getId());;
+		}				
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_NUMBER, fullNo ,true);
+		
+		//String full = "";		
+		String certNo = "0000000000" + String.valueOf(prodApp.getId()) + String.valueOf(prodApp.getProduct().getId());
+		certNo = (prodApp.getProdAppType()!=null? prodApp.getProdAppType():"")+ "/"+ certNo.substring(certNo.length() - 10, certNo.length());
+		//full =  + certNo; // prodApp.getProdAppType() 				
+		param.put("cert_no",certNo);
+		
 		param.put("productDescription",prodApp.getProduct().getProdDesc());
 		List<UseCategory> cats = product.getUseCategories();
 		String catStr="";
@@ -501,7 +507,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		}
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_APPTYPE, t);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_APPNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_NUMBER, prodApp.getProdAppNo()!=null? prodApp.getProdAppNo():"",true);
+	//	utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_NUMBER, prodApp.getProdAppNo()!=null? prodApp.getProdAppNo():"",true);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_DATE,"",false);		
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_SHELFINE,"",false);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_PROD_ROUTE_ADMINISTRATION,"",false);
