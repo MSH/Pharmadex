@@ -60,18 +60,22 @@ public class ManufConverter implements Converter, Serializable {
     }
 
     public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
-        if (value == null || value.equals("")) {
-            return "";
+        if (value == null || "".equals(value) || ("null".equals(value))) {
+            return null;
         } else {
             if (value instanceof Long) {
                 return String.valueOf(value);
             }else if (value instanceof String) {
                 return String.valueOf(value);
             }else if (value instanceof Company){
-                return String.valueOf(((Company) value).getId());
+                Company company = (Company) value;
+                if (company.getId()!=null)
+                    return String.valueOf(company.getId());
+                else
+                    return company.getCompanyName();
             }
         }
-        return "";
+        return null;
     }
 }
 
