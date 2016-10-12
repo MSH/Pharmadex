@@ -118,7 +118,10 @@ public class SampleTestServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, "New Medicine Registration", true);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
-				
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);		
+		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
 		
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPPOST, "", false);	
 		utilsByReports.putNotNull(UtilsByReports.KEY_PROD_DETAILS, "", false);
@@ -152,9 +155,9 @@ public class SampleTestServiceMZ implements Serializable {
 			}
 		}
 		
-		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
+		/*	utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
-		/*utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
 		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);*/

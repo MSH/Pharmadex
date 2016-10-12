@@ -59,6 +59,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_BODY = "body";
 	public static String KEY_REGISTRAR = "registrar";
 	public static String KEY_APPTYPE = "appType";
+	public static String KEY_APPTYPENUM = "appTypeNum";
 	public static String KEY_SUMMARY = "summary";
 	public static String KEY_SAMPLEQTY = "sampleQty";
 	public static String KEY_DUEDATE = "DueDate";
@@ -98,6 +99,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_APPADDRESS = "appAddress";	
 	public static String KEY_APPNUM = "appNum";/**номер в их системе (канцелярский номер) */
 	public static String KEY_APPUSERNAME = "appUserName"; /** ФИО */
+	public static String KEY_APPUSEREMAIL = "appUserEmail"; /** email*/
 	public static String KEY_APPPOST = "appPost"; /**должность*/
 	public static String KEY_EXECSUMMARY = "execSummary"; /**заключение модератора*/
 	public static String KEY_APPTELLFAX = "appTellFax";
@@ -374,8 +376,9 @@ public class UtilsByReports implements Serializable {
 				 param.put(k, str);
 		}		
 		if(k.equals(KEY_APPUSERNAME)){			
-			if(prodApps.getUsername()!=null)
-				str = prodApps.getUsername()!= null ? prodApps.getUsername():"";			
+			if(prodApps.getApplicantUser()!=null)
+				if( prodApps.getApplicantUser().getUsername()!=null)
+				str = prodApps.getApplicantUser().getUsername();//!= null ?prodApps.getApplicantUser():"";			
 				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPTELLFAX)){			

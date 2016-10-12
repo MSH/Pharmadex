@@ -345,7 +345,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_GENNAME, "", false);
 		
-		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);	
+		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);		
+		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
 		
 		JasperReport  jasperMasterReport =  (JasperReport)JRLoader.loadObject(new File(resource.getFile())); 
 		Map reportfields = new HashMap(); 
@@ -509,6 +511,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);	
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUMBER, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_BODY, summary, true);
 
@@ -518,7 +521,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,summary, true);			
 			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
-
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
+			
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);
 				String res = "";
@@ -564,6 +568,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
+	
 			if(prodApp.getApplicant() != null){
 				if(prodApp.getApplicant().getContactName()!=null){
 					setAppResponsibleUser(prodApp.getApplicant().getContactName());							
@@ -627,7 +634,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 							staffRemark= item.getStaffComment()+"<br>";
 					}
 					mp.put(UtilsByReports.FLD_DEFICITEM_NAMEMZ,item.getStaffComment()+"</li>");
-					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b>"+staffRemark);
+					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b> "+staffRemark);
 					res.add(mp);
 				}
 			}else{
@@ -941,7 +948,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
 
-			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);				
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSREC_DATE, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
 
@@ -954,13 +961,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			//letter
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPPOST, "", false);				
-			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);						
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
+			
 			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
 
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
-
+			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);			
+			
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);		
 				String res = "", resIn="";
@@ -972,7 +982,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.putNotNull(UtilsByReports.KEY_CURUSER,res, true);
 				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, resIn, true);
 			}
-			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
+			
 
 			if(prodApp.getApplicant() != null){
 				if(prodApp.getApplicant().getContactName()!=null){
@@ -1045,10 +1055,15 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 			Date dueDate = revDeficiency.getDueDate();
 
-			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_defScr", ".pdf");
+			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_revdefScr", ".pdf");
 			JasperPrint jasperPrint;
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			utilsByReports.init(param, prodApp, prod);
+			
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);		
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1,"",false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2,"",false);
+			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY,"",false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);	
 
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
@@ -1065,10 +1080,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,getSentComment(revDeficiency), true);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
 			
-			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);		
-			utilsByReports.putFieldNotNull(UtilsByReports.KEY_ADDRESS1,"",false);
-			utilsByReports.putFieldNotNull(UtilsByReports.KEY_ADDRESS2,"",false);
-			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COUNTRY,"",false);
+			
 			String res ="";
 			if(prodApp != null){
 				ProdAppType type = prodApp.getProdAppType();
@@ -1076,12 +1088,23 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					res = bundle.getString(prodApp.getProdAppType().getKey());							
 			}
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE,res,true);	
-
+						
 			if(prodApp.getApplicant() != null){
 				if(prodApp.getApplicant().getContactName()!=null){
 					setAppResponsibleUser(prodApp.getApplicant().getContactName());													
 				}
+			}			
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_DOSREC_DATE,"",false);
+			
+			String userEmail = "";
+			String userName = prodApp.getUsername();			
+			if(userName!=null){				
+				  User user = userService.findUserByUsername(userName);
+				  if(user!=null)
+					  userEmail = user.getEmail();				
 			}
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSEREMAIL, userEmail, true);
+			
 			//TODO	
 			/*List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
 			JRMapArrayDataSource source = createDeficiencySource(checkLists);*/
