@@ -378,7 +378,7 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_APPUSERNAME)){			
 			if(prodApps.getApplicantUser()!=null)
 				if( prodApps.getApplicantUser().getUsername()!=null)
-				str = prodApps.getApplicantUser().getUsername();//!= null ?prodApps.getApplicantUser():"";			
+				str = prodApps.getApplicantUser().getUsername();	
 				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPTELLFAX)){			
