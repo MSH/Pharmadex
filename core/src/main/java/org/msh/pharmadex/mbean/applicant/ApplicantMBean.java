@@ -59,16 +59,16 @@ public class ApplicantMBean implements Serializable {
 	private User user;
 	@ManagedProperty(value = "#{userSession}")
 	private UserSession userSession;
-	
+
 	@ManagedProperty(value = "#{roleDAO}")
 	private RoleDAO roleDAO;
 
 	private User selectResponsable;
 	/** use in form applicant */
 	private List<User> usersByApplicant;
-	
+
 	private String sourcePage="/home.faces";
-	
+
 	private List<ProdApplications> prodApplicationses;
 	private List<ProdApplications> prodNotRegApplicationses;
 
@@ -92,21 +92,21 @@ public class ApplicantMBean implements Serializable {
 		}
 
 		String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
-        if (srcPage != null){
-            sourcePage = srcPage;
-            buildIdApp();
-        }
+		if (srcPage != null){
+			sourcePage = srcPage;
+			buildIdApp();
+		}
 	}
 
 	private void buildIdApp(){
-    	int index = sourcePage.indexOf(":");
-    	if(index != -1){
-    		//String id = sourcePage.substring(0, index);
-    		//idAppSource = new Long(id);
-    		sourcePage = sourcePage.substring(index + 1);
-    	}
-    }
-	
+		int index = sourcePage.indexOf(":");
+		if(index != -1){
+			//String id = sourcePage.substring(0, index);
+			//idAppSource = new Long(id);
+			sourcePage = sourcePage.substring(index + 1);
+		}
+	}
+
 	public List<User> completeUserList(String query) {
 		return JsfUtils.completeSuggestions(query, getUnregisteredUsers());
 	}
@@ -260,7 +260,7 @@ public class ApplicantMBean implements Serializable {
 		if(role != null)
 			roles.add(role);
 		user.setRoles(roles);
-		
+
 		User verifUser = userService.findByUsernameOrEmail(user);
 		if(verifUser != null){// dublicate
 			FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -282,13 +282,13 @@ public class ApplicantMBean implements Serializable {
 		List<Role> allRoles = (List<Role>) roleDAO.findAll();
 		if(allRoles != null && allRoles.size() > 0){
 			for(Role r:allRoles){
-				if(r.getRolename().equals(enumrole))
+				if(r.getRolename().equals(enumrole.name()))
 					return r;
 			}
 		}
 		return null;
 	}
-	
+
 	public void validate(ComponentSystemEvent e) {
 		if(selectResponsable == null){
 			FacesContext fc = FacesContext.getCurrentInstance();
@@ -345,7 +345,7 @@ public class ApplicantMBean implements Serializable {
 	}
 
 	public void setUser(User user) {
-		this.user = user;
+		this.user = userService.findUser(user.getUserId());
 	}
 
 	public List<Applicant> getFilteredApplicant() {
@@ -434,7 +434,7 @@ public class ApplicantMBean implements Serializable {
 	public void setUsersByApplicant(List<User> list){
 		this.usersByApplicant = list;
 	}
-	
+
 	public List<ProdApplications> getProdApplicationses() {
 		if (prodApplicationses == null && getSelectedApplicant() != null)
 			prodApplicationses = applicantService.findRegProductForApplicant(getSelectedApplicant().getApplcntId());
@@ -456,14 +456,14 @@ public class ApplicantMBean implements Serializable {
 	public void setProdNotRegApplicationses(List<ProdApplications> prodNotRegApplicationses) {
 		this.prodNotRegApplicationses = prodNotRegApplicationses;
 	}
-	
-	public String getSourcePage() {
-    	return sourcePage;
-    }
 
-    public void setSourcePage(String sourcePage) {
-        this.sourcePage = sourcePage;
-    }
+	public String getSourcePage() {
+		return sourcePage;
+	}
+
+	public void setSourcePage(String sourcePage) {
+		this.sourcePage = sourcePage;
+	}
 
 	public RoleDAO getRoleDAO() {
 		return roleDAO;
@@ -477,27 +477,27 @@ public class ApplicantMBean implements Serializable {
 		if((userSession.isAdmin() || userSession.isStaff() || userSession.isHead())
 				&& getSelectedApplicant().getState() != ApplicantState.NEW_APPLICATION)
 			return true;
-		
+
 		return false;
 	}
-	
+
 	public boolean visibleProdlistPnl(){
 		if(getSelectedApplicant().getState() != ApplicantState.NEW_APPLICATION)
 			return true;
-		
+
 		return false;
 	}
-	
+
 	public boolean visibleRegister(){
 		if(userSession.isAdmin() && getSelectedApplicant().getState() == ApplicantState.NEW_APPLICATION)
 			return true;
 		return false;
 	}
-	
+
 	public String publicForm(){//userSession.getLoggedINUserID()
 		if(userSession.getLoggedInUser() != null && !"".equals(userSession.getLoggedInUser()))
 			return "/internal/processapp.faces";
-		
+
 		return "/public/processapplicant.faces";
 	}
 }

@@ -29,7 +29,6 @@ import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.primefaces.model.DualListModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -68,6 +67,8 @@ public class UserMBean implements Serializable {
     private String email;
     private String applicName = "";
     private Long applicID = new Long(-1);
+    private String backTo = "/admin/userslist_bk.faces";
+    		
 
     public String exception() throws Exception {
         throw new Exception();
@@ -207,7 +208,7 @@ public class UserMBean implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("no_user")));
         }
         
-        return "/admin/userslist_bk.faces";
+        return backTo;
     }
 
     public void addUser() {
@@ -411,4 +412,12 @@ public class UserMBean implements Serializable {
 		this.workspaceDAO = workspaceDAO;
 	}
 
+	public String getBackTo() {
+		return backTo;
+	}
+
+	public void setBackTo(String backTo) {
+		this.backTo = backTo;
+	}
+	
 }
