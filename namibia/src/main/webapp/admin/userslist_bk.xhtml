@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="userlist">
+            <h:panelGroup id="content">
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.Userlist}</h1>
+                </div>
+
+                <p:growl id="growl" showDetail="true"/>
+                <p:messages id="messages" showDetail="true" showSummary="true"/>
+                <p:dataTable id="users" var="user" value="#{userMBean.allUsers}"
+                             rows="25" paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}" rowsPerPageTemplate="25,50,100,200">
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}" action="#{userMBean.addUser}"
+                                         oncomplete="PF('adduser').show();"
+                                         update=":adduserfrm :adduserfrm:rolepicklist">
+                            <f:setPropertyActionListener target="#{userMBean.edit}" value="#{true}" />
+                            <f:setPropertyActionListener target="#{userMBean.backTo}" value="/admin/userslist_bk.faces"/>
+                        </p:commandButton>
+                    </f:facet>
+
+                    <p:column filterBy="#{user.name}"
+                              sortBy="#{user.name}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_name}"/>
+                        </f:facet>
+
+                        <p:commandLink value=" #{user.name}" oncomplete="PF('adduser').show();" update=":adduserfrm"
+                                       ajax="true">
+                            <f:setPropertyActionListener target="#{userMBean.selectedUser}" value="#{user}" />
+                            <f:setPropertyActionListener target="#{userMBean.edit}" value="#{true}" />
+                            <f:setPropertyActionListener target="#{userMBean.backTo}" value="/admin/userslist_bk.faces"/>
+                            <f:setPropertyActionListener target="#{userMBeanNA.rolesList}" value="#{userMBean.selectedUser.roles}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column filterBy="#{user.username}"
+                              sortBy="#{user.username}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_username}"/>
+                        </f:facet>
+
+                        #{user.username}
+                    </p:column>
+
+                    <p:column filterBy="#{user.email}"
+                              sortBy="#{user.email}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_email}"/>
+                        </f:facet>
+                        #{user.email}
+                    </p:column>
+
+                    <p:column filterBy="#{user.type}"
+                              sortBy="#{user.type}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_type}"/>
+                        </f:facet>
+                        #{user.type}
+                    </p:column>
+
+                    <p:column filterBy="#{user.companyName}"
+                              sortBy="#{user.companyName}">
+                     <!-- <p:column filterBy="#{user.applicant.appName}"
+                              sortBy="#{user.applicant.appName}"> -->
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.applicant}"/>
+                        </f:facet>
+                        #{user.companyName}
+                    </p:column>
+
+                    <p:column filterBy="#{user.enabled}"
+                              sortBy="#{user.enabled}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_enable}(true or false)"/>
+                        </f:facet>
+                        <p:outputLabel value="#{msgs.global_yes}" rendered="#{user.enabled}"/>
+                        <p:outputLabel value="#{msgs.global_no}" rendered="#{!user.enabled}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="adduser" modal="true" resizable="false" header="#{msgs.add_user}" dynamic="true" height="450px" width="800px">
+            <ui:decorate template="/templates/userformtempl.xhtml">
+	            <ui:param name="selectedUser" value="#{userMBean.selectedUser}"/>
+	            <ui:param name="input" value="#{true}"/>
+	            <ui:param name="edit" value="#{true}"/>
+            </ui:decorate>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

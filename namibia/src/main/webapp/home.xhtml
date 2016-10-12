@@ -33,22 +33,27 @@
                                 <p:submenu label="#{msgs.home_quicklinks}">
                                     <p:menuitem value="#{msgs.registration_product}" action="/public/productlist.faces" ajax="false"/>
                                     <p:menuitem value="#{msgs.registration_applicant}" url="/public/applicantlist.faces" ajax="false"/>
+                                    
 <ui:remove>
                                     <sec:isAnonymous>
                                         <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces" ajax="false" />
                                     </sec:isAnonymous>
 </ui:remove>
                                 </p:submenu>
-
+                                <sec:isAnonymous>
+									<p:submenu label="#{msgs.registration_form}">
+					                    <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
+					                                action="/public/newapplicantform.faces" ajax="false"/>
+					                </p:submenu>
+                				</sec:isAnonymous>
                                 <sec:isAuthenticated>
                                     <p:submenu label="#{msgs.admin_loggedinuser}">
                                         <p:menuitem value="#{msgs.application_status}"
-                                                    action="/secure/submittedproducts.faces" ajax="false"/>
-                                        <p:menuitem value="#{msgs.applicant_detail}" action="/internal/processapp.faces"
-                                                    ajax="false">
-                                            <f:setPropertyActionListener
-                                                    value="#{userSession.loggedInUserObj.applicant}"
-                                                    target="#{processAppBn.applicant}"/>
+                                                    action="/secure/submittedproducts.faces" ajax="false" rendered="#{userSession.company}"/>
+                                        <p:menuitem value="#{msgs.applicant_detail}" action="/public/processapplicant.faces"
+                                                    ajax="false" rendered="#{userSession.company}">
+                                          		<f:param name="sourcePage" value="/public/applicantlist.faces"/>
+               									<f:param name="appID" value="#{userSession.applcantID}"/>
                                         </p:menuitem>
                                         <p:menuitem value="#{msgs.usersettings_preferences}"
                                                     action="/secure/usersettings.faces"
