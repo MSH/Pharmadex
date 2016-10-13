@@ -36,7 +36,7 @@ public class AmdmtDAO implements Serializable {
             Join<ProdApplications, ProdAppAmdmt> prodAppJoin = paRoot.join("prodAppAmdmts", JoinType.LEFT);
 
 //            paRoot.fetch("prodAppAmdmts", JoinType.LEFT);
-            paRoot.fetch("prod", JoinType.LEFT);
+            paRoot.fetch("product", JoinType.LEFT);
 
 
             Predicate p = cb.equal(prodAppJoin.get("amdmtState"), amdmtState);
