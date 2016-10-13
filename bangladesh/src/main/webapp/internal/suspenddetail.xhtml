@@ -1,0 +1,114 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reviewHome" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showDetail="true" showSummary="true" id="messages"/>
+
+            <div style="width:1054px">
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="prodApp" value="#{suspendDetailBnMZ.prodApplications}"/>
+                </ui:decorate>
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <div align="right">
+                <!-- submit for moderator before reviewing -->
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBnMZ.submitSuspend}"
+                                 ajax="false"
+                                 rendered="#{(userSession.head || userSession.admin) and suspendDetailBnMZ.editForm}"/>
+                <!-- show product details -->
+                <p:commandButton value="#{msgs.product_details}" immediate="true"
+                                 action="#{suspendDetailBnMZ.showProductDetails}"
+                                 ajax="false">
+                    <f:param name="suspDetailID" value="#{suspendDetailBnMZ.suspDetail.id}"/>
+                    <f:param name="prodAppID" value="#{suspendDetailBnMZ.prodApplications.id}"/>
+                </p:commandButton>
+                <!-- return to list -->
+                <p:commandButton value="#{msgs.global_back}" immediate="true"
+                                 action="#{suspendDetailBnMZ.getSourcePage()}" ajax="false">
+                    <f:param name="prodAppID" value="#{suspendDetailBnMZ.prodApplications.id}"/>             
+                </p:commandButton>
+
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
+                <p:tab title="#{msgs.susp_detail}">
+                    <p:panel >
+                        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <p:outputLabel value="#{msgs.susp_report_org}" for="orgReported"/>
+                            <p:inputText value="#{suspendDetailBnMZ.suspDetail.orgReported}" id="orgReported"
+                                         required="true" requiredMessage="#{msgs.susp_report_org}: #{msgs.valueReq}"
+                                         style="width: 99%;" rendered="#{suspendDetailBnMZ.editForm}"/>
+                            <p:outputLabel value="#{suspendDetailBnMZ.suspDetail.orgReported}" rendered="#{!suspendDetailBnMZ.editForm}"/>
+                            <p:message for="orgReported" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.susp_notif_recievedt}" for="notifrecdt"/>
+                            <p:calendar id="notifrecdt" value="#{suspendDetailBnMZ.suspDetail.notifRecieveDt}"
+                            			showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
+                            			required="true" requiredMessage="#{msgs.susp_notif_recievedt}: #{msgs.valueReq}"
+                            			disabled="#{!suspendDetailBnMZ.editForm}"/>
+                            <p:message for="notifrecdt" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.susp_reason}" for="suspReason"/>
+                            <p:inputTextarea value="#{suspendDetailBnMZ.suspDetail.reason}" id="suspReason"
+                                             required="true" requiredMessage="#{msgs.susp_reason}: #{msgs.valueReq}"
+                                             cols="100" rows="4"
+                                             rendered="#{suspendDetailBnMZ.editForm}"/>
+                            <p:outputLabel value="#{suspendDetailBnMZ.suspDetail.reason}" rendered="#{!suspendDetailBnMZ.editForm}"/>
+                            <p:message for="suspReason" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.batch_no}" for="batch_no"/>
+                            <p:inputTextarea id="batch_no" value="#{suspendDetailBnMZ.suspDetail.batchNo}" cols="100" rows="4"
+                                             required="true" requiredMessage="#{msgs.batch_no}: #{msgs.valueReq}"
+                                             rendered="#{suspendDetailBnMZ.editForm}"/>
+                            <p:outputLabel value="#{suspendDetailBnMZ.suspDetail.batchNo}" rendered="#{!suspendDetailBnMZ.editForm}"/>
+                            <p:message for="batch_no" showSummary="true"/>
+
+                            <!-- <p:outputLabel value="#{msgs.updated_date}"/>
+                            <p:outputLabel value="#{suspendDetailBnMZ.suspDetail.updatedDate}">
+                            	<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}" />
+                            </p:outputLabel>
+                            <p:outputLabel/> -->
+
+                            <p:outputLabel value="#{msgs.global_duedate}" for="suspduedt"/>
+                            <p:calendar id="suspduedt" value="#{suspendDetailBnMZ.suspDetail.dueDate}"
+                            			showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
+                                        required="true" requiredMessage="#{msgs.global_duedate}: #{msgs.valueReq}"
+                                        disabled="#{!suspendDetailBnMZ.editForm}"/>
+                            <p:message for="suspduedt" showSummary="true"/>
+
+							<p:outputLabel value="#{msgs.global_decision}"/>
+                            <p:outputLabel value="#{msgs[suspendDetailBnMZ.suspDetail.decision.key]}"/>
+                            <p:outputLabel/>
+                            
+                            <p:outputLabel value="#{msgs.decision_date}"/>
+                            <p:calendar id="samplerecdt" value="#{suspendDetailBnMZ.suspDetail.decisionDate}"
+                                        showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
+                                        disabled="#{!suspendDetailBnMZ.editForm}"/>
+                            <p:outputLabel/>
+
+                            <!-- <p:outputLabel value="#{msgs.created_by}"/>
+                            <p:outputLabel value="#{suspendDetailBnMZ.suspDetail.createdBy.name}"/>
+                            <p:outputLabel/> -->
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+</ui:composition>
