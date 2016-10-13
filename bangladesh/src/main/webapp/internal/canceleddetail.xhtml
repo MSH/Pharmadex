@@ -1,0 +1,109 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reviewHome" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showDetail="true" showSummary="true" id="messages"/>
+
+            <div style="width:1054px">
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="prodApp" value="#{canceledDetailBnMZ.prodApplications}"/>
+                </ui:decorate>
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <div align="right">
+                <!-- submit for moderator before reviewing -->
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{canceledDetailBnMZ.submitCanceled}"
+                                 ajax="false"
+                                 rendered="#{(userSession.head || userSession.admin) and canceledDetailBnMZ.editForm}"/>
+                <!-- show product details -->
+                <p:commandButton value="#{msgs.product_details}" immediate="true"
+                                 action="#{canceledDetailBnMZ.showProductDetails}"
+                                 ajax="false">
+                    <f:param name="suspDetailID" value="#{canceledDetailBnMZ.suspDetail.id}"/>
+                    <f:param name="prodAppID" value="#{canceledDetailBnMZ.prodApplications.id}"/>
+                </p:commandButton>
+                <!-- return to list -->
+                <p:commandButton value="#{msgs.global_back}" immediate="true"
+                                 action="#{canceledDetailBnMZ.getSourcePage()}" ajax="false">
+                    <f:param name="prodAppID" value="#{canceledDetailBnMZ.prodApplications.id}"/>             
+                </p:commandButton>
+
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
+                <p:tab title="#{msgs.cancel_detail}">
+                    <p:panel >
+                        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <!-- <p:outputLabel value="#{msgs.susp_report_org}" for="orgReported"/>
+                            <p:inputText value="#{canceledDetailBnMZ.suspDetail.orgReported}" id="orgReported"
+                                         required="true" requiredMessage="#{msgs.susp_report_org}: #{msgs.valueReq}"
+                                         style="width: 99%;" rendered="#{canceledDetailBnMZ.editForm}"/>
+                            <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.orgReported}" rendered="#{!canceledDetailBnMZ.editForm}"/>
+                            <p:message for="orgReported" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.susp_notif_recievedt}" for="notifrecdt"/>
+                            <p:calendar id="notifrecdt" value="#{canceledDetailBnMZ.suspDetail.notifRecieveDt}"
+                            			showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
+                            			required="true" requiredMessage="#{msgs.susp_notif_recievedt}: #{msgs.valueReq}"
+                            			disabled="#{!canceledDetailBnMZ.editForm}"/>
+                            <p:message for="notifrecdt" showSummary="true"/> -->
+
+                            <p:outputLabel value="#{msgs.cancel_reason}" for="suspReason"/>
+                            <p:inputTextarea value="#{canceledDetailBnMZ.suspDetail.reason}" id="suspReason"
+                                             required="true" requiredMessage="#{msgs.susp_reason}: #{msgs.valueReq}"
+                                             cols="100" rows="4"
+                                             rendered="#{canceledDetailBnMZ.editForm}"/>
+                            <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.reason}" rendered="#{!canceledDetailBnMZ.editForm}"/>
+                            <p:message for="suspReason" showSummary="true"/>
+
+                            <!-- <p:outputLabel value="#{msgs.batch_no}" for="batch_no"/>
+                            <p:inputTextarea id="batch_no" value="#{canceledDetailBnMZ.suspDetail.batchNo}" cols="100" rows="4"
+                                             required="true" requiredMessage="#{msgs.batch_no}: #{msgs.valueReq}"
+                                             rendered="#{canceledDetailBnMZ.editForm}"/>
+                            <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.batchNo}" rendered="#{!canceledDetailBnMZ.editForm}"/>
+                            <p:message for="batch_no" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.updated_date}"/>
+                            <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.updatedDate}"
+                                           converter="javax.faces.DateTime"/>
+                            <p:outputLabel/>
+
+                            <p:outputLabel value="#{msgs.global_duedate}" for="suspduedt"/>
+                            <p:calendar id="suspduedt" value="#{canceledDetailBnMZ.suspDetail.dueDate}"
+                            			showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
+                                        required="true" requiredMessage="#{msgs.global_duedate}: #{msgs.valueReq}"
+                                        disabled="#{!canceledDetailBnMZ.editForm}"/>
+                            <p:message for="suspduedt" showSummary="true"/> -->
+							
+							<p:outputLabel value="#{msgs.global_decision}"/>
+                            <p:outputLabel value="#{msgs[canceledDetailBnMZ.suspDetail.decision.key]}"/>
+                            <p:outputLabel/>
+                            
+                            <p:outputLabel value="#{msgs.decision_date}"/>
+                            <p:calendar id="samplerecdt" value="#{canceledDetailBnMZ.suspDetail.decisionDate}"
+                                        showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
+                                        disabled="#{!canceledDetailBnMZ.editForm}"/>
+                            <p:outputLabel/>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+</ui:composition>
