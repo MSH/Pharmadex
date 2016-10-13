@@ -32,6 +32,7 @@
 						<p:tabView id="processtab" style="width: 830px;"
 							activeIndex="#{processProdBn.selectedTab}" dynamic="true"
 							cache="false">
+							<p:ajax event="tabChange" listener="#{processProdBnMZ.onTabChange}" />
 							<p:tab title="#{msgs.application_info}" id="infotab">
 								<h:panelGrid columns="4" cellspacing="10"
 									columnClasses="col1, col2, col1, col2">
@@ -304,7 +305,8 @@
 								<h:panelGrid columns="1" cellpadding="5" cellspacing="5">
 									<p:commandButton value="#{msgs.btn_create_ackletter}"
 										action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}"
-										oncomplete="PF('createAckLet').show()" update=":createAckLet" />
+										oncomplete="PF('createAckLet').show()" update=":createAckLet" 
+										rendered="#{!userSession.company}"/>
 									<p:dataTable id="lettertable" value="#{processProdBn.letters}"
 										var="letter">
 
@@ -342,11 +344,11 @@
 													value="#{processProdBn.fileDownload(letter)}" />
 											</p:commandButton>
 										</p:column>
-										<p:column style="width: 30px;">
+										<p:column style="width: 30px;" rendered="#{!userSession.company}">
 											<p:commandButton id="deletelet"
 												action="#{processProdBnMZ.deleteLetter(letter)}"
 												icon="ui-icon-trash" ajax="true" immediate="true"
-												update=":reghome:processtab:lettertable :reghome:messages" />
+												update=":reghome:processtab:lettertable :reghome:messages"/>
 										</p:column>
 									</p:dataTable>
 								</h:panelGrid>
@@ -407,37 +409,8 @@
 							</p:tab>
 
 							<p:tab title="#{msgs.suspend_info}" id="susp"
-								rendered="#{(userSession.moderator||userSession.head||userSession.reviewer)and processProdBn.registered and !empty processProdBn.suspDetails}">
-								<p:dataTable id="susptable" value="#{processProdBn.suspDetails}"
-									var="susp">
-
-									<p:column headerText="#{msgs.application_no}">
-										<p:commandLink id="susplink" value="#{susp.suspNo}"
-											action="suspenddetail" ajax="false">
-											<f:param name="prodAppID"
-												value="#{processProdBn.prodApplications.id}" />
-											<f:param name="suspDetailID"
-												value="#{processProdBn.prodApplications.id}" />
-										</p:commandLink>
-									</p:column>
-
-									<p:column headerText="#{msgs.moderator_name}">
-										<h:outputText value="#{susp.moderator.name}" />
-									</p:column>
-
-									<p:column headerText="#{msgs.processor}">
-										<h:outputText value="#{susp.reviewer.name}" />
-									</p:column>
-
-									<p:column headerText="#{msgs.requested_date}">
-										<h:outputText value="#{susp.reqDate}" />
-									</p:column>
-
-									<p:column headerText="#{msgs.dec_date}">
-										<h:outputText value="#{susp.decisionDate}" />
-									</p:column>
-
-								</p:dataTable>
+								rendered="#{(userSession.admin || userSession.head) and !empty processProdBn.suspDetails}">
+								<ui:include src="tabsuspend.xhtml"/>
 							</p:tab>
 
 							<p:tab title="#{msgs.deficiency_reports}" id="fir"
