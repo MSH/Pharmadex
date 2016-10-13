@@ -35,7 +35,8 @@
                          		rowsPerPageTemplate="20,40,100">
 
                     <p:column filterBy="#{eachprod.product.prodName}"
-                              sortBy="#{eachprod.product.prodName}">
+                              sortBy="#{eachprod.product.prodName}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
@@ -50,7 +51,8 @@
 
 
                     <p:column filterBy="#{eachprod.product.genName}"
-                              sortBy="#{eachprod.product.genName}">
+                              sortBy="#{eachprod.product.genName}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prodgenname}"/>
                         </f:facet>
@@ -58,7 +60,8 @@
                     </p:column>
 
                     <p:column filterBy="#{eachprod.prodAppNo}"
-                              sortBy="#{eachprod.prodAppNo}">
+                              sortBy="#{eachprod.prodAppNo}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.application_no}"/>
                         </f:facet>
@@ -66,7 +69,8 @@
                     </p:column>
 
                     <p:column filterBy="#{msgs[eachprod.prodAppType.key]}"
-                              sortBy="#{msgs[eachprod.prodAppType.key]}">
+                              sortBy="#{msgs[eachprod.prodAppType.key]}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.prod_app_type}"/>
                         </f:facet>
@@ -74,7 +78,8 @@
                     </p:column>
 
                     <p:column filterBy="#{msgs[eachprod.regState.key]}"
-                              sortBy="#{msgs[eachprod.regState.key]}">
+                              sortBy="#{msgs[eachprod.regState.key]}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.registration_status}"/>
                         </f:facet>
@@ -82,7 +87,8 @@
                     </p:column>
 
                     <p:column filterBy="#{msgs[eachprod.reviewStatus.key]}"
-                              sortBy="#{msgs[eachprod.reviewStatus.key]}">
+                              sortBy="#{msgs[eachprod.reviewStatus.key]}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.review_status}"/>
                         </f:facet>
@@ -97,7 +103,8 @@
                     </p:column>
 
                     <p:column sortBy="#{eachprod.applicant.appName}"
-                              filterBy="#{eachprod.applicant.appName}">
+                              filterBy="#{eachprod.applicant.appName}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.applicant_name}"/>
                         </f:facet>
@@ -105,7 +112,8 @@
                     </p:column>
 
                     <p:column sortBy="#{eachprod.product.manufName}"
-                              filterBy="#{eachprod.product.manufName}">
+                              filterBy="#{eachprod.product.manufName}"
+							  filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.manuf_name}"/>
                         </f:facet>

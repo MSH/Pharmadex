@@ -16,7 +16,8 @@
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,40,100">
-                <p:column filterBy="#{prodApps.prodName}" sortBy="#{prodApps.prodName}">
+                <p:column filterBy="#{prodApps.prodName}" sortBy="#{prodApps.prodName}"
+                filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prod_name}"/>
                     </f:facet>
@@ -29,7 +30,8 @@
                 </p:column>
 
                 <p:column filterBy="#{prodApps.genName}"
-                          sortBy="#{prodApps.genName}">
+                          sortBy="#{prodApps.genName}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prodgenname}"/>
                     </f:facet>
@@ -37,7 +39,8 @@
                 </p:column>
 
                 <p:column filterBy="#{prodApps.prodCategory}" filterMatchMode="exact" headerText="#{msgs.prod_cat}"
-                          sortBy="#{prodApps.prodCategory}">
+                          sortBy="#{prodApps.prodCategory}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('prodTable').filter()">
                             <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
@@ -49,7 +52,8 @@
 
 
                 <p:column filterBy="#{prodApps.appName}"
-                          sortBy="#{prodApps.appName}">
+                          sortBy="#{prodApps.appName}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_applicant}"/>
                     </f:facet>
@@ -57,7 +61,8 @@
                 </p:column>
 
                 <p:column filterBy="#{prodApps.regDate}"
-                          sortBy="#{prodApps.regDate}">
+                          sortBy="#{prodApps.regDate}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_date}"/>
                     </f:facet>
@@ -66,7 +71,8 @@
                 </p:column>
 
                 <p:column filterBy="#{prodApps.regExpiryDate}"
-                          sortBy="#{prodApps.regExpiryDate}">
+                          sortBy="#{prodApps.regExpiryDate}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.expiry_date}"/>
                     </f:facet>
@@ -75,7 +81,8 @@
                 </p:column>
 
                 <p:column filterBy="#{prodApps.manufName}"
-                          sortBy="#{prodApps.manufName}">
+                          sortBy="#{prodApps.manufName}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.manuf_name}"/>
                     </f:facet>
@@ -83,7 +90,8 @@
                 </p:column>
                 
                 <p:column filterBy="#{prodApps.fnm}"
-                          sortBy="#{prodApps.fnm}">
+                          sortBy="#{prodApps.fnm}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prod_fnm}"/>
                     </f:facet>
