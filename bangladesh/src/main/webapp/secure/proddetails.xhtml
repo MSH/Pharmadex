@@ -6,15 +6,17 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:o="http://omnifaces.org/ui">
 
-    <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3">
-    	<p:outputLabel value="#{msgs.dosRecDate}" for="dosrecdate" styleClass="fy-required-field"/>
-        <p:calendar value="#{prodRegAppMbean.prodApplications.dosRecDate}" id="dosrecdate" showOn="button"
-                pattern="#{userAccessMBean.workspace.datePattern}"
-                required="true" requiredMessage="#{msgs.dosRecDate}: #{msgs.valueReq}"/>
-         <p:message for="dosrecdate" showSummary="true" showDetail="false"/>
-                    
+    <h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3"> 
         <p:outputLabel value="#{msgs.prod_app_type}" styleClass="fy-required-field"/>
-        <p:outputLabel value="#{msgs[prodRegAppMbean.prodApplications.prodAppType.key]}" styleClass="label"/>
+        <p:outputLabel value="#{msgs[prodRegAppMbean.prodApplications.prodAppType.key]}" styleClass="label"
+        				rendered="#{!userSession.admin}"/>
+        <p:selectOneMenu id="apptypeCb" value="#{prodRegAppMbean.prodApplications.prodAppType}" 
+        					required="true" requiredMessage="#{msgs.valid_prod_type}"
+        					rendered="#{userSession.admin}">
+	        <f:selectItem itemLabel="-" itemValue=""/>
+	        <f:selectItems value="#{globalLists.getProdAppTypeShortList()}" var="prodcat"
+	                       itemLabel="#{msgs[prodcat.key]}"/>
+        </p:selectOneMenu>
         <p:outputLabel/>
 
         <p:outputLabel value="#{msgs.prod_cat}" for="prodCatcb" styleClass="fy-required-field"/>

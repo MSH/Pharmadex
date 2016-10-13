@@ -23,7 +23,7 @@
 
                 <pe:ajaxErrorHandler/>
 
-                <p:tab id="prodreg" title="#{msgs.applicant_detail}" >
+                <p:tab id="prodreg" title="#{msgs.applicant_detail}">
 					<ui:decorate template="appinfosub.xhtml">
 	                	<ui:param name="regHomeData" value="#{prodRegAppMbean}"/>
 	                	<ui:param name="appSelectData" value="#{appSelectMBean}"/>
@@ -494,7 +494,7 @@
                     <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
 
-                <p:tab id="prodAppChecklist" title="#{msgs.checklist}">
+                <p:tab id="prodAppChecklist" title="#{msgs.checklist}" rendered="#{prodRegAppMbeanMZ.visibleTabsByEdit}">
                     <p:panel header="#{msgs.checklist}">
                         <ui:decorate template="prodappchecklist.xhtml">
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>

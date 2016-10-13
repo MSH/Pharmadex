@@ -10,60 +10,6 @@
 		</div>
 
 		<h:form prependId="false">
-			<!--            <h:panelGroup rendered="#{not empty prodAppMBean.pendingRenewals}"> -->
-			<h:panelGroup rendered="false">
-				<p:outputLabel value="#{msgs.pending_renewals}"
-					style="font-weight: bolder;color: orangered;" />
-				<p:dataTable id="renewals" var="eachprod"
-					value="#{prodAppMBean.pendingRenewals}"
-					rendered="#{not empty prodAppMBean.pendingRenewals}"
-					filteredValue="#{prodAppMBeanMZ.filteredApps}">
-
-					<p:column 
-						sortBy="#{eachprod.product.prodName}">
-						<f:facet name="header">
-							<h:outputText value="#{msgs.prod_name}" />
-						</f:facet>
-						<p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
-							action="/internal/processreg" ajax="false">
-							<f:param name="id" value="#{eachprod.id}" />
-						</p:commandLink>
-					</p:column>
-
-					<p:column headerText="#{msgs.prodgenname}">
-                        #{eachprod.product.genName}
-                    </p:column>
-
-					<p:column headerText="#{msgs.application_no}">
-                        #{eachprod.prodAppNo}
-                    </p:column>
-
-					<p:column headerText="Registration Status">
-                        #{msgs[eachprod.regState.key]}
-                    </p:column>
-
-					<p:column headerText="#{msgs.prod_app_type}">
-                        #{msgs[eachprod.prodAppType.key]}
-                    </p:column>
-
-					<p:column headerText="#{msgs.prod_cat}">
-                        #{msgs[eachprod.product.prodCategory.key]}
-                    </p:column>
-
-					<p:column headerText="Date Submitted">
-						<h:outputLabel converter="javax.faces.DateTime"
-							value="#{eachprod.submitDate}" />
-					</p:column>
-
-					<p:column headerText="Manufacturer Name">
-                        #{eachprod.product.manufName}
-                    </p:column>
-
-				</p:dataTable>
-				<p:separator />
-			</h:panelGroup>
-
-
 			<h:outputFormat id="noRecordsFound"
 				value="#{msgs.label_no_records_found}"
 				rendered="#{empty prodAppMBeanMZ.submmittedAppList}">
@@ -78,13 +24,12 @@
 				paginator="true" rows="20" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="20,40,100">
-				<p:column 
-						sortBy="#{eachprod.product.prodName}"
-						headerText="#{msgs.prod_name}"
-						>
+				<p:column  sortBy="#{eachprod.product.prodName}"
+						headerText="#{msgs.prod_name}" >
 					<p:commandLink value="#{eachprod.product.prodName}"
 						action="/internal/processreg" ajax="false">
 						<f:param name="prodAppID" value="#{eachprod.id}" />
+						<f:param name="sourcePage" value="/secure/submittedproducts.xhtml"/>
 					</p:commandLink>
 				</p:column>
 
