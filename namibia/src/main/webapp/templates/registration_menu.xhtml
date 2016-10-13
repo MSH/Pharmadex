@@ -1,8 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:sec="http://www.springframework.org/security/facelets/tags"
-        >
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:sec="http://www.springframework.org/security/facelets/tags">
         
            <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-home" url="/public/applicantlist.faces"
                             ajax="false"/>
@@ -12,7 +12,15 @@
                             ajax="false"/>
            <p:menuitem value="#{msgs.cancel_prod}" icon="ui-icon-document" url="/public/canceledproducts.faces"
                             ajax="false"/>
-			
+                            
+			<sec:isAnonymous>
+				<p:separator rendered="#{!isleftmenu}"/>
+				<p:submenu label="#{msgs.registration_form}">
+					<p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
+					             action="/public/newapplicantform.faces" ajax="false"/>
+					</p:submenu>
+            </sec:isAnonymous>
+                				
             <sec:isAuthenticated>
             	<p:separator rendered="#{!isleftmenu and userSession.displayRegistrationFormItemMZ()}"/>
                 <p:submenu label="#{msgs.registration_form}" 
