@@ -126,7 +126,9 @@
                 </p:outputPanel>
                 <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
                 	<p:commandButton action="#{userMBean.resetPassword}" value="#{msgs.reset_password}"
+                                     onclick="PF('statusDialog').show();"
                                      oncomplete="PF('adduser').hide()"
+                                     ajax="false"
                                      update=":userlist:users :userlist:messages :adduserfrm"
                                      rendered="#{userMBean.edit}"/>
                     <h:outputText value="" rendered="#{!userMBean.edit}"/>
@@ -151,10 +153,12 @@
 
                 <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" id="saveuserbtn"
                                  ajax="false"
+                                 onclick="PF('statusDialog').show();"
                                  oncomplete="if (!args.validationFailed) PF('adduser').hide()"
                                  update=":userlist:users :userlist:messages :adduserfrm" 
                                  rendered="#{!userMBean.edit}"/>
                 <p:commandButton action="#{userMBean.updateuser}" value="#{msgs.global_update}" id="updateuserbtn"
+                				 onclick="PF('statusDialog').show();"
                                  oncomplete="if (!args.validationFailed) PF('adduser').hide()"
                                  ajax="false"
                                  update=":userlist:users :userlist:messages :adduserfrm" 
@@ -165,6 +169,22 @@
                  <!-- <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" ajax="false" icon="ui-icon-extlink"/> -->
             </h:form>
         </p:dialog>
-
+		<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+		
+		<script type="text/javascript">
+			function start() {
+			PF('statusDialog').show();
+			setTimeout(function() {
+				PF('statusDialog').hide();
+			}, 3000);
+			}
+				
+			function stop() {
+			PF('statusDialog').hide();
+			}
+		</script>
     </ui:define>
 </ui:composition>

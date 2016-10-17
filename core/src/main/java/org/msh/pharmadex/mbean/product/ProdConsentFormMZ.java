@@ -109,8 +109,6 @@ public class ProdConsentFormMZ implements Serializable {
 
     }
 
-
-    @Transactional
     public String submitApp() {
         context = FacesContext.getCurrentInstance();
         bundle = context.getApplication().getResourceBundle(context, "msgs");
