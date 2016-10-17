@@ -2,7 +2,11 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.mbean.product.ProdTable;
+import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.DosageFormService;
+import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 
@@ -32,11 +36,15 @@ public class PIPOrderBn extends POrderBn {
     private PIPOrder pipOrder;
     private List<POrderChecklist> pOrderChecklists;
     private PIPProd pipProd;
-    @ManagedProperty(value = "#{dosageFormService}")
-    private DosageFormService dosageFormService;
     private boolean showWithdrawn;
     private boolean showSubmit;
     private POrderComment pOrderComment;
+    @ManagedProperty(value = "#{dosageFormService}")
+    private DosageFormService dosageFormService;
+    @ManagedProperty(value = "#{productService}")
+    private ProductService productService;
+    @ManagedProperty(value = "#{companyService}")
+    CompanyService companyService;
 
     @PostConstruct
     private void init() {
@@ -105,12 +113,9 @@ public class PIPOrderBn extends POrderBn {
 
     @Override
     public void addDocument() {
-//        file = userSession.getFile();
         getpOrderDoc().setPipOrder(pipOrder);
         getpOrderDoc().setCreatedDate(new Date());
-//        getpOrderDocDAO().save(getpOrderDoc());
         getpOrderDocs().add(getpOrderDoc());
-//        userSession.setFile(null);
         FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, msg);
 
@@ -149,6 +154,23 @@ public class PIPOrderBn extends POrderBn {
         pipProds.add(pipProd);
         pipOrder.setTotalPrice(pOrderService.calculateGrandTotal(pipProds, pipOrder.getFreight()));
         initAddProd();
+    }
+
+    public List<String> completeProduct(String query){
+        return globalEntityLists.getProductList(query);
+    }
+
+    public List<String> completeManufacturer(String query){
+        if (query==null || "".equals(query)) return null;
+        List<String> res = new ArrayList<String>();
+        List<Company> manfs = globalEntityLists.getManufacturers();
+        query = query.toLowerCase();
+        for (Company man : manfs){
+            if (man.getCompanyName().toLowerCase().startsWith(query))
+                if (!res.contains(man.getCompanyName()))
+                    res.add(man.getCompanyName());
+        }
+        return res;
     }
 
     public String cancelOrder() {
@@ -360,5 +382,21 @@ public class PIPOrderBn extends POrderBn {
 
     public void setpOrderComment(POrderComment pOrderComment) {
         this.pOrderComment = pOrderComment;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public CompanyService getCompanyService() {
+        return companyService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
     }
 }

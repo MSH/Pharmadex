@@ -1,30 +1,14 @@
 package org.msh.pharmadex.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.msh.pharmadex.dao.CustomFeeSchDAO;
-import org.msh.pharmadex.domain.AdminRoute;
-import org.msh.pharmadex.domain.AmdmtCategory;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.ApplicantType;
-import org.msh.pharmadex.domain.Atc;
-import org.msh.pharmadex.domain.Company;
-import org.msh.pharmadex.domain.Country;
-import org.msh.pharmadex.domain.Currency;
-import org.msh.pharmadex.domain.DosUom;
-import org.msh.pharmadex.domain.DosageForm;
-import org.msh.pharmadex.domain.Excipient;
-import org.msh.pharmadex.domain.FeeSchedule;
-import org.msh.pharmadex.domain.Inn;
-import org.msh.pharmadex.domain.PharmClassif;
-import org.msh.pharmadex.domain.PharmacySite;
-import org.msh.pharmadex.domain.Role;
-import org.msh.pharmadex.domain.SRA;
-import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.ApplicantState;
+import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.JsfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -57,6 +41,7 @@ public class GlobalEntityLists implements Serializable {
     private List<SRA> sras;
     private List<Currency> currencies;
     private List<Role> roles;
+    private List<ProdTable> productList;
 
 
     @Autowired
@@ -152,6 +137,23 @@ public class GlobalEntityLists implements Serializable {
         if (countries == null)
             countries = countryService.getCountries();
         return countries;
+    }
+
+    public List<String> getProductList(String query){
+        if (query==null) return null;
+        if ("".equals(query)) return null;
+        query = query.toLowerCase();
+        List<ProdTable> products = productService.findAllRegisteredProduct();
+        List<String> suggestions = new ArrayList<String>();
+        String current;
+        for (ProdTable prod:products) {
+            current = prod.getProdName().toLowerCase();
+            if (current.startsWith(query))
+                if (!suggestions.contains(prod.getProdName()))
+                    suggestions.add(prod.getProdName());
+
+        }
+        return suggestions;
     }
 
     public List<Country> completeCountryList(String query) {
@@ -263,4 +265,9 @@ public class GlobalEntityLists implements Serializable {
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
+
+    public void setProductList(List<ProdTable> productList) {
+        this.productList = productList;
+    }
+
 }

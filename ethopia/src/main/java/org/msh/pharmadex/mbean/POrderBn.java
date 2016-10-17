@@ -4,10 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.msh.pharmadex.service.CurrencyService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.POrderService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -45,7 +42,6 @@ public abstract class POrderBn implements Serializable {
 
     FacesContext context = FacesContext.getCurrentInstance();
     java.util.ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msgs");
-    //    private POrderBase pOrderBase;
     private User applicantUser;
     private Applicant applicant;
     private POrderDoc pOrderDoc;
@@ -59,7 +55,6 @@ public abstract class POrderBn implements Serializable {
     public StreamedContent fileDownload(POrderDoc doc) {
         InputStream ist = new ByteArrayInputStream(doc.getFile());
         StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
-//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
         return download;
     }
 
@@ -92,12 +87,10 @@ public abstract class POrderBn implements Serializable {
             context.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-//        pOrderDoc.setPipOrder(get);
         pOrderDoc.setFileName(file.getFileName());
         pOrderDoc.setContentType(file.getContentType());
         pOrderDoc.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
         pOrderDoc.setRegState(AmdmtState.NEW_APPLICATION);
-//        userSession.setFile(file);
     }
 
     public abstract void addDocument();
