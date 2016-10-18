@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-09-28T18:34:58 -->
+<!-- 2016-10-18T15:03:57 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -70,7 +70,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA["Attention: ".concat( $P{appResponsible} == null ? "____________________":$P{appResponsible}).concat(" (e.g. Regulatory Affairs Manager)")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Attention: ".concat( $P{appResponsible} == null ? "____________________":$P{appResponsible})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="406" y="184" width="34" height="16" uuid="ae4a7214-f0ee-475e-ac84-d7448a101f01">
@@ -85,6 +85,7 @@
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{DueDate} != null ? $P{DueDate} : new java.util.Date()]]></textFieldExpression>
 			</textField>
@@ -276,9 +277,9 @@ Website: www.dgda.gov.bd]]></text>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="212" splitType="Stretch">
+		<band height="155" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="32" y="20" width="524" height="32" uuid="f481329b-9ad7-4c83-87a7-f1646a1d7c43">
+				<reportElement positionType="Float" x="32" y="5" width="524" height="32" uuid="f481329b-9ad7-4c83-87a7-f1646a1d7c43">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -288,7 +289,7 @@ Website: www.dgda.gov.bd]]></text>
 				<text><![CDATA[The review of the application will commence again once you submit your responses. If you have any queries as to the meaning of this letter, you should contact the undersigned immediately.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="32" y="72" width="250" height="16" uuid="d51225b6-2888-4d3a-a67c-28851cb084d1">
+				<reportElement positionType="Float" x="32" y="57" width="250" height="16" uuid="d51225b6-2888-4d3a-a67c-28851cb084d1">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -297,14 +298,8 @@ Website: www.dgda.gov.bd]]></text>
 				</textElement>
 				<text><![CDATA[Yours faithfully ]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="456" y="110" width="100" height="16" uuid="b1750e54-88cd-41ed-9da3-3b5ac6d49a21">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
-			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="284" y="132" width="272" height="80" uuid="f35876ec-04c1-42c7-870b-5f1e08b8581e">
+				<reportElement positionType="Float" x="285" y="107" width="272" height="48" uuid="f35876ec-04c1-42c7-870b-5f1e08b8581e">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>

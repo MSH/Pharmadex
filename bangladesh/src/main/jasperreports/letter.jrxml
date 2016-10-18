@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-09-28T18:27:01 -->
+<!-- 2016-10-18T13:06:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -132,7 +132,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA["Attention: ".concat($P{appResponsible} == null ? "____________________":$P{appResponsible}).concat(" (e.g. Regulatory Affairs Manager)")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Attention: ".concat($P{appResponsible} == null ? "____________________":$P{appResponsible})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="32" y="89" width="180" height="16" uuid="f9036c27-e4a5-48cd-8867-df8fc91f3fb4">
