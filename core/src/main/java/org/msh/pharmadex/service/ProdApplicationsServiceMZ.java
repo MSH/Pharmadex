@@ -523,6 +523,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_MODINITIALS, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
 			
+			if(prodApp.getApplicant() != null){
+				if(prodApp.getApplicant().getContactName()!=null){
+					setAppResponsibleUser(prodApp.getApplicant().getContactName());													
+				}
+			}
+					
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);
 				String res = "";
