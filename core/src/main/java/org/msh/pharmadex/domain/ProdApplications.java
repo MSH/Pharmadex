@@ -21,7 +21,8 @@ public class ProdApplications extends CreationDetail implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    //@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY) 20161017 AK
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "APP_ID", nullable = false)
     private Applicant applicant;
 

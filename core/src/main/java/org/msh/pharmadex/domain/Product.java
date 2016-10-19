@@ -49,7 +49,8 @@ public class Product extends CreationDetail implements Serializable {
     @Column(name = "dosage_strength")
     private String dosStrength;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(fetch = FetchType.LAZY) 20161017 AK
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DOSUNIT_ID")
     @NotAudited
     private DosUom dosUnit;
@@ -67,15 +68,18 @@ public class Product extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProdCategory prodCategory;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY) 20161017 AK
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @NotAudited
     private List<ProdInn> inns;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY) 20161017 AK
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @NotAudited
     private List<ProdExcipient> excipients;
 
-    @ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    //@ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY, cascade = {CascadeType.ALL}) 20161017 AK
+    @ManyToMany(targetEntity = Atc.class, fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(name = "prod_atc", joinColumns = @JoinColumn(name = "prod_id"), inverseJoinColumns = @JoinColumn(name = "atc_id"))
     @NotAudited
     private List<Atc> atcs;

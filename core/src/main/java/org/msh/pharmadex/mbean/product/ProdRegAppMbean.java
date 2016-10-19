@@ -190,6 +190,7 @@ public class ProdRegAppMbean implements Serializable {
 					applicantUser = getLoggedInUser();
 
 				prodApplications.setApplicant(applicantUser.getApplicant());
+				Hibernate.initialize(applicantUser.getApplicant());
 				prodApplications.setApplicantUser(applicantUser);
 
 				prodApplications.setCreatedBy(getLoggedInUser());
@@ -849,6 +850,7 @@ public class ProdRegAppMbean implements Serializable {
 						Hibernate.initialize(pc.getCompany());
 				}*/
 				
+				//Hibernate.initialize(prodApplications.getApplicant());
 				applicant = prodApplications.getApplicant();
 
 				applicantUser = prodApplications.getApplicantUser();
