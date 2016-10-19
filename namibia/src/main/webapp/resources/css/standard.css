@@ -89,6 +89,10 @@ body {
     font-size: 98% !important;
 }
 
+.ui-widget-header {
+    border: 1px solid #6091ba;
+    background: #6091ba;
+}
 .ui-growl {
     top: 115px !important;
 }
@@ -99,7 +103,7 @@ body {
     padding: 0px 0px 0 0px;
     background-repeat: repeat;
     background-position: center;
-    background-color: #5c9ccc;
+    background-color: #2f506c;
 }
 
 #logo h1, #logo p {
@@ -134,7 +138,7 @@ body {
 #logo a {
     border: none;
     text-decoration: none;
-    color: #e5ff0d;
+    color: #FFFFFF;
     padding: 0px 0px 0px 10px;
 }
 
@@ -149,7 +153,11 @@ body {
 .ui-menubar {
     width: 1044px;
     margin: 0 auto;
+    background: #6091ba;
+}
 
+.ui-widget-content{
+	border: 1px solid #6091ba;
 }
 
 #menu ul {
@@ -278,7 +286,7 @@ body {
 
 .title a {
     border-bottom: none;
-    color: darkblue;
+    color: #2f506c;
 
 }
 
