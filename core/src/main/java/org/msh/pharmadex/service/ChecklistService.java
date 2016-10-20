@@ -75,4 +75,9 @@ public class ChecklistService implements Serializable {
         return checklists;
     }
 
+	public List<Checklist> findAll() {
+		return checklistDAO.findAll();
+	
+	}
+
 }
