@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="chklsts">
+            <h:panelGroup id="content">
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.checklist}</h1>
+                </div>
+
+                <p:growl id="growl" showDetail="true"/>
+                <p:messages id="messages" showSummary="true"/>
+                <p:dataTable id="lsts" var="item" value="#{checklistMBean.alllist}"
+                 rows="25" paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}" rowsPerPageTemplate="25,50,100,200">
+                >
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}" action="#{checklistMBean.initAdd}"
+                                         oncomplete="PF('addlst').show();"
+                                         update=":addlstfrm"/>
+                    </f:facet>
+                    <p:column headerText="#{msgs.isHeader}">
+                      <h:outputText value="#{item.header} "/>
+                   </p:column>
+                    <p:column style="width:10%" headerText="#{msgs.checklist_module}">
+                       <h:outputText value="  #{item.module}"/>
+                   </p:column>
+                   <p:column headerText="#{msgs.checklist_moduleno}">
+                      <h:outputText value="#{item.moduleNo}"/>
+                   </p:column>
+                   <p:column  style="width:40%" headerText="#{msgs.global_name}">
+                
+                           <p:commandLink value=" #{item.name}" oncomplete="PF('addlst').show();" update=":addlstfrm"
+                                       ajax="true" action="#{checklistMBean.initUpdate(item)}">
+                        </p:commandLink>
+                     </p:column>
+                     <p:column headerText="#{msgs[checklistMBean.getGeneric().key]}">
+                        <h:outputText value="#{item.genMed}"/>
+                     </p:column>
+                      <p:column headerText="#{msgs[checklistMBean.getNewEntity().key]}">
+                       <h:outputText value=" #{item.newMed}"/>
+                     </p:column>
+                      <p:column headerText="Recognized">
+                       <h:outputText value="#{item.recognizedMed}"/>
+                     </p:column>
+                     <p:column headerText="#{msgs[checklistMBean.getRenew().key]}">
+                      <h:outputText value="#{item.renewal}"/>
+                      </p:column>
+                    <p:column headerText="#{checklistMBean.getVariation()}">
+                      <h:outputText value="#{item.variation}"/>
+                     </p:column>
+                      <p:column headerText="#{checklistMBean.getMajVariation()}">
+                     <h:outputText value="#{item.majvar}"/>
+                      </p:column> 
+                  </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+        
+        <p:dialog widgetVar="addlst" modal="true" resizable="false" header="#{msgs.global_addupdate}" dynamic="true" height="450px" width="800px">
+            <h:form id="addlstfrm">
+                <p:messages showSummary="true"/>
+                  <h:panelGrid columns="3" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5"
+                             id="detailitem">
+                    <h:outputLabel value="#{msgs.isHeader}" />
+                    <p:selectBooleanButton value="#{checklistMBean.listItem.header}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                  
+                    <p:message for="mod"/>
+                    <h:outputLabel value="#{msgs.checklist_module}" for="mod"/>
+                    <p:inputText value="#{checklistMBean.listItem.module}" required="true" id="mod"
+                                 style="width:50px;"/>
+                    <p:message for="mod"/>
+                 
+                    <h:outputLabel value="#{msgs.checklist_moduleNo}" for="modn"/>
+                    <p:inputText value="#{checklistMBean.listItem.moduleNo}"  id="modn"
+                                 style="width:50px;"/>
+                    <p:message for="modn"/>
+                    <h:outputLabel value="#{msgs.global_name}" for="name"/>
+                     <p:inputText value="#{checklistMBean.listItem.name}" required="true" id="name"
+                                 style="width:400px;"/>
+                     <p:message for="name"/>
+                     <h:outputLabel value="#{msgs[checklistMBean.getGeneric().key]}" />
+                    <p:selectBooleanButton value="#{checklistMBean.listItem.genMed}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                    <h:outputLabel value=""/>
+                    <h:outputLabel value="#{msgs[checklistMBean.getNewEntity().key]}" />
+                    <p:selectBooleanButton value="#{checklistMBean.listItem.newMed}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                    <h:outputLabel value=""/>
+                    <h:outputLabel value="Recognized" />
+                    <p:selectBooleanButton value="#{checklistMBean.listItem.recognizedMed}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                    <h:outputLabel value=""/>
+                    <h:outputLabel value="#{msgs[checklistMBean.getRenew().key]}" />
+                    <p:selectBooleanButton value="#{checklistMBean.listItem.renewal}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                    <h:outputLabel value=""/>
+                     <h:outputLabel value="#{checklistMBean.getVariation()}" />
+                    <p:selectBooleanButton value="#{checklistMBean.listItem.variation}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                    <h:outputLabel value=""/>
+                    <h:outputLabel value="#{checklistMBean.getMajVariation()}" />
+                    <p:selectBooleanButton value="#{checklistMBean.listItem.majvar}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                  </h:panelGrid>   
+                   <p:commandButton action="#{checklistMBean.saveLst}" value="#{msgs.global_add}" id="savebtn"
+                                 oncomplete="if (!args.validationFailed) PF('addlst').hide()"
+                                 update=":chklsts :chklsts:messages :addlstfrm" rendered="#{!fastTrackMBean.edit}"/>
+                <p:commandButton action="#{checklistMBean.saveLst}" value="#{msgs.global_update}" id="updatebtn"
+                                 oncomplete="if (!args.validationFailed) PF('addlst').hide()"
+                                 update=":chklsts :chklsts :addlstfrm" rendered="#{checklistMBean.edit}"/>
+                <p:commandButton action="#{checklistMBean.cancel}" immediate="true" value="#{msgs.global_cancel}"
+                                 oncomplete="PF('addlst').hide()" ajax="false"/> 
+           </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+                     
