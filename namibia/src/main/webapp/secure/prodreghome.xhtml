@@ -72,15 +72,7 @@
                                         update=":reghome:messages"/>
 
                                 <p:column headerText="#{msgs.product_innname}">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{prodInn.inn.name}"/>
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputText value="#{prodInn.inn.name}" style="width:100%"/>
-                                        </f:facet>
-                                    </p:cellEditor>
-
+                                    <h:outputText value="#{prodInn.inn.name}"/>
                                 </p:column>
 
                                 <p:column headerText="#{msgs.dos_strength}">
@@ -140,14 +132,7 @@
                                         update=":reghome:messages"/>
 
                                 <p:column headerText="#{msgs.excipient_name}">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{prodExp.excipient.name}"/>
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputText value="#{prodExp.excipient.name}" style="width:100%"/>
-                                        </f:facet>
-                                    </p:cellEditor>
+                                    <h:outputText value="#{prodExp.excipient.name}"/>
                                 </p:column>
 
                                 <p:column headerText="#{msgs.dos_strength}">
