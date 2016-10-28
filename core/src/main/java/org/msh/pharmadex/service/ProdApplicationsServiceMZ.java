@@ -975,8 +975,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
-			utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);			
+			utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
 			
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPRESPONSIBLE, "", false);
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);		
 				String res = "", resIn="";
@@ -988,12 +989,14 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				utilsByReports.putNotNull(UtilsByReports.KEY_CURUSER,res, true);
 				utilsByReports.putNotNull(UtilsByReports.KEY_SCRINITIALS, resIn, true);
 			}
-			
-
+						
 			if(prodApp.getApplicant() != null){
 				if(prodApp.getApplicant().getContactName()!=null){
 					setAppResponsibleUser(prodApp.getApplicant().getContactName());													
 				}
+			}
+			if(prodApp.getUsername()!=null){				
+				utilsByReports.putNotNull(UtilsByReports.KEY_USERNAME, prodApp.getUsername(), true);
 			}
 			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
 			if(resource != null){

@@ -99,6 +99,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_APPADDRESS = "appAddress";	
 	public static String KEY_APPNUM = "appNum";/**номер в их системе (канцелярский номер) */
 	public static String KEY_APPUSERNAME = "appUserName"; /** ФИО */
+	public static String KEY_USERNAME = "userName"; /** ФИО из формы*/
 	public static String KEY_APPUSEREMAIL = "appUserEmail"; /** email*/
 	public static String KEY_APPPOST = "appPost"; /**должность*/
 	public static String KEY_EXECSUMMARY = "execSummary"; /**заключение модератора*/
@@ -378,7 +379,7 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_APPUSERNAME)){			
 			if(prodApps.getApplicantUser()!=null)
 				if( prodApps.getApplicantUser().getUsername()!=null)
-				str = prodApps.getApplicantUser().getUsername();	
+				str = prodApps.getApplicantUser().getName();//getUsername();	
 				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPTELLFAX)){			
