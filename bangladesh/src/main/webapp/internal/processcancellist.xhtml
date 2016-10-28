@@ -60,8 +60,8 @@
                         <h:outputText value="#{susp.decision}"/>
                     </p:column>
 
-                    <p:column headerText="#{msgs.dec_date}">
-                        <h:outputText value="#{susp.decisionDate}" >
+                    <p:column headerText="#{msgs.global_duedate}">
+                        <h:outputText value="#{susp.dueDate}" >
                         	<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}" />
                         </h:outputText>
                     </p:column>
