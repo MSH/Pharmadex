@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-10-11T17:46:13 -->
+<!-- 2016-10-28T16:26:10 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -18,7 +18,6 @@
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="appNum" class="java.lang.String"/>
 	<parameter name="appPost" class="java.lang.String"/>
-	<parameter name="appUserName" class="java.lang.String"/>
 	<parameter name="dosRecDate" class="java.lang.String"/>
 	<parameter name="prodName" class="java.lang.String"/>
 	<parameter name="genName" class="java.lang.String"/>
@@ -30,11 +29,13 @@
 	<parameter name="scrInitials" class="java.lang.String"/>
 	<parameter name="address1" class="java.lang.String"/>
 	<parameter name="address2" class="java.lang.String"/>
+	<parameter name="appUserName" class="java.lang.String"/>
+	<parameter name="userName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="287" splitType="Stretch">
+		<band height="300" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement x="0" y="95" width="572" height="27" forecolor="#000000" uuid="71b0cf8c-d82f-48ec-90c0-d1905bde6c8b">
@@ -121,7 +122,7 @@
 				<textFieldExpression><![CDATA["".concat($P{appPost} == null ? "Director Técnico ":$P{appPost}).concat(" da ").concat($P{appName})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="280" y="260" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
+				<reportElement positionType="Float" x="280" y="273" width="249" height="13" uuid="be00699c-7404-4df9-a61e-8b261b7d72b9">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -133,7 +134,7 @@
 				<textFieldExpression><![CDATA[$P{address1} == null ? "": $P{address1}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="280" y="274" width="249" height="13" uuid="f9a253a5-f832-4e9a-8d09-2b17a902495e">
+				<reportElement positionType="Float" x="280" y="287" width="249" height="13" uuid="f9a253a5-f832-4e9a-8d09-2b17a902495e">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -143,6 +144,18 @@
 					<font fontName="DejaVu Serif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address2} == null ? "Maputo": ("".equals($P{address2})?"Maputo" :$P{address2})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="280" y="260" width="249" height="13" uuid="ac3fca55-e00a-43d3-ab2a-99aa0e003dde">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Serif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appUserName} == null ? "": $P{appUserName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -335,10 +348,9 @@ Fax: 21326547]]></text>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="152" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="172" splitType="Stretch">
 			<staticText>
-				<reportElement x="113" y="10" width="339" height="20" uuid="0fe2c96c-9cef-4022-9637-5f1fc2db6834">
+				<reportElement x="113" y="30" width="339" height="20" uuid="0fe2c96c-9cef-4022-9637-5f1fc2db6834">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -347,12 +359,12 @@ Fax: 21326547]]></text>
 				<text><![CDATA[A Chefe do Sector de Registo e Produtos de Saude]]></text>
 			</staticText>
 			<line>
-				<reportElement x="170" y="50" width="223" height="1" uuid="f64599aa-6d88-4396-ad02-73590f0d9ded">
+				<reportElement x="170" y="70" width="223" height="1" uuid="f64599aa-6d88-4396-ad02-73590f0d9ded">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="131" y="60" width="300" height="18" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
+				<reportElement positionType="Float" x="131" y="80" width="300" height="18" uuid="3c0bf981-f7d8-43b9-99c8-00e8bab560d6">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -360,10 +372,10 @@ Fax: 21326547]]></text>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Serif" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{appUserName} == null ? "Dra. Sultana Razaco":$P{appUserName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{userName} == null ? "Dra. Sultana Razaco":$P{userName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="127" y="90" width="300" height="20" uuid="15ff9fe7-fdcb-4075-9938-a3f874058b5b">
+				<reportElement x="127" y="110" width="300" height="20" uuid="15ff9fe7-fdcb-4075-9938-a3f874058b5b">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -373,7 +385,7 @@ Fax: 21326547]]></text>
 				<text><![CDATA[(Farmacêutica)]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="0" y="136" width="250" height="16" uuid="b24bf83c-7aa1-49b4-b4ba-57a56a48d72f">
+				<reportElement positionType="Float" x="0" y="156" width="250" height="16" uuid="b24bf83c-7aa1-49b4-b4ba-57a56a48d72f">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["".concat($P{modInitials} == null ?"SR":$P{modInitials}).concat("/").concat($P{scrInitials} == null ?"":$P{scrInitials})]]></textFieldExpression>
