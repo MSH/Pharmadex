@@ -97,21 +97,8 @@ ul.ui-menu-child {
 	            </p:submenu>
 
 				<sec:isAuthenticated>
-					<p:submenu label="#{msgs.Admin}" icon="ui-icon-key"
-						rendered="#{userSession.admin}">
-						<p:menuitem value="#{msgs.admin_onlineusers}"
-							url="/admin/loggedinuser_bk.faces" icon="ui-icon-document"
-							ajax="false" />
-						<p:menuitem value="#{msgs.Userlist}"
-							url="/admin/userslist_bk.faces" icon="ui-icon-gear" ajax="false" />
-						<p:menuitem value="#{msgs.admin_rolelist}"
-							url="/admin/rolelist_bk.faces" icon="ui-icon-document"
-							ajax="false" />
-						<p:menuitem value="#{msgs.admin_useraccess}"
-							url="/admin/useraccesslist_bk.faces" icon="ui-icon-document"
-							ajax="false" />
-						<p:menuitem value="#{msgs.admin_other}" url="/admin/other.faces"
-							icon="ui-icon-document" ajax="false" />
+					<p:submenu label="#{msgs.Admin}" icon="ui-icon-key" rendered="#{userSession.admin}">
+						<ui:decorate template="/templates/menu_admin.xhtml"/>
 					</p:submenu>
 				</sec:isAuthenticated>
 			</p:menubar>

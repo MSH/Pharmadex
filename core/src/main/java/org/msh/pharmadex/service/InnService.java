@@ -3,8 +3,8 @@ package org.msh.pharmadex.service;
 import java.io.Serializable;
 import java.util.List;
 
+import org.msh.pharmadex.dao.InnDAO;
 import org.msh.pharmadex.dao.iface.ExcipientDAO;
-import org.msh.pharmadex.dao.iface.InnDAO;
 import org.msh.pharmadex.dao.iface.ProdExcipientDAO;
 import org.msh.pharmadex.dao.iface.ProdInnDAO;
 import org.msh.pharmadex.domain.Excipient;
@@ -23,7 +23,7 @@ public class InnService implements Serializable {
     private static final long serialVersionUID = -1166922531912144288L;
 
     @Autowired
-    private InnDAO innDAO;
+    InnDAO innDAO;
 
     @Autowired
     private ExcipientDAO excipientDAO;
@@ -37,17 +37,33 @@ public class InnService implements Serializable {
     private List<Inn> innList;
 
     public List<Inn> getInnList() {
-        if(innList==null)
-            innList = (List<Inn>) innDAO.findAll();
-        return innList;
+       innList = (List<Inn>) innDAO.findAll();
+       return innList;
     }
 
     public List<Excipient> getExcipients() {
         return excipientDAO.findAll();
     }
 
+    public boolean isNameInnDuplicated(Inn inn){
+    	return innDAO.isNameDuplicated(inn);
+    }
+    
     public Inn saveInn(Inn inn) {
-        return innDAO.save(inn);
+        return innDAO.saveInn(inn);
+    }
+    
+    public Inn updateInn(Inn inn) {
+    	return innDAO.update(inn);
+    }
+    
+    public Inn addInn(Inn inn) {
+    	if(innDAO.isNameDuplicated(inn)){
+    		inn = innDAO.findByName(inn.getName());
+    	}else{
+    		inn = innDAO.saveInn(inn);
+    	}
+        return inn;
     }
 
     public Excipient saveExcipient(Excipient excipient) {
@@ -61,7 +77,7 @@ public class InnService implements Serializable {
     }
 
     public Inn findInnById(long id) {
-        return innDAO.findOne(id);
+        return innDAO.findInnById(id);
     }
 
     public List<ProdInn> findInnByProdApp(Long id) {

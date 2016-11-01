@@ -68,7 +68,7 @@ public class ProdAddDetailMBean implements Serializable {
 
         try {
             if (prodInn.getInn().getId() == null)
-                prodInn.setInn(innService.saveInn(prodInn.getInn()));
+                prodInn.setInn(innService.addInn(prodInn.getInn()));
             else
                 prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
 
