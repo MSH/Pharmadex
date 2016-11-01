@@ -45,7 +45,7 @@ public class InnDAO implements Serializable {
 	}
 
 	public List<Inn> findAll() {
-		List<Inn> list = entityManager.createQuery("select i from Inn i")
+		List<Inn> list = entityManager.createQuery("select i from Inn i order by i.name")
 				.getResultList();
 		return list;
 	}

@@ -95,7 +95,7 @@ public class InnMBean implements Serializable {
 		facesContext = FacesContext.getCurrentInstance();
 		String n = selectedInn.getName();
 		if(innService.isNameInnDuplicated(selectedInn)){
-			selectedInn.setName(oldNameInn);
+			//selectedInn.setName(oldNameInn);
 			FacesMessage msg = new FacesMessage("Dublicate value ", n);
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			facesContext.addMessage(null, msg);
