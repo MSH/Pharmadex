@@ -56,11 +56,11 @@
                     <p:autoComplete value="#{appSelectMBean.prodTable}" id="prodTable"
                                     completeMethod="#{appSelectMBean.completeProduct}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
-                                    converter="#{productConverter}" forceSelection="true">
+                                    converter="#{productConverter}" forceSelection="true" required="true">
                         <p:ajax event="itemSelect" listener="#{appSelectMBean.onItemSelect}" />
                     </p:autoComplete>
                     <p:outputLabel value="#{appSelectMBean.prodTable.prodName}"
-                                   rendered="#{appSelectMBean.showProductChoice }"/>
+                                   rendered="#{appSelectMBean.showProductChoice }" required="true"/>
                     <p:message for="prodTable" showSummary="true" showDetail="false"/>
                    <!--  <p:commandButton type="submit" value="#{msgs.global_save}" action="#{appSelectMBean.addProdToRegistration()}"
                     				 immediate="true" ajax="true"/> -->
