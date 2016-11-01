@@ -3,8 +3,8 @@ package org.msh.pharmadex.service;
 import java.io.Serializable;
 import java.util.List;
 
+import org.msh.pharmadex.dao.ExcipientDAO;
 import org.msh.pharmadex.dao.InnDAO;
-import org.msh.pharmadex.dao.iface.ExcipientDAO;
 import org.msh.pharmadex.dao.iface.ProdExcipientDAO;
 import org.msh.pharmadex.dao.iface.ProdInnDAO;
 import org.msh.pharmadex.domain.Excipient;
@@ -26,7 +26,7 @@ public class InnService implements Serializable {
     InnDAO innDAO;
 
     @Autowired
-    private ExcipientDAO excipientDAO;
+    ExcipientDAO excipientDAO;
 
     @Autowired
     private ProdInnDAO prodInnDAO;
@@ -66,9 +66,13 @@ public class InnService implements Serializable {
         return inn;
     }
 
-    public Excipient saveExcipient(Excipient excipient) {
-        excipient = excipientDAO.save(excipient);
-        return excipient;
+    public Excipient addExcipient(Excipient exc) {
+    	if(excipientDAO.isNameDuplicated(exc)){
+    		exc = excipientDAO.findByName(exc.getName());
+    	}else{
+    		exc = excipientDAO.saveExcipient(exc);
+    	}
+        return exc;
     }
     
     public String removeExcipient(ProdExcipient excipient) {

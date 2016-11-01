@@ -444,7 +444,7 @@ public class RegHomeMbean implements Serializable {
     public String addProdExcipient() {
         context = FacesContext.getCurrentInstance();
         if (prodExcipient.getExcipient().getId() == null)
-            prodExcipient.setExcipient(innService.saveExcipient(prodExcipient.getExcipient()));
+            prodExcipient.setExcipient(innService.addExcipient(prodExcipient.getExcipient()));
         else
             prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
 

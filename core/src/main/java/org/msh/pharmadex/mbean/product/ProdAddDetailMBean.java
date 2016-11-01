@@ -1,7 +1,23 @@
 package org.msh.pharmadex.mbean.product;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+
 import org.msh.pharmadex.dao.iface.DosUomDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.DosUom;
+import org.msh.pharmadex.domain.Excipient;
+import org.msh.pharmadex.domain.Inn;
+import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.service.AtcService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.InnService;
@@ -11,17 +27,6 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Created by utkarsh on 3/29/15.
@@ -100,7 +105,7 @@ public class ProdAddDetailMBean implements Serializable {
         try {
             context = FacesContext.getCurrentInstance();
             if (prodExcipient.getExcipient().getId() == null)
-                prodExcipient.setExcipient(innService.saveExcipient(prodExcipient.getExcipient()));
+                prodExcipient.setExcipient(innService.addExcipient(prodExcipient.getExcipient()));
             else
                 prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
 
