@@ -68,7 +68,7 @@ public class ChecklistMBean implements Serializable {
 	 
 	  public void initUpdate(Checklist item) {
 		  listItem = item;
-	        edit = true;
+	         edit = true;
 	    }
 	 
 	public ChecklistService getChecklistService() {
