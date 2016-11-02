@@ -73,11 +73,14 @@ public class ReviewQDAO implements Serializable{
                 .getResultList();
 
     }
-    @Transactional 
-    public boolean save(ReviewQuestion q){
-    	 if (q.getId()==null) entityManager.persist(q);
-    	 else entityManager.merge(q);
-    	 return true;
-    }
+    @Transactional
+	public boolean save(ReviewQuestion listItem) {
+	if (listItem.getId()==null) entityManager.persist(listItem);
+	else 
+		entityManager.merge( listItem);
+		return true;
+	}
+   
+
 }
 
