@@ -59,6 +59,14 @@
                     <p:menuitem value="#{msgs.reg_expired}" icon="ui-icon-document"
                                 url="/internal/expiredreg.faces"/>
                 </p:submenu>
+            
+            	<p:separator rendered="#{!isleftmenu and (userSession.admin||userSession.head)}"/>
+                <p:submenu label="#{msgs.menu_references}" rendered="#{userSession.admin||userSession.head}">
+                    <p:menuitem value="#{msgs.admin_inn}" action="/secure/innlist.faces" icon="ui-icon-document"
+						ajax="false" />
+					<p:menuitem value="#{msgs.admin_excipient}" action="/secure/excipientlist.faces" icon="ui-icon-document"
+						ajax="false" />
+                </p:submenu>
             </sec:isAuthenticated>
         
 </ui:composition>
