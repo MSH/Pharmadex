@@ -23,7 +23,8 @@
                         <p:commandButton value="#{msgs.global_add}" action="#{innMBean.addInn}"
                                          oncomplete="PF('innDlg').show();"
                                          update=":innform">
-                             <f:setPropertyActionListener value="#{true}" target="#{innMBean.newInn}"/>       
+                             <f:setPropertyActionListener value="#{true}" target="#{innMBean.newInn}"/>
+                             <f:setPropertyActionListener value="/admin/innlist.faces" target="#{innMBean.backTo}"/>      
                         </p:commandButton>
                     </f:facet>
 
@@ -39,6 +40,7 @@
 							<f:setPropertyActionListener value="#{inn}" target="#{innMBean.selectedInn}"/>
 							<f:setPropertyActionListener value="#{inn.name}" target="#{innMBean.oldNameInn}"/>
 							<f:setPropertyActionListener value="#{false}" target="#{innMBean.newInn}"/>
+							<f:setPropertyActionListener value="/admin/innlist.faces" target="#{innMBean.backTo}"/>
                         </p:commandLink>
                     </p:column>
                 </p:dataTable>

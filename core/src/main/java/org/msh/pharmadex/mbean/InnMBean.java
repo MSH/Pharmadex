@@ -27,6 +27,7 @@ public class InnMBean implements Serializable {
 	InnService innService;
 	
 	private boolean newInn = true;
+	private boolean newExc = true;
 	
 	private List<Inn> allInns;
 	private List<Inn> filteredInns;
@@ -38,6 +39,7 @@ public class InnMBean implements Serializable {
 	private Excipient selectedExcipient = null;
 	
 	private String oldNameInn = "";
+	private String oldNameExp = "";
 	
 	private String backTo = "/admin/innlist.faces";
 
@@ -62,6 +64,13 @@ public class InnMBean implements Serializable {
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		WebUtils.setSessionAttribute(request, "innMBean", null);
 
+	}
+	
+	public void cancelExcipient() {
+		selectedExcipient = new Excipient();
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+		WebUtils.setSessionAttribute(request, "innMBean", null);
 	}
 	
 	public void addExcipient() {
@@ -96,7 +105,7 @@ public class InnMBean implements Serializable {
 		selectedInn.setName(selectedInn.getName().trim());
 		
 		if(innService.isNameInnDuplicated(selectedInn)){
-			//selectedInn.setName(oldNameInn);
+			selectedInn.setName(oldNameInn);
 			FacesMessage msg = new FacesMessage("Dublicate value ", n);
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			facesContext.addMessage(null, msg);
@@ -112,8 +121,48 @@ public class InnMBean implements Serializable {
 		return backTo;
 	}
 	
+	public String updateExcipient() {
+		facesContext = FacesContext.getCurrentInstance();
+		String n = selectedExcipient.getName();
+		selectedExcipient.setName(selectedExcipient.getName().trim());
+		
+		if(innService.isNameExcipientDuplicated(selectedExcipient)){
+			selectedExcipient.setName(oldNameExp);
+			FacesMessage msg = new FacesMessage("Dublicate value ", n);
+			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+			facesContext.addMessage(null, msg);
+			facesContext.validationFailed();
+			return "";
+		}
+		
+		selectedExcipient = innService.updateExcipient(selectedExcipient);
+		if(selectedExcipient != null)
+			selectedExcipient = new Excipient();
+		allExcipients = null;
+		filteredExcipients = null;
+		return backTo;
+	}
+	
 	public String saveExcipient() {
-		return "";
+		facesContext = FacesContext.getCurrentInstance();
+		String n = selectedExcipient.getName();
+		selectedExcipient.setName(selectedExcipient.getName().trim());
+		
+		if(innService.isNameExcipientDuplicated(selectedExcipient)){
+			FacesMessage msg = new FacesMessage("Dublicate value ", n);
+			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+			facesContext.addMessage(null, msg);
+			facesContext.validationFailed();
+			return "";
+		}
+		
+		selectedExcipient = innService.saveExcipient(selectedExcipient);
+		if(selectedExcipient != null)
+			selectedExcipient = new Excipient();
+		allExcipients = null;
+		filteredExcipients = null;
+
+		return backTo;
 	}
 	
 	public Inn getSelectedInn() {
@@ -133,8 +182,7 @@ public class InnMBean implements Serializable {
 	}
 
 	public List<Inn> getAllInns() {
-		//if(allInns==null)
-			allInns = innService.getInnList();
+		allInns = innService.getInnList();
 		return allInns;
 	}
 
@@ -147,8 +195,7 @@ public class InnMBean implements Serializable {
 	}
 
 	public List<Excipient> getAllExcipients() {
-		if(allExcipients == null)
-			allExcipients = innService.getExcipients();
+		allExcipients = innService.getExcipients();
 		return allExcipients;
 	}
 
@@ -192,6 +239,14 @@ public class InnMBean implements Serializable {
 		this.oldNameInn = oldName;
 	}
 
+	public String getOldNameExp() {
+		return oldNameExp;
+	}
+
+	public void setOldNameExp(String oldNameExp) {
+		this.oldNameExp = oldNameExp;
+	}
+
 	public boolean isNewInn() {
 		return newInn;
 	}
@@ -200,6 +255,12 @@ public class InnMBean implements Serializable {
 		this.newInn = newInn;
 	}
 	
-	
+	public boolean isNewExc() {
+		return newExc;
+	}
+
+	public void setNewExc(boolean newExc) {
+		this.newExc = newExc;
+	}
 
 }

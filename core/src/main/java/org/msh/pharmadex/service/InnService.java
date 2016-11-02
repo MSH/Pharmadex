@@ -49,12 +49,24 @@ public class InnService implements Serializable {
     	return innDAO.isNameDuplicated(inn);
     }
     
+    public boolean isNameExcipientDuplicated(Excipient exc){
+    	return excipientDAO.isNameDuplicated(exc);
+    }
+    
     public Inn saveInn(Inn inn) {
         return innDAO.saveInn(inn);
     }
     
+    public Excipient saveExcipient(Excipient exc) {
+    	return excipientDAO.saveExcipient(exc);
+    }
+    
     public Inn updateInn(Inn inn) {
     	return innDAO.update(inn);
+    }
+    
+    public Excipient updateExcipient(Excipient exc) {
+    	return excipientDAO.update(exc);
     }
     
     public Inn addInn(Inn inn) {
