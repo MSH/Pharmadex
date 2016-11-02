@@ -1,6 +1,5 @@
 package org.msh.pharmadex.mbean;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.msh.pharmadex.domain.Excipient;
 import org.msh.pharmadex.domain.Inn;
-import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.service.InnService;
 import org.springframework.web.util.WebUtils;
 
@@ -73,6 +71,7 @@ public class InnMBean implements Serializable {
 	public String saveInn() {
 		facesContext = FacesContext.getCurrentInstance();
 		String n = selectedInn.getName();
+		selectedInn.setName(selectedInn.getName().trim());
 		
 		if(innService.isNameInnDuplicated(selectedInn)){
 			FacesMessage msg = new FacesMessage("Dublicate value ", n);
@@ -94,6 +93,8 @@ public class InnMBean implements Serializable {
 	public String updateInn() {
 		facesContext = FacesContext.getCurrentInstance();
 		String n = selectedInn.getName();
+		selectedInn.setName(selectedInn.getName().trim());
+		
 		if(innService.isNameInnDuplicated(selectedInn)){
 			//selectedInn.setName(oldNameInn);
 			FacesMessage msg = new FacesMessage("Dublicate value ", n);

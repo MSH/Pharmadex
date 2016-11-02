@@ -18,7 +18,7 @@
                         <p:ajax event="itemSelect" listener="#{regProdMbn.onItemSelect}" update="@form" process="@form"/>
                     </p:autoComplete>
                     <p:commandButton value="#{msgs.open_app}"
-                                     action="/internal/processreg.faces" ajax="false">
+                                     action="#{regProdMbn.searchProduct()}" ajax="false">
                         <f:param name="prodAppID" value="#{regProdMbn.prodTable.prodAppID}"/>
                         <f:param name="sourcePage" value="/internal/processcancellist.faces"/>
                     </p:commandButton>

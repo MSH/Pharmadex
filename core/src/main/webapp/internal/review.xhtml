@@ -103,7 +103,7 @@
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary"/>
                     <pe:ckEditor id="revsummary" value="#{reviewBn.review.reviewerSummary}"
 								 height="500" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" 
 								 rendered="#{userSession.reviewer and !reviewBn.review.submitted}"/>
                     <h:outputText value="#{reviewBn.review.reviewerSummary}" escape="false"

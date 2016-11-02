@@ -193,7 +193,7 @@
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary1" styleClass="label"/>
                     <pe:ckEditor id="revsummary1" value="#{reviewInfoBn.reviewComment.comment}"
 								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
@@ -220,7 +220,7 @@
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
                     <pe:ckEditor id="revsummary" value="#{reviewInfoBn.reviewComment.comment}"
 								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
@@ -236,7 +236,7 @@
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="addcomment" styleClass="label"/>
                     <pe:ckEditor id="addcomment" value="#{reviewInfoBn.reviewComment.comment}"
 								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
                     <p:message for="addcomment"/>
                 </h:panelGrid>
@@ -291,7 +291,7 @@
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revcommsummary" styleClass="label"/>
                     <pe:ckEditor id="revcommsummary" value="#{reviewInfoBn.revDeficiency.ackComment.comment}"
 								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
                     <p:message for="revcommsummary"/>
                 </h:panelGrid>

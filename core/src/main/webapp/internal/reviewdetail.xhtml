@@ -90,7 +90,7 @@
                     <p:outputLabel value="#{msgs.pri_processor}:" styleClass="label"/>
                     <pe:ckEditor value="#{reviewDetailBn.reviewDetail.otherComment}"
 								 height="500" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}" />
                     <p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.otherComment}"
                                    rendered="#{!userSession.reviewer or !reviewDetailBn.priReviewer}"></p:outputLabel>
@@ -99,7 +99,7 @@
                                    rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview}"/>
                     <pe:ckEditor value="#{reviewDetailBn.reviewDetail.secComment}"
 								 height="500" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}" />
                     <p:outputLabel escape="false" value="#{reviewDetailBn.reviewDetail.secComment}"
                                    rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and (!userSession.reviewer or !reviewDetailBn.secReviewer)}"></p:outputLabel>

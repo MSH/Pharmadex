@@ -296,7 +296,7 @@
                     <p:outputLabel value="#{msgs.global_comment}" for="addcomment" styleClass="label"/>
                     <pe:ckEditor id="addcomment" value="#{suspendDetailBn.suspComment.comment}"
 								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
                     <p:message for="addcomment"/>
                 </h:panelGrid>
@@ -346,7 +346,7 @@
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="decsummary" styleClass="label"/>
                     <pe:ckEditor id="decsummary" value="#{suspendDetailBn.curReviewComment.comment}"
 								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
                     <p:message for="decsummary"/>
                     </h:panelGrid>
@@ -373,7 +373,7 @@
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
                     <pe:ckEditor id="revsummary" value="#{suspendDetailBn.suspDetail.finalSumm}"
 								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
                     <p:message for="revsummary"/>
                 </h:panelGrid>
