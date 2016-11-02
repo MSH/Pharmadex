@@ -1,9 +1,15 @@
 package org.msh.pharmadex.service;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+
+import javax.faces.context.FacesContext;
 
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.domain.ProdApplications;
@@ -23,8 +29,8 @@ public class UtilsByReports implements Serializable {
 
 	private static final long serialVersionUID = 5110624647990815527L;
 	
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
+	//private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");	
+	
 	public static final String FTR_DATASOUTCE = "filterDataSource";
 	public static final String FTR_DATASOUTCE1  = "filterDataSource1";
 	public static final String FTR_DATASOUTCE2  = "filterDataSource2";
@@ -43,6 +49,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_MODINITIALS = "modInitials";
 	public static String KEY_SCRINITIALS = "scrInitials";
 	public static String KEY_APPNAME = "appName";
+	public static String KEY_FULLAPPNAME = "fullAppName";
 	public static String KEY_ADDRESS1 = "address1";
 	public static String KEY_ADDRESS2 = "address2";
 	public static String KEY_COUNTRY = "country";
@@ -54,6 +61,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_PRODSTRENGTH = "prodStrength";
 	public static String KEY_DOSFORM = "dosForm";
 	public static String KEY_MANUFNAME = "manufName";
+	public static String KEY_FULLMANUFNAME = "fullManufName";
 	public static String KEY_SUBJECT = "subject";
 	public static String KEY_SUBJECT_1 = "subject1";
 	public static String KEY_BODY = "body";
@@ -113,6 +121,10 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_CHEIFNAME = "cheifName";
 	public static String KEY_FIRSTNAME = "firstNames";
 	public static String KEY_SECONDNAME = "secondNames";
+	
+	public static String KEY_ACTIVEINGR="activeIngr";
+	public static String KEY_PRODCONTROLLER="prodController";
+	public static String KEY_RELEASERESPONSIBILITY ="releaseResponsibility";
 	
 	private HashMap<String, Object> param = null;
 	private HashMap<String, Object> field = null;
@@ -342,22 +354,22 @@ public class UtilsByReports implements Serializable {
 		}
 		if(k.equals(KEY_REG_DATE)){
 			if(prodApps.getRegistrationDate() != null)
-				str = dateFormat.format(prodApps.getRegistrationDate());
+				str = getDateformat().format(prodApps.getRegistrationDate());
 			param.put(k, str);
 		}
 		if(k.equals(KEY_EXPIRY_DATE)){
 			if(prodApps.getRegExpiryDate() != null)
-				str = dateFormat.format(prodApps.getRegExpiryDate());
+				str = getDateformat().format(prodApps.getRegExpiryDate());
 			param.put(k, str);
 		}
 		if(k.equals(KEY_SUBMIT_DATE)){
 			if(prodApps.getSubmitDate() != null)
-				str = dateFormat.format(prodApps.getSubmitDate());
+				str = getDateformat().format(prodApps.getSubmitDate());
 			param.put(k, str);
 		}
 		if(k.equals(KEY_DOSREC_DATE)){
 			if(prodApps.getDosRecDate() != null)
-				str = dateFormat.format(prodApps.getDosRecDate());
+				str = getDateformat().format(prodApps.getDosRecDate());
 			param.put(k, str);
 		}
 		/** letter*/	
@@ -567,22 +579,22 @@ public class UtilsByReports implements Serializable {
 		}
 		if(k.equals(KEY_REG_DATE)){
 			if(prodApps.getRegistrationDate() != null)
-				str = dateFormat.format(prodApps.getRegistrationDate());
+				str = getDateformat().format(prodApps.getRegistrationDate());
 			field.put(k, str);
 		}
 		if(k.equals(KEY_EXPIRY_DATE)){
 			if(prodApps.getRegExpiryDate() != null)
-				str = dateFormat.format(prodApps.getRegExpiryDate());
+				str = getDateformat().format(prodApps.getRegExpiryDate());
 			field.put(k, str);
 		}
 		if(k.equals(KEY_SUBMIT_DATE)){
 			if(prodApps.getSubmitDate() != null)
-				str = dateFormat.format(prodApps.getSubmitDate());
+				str = getDateformat().format(prodApps.getSubmitDate());
 			field.put(k, str);
 		}
 		if(k.equals(KEY_DOSREC_DATE)){
 			if(prodApps.getDosRecDate() != null)
-				str = dateFormat.format(prodApps.getDosRecDate());
+				str = getDateformat().format(prodApps.getDosRecDate());
 			field.put(k, str);
 		}
 		/** letter*/	
@@ -634,4 +646,13 @@ public class UtilsByReports implements Serializable {
 		}
 		return manufName;
     }
+	public static DateFormat getDateformat() {
+		DateFormat  dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+		if(locale!=null){
+			dateFormat = new SimpleDateFormat("dd/MM/yyyy", locale);			
+		}		
+		return dateFormat;
+	}
+	
 }

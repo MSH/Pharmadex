@@ -42,6 +42,8 @@ import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewInfo;
@@ -349,6 +351,58 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
 		
+		String fullAppName = "";
+		if(prodApp.getApplicant()!=null){
+			if(prodApp.getApplicant().getAppName() != null)
+				fullAppName+= prodApp.getApplicant().getAppName();
+			if(prodApp.getApplicant().getAddress()!=null)
+				if(prodApp.getApplicant().getAddress().getCountry()!=null)
+					if(!"".equals(prodApp.getApplicant().getAddress().getCountry()))
+					fullAppName+= ", "+prodApp.getApplicant().getAddress().getCountry();
+		}		
+		utilsByReports.putNotNull(UtilsByReports.KEY_FULLAPPNAME, fullAppName, true);		
+		
+		String activeIngr="" , resActiveIngr="";
+		 List<ProdInn> prodInn = product.getInns();
+			if(prodInn!=null){				
+				for(ProdInn el:prodInn){							
+					if(el!=null){
+						String inn = "", dosStrength="", uom ="", refStd="";
+						if(el.getInn()!=null){
+							inn = el.getInn().getName()!=null?el.getInn().getName():"";
+						}							
+						dosStrength = el.getDosStrength()!=null?el.getDosStrength():"";							
+						if(el.getDosUnit()!=null){
+							uom = el.getDosUnit().getUom()!=null?el.getDosUnit().getUom():"";
+						}				
+						activeIngr+=", "+inn+" "+dosStrength+" "+uom;
+					}							
+				}
+				if(activeIngr.length()>0)
+					resActiveIngr = activeIngr.replaceFirst(", ", "");
+			}	 
+		utilsByReports.putNotNull(UtilsByReports.KEY_ACTIVEINGR, resActiveIngr, true);
+		
+		String FPRC = "", FPRR ="", PROD_MANUF="";
+		List<ProdCompany> companyList = product.getProdCompanies();
+		if (companyList != null){
+			for(ProdCompany company:companyList){
+				if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+					PROD_MANUF = getNameFullAddres(company);
+				}
+				if (company.getCompanyType().equals(CompanyType.FPRC)){
+					FPRC = getNameFullAddres(company);
+					 
+				}
+				if (company.getCompanyType().equals(CompanyType.FPRR)){
+					FPRR = getNameFullAddres(company);
+				}
+			}
+		}
+		utilsByReports.putNotNull(UtilsByReports.KEY_FULLMANUFNAME, PROD_MANUF, true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PRODCONTROLLER, FPRC, true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_RELEASERESPONSIBILITY, FPRR, true);
+		
 		JasperReport  jasperMasterReport =  (JasperReport)JRLoader.loadObject(new File(resource.getFile())); 
 		Map reportfields = new HashMap(); 
 		if(jasperMasterReport!=null){
@@ -471,6 +525,27 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			return jasperPrint;
 		}else
 			return  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));*/
+	}
+	/**
+	 * @return companyName, address1, address, country
+	 */
+	private String getNameFullAddres(ProdCompany company) {
+		String res = "";
+		if(company.getCompany()!=null)
+			 if( company.getCompany().getCompanyName()!=null)
+				 res +=  company.getCompany().getCompanyName();
+			 if(company.getCompany().getAddress()!=null){
+		    	 if(company.getCompany().getAddress().getAddress1()!=null)
+		    		 if(!"".equals(company.getCompany().getAddress().getAddress1()))
+		    			 res += ", " +company.getCompany().getAddress().getAddress1() ;
+		    	 if(company.getCompany().getAddress().getAddress2()!=null)
+		    		 if(!"".equals(company.getCompany().getAddress().getAddress2()))
+		    			 res +=", " + company.getCompany().getAddress().getAddress2() ;
+		    	 if(company.getCompany().getAddress().getCountry()!=null)
+		    		 if(!"".equals(company.getCompany().getAddress().getCountry()))
+		    			 res +=", " + company.getCompany().getAddress().getCountry();
+		     }
+			 return res;
 	}
 
 	public String createRejectCert(ProdApplications prodApp, String summary , Long loggedINUserID ) {
