@@ -637,4 +637,14 @@ public class ReviewService implements Serializable {
         saveReviewInfo(reviewInfo);
         return comment;
     }
+
+	public List<ReviewQuestion> findAllrevQ() {
+		
+		return reviewQDAO.findAll();
+	}
+
+	public boolean updateRevQList(ReviewQuestion listItem) {
+		return  reviewQDAO.save(listItem);
+		
+	}
 }
