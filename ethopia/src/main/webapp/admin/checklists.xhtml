@@ -117,7 +117,7 @@
                   </h:panelGrid>   
                    <p:commandButton action="#{checklistMBean.saveLst}" value="#{msgs.global_add}" id="savebtn"
                                  oncomplete="if (!args.validationFailed) PF('addlst').hide()"
-                                 update=":chklsts :chklsts:messages :addlstfrm" rendered="#{!fastTrackMBean.edit}"/>
+                                 update=":chklsts :chklsts:messages :addlstfrm" rendered="#{!checklistMBean.edit}"/>
                 <p:commandButton action="#{checklistMBean.saveLst}" value="#{msgs.global_update}" id="updatebtn"
                                  oncomplete="if (!args.validationFailed) PF('addlst').hide()"
                                  update=":chklsts :chklsts :addlstfrm" rendered="#{checklistMBean.edit}"/>
