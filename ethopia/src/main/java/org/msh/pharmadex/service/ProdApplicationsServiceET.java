@@ -1,6 +1,9 @@
 package org.msh.pharmadex.service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -12,13 +15,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.CustomLicHolderDAO;
 import org.msh.pharmadex.dao.CustomReviewDAO;
@@ -38,6 +41,8 @@ import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -70,6 +75,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
  
     @Autowired
 	private UtilsByReportsET utilsByReports;
+    
+    private ProdApplications prodApp;
     
 /*  @ManagedProperty(value = "#{licenseHolderService}")
     private LicenseHolderService licenseHolderService;
@@ -156,7 +163,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 
 
     }
-
+    
     public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
         List<ProdApplications> prodApplicationses = null;
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -441,6 +448,29 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
             }
         }
 		return ans;
+	}
+	
+	@Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	public String createRegCert(ProdApplications _prodApp) {
+		this.prodApp = _prodApp;
+		Product prod = prodApp.getProduct();
+		File invoicePDF = null;
+		try {
+			invoicePDF = File.createTempFile("" + prod.getProdName() + "_registration", ".pdf");
+			JasperPrint jasperPrint = initRegCert();
+			if (jasperPrint==null)
+				throw new JRException("Error during creation of certificate");
+			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
+			prodApp.setRegCert(IOUtils.toByteArray(new FileInputStream(invoicePDF)));
+			prodApplicationsDAO.updateApplication(prodApp);
+			return "created";
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 	
 	public JasperPrint initRegCert(){

@@ -26,7 +26,6 @@ public class ProductDisplayET implements Serializable{
     private ProdApplicationsServiceET prodApplicationsServiceET;
 	
 	 public StreamedContent generateCertificate(){
-		 
 		 String result = "";
 	        if (getProductDisplay().getProdApplications().getRegCert()==null)
 	            result = prodApplicationsServiceET.createRegCert(getProductDisplay().getProdApplications());

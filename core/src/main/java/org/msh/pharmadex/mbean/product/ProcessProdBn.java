@@ -1250,4 +1250,14 @@ public class ProcessProdBn implements Serializable {
 	public void setProdApplicationsServiceMZ(ProdApplicationsServiceMZ prodApplicationsServiceMZ) {
 		this.prodApplicationsServiceMZ = prodApplicationsServiceMZ;
 	}
+
+	public User getLoggedInUser() {
+		return loggedInUser;
+	}
+
+	public void setLoggedInUser(User loggedInUser) {
+		this.loggedInUser = loggedInUser;
+	}
+	
+	
 }

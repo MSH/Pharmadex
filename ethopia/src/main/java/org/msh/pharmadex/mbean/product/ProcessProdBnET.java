@@ -1,19 +1,14 @@
 package org.msh.pharmadex.mbean.product;
 
-import net.sf.jasperreports.engine.JasperPrint;
-import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.mbean.BackLog;
-import org.msh.pharmadex.service.ProdApplicationsServiceET;
-import org.msh.pharmadex.service.ReviewService;
-import org.msh.pharmadex.util.RetObject;
-import org.msh.pharmadex.util.Scrooge;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.util.WebUtils;
+import static javax.faces.context.FacesContext.getCurrentInstance;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -21,14 +16,25 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
 
-import static javax.faces.context.FacesContext.getCurrentInstance;
+import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ReviewComment;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.service.ProdApplicationsServiceET;
+import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.util.RegistrationUtil;
+import org.msh.pharmadex.util.RetObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * Backing bean to process the application made for registration
@@ -54,6 +60,7 @@ public class ProcessProdBnET implements Serializable {
     private List<ProdApplications> allAncestors;
     private String backTo = "";
     private FacesContext facesContext = FacesContext.getCurrentInstance();
+	protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     @PostConstruct
     private void init() {
@@ -180,6 +187,41 @@ public class ProcessProdBnET implements Serializable {
 
         return "/internal/processprodlist";
     }
+    
+    public String registerProduct(ProdApplications prodApplications) {
+    	facesContext = getCurrentInstance();
+		try {
+			if(prodApplications.getRegState().equals(RegState.REGISTERED))
+				prodApplicationsServiceET.createRegCert(prodApplications);
+			else{
+				if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
+					return "";
+				}
+
+				if(prodApplications.getProdRegNo() == null || prodApplications.getProdRegNo().equals(""))
+					prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + 0, prodApplications.getProdAppNo()));
+
+				prodApplications.setActive(true);
+				prodApplications.setUpdatedBy(getProcessProdBn().getLoggedInUser());
+
+				String retValue = getProcessProdBn().getProdApplicationsService().registerProd(prodApplications);
+				if(retValue.equals("created")) {
+					System.out.println("Product moved to registered");
+					getProcessProdBn().setTimeLineList(null);
+					prodApplicationsServiceET.createRegCert(prodApplications);
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+				}else{
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
+				}
+				getProcessProdBn().setTimeLine(new TimeLine());
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
+		}
+		return null;
+}
 
    public boolean isFieldChanged(String fieldname){
 	  if (changedFields.contains(fieldname)) return true;

@@ -835,10 +835,9 @@
                     <p:outputLabel for="regnumber" value="#{msgs.reg_number}"/>
                     <p:inputText id="regnumber" value="#{processProdBn.prodApplications.prodRegNo}" required="true"/>
                     <p:message for="regnumber" showSummary="true"/>
-
                 </h:panelGrid>
 
-                <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBn.registerProduct}"
+                <p:commandButton id="regBtn" value="#{msgs.register_product}" action="#{processProdBnET.registerProduct(processProdBn.prodApplications)}"
                                  oncomplete="regDlg.hide()" icon="ui-icon-gear" ajax="false"
                                  update=":reghome:growl :reghome:messages :reghome :regdatedlg"/>
             </h:form>
