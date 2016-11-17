@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-11-02T13:03:56 -->
+<!-- 2016-11-17T11:38:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="355b4245-79d2-44b4-b421-c0e09801e04f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -37,30 +37,6 @@
 				</reportElement>
 				<textFieldExpression><![CDATA["Registration number:"]]></textFieldExpression>
 			</textField>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="231" y="33" width="100" height="100" uuid="6ceae990-e901-4ded-b9f2-57552ebc6ff4">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-				<imageExpression><![CDATA["na_namibia_header.png"]]></imageExpression>
-			</image>
-			<textField>
-				<reportElement positionType="Float" x="32" y="172" width="523" height="28" uuid="851a5127-596c-4ced-a9ce-b9d928a2b84e">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font size="16" isBold="true" isItalic="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["MEDICINES REGISTRATION CERTIFICATE"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="32" y="140" width="523" height="16" uuid="8debc406-ead9-40b4-8b5e-ab605f76c9e0">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["MINISTRY OF HEALTH AND SOCIAL SERVICES"]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement key="" x="32" y="227" width="523" height="48" uuid="f21e9058-2333-4a8b-969c-29aa04158a91">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
@@ -71,15 +47,6 @@
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["It is hereby certified that the Namibia Medicines Regulatory Council has approved in terms section 19(4) of the Medicines and Related Substances Control Act, 2003 (Act No. 13 of 2003), the registration of the medicine described below subject to the conditions set out below:"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="35" y="2" width="523" height="16" uuid="ee277407-5c2c-43cf-a4cd-ade96d9ecbaf">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["NAMIBIA MEDICINES REGULATORY COUNCIL"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="160" y="308" width="395" height="16" uuid="b71d82d5-262a-441c-b5fc-9423cb7043fe">
@@ -340,6 +307,66 @@
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["10."]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="63" y="0" width="100" height="100" uuid="f7c83e5a-6747-4966-8435-c9e177fcf812">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="415" y="0" width="100" height="100" uuid="a40786b3-2fa8-41bc-bb9a-00cd8de7f1c9">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["na_namibia_header.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="32" y="103" width="523" height="28" uuid="e2aed766-0bd2-4dde-911e-70fdfc57abf7"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MINISTRY OF HEALTH AND SOCIAL SERVICES"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="32" y="148" width="523" height="16" uuid="665fcdc6-d229-49b3-b082-893477199cd5">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NAMIBIA MEDICINES REGULATORY COUNCIL"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement key="" x="32" y="166" width="198" height="36" uuid="6c25903f-3b41-4a03-89cd-ade9a71b279c">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement markup="html">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Private Bag 13366 <br>Windhoek"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="230" y="166" width="150" height="32" uuid="ff81bb04-c498-48d4-a65f-e3671edb5788">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="html">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["15 Ruhr Street, Northern Ind. Area"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="166" width="95" height="32" uuid="38ad148f-d79f-47c2-a84a-8de5d67826db">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" markup="html">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["+264 (61) 203 2400 (tel)<br>+264 (61) 225 048 (fax)"]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
