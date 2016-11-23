@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.primefaces.event.FlowEvent;
 
@@ -55,6 +56,7 @@ public class ProdRegAppMbeanMZ implements Serializable {
 		String currentWizardStep = event.getOldStep();
 		String nextWizardStep = event.getNewStep();
 		try {
+	
 			if(!isClickPrevious(currentWizardStep, nextWizardStep)){
 				prodRegAppMbean.initializeNewApp(nextWizardStep);
 				if (currentWizardStep.equals("prodreg")) {
@@ -68,7 +70,13 @@ public class ProdRegAppMbeanMZ implements Serializable {
 						context.addMessage(null, msg2);
 						nextWizardStep = currentWizardStep; // keep wizard on current step if error
 					}
-
+					if (prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.VARIATION)||prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.RENEW)){
+						if (prodRegAppMbean.getProduct().getProdName()==null){
+							FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Product not selected", "Select a product.");
+							context.addMessage(null, msg1);
+							nextWizardStep = currentWizardStep; 
+						}
+					}
 				}
 				if (!currentWizardStep.equals("prodreg")){
 					prodRegAppMbean.saveApp();
