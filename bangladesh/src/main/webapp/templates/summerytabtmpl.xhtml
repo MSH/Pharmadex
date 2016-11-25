@@ -236,7 +236,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.manufacturer_detail}">
-            <p:dataTable id="companyTable" var="company" value="#{prodAppData.product.prodCompanies}"
+            <p:dataTable id="companyTable" var="company" value="#{prodCompaniesList}"
                          style="width:100%;">
                 <p:column headerText="#{msgs.applicant_name}">
                     <h:outputText value="#{company.company.companyName}" style="#{processProdBnBg.findCompaniesChanged()?('color:red;'):('color:black;')}"/>

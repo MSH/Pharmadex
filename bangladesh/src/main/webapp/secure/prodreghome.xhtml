@@ -57,13 +57,11 @@
 
                             <p:dataTable id="inntable" var="prodInn" value="#{prodRegAppMbean.selectedInns}"
                                          style="width:100%;" editable="true"
-                                         emptyMessage="No Inns selected"
-                                    >
+                                         emptyMessage="No Inns selected">
                                 <f:facet name="header">
                                     <p:commandLink value="#{msgs.global_add}*" action="#{prodAddDetailMBean.openAddInn}"
                                                    id="addInnBtn"
                                                    oncomplete="PF('addInnDlg').show()" update=":addInnFrm"/>
-
                                 </f:facet>
 
                                 <p:ajax event="rowEdit" listener="#{prodAddDetailMBean.onRowEdit}"
@@ -100,7 +98,11 @@
                                         </f:facet>
                                     </p:cellEditor>
                                 </p:column>
-
+								
+								<p:column headerText="#{msgs.manuf_name}">
+                                    <h:outputText value="#{prodInn.company.companyName}"/>
+                                </p:column>
+                                
                                 <p:column style="width:32px">
                                     <p:rowEditor/>
                                 </p:column>
@@ -172,7 +174,10 @@
                                     </p:cellEditor>
                                 </p:column>
 
-
+								<p:column headerText="#{msgs.manuf_name}">
+                                    <h:outputText value="#{prodExp.company.companyName}"/>
+                                </p:column>
+                                
                                 <p:column style="width:32px">
                                     <p:rowEditor/>
                                 </p:column>
@@ -304,7 +309,7 @@
                                            styleClass="hint"/>
 
 
-                            <p:dataTable id="companyTable" var="company" value="#{prodRegAppMbean.product.prodCompanies}"
+                            <p:dataTable id="companyTable" var="company" value="#{prodRegAppMbeanBg.prodCompanies}"
                                          style="width:100%;">
                                 <f:facet name="header">
                                     <p:commandLink id="addManufBtn" value="#{msgs.global_add}*"
@@ -333,8 +338,7 @@
                                     <p:commandButton action="#{prodRegAppMbean.removeCompany(company)}"
                                                      value="#{msgs.global_delete}"
                                                      update=":addcompany :reghome:companyTable :reghome:growl"
-                                                     immediate="true"
-                                            >
+                                                     immediate="true" rendered="#{prodRegAppMbeanBg.visBtnDelete(company)}">
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
@@ -499,11 +503,11 @@
                             <ui:param name="prodAppData" value="#{prodRegAppMbean.prodApplications}"/>
                             <ui:param name="foreignAppStatus" value="#{prodRegAppMbean.foreignAppStatuses}"/>
                             <ui:param name="prodAppChecklists" value="#{prodRegAppMbean.prodAppChecklists}"/>
+                            <ui:param name="prodCompaniesList" value="#{prodRegAppMbeanBg.prodCompanies}"/>
                         </ui:decorate>
                     </p:panel>
                     <ui:include src="wizardnavigation.xhtml"/>
                 </p:tab>
-
             </p:wizard>
 
             <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException"
@@ -521,16 +525,15 @@
 
 
                 <p:button onclick="document.location.href = document.location.href;"
-                          value="Reload!"
-                        />
+                          value="Reload!"/>
             </p:dialog>
         </h:form>
 
         <p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true"
                   modal="true" dynamic="true">
             <h:form id="addInnFrm">
-                <pe:ajaxErrorHandler/>
-                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+               	<!-- <p:messages showSummary="true"/> -->
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="col1, col2" styleClass="grid">
                     <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
                     <p:autoComplete id="innname" value="#{prodAddDetailMBean.prodInn.inn}"
                                     completeMethod="#{globalEntityLists.completeInnCodes}"
@@ -538,11 +541,9 @@
                                     forceSelection="false" required="true"
                                     requiredMessage="#{msgs.product_innname_valid}">
                     </p:autoComplete>
-                    <p:message for="innname" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.dos_strength}" for="innqty"/>
                     <p:inputText id="innqty" value="#{prodAddDetailMBean.prodInn.dosStrength}" required="true"/>
-                    <p:message for="innqty" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
                     <p:selectOneMenu id="innunit" value="#{prodAddDetailMBean.prodInn.dosUnit}"
@@ -553,33 +554,34 @@
                                        itemValue="#{dosUom}"/>
                         <f:ajax render="select_item"/>
                     </p:selectOneMenu>
-                    <p:message for="innunit" showSummary="true"/>
 
                     <h:outputLabel value="#{msgs.inn_ref}" for="innref"/>
                     <p:inputText id="innref" value="#{prodAddDetailMBean.prodInn.refStd}"/>
-
-                    <h:outputLabel/>
-
-                    <h:panelGroup>
-                        <p:commandButton action="#{prodAddDetailMBean.addProdInn}" value="#{msgs.global_add}"
-                                         oncomplete="if(!args.validationFailed) PF('addInnDlg').hide()"
-                                         update=":reghome:atctable :reghome:inntable :addInnFrm :reghome:growl"/>
-                        <p:commandButton action="#{prodAddDetailMBean.cancelAddInn}" immediate="true"
-                                         value="#{msgs.global_cancel}"
-                                         ajax="true"
-                                         oncomplete="PF('addInnDlg').hide()" update=":addInnFrm"/>
-                    </h:panelGroup>
-                    <h:outputLabel/>
-
-                </h:panelGrid>
+                    
+                    <h:outputLabel/> <h:outputLabel/>
+                    <h:outputLabel/> <h:outputLabel/>
+				</h:panelGrid>
+				<ui:decorate template="/templates/companydetailtmpl.xhtml">
+		            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
+		            <ui:param name="showCompType" value="#{false}"/>
+	            </ui:decorate>
+                
+                <h:panelGroup>
+	                <p:commandButton action="#{prodAddDetailMBean.addProdInn}" value="#{msgs.global_add}"
+	                                 oncomplete="if(!args.validationFailed) PF('addInnDlg').hide()"
+	                                 update=":reghome:atctable :reghome:inntable :addInnFrm :reghome:growl"/>
+	                <p:commandButton action="#{prodAddDetailMBean.cancelAddInn}" immediate="true"
+	                                 value="#{msgs.global_cancel}" ajax="true"
+                                     oncomplete="PF('addInnDlg').hide()" update=":addInnFrm"/>
+                </h:panelGroup>
             </h:form>
         </p:dialog>
 
         <p:dialog header="#{msgs.product_active}" widgetVar="addExpntDlg" id="addExpntdlg" resizable="true" modal="true"
                   dynamic="true">
             <h:form id="addExpFrm">
-                <pe:ajaxErrorHandler/>
-                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+                <!-- <p:messages showSummary="true"/> -->
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="col1, col2" styleClass="grid">
                     <p:outputLabel value="#{msgs.product_active}" for="expname"/>
                     <p:autoComplete id="expname" value="#{prodAddDetailMBean.prodExcipient.excipient}"
                                     completeMethod="#{globalEntityLists.completeExcipients}"
@@ -587,11 +589,9 @@
                                     forceSelection="false" required="true"
                                     requiredMessage="#{msgs.product_innname_valid}">
                     </p:autoComplete>
-                    <p:message for="expname" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.dos_strength}" for="expqty"/>
                     <p:inputText id="expqty" value="#{prodAddDetailMBean.prodExcipient.dosStrength}" required="true"/>
-                    <p:message for="expqty" showSummary="true"/>
 
                     <p:outputLabel value="#{msgs.dos_unit}" for="expunit"/>
                     <p:selectOneMenu id="expunit" value="#{prodAddDetailMBean.prodExcipient.dosUnit.id}"
@@ -600,30 +600,25 @@
                         <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
                                        itemValue="#{dosUom.id}"/>
                     </p:selectOneMenu>
-                    <p:message for="expunit" showSummary="true"/>
 
                     <h:outputLabel value="#{msgs.inn_funct}" for="expfunct"/>
                     <p:inputText id="expfunct" value="#{prodAddDetailMBean.prodExcipient.function}"/>
-                    <p:message for="expfunct" showSummary="true"/>
-
 
                     <h:outputLabel value="#{msgs.inn_ref}" for="expref"/>
                     <p:inputText id="expref" value="#{prodAddDetailMBean.prodExcipient.refStd}"/>
-
-                    <h:outputLabel/>
-
-                    <h:panelGroup>
-                        <p:commandButton action="#{prodAddDetailMBean.addProdExcipient}" value="#{msgs.global_add}"
-                                         oncomplete="!if(args.validationFailed) addExpntDlg.hide()"
-                                         update=":reghome:expnttable :addExpFrm :reghome:growl"/>
-                        <p:commandButton action="#{prodAddDetailMBean.cancelAddExcipient}" immediate="true"
-                                         value="#{msgs.global_cancel}"
-                                         ajax="true"
-                                         oncomplete="PF('addExpntDlg').hide()" update=":addExpFrm"/>
-                    </h:panelGroup>
-                    <h:outputLabel/>
-
-                </h:panelGrid>
+				</h:panelGrid>
+				<ui:decorate template="/templates/companydetailtmpl.xhtml">
+		            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
+		            <ui:param name="showCompType" value="#{false}"/>
+	            </ui:decorate>
+                <h:panelGroup>
+	                <p:commandButton action="#{prodAddDetailMBean.addProdExcipient}" value="#{msgs.global_add}"
+	                                 oncomplete="!if(args.validationFailed) addExpntDlg.hide()"
+	                                 update=":reghome:expnttable :addExpFrm :reghome:growl"/>
+	                <p:commandButton action="#{prodAddDetailMBean.cancelAddExcipient}" immediate="true"
+                                     value="#{msgs.global_cancel}" ajax="true"
+                                     oncomplete="PF('addExpntDlg').hide()" update=":addExpFrm"/>
+                </h:panelGroup>
             </h:form>
         </p:dialog>
 
@@ -671,7 +666,7 @@
                 <p:messages showSummary="true"/>
                 <ui:decorate template="/templates/companydetailtmpl.xhtml">
                     <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
-                    <ui:param name="input" value="#{true}"/>
+                    <ui:param name="showCompType" value="#{true}"/>
                 </ui:decorate>
 
                 <h:outputLabel/>

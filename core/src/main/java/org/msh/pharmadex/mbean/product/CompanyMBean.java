@@ -1,5 +1,16 @@
 package org.msh.pharmadex.mbean.product;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+
 import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.service.CompanyService;
@@ -10,16 +21,6 @@ import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import java.io.Serializable;
-import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Author: usrivastava
@@ -81,8 +82,7 @@ public class CompanyMBean implements Serializable {
 //        logger.error("Selected company is " + selectedCompany.getCompanyName());
 //        logger.error("event " + event.getObject());
         gmpChangeListener();
-
-
+        
     }
 
     public void companyChangeEventListener(AjaxBehaviorEvent event) {
@@ -90,8 +90,6 @@ public class CompanyMBean implements Serializable {
 //        logger.error("Selected company is " + selectedCompany.getCompanyName());
 //        logger.error("event " + event.getSource());
         gmpChangeListener();
-
-
     }
 
 

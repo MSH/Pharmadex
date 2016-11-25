@@ -68,11 +68,10 @@ public class Product extends CreationDetail implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProdCategory prodCategory;
 
-    //@OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY) 20161017 AK
     @OneToMany(mappedBy = "product", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @NotAudited
     private List<ProdInn> inns;
-
+    
     //@OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY) 20161017 AK
     @OneToMany(mappedBy = "product", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @NotAudited

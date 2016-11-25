@@ -2,76 +2,82 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui">
 
-    <h:panelGrid columns="2" cellpadding="10px" cellspacing="6px" id="companydetail" width="100%"
+    <h:panelGrid id="companydetail" columns="2" cellpadding="10px" cellspacing="6px" width="100%"
                  columnClasses="col1, col2">
-
+	
         <p:outputLabel value="#{msgs.manuf_name}" for="companyname"/>
         <p:autoComplete id="companyname" value="#{companyMBean.selectedCompany}" widgetVar="appac"
                         completeMethod="#{companyMBean.completeCompany}" dropdown="true"
                         var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}" forceSelection="false"
-                        required="true" requiredMessage="#{msgs.valid_value_req}" rendered="#{input}"
+                        required="true" requiredMessage="#{msgs.valid_value_req}" 
                         converter="#{manufConverter}" minQueryLength="2" maxResults="10">
-            <p:ajax event="itemSelect" update="@form"
+            <p:ajax event="itemSelect" update="companydetail"
                     listener="#{companyMBean.companyChangeEventListener}" partialSubmit="true"/>
             <p:ajax event="change" listener="#{companyMBean.companyChangeEventListener}"
-                    update="@form" partialSubmit="true" onstart="if(PF('appac').panel.is(':visible')) {return false;}"/>
+                    update="companydetail" partialSubmit="true" onstart="if(PF('appac').panel.is(':visible')) {return false;}"/>
         </p:autoComplete>
-        <h:outputLabel value="#{companydata.companyName}" rendered="#{!input}" style="font-weight: bold;"/>
 
-        <h:outputLabel/>
-        <h:outputLabel/>
+		<p:outputLabel/>
+        <p:outputLabel/>
 
-
-        <ui:decorate template="/templates/addrtempl.xhtml">
-            <ui:param name="addressdata" value="#{companydata.address}"/>
-            <ui:param name="input" value="#{input}"/>
-        </ui:decorate>
-
+        <p:outputLabel value="#{msgs.applicant_addr1}*"/>
+	    <p:inputText value="#{companydata.address.address1}" 
+	    			 required="true" requiredMessage="#{msgs.valid_address}"/>
+	 
+	    <p:outputLabel/>
+	    <p:outputLabel/>
+	    
+	    <p:outputLabel/>
+	    <p:inputText value="#{companydata.address.address2}" />
+	
+	    <p:outputLabel value="#{msgs.applicant_zipcd}"/>
+	    <p:inputText value="#{companydata.address.zipcode}"/>
+	
+	    <o:outputLabel value="#{msgs.applicant_country}*" />
+	    <p:autoComplete value="#{companydata.address.country}" 
+	                    completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
+	                    var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
+	                    required="true" requiredMessage="#{msgs.valid_country}">
+	        <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+	    </p:autoComplete>
 
         <p:outputLabel/>
         <p:outputLabel/>
-
 
         <p:outputLabel/>
         <p:outputLabel/>
 
         <p:outputLabel value="#{msgs.applicant_filenumber}" for="ref"/>
-        <p:inputText value="#{companydata.siteNumber}" rendered="#{input}" id="ref"/>
-        <h:outputLabel value="#{companydata.siteNumber}" rendered="#{!input}" style="font-weight: bold;"/>
+        <p:inputText value="#{companydata.siteNumber}" id="ref"/>
 
         <p:outputLabel value="#{msgs.applicant_phone}" style="text-align: right;" for="cphoneno"/>
-        <p:inputText value="#{companydata.phoneNo}" required="true" requiredMessage="#{msgs.valid_value_req}"
-        			rendered="#{input}" id="cphoneno"/>
-        <h:outputLabel value="#{companydata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
+        <p:inputText id="cphoneno" value="#{companydata.phoneNo}" 
+        			required="true" requiredMessage="#{msgs.valid_value_req}"/>
 
         <p:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno"/>
-        <p:inputText value="#{companydata.faxNo}" rendered="#{input}" id="cfaxno"/>
-        <h:outputLabel value="#{companydata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
+        <p:inputText id="cfaxno" value="#{companydata.faxNo}" />
 
         <p:outputLabel value="#{msgs.applicant_email}" for="email"/>
-        <p:inputText value="#{companydata.email}" rendered="#{input}" id="email"/>
-        <h:outputLabel value="#{companydata.email}" rendered="#{!input}" style="font-weight: bold;"/>
+        <p:inputText id="email" value="#{companydata.email}"/>
 
-        <p:outputLabel value="#{msgs.company_type}" rendered="#{input}" for="grid"/>
+        <p:outputLabel value="#{msgs.company_type}" rendered="#{showCompType}" for="grid"/>
         <p:selectManyCheckbox id="grid" value="#{companyMBean.companyTypes}" layout="grid" columns="3"
-                              required="true" requiredMessage="#{msgs.company_missing}">
-            <f:selectItems value="#{globalLists.companyType}" var="type" itemLabel="#{msgs[type.key]}"
+                              required="true" requiredMessage="#{msgs.company_missing}" rendered="#{showCompType}">
+            <f:selectItems value="#{prodRegAppMbeanBg.companyType}" var="type" itemLabel="#{msgs[type.key]}"
                            itemValue="#{type}"/>
         </p:selectManyCheckbox>
 
         <p:outputLabel value="#{msgs.gmpinsp_done}" for="gmpChkbox" styleClass="label"/>
-        <p:selectBooleanCheckbox value="#{companydata.gmpInsp}" id="gmpChkbox">
-        </p:selectBooleanCheckbox>
+        <p:selectBooleanCheckbox id="gmpChkbox" value="#{companydata.gmpInsp}"/>
 
         <p:outputLabel value="#{msgs.gmp_cert_no}" styleClass="label" for="gmpCertNo"/>
         <p:inputText id="gmpCertNo" value="#{companydata.gmpCertNo}"/>
 
         <p:outputLabel value="#{msgs.gmp_cert_date}" styleClass="label" for="gmpCertDt"/>
-        <p:calendar value="#{companydata.gmpInspDate}" id="gmpCertDt" showOn="button"
+        <p:calendar id="gmpCertDt" value="#{companydata.gmpInspDate}" showOn="button"
                     pattern="#{userAccessMBean.workspace.datePattern}"/>
     </h:panelGrid>
-
-
 </ui:composition>

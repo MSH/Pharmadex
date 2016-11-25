@@ -13,12 +13,14 @@ import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.dao.iface.DosUomDAO;
 import org.msh.pharmadex.domain.Atc;
+import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.DosUom;
 import org.msh.pharmadex.domain.Excipient;
 import org.msh.pharmadex.domain.Inn;
 import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.service.AtcService;
+import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.InnService;
 import org.primefaces.event.CellEditEvent;
@@ -43,6 +45,12 @@ public class ProdAddDetailMBean implements Serializable {
     private DosUomDAO dosUomDAO;
     @ManagedProperty(value = "#{prodRegAppMbean}")
     private ProdRegAppMbean prodRegAppMbean;
+    
+    @ManagedProperty(value = "#{companyMBean}")
+    private CompanyMBean companyMBean;
+    @ManagedProperty(value = "#{companyService}")
+    private CompanyService companyService;
+    
     @ManagedProperty(value = "#{atcService}")
     private AtcService atcService;
     @ManagedProperty(value = "#{globalEntityLists}")
@@ -79,6 +87,12 @@ public class ProdAddDetailMBean implements Serializable {
 
             prodInn.setProduct(prodRegAppMbean.getProduct());
             prodInn.setDosUnit(dosUomDAO.findOne(prodInn.getDosUnit().getId()));
+            
+            if(companyMBean.getSelectedCompany() != null){
+            	Company compInn = companyService.saveCompany(companyMBean.getSelectedCompany());
+            	prodInn.setCompany(compInn);
+            }
+            
             prodRegAppMbean.getSelectedInns().add(prodInn);
 
             List<Atc> selectedAtcs = prodRegAppMbean.getSelectedAtcs();
@@ -109,9 +123,11 @@ public class ProdAddDetailMBean implements Serializable {
             List<ProdExcipient> selectedExipients = prodRegAppMbean.getSelectedExipients();
             prodExcipient.setProduct(prodRegAppMbean.getProduct());
             prodExcipient.setDosUnit(dosUomDAO.findOne(prodExcipient.getDosUnit().getId()));
+            if(companyMBean.getSelectedCompany() != null){
+            	Company compInn = companyService.saveCompany(companyMBean.getSelectedCompany());
+            	prodExcipient.setCompany(compInn);
+            }
             selectedExipients.add(prodExcipient);
-//        product.setExcipients(selectedExipients);
-
 
             prodExcipient = new ProdExcipient();
             prodExcipient.setDosUnit(new DosUom());
@@ -244,7 +260,15 @@ public class ProdAddDetailMBean implements Serializable {
         this.innService = innService;
     }
 
-    public DosUomDAO getDosUomDAO() {
+    public CompanyService getCompanyService() {
+		return companyService;
+	}
+
+	public void setCompanyService(CompanyService companyService) {
+		this.companyService = companyService;
+	}
+
+	public DosUomDAO getDosUomDAO() {
         return dosUomDAO;
     }
 
@@ -259,6 +283,14 @@ public class ProdAddDetailMBean implements Serializable {
     public void setProdRegAppMbean(ProdRegAppMbean prodRegAppMbean) {
         this.prodRegAppMbean = prodRegAppMbean;
     }
+
+    public CompanyMBean getCompanyMBean() {
+		return companyMBean;
+	}
+
+	public void setCompanyMBean(CompanyMBean companyMBean) {
+		this.companyMBean = companyMBean;
+	}
 
 	public AtcService getAtcService() {
         return atcService;
