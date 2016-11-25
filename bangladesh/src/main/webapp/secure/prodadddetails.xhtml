@@ -39,11 +39,13 @@
 
 
         <p:outputLabel value="#{msgs.product_conttype}" for="inconttype"/>
-        <p:inputTextarea id="inconttype" value="#{prodRegAppMbean.product.contType}" cols="100" rows="1"/>
+        <p:inputTextarea id="inconttype" value="#{prodRegAppMbean.product.contType}" cols="100" rows="1"
+        				required="true"  requiredMessage="#{msgs.product_conttype}"/>
         <p:message for="inconttype" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.product_storcndtn}" for="instorecndtn"/>
-        <p:inputTextarea id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}" cols="100" rows="1"/>
+        <p:inputTextarea id="instorecndtn" value="#{prodRegAppMbean.product.storageCndtn}" cols="100" rows="1"
+        				required="true"  requiredMessage="#{msgs.product_storcndtn}"/>
         <p:message for="instorecndtn" showSummary="true" showDetail="false"/>
 
         <p:outputLabel value="#{msgs.use_category}" for="grid"/>
