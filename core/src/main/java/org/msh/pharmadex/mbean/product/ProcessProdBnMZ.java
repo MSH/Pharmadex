@@ -29,7 +29,6 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewService;
-import org.msh.pharmadex.service.SuspendServiceMZ;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
@@ -178,11 +177,13 @@ public class ProcessProdBnMZ implements Serializable {
 		if(getProcessProdBn().getProdApplications() != null){
 			RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
 			if(userSession.isAdmin() && !curRegState.equals(RegState.REGISTERED)
-					&& !curRegState.equals(RegState.REJECTED))
+					&& !curRegState.equals(RegState.REJECTED)
+					 && getProcessProdBn().getProdApplications().getModerator() != null)
 				return true;
 
 			if(userSession.isStaff() && !curRegState.equals(RegState.REGISTERED)
-					&& !curRegState.equals(RegState.REJECTED) && getProcessProdBn().getProdApplications().getModerator() != null){
+					&& !curRegState.equals(RegState.REJECTED)
+					&& getProcessProdBn().getProdApplications().getModerator() != null){
 				return true;
 			}
 		}
