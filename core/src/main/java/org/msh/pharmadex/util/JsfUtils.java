@@ -50,6 +50,13 @@ public class JsfUtils {
         c.add(Calendar.YEAR, year);
         return c.getTime();
     }
+    
+    public static Date addDays(Date dt, int countDay){
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DAY_OF_YEAR, countDay);
+        return c.getTime();
+    }
 
 //    public static Flash flashScope() {
 //        return (FacesContext.getCurrentInstance().getExternalContext().getFlash());
