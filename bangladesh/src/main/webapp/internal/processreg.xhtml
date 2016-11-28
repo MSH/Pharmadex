@@ -803,7 +803,7 @@
 						id="regDate" showOn="button" required="true"
 						pattern="#{userAccessMBean.workspace.datePattern}">
 						<f:validator validatorId="pastDateValidator" />
-						<p:ajax event="dateSelect" listener="#{processProdBn.dateChange}"
+						<p:ajax event="dateSelect" listener="#{processProdBnBg.dateChange}"
 							update=":regdatedlg" />
 					</p:calendar>
 					<p:message for="regstartdate" />
