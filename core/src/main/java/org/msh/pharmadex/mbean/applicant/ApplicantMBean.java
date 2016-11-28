@@ -366,8 +366,17 @@ public class ApplicantMBean implements Serializable {
 		User resp = null;
 		if(selectedApplicant != null && selectedApplicant.getApplcntId() != null){
 			String contactName = selectedApplicant.getContactName();
-			if(contactName != null && !contactName.equals("") && !contactName.equals("NOT SPECIFIED"))
+			if(contactName != null && !contactName.equals("") && !contactName.equals("NOT SPECIFIED")){
 				resp = userService.findUserByUsername(contactName);
+				if(resp != null){
+					if (resp.getApplicant()==null){
+						resp = null;
+						selectedApplicant.setContactName("");
+					}
+				}else{
+					selectedApplicant.setContactName("");
+				}
+			}	
 		}
 		return resp;
 	}
