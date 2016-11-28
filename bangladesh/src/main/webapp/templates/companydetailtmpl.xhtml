@@ -10,10 +10,10 @@
 	
         <p:outputLabel value="#{msgs.manuf_name}" for="companyname"/>
         <p:autoComplete id="companyname" value="#{companyMBean.selectedCompany}" widgetVar="appac"
-                        completeMethod="#{companyMBean.completeCompany}" dropdown="true"
+                        completeMethod="#{companyMBean.completeCompany}" dropdown="false"
                         var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}" forceSelection="false"
                         required="true" requiredMessage="#{msgs.valid_value_req}" 
-                        converter="#{manufConverter}" minQueryLength="2" maxResults="10">
+                        converter="#{manufConverter}" minQueryLength="2" maxResults="30">
             <p:ajax event="itemSelect" update="companydetail"
                     listener="#{companyMBean.companyChangeEventListener}" partialSubmit="true"/>
             <p:ajax event="change" listener="#{companyMBean.companyChangeEventListener}"
