@@ -63,6 +63,7 @@ public class CompanyService implements Serializable {
 
 	@Transactional
 	public List<ProdCompany> addCompany(Product prod, Company selectedCompany, List<String> companyTypes) {
+		globalEntityLists.setManufacturers(null);
 		if (companyTypes.size() < 1)
 			return null;
 
@@ -85,7 +86,7 @@ public class CompanyService implements Serializable {
 			selectedCompany = saveCompany(selectedCompany);// findCompanyById(selectedCompany.getId());
 		else {
 			selectedCompany = saveCompany(selectedCompany);
-			globalEntityLists.setManufacturers(null);
+			
 		}
 
 		for (String ct : companyTypes) {
