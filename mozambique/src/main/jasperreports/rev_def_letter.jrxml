@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-08-22T17:46:05 -->
+<!-- 2016-11-29T14:58:07 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -25,7 +25,8 @@
 	<parameter name="appName" class="java.lang.String"/>
 	<parameter name="manufName" class="java.lang.String"/>
 	<parameter name="execSummary" class="java.lang.String"/>
-	<parameter name="DueDate" class="java.util.Date"/>
+	<parameter name="DueDateMZ" class="java.lang.String"/>
+	<parameter name="curDate" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -81,12 +82,12 @@
 				</textElement>
 				<text><![CDATA[Ref:                  /CTTF/11                                     ]]></text>
 			</staticText>
-			<textField pattern="MMM, yyyy">
-				<reportElement positionType="Float" x="380" y="270" width="100" height="18" uuid="34c21125-f6d7-40e1-9acb-dcb2fbeedd42"/>
+			<textField pattern="">
+				<reportElement positionType="Float" x="380" y="270" width="171" height="18" uuid="34c21125-f6d7-40e1-9acb-dcb2fbeedd42"/>
 				<textElement>
 					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{DueDate} != null ? $P{DueDate} : new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DueDateMZ} != null ? $P{DueDateMZ} : new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="0" y="300" width="555" height="20" uuid="f554b4e1-98fc-4663-b821-7fc5677724cb"/>
@@ -100,7 +101,7 @@
 				<textElement markup="html">
 					<font fontName="DejaVu Serif"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Reunida no dia 20 de Julho de 2011, a CTTF analisou a avaliação clínica e farmacêutica do produto acima referenciado tendo chegado a seguinte conclusão: <br><br>A aprovação do registo desta especialidade Farmacêutica  <b><u>".concat($P{genName}==null?"":$P{genName}).concat("</u></b>(Comprimidos revestidos). Fica condicionada pelo requerente de:")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Reunida no dia ".concat( $P{curDate} == null ? "":$P{curDate}) .concat(", a CTTF analisou a avaliação clínica e farmacêutica do produto acima referenciado tendo chegado a seguinte conclusão: <br><br>A aprovação do registo desta especialidade Farmacêutica  <b><u>").concat($P{genName}==null?"":$P{genName}).concat("</u></b>(Comprimidos revestidos). Fica condicionada pelo requerente de:")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="0" y="320" width="551" height="1" uuid="8e2d0272-6f18-4433-a318-d9903276c17b">
