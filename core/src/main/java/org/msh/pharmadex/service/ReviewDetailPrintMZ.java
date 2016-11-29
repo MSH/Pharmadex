@@ -26,6 +26,7 @@ import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.CompanyType;
+import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.mbean.product.ReviewItemReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -93,9 +94,19 @@ public class ReviewDetailPrintMZ implements Serializable {
 		if (prop.getProperty("chapter1_7") != null)
 			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_7"),
 					prodApp.getProduct().getDosForm().getDosForm(), null,null,null,null,null);
-		if (prop.getProperty("chapter1_8") != null)
+		if (prop.getProperty("chapter1_8") != null){			
+			List<UseCategory> cats =  prodApp.getProduct().getUseCategories();			
+			String catStr="";			
+			for(UseCategory cat:cats){
+				if (!"".equals(cat)){
+					catStr = bundle.getString(cat.getKey());
+				}else{
+					catStr = catStr +"," + bundle.getString(cat.getKey());
+				}
+			}				
 			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_8"),
-					prodApp.getProduct().getIndications(), null,null,null,null,null);
+					catStr, null,null,null,null,null); //prodApp.getProduct().Indications()
+		}
 		if (prop.getProperty("chapter1_9") != null)
 			fillItemRS(res, prop.getProperty("chapter1"), prop.getProperty("chapter1_9"),
 					prodApp.getProduct().getShelfLife(), null,null,null,null,null);

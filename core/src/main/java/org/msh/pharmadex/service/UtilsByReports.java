@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class UtilsByReports implements Serializable {
 
 	private static final long serialVersionUID = 5110624647990815527L;
-	
+
 	//private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");	
 	
 	public static final String FTR_DATASOUTCE = "filterDataSource";
@@ -71,6 +71,8 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_SUMMARY = "summary";
 	public static String KEY_SAMPLEQTY = "sampleQty";
 	public static String KEY_DUEDATE = "DueDate";
+	public static String KEY_CURDATE ="curDate";
+	public static String KEY_DUEDATEMZ = "DueDateMZ";
 	public static String KEY_COMPANY_NAME = "companyName";
 	public static String KEY_COMPANY_PHONE = "companyPhone";
 	public static String KEY_COMPANY_FAX  = "companyFax";

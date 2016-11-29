@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1164,6 +1165,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY,getSentComment(revDeficiency), true);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATE, dueDate);
 			
+			String dueDateMZ = getDateMZFormat(dueDate,"MMM, yyyy");	
+			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATEMZ,dueDateMZ);
+			
 			
 			String res ="";
 			if(prodApp != null){
@@ -1188,6 +1192,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					  userEmail = user.getEmail();				
 			}
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPUSEREMAIL, userEmail, true);
+			
+			Date date= new Date();
+			date.getTime();
+			String strCurDate =	getDateMZFormat(date,"dd 'de' MMMM 'de' yyyy");		
+			utilsByReports.putNotNull(UtilsByReports.KEY_CURDATE, strCurDate, true);
 			
 			//TODO	
 			/*List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
@@ -1247,6 +1256,15 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		} 
 	}
 
+	private String getDateMZFormat(Date date, String format) {
+		String strCurDate = "";		
+		if(date!=null){				
+			SimpleDateFormat curFormat  = new SimpleDateFormat(format, new Locale("pt", "PT"));							
+			strCurDate = curFormat.format(date);
+		}
+		return strCurDate;
+	}
+	
 	private String getSentComment(RevDeficiency revDeficiency) {
 		String result = "";	 
 		if(revDeficiency.getSentComment()!=null) 
