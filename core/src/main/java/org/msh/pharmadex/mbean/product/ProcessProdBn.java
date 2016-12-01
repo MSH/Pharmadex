@@ -120,8 +120,8 @@ public class ProcessProdBn implements Serializable {
 	@ManagedProperty(value = "#{suspendService}")
 	private SuspendService suspendService;
 	@ManagedProperty(value = "#{suspendServiceMZ}")
-    private SuspendServiceMZ suspendServiceMZ;
-	
+	private SuspendServiceMZ suspendServiceMZ;
+
 	@ManagedProperty(value = "#{attachmentDAO}")
 	private AttachmentDAO attachmentDAO;
 	@ManagedProperty(value = "#{prodRegAppMbean}")
@@ -179,8 +179,11 @@ public class ProcessProdBn implements Serializable {
 				if (facesContext.getExternalContext().getFlash()!=null)
 					suspId = (String) facesContext.getExternalContext().getFlash().get("suspDetailID");
 			}
-			
-			loggedInUser = userService.findUser(userSession.getLoggedINUserID());
+			if(userSession.getLoggedINUserID() != null){
+				loggedInUser = userService.findUser(userSession.getLoggedINUserID());
+			}else{
+				loggedInUser=null;
+			}
 			mail.setUser(loggedInUser);
 			timeLine.setUser(loggedInUser);
 			selComment.setUser(loggedInUser);
@@ -570,29 +573,29 @@ public class ProcessProdBn implements Serializable {
 	}
 
 	public String registerProduct() {
-			facesContext = getCurrentInstance();
-			if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
-				return "";
-			}
+		facesContext = getCurrentInstance();
+		if (!prodApplications.getRegState().equals(RegState.RECOMMENDED)) {
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("register_fail")));
+			return "";
+		}
 
-			if(prodApplications.getProdRegNo()==null||prodApplications.getProdRegNo().equals(""))
-				prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + 0, prodApplications.getProdAppNo()));
+		if(prodApplications.getProdRegNo()==null||prodApplications.getProdRegNo().equals(""))
+			prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + 0, prodApplications.getProdAppNo()));
 
-			prodApplications.setActive(true);
-			prodApplications.setUpdatedBy(loggedInUser);
+		prodApplications.setActive(true);
+		prodApplications.setUpdatedBy(loggedInUser);
 
-			String retValue = prodApplicationsService.registerProd(prodApplications);
-			if(retValue.equals("created")) {
-				System.out.println("Product moved to registered");
-				prodApplicationsService.createRegCert(prodApplications);
-				timeLineList = null;
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
-			}else{
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
-			}
-			timeLine = new TimeLine();
-			return null;
+		String retValue = prodApplicationsService.registerProd(prodApplications);
+		if(retValue.equals("created")) {
+			System.out.println("Product moved to registered");
+			prodApplicationsService.createRegCert(prodApplications);
+			timeLineList = null;
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+		}else{
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
+		}
+		timeLine = new TimeLine();
+		return null;
 	}
 
 	public List<Mail> getMails() {
@@ -655,7 +658,7 @@ public class ProcessProdBn implements Serializable {
 	public void setCreateRegCert(boolean createRegCert) {
 		this.createRegCert = createRegCert;
 	}
-	
+
 	public boolean isCreateRejCert() {
 		createRejCert = false;
 		if (prodApplications != null) {
@@ -900,7 +903,7 @@ public class ProcessProdBn implements Serializable {
 					return "/secure/submittedproducts";
 				}
 			}
-			return "/internal/processprodlist";
+		return "/internal/processprodlist";
 	}
 
 	public boolean isDisplaySample() {
@@ -1037,7 +1040,7 @@ public class ProcessProdBn implements Serializable {
 	public void setSuspendService(SuspendService suspendService) {
 		this.suspendService = suspendService;
 	}
-	
+
 	public SuspendServiceMZ getSuspendServiceMZ() {
 		return suspendServiceMZ;
 	}
@@ -1217,15 +1220,15 @@ public class ProcessProdBn implements Serializable {
 	public boolean getCanNextStep() {
 		if((userSession.isAdmin() || getCheckReviewStatus() || userSession.isStaff()
 				|| userSession.isModerator()) && !prodApplications.getRegState().equals(RegState.REGISTERED)
-				 && !prodApplications.getRegState().equals(RegState.REJECTED))
+				&& !prodApplications.getRegState().equals(RegState.REJECTED))
 			return true;
 		return false;
 	}
-	
+
 	public boolean getCanChangeModerator() {
 		if((userSession.isAdmin() || userSession.isStaff())
 				&& !prodApplications.getRegState().equals(RegState.REGISTERED)
-				 && !prodApplications.getRegState().equals(RegState.REJECTED))
+				&& !prodApplications.getRegState().equals(RegState.REJECTED))
 			return true;
 		return false;
 	}
@@ -1258,6 +1261,6 @@ public class ProcessProdBn implements Serializable {
 	public void setLoggedInUser(User loggedInUser) {
 		this.loggedInUser = loggedInUser;
 	}
-	
-	
+
+
 }
