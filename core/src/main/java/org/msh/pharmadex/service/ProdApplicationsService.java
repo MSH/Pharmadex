@@ -254,8 +254,6 @@ public class ProdApplicationsService implements Serializable {
 		params.put("endDt", currDate.getTime());
 
 		ArrayList<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
-
-
 		return prodApps;
 	}
 
