@@ -533,6 +533,7 @@
                   modal="true" dynamic="true">
             <h:form id="addInnFrm">
                	<!-- <p:messages showSummary="true"/> -->
+               	<h:panelGrid columns="2" cellspacing="15" styleClass="grid">
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="col1, col2" styleClass="grid">
                     <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
                     <p:autoComplete id="innname" value="#{prodAddDetailMBean.prodInn.inn}"
@@ -565,7 +566,7 @@
 		            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
 		            <ui:param name="showCompType" value="#{false}"/>
 	            </ui:decorate>
-                
+                </h:panelGrid>
                 <h:panelGroup>
 	                <p:commandButton action="#{prodAddDetailMBean.addProdInn}" value="#{msgs.global_add}"
 	                                 oncomplete="if(!args.validationFailed) PF('addInnDlg').hide()"
@@ -581,6 +582,7 @@
                   dynamic="true">
             <h:form id="addExpFrm">
                 <!-- <p:messages showSummary="true"/> -->
+                <h:panelGrid columns="2" cellspacing="15" styleClass="grid">
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="col1, col2" styleClass="grid">
                     <p:outputLabel value="#{msgs.product_active}" for="expname"/>
                     <p:autoComplete id="expname" value="#{prodAddDetailMBean.prodExcipient.excipient}"
@@ -611,6 +613,7 @@
 		            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
 		            <ui:param name="showCompType" value="#{false}"/>
 	            </ui:decorate>
+	            </h:panelGrid>
                 <h:panelGroup>
 	                <p:commandButton action="#{prodAddDetailMBean.addProdExcipient}" value="#{msgs.global_add}"
 	                                 oncomplete="!if(args.validationFailed) addExpntDlg.hide()"
