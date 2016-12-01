@@ -13,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.Hibernate;
 import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.auth.PassPhrase;
 import org.msh.pharmadex.dao.iface.RoleDAO;
@@ -294,6 +295,7 @@ public class UserMBean implements Serializable {
 	public void setSelectedUser(User selUser) {
 		if(selUser != null && selUser.getUserId() != null){
 			this.selectedUser = userService.findUser(selUser.getUserId());
+			Hibernate.initialize(this.selectedUser.getApplicant());
 			this.selectedRoles = this.selectedUser.getRoles();
 			roles.setTarget(selectedRoles);
 			if (this.selectedUser.getApplicant() != null){
@@ -311,7 +313,7 @@ public class UserMBean implements Serializable {
 	}
 
 	public List<User> getAllUsers() {
-		if(allUsers==null)
+		//if(allUsers==null)
 			allUsers = userService.findAllUsers();
 		return allUsers;
 	}
