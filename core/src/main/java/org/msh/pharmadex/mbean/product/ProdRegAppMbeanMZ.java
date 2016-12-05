@@ -70,12 +70,14 @@ public class ProdRegAppMbeanMZ implements Serializable {
 						context.addMessage(null, msg2);
 						nextWizardStep = currentWizardStep; // keep wizard on current step if error
 					}
+					if(prodRegAppMbean.getProdApplications().getProdAppType() != null){
 					if (prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.VARIATION)||prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.RENEW)){
 						if (prodRegAppMbean.getProduct().getProdName()==null){
 							FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Product not selected", "Select a product.");
 							context.addMessage(null, msg1);
 							nextWizardStep = currentWizardStep; 
 						}
+					}
 					}
 				}
 				if (!currentWizardStep.equals("prodreg")){
