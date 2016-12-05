@@ -36,6 +36,8 @@ public class UserAuthHandler implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
         // It's OK to return null here because Faces is just going to exit.
 
+        userSession.getUserService().setUserId(null);
+        
         return "/home.faces";
     }
 

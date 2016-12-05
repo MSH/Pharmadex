@@ -106,6 +106,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         if (userAccess == null) {
             return null;
         }
+        
 
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 
@@ -116,7 +117,6 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
                 (ServletResponse) context.getResponse());
         FacesContext.getCurrentInstance().responseComplete();
         
-        userService.setUserId(null);
         // It's OK to return null here because Faces is just going to exit.
 
         return null;
