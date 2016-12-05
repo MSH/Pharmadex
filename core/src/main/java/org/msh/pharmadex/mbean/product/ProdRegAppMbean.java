@@ -856,8 +856,8 @@ public class ProdRegAppMbean implements Serializable {
 				applicantUser = prodApplications.getApplicantUser();
 				if(applicantUser == null)
 					applicantUser = prodApplications.getCreatedBy();
-				if(applicantUser == null)
-					applicantUser = getLoggedInUser();
+				//if(applicantUser == null)
+				//	applicantUser = getLoggedInUser();
 
 				pricing = product.getPricing();
 				drugPrices = pricing != null ? pricing.getDrugPrices() : null;

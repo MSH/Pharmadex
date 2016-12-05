@@ -66,18 +66,20 @@ public class ProdRegAppMbeanMZ implements Serializable {
 						nextWizardStep = currentWizardStep; // keep wizard on current step if error
 					}
 					if (prodRegAppMbean.getApplicantUser() == null) {
-						FacesMessage msg2 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Applicant user not selected", "Select person responsible for the application");
-						context.addMessage(null, msg2);
-						nextWizardStep = currentWizardStep; // keep wizard on current step if error
-					}
-					if(prodRegAppMbean.getProdApplications().getProdAppType() != null){
-					if (prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.VARIATION)||prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.RENEW)){
-						if (prodRegAppMbean.getProduct().getProdName()==null){
-							FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Product not selected", "Select a product.");
-							context.addMessage(null, msg1);
-							nextWizardStep = currentWizardStep; 
+						if(!prodRegAppMbean.getProdApplications().getRegState().equals(RegState.REGISTERED)){
+							FacesMessage msg2 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Applicant user not selected", "Select person responsible for the application");
+							context.addMessage(null, msg2);
+							nextWizardStep = currentWizardStep; // keep wizard on current step if error
 						}
 					}
+					if(prodRegAppMbean.getProdApplications().getProdAppType() != null){
+						if (prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.VARIATION)||prodRegAppMbean.getProdApplications().getProdAppType().equals(ProdAppType.RENEW)){
+							if (prodRegAppMbean.getProduct().getProdName()==null){
+								FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Product not selected", "Select a product.");
+								context.addMessage(null, msg1);
+								nextWizardStep = currentWizardStep; 
+							}
+						}
 					}
 				}
 				if (!currentWizardStep.equals("prodreg")){

@@ -115,7 +115,8 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
         dispatcher.forward((ServletRequest) context.getRequest(),
                 (ServletResponse) context.getResponse());
         FacesContext.getCurrentInstance().responseComplete();
-
+        
+        userService.setUserId(null);
         // It's OK to return null here because Faces is just going to exit.
 
         return null;
