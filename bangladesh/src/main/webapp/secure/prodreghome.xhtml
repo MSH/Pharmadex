@@ -530,11 +530,9 @@
         </h:form>
 
         <p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true"
-                  modal="true" dynamic="true">
+                  modal="true" dynamic="true" width="900px">
             <h:form id="addInnFrm">
-               	<!-- <p:messages showSummary="true"/> -->
-               	<h:panelGrid columns="2" cellspacing="15" styleClass="grid">
-                <h:panelGrid columns="2" cellspacing="5" columnClasses="col1, col2" styleClass="grid">
+                <h:panelGrid columns="4" cellspacing="5" columnClasses="col1, col2, col1, col2" >
                     <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
                     <p:autoComplete id="innname" value="#{prodAddDetailMBean.prodInn.inn}"
                                     completeMethod="#{globalEntityLists.completeInnCodes}"
@@ -542,9 +540,13 @@
                                     forceSelection="false" required="true"
                                     requiredMessage="#{msgs.product_innname_valid}">
                     </p:autoComplete>
-
+					<p:outputLabel />
+					<p:outputLabel />
+			
                     <p:outputLabel value="#{msgs.dos_strength}" for="innqty"/>
                     <p:inputText id="innqty" value="#{prodAddDetailMBean.prodInn.dosStrength}" required="true"/>
+                    <p:outputLabel />
+					<p:outputLabel />
 
                     <p:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
                     <p:selectOneMenu id="innunit" value="#{prodAddDetailMBean.prodInn.dosUnit}"
@@ -566,7 +568,6 @@
 		            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
 		            <ui:param name="showCompType" value="#{false}"/>
 	            </ui:decorate>
-                </h:panelGrid>
                 <h:panelGroup>
 	                <p:commandButton action="#{prodAddDetailMBean.addProdInn}" value="#{msgs.global_add}"
 	                                 oncomplete="if(!args.validationFailed) PF('addInnDlg').hide()"
@@ -579,11 +580,9 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.product_active}" widgetVar="addExpntDlg" id="addExpntdlg" resizable="true" modal="true"
-                  dynamic="true">
+                  dynamic="true" width="900px">
             <h:form id="addExpFrm">
-                <!-- <p:messages showSummary="true"/> -->
-                <h:panelGrid columns="2" cellspacing="15" styleClass="grid">
-                <h:panelGrid columns="2" cellspacing="5" columnClasses="col1, col2" styleClass="grid">
+                <h:panelGrid columns="4" cellspacing="5" columnClasses="col1, col2, col1, col2">
                     <p:outputLabel value="#{msgs.product_active}" for="expname"/>
                     <p:autoComplete id="expname" value="#{prodAddDetailMBean.prodExcipient.excipient}"
                                     completeMethod="#{globalEntityLists.completeExcipients}"
@@ -591,9 +590,14 @@
                                     forceSelection="false" required="true"
                                     requiredMessage="#{msgs.product_innname_valid}">
                     </p:autoComplete>
+                    <p:outputLabel />
+					<p:outputLabel />
 
                     <p:outputLabel value="#{msgs.dos_strength}" for="expqty"/>
                     <p:inputText id="expqty" value="#{prodAddDetailMBean.prodExcipient.dosStrength}" required="true"/>
+                    
+					<h:outputLabel value="#{msgs.inn_funct}" for="expfunct"/>
+                    <p:inputText id="expfunct" value="#{prodAddDetailMBean.prodExcipient.function}"/>
 
                     <p:outputLabel value="#{msgs.dos_unit}" for="expunit"/>
                     <p:selectOneMenu id="expunit" value="#{prodAddDetailMBean.prodExcipient.dosUnit.id}"
@@ -602,18 +606,17 @@
                         <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
                                        itemValue="#{dosUom.id}"/>
                     </p:selectOneMenu>
-
-                    <h:outputLabel value="#{msgs.inn_funct}" for="expfunct"/>
-                    <p:inputText id="expfunct" value="#{prodAddDetailMBean.prodExcipient.function}"/>
-
+                    
                     <h:outputLabel value="#{msgs.inn_ref}" for="expref"/>
                     <p:inputText id="expref" value="#{prodAddDetailMBean.prodExcipient.refStd}"/>
+                    
+                    <h:outputLabel/> <h:outputLabel/>
+                    <h:outputLabel/> <h:outputLabel/>
 				</h:panelGrid>
 				<ui:decorate template="/templates/companydetailtmpl.xhtml">
 		            <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
 		            <ui:param name="showCompType" value="#{false}"/>
 	            </ui:decorate>
-	            </h:panelGrid>
                 <h:panelGroup>
 	                <p:commandButton action="#{prodAddDetailMBean.addProdExcipient}" value="#{msgs.global_add}"
 	                                 oncomplete="!if(args.validationFailed) addExpntDlg.hide()"
@@ -664,9 +667,8 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="true"
-                  modal="true" dynamic="true">
+                  modal="true" dynamic="true" width="800px">
             <h:form id="addcompany">
-                <p:messages showSummary="true"/>
                 <ui:decorate template="/templates/companydetailtmpl.xhtml">
                     <ui:param name="companydata" value="#{companyMBean.selectedCompany}"/>
                     <ui:param name="showCompType" value="#{true}"/>

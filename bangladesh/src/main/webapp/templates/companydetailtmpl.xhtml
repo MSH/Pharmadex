@@ -3,10 +3,9 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
-	<h:panelGrid columns="2" cellspacing="25"
-		styleClass="grid">
-		<h:panelGrid id="companydetail" columns="2" cellpadding="10px"
-			cellspacing="6px" width="100%" columnClasses="col1, col2">
+	
+		<h:panelGrid id="companydetail" columns="4" cellpadding="10px"
+			cellspacing="6px" width="100%" columnClasses="col1, col2, col1, col2">
 
 			<p:outputLabel value="#{msgs.manuf_name}" for="companyname" />
 			<p:autoComplete id="companyname"
@@ -25,21 +24,34 @@
 					onstart="if(PF('appac').panel.is(':visible')) {return false;}" />
 			</p:autoComplete>
 
-			<p:outputLabel />
-			<p:outputLabel />
+			<p:outputLabel value="#{msgs.applicant_phone}"
+				style="text-align: right;" for="cphoneno" />
+			<p:inputText id="cphoneno" value="#{companydata.phoneNo}"
+				required="true" requiredMessage="#{msgs.valid_value_req}" />
+				
+			<p:outputLabel /> <p:outputLabel />
+			<p:outputLabel /> <p:outputLabel />
 
 			<p:outputLabel value="#{msgs.applicant_addr1}*" />
 			<p:inputText value="#{companydata.address.address1}" required="true"
 				requiredMessage="#{msgs.valid_address}" />
 
-			<p:outputLabel />
-			<p:outputLabel />
+			<p:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno" />
+			<p:inputText id="cfaxno" value="#{companydata.faxNo}" />
 
 			<p:outputLabel />
 			<p:inputText value="#{companydata.address.address2}" />
+			
+			<p:outputLabel value="#{msgs.applicant_email}" for="email" />
+			<p:inputText id="email" value="#{companydata.email}" />
 
 			<p:outputLabel value="#{msgs.applicant_zipcd}" />
 			<p:inputText value="#{companydata.address.zipcode}" />
+			
+			<p:outputLabel value="#{msgs.gmpinsp_done}" for="gmpChkbox"
+				styleClass="label" />
+			<p:selectBooleanCheckbox id="gmpChkbox"
+				value="#{companydata.gmpInsp}" />
 
 			<o:outputLabel value="#{msgs.applicant_country}*" />
 			<p:autoComplete value="#{companydata.address.country}"
@@ -51,51 +63,29 @@
 					list="#{globalEntityLists.countries}" />
 			</p:autoComplete>
 
-			<p:outputLabel />
-			<p:outputLabel />
-
-			<p:outputLabel />
-			<p:outputLabel />
-
-			<p:outputLabel value="#{msgs.applicant_filenumber}" for="ref" />
-			<p:inputText value="#{companydata.siteNumber}" id="ref" />
-
-			<p:outputLabel value="#{msgs.applicant_phone}"
-				style="text-align: right;" for="cphoneno" />
-			<p:inputText id="cphoneno" value="#{companydata.phoneNo}"
-				required="true" requiredMessage="#{msgs.valid_value_req}" />
-
-			<p:outputLabel value="#{msgs.applicant_faxno}" for="cfaxno" />
-			<p:inputText id="cfaxno" value="#{companydata.faxNo}" />
-
-			<p:outputLabel value="#{msgs.applicant_email}" for="email" />
-			<p:inputText id="email" value="#{companydata.email}" />
-
-
-		</h:panelGrid>
-		<h:panelGrid id="companydetail1" columns="2" cellpadding="10px"
-			cellspacing="6px" width="100%" columnClasses="col1, col2">
-						<p:outputLabel value="#{msgs.gmpinsp_done}" for="gmpChkbox"
-				styleClass="label" />
-			<p:selectBooleanCheckbox id="gmpChkbox"
-				value="#{companydata.gmpInsp}" />
-
 			<p:outputLabel value="#{msgs.gmp_cert_no}" styleClass="label"
 				for="gmpCertNo" />
 			<p:inputText id="gmpCertNo" value="#{companydata.gmpCertNo}" />
 
+			<p:outputLabel value="#{msgs.applicant_filenumber}" for="ref" />
+			<p:inputText value="#{companydata.siteNumber}" id="ref" />
+			
 			<p:outputLabel value="#{msgs.gmp_cert_date}" styleClass="label"
 				for="gmpCertDt" />
 			<p:calendar id="gmpCertDt" value="#{companydata.gmpInspDate}"
 				showOn="button" pattern="#{userAccessMBean.workspace.datePattern}" />
+			
 			<p:outputLabel value="#{msgs.company_type}"
 				rendered="#{showCompType}" for="grid" />
 			<p:selectManyCheckbox id="grid" value="#{companyMBean.companyTypes}"
-				layout="grid" columns="3" required="true"
+				layout="grid" columns="1" required="true"
 				requiredMessage="#{msgs.company_missing}" rendered="#{showCompType}">
 				<f:selectItems value="#{prodRegAppMbeanBg.companyType}" var="type"
 					itemLabel="#{msgs[type.key]}" itemValue="#{type}" />
 			</p:selectManyCheckbox>
+			
+			<p:outputLabel />
+			<p:outputLabel />
+
 		</h:panelGrid>
-	</h:panelGrid>
 </ui:composition>
