@@ -12,7 +12,7 @@
                         completeMethod="#{companyMBean.completeCompany}" dropdown="true"
                         var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}" forceSelection="false"
                         required="true" requiredMessage="#{msgs.valid_value_req}" rendered="#{input}"
-                        converter="#{manufConverter}" minQueryLength="2" maxResults="10">
+                        converter="#{manufConverter}" minQueryLength="2" scrollHeight="200">
             <p:ajax event="itemSelect" update="@form"
                     listener="#{companyMBean.companyChangeEventListener}" partialSubmit="true"/>
             <p:ajax event="change" listener="#{companyMBean.companyChangeEventListener}"

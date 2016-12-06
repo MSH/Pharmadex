@@ -103,7 +103,7 @@
             <p:autoComplete id="mod" value="#{preScreenProdMBn.moderator}"
                             completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
                             var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                            forceSelection="true"
+                            forceSelection="true" scrollHeight="200"
                             converter="#{userConverter}">
             </p:autoComplete>
 
