@@ -65,13 +65,13 @@
             <sec:isAuthenticated>
                 <p:submenu label="#{msgs.Admin}" icon="ui-icon-key" rendered="#{userSession.admin}">
                     <p:menuitem value="#{msgs.admin_onlineusers}" url="/admin/loggedinuser_bk.faces"
-                                icon="ui-icon-document" ajax="false"/>
-                    <p:menuitem value="#{msgs.Userlist}" url="/admin/userslist_bk.faces" icon="ui-icon-gear"
+                                icon="ui-icon-folder-open" ajax="false"/>
+                    <p:menuitem value="#{msgs.Userlist}" url="/admin/userslist_bk.faces" icon="ui-icon-folder-open"
                                 ajax="false"/>
                     <p:menuitem value="#{msgs.admin_rolelist}" url="/admin/rolelist_bk.faces"
-                                icon="ui-icon-document" ajax="false"/>
+                                icon="ui-icon-folder-open" ajax="false"/>
                     <p:menuitem value="#{msgs.admin_useraccess}" url="/admin/useraccesslist_bk.faces"
-                                icon="ui-icon-document" ajax="false"/>
+                                icon="ui-icon-folder-open" ajax="false"/>
                 </p:submenu>
             </sec:isAuthenticated>
 

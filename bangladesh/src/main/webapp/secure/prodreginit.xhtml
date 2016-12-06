@@ -22,7 +22,7 @@
                 <p:outputLabel styleClass="hint" value="#{msgs.prodreghome_reg_info4}"/>
             </h:panelGrid>
 
-            <p:panel header="Application Detail" rendered="#{prodRegInit.eligible}">
+            <p:panel header="#{msgs.app_detail}" rendered="#{prodRegInit.eligible}">
                 <h:panelGrid id="feepanel" columns="3" columnClasses="label value" cellspacing="10" cellpadding="10">
                     <p:outputLabel value="#{msgs.prod_app_type}" for="apptypeCb" styleClass="fy-required-field"/>
                     <p:selectOneMenu id="apptypeCb" value="#{prodRegInit.prodAppType}" required="true"
@@ -66,7 +66,7 @@
             <p:dataTable var="checkList" value="#{prodRegInit.checklists}" style="width:100%;"
                          rendered="#{prodRegInit.displayfeepanel}">
                 <f:facet name="header">
-                    Required Documents
+                    <h:outputText value="#{msgs.requireddocs}"/>
                 </f:facet>
 
                 <p:column headerText="#{msgs.checklist_moduleno}" colspan="2" rendered="#{!checkList.header}" style="background-color: bisque;font-weight: bolder;">

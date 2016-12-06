@@ -7,12 +7,12 @@
                 
     <ui:define name="regcontent">
         <div class="post">
-            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.cancel_prod}</h1>
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.registration_product}</h1>
         </div>
 
         <h:form prependId="false">
             <p:growl/>
-            <p:dataTable id="products" var="prodApps" value="#{productMbeanMZ.canceledProds}" tableStyle="width: auto"
+            <p:dataTable id="products" var="prodApps" value="#{productMbean.products}" tableStyle="width: auto"
                          widgetVar="prodTable"
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -23,24 +23,23 @@
                         <h:outputText value="#{msgs.prod_name}"/>
                     </f:facet>
                     <p:commandLink id="viewLink" value="#{prodApps.prodName}"
-                                   action="/public/productdetail.faces"
+                                   action="/public/productdetail"
                                    ajax="false">
                         <f:param name="prodAppID" value="#{prodApps.prodAppID}"/>
                     </p:commandLink>
+
                 </p:column>
 
-                <p:column filterBy="#{prodApps.genName}"
-                          sortBy="#{prodApps.genName}"
-                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                <p:column filterBy="#{prodApps.genName}" sortBy="#{prodApps.genName}"
+                		filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.prodgenname}"/>
                     </f:facet>
                     <h:outputText value="#{prodApps.genName}"/>
                 </p:column>
-
+                
                 <p:column filterBy="#{prodApps.prodCategory}" filterMatchMode="exact" headerText="#{msgs.prod_cat}"
-                          sortBy="#{prodApps.prodCategory}"
-                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                          sortBy="#{prodApps.prodCategory}">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('prodTable').filter()">
                             <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
@@ -50,36 +49,34 @@
                     <h:outputText value="#{prodApps.prodCategory}"/>
                 </p:column>
 
-                <p:column filterBy="#{prodApps.appName}"
-                          sortBy="#{prodApps.appName}"
-                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                <p:column filterBy="#{prodApps.appName}" sortBy="#{prodApps.appName}"
+                			filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_applicant}"/>
                     </f:facet>
                     <h:outputText value="#{prodApps.appName}"/>
                 </p:column>
 
-                <p:column sortBy="#{prodApps.regDate}">
+                <p:column filterBy="#{prodApps.regDate}" sortBy="#{prodApps.regDate}"
+                			filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.registration_date}"/>
                     </f:facet>
-                    <h:outputLabel value="#{prodApps.regDate}">
-                    	<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}" />
-                    </h:outputLabel>
-                </p:column>
-				
-				<p:column >
-                    <f:facet name="header">
-                        <h:outputText value="#{msgs.decision_date}"/>
-                    </f:facet>
-                    <h:outputLabel value="#{productMbeanMZ.findDecisionDateSuspDetail(prodApps.prodAppID)}">
-                    	<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}" />
-                    </h:outputLabel>
+                    <h:outputLabel converter="javax.faces.DateTime"
+                                   value="#{prodApps.regDate}"/>
                 </p:column>
 
-                <p:column filterBy="#{prodApps.manufName}"
-                          sortBy="#{prodApps.manufName}"
-                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                <p:column filterBy="#{prodApps.regExpiryDate}" sortBy="#{prodApps.regExpiryDate}"
+                		filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.expiry_date}"/>
+                    </f:facet>
+                    <h:outputLabel converter="javax.faces.DateTime"
+                                   value="#{prodApps.regExpiryDate}"/>
+                </p:column>
+
+                <p:column filterBy="#{prodApps.manufName}" sortBy="#{prodApps.manufName}"
+                		filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
                     <f:facet name="header">
                         <h:outputText value="#{msgs.manuf_name}"/>
                     </f:facet>

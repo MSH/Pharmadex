@@ -15,7 +15,7 @@
                     <p:autoComplete value="#{regProdMbn.prodTable}" id="basicPojo"
                                     completeMethod="#{regProdMbn.completeProduct}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
-                                    converter="#{productConverter}" forceSelection="true" >
+                                    converter="#{productConverter}" forceSelection="true" scrollHeight="200">
                         <p:ajax event="itemSelect" listener="#{regProdMbn.onItemSelect}" update="@form"
                                 process="@form"/>
                     </p:autoComplete>
