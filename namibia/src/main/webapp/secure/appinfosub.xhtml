@@ -56,7 +56,8 @@
                     <p:autoComplete value="#{appSelectMBean.prodTable}" id="prodTable"
                                     completeMethod="#{appSelectMBean.completeProduct}"
                                     var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
-                                    converter="#{productConverter}" forceSelection="true">
+                                    converter="#{productConverter}" forceSelection="true"
+                                     scrollHeight="200">
                         <p:ajax event="itemSelect" listener="#{appSelectMBean.onItemSelect}" />
                     </p:autoComplete>
                     <p:outputLabel value="#{appSelectMBean.prodTable.prodName}"
@@ -71,7 +72,7 @@
                 <p:autoComplete id="appname" value="#{appSelectMBean.selectedApplicant}"
                                 completeMethod="#{appSelectMBean.completeApplicantList}" dropdown="true"
                                 var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" forceSelection="true"
-                                converter="#{applicantConverter}">
+                                converter="#{applicantConverter}" scrollHeight="200">
                     <p:ajax event="itemSelect"
                             update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
                             listener="#{appSelectMBean.appChangeListenener}" partialSubmit="true" 
