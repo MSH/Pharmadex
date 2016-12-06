@@ -28,7 +28,8 @@
         <p:autoComplete id="mod" value="#{applicantdata.applicantType}" rendered="#{input}"
                         completeMethod="#{applicantMBean.completeApplicantTypeList}" dropdown="true"
                         var="it" itemLabel="#{it.name}" itemValue="#{it}" forceSelection="true"
-                        required="true" requiredMessage="#{msgs.valid_applicantType}">
+                        required="true" requiredMessage="#{msgs.valid_applicantType}"
+                         scrollHeight="200">
             <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.applicantTypes}"/>
         </p:autoComplete>
         <h:outputLabel value="#{applicantdata.applicantType}" rendered="#{!input}" style="font-weight: bold;"/>

@@ -345,7 +345,7 @@
                     <p:autoComplete value="#{sampleRecBn.sampleMed.country}" id="country"
                                     completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
                                     var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
-                                    required="true">
+                                    required="true" scrollHeight="200">
                         <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
                     </p:autoComplete>
                     <p:message for="country" showSummary="true"/>
@@ -412,7 +412,7 @@
                     <p:autoComplete value="#{sampleRecBn.sampleStd.country}" id="countrystd"
                                     completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
                                     var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
-                                    required="true">
+                                    required="true" scrollHeight="200">
                         <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
                     </p:autoComplete>
                     <p:message for="countrystd" showSummary="true"/>

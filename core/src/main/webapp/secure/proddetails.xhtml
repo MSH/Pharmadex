@@ -82,10 +82,8 @@
         <p:autoComplete id="pharmClassifcb" value="#{prodRegAppMbean.product.pharmClassif}"
                         completeMethod="#{globalEntityLists.completePharmClassif}" dropdown="true"
                         var="it" itemLabel="#{it.name}" itemValue="#{it}"
-                        forceSelection="false"
-                        required="true"
-                        requiredMessage="#{msgs.valid_value_req}"
-                >
+                        forceSelection="false"  scrollHeight="200"
+                        required="true" requiredMessage="#{msgs.valid_value_req}">
             <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.pharmClassifs}"/>
         </p:autoComplete>
         <p:message for="pharmClassifcb" showSummary="true" showDetail="false"/>

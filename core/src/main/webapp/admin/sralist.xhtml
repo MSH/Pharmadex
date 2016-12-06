@@ -63,7 +63,7 @@
                     <p:autoComplete value="#{sraMBean.sra.country}" id="country" rendered="#{!sraMBean.displayAgency}"
                                     completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
                                     var="it" itemLabel="#{it}" itemValue="#{it}" forceSelection="true"
-                                    required="true">
+                                    required="true" scrollHeight="200">
                         <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
                     </p:autoComplete>
                     <p:message for="country" rendered="#{!sraMBean.displayAgency}"/>

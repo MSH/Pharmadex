@@ -645,8 +645,8 @@
                     <p:autoComplete id="innname" value="#{prodAddDetailMBean.prodInn.inn}"
                                     completeMethod="#{globalEntityLists.completeInnCodes}"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{innConverter}"
-                                    forceSelection="false" required="true"
-                                    requiredMessage="#{msgs.product_innname_valid}">
+                                    forceSelection="false" scrollHeight="200"
+                                    required="true" requiredMessage="#{msgs.product_innname_valid}">
                     </p:autoComplete>
                     <p:message for="innname" showSummary="true"/>
 
@@ -694,8 +694,8 @@
                     <p:autoComplete id="expname" value="#{prodAddDetailMBean.prodExcipient.excipient}"
                                     completeMethod="#{globalEntityLists.completeExcipients}"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{excipientConverter}"
-                                    forceSelection="false" required="true"
-                                    requiredMessage="#{msgs.product_innname_valid}">
+                                    forceSelection="false" scrollHeight="200" 
+                                    required="true" requiredMessage="#{msgs.product_innname_valid}">
                     </p:autoComplete>
                     <p:message for="expname" showSummary="true"/>
 
@@ -745,7 +745,7 @@
                     <p:autoComplete id="atcname" value="#{prodAddDetailMBean.atc}"
                                     completeMethod="#{globalEntityLists.completeAtcNames}"
                                     var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
-                                    forceSelection="true">
+                                    forceSelection="true" scrollHeight="200">
                         <p:ajax event="itemSelect" listener="#{prodAddDetailMBean.updateAtc}" update=":atcdetail"/>
                     </p:autoComplete>
 

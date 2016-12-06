@@ -5,7 +5,7 @@
                 template="../templates/admin_layout.xhtml">
                 
     <ui:define name="content">
-        <div class="post" style="width: 1024px">
+        <div class="post" style="width: 100%">
             <h1 class="title ui-widget-header ui-corner-all"> #{msgs.applicant_registration}</h1>
         </div>
 
@@ -74,7 +74,7 @@
                     <p:autoComplete id="username" value="#{applicantMBean.user}"
                                     completeMethod="#{applicantMBean.completeUserList}" dropdown="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}" forceSelection="true"
-                                    converter="#{userConverter}">
+                                    converter="#{userConverter}" scrollHeight="200">
                     </p:autoComplete>
 
                     <h:panelGroup>

@@ -15,7 +15,7 @@
                                     completeMethod="#{processAppListBn.completeApplicantList}"
                                     var="p" itemLabel="#{p.appName}" itemValue="#{p.applcntId}"
                                     converter="#{applicantConverter}" forceSelection="true"
-                            />
+                                     scrollHeight="200"/>
                     <p:commandButton value="#{msgs.global_submit}" action="#{processAppListBn.searchApplicant}"
                                      ajax="false">
                     </p:commandButton>

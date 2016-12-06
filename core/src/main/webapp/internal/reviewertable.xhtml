@@ -183,7 +183,7 @@
                                     completeMethod="#{globalEntityLists.completeProcessorList}"
                                     dropdown="true" required="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                    forceSelection="true"
+                                    forceSelection="true" scrollHeight="200"
                                     converter="#{userConverter}">
                     </p:autoComplete>
 
@@ -197,7 +197,7 @@
                                     completeMethod="#{globalEntityLists.completeProcessorList}"
                                     dropdown="true" required="true"
                                     var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                    forceSelection="true"
+                                    forceSelection="true" scrollHeight="200"
                                     converter="#{userConverter}">
                     </p:autoComplete>
 
@@ -251,7 +251,7 @@
                                 completeMethod="#{globalEntityLists.completeProcessorList}"
                                 dropdown="true" required="true"
                                 var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                forceSelection="true"
+                                forceSelection="true" scrollHeight="200"
                                 converter="#{userConverter}">
                 </p:autoComplete>
 
@@ -264,7 +264,8 @@
                                 completeMethod="#{globalEntityLists.completeProcessorList}"
                                 dropdown="true" required="true"
                                 var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                                forceSelection="true" converter="#{userConverter}">
+                                forceSelection="true" converter="#{userConverter}"
+                                 scrollHeight="200">
                 </p:autoComplete>
 
                 <p:outputLabel value="#{msgs.global_duedate}" for="cduedt" styleClass="label"

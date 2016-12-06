@@ -24,7 +24,7 @@
     <p:autoComplete value="#{addressdata.country}" rendered="#{input}"
                     completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
                     var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
-                    required="true" requiredMessage="#{msgs.valid_country}">
+                    required="true" requiredMessage="#{msgs.valid_country}" scrollHeight="200">
         <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
     </p:autoComplete>
 

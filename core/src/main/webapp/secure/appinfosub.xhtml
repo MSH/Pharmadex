@@ -56,7 +56,7 @@
                 <p:autoComplete id="appname" value="#{appSelectMBean.selectedApplicant}"
                                 completeMethod="#{appSelectMBean.completeApplicantList}" dropdown="true"
                                 var="it" itemLabel="#{it.appName}" itemValue="#{it.applcntId}" forceSelection="true"
-                                converter="#{applicantConverter}">
+                                converter="#{applicantConverter}" scrollHeight="200">
                     <p:ajax event="itemSelect"
                             update=":reghome:appdetaildlg :reghome:contact :reghome:btnpnl"
                             listener="#{appSelectMBean.appChangeListenener}" partialSubmit="true" 
