@@ -103,7 +103,7 @@ public class GlobalEntityLists implements Serializable {
 
     public List<Company> getManufacturers() {
         //if (manufacturers == null)
-            manufacturers = companyService.findAllManufacturers();
+        manufacturers = companyService.findAllManufacturers();
         return manufacturers;
     }
 

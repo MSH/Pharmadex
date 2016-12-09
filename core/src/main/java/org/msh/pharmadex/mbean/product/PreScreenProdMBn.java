@@ -60,7 +60,7 @@ public class PreScreenProdMBn implements Serializable {
 	private List<ProdAppChecklist> prodAppChecklists;
 	private ProdAppChecklist prodAppChecklist;
 	private UploadedFile file;
-
+	private String fileName = "";
 
 	public String completeScreen() {
 		facesContext = FacesContext.getCurrentInstance();
@@ -109,6 +109,13 @@ public class PreScreenProdMBn implements Serializable {
 		return "/internal/processprodlist";
 	}
 
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 
 	public void prescreenfeerecvd() {
 		processProdBn.getProdApplications().setPrescreenfeeReceived(true);
@@ -175,12 +182,14 @@ public class PreScreenProdMBn implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, message);
 		try {
 			if (file != null) {
+				setFileName(file.getFileName());
 				prodAppChecklist.setFile(IOUtils.toByteArray(file.getInputstream()));
 				prodAppChecklist.setFileName(file.getFileName());
 				prodAppChecklist.setContentType(file.getContentType());
 				prodAppChecklist.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
 				prodAppChecklist.setFileUploaded(true);
 			} else {
+				setFileName("");
 				FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), resourceBundle.getString("upload_fail"));
 				facesContext.addMessage(null, msg);
 

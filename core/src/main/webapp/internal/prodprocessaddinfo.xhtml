@@ -5,9 +5,9 @@
                 xmlns:p="http://primefaces.org/ui">
 
 
-    <h:panelGrid columns="2" cellspacing="10" cellpadding="10" width="100%">
-        <p:outputLabel value="#{msgs.doss_loc}" for="dossloc" styleClass="label"/>
-        <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="dossloc"/>
+    <h:panelGrid columns="2" cellspacing="10" cellpadding="10" width="100%" columnClasses="label, value">
+        <p:outputLabel value="#{msgs.doss_loc}" for="dossloc"/>
+        <p:inputText id="dossloc" value="#{processProdBn.prodApplications.dossLoc}" style="width: 400px;"/>
 
     </h:panelGrid>
 <!--

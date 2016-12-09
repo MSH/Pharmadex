@@ -13,11 +13,11 @@
                         <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk"
                                     action="#{applicantMBean.saveApp}" ajax="false"
                                    rendered="#{userSession.staff || userSession.admin}"/>
-                        <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-gear"
+                        <p:menuitem value="#{msgs.register_applicant}" immediate="true" icon="ui-icon-check"
                                     action="#{applicantMBean.registerApplicant}" ajax="false"
                                     rendered="#{applicantMBean.visibleRegister()}"/>
-                        <p:menuitem value="#{msgs.global_cancel}" immediate="true"
-                                    icon="ui-icon ui-icon-circle-triangle-w"
+                        <p:menuitem value="#{msgs.global_exit}" immediate="true"
+                                    icon="ui-icon-extlink"
                                     action="#{applicantMBean.cancelApp}" ajax="false"/>
                     </p:submenu>
                 </p:menu>
