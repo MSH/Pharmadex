@@ -50,20 +50,6 @@
                 <p:tab title="#{msgs.cancel_detail}">
                     <p:panel >
                         <h:panelGrid columns="3" columnClasses="label value" cellpadding="10px" cellspacing="10px">
-                            <!-- <p:outputLabel value="#{msgs.susp_report_org}" for="orgReported"/>
-                            <p:inputText value="#{canceledDetailBnMZ.suspDetail.orgReported}" id="orgReported"
-                                         required="true" requiredMessage="#{msgs.susp_report_org}: #{msgs.valueReq}"
-                                         style="width: 99%;" rendered="#{canceledDetailBnMZ.editForm}"/>
-                            <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.orgReported}" rendered="#{!canceledDetailBnMZ.editForm}"/>
-                            <p:message for="orgReported" showSummary="true"/>
-
-                            <p:outputLabel value="#{msgs.susp_notif_recievedt}" for="notifrecdt"/>
-                            <p:calendar id="notifrecdt" value="#{canceledDetailBnMZ.suspDetail.notifRecieveDt}"
-                            			showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
-                            			required="true" requiredMessage="#{msgs.susp_notif_recievedt}: #{msgs.valueReq}"
-                            			disabled="#{!canceledDetailBnMZ.editForm}"/>
-                            <p:message for="notifrecdt" showSummary="true"/> -->
-
                             <p:outputLabel value="#{msgs.cancel_reason}" for="suspReason"/>
                             <p:inputTextarea value="#{canceledDetailBnMZ.suspDetail.reason}" id="suspReason"
                                              required="true" requiredMessage="#{msgs.susp_reason}: #{msgs.valueReq}"
@@ -71,25 +57,6 @@
                                              rendered="#{canceledDetailBnMZ.editForm}"/>
                             <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.reason}" rendered="#{!canceledDetailBnMZ.editForm}"/>
                             <p:message for="suspReason" showSummary="true"/>
-
-                            <!-- <p:outputLabel value="#{msgs.batch_no}" for="batch_no"/>
-                            <p:inputTextarea id="batch_no" value="#{canceledDetailBnMZ.suspDetail.batchNo}" cols="100" rows="4"
-                                             required="true" requiredMessage="#{msgs.batch_no}: #{msgs.valueReq}"
-                                             rendered="#{canceledDetailBnMZ.editForm}"/>
-                            <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.batchNo}" rendered="#{!canceledDetailBnMZ.editForm}"/>
-                            <p:message for="batch_no" showSummary="true"/>
-
-                            <p:outputLabel value="#{msgs.updated_date}"/>
-                            <p:outputLabel value="#{canceledDetailBnMZ.suspDetail.updatedDate}"
-                                           converter="javax.faces.DateTime"/>
-                            <p:outputLabel/>
-
-                            <p:outputLabel value="#{msgs.global_duedate}" for="suspduedt"/>
-                            <p:calendar id="suspduedt" value="#{canceledDetailBnMZ.suspDetail.dueDate}"
-                            			showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"
-                                        required="true" requiredMessage="#{msgs.global_duedate}: #{msgs.valueReq}"
-                                        disabled="#{!canceledDetailBnMZ.editForm}"/>
-                            <p:message for="suspduedt" showSummary="true"/> -->
 							
 							<p:outputLabel value="#{msgs.global_decision}"/>
                             <p:outputLabel value="#{msgs[canceledDetailBnMZ.suspDetail.decision.key]}"/>

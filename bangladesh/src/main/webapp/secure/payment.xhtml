@@ -12,7 +12,8 @@
         				requiredMessage="#{msgs.bank_missing}" style="width: 400px;"/>
 
         <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
-        <p:inputText id="receiptno" value="#{prodRegAppMbean.prodApplications.receiptNo}"/>
+        <p:inputText id="receiptno" value="#{prodRegAppMbean.prodApplications.receiptNo}"
+        			 style="width: 400px;"/>
 
         <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
         <p:calendar value="#{prodRegAppMbean.prodApplications.feeSubmittedDt}" id="feesubmitdt" showOn="button"

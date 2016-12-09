@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+    <p:outputLabel value="#{msgs.applicant_addr1} *" />
+    <p:inputText value="#{addressdata.address1}" rendered="#{input}"
+    			 required="true" requiredMessage="#{msgs.valid_address}"/>
+    <h:outputLabel value="#{addressdata.address1}" rendered="#{!input}"/>
+    <h:outputLabel/>
+    <h:outputLabel/>
+
+    <p:outputLabel/>
+    <p:inputText value="#{addressdata.address2}" rendered="#{input}"/>
+    <h:outputLabel value="#{addressdata.address2}" rendered="#{!input}"/>
+    <p:outputLabel value="#{msgs.applicant_zipcd}"/>
+    <p:inputText value="#{addressdata.zipcode}" rendered="#{input}"/>
+    <h:outputLabel value="#{addressdata.zipcode}" rendered="#{!input}"/>
+
+    <o:outputLabel value="#{msgs.applicant_country} *"/>
+    <p:autoComplete value="#{addressdata.country}" rendered="#{input}"
+                    completeMethod="#{globalEntityLists.completeCountryList}" dropdown="true"
+                    var="it" itemLabel="#{it.countryName}" itemValue="#{it}" forceSelection="true"
+                    required="true" requiredMessage="#{msgs.valid_country}" scrollHeight="200">
+        <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.countries}"/>
+    </p:autoComplete>
+    <h:outputLabel value="#{addressdata.country.countryName}" rendered="#{!input}"/>
+</ui:composition>

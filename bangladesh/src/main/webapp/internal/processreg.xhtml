@@ -455,7 +455,7 @@
 									</p:column>
 								</p:dataTable>
 							</p:tab>
-<p:tab title="#{msgs.prev_applications}" rendered="#{!empty processProdBnBg.allAncestors}" id="parent">
+							<p:tab title="#{msgs.prev_applications}" rendered="#{!empty processProdBnBg.allAncestors}" id="parent">
                                 <p:panel header="#{msgs.recieved_applications}">
                                     <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnBg.allAncestors}">
                                        <p:column filterBy="#{eachprod.product.prodName}"
@@ -574,13 +574,13 @@
 		</p:dialog>
 
 		<p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg"
-			resizable="false" id="moderatordlg" modal="true" dynamic="true"
+			resizable="false" id="moderatordlg" modal="true" dynamic="true" width="400px"
 			rendered="#{userSession.head||userSession.admin||userSession.staff}">
-			<h:form id="moderatorForm">
-
-				<p:panelGrid columns="2" columnClasses="label value">
-					<h:outputText value="#{msgs.moderator_name}: " escape="false"
-						styleClass="text" />
+			
+			<h:form id="moderatorForm" prependId="false">
+				<h:panelGrid columns="2" style="margin-bottom:10px"
+						cellpadding="10px" cellspacing="6px" columnClasses="label value">
+					<p:outputLabel value="#{msgs.moderator_name}"/>
 
 					<p:autoComplete id="mod" value="#{processProdBn.moderator}"
 						completeMethod="#{globalEntityLists.completeModeratorList}"
@@ -589,7 +589,7 @@
 						converter="#{userConverter}" scrollHeight="200"
 						required="true" requiredMessage="#{msgs.choose_moderator}">
 					</p:autoComplete>
-				</p:panelGrid>
+				</h:panelGrid>
 
 				<p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
 					action="#{processProdBn.assignModerator}"
@@ -599,27 +599,30 @@
 
 		<p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg"
 			resizable="false" id="attachdlg" modal="true" dynamic="true">
-			<p:messages showSummary="true" showDetail="true" />
 			<h:form prependId="false">
-				<h:panelGrid columns="3" style="margin-bottom:10px">
+				<h:panelGrid columns="2" style="margin-bottom:10px" columnClasses="label value">
 					<p:outputLabel for="attachtitle" value="#{msgs.title}" />
 					<p:inputText id="attachtitle"
-						value="#{fileUploadController.attach.title}" required="true" />
-					<p:message for="attachtitle" showSummary="true" />
+						value="#{fileUploadController.attach.title}" required="true" 
+						 style="width: 400px;"/>
+					
 					<h:outputLabel for="attachcomment" value="#{msgs.global_comment}" />
 					<p:inputTextarea id="attachcomment"
-						value="#{fileUploadController.attach.comment}" rows="5" cols="50" />
-					<p:message for="attachcomment" showSummary="true" />
+						value="#{fileUploadController.attach.comment}" rows="5" style="width: 400px;"/>
 				</h:panelGrid>
 
 				<p:fileUpload
 					fileUploadListener="#{fileUploadController.handleFileUpload}"
 					mode="advanced" auto="true"
-					update=":reghome:growl :reghome:messages" multiple="false"
+					update=":reghome:growl :reghome:messages :attachPnl" multiple="false"
 					sizeLimit="100000000">
-
 				</p:fileUpload>
-
+				
+				<h:panelGrid id="attachPnl" columns="2" style="margin-bottom:10px" columnClasses="label value">
+                    <p:outputLabel value="#{msgs.filename}" rendered="#{not empty fileUploadController.attach.fileName}"/>
+                    <p:outputLabel value="#{fileUploadController.attach.fileName}"/>
+                </h:panelGrid>
+                
 				<p:commandButton id="adddoc" value="#{msgs.global_submit}"
 					action="#{fileUploadController.addDocument}"
 					oncomplete="if (!args.validationFailed) PF('attachdlg').hide()"

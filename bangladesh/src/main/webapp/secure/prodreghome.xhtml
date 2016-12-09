@@ -529,7 +529,7 @@
             </p:dialog>
         </h:form>
 
-        <p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true"
+        <p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="false"
                   modal="true" dynamic="true" width="900px">
             <h:form id="addInnFrm">
                 <h:panelGrid columns="4" cellspacing="5" columnClasses="col1, col2, col1, col2" >
@@ -579,7 +579,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{msgs.product_active}" widgetVar="addExpntDlg" id="addExpntdlg" resizable="true" modal="true"
+        <p:dialog header="#{msgs.product_active}" widgetVar="addExpntDlg" id="addExpntdlg" resizable="false" modal="true"
                   dynamic="true" width="900px">
             <h:form id="addExpFrm">
                 <h:panelGrid columns="4" cellspacing="5" columnClasses="col1, col2, col1, col2">
@@ -628,15 +628,15 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="ATC Lookup" widgetVar="addAtcDlg" resizable="true" modal="true" dynamic="true">
+        <p:dialog header="ATC Lookup" widgetVar="addAtcDlg" resizable="false" modal="true" dynamic="true" width="350px">
             <h:form id="atcdetail">
                 <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid"
                              id="atclookupgrid">
-                    <h:outputLabel value="#{msgs.atc_name}" for="atcname"/>
+                    <h:outputLabel value="#{msgs.atc_name}" for="atcname" />
                     <p:autoComplete id="atcname" value="#{prodAddDetailMBean.atc}"
                                     completeMethod="#{globalEntityLists.completeAtcNames}"
                                     var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
-                                    forceSelection="true" scrollHeight="200">
+                                    forceSelection="true" scrollHeight="200" inputStyle="width: 200px">
                         <p:ajax event="itemSelect" listener="#{prodAddDetailMBean.updateAtc}" update=":atcdetail"/>
                     </p:autoComplete>
 
@@ -666,7 +666,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="true"
+        <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="false"
                   modal="true" dynamic="true" width="800px">
             <h:form id="addcompany">
                 <ui:decorate template="/templates/companydetailtmpl.xhtml">
@@ -690,13 +690,11 @@
 
         <p:dialog header="#{msgs.foreign_country_status_txt}" widgetVar="addForeignStatusDlg" id="addForeignStatusdlg"
                   dynamic="true"
-                  resizable="true" modal="true">
+                  resizable="false" modal="true">
             <h:form id="addForeignStatus">
                 <p:messages showSummary="true"/>
-
-                <h:panelGrid id="foreignstatustable" columns="2" columnClasses="label value">
-                    <p:outputLabel value="#{msgs.foreign_country_status_type}" for="forStatuscb"
-                                   styleClass="fy-required-field"/>
+                <h:panelGrid id="foreignstatustable" columns="2" columnClasses="label, value">
+                    <p:outputLabel value="#{msgs.foreign_country_status_type}" for="forStatuscb"/>
                     <p:selectOneMenu id="forStatuscb"
                                      value="#{foreignAppStatusMBean.selForeignAppStatus.foreignAppStatusType}"
                                      required="true">
@@ -716,14 +714,15 @@
 
                     <p:outputLabel for="otherprodname" value="#{msgs.prod_name}"/>
                     <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.prodName}" required="true"
-                                 id="otherprodname"/>
+                                 id="otherprodname" size="95"/>
 
                     <p:outputLabel for="mktauthholder" value="#{msgs.mkt_auth_holder}"/>
                     <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthHolder}" required="true"
-                                 id="mktauthholder"/>
+                                 id="mktauthholder" size="95"/>
 
                     <p:outputLabel for="mktauthcert" value="#{msgs.mkt_auth_cert}"/>
-                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
+                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"
+                    			 size="95"/>
 
                     <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
                     <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate" 
@@ -747,7 +746,7 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg"
-                  resizable="true" dynamic="true"
+                  resizable="false" dynamic="true"
                   modal="true">
             <h:form id="addpricing">
                 <h:panelGrid columns="3" columnClasses="label value" cellpadding="10" cellspacing="10">
@@ -780,24 +779,29 @@
         </p:dialog>
 
         <p:dialog header="#{msgs.adddocument}" widgetVar="attachDlg" resizable="false"
-                  dynamic="true">
+                  dynamic="true" width="500px">
             <h:form id="attachfrm">
-                <h:panelGrid columns="2" style="margin-bottom:10px">
+                <h:panelGrid columns="2" style="margin-bottom:10px" columnClasses="label value">
                     <p:outputLabel value="#{msgs.title}"/>
-                    <p:inputText value="#{prodRegAppMbean.attachment.title}"/>
+                    <p:inputText value="#{prodRegAppMbean.attachment.title}" style="width: 400px;"/>
+                    
                     <p:outputLabel value="#{msgs.global_comment}"/>
                     <p:inputTextarea value="#{prodRegAppMbean.attachment.comment}"
-                                     rows="5" cols="50"/>
+                                     rows="5" style="width: 400px;"/>
                 </h:panelGrid>
 
                 <p:fileUpload fileUploadListener="#{prodRegAppMbean.handleFileUpload}"
                               mode="advanced" process=":attachfrm" auto="true"
-                              update=":reghome:growl :reghome:messages"
+                              update=":reghome:growl :reghome:messages :attachPnl"
                               multiple="false"
                               sizeLimit="10000000000000">
-
                 </p:fileUpload>
-
+                
+				<h:panelGrid id="attachPnl" columns="2" style="margin-bottom:10px" columnClasses="label value">
+                    <p:outputLabel value="#{msgs.filename}" rendered="#{not empty fileUploadController.attach.fileName}"/>
+                    <p:outputLabel value="#{fileUploadController.attach.fileName}"/>
+                </h:panelGrid>
+                
                 <p:commandButton id="adddoc" value="#{msgs.global_submit}"
                                  action="#{prodRegAppMbean.addDocument}" process=":attachfrm"
                                  oncomplete="PF('attachDlg').hide()"

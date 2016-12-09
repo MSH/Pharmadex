@@ -1,7 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <p:accordionPanel value="Product Information" activeIndex="0,1,2,3,4,5,6,7,8,9,10" multiple="true" id="prodsummaccpnl">
         <p:tab title="#{msgs.applicant_detail}"
@@ -22,29 +23,26 @@
 
         <p:tab title="#{msgs.product_details}">
             <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
-                <h:outputLabel value="#{msgs.prodName}:"/>
+                <h:outputLabel value="#{msgs.prodName}"/>
                 <h:outputLabel value="#{prodAppData.product.prodName}"/>
 
-                <h:outputLabel value="#{msgs.prod_cat}:"/>
+                <h:outputLabel value="#{msgs.prod_cat}"/>
                 <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
 
-                <h:outputLabel value="#{msgs.prodgenname}:"/>
+                <h:outputLabel value="#{msgs.prodgenname}"/>
                 <h:outputLabel value="#{prodAppData.product.genName}"/>
 
-                <h:outputLabel value="#{msgs.prod_app_type}:"/>
+                <h:outputLabel value="#{msgs.prod_app_type}"/>
                 <h:outputLabel value="#{msgs[prodAppData.prodAppType.key]}"/>
 
                 <h:outputLabel value="#{msgs.dos_form}"/>
                 <h:outputLabel value="#{prodAppData.product.dosForm.dosForm}"/>
 
-                <h:outputLabel value="#{dos_strength}:" style="font-weight: bold;"/>
+                <h:outputLabel value="#{msgs.dos_strength}"/>
                 <h:outputLabel value="#{prodAppData.product.dosStrength}"/>
 
                 <h:outputLabel value="#{msgs.dos_unit}"/>
                 <h:outputLabel value="#{prodAppData.product.dosUnit.uom}"/>
-
-                <h:outputLabel value="#{msgs.prod_cat}"/>
-                <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
 
                 <h:outputLabel value="#{msgs.admin_route}"/>
                 <h:outputLabel value="#{msgs[prodAppData.product.adminRoute.key]}"/>
@@ -61,10 +59,11 @@
         </p:tab>
 
         <p:tab title="#{msgs.inn_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
-            <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
-                <h:outputLabel value="#{msgs.inn_header}:"/>
+            <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value">
+                <h:outputLabel value="#{msgs.active_substance}"/>
                 <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}" style="width:100%;">
-                    <p:column headerText="#{msgs.active_substance}">
+                    
+                    <p:column headerText="#{msgs.product_innname}">
                         <h:outputText value="#{prodInn.inn.name}" style="#{processProdBnBg.findInnChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>
 
@@ -79,15 +78,17 @@
                     <p:column headerText="#{msgs.inn_ref}">
                         <h:outputText value="#{prodInn.refStd}" style="#{processProdBnBg.findInnChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>
+                    
+                    <p:column headerText="#{msgs.manuf_name}">
+                    	<h:outputText value="#{prodInn.company.companyName}" style="#{processProdBnBg.findInnChanged()?('color:red;'):('color:black;')}"/>
+                    </p:column>
                 </p:dataTable>
-
-            </h:panelGrid>
-
-            <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
-                <h:outputLabel value="#{msgs.product_active}:"/>
+                
+                <h:outputLabel value="#{msgs.product_active}"/>
                 <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodAppData.product.excipients}"
                              style="width:100%;">
-                    <p:column headerText="#{msgs.active_substance}">
+                             
+                    <p:column headerText="#{msgs.excipient_name}">
                         <h:outputText value="#{prodExp.excipient.name}" style="#{processProdBnBg.findExcipientChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>
 
@@ -99,18 +100,24 @@
                         <h:outputText value="#{prodExp.dosUnit.uom}" style="#{processProdBnBg.findExcipientChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>
 
+					<p:column headerText="#{msgs.inn_funct}">
+                        <h:outputText value="#{prodExp.function}" style="#{processProdBnBg.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+                    </p:column>
+                    
                     <p:column headerText="#{msgs.inn_ref}">
                         <h:outputText value="#{prodExp.refStd}" style="#{processProdBnBg.findExcipientChanged()?('color:red;'):('color:black;')}"/>
                     </p:column>
+                    <p:column headerText="#{msgs.manuf_name}">
+                        <h:outputText value="#{prodExp.company.companyName}" style="#{processProdBnBg.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+                    </p:column>
                 </p:dataTable>
-
             </h:panelGrid>
 
         </p:tab>
 
         <p:tab title="#{msgs.atc_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
-            <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
-                <h:outputLabel value="#{msgs.atc_header}" style="font-weight: bold;"/>
+            <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value">
+                <h:outputLabel value="#{msgs.atc_header}"/>
                 <p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.product.atcs}" style="width:100%;">
                     <p:column headerText="#{msgs.atc_code}">
                         <h:outputText value="#{atc.atcCode}" style="#{processProdBnBg.findAtcChanged()?('color:red;'):('color:black;')}"/>
@@ -126,82 +133,35 @@
 
         <p:tab title="#{msgs.application_detail}">
             <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
-                <!--
-                <h:outputLabel value="#{msgs.product_drug_type}"/>
-                <h:outputLabel value="#{msgs[prodAppData.drugType.key]}"/>
-                -->
-                <h:outputLabel value="#{msgs.product_shelflife}:" style="font-weight: bold;"/>
-                  <ui:fragment   rendered="#{processProdBnBg.isFieldChanged('ShelfLife')}">
-                     <div>
-                      <h:outputLabel value="#{prodAppData.product.shelfLife}" style="color:red;"/>
-                     </div>
-                 </ui:fragment>            
-                 <ui:fragment   rendered="#{!processProdBnBg.isFieldChanged('ShelfLife')}">
-                     <div>
-                      <h:outputLabel value="#{prodAppData.product.shelfLife}"/>
-                     </div>
-                </ui:fragment>   
+           		<h:outputLabel value="#{msgs.prod_indications}"/>
+                <h:outputLabel value="#{prodAppData.product.indications}"/>
+            
+            	<h:outputLabel value="#{msgs.prod_posology}"/>
+               	<h:outputLabel value="#{prodAppData.product.posology}"/>
+            
+            	<h:outputLabel value="#{msgs.product_drug_type}"/>
+            	<h:outputLabel value="#{prodAppData.product.drugType}"/>
 
-                <h:outputLabel value="#{msgs.product_packsize}:" style="font-weight: bold;"/>
-                 <ui:fragment   rendered="#{processProdBnBg.isFieldChanged('PackSize')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.packSize}" style="color:red;"/>
-                   </div>
-                </ui:fragment>            
-                  <ui:fragment   rendered="#{!processProdBnBg.isFieldChanged('PackSize')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.packSize}" />
-                   </div>
-                </ui:fragment>  
-
-                <h:outputLabel value="#{msgs.product_conttype}"/>
-                  <ui:fragment   rendered="#{processProdBnBg.isFieldChanged('ContType')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.contType}" style="color:red;"/>
-                   </div>
-                </ui:fragment>   
-        
-                 <ui:fragment   rendered="#{!processProdBnBg.isFieldChanged('ContType')}">
-                    <div>
-                       <h:outputLabel value="#{prodAppData.product.contType}" />
-                   </div>
-                </ui:fragment> 
-
-                <h:outputLabel value="#{msgs.product_storcndtn}"/>
-                  <ui:fragment   rendered="#{processProdBnBg.isFieldChanged('Storage')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.storageCndtn}" style="color:red;"/>
-                     </div>
-                </ui:fragment> 
-                 <ui:fragment   rendered="#{!processProdBnBg.isFieldChanged('Storage')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.storageCndtn}" />
-                     </div>
-                </ui:fragment> 
-
-                <h:outputLabel value="#{msgs.prod_indications}"/>
-                 <ui:fragment   rendered="#{processProdBnBg.isFieldChanged('Indications')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.indications}" style="color:red;"/>
-                     </div>
-                </ui:fragment> 
-                <ui:fragment   rendered="#{!processProdBnBg.isFieldChanged('Indications')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.indications}" />
-                     </div>
-                </ui:fragment>
-
-                <h:outputLabel value="#{msgs.prod_posology}"/>
-               <ui:fragment   rendered="#{processProdBnBg.isFieldChanged('Posology')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.posology}" style="color:red;"/>
-                    </div>
-                </ui:fragment>
-                   <ui:fragment   rendered="#{!processProdBnBg.isFieldChanged('Posology')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.posology}" />
-                    </div>
-                </ui:fragment>
+				<h:outputLabel value="#{msgs.prod_fnm}"/>
+            	<h:outputLabel value="#{prodAppData.product.fnm}"/>
+            
+            	<h:outputLabel value="#{msgs.product_shelflife}"/>
+            	<h:outputLabel value="#{prodAppData.product.shelfLife}"/>
+            	
+            	<h:outputLabel value="#{msgs.product_packsize}"/>
+            	<h:outputLabel value="#{prodAppData.product.packSize}"/>
+            	
+            	<h:outputLabel value="#{msgs.product_conttype}"/>
+            	<h:outputLabel value="#{prodAppData.product.contType}"/>
+            	
+            	<h:outputLabel value="#{msgs.product_storcndtn}"/>
+            	<h:outputLabel value="#{prodAppData.product.storageCndtn}"/>
+            	
+            	<h:outputLabel value="#{msgs.use_category}"/>
+            	<ui:repeat value="#{prodAppData.product.useCategories}" var="categ">
+            		<h:outputLabel value="#{msgs[categ.key]}"/>
+            		<br />
+            	</ui:repeat>
             </h:panelGrid>
         </p:tab>
 
@@ -230,9 +190,7 @@
                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                     </h:outputText>
                 </p:column>
-
             </p:dataTable>
-
         </p:tab>
 
         <p:tab title="#{msgs.manufacturer_detail}">
@@ -253,28 +211,25 @@
                 <p:column headerText="#{msgs.applicant_phone}">
                     <h:outputText value="#{company.company.phoneNo}" style="#{processProdBnBg.findCompaniesChanged()?('color:red;'):('color:black;')}"/>
                 </p:column>
-
             </p:dataTable>
-
         </p:tab>
 
         <p:tab title="#{msgs.product_pricing_comparison}"
                rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector)}">
-            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2" var="prodAppData">
-                <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
-                <p:outputLabel id="msrp" value="#{prodAppData.product.pricing.msrp}"/>
+            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col1, col2" var="prodAppData">
+                <p:outputLabel value="#{msgs.product_pricing_max}"/>
+                <p:outputLabel value="#{prodAppData.product.pricing.msrp}"/>
 
-                <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
-                <p:outputLabel id="priceperdose" value="#{prodAppData.product.pricing.pricePerDose}"/>
+                <p:outputLabel value="#{msgs.product_pricing_perdose}"/>
+                <p:outputLabel value="#{prodAppData.product.pricing.pricePerDose}"/>
 
-                <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
-                <p:outputLabel id="priceperday" value="#{prodAppData.product.pricing.pricePerDay}"/>
+                <p:outputLabel value="#{msgs.product_pricing_perday}"/>
+                <p:outputLabel value="#{prodAppData.product.pricing.pricePerDay}"/>
 
-                <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
-                <p:outputLabel id="treatcost" value="#{prodAppData.product.pricing.treatCost}"/>
+                <p:outputLabel value="#{msgs.product_pricing_treatcost}" />
+                <p:outputLabel value="#{prodAppData.product.pricing.treatCost}"/>
             </h:panelGrid>
-
-
+            
             <p:dataTable id="pricetable" var="price" value="#{prodAppData.product.pricing.drugPrices}"
                          style="width:100%;">
                 <p:column headerText="#{msgs.drug_price_name}">
@@ -284,9 +239,7 @@
                 <p:column headerText="#{msgs.drug_price_msrp}">
                     <h:outputText value="#{price.msrp}"/>
                 </p:column>
-
             </p:dataTable>
-
         </p:tab>
 
         <p:tab title="#{msgs.payment_info}"

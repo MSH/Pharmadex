@@ -65,20 +65,17 @@
 						escape="false" />
 				</div>
 
-				<h:panelGrid columns="3" columnClasses="label value"
-					cellspacing="5px">
-					<p:outputLabel value="#{msgs.volumes}:" />
+				<h:panelGrid columns="2" cellspacing="5px" columnClasses="label value">
+					<p:outputLabel value="#{msgs.volumes}"/>
 					<p:inputText value="#{reviewDetailBn.reviewDetail.volume}"
-						rendered="#{reviewDetailBnMZ.visibleSaveBtn()}" />
+						rendered="#{reviewDetailBnMZ.visibleSaveBtn()}" 
+						style="width: 200px"/>
 					<p:outputLabel escape="false"
 						value="#{reviewDetailBn.reviewDetail.volume}"
-						rendered="#{reviewDetailBnMZ.hideComponents()}" />
-					<p:outputLabel />
+						rendered="#{!reviewDetailBnMZ.visibleSaveBtn()}"/>
 
-					<p:outputLabel value="#{msgs.reviewer_response}: "
-						styleClass="label" />
-					<p:outputLabel />
-					<p:outputLabel />
+					<p:outputLabel value="#{msgs.reviewer_response}:"/>
+					<p:outputLabel/>
 				</h:panelGrid>
 				<h:panelGrid columns="3" columnClasses="label value"
 					cellspacing="5px" id="filePnl">

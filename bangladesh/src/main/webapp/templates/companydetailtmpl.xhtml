@@ -10,7 +10,7 @@
 			<p:outputLabel value="#{msgs.manuf_name}" for="companyname" />
 			<p:autoComplete id="companyname"
 				value="#{companyMBean.selectedCompany}" widgetVar="appac"
-				completeMethod="#{companyMBean.completeCompany}" dropdown="false"
+				completeMethod="#{companyMBean.completeCompany}" dropdown="true"
 				var="it" itemLabel="#{it.companyName}" itemValue="#{it.id}"
 				forceSelection="false" required="true"
 				requiredMessage="#{msgs.valid_value_req}"

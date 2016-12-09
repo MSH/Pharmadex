@@ -9,26 +9,29 @@
             <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
                         id="saveMenuItem" rendered="#{userSession.staff}"
                         ajax="false"/>
-            <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" rendered="#{userSession.staff}"
-                        onclick="PF('dlg').show()" id="addCommentMI"/>
+            <p:menuitem value="#{msgs.global_comment}" rendered="#{userSession.staff}"
+                        onclick="PF('dlg').show()" id="addCommentMI" icon="ui-icon-comment"/>
                         
-            <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
+            <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-seek-next"
                         onclick="PF('stepDlg').show()" id="nextStepMI"
                         rendered="#{processProdBnMZ.canNextStep}"/>
-            <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
+                        
+            <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-closethick"
                         onclick="PF('rejectDlg').show()" id="rejectMI" 
                         rendered="#{processProdBn.canReject}"/>
 
-            <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
+            <p:menuitem value="#{msgs.register_product}" icon="ui-icon-check"
                         oncomplete="PF('regDlg').show()" id="registerMI" 
                         action="#{processProdBn.initRegistration}"
                         rendered="#{processProdBn.canRegister}"/>
-            <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
+                        
+            <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-person"
                         onclick="PF('moderatordlg').show()"
                         rendered="#{processProdBnMZ.canChangeModerator}" id="assignModMI">
                         <p:resetInput target="moderatorForm" />
             </p:menuitem>
-            <p:menuitem value="#{msgs.edit_product}" icon="ui-icon-gear"
+            
+            <p:menuitem value="#{msgs.edit_product}" icon="ui-icon-pencil"
                         action="/secure/prodreghome.faces" ajax="false"
                         rendered="#{userSession.admin}">
                     <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
@@ -44,13 +47,15 @@
                         action="/public/productdetail" ajax="false">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
             </p:menuitem>
-            <p:menuitem value="#{msgs.global_suspend}" icon="ui-icon-gear"
+            
+            <p:menuitem value="#{msgs.global_suspend}" icon="ui-icon-pause"
                         action="/internal/suspenddetail.faces" ajax="false"
                         rendered="#{userSession.admin||userSession.head}">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
                 <f:param name="sourcePage" value="/internal/processreg.faces" />
             </p:menuitem>
-            <p:menuitem value="#{msgs.global_cancel}" icon="ui-icon-gear"
+            
+            <p:menuitem value="#{msgs.global_cancel}" icon="ui-icon-cancel"
                         action="/internal/canceleddetail.faces" ajax="false"
                         rendered="#{userSession.admin||userSession.head}">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
@@ -58,17 +63,15 @@
             </p:menuitem>
         </p:submenu>
         <p:submenu label="#{msgs.suspend_info}" rendered="#{processProdBnMZ.visibleSuspCancelMenu()}">
-        	<p:menuitem value="#{msgs.global_cancel}" icon="ui-icon-gear"
+        	<p:menuitem value="#{msgs.global_cancel}" icon="ui-icon-cancel"
                         action="/internal/canceleddetail.faces" ajax="false"
                         rendered="#{processProdBn.suspended}">
                 <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
                 <f:param name="sourcePage" value="/internal/processreg.faces" />
             </p:menuitem>
-            <p:menuitem value="#{msgs.global_revertToRegist}" icon="ui-icon-gear"
+            
+            <p:menuitem value="#{msgs.global_revertToRegist}" icon="ui-icon-arrowreturnthick-1-w"
                         action="#{processProdBnMZ.revertToRegistered()}" ajax="false"/>
-                <!-- <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
-                <f:param name="sourcePage" value="/internal/processreg.faces" />
-            </p:menuitem> -->
         </p:submenu>
 <ui:remove>
             <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
@@ -99,6 +102,4 @@
 </ui:remove>
         
     </p:menu>
-
-
 </ui:composition>

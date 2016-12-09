@@ -71,9 +71,10 @@
     </p:dataTable>
 
     <p:dialog header="#{msgs.sample_test_result}" widgetVar="addSampleTestDlg" id="addSampleTestDlg"
-              modal="true" dynamic="true">
-        <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
-            <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
+              modal="true" dynamic="true" resizable="false" width="800px">
+        <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10"
+         			columnClasses="label value">
+            <p:outputLabel value="#{msgs.item_requested}" for="itm_req"/>
             <p:selectManyCheckbox id="itm_req" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
                                   columns="1"
                                   converter="omnifaces.GenericEnumConverter">
@@ -81,20 +82,15 @@
                                itemValue="#{type}"/>
                 <f:attribute name="collectionType" value="java.util.ArrayList"/>
             </p:selectManyCheckbox>
-            <p:message for="itm_req" showSummary="true" showDetail="false"/>
 
-            <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
-            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity" width="700"/>
-            <p:message for="quantity" showSummary="true" showDetail="false"/>
-
+            <p:outputLabel value="#{msgs.global_quantity}" for="quantity"/>
+            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity" style="width: 640px;"/>
 
             <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
             <pe:ckEditor id="revsummary" value="#{sampleTestBn.sampleComment.comment}"
-								 height="200" width="700"
+								 height="200" width="650"
 								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 								 required="true" />
-            <p:message for="revsummary"/>
-
         </h:panelGrid>
         <p:commandButton value="#{msgs.global_submit}" action="#{sampleTestBnMZ.addSample}"
                          oncomplete="PF('reviewDlg').hide()" ajax="false"/>

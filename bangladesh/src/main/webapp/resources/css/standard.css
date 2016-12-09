@@ -299,7 +299,7 @@ body {
 }
 
 .hint {
-    font-weight: lighter;
+    font-weight: lighter, bold;
     color: firebrick;
 }
 
