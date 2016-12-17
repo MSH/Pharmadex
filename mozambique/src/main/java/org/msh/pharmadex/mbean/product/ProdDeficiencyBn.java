@@ -63,7 +63,7 @@ public class ProdDeficiencyBn implements Serializable {
 	private String summary;
 	private String days;
 	private Date dueDate;
-	private FacesContext context;
+	private FacesContext context = FacesContext.getCurrentInstance();
 	private JasperPrint jasperPrint;
 	private ProdApplications prodApplications;
 
