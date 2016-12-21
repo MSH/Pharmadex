@@ -17,9 +17,10 @@
 
 		<h:panelGrid columns="4" columnClasses="col1, col2, col1, col2"
 			cellpadding="5" cellspacing="5">
-			<h:outputLabel value="#{msgs.User_username}" />
+			<h:outputLabel value="#{msgs.User_username}*" />
 			<p:inputText value="#{selectedUser.username}"
-				disabled="#{!userMBeanNA.isNewUser(selectedUser)}" />
+				required="true"
+				requiredMessage="#{msgs.valid_login}" />
 
 			<h:outputText value="#{msgs.User_type}" />
 			<p:selectOneMenu value="#{selectedUser.type}">
@@ -85,14 +86,16 @@
 		</p:blockUI>
 
 		<p:commandButton action="#{userMBeanNA.saveUser(selectedUser)}"
-			value="#{msgs.global_add}" id="saveuserbtn" ajax="false"
+			value="#{msgs.global_add}" id="saveuserbtn"
 			oncomplete="if (!args.validationFailed) PF('adduser').hide()"
-			update=":userlist:users :userlist:messages :adduserfrm"
+			ajax="true"
+			update=":userlist:users :userlist:messages adduserfrm"
 			rendered="#{userMBeanNA.isNewUser(selectedUser)}" />
 		<p:commandButton action="#{userMBeanNA.updateUser(selectedUser)}"
 			value="#{msgs.global_update}" id="updateuserbtn"
 			oncomplete="if (!args.validationFailed) PF('adduser').hide()"
-			ajax="false" update=":userlist:users :userlist:messages :adduserfrm"
+			ajax="true"
+			update=":userlist:users :userlist:messages adduserfrm"
 			rendered="#{!userMBeanNA.isNewUser(selectedUser)}" />
 		<p:commandButton action="#{userMBeanNA.cancelUser(selectedUser)}" immediate="true"
 			value="#{msgs.global_cancel}" oncomplete="PF('adduser').hide()"

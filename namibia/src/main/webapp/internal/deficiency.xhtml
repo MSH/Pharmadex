@@ -34,26 +34,12 @@
 				<div style="height: 10px;" />
 				<p:panel header="#{msgs.deficiency_reports}">
 				<h:panelGrid columns="3" cellspacing="10" cellpadding="10">
-					<p:outputLabel value="#{msgs.global_duedate}:" styleClass="label" for="duedate"/>
+					<p:outputLabel value="#{msgs.global_date}:" styleClass="label" for="duedate"/>
                     <p:calendar value="#{prodDeficiencyBn.dueDate}" id="duedate" showOn="button"
                                 pattern="#{userAccessMBean.workspace.datePattern}" 
                                 required="true" requiredMessage="#{msgs.global_duedate}"/>
                     <p:message for="duedate"/>
-					
-					<p:outputLabel value="#{msgs.deficiency_reply}" styleClass="label"
-						style="width:200px;" for="days"/>
-					<h:panelGrid columns="2" >
-						<p:inputText value="#{prodDeficiencyBn.days}" id="days"
-									required="true" requiredMessage="#{msgs.deficiency_reply}  #{msgs.deficiency_days}"/>
-						<p:outputLabel value="#{msgs.deficiency_days}"/>
-					</h:panelGrid>
-					<p:message for="days"/>
-					
-                    <p:outputLabel value="#{msgs.global_summary}" for="sum" styleClass="label"/>
-                    <p:inputTextarea value="#{prodDeficiencyBn.summary}" id="sum" 
-                    				required="true" requiredMessage="#{msgs.global_summary}"
-                    				rows="6" cols="120" />
-                    <p:message for="sum"/>
+
 				</h:panelGrid>
 
 				<div style="height: 10px;" />

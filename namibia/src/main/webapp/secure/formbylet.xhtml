@@ -16,12 +16,6 @@
                 required="true" requiredMessage="#{msgs.dosRecDate}: #{msgs.valueReq}"/>
         <p:message for="dosrecdate" showSummary="true" showDetail="false"/>
          
-		<p:outputLabel value="#{msgs.user_sender}" for="sender" />
-		<p:inputText value="#{prodApp.username}" id="sender" required="true" />
-		<p:message for="sender" />
 
-		<p:outputLabel value="#{msgs.user_position}:" for="receiver" />
-		<p:inputText value="#{prodApp.position}" id="receiver" required="true" />
-		<p:message for="receiver" />
 	</h:panelGrid>
 </ui:composition>
