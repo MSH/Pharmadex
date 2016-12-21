@@ -243,6 +243,7 @@ public class CustomReviewDAO implements Serializable {
 							// only pictures
 							if(det.getFilename() != null && !det.getFilename().equals("")){
 								String fname = det.getFilename();
+								fname = fname.toLowerCase(); //AK because of clipping tool :) 20161220
 								if(fname.endsWith(".png") || fname.endsWith(".bmp")
 										|| fname.endsWith(".jpeg") || fname.endsWith(".jpg"))
 									item.setFile(det.getFile());
