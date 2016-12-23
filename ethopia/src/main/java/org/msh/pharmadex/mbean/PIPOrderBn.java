@@ -1,14 +1,15 @@
 package org.msh.pharmadex.mbean;
 
+import org.msh.pharmadex.dao.iface.TimeLinePIPDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.domain.enums.CompanyType;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProdTable;
-import org.msh.pharmadex.service.CompanyService;
-import org.msh.pharmadex.service.DosageFormService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.ProductService;
-import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.StrTools;
+import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -39,16 +40,24 @@ public class PIPOrderBn extends POrderBn {
     private boolean showWithdrawn;
     private boolean showSubmit;
     private POrderComment pOrderComment;
+    private ProdTable product;
+    private List<Attachment> attachments;
+    private User curUser;
     @ManagedProperty(value = "#{dosageFormService}")
     private DosageFormService dosageFormService;
     @ManagedProperty(value = "#{productService}")
     private ProductService productService;
     @ManagedProperty(value = "#{companyService}")
     CompanyService companyService;
+    @ManagedProperty(value = "#{timeLinePIPDAO}")
+    private TimeLinePIPDAO timeLinePIPDAO;
 
     @PostConstruct
     private void init() {
         try {
+            Long userId = userSession.getLoggedINUserID();
+            curUser = userService.findUser(userId);
+            product = new ProdTable();
             String pipOrderst = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID");
             if (pipOrderst != null && !pipOrderst.equals("")) {
                 Long pipOrderID = Long.valueOf(pipOrderst);
@@ -70,7 +79,6 @@ public class PIPOrderBn extends POrderBn {
                     pipOrder.setCreatedBy(applicantUser);
                     pipOrder.setApplicantUser(applicantUser);
                     pipOrder.setApplicant(getApplicant());
-//  26.05
                     pipOrder.getCurrency().setCurrCD("US Dollar");
                     pipProd = new PIPProd(new DosageForm(), new DosUom(), pipOrder, pipOrder.getCurrency().getCurrCD());
                     pOrderChecklists = new ArrayList<POrderChecklist>();
@@ -84,10 +92,12 @@ public class PIPOrderBn extends POrderBn {
                     }
                 }
             }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
 
     public void calculateTotalPrice(AjaxBehaviorEvent event) {
         if (pipProd.getUnitPrice() != null && pipProd.getQuantity() != null) {
@@ -132,6 +142,7 @@ public class PIPOrderBn extends POrderBn {
         uom.setUom("");
         uom.setId(0);
         setPipProd(new PIPProd(new DosageForm(), uom, pipOrder, pipOrder.getCurrency().getCurrCD()));
+        pipProd.setProductName("");
         setPipProd(pipProd);
 
     }
@@ -156,8 +167,22 @@ public class PIPOrderBn extends POrderBn {
         initAddProd();
     }
 
-    public List<String> completeProduct(String query){
-        return globalEntityLists.getProductList(query);
+     public List<ProdTable> completeProducts(String query){
+        List<ProdTable> found = productService.findAllRegisteredProduct();
+        List<ProdTable> result = new ArrayList<ProdTable>();
+        query = query.toUpperCase();
+        //product.setProdName(query);
+        pipProd.setProductName(query);
+        if (StrTools.isEmptyString(query))
+            return found;
+        else{
+            for(ProdTable prod:found){
+                if (prod.getProdName().toUpperCase().startsWith(query) || prod.getGenName().toUpperCase().startsWith(query))
+                    result.add(prod);
+            }
+        }
+
+        return result;
     }
 
     public List<String> completeManufacturer(String query){
@@ -190,10 +215,20 @@ public class PIPOrderBn extends POrderBn {
         return (ArrayList<POrderDoc>) getpOrderService().findPOrderDocs(pipOrder);
     }
 
+
+    public void createTimeLineEvent(RegState state, String comment){
+        TimeLinePIP timeLine = new TimeLinePIP();
+        timeLine.setProdApplications(pipOrder);
+        timeLine.setRegState(state);
+        timeLine.setStatusDate(new Date());
+        timeLine.setComment(comment);
+        timeLine.setUser(curUser);
+        timeLinePIPDAO.saveAndFlush(timeLine);
+    }
+
     public String saveOrder() {
         try {
             context = FacesContext.getCurrentInstance();
-//        pipOrder.setCreatedBy(getApplicantUser());
             pipOrder.setState(AmdmtState.NEW_APPLICATION);
             pipOrder.setpOrderChecklists(getpOrderChecklists());
             pipOrder.setPipProds(pipProds);
@@ -213,6 +248,7 @@ public class PIPOrderBn extends POrderBn {
                 pipOrder = (PIPOrder) retValue.getObj();
                 String retMsg = super.saveOrder();
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+                createTimeLineEvent(RegState.NEW_APPL,"Pre-import order created");
                 return "piporderlist";
             } else {
                 pipOrder.setState(AmdmtState.SAVED);
@@ -222,7 +258,8 @@ public class PIPOrderBn extends POrderBn {
                     context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "No product specified to be imported"));
                 if (retValue.getMsg().equals("error"))
                     context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Unable to create the order"));
-
+                if (pipOrder.getState().equals(RegState.NEW_APPL))
+                    createTimeLineEvent(RegState.NEW_APPL,bundle.getString("timeline_newapp"));
                 return "";
             }
         }catch (Exception ex){
@@ -248,6 +285,7 @@ public class PIPOrderBn extends POrderBn {
 
             pipOrder = (PIPOrder) pOrderService.saveOrder(pipOrder);
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+            createTimeLineEvent(RegState.REJECTED,"PIP withdrown");
             return "piporderlist";
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -275,7 +313,7 @@ public class PIPOrderBn extends POrderBn {
             String result;
             if(pipOrder.getId()!=null) {
                 result = pOrderService.removeProd(pipProd);
-                pOrderService.updatePIPOrder(pipOrder);
+                pOrderService.updatePOrder(pipOrder);
             }else{
                 result = "persist";
             }
@@ -372,6 +410,56 @@ public class PIPOrderBn extends POrderBn {
         return showSubmit;
     }
 
+    private void updateProductInfo(){
+        if (product!=null) {
+            Long paId = product.getProdAppID();
+            Product prod = productService.findProduct(product.getId());
+            pipProd.setDosForm(prod.getDosForm());
+            pipProd.setDosUnit(prod.getDosUnit());
+            pipProd.setDosStrength(prod.getDosStrength());
+            pipProd.setProductDesc(prod.getProdDesc());
+            pipProd.setShelfLife(prod.getShelfLife());
+            pipProd.setManufName(prod.getManufName());
+            pipProd.setProductName(prod.getProdName());
+            String name = pipProd.getProductName();
+            if (!name.endsWith("(registered)"))
+                pipProd.setProductName(name+" (registered)");
+            Long companyId=null;
+            if (prod.getProdCompanies() != null){
+                for (ProdCompany pcompany : prod.getProdCompanies()) {
+                    if (pcompany.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){
+                        companyId = pcompany.getCompany().getId();
+                    }
+                }
+                if (companyId!=null){
+                    Company company = companyService.findCompanyById(companyId);
+                    if (company!=null){
+                        if (company.getAddress()!=null){
+                            if (company.getAddress().getCountry()!=null){
+                                pipProd.setCountry(company.getAddress().getCountry());
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            pipProd.setDosForm(null);
+            pipProd.setDosUnit(null);
+            pipProd.setDosStrength(null);
+            pipProd.setProductDesc(null);
+            pipProd.setShelfLife(null);
+            pipProd.setManufName(null);
+//            pipProd.setProductName(null);
+            pipProd.setCountry(null);
+        }
+    }
+
+    public void productSelectListenener(SelectEvent event) {
+        product = (ProdTable) event.getObject();
+        updateProductInfo();
+    }
+
+
     public void setShowSubmit(boolean showSubmit) {
         this.showSubmit = showSubmit;
     }
@@ -398,5 +486,37 @@ public class PIPOrderBn extends POrderBn {
 
     public void setCompanyService(CompanyService companyService) {
         this.companyService = companyService;
+    }
+
+    public ProdTable getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProdTable product) {
+        this.product = product;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public TimeLinePIPDAO getTimeLinePIPDAO() {
+        return timeLinePIPDAO;
+    }
+
+    public void setTimeLinePIPDAO(TimeLinePIPDAO timeLinePIPDAO) {
+        this.timeLinePIPDAO = timeLinePIPDAO;
+    }
+
+    public User getCurUser() {
+        return curUser;
+    }
+
+    public void setCurUser(User curUser) {
+        this.curUser = curUser;
     }
 }

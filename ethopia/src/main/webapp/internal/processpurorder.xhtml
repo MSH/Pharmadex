@@ -29,6 +29,13 @@
                         <p:menuitem value="#{msgs.global_cancel}" immediate="true"
                                     icon="ui-icon ui-icon-circle-triangle-w"
                                     action="#{processPurOrderBn.cancel}" ajax="false"/>
+                        <p:menuitem value="#{msgs.orderChangeCSO}"
+                                    id="changeCSO"
+                                    icon="ui-icon-document"
+                                    oncomplete="PF('chngRespPerson').show()"
+                                    rendered="#{not empty processPurOrderBn.pOrderBase.responsiblePerson and userSession.csd}"
+                        />
+
                     </p:submenu>
                     <p:submenu label="#{msgs.approve_review}"
                                rendered="#{userSession.cst and empty processPurOrderBn.pOrderBase.approvalDate and not processPurOrderBn.displayReview}">
@@ -78,6 +85,16 @@
                                     <h:outputLabel value="#{msgs[processPurOrderBn.pOrderBase.reviewState.key]}"
                                                    rendered="#{not empty processPurOrderBn.pOrderBase.reviewState}"
                                                    style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.orderResponsiblePerson}: "
+                                                   rendered="#{not empty processPurOrderBn.pOrderBase.responsiblePerson}"/>
+                                    <h:outputLabel value="#{processPurOrderBn.pOrderBase.responsiblePerson.name}"
+                                                   rendered="#{not empty processPurOrderBn.pOrderBase.responsiblePerson}"/>
                                 </td>
                             </tr>
                         </table>
@@ -490,5 +507,29 @@
                                  oncomplete="if (!args.validationFailed) PF('withdrawDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
+        <p:dialog header="#{msgs.chngOrderResponsiblePerson}" widgetVar="chngRespPerson" id="chngResponsiblePerson"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+                    <p:outputLabel value="#{msgs.orderResponsiblePerson}" for="chngResp"
+                                   escape="false" styleClass="label" />
+
+                    <p:autoComplete id="chngResp" value="#{processPurOrderBn.pOrderBase.responsiblePerson}"
+                                    cache="false"
+                                    completeMethod="#{globalEntityLists.completeCSOList}"
+                                    dropdown="true" required="true" var="responsiblePerson"
+                                    itemLabel="#{responsiblePerson.name}"
+                                    itemValue="#{responsiblePerson.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
+
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{processPurOrderBn.saveApp}"
+                                 oncomplete="PF('chngRespPerson').hide();" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 </ui:composition>

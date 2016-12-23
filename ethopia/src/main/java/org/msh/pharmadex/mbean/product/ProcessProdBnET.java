@@ -250,8 +250,8 @@ public class ProcessProdBnET implements Serializable {
 		if (changedFields.contains("ProdCompanies")) return true;
       	return false;
    }
-   
-    
+
+
     public void setShowFeedBackButton(boolean showFeedBackButton) {
         this.showFeedBackButton = showFeedBackButton;
     }

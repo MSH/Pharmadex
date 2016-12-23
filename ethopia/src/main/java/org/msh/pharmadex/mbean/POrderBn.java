@@ -1,10 +1,12 @@
 package org.msh.pharmadex.mbean;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.service.*;
+import org.msh.pharmadex.util.StrTools;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -13,10 +15,8 @@ import org.primefaces.model.UploadedFile;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
  * User: usrivastava
  * Date: 1/12/12
  * Time: 12:05 AM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public abstract class POrderBn implements Serializable {
 
@@ -53,8 +53,21 @@ public abstract class POrderBn implements Serializable {
     }
 
     public StreamedContent fileDownload(POrderDoc doc) {
-        InputStream ist = new ByteArrayInputStream(doc.getFile());
-        StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
+        StreamedContent download = null;
+        if (AttachmentService.attStoresInDb()) {
+            InputStream ist = new ByteArrayInputStream(doc.getFile());
+            download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
+        }else{
+            String fileName = pOrderService.extractAttFileName(doc);
+            try {
+                FileInputStream ist = new FileInputStream(fileName);
+                download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                download=null;
+            }
+
+        }
         return download;
     }
 
@@ -62,32 +75,41 @@ public abstract class POrderBn implements Serializable {
         try {
             context = FacesContext.getCurrentInstance();
             FacesMessage msg = new FacesMessage(bundle.getString("global_delete"), attach.getFileName() + bundle.getString("is_deleted"));
-            pOrderService.delete(pOrderDoc);
-            pOrderDocs = null;
+            String res = pOrderService.delete(pOrderDoc);
+            if ("".equals(res))
+                pOrderDocs = null;
+            else
+                msg = new FacesMessage(bundle.getString("global_fail"), attach.getFileName() + res);
             context.addMessage(null, msg);
         } catch (Exception e) {
             FacesMessage msg = new FacesMessage(bundle.getString("global_fail"), attach.getFileName() + bundle.getString("cannot_delte"));
             context.addMessage(null, msg);
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
-
     }
 
     public abstract void currChangeListener();
 
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
+        String fileName="";
         try {
             if(pOrderDoc==null)
                 pOrderDoc = new POrderDoc();
-            pOrderDoc.setFile(IOUtils.toByteArray(file.getInputstream()));
+            if (AttachmentService.attStoresInDb()){
+                pOrderDoc.setFileName(file.getFileName());
+                pOrderDoc.setFile(IOUtils.toByteArray(file.getInputstream()));
+                fileName = file.getFileName();
+            }else{
+                fileName = AttachmentService.save(file.getInputstream(),file.getFileName());
+                pOrderDoc.setFile(IOUtils.toByteArray(fileName));
+            }
         } catch (IOException e) {
             FacesMessage msg = new FacesMessage(bundle.getString("global_fail"), file.getFileName() + bundle.getString("upload_fail"));
             context.addMessage(null, msg);
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
-        pOrderDoc.setFileName(file.getFileName());
+        pOrderDoc.setFileName(fileName);
         pOrderDoc.setContentType(file.getContentType());
         pOrderDoc.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
         pOrderDoc.setRegState(AmdmtState.NEW_APPLICATION);

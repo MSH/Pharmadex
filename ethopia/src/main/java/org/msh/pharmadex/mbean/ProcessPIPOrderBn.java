@@ -2,19 +2,19 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.ResourceBundle;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static javax.faces.context.FacesContext.getCurrentInstance;
 
 /**
  * Backing bean to process the application made for registration
@@ -26,12 +26,18 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     private List<PIPProd> pipProds;
 
+    @ManagedProperty(value = "#{timelineService}")
+    TimelineService timelineService;
+
+    private java.util.ResourceBundle bundle;
+
     @PostConstruct
     public void init() {
         try {
             pOrderBase = new PIPOrder();
             Long pipOrderID=null;
             facesContext = FacesContext.getCurrentInstance();
+            bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
             if (facesContext.getExternalContext().getRequestParameterMap().containsKey("pipOrderID"))
                 pipOrderID = Long.valueOf(Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID")));
             else{
@@ -39,7 +45,6 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
                 if (pipOrderIDStr!=null)
                     pipOrderID = Long.parseLong(pipOrderIDStr);
             }
-            //Long pipOrderID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("pipOrderID"));
             if (pipOrderID != null) {
                 pOrderBase = pOrderService.findPIPOrderByID(pipOrderID);
                 initVariables();
@@ -50,6 +55,10 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     }
 
+    public void changeCSO(){
+
+    }
+
     @Override
     public void initVariables() {
         pOrderChecklists = pOrderService.findPOrderChecklists(pOrderBase);
@@ -57,10 +66,10 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         pOrderComments = pOrderService.findPOrderComments(pOrderBase);
 
         pipProds = ((PIPOrder) pOrderBase).getPipProds();
-//        pOrderComments = ((PIPOrder) pOrderBase).getpOrderComments();
         setApplicantUser(pOrderBase.getApplicantUser());
         setApplicant(pOrderBase.getApplicantUser().getApplicant());
         setpOrderDocs(null);
+        curUser = userService.findUser(userSession.getLoggedINUserID());
     }
 
     @Override
@@ -84,7 +93,7 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         pipOrder.setpOrderComments(pOrderComments);
         pipOrder.setPipProds(pipProds);
 
-        RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+        RetObject retObject = pOrderService.updatePOrder(pOrderBase,curUser);
         return "/public/processpiporderlist.faces";
     }
 
@@ -97,7 +106,7 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
                 facesContext.addMessage(null, error);
                 return null;
             }
-            RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+            RetObject retObject =  pOrderService.updatePOrder(pOrderBase,curUser);
             if (!retObject.getMsg().equals("persist")) {
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), retObject.getMsg()));
                 return null;
@@ -150,4 +159,19 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         this.pipProds = pipProds;
     }
 
+    public TimelineService getTimelineService() {
+        return timelineService;
+    }
+
+    public void setTimelineService(TimelineService timelineService) {
+        this.timelineService = timelineService;
+    }
+
+    public java.util.ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
 }

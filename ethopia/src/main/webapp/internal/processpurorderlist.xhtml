@@ -34,7 +34,7 @@
                     <p:column headerText="#{msgs.application_no}" filterBy="#{eachprod.pipNo}"
                               sortBy="#{eachprod.pipNo}">
                         <p:commandLink id="viewLink" value="#{eachprod.pipNo}"
-                                       action="processpurorder" ajax="false">
+                                       action="#{processPurOrderBn.openOrder}" ajax="false">
                             <f:param name="purOrderID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>

@@ -113,15 +113,15 @@
                     <p:dataTable id="ordertable" var="order" value="#{pIPOrderBn.pipProds}" style="width:100%;"
                                  sortBy="#{order.pipOrder.applicant.applcntId}">
 
-                        <p:column headerText="#{msgs.prod_no}">
+                        <p:column headerText="#{msgs.prod_no}" width="40">
                             <h:outputText value="#{order.productNo}"/>
                         </p:column>
 
-                        <p:column headerText="#{msgs.prod_name}">
+                        <p:column headerText="#{msgs.prod_name}" width="26%">
                             <h:outputText value="#{order.productName}"/>
                         </p:column>
 
-                        <p:column headerText="#{msgs.dos_strength}">
+                        <p:column headerText="#{msgs.dos_strength}" width="50">
                             <h:outputText value="#{order.dosStrength}"/>
                         </p:column>
 
@@ -134,11 +134,11 @@
                         </p:column>
 
 
-                        <p:column headerText="#{msgs.prod_presentation}">
+                        <p:column headerText="#{msgs.prod_presentation}" width="21%">
                             <h:outputText value="#{order.productDesc}"/>
                         </p:column>
 
-                        <p:column headerText="#{msgs.global_quantity}">
+                        <p:column headerText="#{msgs.global_quantity}" width="50">
                             <h:outputText value="#{order.quantity}"/>
                         </p:column>
 
@@ -157,7 +157,7 @@
                             </h:outputText>
                         </p:column>
 
-                        <p:column rendered="#{!pIPOrderBn.showWithdrawn}">
+                        <p:column rendered="#{!pIPOrderBn.showWithdrawn}" width="25">
                             <p:commandButton action="#{pIPOrderBn.removeProd(order)}" icon="ui-icon-trash"
                                              update=":reghome :reghome:growl" immediate="true">
                             </p:commandButton>
@@ -174,25 +174,8 @@
                                 </h:outputText>
                             </p:column>
                         </p:summaryRow>
-
-                        <!--
-                                                    <f:facet name="footer">
-                            <p:row>
-                            <p:column colspan="8" style="text-align:right">
-                                <h:outputText value="Grand Total:" />
-                            </p:column>
-                            <p:column style="text-align:right">
-                                <h:outputText value="#{pIPOrderBn.pipOrder.totalPrice}">
-                                </h:outputText>
-                            </p:column>
-                        </p:row>
-                        </f:facet>
-                        -->
-
                     </p:dataTable>
                 </h:panelGrid>
-
-
             </p:panel>
 
             <div style="height:10px"/>
@@ -380,14 +363,21 @@
                     <p:outputLabel value="#{msgs.prod_name}" for="prodname"/>
                     <!--
                     <p:inputText id="prodname" required="true" value="#{pIPOrderBn.pipProd.productName}"/>
+                    required="true" requiredMessage="#{msgs.valid_value_req}"
                     -->
                     <p:autoComplete id="prodname" widgetVar="prodnamevar"
-                                    required="true" requiredMessage="#{msgs.valid_value_req}"
-                                    value="#{pIPOrderBn.pipProd.productName}"
-                                    minQueryLength="2" maxResults="10" scrollHeight="300"
+                                    value="#{pIPOrderBn.product}"
+                                    maxResults="10" scrollHeight="300"
                                     forceSelection="false"
-                                    completeMethod="#{pIPOrderBn.completeProduct}" dropdown="true"
+                                    completeMethod="#{pIPOrderBn.completeProducts}"
+                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                    converter="#{productConverter}"
+                                    dropdown="true"
                                     >
+                        <p:ajax event="itemSelect"
+                                update="orderdetailfrm"
+                                listener="#{pIPOrderBn.productSelectListenener}"
+                                partialSubmit="true" process="@this"/>
                     </p:autoComplete>
                     <p:message for="prodname" showSummary="true"/>
 
@@ -530,7 +520,6 @@
                                  oncomplete="PF('withdrawDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
-
 
         <p:dialog header="#{msgs.upload_document_msg}" widgetVar="uploaddocdlg" resizable="false" id="uploaddocdlg"
                   modal="true" dynamic="true">

@@ -26,10 +26,12 @@ public class CustomPIPOrderDAO {
 
 
     public List<PIPOrder> findPIPOrderByUser(Long userId, Long applcntId) {
-        List<PIPOrder> pipOrders = entityManager.createQuery("select distinct porder from PIPOrder porder " +
-                "left join fetch porder.pipProds left join fetch porder.applicant left join fetch porder.applicantUser " +
-                "left join fetch porder.createdBy " +
-                "where porder.applicant.applcntId = :applcntId ")
+		String q = "select distinct porder from PIPOrder porder " +
+				"left join fetch porder.pipProds left join fetch porder.applicant left join fetch porder.applicantUser " +
+				"left join fetch porder.createdBy " +
+				"where porder.applicant.applcntId = :applcntId ";
+		q += "order by porder.createdDate desc ";
+        List<PIPOrder> pipOrders = entityManager.createQuery(q)
                 .setParameter("applcntId", applcntId)
                 .getResultList();
 
@@ -56,12 +58,14 @@ public class CustomPIPOrderDAO {
     }
 
     public List<PIPOrder> findAllPIPOrder() {
-        List<PIPOrder> pipOrders = entityManager.createQuery("select distinct porder from PIPOrder porder " +
-                "left join fetch porder.pipProds prod " +
-                "left join fetch porder.applicant app left join fetch app.applicantType left join fetch app.address.country " +
-                "left join fetch porder.applicantUser appUser left join fetch appUser.address.country " +
-                "left join fetch porder.createdBy user left join fetch user.address.country " +
-                "where porder.state not in (:state) ")
+		String q = "select distinct porder from PIPOrder porder " +
+				"left join fetch porder.pipProds prod " +
+				"left join fetch porder.applicant app left join fetch app.applicantType left join fetch app.address.country " +
+				"left join fetch porder.applicantUser appUser left join fetch appUser.address.country " +
+				"left join fetch porder.createdBy user left join fetch user.address.country " +
+				"where porder.state not in (:state) ";
+		q += "order by porder.createdDate desc ";
+        List<PIPOrder> pipOrders = entityManager.createQuery(q)
                 .setParameter("state", AmdmtState.WITHDRAWN)
                 .getResultList();
         return pipOrders;

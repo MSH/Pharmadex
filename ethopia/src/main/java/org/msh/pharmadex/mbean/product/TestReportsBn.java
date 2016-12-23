@@ -7,6 +7,7 @@ import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.SuspDetail;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.Scheduler;
 import org.msh.pharmadex.service.SuspendService;
 
 import javax.faces.bean.ManagedBean;
@@ -30,6 +31,12 @@ public class TestReportsBn {
     @ManagedProperty(value = "#{suspendService}")
     private SuspendService suspendService;
 
+    @ManagedProperty(value = "#{scheduler}")
+    private Scheduler scheduler;
+
+    public void testNotification(){
+        scheduler.processNotifications();
+    }
 
     public void startCheckingRegCertificate(){
         long id = Long.parseLong(recId);
@@ -88,5 +95,11 @@ public class TestReportsBn {
         this.suspendService = suspendService;
     }
 
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
 
+    public void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 }

@@ -2,12 +2,13 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.PIPOrder;
-import org.msh.pharmadex.domain.PIPProd;
 import org.msh.pharmadex.domain.POrderBase;
+import org.msh.pharmadex.domain.User;
+//import org.msh.pharmadex.service.POrderService;
 import org.msh.pharmadex.service.POrderService;
-import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
-
+import org.msh.pharmadex.util.Scrooge;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -28,25 +29,56 @@ import java.util.List;
 @ViewScoped
 public class PIPOrderListBn implements Serializable {
 
-    @ManagedProperty(value = "#{POrderService}")
-    private POrderService pOrderService;
-
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
+
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
+
+    @ManagedProperty(value = "#{POrderService}")
+    protected POrderService pOrderService;
 
     private PIPOrder pipOrder = new PIPOrder();
     private List<PIPOrder> pipOrders;
     private String pipNo;
+    private User curUser;
+    private java.util.ResourceBundle bundle;
+    private FacesContext facesContext;
 
     @PostConstruct
     private void init() {
+        facesContext = FacesContext.getCurrentInstance();
+        bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        Long id = userSession.getLoggedINUserID();
+        curUser = userService.findUser(id);
+    }
+
+
+    public String openOrder() {
+        Long pipId = Scrooge.beanParam("pipOrderID"); //from list xhtml
+        PIPOrder pOrder = pOrderService.findPIPOrderByID(pipId);
+        if (userService.userHasRole(curUser,"ROLE_STAFF")) {
+
+            if (pOrder.getResponsiblePerson() != null) {
+                if (!userSession.getLoggedINUserID().equals(pOrder.getResponsiblePerson().getUserId())) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, bundle.getString("orderMsgOpening"),bundle.getString("orderResponsiblePerson")));
+                    return "";
+                }
+            } else {
+                pOrder.setResponsiblePerson(curUser);
+                pOrderService.updatePOrder(pOrder,curUser);
+            }
+
+        }
+        Scrooge.setBeanParam("pipOrderID",pipId); //to PIP order form
+
+        return "/internal/processpiporder.xhtml";
     }
 
     public String searchPIPOrder(){
         POrderBase pOrderBase = pOrderService.findPOrder(pipNo, false);
         if(pOrderBase!=null) {
             String paramValue=String.valueOf(pOrderBase.getId());
-            //FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().put("processpiporder", paramValue);
             FacesContext.getCurrentInstance().getExternalContext().getFlash().put("pipOrderID", paramValue);
             return "processpiporder";
         }else{
@@ -99,4 +131,37 @@ public class PIPOrderListBn implements Serializable {
     public void setPipNo(String pipNo) {
         this.pipNo = pipNo;
     }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public User getCurUser() {
+        return curUser;
+    }
+
+    public void setCurUser(User curUser) {
+        this.curUser = curUser;
+    }
+
+    public java.util.ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    public void setBundle(java.util.ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
+    public FacesContext getFacesContext() {
+        return facesContext;
+    }
+
+    public void setFacesContext(FacesContext facesContext) {
+        this.facesContext = facesContext;
+    }
+
 }

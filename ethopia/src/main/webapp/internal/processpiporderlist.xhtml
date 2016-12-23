@@ -33,7 +33,7 @@
                     <p:column headerText="#{msgs.application_no}" filterBy="#{eachprod.pipNo}"
                               sortBy="#{eachprod.pipNo}">
                         <p:commandLink id="viewLink" value="#{eachprod.pipNo}"
-                                       action="processpiporder" ajax="false">
+                                       action="#{pIPOrderListBn.openOrder}" ajax="false">
                             <f:param name="pipOrderID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>
@@ -108,7 +108,7 @@
 
                 </p:dataTable>
             </h:panelGroup>
-
         </h:form>
+
     </ui:define>
 </ui:composition>

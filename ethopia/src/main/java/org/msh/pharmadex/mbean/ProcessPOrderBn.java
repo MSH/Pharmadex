@@ -5,13 +5,9 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.POrderService;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
-import org.omnifaces.util.Faces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -20,13 +16,11 @@ import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,8 +59,9 @@ public abstract class ProcessPOrderBn implements Serializable {
     private UploadedFile file;
     private POrderDoc pOrderDoc;
     private boolean showWithdrawn;
+    protected User curUser;
+    protected User responsiblePerson;
 
-    public abstract void init();
 
     public abstract String newApp();
 
@@ -74,6 +69,11 @@ public abstract class ProcessPOrderBn implements Serializable {
         pOrderDoc = new POrderDoc();
     }
 
+    @PostConstruct
+    private void init(){
+        Long userId = userSession.getLoggedINUserID();
+        curUser = userService.findUser(userId);
+    }
     public void initComment() {
         pOrderComment = new POrderComment();
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
@@ -81,9 +81,23 @@ public abstract class ProcessPOrderBn implements Serializable {
     }
 
     public StreamedContent fileDownload(POrderDoc doc) {
-        InputStream ist = new ByteArrayInputStream(doc.getFile());
-        StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
-//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
+        InputStream ist=null;
+        String fileName = "";
+        if (AttachmentService.attStoresInDb()) {
+            ist = new ByteArrayInputStream(doc.getFile());
+            fileName = doc.getFileName();
+        }else{
+            fileName = AttachmentService.extractAttFileNameFromBLOBField(doc.getFile());
+            if ("".equals(fileName)) return null;
+            if ("".equals(fileName)) fileName = doc.getFileName();
+            try {
+                ist = new FileInputStream(fileName);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), fileName);
         return download;
     }
 
@@ -164,26 +178,32 @@ public abstract class ProcessPOrderBn implements Serializable {
 
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
+        String fileName="";
         try {
-            if (pOrderDoc == null)
+            if(pOrderDoc==null)
                 pOrderDoc = new POrderDoc();
-            pOrderDoc.setFile(IOUtils.toByteArray(file.getInputstream()));
+            if (AttachmentService.attStoresInDb()){
+                pOrderDoc.setFileName(file.getFileName());
+                pOrderDoc.setFile(IOUtils.toByteArray(file.getInputstream()));
+                fileName = file.getFileName();
+            }else{
+                fileName = AttachmentService.save(file.getInputstream(),file.getFileName());
+                pOrderDoc.setFile(IOUtils.toByteArray(fileName));
+            }
         } catch (IOException e) {
             FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
             facesContext.addMessage(null, msg);
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
-//        pOrderDoc.setPipOrder(get);
-        pOrderDoc.setFileName(file.getFileName());
+        pOrderDoc.setFileName(fileName);
         pOrderDoc.setContentType(file.getContentType());
         pOrderDoc.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
         pOrderDoc.setRegState(AmdmtState.NEW_APPLICATION);
-//        userSession.setFile(file);
     }
 
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
-        RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+        RetObject retObject = pOrderService.updatePOrder(pOrderBase,curUser);
         return "/public/processpiporderlist.faces";
     }
 
@@ -236,7 +256,6 @@ public abstract class ProcessPOrderBn implements Serializable {
 
     public void initReject() {
         pOrderComment = new POrderComment();
-//        pOrderComment.setRecomendType(RecomendType.ACCEPTED);
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderComment.setDate(new Date());
     }
@@ -246,7 +265,6 @@ public abstract class ProcessPOrderBn implements Serializable {
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
             if (pOrderBase.getReviewState().equals(RecomendType.RECOMENDED)) {
-//            pOrderBase.setReviewState(RecomendType.ACCEPTED);
                 pOrderBase.setState(AmdmtState.APPROVED);
                 pOrderBase.setApprovalDate(new Date());
                 Date expDate = JsfUtils.addDate(new Date(), globalEntityLists.getWorkspace().getPipRegDuration());
@@ -513,5 +531,21 @@ public abstract class ProcessPOrderBn implements Serializable {
 
     public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
         this.prodApplicationsService = prodApplicationsService;
+    }
+
+    public User getCurUser() {
+        return curUser;
+    }
+
+    public void setCurUser(User curUser) {
+        this.curUser = curUser;
+    }
+
+    public User getResponsiblePerson() {
+        return responsiblePerson;
+    }
+
+    public void setResponsiblePerson(User responsiblePerson) {
+        this.responsiblePerson = responsiblePerson;
     }
 }

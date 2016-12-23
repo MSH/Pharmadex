@@ -8,7 +8,6 @@ import org.msh.pharmadex.service.CompanyService;
 import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -104,8 +103,9 @@ public class PurOrderBn extends POrderBn {
 
     public List<ProdTable> completeProduct(String query) {
         List<ProdTable> suggestions = new ArrayList<ProdTable>();
+        query = query.toUpperCase();
         if (getApplicant() != null) {
-            suggestions = pOrderService.findProdByLH(getApplicant().getApplcntId());
+            suggestions  = pOrderService.findProdByLH(getApplicant().getApplcntId(),query);
         }
         return suggestions;
     }
@@ -183,7 +183,7 @@ public class PurOrderBn extends POrderBn {
             String result;
             if(purOrder.getId()!=null) {
                 result = pOrderService.removeProd(purProd);
-                pOrderService.updatePIPOrder(purOrder);
+                pOrderService.updatePOrder(purOrder);
             }else{
                 result = "persist";
             }
@@ -286,24 +286,18 @@ public class PurOrderBn extends POrderBn {
     }
 
     public void appSelectListenener(SelectEvent event) {
-        logger.error("inside appSelectListenener");
         gmpChangeListener();
 
 
     }
 
     public void appChangeListenener(AjaxBehaviorEvent event) {
-        logger.error("inside appChangeListenener");
-//        logger.error("Selected company is " + selectedApplicant.getAppName());
-        logger.error("event " + event.getSource());
+//        logger.error("event " + event.getSource());
         gmpChangeListener();
-
-
     }
 
     @Transactional
     public void gmpChangeListener() {
-        logger.error("inside gmpChangeListener");
         if (product != null && product.getId() != null) {
             List<ProdApplications> prodApplicationsList = prodApplicationsService.findProdApplicationByProduct(product.getId());
             ProdApplications prodApplications = null;
@@ -311,6 +305,7 @@ public class PurOrderBn extends POrderBn {
                 if (pa.isActive())
                     prodApplications = pa;
             }
+            if (prodApplications==null) return;
             Product prod = prodApplications.getProduct();
             List<ProdCompany> prodCompanies = prod.getProdCompanies();
             Company c = null;

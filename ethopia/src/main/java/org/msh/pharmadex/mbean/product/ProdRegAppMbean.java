@@ -45,16 +45,7 @@ import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.UseCategory;
-import org.msh.pharmadex.service.ApplicantService;
-import org.msh.pharmadex.service.ChecklistService;
-import org.msh.pharmadex.service.CompanyService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.InnService;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.ProductService;
-import org.msh.pharmadex.service.ReportService;
-import org.msh.pharmadex.service.TimelineService;
-import org.msh.pharmadex.service.UserService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
@@ -265,15 +256,27 @@ public class ProdRegAppMbean implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 		try {
-
 			file = event.getFile();
 			if(attachment != null){
-				attachment.setFile(IOUtils.toByteArray(file.getInputstream()));
-				attachment.setProdApplications(prodApplications);
-				attachment.setFileName(file.getFileName());
-				attachment.setContentType(file.getContentType());
-				attachment.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
-				attachment.setRegState(prodApplications.getRegState());
+				String savedFileName = "";
+				if (AttachmentService.attStoresInDb()){
+					attachment.setFile(IOUtils.toByteArray(file.getInputstream()));
+					savedFileName = file.getFileName();
+				}else {
+					savedFileName = AttachmentService.save(event.getFile().getInputstream(), event.getFile().getFileName());
+					attachment.setFile(IOUtils.toByteArray(savedFileName));
+				}
+				if (!"".equals(savedFileName)){
+					attachment.setProdApplications(prodApplications);
+					attachment.setFileName(savedFileName);
+					String contType = AttachmentService.detectContentType(file);
+					attachment.setContentType(contType);
+					attachment.setUploadedBy(userService.findUser(userSession.getLoggedINUserID()));
+					attachment.setRegState(prodApplications.getRegState());
+				}else{
+					FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
+					facesContext.addMessage(null, msg);
+				}
 			}
 		} catch (IOException e) {
 			FacesMessage msg = new FacesMessage(resourceBundle.getString("global_fail"), file.getFileName() + resourceBundle.getString("upload_fail"));
@@ -374,19 +377,7 @@ public class ProdRegAppMbean implements Serializable {
 		FacesMessage msg;
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		try {
-			if(attachment != null && attachment.getFile() != null){
-				int len = attachment.getFile().length;
-				/*
-				if(len > 4194304){// в БД используем LONGBLOB = 4194304 - maximum
-					msg = new FacesMessage("Error! " + bundle.getString("Error.bigSizeFile"));
-					facesContext.addMessage(null, msg);
-				}else{
-					attachmentDAO.save(attachment);
-					setAttachments(null);
-					msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-					facesContext.addMessage(null, msg);
-				}
-				*/
+			if(attachment != null && ((attachment.getFile() != null) || (attachment.getFileName()!=null))){
 				attachmentDAO.save(attachment);
 				setAttachments(null);
 				msg = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
@@ -407,7 +398,12 @@ public class ProdRegAppMbean implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 		try {
-
+			String res = AttachmentService.deleteAttachedFile(attach);
+			if (!"".equals(res)){
+				FacesMessage msg = new FacesMessage(res+". "+resourceBundle.getString("global_fail"), attach.getFileName() + resourceBundle.getString("cannot_delte"));
+				facesContext.addMessage(null, msg);
+				return;
+			}
 			FacesMessage msg = new FacesMessage(resourceBundle.getString("global_delete"), attach.getFileName() + resourceBundle.getString("is_deleted"));
 			attachmentDAO.delete(attach);
 			attachments = null;

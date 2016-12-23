@@ -12,11 +12,13 @@ import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.PIPReportItemBean;
 import org.msh.pharmadex.mbean.product.ProdTable;
+import org.msh.pharmadex.util.StrTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +40,9 @@ public class CustomPurOrderDAO {
     }
 
     public List<PurOrder> findPurOrderByUser(Long userId, Long applcntId) {
-        List<PurOrder> purOrders = entityManager.createQuery("select porder from PurOrder porder where porder.applicant.applcntId = :applcntId ")
+        String q= "select porder from PurOrder porder where porder.applicant.applcntId = :applcntId ";
+        q += "order by porder.createdDate desc ";
+        List<PurOrder> purOrders = entityManager.createQuery(q)
                 .setParameter("applcntId", applcntId)
                 .getResultList();
 
@@ -65,7 +69,7 @@ public class CustomPurOrderDAO {
 
 
     public List<PurOrder> findAllPurOrder() {
-        List<PurOrder> purOrders = entityManager.createQuery("select distinct porder from PurOrder porder " +
+        String q = "select distinct porder from PurOrder porder " +
                 "left join fetch porder.purProds purprod left join fetch purprod.product prod " +
                 "left join fetch prod.adminRoute left join fetch prod.dosForm " +
                 "left join fetch prod.dosUnit left join fetch prod.pharmClassif " +
@@ -73,7 +77,9 @@ public class CustomPurOrderDAO {
                 "left join fetch porder.applicant app left join fetch app.applicantType left join fetch app.address.country " +
                 "left join fetch porder.applicantUser appUser left join fetch appUser.address.country " +
                 "left join fetch porder.createdBy user left join fetch user.address.country " +
-                "where porder.state not in (:state)")
+                "where porder.state not in (:state)";
+        q += "order by porder.createdDate desc ";
+        List<PurOrder> purOrders = entityManager.createQuery(q)
                 .setParameter("state", AmdmtState.WITHDRAWN)
                 .getResultList();
         return purOrders;
@@ -85,8 +91,9 @@ public class CustomPurOrderDAO {
         }
     }
 
-    public List<ProdTable> findProdByLH(Long applcntId) {
-        List<Object[]> products = entityManager.createNativeQuery("select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a1.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc " +
+    public List<ProdTable> findProdByLH(Long applcntId, String substr) {
+        final String today = (new SimpleDateFormat("dd/MM/yyyy")).format(new Date());
+        final String query = "select p.id as id, p.prod_name as prodName, p.gen_name as genName, p.prod_cat as prodCategory, a1.appName, pa.registrationDate, pa.regExpiryDate, c.companyName as manufName, pa.prodRegNo, p.prod_desc " +
                 "from prodApplications pa, product p, applicant a1, prod_company pc, company c, lic_holder lh, licholder_prod lp " +
                 "where pa.PROD_ID = p.id " +
                 "and pa.regState = :regState " +
@@ -97,11 +104,14 @@ public class CustomPurOrderDAO {
                 "and lp.licholder_id = lh.id " +
                 "and lp.prod_id = p.id " +
                 "and pc.prod_id = p.id " +
+                "and pa.regExpiryDate > sysdate() " +
+                (!StrTools.isEmptyString(substr) ? "and p.prod_name like '" + substr + "%' " : "") +
                 "and lh.id in (select l.id from lic_holder l, agent_info ai, applicant a where ai.licholder_id = l.id " +
                 "        and a.applcntId = ai.applicant_applcntId " +
                 "        and a.applcntId = :appID " +
                 "and l.state = 'ACTIVE' " +
-                "and sysdate() BETWEEN ai.startDate and ai.endDate  order by a.appname, ai.agent_type);")
+                "and sysdate() BETWEEN ai.startDate and ai.endDate  order by a.appname, ai.agent_type);";
+        List<Object[]> products = entityManager.createNativeQuery(query)
                 .setParameter("appID", applcntId)
                 .setParameter("active", true)
                 .setParameter("regState", "" + RegState.REGISTERED)

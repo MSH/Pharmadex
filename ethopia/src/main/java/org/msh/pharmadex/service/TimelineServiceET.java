@@ -1,20 +1,37 @@
 package org.msh.pharmadex.service;
 
-import org.msh.pharmadex.domain.ProdAppChecklist;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.dao.iface.TimeLinePIPDAO;
+import org.msh.pharmadex.dao.iface.TimeLinePODAO;
+import org.msh.pharmadex.dao.iface.TimeLineSCDAO;
+import org.msh.pharmadex.dao.iface.TimelineDAO;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.faces.bean.ManagedProperty;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by usrivastava on 01/24/2015.
+ * Updated Odissey 07/12/16
  */
 @Service
 public class TimelineServiceET extends TimelineService implements Serializable {
+
+    @ManagedProperty(value = "#{timeLineDAO}")
+    TimeLinePIPDAO timeLinePIPDAO;
+
+    @ManagedProperty(value = "#{timeLineDAO}")
+    TimeLinePODAO timeLinePODAO;
+
+    @ManagedProperty(value = "#{timeLineDAO}")
+    TimeLineSCDAO timeLineSCDAO;
+
 
     @Override
     public String validateStatusChange(TimeLine timeLine) {
@@ -45,19 +62,47 @@ public class TimelineServiceET extends TimelineService implements Serializable {
 
     }
 
-//    public RetObject validatescreening(List<ProdAppChecklist> prodAppChecklists) {
-//        RetObject retObject = new RetObject();
-//        for(ProdAppChecklist prodAppChecklist : prodAppChecklists){
-//            if(prodAppChecklist.getChecklist().isHeader()) {
-//                if (prodAppChecklist.isValue()) {
-//                    if (!prodAppChecklist.isStaffValue()) {
-//                        retObject.setMsg("error");
-//                        return retObject;
-//                    }
-//                }
-//            }
-//        }
-//        retObject.setMsg("persist");
-//        return retObject;
-//    }
+    public List<TimeLineBase> findTimelineByAppNo(Long prodApplications_Id, POrderBase order) {
+        List<TimeLineBase> timeLineEvents = null;
+        if (order instanceof  PIPOrder) {
+            timeLineEvents = timeLinePIPDAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
+        }else if (order instanceof PurOrder){
+            timeLineEvents = timeLinePODAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
+        }
+        if(timeLineList != null && timeLineList.size() > 0)
+            Collections.sort(timeLineList, new Comparator<TimeLineBase>() {
+
+                @Override
+                public int compare(TimeLineBase o1, TimeLineBase o2) {
+                    Long id1 = o1.getId();
+                    Long id2 = o2.getId();
+                    return -id1.compareTo(id2);
+                }
+            });
+        return timeLineEvents;
+    }
+
+    public TimeLinePIPDAO getTimeLinePIPDAO() {
+        return timeLinePIPDAO;
+    }
+
+    public void setTimeLinePIPDAO(TimeLinePIPDAO timeLinePIPDAO) {
+        this.timeLinePIPDAO = timeLinePIPDAO;
+    }
+
+    public TimeLinePODAO getTimeLinePODAO() {
+        return timeLinePODAO;
+    }
+
+    public void setTimeLinePODAO(TimeLinePODAO timeLinePODAO) {
+        this.timeLinePODAO = timeLinePODAO;
+    }
+
+    public TimeLineSCDAO getTimeLineSCDAO() {
+        return timeLineSCDAO;
+    }
+
+    public void setTimeLineSCDAO(TimeLineSCDAO timeLineSCDAO) {
+        this.timeLineSCDAO = timeLineSCDAO;
+    }
 }

@@ -318,6 +318,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
         params.put("reviewState", revState);
         List<RegState> regState = new ArrayList<RegState>();
         regState.add(RegState.REVIEW_BOARD);
+        regState.add(RegState.FOLLOW_UP);
         params.put("regState", regState);
         if (!userSession.isAdmin()) {
             if (userSession.isModerator()) {
@@ -494,10 +495,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		}				
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_NUMBER, fullNo ,true);
 		
-		//String full = "";		
 		String certNo = "0000000000" + String.valueOf(prodApp.getId()) + String.valueOf(prodApp.getProduct().getId());
 		certNo = (prodApp.getProdAppType()!=null? prodApp.getProdAppType():"")+ "/"+ certNo.substring(certNo.length() - 10, certNo.length());
-		//full =  + certNo; // prodApp.getProdAppType() 				
 		param.put("cert_no",certNo);
 		
 		param.put("productDescription",prodApp.getProduct().getProdDesc());
@@ -512,9 +511,6 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		}
 		param.put("prescription",catStr.toLowerCase());
 		
-		/*** add param */
-		
-		//TODO
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_PRODNAME, "", false);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_GENNAME, "", false);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_DOSFORM, "", false);
@@ -537,8 +533,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		}
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_APPTYPE, t);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_APPNAME, "", false);
-	//	utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_NUMBER, prodApp.getProdAppNo()!=null? prodApp.getProdAppNo():"",true);
-		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_DATE,"",false);		
+		utilsByReports.putNotNull(UtilsByReportsET.KEY_REG_DATE,"",false);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_SHELFINE,"",false);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_PROD_ROUTE_ADMINISTRATION,"",false);
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_EXPIRY_DATE,"",false);

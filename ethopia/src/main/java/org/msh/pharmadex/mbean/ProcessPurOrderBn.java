@@ -2,8 +2,8 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -24,10 +24,13 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 public class ProcessPurOrderBn extends ProcessPOrderBn{
 
     private List<PurProd> purProds;
+    private java.util.ResourceBundle bundle;
 
     @PostConstruct
     public void init() {
         pOrderBase = new PurOrder();
+        facesContext = FacesContext.getCurrentInstance();
+        bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
         	Object obj = FacesContext.getCurrentInstance().getExternalContext().getFlash().get("purOrderID");
             if (obj==null){
@@ -47,6 +50,25 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
 
     }
 
+    public String openOrder() {
+        Long pId = Scrooge.beanParam("purOrderID"); //from list xhtml
+        PurOrder pOrder = pOrderService.findPurOrderEager(pId);
+        if (userService.userHasRole(curUser,"ROLE_STAFF")) {
+            if (pOrder.getResponsiblePerson() != null) {
+                if (!userSession.getLoggedINUserID().equals(pOrder.getResponsiblePerson().getUserId())) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, bundle.getString("orderMsgOpening"),bundle.getString("orderResponsiblePerson")));
+                    return "";
+                }
+            } else {
+                pOrder.setResponsiblePerson(curUser);
+                pOrderService.updatePOrder(pOrder,curUser);
+            }
+
+        }
+        Scrooge.setBeanParam("purOrderID",pId); //to PIP order form
+
+        return "/internal/processpurorder.xhtml";
+    }
     @Override
     public String saveApp() {
         facesContext = FacesContext.getCurrentInstance();
@@ -55,18 +77,17 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
         pipOrder.setpOrderComments(pOrderComments);
         pipOrder.setPurProds(purProds);
 
-        RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+        RetObject retObject = pOrderService.updatePOrder(pOrderBase);
         return "/public/processpurorderlist.faces";
     }
 
     @Override
     public void initVariables() {
-//        pOrderChecklists = ((PurOrder) pOrderBase).getpOrderChecklists();
         purProds = ((PurOrder) pOrderBase).getPurProds();
-//        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
         setApplicantUser(pOrderBase.getApplicantUser());
         setApplicant(pOrderBase.getApplicantUser().getApplicant());
         setpOrderDocs(null);
+        curUser = userService.findUser(userSession.getLoggedINUserID());
     }
 
     @Override
@@ -92,7 +113,7 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
                 facesContext.addMessage(null, error);
                 return null;
             }
-            RetObject retObject = pOrderService.updatePIPOrder(pOrderBase);
+            RetObject retObject = pOrderService.updatePOrder(pOrderBase);
             if (!retObject.getMsg().equals("persist")) {
                 facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), retObject.getMsg()));
                 return null;

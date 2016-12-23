@@ -2,15 +2,15 @@ package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.RecomendType;
-
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by utkarsh on 5/12/15.
  */
 @MappedSuperclass
-public class POrderBase extends CreationDetail {
+public class POrderBase extends CreationDetail implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -79,6 +79,9 @@ public class POrderBase extends CreationDetail {
 
     @Enumerated(EnumType.STRING)
     private RecomendType reviewState;
+
+    @OneToOne
+    private User responsiblePerson;
 
     public Long getId() {
         return id;
@@ -262,5 +265,13 @@ public class POrderBase extends CreationDetail {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+
+    public User getResponsiblePerson() {
+        return responsiblePerson;
+    }
+
+    public void setResponsiblePerson(User responsiblePerson) {
+        this.responsiblePerson = responsiblePerson;
     }
 }

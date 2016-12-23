@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,45 +15,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
 import org.msh.pharmadex.dao.CustomLicHolderDAO;
 import org.msh.pharmadex.dao.CustomPIPOrderDAO;
 import org.msh.pharmadex.dao.CustomPurOrderDAO;
-import org.msh.pharmadex.dao.iface.PIPOrderDAO;
-import org.msh.pharmadex.dao.iface.PIPOrderLookUpDAO;
-import org.msh.pharmadex.dao.iface.POrderChecklistDAO;
-import org.msh.pharmadex.dao.iface.POrderCommentDAO;
-import org.msh.pharmadex.dao.iface.POrderDocDAO;
-import org.msh.pharmadex.dao.iface.PipProdDAO;
-import org.msh.pharmadex.dao.iface.PurOrderDAO;
-import org.msh.pharmadex.dao.iface.PurProdDAO;
-import org.msh.pharmadex.domain.Applicant;
-import org.msh.pharmadex.domain.ApplicantType;
-import org.msh.pharmadex.domain.PIPOrder;
-import org.msh.pharmadex.domain.PIPOrderLookUp;
-import org.msh.pharmadex.domain.PIPProd;
-import org.msh.pharmadex.domain.POrderBase;
-import org.msh.pharmadex.domain.POrderChecklist;
-import org.msh.pharmadex.domain.POrderComment;
-import org.msh.pharmadex.domain.POrderDoc;
-import org.msh.pharmadex.domain.PProdBase;
-import org.msh.pharmadex.domain.PurOrder;
-import org.msh.pharmadex.domain.PurProd;
+import org.msh.pharmadex.dao.iface.*;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.mbean.PIPReportItemBean;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.StrTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -94,6 +77,15 @@ public class POrderService implements Serializable {
 
     @Autowired
     CustomLicHolderDAO customLicHolderDAO;
+
+    @Autowired
+    TimeLinePIPDAO timeLinePIPDAO;
+
+    @Autowired
+    TimelineServiceET timelineServiceET;
+
+    User curUser;
+
     public String findFirstAgent(Long id) {
          Applicant a = customLicHolderDAO.findFirstAgent(id);
         return a.getAppName();
@@ -228,7 +220,6 @@ public class POrderService implements Serializable {
         jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, conn);
         net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(pdfFile));
         byte[] file = IOUtils.toByteArray(new FileInputStream(pdfFile));
-//        conn.close();
         return file;
     }
 
@@ -236,15 +227,19 @@ public class POrderService implements Serializable {
         try {
             POrderDoc pOrderDoc = new POrderDoc();
             byte[] file = new byte[0];
+            String fileName = "";
+            File invoicePDF = null;
             if (pipOrderBase instanceof PIPOrder) {
-                File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_ack", ".pdf");
+                invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_ack", ".pdf");
                 file = generateLetter(pipOrderBase, "/reports/pip_ack.jasper", invoicePDF, "");
-                pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
+                //fileName = "PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf";
+                fileName = invoicePDF.getName();
                 pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
             } else if (pipOrderBase instanceof PurOrder) {
-                File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_ack", ".pdf");
+                invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_ack", ".pdf");
                 file = generateLetter(pipOrderBase, "/reports/po_ack.jasper", invoicePDF, null);
-                pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf");
+                //fileName = "PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_ack.pdf";
+                fileName = invoicePDF.getName();
                 pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
             }
             pOrderDoc.setContentType("application/pdf");
@@ -252,7 +247,15 @@ public class POrderService implements Serializable {
             pOrderDoc.setRegState(pipOrderBase.getState());
             pOrderDoc.setTitle("Acknowledgment Letter");
             pOrderDoc.setComment("Automated generated acknowledgement Letter");
-            pOrderDoc.setFile(file);
+            if (AttachmentService.attStoresInDb()) {
+                pOrderDoc.setFileName(fileName);
+                pOrderDoc.setFile(file);
+            }else{
+                //fileName = AttachmentService.getFullUploadPath()+fileName;
+                fileName = AttachmentService.save(new FileInputStream(invoicePDF),fileName);
+                pOrderDoc.setFile(IOUtils.toByteArray(fileName));
+            }
+            pOrderDoc.setFileName(fileName);
             return save(pOrderDoc);
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -268,17 +271,25 @@ public class POrderService implements Serializable {
 
     public RetObject createApprovalLetter(POrderBase pipOrderBase) {
         try {
-            File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_cert", ".pdf");
+            String fileName="PIP_" + pipOrderBase.getId() + "_cert";
+            File invoicePDF = File.createTempFile(fileName,".pdf");
+            fileName = invoicePDF.getName();
             byte[] file = generateLetter(pipOrderBase, "/reports/pip_cert.jasper", invoicePDF, null);
             POrderDoc pOrderDoc = new POrderDoc();
-            pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_cert.pdf");
+            if (AttachmentService.attStoresInDb()){
+                pOrderDoc.setFile(file);
+            }else{
+                fileName = AttachmentService.getFullUploadPath()+fileName;
+                fileName = AttachmentService.save(new FileInputStream(invoicePDF),fileName);
+                pOrderDoc.setFile(IOUtils.toByteArray(fileName));
+            }
+            pOrderDoc.setFileName(fileName);
             pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
             pOrderDoc.setRegState(pipOrderBase.getState());
             pOrderDoc.setTitle("Approval Certificate");
             pOrderDoc.setComment("Automated generated Approval Certificate");
-            pOrderDoc.setFile(file);
             return save(pOrderDoc);
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -297,14 +308,21 @@ public class POrderService implements Serializable {
             File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_cert", ".pdf");
             byte[] file = generateLetter(pipOrderBase, "/reports/po_cert.jasper", invoicePDF, null);
             POrderDoc pOrderDoc = new POrderDoc();
-            pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_cert.pdf");
+            String fileName=invoicePDF.getName();
+            if (AttachmentService.attStoresInDb()){
+                pOrderDoc.setFile(file);
+            }else{
+                fileName = AttachmentService.getFullUploadPath() + fileName;
+                fileName = AttachmentService.save(new FileInputStream(invoicePDF),fileName);
+                pOrderDoc.setFile(IOUtils.toByteArray(fileName));
+            }
+            pOrderDoc.setFileName(fileName);
             pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
             pOrderDoc.setRegState(pipOrderBase.getState());
             pOrderDoc.setTitle("Approval Certificate");
             pOrderDoc.setComment("Automated generated Approval Certificate");
-            pOrderDoc.setFile(file);
             return save(pOrderDoc);
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -323,14 +341,20 @@ public class POrderService implements Serializable {
             File invoicePDF = File.createTempFile("PIP_" + pipOrderBase.getId() + "_reject", ".pdf");
             byte[] file = generateLetter(pipOrderBase, "/reports/pip_reject.jasper", invoicePDF, pOrderComment.getComment());
             POrderDoc pOrderDoc = new POrderDoc();
-            pOrderDoc.setFileName("PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf");
+            String fileName = "PIP_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf";
             pOrderDoc.setPipOrder((PIPOrder) pipOrderBase);
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
             pOrderDoc.setRegState(pipOrderBase.getState());
             pOrderDoc.setTitle("Rejection Letter");
             pOrderDoc.setComment("Automated generated Rejection Letter");
-            pOrderDoc.setFile(file);
+            if (AttachmentService.attStoresInDb()){
+                pOrderDoc.setFile(file);
+            }else{
+                fileName = AttachmentService.getFullUploadPath() + fileName;
+                fileName = AttachmentService.save(new FileInputStream(invoicePDF),fileName);
+            }
+            pOrderDoc.setFileName(fileName);
             return save(pOrderDoc);
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -350,14 +374,20 @@ public class POrderService implements Serializable {
             File invoicePDF = File.createTempFile("PO_" + pipOrderBase.getId() + "_reject", ".pdf");
             byte[] file = generateLetter(pipOrderBase, "/reports/po_reject.jasper", invoicePDF, pOrderComment.getComment());
             POrderDoc pOrderDoc = new POrderDoc();
-            pOrderDoc.setFileName("PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf");
+            String fileName = "PO_" + pipOrderBase.getId() + Calendar.getInstance().get(Calendar.YEAR) + "_reject.pdf";
+            pOrderDoc.setFileName(fileName);
             pOrderDoc.setPurOrder((PurOrder) pipOrderBase);
             pOrderDoc.setContentType("application/pdf");
             pOrderDoc.setUploadedBy(pipOrderBase.getCreatedBy());
             pOrderDoc.setRegState(pipOrderBase.getState());
             pOrderDoc.setTitle("Rejection Letter");
             pOrderDoc.setComment("Automated generated Rejection Letter");
-            pOrderDoc.setFile(file);
+            if (AttachmentService.attStoresInDb()){
+                pOrderDoc.setFile(file);
+            }else{
+                fileName = AttachmentService.getFullUploadPath() + fileName;
+                fileName = AttachmentService.save(new FileInputStream(invoicePDF),fileName);
+            }
             return save(pOrderDoc);
         } catch (JRException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -419,7 +449,6 @@ public class POrderService implements Serializable {
         if (userID == null) {
             retObject.setMsg("error");
         }
-
         try {
             if (companyUser) {
                 pipOrders = customPIPOrderDAO.findPIPOrderByUser(userID, applcntId);
@@ -466,21 +495,49 @@ public class POrderService implements Serializable {
         return retObject;
     }
 
-    public RetObject updatePIPOrder(POrderBase pOrderBase) {
 
+    private void updateTimeLine(RegState state, String comment, PIPOrder order){
+        TimeLinePIP tl = new TimeLinePIP();
+        tl.setRegState(state);
+        tl.setComment(comment);
+        tl.setStatusDate(new Date());
+        tl.setProdApplications(order);
+        tl.setUser(curUser);
+        timeLinePIPDAO.saveAndFlush(tl);
+        List<TimeLineBase> events = timelineServiceET.findTimelineByAppNo(order.getId(), order);
+        if (events==null) return;
+        if (events.size()<2) return;
+        TimeLineBase prevEvent = events.get(events.size() - 1);
+        prevEvent.setEndDate(new Date());
+    }
+
+
+
+    public RetObject updatePOrder(POrderBase pOrderBase, User user) {
+        curUser = user;
+        return updatePOrder(pOrderBase);
+    }
+
+    public RetObject updatePOrder(POrderBase pOrderBase) {
         if (pOrderBase instanceof PIPOrder) {
             PIPOrder pipOrder = (PIPOrder) pOrderBase;
             pipOrder = pipOrderDAO.save(pipOrder);
-
+            RetObject orderDoc = null;
             if (pipOrder.getState().equals(AmdmtState.APPROVED)) {
-                createApprovalLetter(pipOrder);
+                orderDoc = createApprovalLetter(pipOrder);
+                updateTimeLine(RegState.REGISTERED,"PIP registered",pipOrder);
             } else if (pipOrder.getState().equals(AmdmtState.REJECTED)) {
-                createRejectionLetter(pipOrder, pipOrder.getpOrderComments().get(pipOrder.getpOrderComments().size()-1));
+                orderDoc = createRejectionLetter(pipOrder, pipOrder.getpOrderComments().get(pipOrder.getpOrderComments().size()-1));
+                updateTimeLine(RegState.REJECTED,"PIP rejected",pipOrder);
             }
         }
 
+
         if (pOrderBase instanceof PurOrder) {
             PurOrder purOrder = (PurOrder) pOrderBase;
+            if (!purOrder.getProcessor().equals(purOrder.getResponsiblePerson()))
+                if (purOrder.getResponsiblePerson()!=null && purOrder.getProcessor()!=null)
+                    purOrder.setProcessor(purOrder.getResponsiblePerson());
             purOrder = purOrderDAO.save(purOrder);
             if (purOrder.getState().equals(AmdmtState.APPROVED)) {
                 createPOApprovalLetter(purOrder);
@@ -516,8 +573,39 @@ public class POrderService implements Serializable {
         return purOrder;
     }
 
+    public String extractAttFileName(POrderDoc attach){
+        byte[] file = attach.getFile();
+        String filename=null;
+        if (file!=null) {
+            if (file.length < 200)
+                filename = new String(file, Charset.forName("UTF-8"));
+        }else{
+            filename = attach.getFileName();
+            if (filename.contains(":") || filename.contains("/")) return null;
+        }
+        String extension = FilenameUtils.getExtension(filename);
+        if (StrTools.isEmptyString(extension))
+            filename = filename + ".pdf";
+        return filename;
+    }
+
+
     public String delete(POrderDoc pOrderDoc) {
         try {
+            if (!AttachmentService.attStoresInDb()){
+                String fileName = extractAttFileName(pOrderDoc);
+                if (fileName==null) return "";
+                try {
+                    File file = new File(fileName);
+                    if (!file.exists()) return "";
+                    file.deleteOnExit();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    return e.getMessage();
+                }
+                return "";
+            }
+
             pOrderDocDAO.delete(pOrderDoc);
             return "success";
         } catch (Exception ex) {
@@ -571,7 +659,7 @@ public class POrderService implements Serializable {
         pOrderBase.setState(AmdmtState.REVIEW);
         pOrderBase.setUpdatedDate(new Date());
         pOrderBase.setFeeRecieveDate(new Date());
-        return updatePIPOrder(pOrderBase);
+        return updatePOrder(pOrderBase);
     }
 
     public POrderBase findPOrder(String pipNo, boolean purOrder) {
@@ -588,10 +676,10 @@ public class POrderService implements Serializable {
         return pOrderBase;
     }
 
-    public List<ProdTable> findProdByLH(Long applcntId) {
+    public List<ProdTable> findProdByLH(Long applcntId, String substr) {
         List<ProdTable> prodTables = new ArrayList<ProdTable>();
         if (applcntId != null) {
-            prodTables = customPurOrderDAO.findProdByLH(applcntId);
+            prodTables = customPurOrderDAO.findProdByLH(applcntId,substr);
 
         }
         return prodTables;
@@ -708,6 +796,7 @@ public class POrderService implements Serializable {
         }
       return purProds;
     }
+
     
     @Transactional
     public List<PurProd>  findSelectedPurProds(Date startDate, Date endDate, Applicant applicant) {
@@ -724,5 +813,29 @@ public class POrderService implements Serializable {
             retObject.setObj(null);
         }
         return purProds;
+    }
+
+    public PipProdDAO getPipProdDAO() {
+        return pipProdDAO;
+    }
+
+    public void setPipProdDAO(PipProdDAO pipProdDAO) {
+        this.pipProdDAO = pipProdDAO;
+    }
+
+    public PurProdDAO getPurProdDAO() {
+        return purProdDAO;
+    }
+
+    public void setPurProdDAO(PurProdDAO purProdDAO) {
+        this.purProdDAO = purProdDAO;
+    }
+
+    public TimeLinePIPDAO getTimeLinePIPDAO() {
+        return timeLinePIPDAO;
+    }
+
+    public void setTimeLinePIPDAO(TimeLinePIPDAO timeLinePIPDAO) {
+        this.timeLinePIPDAO = timeLinePIPDAO;
     }
 }

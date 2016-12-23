@@ -27,6 +27,9 @@ public class CustomLicHolderDAO {
     }
 
     public boolean validDate(AgentInfo agentInfo) {
+        //can have more the one second/third agents, but only 1 first agent
+        if (!agentInfo.getAgentType().equals(AgentType.FIRST))
+            return true;
         List<AgentInfo> agentInfos = entityManager.createQuery("select ai from AgentInfo ai where ai.licenseHolder.id = :licHolder " +
                 "and ai.agentType = :agentType " +
                 "and ((ai.startDate between :startdate and :enddate) or (ai.endDate between :startdate and enddate))")

@@ -1,12 +1,11 @@
 package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.POrderBase;
-import org.msh.pharmadex.domain.PurOrder;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.service.POrderService;
-import org.msh.pharmadex.service.PurOrderService;
-import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -15,7 +14,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.List;
+import java.util.*;
+import java.util.ResourceBundle;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,14 +32,42 @@ public class PurOrderListBn implements Serializable {
     POrderService pOrderService;
     @ManagedProperty(value = "#{userSession}")
     private UserSession userSession;
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
 
     private PurOrder purOrder = new PurOrder();
     private List<PurOrder> purOrders;
     private String pipNo;
-
+    private User curUser;
+    FacesContext facesContext;
+    java.util.ResourceBundle bundle;
 
     @PostConstruct
     private void init() {
+        facesContext = FacesContext.getCurrentInstance();
+        bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        Long id = userSession.getLoggedINUserID();
+        curUser = userService.findUser(id);
+    }
+
+    public String openOrder() {
+        Long pId = Scrooge.beanParam("purOrderID"); //from list xhtml
+        PIPOrder pOrder = pOrderService.findPIPOrderByID(pId);
+        if (userService.userHasRole(curUser,"ROLE_STAFF")) {
+            if (pOrder.getResponsiblePerson() != null) {
+                if (!userSession.getLoggedINUserID().equals(pOrder.getResponsiblePerson().getUserId())) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, bundle.getString("orderMsgOpening"),bundle.getString("orderResponsiblePerson")));
+                    return "";
+                }
+            } else {
+                pOrder.setResponsiblePerson(curUser);
+                pOrderService.updatePOrder(pOrder,curUser);
+            }
+
+        }
+        Scrooge.setBeanParam("purOrderID",pId); //to PIP order form
+
+        return "/internal/purorder.xhtml";
     }
 
     public String searchPurOrder(){
@@ -99,5 +127,37 @@ public class PurOrderListBn implements Serializable {
 
     public void setPipNo(String pipNo) {
         this.pipNo = pipNo;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public User getCurUser() {
+        return curUser;
+    }
+
+    public void setCurUser(User curUser) {
+        this.curUser = curUser;
+    }
+
+    public FacesContext getFacesContext() {
+        return facesContext;
+    }
+
+    public void setFacesContext(FacesContext facesContext) {
+        this.facesContext = facesContext;
+    }
+
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 }

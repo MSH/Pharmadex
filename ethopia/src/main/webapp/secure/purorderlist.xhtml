@@ -21,7 +21,7 @@
 
                     <p:column headerText="#{msgs.application_no}">
                         <p:commandLink id="viewLink" value="#{eachprod.pipNo}" ajax="false"
-                                       action="/secure/purorder">
+                                       action="purorder">
                             <f:param name="purOrderID" value="#{eachprod.id}"/>
                         </p:commandLink>
                     </p:column>
