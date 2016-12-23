@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-12-21T11:29:24 -->
+<!-- 2016-12-23T11:01:51 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="355b4245-79d2-44b4-b421-c0e09801e04f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -33,7 +33,8 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="640" splitType="Stretch">
+		<band height="672" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
 				<reportElement positionType="Float" x="32" y="103" width="523" height="28" uuid="46bb8eac-6ea5-40c7-9b26-335a0ff7b343"/>
 				<textElement textAlignment="Center">
@@ -158,12 +159,11 @@
 				<textFieldExpression><![CDATA["Your application is being processed and you will be notified of the outcome in due course.<br><br><br>An application number has been assigned to the product. Please quote this number in any future correspondence concerning the product."]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="590" width="348" height="46" uuid="44d0c777-bfe3-4d85-837e-d346474794aa">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<reportElement positionType="Float" x="32" y="590" width="348" height="82" uuid="44d0c777-bfe3-4d85-837e-d346474794aa">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["Yours sincerely<br>".concat("<b>Mr. Johannes Gaeseb</b>").concat("<br>REGISTRAR OF MEDICINES")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Yours sincerely<br><br><br>".concat("<b>Mr. Johannes Gaeseb</b>").concat("<br>REGISTRAR OF MEDICINES")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="461" y="215" width="30" height="16" uuid="52dfa284-41f4-439d-a13e-90dbaa02987e">
