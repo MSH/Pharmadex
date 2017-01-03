@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-10-18T13:19:00 -->
+<!-- 2017-01-03T16:05:12 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -19,20 +19,15 @@
 	<parameter name="appResponsible" class="java.lang.String"/>
 	<parameter name="appAddress" class="java.lang.String"/>
 	<parameter name="appNum" class="java.lang.String"/>
+	<parameter name="sampleComment" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="419" splitType="Stretch">
+		<band height="337" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="236" y="5" width="100" height="100" uuid="b94aef40-5b47-43d1-87ca-52fddd50615b">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
-			</image>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="226" width="524" height="16" uuid="1f59944e-c6d5-4148-a209-fbea606c8a28">
+				<reportElement positionType="Float" x="32" y="144" width="524" height="16" uuid="1f59944e-c6d5-4148-a209-fbea606c8a28">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -42,7 +37,7 @@
 				<textFieldExpression><![CDATA[$P{appName} == null ? "":$P{appName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="242" width="524" height="13" uuid="bf31c222-6722-4363-a181-060e87ee1b99">
+				<reportElement positionType="Float" x="32" y="160" width="524" height="13" uuid="bf31c222-6722-4363-a181-060e87ee1b99">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -52,41 +47,16 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{appAddress} == null ? "": ($P{appAddress}== ""?"" :$P{appAddress})]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="32" y="209" width="159" height="16" uuid="9d16ed9a-7982-4820-8b6d-ce31180d823e">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA["Memo No: ____________________  "]]></textFieldExpression>
-			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="258" width="524" height="16" uuid="61372f6d-0b95-4163-9f3e-ff79404b8106">
+				<reportElement positionType="Float" x="32" y="176" width="524" height="16" uuid="61372f6d-0b95-4163-9f3e-ff79404b8106">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["Attention: ".concat( $P{appResponsible} == null ? "____________________":$P{appResponsible})]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="428" y="209" width="29" height="16" uuid="ae4a7214-f0ee-475e-ac84-d7448a101f01">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA["Date:"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="478" y="209" width="79" height="16" uuid="e4a08ebe-e69b-4ab4-829a-c5604e6f8d09">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
-			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="212" y="322" width="344" height="16" uuid="65b2b8eb-706c-459e-a81c-f68c816c143c">
+				<reportElement positionType="Float" x="212" y="240" width="344" height="16" uuid="65b2b8eb-706c-459e-a81c-f68c816c143c">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -97,7 +67,7 @@
 				<textFieldExpression><![CDATA[$P{appNum} == null ? "":$P{appNum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="32" y="302" width="259" height="16" uuid="8b06b210-bf3e-4a32-b36e-cb9fde9f3297">
+				<reportElement positionType="Float" x="32" y="220" width="259" height="16" uuid="8b06b210-bf3e-4a32-b36e-cb9fde9f3297">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -105,39 +75,75 @@
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Subject: Application for sending samples for testing"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Subject: Request for sending samples for testing"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="32" y="322" width="159" height="16" uuid="38c501ea-c6e5-4dc6-9a0b-76fecf22f1ad">
+				<reportElement positionType="Float" x="32" y="240" width="159" height="16" uuid="38c501ea-c6e5-4dc6-9a0b-76fecf22f1ad">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA["Application Reference Number: "]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="32" y="270" width="524" height="67" uuid="25cd91d6-5703-4242-b1e0-7d65015cdf4b"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["Dear Sir,<br><br>You are requested to send samples of your product for testing and analysis to the Drug Testing Laboratory (DTL) or Chittagong Drug Testing Laboratory (CDTL). In your submission, make sure to include:  ".concat("<ul><li>Relevant analytical documentation for better understanding</li><li>	Copy of The Bank Treasury Chalan receipt</li></ul><br>").concat($P{sampleComment} == null ? "":$P{sampleComment})]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="32" y="0" width="59" height="53" uuid="e74d6854-6cec-4cb7-851d-00ccd69e91aa">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
+			</image>
 			<staticText>
-				<reportElement x="33" y="111" width="524" height="48" uuid="d8c24777-6288-46e2-af61-b1d225d319f3">
+				<reportElement x="141" y="0" width="300" height="48" uuid="b2ef999c-7d38-4613-90d0-74a211f2c32a">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="11" isBold="true" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Government of the People’s Republic of Bangladesh
+Directorate General of Drug Administration (DGDA)
+Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
+			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="491" y="0" width="59" height="53" uuid="f814c2e7-620d-4206-a0f6-a40314f2c5bc">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["logo_header_DGDA.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="32" y="88" width="180" height="16" uuid="6a844e83-9ff4-4522-aef7-57abfbda467f">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Center" markup="html">
-					<font fontName="DejaVu Sans" size="11" isBold="true" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[Government of the Peoples Republic of Bangladesh<br>Directorate General of Drug Administration (DGDA)<br>Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="32" y="352" width="524" height="67" uuid="25cd91d6-5703-4242-b1e0-7d65015cdf4b"/>
-				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["Dear Sir,<br><br>You are requested to send samples of your product for testing and analysis to the Drug Testing Laboratory (DTL) or Chittagong Drug Testing Laboratory (CDTL). In your submission, make sure to include: <ul><li>The minimum sample required (information can be found at www.dgda.gov.bd)</li><li>	Relevant analytical documentation for better understanding</li><li>	Copy of The Bank Treasury Chalan receipt</li> </ul>"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Memo No: ____________________  "]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="32" y="177" width="524" height="16" uuid="d9c1123b-810a-48c9-9eb4-79d7e51e5a1d">
+			<textField>
+				<reportElement positionType="Float" x="408" y="88" width="50" height="16" uuid="d74d130f-a07c-4954-9eb7-e637a2caa189">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Date:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="464" y="88" width="93" height="16" uuid="029ec76a-aeb9-460a-957a-376f5d2d27ba">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="32" y="128" width="249" height="16" uuid="91531792-54cd-42a5-8ad2-52624d16e044">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Center" markup="html">
-					<font fontName="DejaVu Sans" size="11" isBold="true" isItalic="false"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
 				</textElement>
-				<text><![CDATA[Sample Request Letter]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["To,"]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageFooter>
@@ -183,7 +189,7 @@ Website: www.dgda.gov.bd]]></text>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right" markup="html"/>
-				<textFieldExpression><![CDATA["Director General,<br>Directorate General of Drug Administration<br>&<br>Licencing Authority (Drugs)<br>Government of the People’s Republic of Bangladesh"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Director General,<br>Directorate General of Drug Administration<br>&<br>Licensing Authority (Drugs)<br>Government of the People’s Republic of Bangladesh"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

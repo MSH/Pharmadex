@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-09-12T14:33:46 -->
+<!-- 2017-01-03T12:03:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="form13" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="395d8715-444f-481e-a21b-281d8738da54">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -20,10 +20,10 @@
 		<band splitType="Stretch"/>
 	</background>
 	<summary>
-		<band height="71" splitType="Stretch">
+		<band height="183" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
-				<reportElement positionType="Float" x="10" y="7" width="128" height="16" uuid="efd6a221-3ec7-42a9-b185-631fca84d39b">
+				<reportElement positionType="Float" x="10" y="119" width="128" height="16" uuid="efd6a221-3ec7-42a9-b185-631fca84d39b">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -34,17 +34,50 @@
 				<textFieldExpression><![CDATA["Approved shelf-life:"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="147" y="7" width="342" height="16" uuid="981e4f79-83db-401b-95ab-7949aaf1619e">
+				<reportElement positionType="Float" x="147" y="119" width="342" height="16" uuid="981e4f79-83db-401b-95ab-7949aaf1619e">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{shelfine} == null ? "":$F{shelfine}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="10" y="39" width="522" height="32" uuid="fefda5be-c055-496b-b1ce-25d4ac56ac2e">
+				<reportElement x="10" y="151" width="522" height="32" uuid="fefda5be-c055-496b-b1ce-25d4ac56ac2e">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA["The approved shelf-life of this product when packaged and labeled as detailed in the application and modified in subsequent correspondence is as follows."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["The approved shelf-life of this product when packaged and labeled on the basis of accelerated stability study as detailed in the application and modified in subsequent correspondence is as follows."]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="10" y="92" width="100" height="16" uuid="c1dbec70-0e1a-4b91-ab39-f25773b67720">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Attachment 2"]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="18" y="5" width="59" height="53" uuid="9e95d87f-73e1-43be-8d6c-4f5e4c7824b5">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="127" y="5" width="300" height="48" uuid="e708c079-8070-47b1-9f06-da4a28e0e4ac">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="11" isBold="true" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Government of the People’s Republic of Bangladesh
+Directorate General of Drug Administration (DGDA)
+Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
+			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="477" y="5" width="59" height="53" uuid="86f261f1-73ec-4edf-8fd8-8495e9d573f3">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["logo_header_DGDA.png"]]></imageExpression>
+			</image>
 		</band>
 	</summary>
 </jasperReport>
