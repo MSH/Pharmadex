@@ -363,6 +363,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}		
 		utilsByReports.putNotNull(UtilsByReports.KEY_FULLAPPNAME, fullAppName, true);		
 		
+		/**	Active Ingredient(s) */
 		String activeIngr="" , resActiveIngr="";
 		 List<ProdInn> prodInn = product.getInns();
 			if(prodInn!=null){				

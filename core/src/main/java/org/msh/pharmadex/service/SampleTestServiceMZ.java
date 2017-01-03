@@ -161,7 +161,11 @@ public class SampleTestServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
 		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);*/
-
+		String sComment = "";
+		if( sampleComment!=null)
+			if(sampleComment.getComment()!=null)
+				sComment = sampleComment.getComment();
+		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLECOMMENT,sComment, true);
 		param.put("date", new Date());
 
 		if(resource != null){

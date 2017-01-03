@@ -127,6 +127,7 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_ACTIVEINGR="activeIngr";
 	public static String KEY_PRODCONTROLLER="prodController";
 	public static String KEY_RELEASERESPONSIBILITY ="releaseResponsibility";
+	public static String KEY_SAMPLECOMMENT="sampleComment";
 	
 	private HashMap<String, Object> param = null;
 	private HashMap<String, Object> field = null;
