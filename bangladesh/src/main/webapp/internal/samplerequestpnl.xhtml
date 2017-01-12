@@ -51,23 +51,11 @@
             <p:outputLabel value="#{sample.createdBy.name}"/>
         </p:column>
 
-        <p:column headerText="#{msgs.updated_date}">
-            <p:outputLabel value="#{sample.updatedDate}" converter="javax.faces.DateTime"/>
-        </p:column>
-
         <p:column headerText="#{msgs.sampletest_recieved}">
             <p:outputLabel value="#{sample.recievedDt}"
                            converter="javax.faces.DateTime"/>
         </p:column>
 
-        <p:column headerText="#{msgs.sample_test_date}">
-            <p:cellEditor>
-                <f:facet name="output"><p:outputLabel value="#{sample.resultDt}"
-                                                      converter="javax.faces.DateTime"/></f:facet>
-                <f:facet name="input"><p:calendar id="samplesubdt" value="#{sample.resultDt}"
-                                                  style="width:100%"/></f:facet>
-            </p:cellEditor>
-        </p:column>
     </p:dataTable>
 
     <p:dialog header="#{msgs.sample_test_result}" widgetVar="addSampleTestDlg" id="addSampleTestDlg"
@@ -76,17 +64,15 @@
          			columnClasses="label value">
             <p:outputLabel value="#{msgs.item_requested}" for="itm_req"/>
             <p:selectManyCheckbox id="itm_req" value="#{sampleTestBn.sampleTest.sampleTypes}" layout="grid"
-                                  columns="1"
+                                  columns="2"
                                   converter="omnifaces.GenericEnumConverter">
                 <f:selectItems value="#{globalLists.sampleTypes}" var="type" itemLabel="#{msgs[type.key]}"
                                itemValue="#{type}"/>
                 <f:attribute name="collectionType" value="java.util.ArrayList"/>
             </p:selectManyCheckbox>
 
-            <p:outputLabel value="#{msgs.global_quantity}" for="quantity"/>
-            <p:inputText value="#{sampleTestBn.sampleTest.quantity}" id="quantity" style="width: 640px;"/>
 
-            <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
+            <p:outputLabel value="#{msgs.Sample_detail}" for="revsummary" styleClass="label"/>
             <pe:ckEditor id="revsummary" value="#{sampleTestBn.sampleComment.comment}"
 								 height="200" width="650"
 								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"

@@ -306,16 +306,12 @@
 									<p:commandButton value="#{msgs.btn_create_ackletter}"
 										action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}"
 										oncomplete="PF('createAckLet').show()" update=":createAckLet" 
-										rendered="#{!userSession.company}"/>
+										/>
 									<p:dataTable id="lettertable" value="#{processProdBn.letters}"
 										var="letter">
 
 										<p:column headerText="#{msgs.title}">
 											<h:outputText value="#{letter.title}" />
-										</p:column>
-
-										<p:column headerText="#{msgs.letter_type}">
-											<h:outputText value="#{msgs[letter.letterType.key]}" />
 										</p:column>
 
 										<p:column headerText="#{msgs.filename}">
@@ -344,7 +340,7 @@
 													value="#{processProdBn.fileDownload(letter)}" />
 											</p:commandButton>
 										</p:column>
-										<p:column style="width: 30px;" rendered="#{!userSession.company}">
+										<p:column style="width: 30px;">
 											<p:commandButton id="deletelet"
 												action="#{processProdBnMZ.deleteLetter(letter)}"
 												icon="ui-icon-trash" ajax="true" immediate="true"

@@ -1,0 +1,195 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reviewHome" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showDetail="true" showSummary="true" id="messages"/>
+
+            <div style="width:1054px">
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="prodApp" value="#{sampleDetailBn.prodApplications}"/>
+                </ui:decorate>
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <div align="right">
+                <p:commandButton value="#{msgs.notif_recieving}" action="/secure/samplerecieving" ajax="false" rendered="#{sampleDetailBn.displayRec}">
+                    <f:param name="sampleTestID" value="#{sampleDetailBn.sampleTest.id}"/>
+                </p:commandButton>
+                <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.initComment}" ajax="true" oncomplete="PF('submitSampleDlg').show()"
+                                 update=":reviewHome :submitsamplefrm" process="@form" rendered="#{sampleDetailBn.displaySubmit}"/>
+                <p:commandButton value="#{msgs.global_approve}" action="#{sampleDetailBn.initComment}" oncomplete="PF('approveSampleDlg').show()" ajax="true"
+                                 update=":reviewHome :approvesamplefrm" process="@form"
+                                 rendered="#{userSession.labHead}"/>
+                <!--                <p:commandButton value="#{msgs.global_save}" action="#{sampleDetailBn.saveReview}" ajax="true"
+                                                 update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin||userSession.labModerator}"/>
+                -->
+                <p:commandButton value="#{msgs.global_back}" immediate="true"
+                                 action="/internal/processreg"
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{sampleDetailBn.sampleTest.prodApplications.id}"/>
+                </p:commandButton>
+
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
+                <p:tab title="#{msgs.sampletest_detail}">
+                    <p:panel value="Sample Test Detail">
+                        <h:panelGrid columns="2" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <h:outputText value="#{msgs.global_curr_status}" styleClass="label"/>
+                            <h:outputText value="#{msgs[sampleDetailBn.sampleTest.sampleTestStatus.key]}"
+                                          styleClass="label"/>
+
+
+                            <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
+                            <p:dataList id="itm_req" value="#{sampleDetailBn.sampleTest.sampleTypes}" var="type">
+                                #{msgs[type.key]}
+                            </p:dataList>
+
+                            <p:outputLabel value="#{msgs.created_by}"/>
+                            <p:outputLabel value="#{sampleDetailBn.sampleTest.createdBy.name}"/>
+
+                            <p:outputLabel value="#{msgs.sampletest_recieved}" rendered="#{not empty sampleDetailBn.sampleTest.recievedDt}"/>
+                            <p:outputLabel value="#{sampleDetailBn.sampleTest.recievedDt}" rendered="#{not empty sampleDetailBn.sampleTest.recievedDt}"
+                                           converter="javax.faces.DateTime"/>
+
+                            <p:outputLabel value="#{msgs.sample_test_date}" rendered="#{not empty sampleDetailBn.sampleTest.resultDt}"/>
+                            <p:outputLabel value="#{sampleDetailBn.sampleTest.resultDt}"
+                                           rendered="#{not empty sampleDetailBn.sampleTest.resultDt}"
+                                           converter="javax.faces.DateTime"/>
+
+
+                        </h:panelGrid>
+                    </p:panel>
+
+
+                </p:tab>
+                <p:tab title="#{msgs.Sample_detail}">
+
+                    <p:dataTable id="commenttable" value="#{sampleDetailBn.sampleComments}" var="it">
+                        <p:column style="width:200px;">
+                            <p:outputLabel styleClass="ui-icon ui-icon-comment"
+                                           style="display:inline-block;"/>
+                            <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+                            <div style="font-size: smaller;">
+                                <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                            </div>
+                        </p:column>
+
+                        <p:column>
+                            <div style="padding-left:10px;padding-top:10px;">
+                                <h:outputText value="#{it.comment}"
+                                              escape="false"
+                                              styleClass="text"/>
+                            </div>
+                        </p:column>
+                        <p:column style="width:200px;">
+                            #{it.sampleTestStatus}
+                        </p:column>
+                    </p:dataTable>
+
+
+                </p:tab>
+
+            </p:tabView>
+
+
+        </h:form>
+
+        <p:dialog header="#{msgs.submit_sample_result}" widgetVar="submitSampleDlg" id="submitSampleDlg"
+                  modal="true" dynamic="true">
+            <h:form id="submitsamplefrm">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.global_comment}" for="revsummary" styleClass="label"/>
+                    <pe:ckEditor id="revsummary" value="#{sampleDetailBn.sampleComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+								 required="true" />          
+                    <p:message for="revsummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.submitResult}"
+                                 oncomplete="PF('submitSampleDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.global_approve}" widgetVar="approveSampleDlg" id="approveSampleDlg"
+                  modal="true" dynamic="true">
+            <h:form id="approvesamplefrm">
+                <p:outputLabel value="Please make sure that the sample result has been uploaded. If not, go to the attachments tab and upload it." styleClass="hint"/>
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.global_comment}" for="approvesummary" styleClass="label"/>
+                    <pe:ckEditor id="approvesummary" value="#{sampleDetailBn.sampleComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+								 required="true" />
+                    <p:message for="approvesummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.approveResult}"
+                                 oncomplete="PF('approveSampleDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.add_comment}" widgetVar="addcommentDlg" id="addcommentDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="addcomment" styleClass="label"/>
+                    <pe:ckEditor id="addcomment" value="#{sampleDetailBn.sampleComment.comment}"
+								 height="200" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+								 required="true" />
+                    <p:message for="addcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.submitComment}"
+                                 oncomplete="PF('addcommentDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="2" style="margin-bottom:10px" columnClasses="label value">
+                    <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                    <p:inputText id="attachtitle" value="#{sampleDetailBn.prodAppLetter.title}"/>
+                    <p:outputLabel for="attachtype" value="#{msgs.attach_type}"/>
+                    <p:selectOneMenu id="attachtype" value="#{sampleDetailBn.prodAppLetter.letterType}"
+                                     required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalLists.letterTypes}" var="dosUom" itemLabel="#{dosUom}"
+                                       itemValue="#{dosUom}"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="attachcomment" value="#{sampleDetailBn.prodAppLetter.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{sampleDetailBn.handleFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reviewHome:growl :reviewHome:messages"
+                              multiple="false"
+                              sizeLimit="100000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{sampleDetailBn.addDocument}"
+                                 oncomplete="PF('attachdlg').hide()" update=":reviewHome"/>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
