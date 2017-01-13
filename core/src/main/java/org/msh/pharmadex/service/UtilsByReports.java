@@ -128,11 +128,13 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_PRODCONTROLLER="prodController";
 	public static String KEY_RELEASERESPONSIBILITY ="releaseResponsibility";
 	public static String KEY_SAMPLECOMMENT="sampleComment";
+	public static String KEY_SAMPLECOMMENTBN="sampleCommentBN";
 	
 	private HashMap<String, Object> param = null;
 	private HashMap<String, Object> field = null;
 	private ProdApplications prodApps = null;
 	private Product prod = null;
+	private static String format ="";
 	
 	public void init(HashMap<String, Object> _param, ProdApplications _prodApps, Product _prod){
 		this.param = _param;
@@ -649,13 +651,27 @@ public class UtilsByReports implements Serializable {
 		}
 		return manufName;
     }
+	
 	public static DateFormat getDateformat() {
-		DateFormat  dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		String format = getFormat();
+		if("".equals(format)){
+			format = "dd/MM/yyyy";
+		}
+		DateFormat  dateFormat = new SimpleDateFormat(format);
 		Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
 		if(locale!=null){
-			dateFormat = new SimpleDateFormat("dd/MM/yyyy", locale);			
+			dateFormat = new SimpleDateFormat(format, locale);			
 		}		
 		return dateFormat;
 	}
+	
+	public static String getFormat() {
+		return format;
+	}
+	
+	public void setFormat(String format) {
+		this.format = format;
+	}
+	
 	
 }

@@ -131,7 +131,7 @@ public class ProdConsentFormMZ implements Serializable {
         if (retObject.getMsg().equals("persist")) {
             prodApplications = (ProdApplications) retObject.getObj();
             if(!userSession.isCompany())
-            	prodApplicationsServiceMZ.createAckLetter(prodApplications, userSession.getLoggedINUserID());
+            	prodApplicationsServiceMZ.createAckLetter(prodApplications, userSession.getLoggedINUserID(),userSession.isCompany(),userSession.isStaff());
             timeLine.setProdApplications(prodApplications);
             timeLineService.saveTimeLine(timeLine);
             context.addMessage(null, new FacesMessage(bundle.getString("app_submit_success")));

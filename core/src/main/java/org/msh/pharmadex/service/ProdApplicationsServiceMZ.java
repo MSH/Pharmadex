@@ -1018,7 +1018,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @param prodApp current prodapplication
 	 * @return persist or error
 	 */
-	public String createAckLetter(ProdApplications prodApp, Long loggedINUserID) {
+	public String createAckLetter(ProdApplications prodApp, Long loggedINUserID, boolean isCompany, boolean isStaff) {
 		context = FacesContext.getCurrentInstance();		 
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 

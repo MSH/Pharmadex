@@ -6,6 +6,8 @@ package org.msh.pharmadex.domain.enums;
 public enum LetterType {
     ACK_SUBMITTED,
     ACK_RECEIVED,
+    ACC_SUBMITTED,
+    ACC_RECEIVED,
     INVOICE,
     PAYMENT_RECEIVED,
     REMINDER,

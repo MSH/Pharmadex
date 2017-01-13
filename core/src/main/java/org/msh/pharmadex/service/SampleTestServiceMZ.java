@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -26,6 +27,7 @@ import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.domain.enums.SampleType;
 import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.util.RetObject;
@@ -44,7 +46,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 public class SampleTestServiceMZ implements Serializable {
 
 	private static final long serialVersionUID = 5328007438726352679L;
-
+	private java.util.ResourceBundle bundle;
+	private FacesContext context;
 	@Autowired
 	private SampleTestDAO sampleTestDAO;
 
@@ -66,9 +69,10 @@ public class SampleTestServiceMZ implements Serializable {
 	public RetObject createSampleReqLetter(SampleTest sampleTest,Long loggedINUserID  ){
 		ProdApplications prodApp = prodApplicationsService.findProdApplications(sampleTest.getProdApplications().getId());
 		Product product = prodApp.getProduct();
+	
 		try {
 			File invoicePDF = File.createTempFile("" + product.getProdName().split(" ")[0] + "_samplerequest", ".pdf");
-			JasperPrint jasperPrint = initSampleReq(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity(),loggedINUserID);
+			JasperPrint jasperPrint = initSampleReq(prodApp, sampleTest.getSampleComments().get(0), sampleTest.getQuantity(),loggedINUserID, sampleTest.getSampleTypes());
 			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
 			byte[] file = IOUtils.toByteArray(new FileInputStream(invoicePDF));
 			
@@ -100,9 +104,11 @@ public class SampleTestServiceMZ implements Serializable {
 		}
 	}
 
-	public JasperPrint initSampleReq(ProdApplications prodApplications, SampleComment sampleComment, String quantity, Long loggedINUserID ) throws JRException, SQLException {
+	public JasperPrint initSampleReq(ProdApplications prodApplications, SampleComment sampleComment, String quantity, Long loggedINUserID, List<SampleType> sampleTypes ) throws JRException, SQLException {
 		Product product = prodApplications.getProduct();
 		URL resource = getClass().getResource("/reports/sample_request.jasper");
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		//Connection conn = entityManager.unwrap(Session.class).connection();
 		List<ProdApplications> prodApps = prodApplicationsService.findProdApplicationByProduct(product.getId());
 		prodApplications = (prodApps != null && prodApps.size() > 0) ? prodApps.get(0) : null;
@@ -154,18 +160,23 @@ public class SampleTestServiceMZ implements Serializable {
 				}								
 			}
 		}
-		
-		/*	utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS1, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_ID, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLEQTY, quantity, true);
-		utilsByReports.putNotNull(UtilsByReports.KEY_ADDRESS2, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_COUNTRY, "", false);*/
+
+		String res ="";
+		if(sampleTypes!=null && sampleTypes.size()>0){		
+			for(SampleType sType: sampleTypes){
+				 res +=", "+	bundle.getString(sType.getKey());
+			}
+			if(res.length()>0){
+				res = res.replaceFirst(", ", "");
+			}
+		}
 		String sComment = "";
 		if( sampleComment!=null)
 			if(sampleComment.getComment()!=null)
 				sComment = sampleComment.getComment();
 		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLECOMMENT,sComment, true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_SAMPLECOMMENTBN,res+sComment, true);
+		
 		param.put("date", new Date());
 
 		if(resource != null){
