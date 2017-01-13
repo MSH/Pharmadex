@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-01-03T14:01:46 -->
+<!-- 2017-01-13T11:30:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="marketing_authorization" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ede1d88-e4a3-4012-a97f-fcb8fdec872e">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -310,7 +310,7 @@ Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA["________________________"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="212" y="461" width="342" height="16" uuid="161c1707-23db-489a-ad40-a159b5f91beb">
@@ -397,7 +397,7 @@ Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["Conditions which apply to this approval are as follows. "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Conditions which apply to this approval are as follows.<ul><li>The product(s) must conform with all the details provided in your application and as modified in subsequent correspondence. </li> <li>	No changes may be made to the product without prior approval of the Licensing Authority (Drugs)</li><li>The approved sites of manufacturer stated in Attachment 1. </li><li>The Approved shelf life is that in Attachment 2. The shelf life may be changed having the prior approval of Licensing Authority.</li><li>The only Product Information (PI) that may be supplied with or for this product must be the PI that is approved. Attachment 3 is a copy of the approved PI. </li></ul> "]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -408,7 +408,7 @@ Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["<ul><li>The product(s) must conform with all the details provided in your application and as modified in subsequent correspondence. </li> <li>	No changes may be made to the product without prior approval of the Licensing Authority (Drugs)</li><li>The approved sites of manufacturer stated in Attachment 1. </li><li>The Approved shelf life is that in Attachment 2. The shelf life may be changed having the prior approval of Licensing Authority.</li><li>The only Product Information (PI) that may be supplied with or for this product must be the PI that is approved. Attachment 3 is a copy of the approved PI. </li><li>	The Product Information (PI) may not be altered without prior approval of Licensing Authority, except for safety updates that further restrict use of the product. Any such safety-related changes must be notified to the Licensing Authority within five days of making the changes.</li></ul>"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<ul><li>	The Product Information (PI) may not be altered without prior approval of Licensing Authority, except for safety updates that further restrict use of the product. Any such safety-related changes must be notified to the Licensing Authority within five days of making the changes.</li></ul>"]]></textFieldExpression>
 			</textField>
 			<break>
 				<reportElement x="0" y="5" width="543" height="1" uuid="c6fea491-e176-4536-ae6c-cab2808e8617"/>
@@ -440,7 +440,6 @@ Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 			<subreport>
 				<reportElement key="subreport-1" x="0" y="604" width="550" height="20" uuid="4cab5a9e-330b-4fae-b90c-bf842e62a16a">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-					<printWhenExpression><![CDATA[false]]></printWhenExpression>
 				</reportElement>
 				<dataSourceExpression><![CDATA[$F{filterF16DataSource}]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{Subreport_1}]]></subreportExpression>
@@ -700,9 +699,7 @@ Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 				<reportElement x="0" y="454" width="560" height="1" uuid="e50d1f65-d4bc-4798-86d2-c18bab2e286a"/>
 			</break>
 			<break>
-				<reportElement x="0" y="596" width="560" height="1" uuid="30569eef-b9fb-42da-b904-e9e61fa337fd">
-					<printWhenExpression><![CDATA[false]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="0" y="596" width="560" height="1" uuid="30569eef-b9fb-42da-b904-e9e61fa337fd"/>
 			</break>
 		</band>
 	</summary>

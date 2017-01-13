@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-01-03T15:50:27 -->
+<!-- 2017-01-12T19:13:12 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -28,8 +28,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="413" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		<band height="429" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="32" y="144" width="524" height="16" uuid="1f59944e-c6d5-4148-a209-fbea606c8a28">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
@@ -189,13 +188,12 @@
 				<textFieldExpression><![CDATA["In response to your application number mentioned above related to the Marketing Authorization of the following product, you are requested to provide the following information(s) as early as possible."]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="32" y="397" width="524" height="16" uuid="222c05d8-a923-45a6-8ce3-bfbe88870b5c">
+				<reportElement positionType="Float" x="32" y="397" width="524" height="32" uuid="222c05d8-a923-45a6-8ce3-bfbe88870b5c">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA["The application has not been accepted for evaluation because the following documents are not complete or missing : "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["                 The application has not been accepted for evaluation because the following documents are not complete or missing. "]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="32" y="329" width="524" height="1" uuid="f9da14eb-599d-4758-880a-8d8a4ffbd902">

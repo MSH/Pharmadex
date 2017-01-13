@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-01-03T16:05:12 -->
+<!-- 2017-01-13T09:48:36 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -19,7 +19,7 @@
 	<parameter name="appResponsible" class="java.lang.String"/>
 	<parameter name="appAddress" class="java.lang.String"/>
 	<parameter name="appNum" class="java.lang.String"/>
-	<parameter name="sampleComment" class="java.lang.String"/>
+	<parameter name="sampleCommentBN" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -86,7 +86,7 @@
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="32" y="270" width="524" height="67" uuid="25cd91d6-5703-4242-b1e0-7d65015cdf4b"/>
 				<textElement markup="html"/>
-				<textFieldExpression><![CDATA["Dear Sir,<br><br>You are requested to send samples of your product for testing and analysis to the Drug Testing Laboratory (DTL) or Chittagong Drug Testing Laboratory (CDTL). In your submission, make sure to include:  ".concat("<ul><li>Relevant analytical documentation for better understanding</li><li>	Copy of The Bank Treasury Chalan receipt</li></ul><br>").concat($P{sampleComment} == null ? "":$P{sampleComment})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Dear Sir,<br><br>You are requested to send samples of your product for testing and analysis to the Drug Testing Laboratory (DTL) or Chittagong Drug Testing Laboratory (CDTL). In your submission, make sure to include: <ul><li>".concat($P{sampleCommentBN} == null ? "":$P{sampleCommentBN}).concat("</li><li>Relevant analytical documentation for better understanding</li><li>	Copy of The Bank Treasury Chalan receipt</li></ul><br>")]]></textFieldExpression>
 			</textField>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="32" y="0" width="59" height="53" uuid="e74d6854-6cec-4cb7-851d-00ccd69e91aa">
