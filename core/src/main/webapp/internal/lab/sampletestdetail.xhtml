@@ -57,7 +57,7 @@
 
                             <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
                             <p:dataList id="itm_req" value="#{sampleDetailBn.sampleTest.sampleTypes}" var="type">
-                                #{type}
+                                #{msgs[type.key]}
                             </p:dataList>
 
                             <p:outputLabel value="#{msgs.global_quantity}" for="quantity" styleClass="label"/>
