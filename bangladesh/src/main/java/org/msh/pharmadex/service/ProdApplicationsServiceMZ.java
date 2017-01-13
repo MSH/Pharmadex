@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -40,7 +39,6 @@ import org.msh.pharmadex.dao.iface.ProdAppLetterDAO;
 import org.msh.pharmadex.dao.iface.RevDeficiencyDAO;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.Company;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
@@ -77,6 +75,9 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
+
+import org.msh.pharmadex.service.Manufac;
+import org.msh.pharmadex.service.ManufacFP;
 
 /**
  */
@@ -489,7 +490,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 								productName = el.getProduct().getProdName();								
 							}
 							if(el.getProduct().getShelfLife()!=null){
-								appShelf = el.getProduct().getShelfLife();
+								appShelf = el.getProduct().getShelfLife()+" months";
 							}
 							if(el.getProduct().getStorageCndtn()!=null){
 								storageCond = el.getProduct().getStorageCndtn();
@@ -523,14 +524,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 									}
 								}
 							}			
-						}
-						
-						String	step = bundle.getString(CompanyType.FIN_PROD_MANUF.getKey());//"Finished Product Manufacturer";
+						}										
+						String dosForm =  (product.getDosForm() != null && product.getDosForm().getDosForm() != null) ? product.getDosForm().getDosForm():"";
 						Manufac manuf = new Manufac();
 						manuf.setProductName(productName);
 						manuf.setcompanyName(companyName);
 						manuf.setaddr(addr);
-						manuf.setCompanyType(step);
+						manuf.setCompanyType(dosForm);
 						dataList.add(manuf);
 						
 						ManufacFP manufFP = new ManufacFP();
@@ -859,9 +859,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					if(item.getStaffComment()!=null){
 						if(!"".equals(item.getStaffComment()))
 							staffRemark= item.getStaffComment()+"<br>";
-					}
-					mp.put(UtilsByReports.FLD_DEFICITEM_NAMEMZ,item.getStaffComment()+"</li>");
-					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ". " + item.getChecklist().getName()+"</b> "+staffRemark);
+					}			
+					mp.put(UtilsByReports.FLD_DEFICITEM_NAMEMZ,item.getStaffComment()+"</li>");					
+					mp.put(UtilsByReports.FLD_DEFICITEM_NAME, "<b>"+item.getChecklist().getModule() + ": " + item.getChecklist().getName()+"</b> "+staffRemark);
 					res.add(mp);
 				}
 			}else{
@@ -1162,14 +1162,19 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @param prodApp current prodapplication
 	 * @return persist or error
 	 */
-	public String createAckLetter(ProdApplications prodApp, Long loggedINUserID) {
+	public String createAckLetter(ProdApplications prodApp, Long loggedINUserID, boolean isCompany, boolean isStaff) {
 		context = FacesContext.getCurrentInstance();		 
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
 		try {
-			File invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_ack", ".pdf");
-
+			File invoicePDF =  null;
+			if(isStaff){
+				invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_accept", ".pdf");
+			}else{
+				invoicePDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_ack", ".pdf");
+			}
+		
 			JasperPrint jasperPrint;
 
 			HashMap<String, Object> param = new HashMap<String, Object>();
@@ -1199,6 +1204,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
 			
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPRESPONSIBLE, "", false);
+			
+			Date date= new Date();
+			date.getTime();			
+			utilsByReports.setFormat(getCurFormat());
+			String curDate = UtilsByReports.getDateformat().format(date);
+			utilsByReports.putNotNull(UtilsByReports.KEY_CURDATE, curDate, true);
+			
 			if(loggedINUserID!=null){
 				User curuser = userService.findUser(loggedINUserID);		
 				String res = "", resIn="";
@@ -1219,7 +1231,22 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			if(prodApp.getUsername()!=null){				
 				utilsByReports.putNotNull(UtilsByReports.KEY_USERNAME, prodApp.getUsername(), true);
 			}
-			URL resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
+			String res ="";
+			if(prodApp != null){
+				ProdAppType type = prodApp.getProdAppType();
+				if(type!=null)
+					res = bundle.getString(prodApp.getProdAppType().getKey());							
+			}
+			utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE,res,true);	
+			
+			URL resource =null;
+			
+			if(isStaff){
+				 resource = getClass().getClassLoader().getResource("/reports/acceptance.jasper");
+			}else{
+				resource = getClass().getClassLoader().getResource("/reports/letter.jasper");
+			}
+			
 			if(resource != null){
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 				net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(invoicePDF));
@@ -1230,11 +1257,21 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				attachment.setFile(file);
 				attachment.setProdApplications(prodApp);
 				attachment.setFileName(invoicePDF.getName());
-				attachment.setTitle(bundle.getString("Letter.title_acknow"));
-				attachment.setUploadedBy(prodApp.getCreatedBy());
-				attachment.setComment(bundle.getString("Letter.comment_acknow"));
+				
+				if(isStaff){
+					attachment.setTitle(bundle.getString("Letter.title_acceptance"));
+					attachment.setComment(bundle.getString("Letter.comment_acceptance"));
+				}else{
+					attachment.setTitle(bundle.getString("Letter.title_acknow"));
+					attachment.setComment(bundle.getString("Letter.comment_acknow"));
+				}
+			
+				attachment.setUploadedBy(prodApp.getCreatedBy());				
 				attachment.setContentType("application/pdf");
 				attachment.setLetterType(LetterType.ACK_SUBMITTED);
+				if(isStaff){
+					attachment.setLetterType(LetterType.ACC_SUBMITTED);
+				}
 				prodAppLetterDAO.save(attachment);
 				return "persist";
 			}
@@ -1247,6 +1284,15 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			return "error";
 		}
 	}
+
+	private String getCurFormat() {
+		String format ="";
+		if(!workspaceDAO.findAll().isEmpty() && workspaceDAO.findAll().size()>0){
+			 format =workspaceDAO.findAll().get(0).getDatePattern();
+		}				
+		return format;
+	}
+
 
 	/**
 	 * set parameter applicant responsible
@@ -1312,8 +1358,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			
 			String dueDateMZ = getDateMZFormat(dueDate,"MMM, yyyy");	
 			utilsByReports.putNotNull(UtilsByReports.KEY_DUEDATEMZ,dueDateMZ);
-			
-			
+						
 			String res ="";
 			if(prodApp != null){
 				ProdAppType type = prodApp.getProdAppType();
