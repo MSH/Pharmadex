@@ -47,6 +47,15 @@ public class ProdAckLetterFormMZ implements Serializable {
     	prodApp.setUsername(send);
 	}
     
+    public String getCreateLetterBtnName(String val){    
+    	context = FacesContext.getCurrentInstance();
+    	bundle = context.getApplication().getResourceBundle(context, "msgs");
+    	if(userSession.isStaff())
+    		return val;
+    	else
+    		return bundle.getString("btn_create_ackletter");
+    }
+    
     public void createLetter(ProdApplications prodApp){
     	prodApplicationsServiceMZ.createAckLetter(prodApp, userSession.getLoggedINUserID(),userSession.isCompany(),userSession.isStaff());
     }
