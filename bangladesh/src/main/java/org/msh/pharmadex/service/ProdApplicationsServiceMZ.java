@@ -390,8 +390,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 							
 							if(el.getCompany().getCompanyName()!=null)
 								companyName = el.getCompany().getCompanyName();
-							 
-							
+														
 							if(el.getCompany().getAddress()!=null){
 								if(el.getCompany().getAddress().getAddress1()!=null){
 									if(!"".equals(el.getCompany().getAddress().getAddress1())){
@@ -480,11 +479,19 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 		
 		if (companyList != null){
-			for(ProdCompany el:companyList){					
-					
-					if (el.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){						
-						String productName="", companyName = "", addr = "", appShelf = "", storageCond = "";
-						
+			
+			ProdCompany el =getFinProdManuf(companyList);
+			if(el== null){
+				el =getTollManuf(companyList);
+			}
+			if(el!=null){
+				String productName="", companyName = "", addr = "", appShelf = "", storageCond = "", step ="";
+				
+					if (el.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){	
+						step =  bundle.getString(CompanyType.FIN_PROD_MANUF.getKey());
+					}else if(el.getCompanyType().equals(CompanyType.TOLL_MANUF)){
+						step =  bundle.getString(CompanyType.TOLL_MANUF.getKey());
+					}	
 						if(el.getProduct()!=null){
 							if(el.getProduct().getProdName()!=null){
 								productName = el.getProduct().getProdName();								
@@ -497,40 +504,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 							}								
 						}
 												
-						if(el.getCompany()!=null){
-							//id = el.getCompany().getId()+"";
-							if(el.getCompany().getCompanyName()!=null)
-								companyName = el.getCompany().getCompanyName();
-							 							
-							if(el.getCompany().getAddress()!=null){
-								if(el.getCompany().getAddress().getAddress1()!=null){
-									if(!"".equals(el.getCompany().getAddress().getAddress1())){
-										addr+=el.getCompany().getAddress().getAddress1()+", ";
-									}							
-								}
-								if(el.getCompany().getAddress().getAddress2()!=null){
-									if(!"".equals(el.getCompany().getAddress().getAddress2())){
-										addr+=el.getCompany().getAddress().getAddress2()+", ";
-									}
-								}
-								if(el.getCompany().getAddress().getZipcode()!=null){
-									if(!"".equals(el.getCompany().getAddress().getZipcode())){
-										addr+=el.getCompany().getAddress().getZipcode()+", ";
-									}
-								}
-								if(el.getCompany().getAddress().getCountry()!=null){
-									if(!"".equals(el.getCompany().getAddress().getCountry())){
-										addr+=el.getCompany().getAddress().getCountry();
-									}
-								}
-							}			
+						if(el.getCompany()!=null){							
+							companyName = 	getCompanyName(el);							 			
+							addr = getAddress(el);									
 						}										
-						String dosForm =  (product.getDosForm() != null && product.getDosForm().getDosForm() != null) ? product.getDosForm().getDosForm():"";
+						 
 						Manufac manuf = new Manufac();
 						manuf.setProductName(productName);
 						manuf.setcompanyName(companyName);
 						manuf.setaddr(addr);
-						manuf.setCompanyType(dosForm);
+						manuf.setCompanyType(step);
 						dataList.add(manuf);
 						
 						ManufacFP manufFP = new ManufacFP();
@@ -541,10 +524,25 @@ public class ProdApplicationsServiceMZ implements Serializable {
 						manufFP.setStorageCond(storageCond);
 						dataListFP.add(manufFP);
 						
+					}else{
+						Manufac manuf = new Manufac();
+						manuf.setProductName("");
+						manuf.setcompanyName("");
+						manuf.setaddr("");
+						manuf.setCompanyType("");
+						dataList.add(manuf);
+						
+						ManufacFP manufFP = new ManufacFP();
+						manufFP.setProductName("");
+						manufFP.setcompanyName("");
+						manufFP.setaddr("");
+						manufFP.setAppShelf("");
+						manufFP.setStorageCond("");
+						dataListFP.add(manufFP);
 					}
 			}
-		}
-		
+
+
 		JasperReport  jasperMasterReport =  (JasperReport)JRLoader.loadObject(new File(resource.getFile())); 
 		Map reportfields = new HashMap(); 
 		if(jasperMasterReport!=null){
@@ -672,6 +670,74 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}else
 			return  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));*/
 	}
+
+	private ProdCompany getFinProdManuf(List<ProdCompany> companyList) {		
+		if (companyList != null){
+			for(ProdCompany company:companyList){
+				if (company.getCompanyType().equals(CompanyType.FIN_PROD_MANUF)){				
+					return company;
+				}
+			}
+		}
+		return null;
+	}
+	private ProdCompany getTollManuf(List<ProdCompany> companyList) {
+		if (companyList != null){
+			for(ProdCompany company:companyList){
+				if (company.getCompanyType().equals(CompanyType.TOLL_MANUF)){				
+					return company;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param el - ProdCompany
+	 * @return companyName ProdCompany
+	 */
+	private String getCompanyName(ProdCompany el) {
+		String companyName ="";
+		if(el.getCompany().getCompanyName()!=null)
+			companyName = el.getCompany().getCompanyName();
+		return companyName;
+	}
+
+
+	/**
+	 * 
+	 * @param el - ProdCompany
+	 * @return all addres ProdCompany
+	 */
+	private String getAddress(ProdCompany el) {
+		String  addr ="";
+		if(el.getCompany().getAddress()!=null){
+			if(el.getCompany().getAddress().getAddress1()!=null){
+				if(!"".equals(el.getCompany().getAddress().getAddress1())){
+					addr+=el.getCompany().getAddress().getAddress1()+", ";
+				}							
+			}
+			if(el.getCompany().getAddress().getAddress2()!=null){
+				if(!"".equals(el.getCompany().getAddress().getAddress2())){
+					addr+=el.getCompany().getAddress().getAddress2()+", ";
+				}
+			}
+			if(el.getCompany().getAddress().getZipcode()!=null){
+				if(!"".equals(el.getCompany().getAddress().getZipcode())){
+					addr+=el.getCompany().getAddress().getZipcode()+", ";
+				}
+			}
+			if(el.getCompany().getAddress().getCountry()!=null){
+				if(!"".equals(el.getCompany().getAddress().getCountry())){
+					addr+=el.getCompany().getAddress().getCountry();
+				}
+			}
+		}	
+		return addr;
+	}
+
+
 	/**
 	 * @return companyName, address1, address, country
 	 */
