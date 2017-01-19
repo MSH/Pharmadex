@@ -391,7 +391,10 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_APPADDRESS)){
 			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
 				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
-				 param.put(k, str);
+				str += prodApps.getApplicant().getAddress().getAddress2() != null ? "<br>"+ prodApps.getApplicant().getAddress().getAddress2():"";
+				str += prodApps.getApplicant().getAddress().getZipcode()!= null ? "<br>"+ prodApps.getApplicant().getAddress().getZipcode():"";
+				str += prodApps.getApplicant().getAddress().getCountry()!= null ? "<br>"+prodApps.getApplicant().getAddress().getCountry():"";
+				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPUSERNAME)){			
 			if(prodApps.getApplicantUser()!=null)
@@ -616,6 +619,9 @@ public class UtilsByReports implements Serializable {
 		if(k.equals(KEY_APPADDRESS)){
 			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
 				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
+				str += prodApps.getApplicant().getAddress().getAddress2() != null ? "<br>"+ prodApps.getApplicant().getAddress().getAddress2():"";
+				str += prodApps.getApplicant().getAddress().getZipcode()!= null ? "<br>"+ prodApps.getApplicant().getAddress().getZipcode():"";
+				str += prodApps.getApplicant().getAddress().getCountry()!= null ? "<br>"+prodApps.getApplicant().getAddress().getCountry():"";
 				field.put(k, str);
 		}		
 		if(k.equals(KEY_APPUSERNAME)){			
