@@ -6,6 +6,7 @@ package org.msh.pharmadex.dao.iface;
 
 import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.enums.CTDModule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,6 +24,7 @@ public interface ReviewInfoDAO extends JpaRepository<ReviewInfo, Long> {
 
     public ReviewInfo findByReviewer_UserIdAndProdApplications_Id(Long reviewer_UserId, Long prodApplications_Id);
     //public List<ReviewInfo> findByProdApplications_IdAndReviewer_UserId( Long prodApplications_Id,Long reviewer_UserId);
+    public ReviewInfo findByReviewer_UserIdAndProdApplications_IdAndCtdModule(Long reviewer_UserId, Long prodApplications_Id, CTDModule ctdModule);
 
     @Query("select distinct ri from ReviewInfo ri left join fetch ri.reviewComments  where ri.id = ?1 ")
     public ReviewInfo findById(Long revInfoID);
