@@ -545,10 +545,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		JasperReport  jasperMasterReport =  (JasperReport)JRLoader.loadObject(new File(resource.getFile())); 
 		Map reportfields = new HashMap(); 
-		if(jasperMasterReport!=null){
-			/*JRMapArrayDataSource source = createRegLetterSource("table", product, prodApp);
-			if(source!=null) 
-				reportfields.put(UtilsByReports.FTR_DATASOUTCE, source);	*/
+		if(jasperMasterReport!=null){			
 			JRBeanCollectionDataSource dataSource = new  JRBeanCollectionDataSource(dataList);
 			param.put(UtilsByReports.FTR_DATASOUTCE,dataSource);
 		}
@@ -556,11 +553,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		//subReport, set fields
         URL subresourceA1 = getClass().getResource("/reports/attachment1.jasper");
         if(subresourceA1!=null){
-        	//attachment1 table 1 			
-			/*JRMapArrayDataSource sourceTable1 = createRegLetterSource("table1", product, prodApp);
-			if(sourceTable1!=null) 
-				reportfields.put(UtilsByReports.FTR_DATASOUTCE1, sourceTable1);	
-			*/
+        	
         	JRBeanCollectionDataSource dataSource1 = new  JRBeanCollectionDataSource(dataListFP);
 			param.put(UtilsByReports.FTR_DATASOUTCE1,dataSource1);
     		//attachment1 table 2	
@@ -645,30 +638,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
         }
        
         JasperPrint jasperPrint;
-        /*if(reportfields.size()>0)
-        	if(reportfields.size()==1)
-        		jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(new Object[] { reportfields}));
-        	else
-        		jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(new Object[] { reportfields}));      	      
-        else
-        	jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));*/
         jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(new Object[] { reportfields})); 
         return jasperPrint;
-	/*
-		String regNum = prodApp.getProdRegNo() != null ? prodApp.getProdRegNo():""; //"2019/08";//
-		String prodName = product.getProdName() != null ? product.getProdName():""; //"AMPICILLIN";//
-		JRMapArrayDataSource source = createRegLetterSource(prodName, regNum);
-		
-		 Map[] masterData = new Map[1];
-		 masterData[0] = new HashMap();
-         masterData[0].put(UtilsByReports.FTR_DATASOUTCE, source);
-	  	
-		JasperPrint jasperPrint;
-		if(source != null){
-			jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JRMapArrayDataSource(masterData));
-			return jasperPrint;
-		}else
-			return  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));*/
+	
 	}
 
 	private ProdCompany getFinProdManuf(List<ProdCompany> companyList) {		
@@ -1254,7 +1226,19 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			utilsByReports.putNotNull(UtilsByReports.KEY_PRODSTRENGTH, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
 			utilsByReports.putNotNull(UtilsByReports.KEY_PACKSIZE, "", false);
-			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, "", false);
+			
+			String manufName = "";
+			List<ProdCompany> companyList = prod.getProdCompanies();
+			if(companyList!=null){
+				ProdCompany el = getFinProdManuf(companyList);
+				if(el == null){
+					el = getTollManuf(companyList);
+				}
+				if(el!=null){
+					manufName = getCompanyName(el);
+				}
+			}			
+			utilsByReports.putNotNull(UtilsByReports.KEY_MANUFNAME, manufName, true);
 
 			//letter
 			utilsByReports.putNotNull(UtilsByReports.KEY_APPNUM, "", false);
