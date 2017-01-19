@@ -41,12 +41,14 @@
                             <h:outputText value="#{msgs.prod_name}"/>
                         </f:facet>
                         <p:commandLink id="viewLink" value="#{eachprod.product.prodName}"
+                        			   rendered="#{!userSession.admin}"
                                        action="/internal/processreg"
                                        ajax="false"
                                        style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
                             <f:param name="prodAppID" value="#{eachprod.id}"/>
                             <f:param name="sourcePage" value="/internal/processprodlist.xhtml"/>
                         </p:commandLink>
+                        <h:outputText value="#{eachprod.product.prodName}" rendered="#{userSession.admin}"/>
                     </p:column>
 
 

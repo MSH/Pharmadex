@@ -25,10 +25,11 @@
                                 ajax="false" rendered="#{userSession.displayAppRegMZ()}"/>
                 </p:submenu>
                 
-				<p:separator rendered="#{!isleftmenu and (userSession.company||userSession.staff||userSession.admin)}"/>
-                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff||userSession.admin}">
+				<p:separator rendered="#{!isleftmenu and (userSession.company||userSession.staff) and !userSession.admin}"/>
+                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff and !userSession.admin}">
                     <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-folder-open"
-                                url="/secure/submittedproducts.faces"/>
+                                url="/secure/submittedproducts.faces"
+                                rendered="#{!userSession.admin}"/>
                     <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-folder-open"
                                 url="/secure/savedproducts.faces"
                                 rendered="#{userSession.displaySavedItemMZ()}"/>
