@@ -389,12 +389,33 @@ public class UtilsByReports implements Serializable {
 				param.put(k, str);
 		}		
 		if(k.equals(KEY_APPADDRESS)){
-			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
-				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
-				str += prodApps.getApplicant().getAddress().getAddress2() != null ? "<br>"+ prodApps.getApplicant().getAddress().getAddress2():"";
-				str += prodApps.getApplicant().getAddress().getZipcode()!= null ? "<br>"+ prodApps.getApplicant().getAddress().getZipcode():"";
-				str += prodApps.getApplicant().getAddress().getCountry()!= null ? "<br>"+prodApps.getApplicant().getAddress().getCountry():"";
+			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null){
+				str = "";
+				if(prodApps.getApplicant().getAddress().getAddress1() != null){
+					if(!"".equals(prodApps.getApplicant().getAddress().getAddress1())){
+						str +="<br>"+ prodApps.getApplicant().getAddress().getAddress1();
+					}
+				}
+				if( prodApps.getApplicant().getAddress().getAddress2() != null ){
+					if(!"".equals( prodApps.getApplicant().getAddress().getAddress2())){
+						str += "<br>"+prodApps.getApplicant().getAddress().getAddress2();
+					}
+				}
+				if(prodApps.getApplicant().getAddress().getZipcode()!= null){
+					if(!"".equals(prodApps.getApplicant().getAddress().getZipcode())){
+						str += "<br>"+prodApps.getApplicant().getAddress().getZipcode();
+					}
+				}
+				if(prodApps.getApplicant().getAddress().getCountry()!= null){
+					if(!"".equals(prodApps.getApplicant().getAddress().getCountry())){
+						str += "<br>"+prodApps.getApplicant().getAddress().getCountry();
+					}
+				}				
+				if(str.length()>0){
+					str = str.replaceFirst("<br>", "");
+				}				
 				param.put(k, str);
+			}				
 		}		
 		if(k.equals(KEY_APPUSERNAME)){			
 			if(prodApps.getApplicantUser()!=null)
@@ -617,12 +638,35 @@ public class UtilsByReports implements Serializable {
 				field.put(k, str);
 		}		
 		if(k.equals(KEY_APPADDRESS)){
-			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null)
-				str = prodApps.getApplicant().getAddress().getAddress1() != null ? prodApps.getApplicant().getAddress().getAddress1():"";
-				str += prodApps.getApplicant().getAddress().getAddress2() != null ? "<br>"+ prodApps.getApplicant().getAddress().getAddress2():"";
-				str += prodApps.getApplicant().getAddress().getZipcode()!= null ? "<br>"+ prodApps.getApplicant().getAddress().getZipcode():"";
-				str += prodApps.getApplicant().getAddress().getCountry()!= null ? "<br>"+prodApps.getApplicant().getAddress().getCountry():"";
-				field.put(k, str);
+			str = "";
+			if(prodApps.getApplicant() != null && prodApps.getApplicant().getAddress() != null){
+				
+				if(prodApps.getApplicant().getAddress().getAddress1() != null){
+					if(!"".equals(prodApps.getApplicant().getAddress().getAddress1())){
+						str +="<br>"+ prodApps.getApplicant().getAddress().getAddress1();
+					}
+				}
+				if( prodApps.getApplicant().getAddress().getAddress2() != null ){
+					if(!"".equals( prodApps.getApplicant().getAddress().getAddress2())){
+						str += "<br>"+prodApps.getApplicant().getAddress().getAddress2();
+					}
+				}
+				if(prodApps.getApplicant().getAddress().getZipcode()!= null){
+					if(!"".equals(prodApps.getApplicant().getAddress().getZipcode())){
+						str += "<br>"+prodApps.getApplicant().getAddress().getZipcode();
+					}
+				}
+				if(prodApps.getApplicant().getAddress().getCountry()!= null){
+					if(!"".equals(prodApps.getApplicant().getAddress().getCountry())){
+						str += "<br>"+prodApps.getApplicant().getAddress().getCountry();
+					}
+				}				
+				if(str.length()>0){
+					str = str.replaceFirst("<br>", "");
+				}				
+			}
+			param.put(k, str);
+				
 		}		
 		if(k.equals(KEY_APPUSERNAME)){			
 			if(prodApps.getUsername()!=null)
