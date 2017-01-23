@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-01-19T17:20:57 -->
+<!-- 2017-01-23T12:14:42 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="marketing_authorization" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ede1d88-e4a3-4012-a97f-fcb8fdec872e">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -305,7 +305,7 @@ Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 				<textFieldExpression><![CDATA["(Before the expiry date you have to apply for renewal of the registration) "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="212" y="445" width="342" height="16" uuid="cf23f45e-9ae7-4038-bd03-0ce625eca2c8">
+				<reportElement positionType="Float" x="212" y="445" width="342" height="16" uuid="cf23f45e-9ae7-4038-bd03-0ce625eca2c8">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
@@ -313,13 +313,13 @@ Aushad Bhaban, Mohakhali, Dhaka-1212]]></text>
 				<textFieldExpression><![CDATA["________________________"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="212" y="461" width="342" height="16" uuid="161c1707-23db-489a-ad40-a159b5f91beb">
+				<reportElement positionType="Float" x="212" y="461" width="342" height="16" uuid="161c1707-23db-489a-ad40-a159b5f91beb">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{regDate} == null ? "":$P{regDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="212" y="477" width="342" height="16" uuid="ddc2bc87-6dcc-41ab-9bd8-5ca1cd335a1d">
+				<reportElement positionType="Float" x="212" y="477" width="342" height="16" uuid="ddc2bc87-6dcc-41ab-9bd8-5ca1cd335a1d">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{expiryDate} == null ? "":$P{expiryDate}]]></textFieldExpression>
