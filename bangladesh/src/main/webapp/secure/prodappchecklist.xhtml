@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:panelGrid cellspacing="10" columns="1" width="100%">
+        <h:outputLabel value="#{msgs.checklist_inst}" styleClass="label"/>
+
+        <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;"
+                     
+                     >
+                     <!-- rowStyleClass="#{(checkList.getId() > 0 and checkList.getValue() == null)?'colored':null}" -->
+            <p:column headerText="#{msgs.checklist_moduleno}" rendered="#{!checkList.checklist.header}" 
+            			colspan="4" style="background-color: bisque;font-weight: bolder;">
+                <h:outputLabel value="#{checkList.checklist.name}" />
+            </p:column>
+            <p:column headerText="#{msgs.checklist_moduleno}" rendered="#{checkList.checklist.header}">
+                <h:outputLabel value="#{checkList.checklist.moduleNo}" />
+            </p:column>
+            
+            <p:column headerText="#{msgs.checklist_name}" rendered="#{checkList.checklist.header}">
+                <p:outputLabel value="#{checkList.checklist.name}" for="console" />
+            </p:column>
+            
+            <p:column headerText="#{msgs.checklist_module}" rendered="#{checkList.checklist.header}">
+                <h:outputLabel value="#{checkList.checklist.module}"/>
+            </p:column>
+            
+            <p:column rendered = "#{checkList.checklist.header}" style="width:165px">
+                <p:selectOneButton id="console" value="#{checkList.value}" required="true" 
+                					requiredMessage="#{msgs.checklist_incomplete}">
+                    <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}"/>
+                </p:selectOneButton>
+            </p:column>
+        </p:dataTable>
+    </h:panelGrid>
+
+</ui:composition>

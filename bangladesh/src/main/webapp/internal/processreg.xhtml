@@ -8,7 +8,7 @@
 	<ui:define name="content">
 
 		<h:form id="reghome" enctype="multipart/form-data">
-			<p:growl id="growl" showDetail="true" />
+			<p:growl id="growl" showDetail="false" />
 
 			<h:panelGrid columns="2" columnClasses="menu,content">
 				<h:panelGrid columns="2" columnClasses="menu,content">
@@ -27,7 +27,7 @@
 							width="830px">
 						</pe:timeline>
 
-						<p:messages id="messages" showDetail="true" showSummary="true" />
+						<p:messages id="messages" showDetail="false" showSummary="true" />
 
 						<p:tabView id="processtab" style="width: 830px;"
 							activeIndex="#{processProdBn.selectedTab}" dynamic="true"
@@ -343,6 +343,7 @@
 										<p:column style="width: 30px;">
 											<p:commandButton id="deletelet"
 												action="#{processProdBnMZ.deleteLetter(letter)}"
+												rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}"
 												icon="ui-icon-trash" ajax="true" immediate="true"
 												update=":reghome:processtab:lettertable :reghome:messages"/>
 										</p:column>
@@ -819,18 +820,7 @@
 						required="true" />
 					<p:message for="regnumber" showSummary="true" />
 
-					<p:outputLabel value="#{msgs.gestorDeCTRM}" />
-					<p:inputText id="gestorDeCTRM"
-						value="#{processProdBnMZ.gestorDeCTRM}" />
-					<p:outputLabel />
 					
-					<p:outputLabel value="#{msgs.lbl_generic}" for="gen" />
-					<p:selectBooleanButton id="gen" value="#{processProdBnMZ.generic}"
-							onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-							onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px"
-							required="true">
-					</p:selectBooleanButton>
-					<p:outputLabel />
 				</h:panelGrid>
 
 				<p:commandButton id="regBtn" value="#{processProdBn.buildStringByRegDlg(false)}"

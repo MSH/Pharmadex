@@ -13,8 +13,8 @@
     <ui:define name="content">
 
         <h:form id="reviewHome">
-            <p:growl id="growl" showSummary="true"/>
-            <p:messages showDetail="true" showSummary="true"/>
+            <p:growl id="growl" showSummary="true" showDetail="false"/>
+            <p:messages showSummary="true" showDetail="false"/>
 
             <div style="width:1054px">
                 <ui:decorate template="/templates/prodbannertempl.xhtml">
@@ -66,11 +66,7 @@
                             <f:convertDateTime pattern="MMM dd, yyyy"/>
                         </p:outputLabel>
 
-                        <p:commandLink value="#{msgs.detail_review}" ajax="false"
-                                       action="/internal/reviewInfo.faces">
-                            <f:param name="sourcePage" value="#{execSummaryBn.prodApplications.id}:/internal/execsumm.faces" />
-                            <f:param name="reviewInfoID" value="#{each.id}"/>
-                        </p:commandLink>
+                        
                     </h:panelGrid>
                     <p:panel>
                         <h:panelGrid columns="2" cellspacing="10" cellpadding="10">

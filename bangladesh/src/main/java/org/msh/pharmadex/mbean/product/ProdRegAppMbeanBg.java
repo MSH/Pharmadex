@@ -75,13 +75,34 @@ public class ProdRegAppMbeanBg implements Serializable {
 	public boolean visBtnDelete(ProdCompany pr){
 		return (pr.getId() != null);
 	}
-	
+	/**
+	 * Try to formulate only
+	 * @return
+	 */
 	public List<CompanyType> getCompanyType() {
 		List<CompanyType> list = new ArrayList<CompanyType>();
-		for(CompanyType t:CompanyType.values())
-			if(!t.equals(CompanyType.API_MANUF) && !t.equals(CompanyType.EXC_MANUF))
-				list.add(t);
-        return list;
-    }
+		Product prod = getProdRegAppMbean().getProduct();
+		if(prod != null){
+			List<ProdCompany> comps = prod.getProdCompanies();
+			boolean hasManuf = false;
+			if(comps != null){ //may be first entry!
+				for(ProdCompany pc : comps){
+					if(pc.getCompanyType().equals(CompanyType.FIN_PROD_MANUF) || pc.getCompanyType().equals(CompanyType.TOLL_MANUF)){
+						hasManuf=true;
+						break;
+					}
+				}
+			}
+			for(CompanyType t:CompanyType.values())
+				if(!t.equals(CompanyType.API_MANUF) && !t.equals(CompanyType.EXC_MANUF)){
+					if(hasManuf & (t.equals(CompanyType.TOLL_MANUF) || t.equals(CompanyType.FIN_PROD_MANUF))){
+						//nothing to do!
+					}else{
+						list.add(t);
+					}
+				}
+		}
+		return list;
+	}
 
 }

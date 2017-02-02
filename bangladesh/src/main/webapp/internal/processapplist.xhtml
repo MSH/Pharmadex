@@ -9,24 +9,18 @@
 
         <h:form prependId="false">
 
-            <p:panel header="#{msgs.recieved_applications}">
+            <p:panel header="#{msgs.applicants_to_register}">
                 <p:dataTable id="applicants" var="licHolder" value="#{processAppListBn.pendingApps}">
-                    <p:column headerText="#{msgs.registration_applicant}">
+                    <p:column headerText="#{msgs.applicant}">
                         <p:commandLink value="#{licHolder.appName}" action="/internal/processapp.faces"
                                        ajax="false">
                             <f:param name="sourcePage" value="/internal/processapplist.faces"/>
                				<f:param name="appID" value="#{licHolder.applcntId}"/>
                         </p:commandLink>
                     </p:column>
-
                     <p:column headerText="#{msgs.applicant_submitdate}">
                         <h:outputLabel converter="javax.faces.DateTime" value="#{licHolder.submitDate}"/>
                     </p:column>
-
-                    <p:column headerText="#{msgs.registration_status}">
-                        #{msgs[licHolder.state.key]}
-                    </p:column>
-
                     <p:column headerText="#{msgs.applicant_country}">
                         #{licHolder.address.country.countryName}
                     </p:column>

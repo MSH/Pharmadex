@@ -14,8 +14,8 @@
         </div>
 
         <h:form id="reghome" enctype="multipart/form-data">
-            <p:growl id="growl" showSummary="true" autoUpdate="true"/>
-            <p:messages showSummary="true" showDetail="true" id="messages"/>
+            <p:growl id="growl" showSummary="true" showDetail="false" autoUpdate="true"/>
+            <p:messages showSummary="true" showDetail="false" id="messages"/>
             <pe:ajaxErrorHandler/>
             <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="true"
                       flowListener="#{prodRegAppMbeanMZ.onFlowProcess}" 
@@ -54,7 +54,7 @@
 
                             <h:outputLabel value="#{msgs.active_substance}" style="width: 60px;" styleClass="label"/>
 
-
+							
                             <p:dataTable id="inntable" var="prodInn" value="#{prodRegAppMbean.selectedInns}"
                                          style="width:100%;" editable="true"
                                          emptyMessage="No Inns selected">

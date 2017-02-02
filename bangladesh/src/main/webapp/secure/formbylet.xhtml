@@ -7,8 +7,6 @@
 
 	<h:panelGrid cellspacing="10" cellpadding="10" columns="3" columnClasses="label value label">
 		<p:outputLabel value="#{msgs.number}" for="prodappno" />
-		<p:inputText id="prodappno" value="#{prodApp.prodAppNo}" required="true" />
-		<p:message for="prodappno" />
-
+		<p:outputLabel id="prodappno" value="#{prodApp.prodAppNo}" />
 	</h:panelGrid>
 </ui:composition>

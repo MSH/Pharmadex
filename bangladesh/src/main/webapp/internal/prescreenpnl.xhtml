@@ -6,8 +6,9 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
 	<h:panelGrid id="btnpnlFirst" cellspacing="2" cellpadding="2" columns="4">
-        <p:commandButton id="completef" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check">
+         <p:commandButton id="completef" value="#{msgs.global_complete}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"
+                         update="reghome">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
         <p:commandButton value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
@@ -24,7 +25,7 @@
     
     <h:panelGrid id="modpnl" columns="2" columnClasses="label value" cellpadding="5" cellspacing="5">
         <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
-        <p:outputLabel value="#{processProdBn.moderator.username}"/>
+        <p:outputLabel value="#{preScreenProdMBn.moderatorForDisplay}"/>
     </h:panelGrid>
 
     <p:dataTable var="checkList" value="#{preScreenProdMBn.prodAppChecklists}"
@@ -75,8 +76,9 @@
     </p:dataTable>
 
 	<h:panelGrid id="btnpnlSecond" cellspacing="2" cellpadding="2" columns="4">
-        <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check">
+        <p:commandButton id="complete" value="#{msgs.global_complete}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"
+                         update="reghome">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
         <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"

@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -195,7 +197,13 @@ public class ReviewService implements Serializable {
 		} else {
 			reviewQuestions = reviewQDAO.findByGenMed();
 		}
-
+		//sort questions by order
+		Collections.sort(reviewQuestions, new Comparator<ReviewQuestion>() {
+			@Override
+			public int compare(ReviewQuestion o1, ReviewQuestion o2) {
+				return o1.getOrd().compareTo(o2.getOrd());
+			}
+		});
 		ReviewDetail reviewDetail;
 		User curUser = userService.findUser(loggedInUser);
 		for (ReviewQuestion reviewQuestion : reviewQuestions) {

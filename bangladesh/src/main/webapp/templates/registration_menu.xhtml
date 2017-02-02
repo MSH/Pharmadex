@@ -14,19 +14,19 @@
                             ajax="false"/>
 			
             <sec:isAuthenticated>
-            	<p:separator rendered="#{!isleftmenu and userSession.displayRegistrationFormItemMZ()}"/>
+            	<p:separator rendered="#{!isleftmenu and (userSession.company || userSession.admin)}"/>
                 <p:submenu label="#{msgs.registration_form}" 
-                           rendered="#{userSession.displayRegistrationFormItemMZ()}">
+                           rendered="#{userSession.company || userSession.admin}">
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-document"
                                 action="/secure/prodreginit.faces" ajax="false"
                                 rendered="#{!userSession.admin}"/>
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-document"
                                 action="#{navigationBean.regApplicantAction}"
-                                ajax="false" rendered="#{userSession.displayAppRegMZ()}"/>
+                                ajax="false" rendered="#{userSession.admin}"/>
                 </p:submenu>
                 
-				<p:separator rendered="#{!isleftmenu and (userSession.company||userSession.staff) and !userSession.admin}"/>
-                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff and !userSession.admin}">
+				<p:separator rendered="#{!isleftmenu and userSession.company}"/>
+                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company}">
                     <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-folder-open"
                                 url="/secure/submittedproducts.faces"
                                 rendered="#{!userSession.admin}"/>
@@ -43,7 +43,7 @@
                                 url="/internal/processprodlist.faces"/>
                     <p:menuitem value="#{msgs.applicant_reg_process}" icon="ui-icon-folder-open"
                                 url="/internal/processapplist.faces"
-                                rendered="#{userSession.displayListAppOnRegMZ()}"/>
+                                rendered="#{userSession.admin}"/>
                     <p:menuitem value="#{msgs.process_suspcancel}" icon="ui-icon-folder-open"
                                 url="/internal/processcancellist.faces"
                                 rendered="#{userSession.head || userSession.admin}"/>
@@ -51,14 +51,10 @@
                 
 				<p:separator rendered="#{!isleftmenu and (userSession.admin||userSession.staff)}"/>
                 <p:submenu label="#{msgs.post_reg_proces}" rendered="#{userSession.admin||userSession.staff}">
-                    <p:menuitem value="#{msgs.process_amdmt}" icon="ui-icon-folder-open"
-                                url="/internal/amdmtlist.faces"/>
                     <p:menuitem value="#{msgs.reg_expiring}" icon="ui-icon-folder-open"
                                 url="/internal/regexpiring.faces"/>
                     <p:menuitem value="#{msgs.payment_notfied}" icon="ui-icon-folder-open"
                                 url="/internal/paymentnotified.faces"/>
-                    <p:menuitem value="#{msgs.reg_expired}" icon="ui-icon-folder-open"
-                                url="/internal/expiredreg.faces"/>
                 </p:submenu>
             </sec:isAuthenticated>
         

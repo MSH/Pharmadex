@@ -1,0 +1,16 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+        >
+
+    <p:tab title="#{msgs.prod_verification}" id="verficationtab"
+           rendered="#{processProdBn.displayVerify}">
+        <ui:include src="verificationpnl.xhtml"/>
+    </p:tab>
+    <p:tab title="#{msgs.prod_screening}"
+           rendered="#{(!processProdBn.displayVerify || (userSession.head || userSession.moderator || userSession.reviewer) ) and (userSession.head || userSession.staff || userSession.moderator || userSession.reviewer)}"
+           id="checklisttab">
+        <ui:include src="prescreenpnl.xhtml"/>
+    </p:tab>
+</ui:composition>
