@@ -6,8 +6,9 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
 	<h:panelGrid id="btnpnlFirst" cellspacing="2" cellpadding="2" columns="4">
-        <p:commandButton id="completef" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check">
+         <p:commandButton id="completef" value="#{msgs.global_complete}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"
+                         update="reghome">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
         <p:commandButton value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
@@ -24,7 +25,7 @@
     
     <h:panelGrid id="modpnl" columns="2" columnClasses="label value" cellpadding="5" cellspacing="5">
         <p:outputLabel value="#{msgs.moderator_name}:" styleClass="label"/>
-        <p:outputLabel value="#{processProdBn.moderator.username}"/>
+        <p:outputLabel value="#{preScreenProdMBn.moderatorForDisplay}"/>
     </h:panelGrid>
 
     <p:dataTable var="checkList" value="#{preScreenProdMBn.prodAppChecklists}"
@@ -75,8 +76,9 @@
     </p:dataTable>
 
 	<h:panelGrid id="btnpnlSecond" cellspacing="2" cellpadding="2" columns="4">
-        <p:commandButton id="complete" value="#{msgs.global_complete}" oncomplete="PF('completescreendlg').show()"
-                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check">
+        <p:commandButton id="complete" value="#{msgs.global_complete}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
+                         rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"
+                         update="reghome">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
         <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
@@ -93,60 +95,49 @@
     
        <p:dialog header="#{msgs.complete_screen}" widgetVar="completescreendlg" resizable="false"
               id="completescreen" appendTo="@form" modal="true" dynamic="true"
+              cellpadding="10px" cellspacing="6px" width="400px"
               rendered="#{userSession.head||userSession.admin||userSession.staff}">
+              
+      		<h:panelGrid columns="2" style="margin-bottom:10px"
+						cellpadding="10px" cellspacing="6px" columnClasses="label value">
+					<p:outputLabel value="#{msgs.moderator_name}" escape="false"/>
 
-        <p:panelGrid columns="2" columnClasses="label value">
-            <h:outputText value="#{msgs.moderator_name}: "
-                          escape="false"
-                          styleClass="text"/>
+					<p:autoComplete id="mod" value="#{preScreenProdMBn.moderator}"
+						completeMethod="#{globalEntityLists.completeModeratorList}"
+						dropdown="true" var="it" itemLabel="#{it.name}"
+						itemValue="#{it.userId}" forceSelection="true"
+						converter="#{userConverter}" scrollHeight="200"
+						required="true">
+					</p:autoComplete>
 
-            <p:autoComplete id="mod" value="#{preScreenProdMBn.moderator}"
-                            completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
-                            var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
-                            forceSelection="true" scrollHeight="200"
-                            converter="#{userConverter}">
-            </p:autoComplete>
-
-            <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc" />
-            <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"/>
-        </p:panelGrid>
+		            <p:outputLabel value="#{msgs.doss_loc}" for="shelfloc" />
+		            <p:inputText value="#{processProdBn.prodApplications.dossLoc}" id="shelfloc"
+		            	style="width: 300px;"/>
+        	</h:panelGrid>
 
         <p:commandButton id="completescreencb" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.completeScreen}"
                          oncomplete="PF('completescreendlg').hide()" process="@form" ajax="false"/>
     </p:dialog>
-<ui:remove>
-    <p:dialog header="#{msgs.complete_screen}" widgetVar="archiveappdlg" resizable="false"
-              id="archiveapp" modal="true" appendTo="@(body)"
-              rendered="#{userSession.head||userSession.admin||userSession.staff}">
-
-            <p:panelGrid columns="2" columnClasses="label value">
-
-                <p:outputLabel value="#{msgs.global_remark}" for="remarkarchive"/>
-                <p:inputText value="#{preScreenProdMBn.timeLine.comment}" id="remarkarchive"/>
-
-            </p:panelGrid>
-
-
-            <p:commandButton id="archiveappbtn" value="#{msgs.global_submit}"
-                             action="#{preScreenProdMBn.archiveApp}"
-                             oncomplete="PF('archiveappdlg').hide()" update=":reghome @form" process="@form"/>
-    </p:dialog>
-</ui:remove>
-    <p:dialog header="#{msgs.adddocument}" widgetVar="moduledlg" resizable="true" id="moduleDlg" modal="true"
-            >
+    
+    <p:dialog id="moduleDlg" header="#{msgs.adddocument}" widgetVar="moduledlg" 
+    		resizable="false" modal="true" width="300px">
         <p:fileUpload fileUploadListener="#{preScreenProdMBn.handleFileUpload}"
                       mode="advanced" auto="true"
                       multiple="false"
                       sizeLimit="100000000"
-                      update=":reghome:messages">
-
+                      update=":reghome:messages :attachPnl">
         </p:fileUpload>
+        
+        <h:panelGrid id="attachPnl" columns="2" style="margin-bottom:10px" columnClasses="label value">
+	        <p:outputLabel value="#{msgs.filename}" rendered="#{not empty preScreenProdMBn.fileName}"/>
+	        <p:outputLabel value="#{preScreenProdMBn.fileName}"/>
+        </h:panelGrid>
+
         <p:commandButton id="addmoduledoc" value="#{msgs.global_submit}"
                          action="#{preScreenProdMBn.addModuleDoc}"
                          oncomplete="PF('moduledlg').hide()"
-                         update=":reghome:messages :reghome:processtab:checkListTbl"
-                />
+                         update=":reghome:messages :reghome:processtab:checkListTbl"/>
     </p:dialog>
 
 </ui:composition>

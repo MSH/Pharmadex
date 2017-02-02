@@ -8,7 +8,7 @@
 	<ui:define name="content">
 
 		<h:form id="reghome" enctype="multipart/form-data">
-			<p:growl id="growl" showDetail="true" />
+			<p:growl id="growl" showDetail="false" />
 
 			<h:panelGrid columns="2" columnClasses="menu,content">
 				<h:panelGrid columns="2" columnClasses="menu,content">
@@ -27,7 +27,7 @@
 							width="830px">
 						</pe:timeline>
 
-						<p:messages id="messages" showDetail="true" showSummary="true" />
+						<p:messages id="messages" showDetail="false" showSummary="true" />
 
 						<p:tabView id="processtab" style="width: 830px;"
 							activeIndex="#{processProdBn.selectedTab}" dynamic="true"
@@ -37,7 +37,7 @@
 								<h:panelGrid columns="4" cellspacing="10"
 									columnClasses="col1, col2, col1, col2">
 
-									<h:outputLabel value="#{msgs.prodName}:" />
+										<h:outputLabel value="#{msgs.prodName}:" />
 									   <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('prodName')}">
                                      <div>
                                       <h:outputLabel value="#{processProdBn.product.prodName}" style="color: red;"/>
@@ -161,7 +161,8 @@
                                        </div>
                                     </ui:fragment>
                                     
-									<h:outputLabel value="#{msgs.product_details}" />
+									
+		<h:outputLabel value="#{msgs.product_details}" />
 									<p:commandButton value="#{msgs.click_here}"
 										action="processproddetail" ajax="false" target="_blank"
 										icon="ui-icon-search">
@@ -214,7 +215,7 @@
 							</p:tab>
 
 							<p:tab title="#{msgs.timeline}"
-								
+								rendered="#{userSession.admin||userSession.head||userSession.moderator||userSession.reviewer||userSession.staff}"
 								id="timelinetab">
 
 								<p:dataTable id="timelinetbl" var="timeline"
@@ -302,18 +303,16 @@
 
 							<p:tab title="#{msgs.letters}" id="lettertab">
 								<h:panelGrid columns="1" cellpadding="5" cellspacing="5">
-									<p:commandButton value="#{msgs.btn_create_ackletter}"
+									<p:commandButton value="#{prodAckLetterFormMZ.getCreateLetterBtnName(msgs.btn_create_acceptance)}"
 										action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}"
 										oncomplete="PF('createAckLet').show()" update=":createAckLet" 
-										rendered="#{!userSession.company}"/>
+										/>
 									<p:dataTable id="lettertable" value="#{processProdBn.letters}"
 										var="letter">
 
 										<p:column headerText="#{msgs.title}">
 											<h:outputText value="#{letter.title}" />
 										</p:column>
-
-										
 
 										<p:column headerText="#{msgs.filename}">
 											<h:outputText value="#{letter.fileName}" />
@@ -341,9 +340,10 @@
 													value="#{processProdBn.fileDownload(letter)}" />
 											</p:commandButton>
 										</p:column>
-										<p:column style="width: 30px;" rendered="#{!userSession.company}">
+										<p:column style="width: 30px;">
 											<p:commandButton id="deletelet"
 												action="#{processProdBnMZ.deleteLetter(letter)}"
+												rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}"
 												icon="ui-icon-trash" ajax="true" immediate="true"
 												update=":reghome:processtab:lettertable :reghome:messages"/>
 										</p:column>
@@ -452,9 +452,9 @@
 									</p:column>
 								</p:dataTable>
 							</p:tab>
-  <p:tab title="#{msgs.prev_applications}" rendered="#{!empty processProdBnNA.allAncestors}" id="parent">
+							<p:tab title="#{msgs.prev_applications}" rendered="#{!empty processProdBnBg.allAncestors}" id="parent">
                                 <p:panel header="#{msgs.recieved_applications}">
-                                    <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnNA.allAncestors}">
+                                    <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnBg.allAncestors}">
                                        <p:column filterBy="#{eachprod.product.prodName}"
                                         sortBy="#{eachprod.product.prodName}">
                                         <f:facet name="header">
@@ -571,22 +571,22 @@
 		</p:dialog>
 
 		<p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg"
-			resizable="false" id="moderatordlg" modal="true" dynamic="true"
+			resizable="false" id="moderatordlg" modal="true" dynamic="true" width="400px"
 			rendered="#{userSession.head||userSession.admin||userSession.staff}">
-			<h:form id="moderatorForm">
-
-				<p:panelGrid columns="2" columnClasses="label value">
-					<h:outputText value="#{msgs.moderator_name}: " escape="false"
-						styleClass="text" />
+			
+			<h:form id="moderatorForm" prependId="false">
+				<h:panelGrid columns="2" style="margin-bottom:10px"
+						cellpadding="10px" cellspacing="6px" columnClasses="label value">
+					<p:outputLabel value="#{msgs.moderator_name}"/>
 
 					<p:autoComplete id="mod" value="#{processProdBn.moderator}"
 						completeMethod="#{globalEntityLists.completeModeratorList}"
 						dropdown="true" var="it" itemLabel="#{it.name}"
 						itemValue="#{it.userId}" forceSelection="true"
-						converter="#{userConverter}"
+						converter="#{userConverter}" scrollHeight="200"
 						required="true" requiredMessage="#{msgs.choose_moderator}">
 					</p:autoComplete>
-				</p:panelGrid>
+				</h:panelGrid>
 
 				<p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
 					action="#{processProdBn.assignModerator}"
@@ -596,27 +596,30 @@
 
 		<p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg"
 			resizable="false" id="attachdlg" modal="true" dynamic="true">
-			<p:messages showSummary="true" showDetail="true" />
 			<h:form prependId="false">
-				<h:panelGrid columns="3" style="margin-bottom:10px">
+				<h:panelGrid columns="2" style="margin-bottom:10px" columnClasses="label value">
 					<p:outputLabel for="attachtitle" value="#{msgs.title}" />
 					<p:inputText id="attachtitle"
-						value="#{fileUploadController.attach.title}" required="true" />
-					<p:message for="attachtitle" showSummary="true" />
+						value="#{fileUploadController.attach.title}" required="true" 
+						 style="width: 400px;"/>
+					
 					<h:outputLabel for="attachcomment" value="#{msgs.global_comment}" />
 					<p:inputTextarea id="attachcomment"
-						value="#{fileUploadController.attach.comment}" rows="5" cols="50" />
-					<p:message for="attachcomment" showSummary="true" />
+						value="#{fileUploadController.attach.comment}" rows="5" style="width: 400px;"/>
 				</h:panelGrid>
 
 				<p:fileUpload
 					fileUploadListener="#{fileUploadController.handleFileUpload}"
 					mode="advanced" auto="true"
-					update=":reghome:growl :reghome:messages" multiple="false"
+					update=":reghome:growl :reghome:messages :attachPnl" multiple="false"
 					sizeLimit="100000000">
-
 				</p:fileUpload>
-
+				
+				<h:panelGrid id="attachPnl" columns="2" style="margin-bottom:10px" columnClasses="label value">
+                    <p:outputLabel value="#{msgs.filename}" rendered="#{not empty fileUploadController.attach.fileName}"/>
+                    <p:outputLabel value="#{fileUploadController.attach.fileName}"/>
+                </h:panelGrid>
+                
 				<p:commandButton id="adddoc" value="#{msgs.global_submit}"
 					action="#{fileUploadController.addDocument}"
 					oncomplete="if (!args.validationFailed) PF('attachdlg').hide()"
@@ -800,7 +803,7 @@
 						id="regDate" showOn="button" required="true"
 						pattern="#{userAccessMBean.workspace.datePattern}">
 						<f:validator validatorId="pastDateValidator" />
-						<p:ajax event="dateSelect" listener="#{processProdBn.dateChange}"
+						<p:ajax event="dateSelect" listener="#{processProdBnNA.dateChange}"
 							update=":regdatedlg" />
 					</p:calendar>
 					<p:message for="regstartdate" />
@@ -817,18 +820,7 @@
 						required="true" />
 					<p:message for="regnumber" showSummary="true" />
 
-					<p:outputLabel value="#{msgs.gestorDeCTRM}" />
-					<p:inputText id="gestorDeCTRM"
-						value="#{processProdBnMZ.gestorDeCTRM}" />
-					<p:outputLabel />
 					
-					<p:outputLabel value="#{msgs.lbl_generic}" for="gen" />
-					<p:selectBooleanButton id="gen" value="#{processProdBnMZ.generic}"
-							onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
-							onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px"
-							required="true">
-					</p:selectBooleanButton>
-					<p:outputLabel />
 				</h:panelGrid>
 
 				<p:commandButton id="regBtn" value="#{processProdBn.buildStringByRegDlg(false)}"
@@ -844,7 +836,9 @@
 			<h:form id="rejectdatedlg">
 				<h:panelGrid columns="3" cellspacing="10" cellpadding="10" columnClasses="label value label">
 					<p:outputLabel value="#{msgs.global_summary}" for="sum"/>
-					<p:inputTextarea id="sum" value="#{processProdBnMZ.rejectSumm}" rows="6" cols="100"
+					<pe:ckEditor id="sum" value="#{processProdBnMZ.rejectSumm}"
+						height="250" width="450"
+						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 						required="true" requiredMessage="#{msgs.reject_summary}"/>
 					<p:message for="sum" />
 				</h:panelGrid>

@@ -11,8 +11,9 @@ import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.service.ProdApplicationsServiceNA;
+import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.util.JsfUtils;
 
 
 
@@ -31,8 +32,8 @@ public class ProcessProdBnNA implements Serializable {
     @ManagedProperty(value = "#{userSession}")
     public UserSession userSession;
     
-    @ManagedProperty(value = "#{prodApplicationsServiceNA}")
-    public ProdApplicationsServiceNA prodApplicationsServiceNA;
+    @ManagedProperty(value = "#{prodApplicationsService}")
+    public ProdApplicationsService prodApplicationsService;
     @ManagedProperty(value = "#{reviewService}")
     public ReviewService reviewService;
 
@@ -91,7 +92,7 @@ public class ProcessProdBnNA implements Serializable {
       public List<ProdApplications> getAllAncestors(){
           if (allAncestors==null){
           ProdApplications prod = processProdBn.getProdApplications();
-          allAncestors = getProdApplicationsServiceNA().getAllAncestor(prod);
+          allAncestors = getProdApplicationsService().getAllAncestor(prod);
           }
           return allAncestors;
       }
@@ -117,12 +118,12 @@ public class ProcessProdBnNA implements Serializable {
           this.userSession = userSession;
       }
 
-      public ProdApplicationsServiceNA getProdApplicationsServiceNA() {
-          return prodApplicationsServiceNA;
+      public ProdApplicationsService getProdApplicationsService() {
+          return prodApplicationsService;
       }
 
-      public void setProdApplicationsServiceNA(ProdApplicationsServiceNA prodApplicationsServiceNA) {
-          this.prodApplicationsServiceNA = prodApplicationsServiceNA;
+      public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+          this.prodApplicationsService = prodApplicationsService;
       }
       public ReviewService getReviewService() {
   		return reviewService;
@@ -130,4 +131,13 @@ public class ProcessProdBnNA implements Serializable {
   	public void setReviewService(ReviewService reviewService) {
   		this.reviewService = reviewService;
   	}
+  	
+	/**
+	 * Issues #2339
+	 * Expiry date should be calculated as registration date + 365*5 (days)
+	 */
+	public void dateChange() {
+		int countDay = 365*5;
+		getProcessProdBn().getProdApplications().setRegExpiryDate(JsfUtils.addDays(getProcessProdBn().getProdApplications().getRegistrationDate(), countDay));
+	}
 }

@@ -5,20 +5,21 @@
 package org.msh.pharmadex.mbean.product;
 
 
+import java.io.Serializable;
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.ProdCompany;
 import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.service.ProdApplicationsServiceNA;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
-import java.io.Serializable;
-import java.util.List;
+import org.msh.pharmadex.service.ProdApplicationsService;
 
 /**
  * Backing bean to capture review of products
@@ -30,13 +31,11 @@ public class ProdConsentFormNA extends ProdConsentFormMZ implements Serializable
 
     java.util.ResourceBundle bundle;
     private FacesContext context;
-     @ManagedProperty(value = "#{prodApplicationsServiceNA}")
-    private ProdApplicationsServiceNA prodApplicationsServiceNA;
 
     @Override
     public String submitApp() {
     	ProdApplications curA=getProdApplications();
-    	curA.setProdAppNo(prodApplicationsServiceNA.generateAppNo(getProdApplications()));
+    	curA.setProdAppNo(getProdApplicationsService().generateAppNo(getProdApplications()));
     	
   	  if (curA.getParentApplication()!=null){
   		  Product oldPr=null;
@@ -193,15 +192,4 @@ public class ProdConsentFormNA extends ProdConsentFormMZ implements Serializable
     	if (co.getCompany()!=oldCo.getCompany()) return true;
     	return false;
     }
-	public ProdApplicationsServiceNA getProdApplicationsServiceNA() {
-		return prodApplicationsServiceNA;
-	}
-
-	public void setProdApplicationsServiceNA(ProdApplicationsServiceNA prodApplicationsServiceNA) {
-		this.prodApplicationsServiceNA = prodApplicationsServiceNA;
-	}
-
-  
-
-   
 }

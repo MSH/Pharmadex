@@ -41,7 +41,7 @@
 				</p:commandButton>
 				<p:commandButton value="#{msgs.global_save}"
 					action="#{reviewDetailBn.saveReview(false)}"
-					rendered="#{reviewDetailBnMZ.visibleSaveBtn()}"
+					rendered="#{reviewDetailBnMZ.visibleSaveBtn() and reviewDetailBnMZ.visibleSubmitBtn()}"
 					update=":reviewHome:growl reviewHome:filePnl" ajax="true">
 				</p:commandButton>
 				<p:commandButton value="#{msgs.global_submit}"
@@ -69,22 +69,20 @@
 					cellspacing="5px">
 					<p:outputLabel value="#{msgs.volumes}:" />
 					<p:inputText value="#{reviewDetailBn.reviewDetail.volume}"
-						rendered="#{reviewDetailBnMZ.visibleSaveBtn()}" />
+						rendered="#{reviewDetailBnMZ.visibleSaveBtn() and reviewDetailBnMZ.visibleSubmitBtn()}" />
 					<p:outputLabel escape="false"
 						value="#{reviewDetailBn.reviewDetail.volume}"
-						rendered="#{reviewDetailBnMZ.hideComponents()}" />
+						rendered="#{reviewDetailBnMZ.hideComponents() || !reviewDetailBnMZ.visibleSubmitBtn()}" />
 					<p:outputLabel />
 
-					<p:outputLabel value="#{msgs.reviewer_response}: "
-						styleClass="label" />
-					<p:outputLabel />
-					<p:outputLabel />
 				</h:panelGrid>
 				<h:panelGrid columns="3" columnClasses="label value"
 					cellspacing="5px" id="filePnl">
-					<p:outputLabel value="#{msgs.upload_file}:" />
+					<p:outputLabel value="#{msgs.upload_file}:"
+						rendered="#{reviewDetailBnMZ.visibleSubmitBtn()}" />
 					<p:fileUpload
 						fileUploadListener="#{reviewDetailBn.handleFileUpload}"
+						rendered="#{reviewDetailBnMZ.visibleSubmitBtn()}"
 						mode="advanced" dragDropSupport="true"
 						disabled="#{reviewDetailBnMZ.hideComponents()}"
 						update=":reviewHome:filePnl :reviewHome:imgpnl :reviewHome:imggr growl"
@@ -95,31 +93,30 @@
 					<p:commandButton id="fdownload" value="#{msgs.global_download}"
 						onclick="PrimeFaces.monitorDownload(start, stop)"
 						icon="ui-icon-arrowthichk-n"
-						rendered="#{reviewDetailBn.visibleBtnDownload()}">
+						rendered="#{reviewDetailBn.visibleBtnDownload() and reviewDetailBnMZ.visibleSubmitBtn()}">
 						<p:fileDownload
 							value="#{fileUploadController.reviewDetailDownload(reviewDetailBn.reviewDetail)}" />
 					</p:commandButton>
 					<p:commandButton id="deleteattach"
 						action="#{fileUploadController.deleteReviewDetail(reviewDetailBn.reviewDetail)}"
 						ajax="false" icon="ui-icon-trash" update=":reviewHome:filePnl"
-						rendered="#{reviewDetailBn.visibleBtnDownload() and reviewDetailBnMZ.visibleSaveBtn()}" />
+						rendered="#{reviewDetailBn.visibleBtnDownload() and reviewDetailBnMZ.visibleSaveBtn() and reviewDetailBnMZ.visibleSubmitBtn()}" />
 				</h:panelGrid>
-				<h:panelGrid columns="2" columnClasses="label value"
+				<h:panelGrid columns="1" 
 					cellspacing="5px">
 					<p:outputLabel
 						rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}" />
 					<p:outputLabel value="#{msgs.dont_insert_table}" styleClass="hint"
-						rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}" />
+						rendered="#{userSession.reviewer and reviewDetailBn.priReviewer and reviewDetailBnMZ.visibleSubmitBtn()}" />
 
 					<p:outputLabel value="#{msgs.pri_processor}:" styleClass="label" />
 					<pe:ckEditor value="#{reviewDetailBn.reviewDetail.otherComment}"
 						height="500" width="700"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
-						rendered="#{userSession.reviewer and reviewDetailBn.priReviewer}" />
-
-					<p:outputLabel escape="false"
+						rendered="#{userSession.reviewer and reviewDetailBn.priReviewer and reviewDetailBnMZ.visibleSubmitBtn()}" />
+					<h:outputText escape="false"
 						value="#{reviewDetailBn.reviewDetail.otherComment}"
-						rendered="#{!userSession.reviewer or !reviewDetailBn.priReviewer}"></p:outputLabel>
+						rendered="#{!userSession.reviewer or !reviewDetailBn.priReviewer or !reviewDetailBnMZ.visibleSubmitBtn()}" />
 
 					<p:outputLabel
 						rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}" />
@@ -132,16 +129,13 @@
 					<pe:ckEditor value="#{reviewDetailBn.reviewDetail.secComment}"
 						height="500" width="700"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
-						rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}"
-                     />
-                    <p:outputLabel escape="false"
+						rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and userSession.reviewer and reviewDetailBn.secReviewer}" />
+					<h:outputText escape="false"
 						value="#{reviewDetailBn.reviewDetail.secComment}"
-						rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and (!userSession.reviewer or !reviewDetailBn.secReviewer)}"></p:outputLabel>
+						rendered="#{reviewDetailBn.reviewDetail.reviewInfo.secreview and (!userSession.reviewer or !reviewDetailBn.secReviewer)}" />
 				</h:panelGrid>
-				<h:panelGrid id="imgpnl" columns="2" columnClasses="label value"
+				<h:panelGrid id="imgpnl" columns="1" columnClasses="label value"
 					cellspacing="5px">
-					<p:outputLabel value="#{msgs.image}"
-						rendered="#{reviewDetailBn.fileImg}" />
 					<p:graphicImage id="imggr" value="#{imageStreamer.image}"
 						rendered="#{reviewDetailBn.fileImg}" cache="false" width="700">
 						<f:param name="revdetid" value="#{reviewDetailBn.reviewDetail.id}" />

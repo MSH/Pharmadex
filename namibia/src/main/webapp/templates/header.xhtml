@@ -96,6 +96,12 @@ ul.ui-menu-child {
 						<p:menuitem value="#{msgs.admin_useraccess}"
 							url="/admin/useraccesslist_bk.faces" icon="ui-icon-document"
 							ajax="false" />
+						<p:menuitem value="#{msgs.checklist}"
+							action="/internal/editChecklist.faces" icon="ui-icon-document"
+							ajax="false" />
+						<p:menuitem value="#{msgs.review_questions}"
+							action="/internal/editReview.faces" icon="ui-icon-document"
+							ajax="false" />
 					</p:submenu>
 				</sec:isAuthenticated>
 
