@@ -150,6 +150,46 @@ public class ProductDAO implements Serializable {
 		return prodTables;
 	}
 
+	/**
+	 * In DB Bangladesh in table prodApplications no field 'active'
+	 * @return
+	 */
+	public List<ProdTable> findProductsByStateBD(RegState regState) {
+		String q = "select distinct p.id as id, p.prod_name as prodName, p.gen_name as genName, "
+				+ "p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, "
+				+ "p.manuf_name as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID, p.fnm as fnm " +
+				"from prodApplications pa, product p, applicant a, prod_company pc, company c " +
+				"where pa.PROD_ID = p.id " +
+				"and a.applcntId = pa.APP_ID " +
+				"and pc.prod_id = p.id " +
+				"and pa.regState = :regState ";
+		List<Object[]> products = null;
+		products = entityManager
+				.createNativeQuery(q)
+				.setParameter("regState", "" + regState)
+				.getResultList();
+
+		List<ProdTable> prodTables = new ArrayList<ProdTable>();
+		ProdTable prodTable;
+		for (Object[] objArr : products) {
+			prodTable = new ProdTable();
+			prodTable.setId(Long.valueOf("" + objArr[0]));
+			prodTable.setProdName((String) objArr[1]);
+			prodTable.setGenName((String) objArr[2]);
+			prodTable.setProdCategory(ProdCategory.valueOf((String) objArr[3]));
+			prodTable.setAppName((String) objArr[4]);
+			prodTable.setRegDate((Date) objArr[5]);
+			prodTable.setRegExpiryDate((Date) objArr[6]);
+			prodTable.setManufName((String) objArr[7]);
+			prodTable.setRegNo((String) objArr[8]);
+			prodTable.setProdDesc((String) objArr[9]);
+			prodTable.setProdAppID(Long.valueOf("" + objArr[10]));
+			prodTable.setFnm((String) objArr[11]);
+			prodTables.add(prodTable);
+		}
+		return prodTables;
+	}
+	
 	public List<Product> findProductByFilter(HashMap<String, Object> params) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Product> query = cb.createQuery(Product.class);
