@@ -24,10 +24,10 @@ public class ReviewDetailBnMZ implements Serializable {
 	private static final long serialVersionUID = -607484272762279214L;
 
 	@ManagedProperty(value = "#{reviewDetailBn}")
-    private ReviewDetailBn reviewDetailBn;
-	
+	private ReviewDetailBn reviewDetailBn;
+
 	@ManagedProperty(value = "#{userSession}")
-    private UserSession userSession;
+	private UserSession userSession;
 
 
 	public boolean visibleSaveBtn(){
@@ -35,30 +35,34 @@ public class ReviewDetailBnMZ implements Serializable {
 		/*ReviewInfo info = reviewDetail.getReviewInfo();
 		if(info != null && info.getReviewStatus().equals(ReviewStatus.ACCEPTED))
 			return false;
-		
+
 		// curUser=Second Reviewer && status=SEC_REVIEW
 		if(info.isSecreview() && info.getReviewStatus().equals(ReviewStatus.SEC_REVIEW)
 				&& info.getReviewer().getUserId().intValue() == userSession.getLoggedINUserID().intValue())
 			return false;*/
-		
+
 		return userSession.isReviewer();
 	}
-	
+
 	public boolean hideComponents(){
 		return !visibleSaveBtn();
 	}
-	
+
 	public boolean visibleSubmitBtn(){
 		//(userSession.reviewer) and (not reviewInfoBn.submitted)
-		ReviewInfo info = getReviewDetailBn().getReviewDetail().getReviewInfo();
-		if(info != null && info.getReviewStatus().equals(ReviewStatus.ACCEPTED))
-			return false;
-		
-		if(info.isSecreview() && info.getReviewStatus().equals(ReviewStatus.SEC_REVIEW)
-				&& info.getReviewer().getUserId().intValue() == userSession.getLoggedINUserID().intValue())
-			return false;
+		if (userSession.isReviewer()){
+			ReviewInfo info = getReviewDetailBn().getReviewDetail().getReviewInfo();
+			if(info != null && info.getReviewStatus().equals(ReviewStatus.ACCEPTED))
+				return false;
 
-		return true;
+			if(info.isSecreview() && info.getReviewStatus().equals(ReviewStatus.SEC_REVIEW)
+					&& info.getReviewer().getUserId().intValue() == userSession.getLoggedINUserID().intValue())
+				return false;
+
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	public ReviewDetailBn getReviewDetailBn() {
@@ -76,5 +80,5 @@ public class ReviewDetailBnMZ implements Serializable {
 	public void setUserSession(UserSession userSession) {
 		this.userSession = userSession;
 	}
-	
+
 }
