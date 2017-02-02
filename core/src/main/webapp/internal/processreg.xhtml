@@ -7,7 +7,7 @@
     <ui:define name="content">
 
         <h:form id="reghome" enctype="multipart/form-data">
-            <p:growl id="growl" showDetail="true"/>
+            <p:growl id="growl" showSummary="true" showDetail="false"/>
 
             <h:panelGrid columns="2" columnClasses="menu,content">
                 <h:panelGrid columns="2" columnClasses="menu,content">
@@ -26,7 +26,7 @@
                                      height="130px" width="830px">
                         </pe:timeline>
 
-                        <p:messages id="messages" showDetail="true" showSummary="true"/>
+                        <p:messages id="messages" showDetail="false" showSummary="true"/>
 
                         <p:tabView id="processtab" style="width: 830px;"
                                    activeIndex="#{processProdBn.selectedTab}" dynamic="true"
