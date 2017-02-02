@@ -90,8 +90,9 @@ public class CompanyService implements Serializable {
 		}
 
 		for (String ct : companyTypes) {
-			if(ct != null&&ct != "" && CompanyType.valueOf(ct).equals(CompanyType.FIN_PROD_MANUF))
+			if(ct != null&&ct != "" && CompanyType.valueOf(ct).equals(CompanyType.FIN_PROD_MANUF)){
 				prod.setManufName(selectedCompany.getCompanyName());
+			}
 			ProdCompany prodCompany = new ProdCompany(prod, selectedCompany, CompanyType.valueOf(ct));
 			if(!containsProdCompany(prodCompanies, prodCompany))
 				prodCompanies.add(prodCompany);
