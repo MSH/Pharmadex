@@ -2,13 +2,16 @@ package org.msh.pharmadex.dao;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -383,5 +386,24 @@ public class ProdApplicationsDAO implements Serializable {
                 .getResultList();
         return prodApplicationses;
 
+    }
+    /**
+     * Get the first prodapplication id for a year given. Sometimes it will be needed for application number calculation
+     * @param year 
+     * @return first prodapplication id or 0 
+     */
+    public Long findFirstIdForYear(int year){
+    	String query = "SELECT pa FROM ProdApplications pa where pa.createdDate>:created and pa.prodAppNo is not null order by pa.id";
+    	Calendar cal = GregorianCalendar.getInstance();
+    	cal.set(year-1, 11, 31, 0, 0, 0);
+    	Query q = entityManager.createQuery(query).setParameter("created", cal.getTime())
+    			.setMaxResults(1);
+    	@SuppressWarnings("unchecked")
+		List<ProdApplications> apps = q.getResultList();
+    	if(apps==null || apps.size()<1){
+    		return new Long(0);
+    	}else{
+    		return apps.get(0).getId();
+    	}
     }
 }
