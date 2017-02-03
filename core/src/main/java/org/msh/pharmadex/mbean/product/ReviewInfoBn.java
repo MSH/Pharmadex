@@ -154,6 +154,8 @@ public class ReviewInfoBn implements Serializable {
 		int index = backTo.indexOf(":");
 		if(index != -1){
 			String id = backTo.substring(0, index);
+			if(id.isEmpty())
+				id = "0";
 			idProdAppSource = new Long(id);
 			backTo = backTo.substring(index + 1);
 		}else if(prodApplications != null)

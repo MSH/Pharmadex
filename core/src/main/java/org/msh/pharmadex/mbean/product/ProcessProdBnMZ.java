@@ -249,6 +249,15 @@ public class ProcessProdBnMZ implements Serializable {
 		}
 		return null;
 	}
+	
+	public String registerProductNA(ProdApplications prodApplications, String backTo) {
+		this.registerProduct(prodApplications);
+		
+		if(backTo != null && !backTo.isEmpty())
+			return backTo;
+		return null;
+		//return "/public/productlist";
+	}
 
 	public String rejectProduct(ProdApplications prodApplications) {
 		facesContext = getCurrentInstance();

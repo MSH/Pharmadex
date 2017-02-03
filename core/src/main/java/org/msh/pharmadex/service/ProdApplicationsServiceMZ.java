@@ -1457,5 +1457,15 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		this.prodApplicationsService = prodApplicationsService;
 	}
 
+	public ArrayList<ProdApplications> findExpiringProd() {
+		Calendar currDate = Calendar.getInstance();
+		//currDate.add(Calendar.MONTH, 1);
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("startDt", currDate.getTime());
+		currDate.add(Calendar.MONTH, 2);
+		params.put("endDt", currDate.getTime());
 
+		ArrayList<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
+		return prodApps;
+	}
 }
