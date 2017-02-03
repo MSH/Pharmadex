@@ -32,6 +32,7 @@
 				<!-- BACK, SAVE, SUBMIT-->
 				<p:commandButton value="#{msgs.global_back}" action="reviewInfo"
 					ajax="false" immediate="true">
+					<f:param name="sourcePage" value="#{reviewDetailBn.prodApplications.id}:/internal/processreg.faces" />
 					<f:param name="reviewInfoID"
 						value="#{reviewDetailBn.reviewDetail.reviewInfo.id}" />
 					<f:param name="reviewActiveIndex1"
@@ -67,7 +68,7 @@
 
 				<h:panelGrid columns="3" columnClasses="label value"
 					cellspacing="5px">
-					<p:outputLabel value="#{msgs.volumes}:" />
+					<p:outputLabel value="#{msgs.module}:" />
 					<p:inputText value="#{reviewDetailBn.reviewDetail.volume}"
 						rendered="#{reviewDetailBnMZ.visibleSaveBtn() and reviewDetailBnMZ.visibleSubmitBtn()}" />
 					<p:outputLabel escape="false"

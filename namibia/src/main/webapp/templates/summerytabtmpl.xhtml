@@ -21,47 +21,94 @@
         </p:tab>
 
         <p:tab title="#{msgs.product_details}">
-            <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
-                <h:outputLabel value="#{msgs.prodName}:"/>
-                <h:outputLabel value="#{prodAppData.product.prodName}"/>
-
-                <h:outputLabel value="#{msgs.prod_cat}:"/>
-                <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
-
-                <h:outputLabel value="#{msgs.prodgenname}:"/>
-                <h:outputLabel value="#{prodAppData.product.genName}"/>
-
-                <h:outputLabel value="#{msgs.prod_app_type}:"/>
-                <h:outputLabel value="#{msgs[prodAppData.prodAppType.key]}"/>
-
-                <h:outputLabel value="#{msgs.dos_form}"/>
-                <h:outputLabel value="#{prodAppData.product.dosForm.dosForm}"/>
-
-                <h:outputLabel value="#{dos_strength}:" style="font-weight: bold;"/>
-                <h:outputLabel value="#{prodAppData.product.dosStrength}"/>
-
-                <h:outputLabel value="#{msgs.dos_unit}"/>
-                <h:outputLabel value="#{prodAppData.product.dosUnit.uom}"/>
-
-                <h:outputLabel value="#{msgs.prod_cat}"/>
-                <h:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
-
-                <h:outputLabel value="#{msgs.admin_route}"/>
-                <h:outputLabel value="#{msgs[prodAppData.product.adminRoute.key]}"/>
-
-                <h:outputLabel value="#{msgs.age_group}"/>
-                <h:outputLabel value="#{msgs[prodAppData.product.ageGroup.key]}"/>
-
-                <h:outputLabel value="#{msgs.product_pharmclassif}"/>
-                <h:outputLabel value="#{prodAppData.product.pharmClassif.displayName}"/>
-
-                <h:outputLabel value="#{msgs.prod_desc}"/>
-                <h:outputLabel value="#{prodAppData.product.prodDesc}"/>
-            </h:panelGrid>
+            <p:panelGrid cellspacing="10" style="width: 100%;">
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.prod_app_type}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<p:outputLabel value="#{msgs[prodAppData.prodAppType.key]}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.prod_cat}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<p:outputLabel value="#{msgs[prodAppData.product.prodCategory.key]}"/>
+	            	</p:column>
+	            </p:row>
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.prodName}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		 <p:outputLabel value="#{prodAppData.product.prodName}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top"> </p:column>
+	            	<p:column styleClass="col2_top"> </p:column>
+	            </p:row>
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.prodgenname}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		 <p:outputLabel value="#{prodAppData.product.genName}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top"> </p:column>
+	            	<p:column styleClass="col2_top"> </p:column>
+	            </p:row>
+				<p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.dos_form}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<p:outputLabel value="#{prodAppData.product.dosForm.dosForm}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.dos_unit}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<p:outputLabel value="#{prodAppData.product.dosUnit.uom}"/>
+	            	</p:column>
+	            </p:row>
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.dos_strength}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		 <p:outputLabel value="#{prodAppData.product.dosStrength}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top"> </p:column>
+	            	<p:column styleClass="col2_top"> </p:column>
+	            </p:row>
+				<p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.admin_route}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<p:outputLabel value="#{msgs[prodAppData.product.adminRoute.key]}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.age_group}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<p:outputLabel value="#{msgs[prodAppData.product.ageGroup.key]}"/>
+	            	</p:column>
+	            </p:row>
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.prod_desc}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		 <p:outputLabel value="#{prodAppData.product.prodDesc}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top"> </p:column>
+	            	<p:column styleClass="col2_top"> </p:column>
+	            </p:row>
+            </p:panelGrid>
         </p:tab>
 
         <p:tab title="#{msgs.inn_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
-            <h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
+<!-- 			<h:panelGrid columns="2" cellspacing="10" columnClasses="col1, col2">
                 <h:outputLabel value="#{msgs.inn_header}:"/>
                 <p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}" style="width:100%;">
                     <p:column headerText="#{msgs.active_substance}">
@@ -104,105 +151,179 @@
                     </p:column>
                 </p:dataTable>
 
-            </h:panelGrid>
-
+            </h:panelGrid> -->
+             <p:panelGrid cellspacing="10" style="width: 100%;" >
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.inn_header}"/>
+	            	</p:column>
+	            	<p:column style="width:900px;">
+	            		<p:dataTable id="innsummarytbl" var="prodInn" value="#{prodAppData.product.inns}" style="width:100%;">
+		                    <p:column headerText="#{msgs.active_substance}">
+		                        <h:outputText value="#{prodInn.inn.name}" style="#{processProdBnNA.findInnChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		
+		                    <p:column headerText="#{msgs.dos_strength}">
+		                        <h:outputText value="#{prodInn.dosStrength}" style="#{processProdBnNA.findInnChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		
+		                    <p:column headerText="#{msgs.dos_unit}">
+		                        <h:outputText value="#{prodInn.dosUnit.uom}" style="#{processProdBnNA.findInnChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		
+		                    <p:column headerText="#{msgs.inn_ref}">
+		                        <h:outputText value="#{prodInn.refStd}" style="#{processProdBnNA.findInnChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		                </p:dataTable>
+	            	</p:column>
+	            </p:row>
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.product_active}"/>
+	            	</p:column>
+	            	<p:column style="width:900px;">
+	            		 <p:dataTable id="expsummarytbl" var="prodExp" value="#{prodAppData.product.excipients}" style="width:100%;">
+		                    <p:column headerText="#{msgs.active_substance}">
+		                        <h:outputText value="#{prodExp.excipient.name}" style="#{processProdBnNA.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		
+		                    <p:column headerText="#{msgs.dos_strength}">
+		                        <h:outputText value="#{prodExp.dosStrength}" style="#{processProdBnNA.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		
+		                    <p:column headerText="#{msgs.dos_unit}">
+		                        <h:outputText value="#{prodExp.dosUnit.uom}" style="#{processProdBnNA.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		
+		                    <p:column headerText="#{msgs.inn_ref}">
+		                        <h:outputText value="#{prodExp.refStd}" style="#{processProdBnNA.findExcipientChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		                </p:dataTable>
+	            	</p:column>
+	            </p:row>
+			</p:panelGrid>
         </p:tab>
 
         <p:tab title="#{msgs.atc_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
-            <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
-                <h:outputLabel value="#{msgs.atc_header}" style="font-weight: bold;"/>
-                <p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.product.atcs}" style="width:100%;">
-                    <p:column headerText="#{msgs.atc_code}">
-                        <h:outputText value="#{atc.atcCode}"  style="#{processProdBnNA.findAtcChanged()?('color:red;'):('color:black;')}"/>
-                    </p:column>
-
-                    <p:column headerText="#{msgs.atc_name}">
-                        <h:outputText value="#{atc.atcName}"  style="#{processProdBnNA.findAtcChanged()?('color:red;'):('color:black;')}"/>
-                    </p:column>
-                </p:dataTable>
-
-            </h:panelGrid>
+            <p:panelGrid cellspacing="10" style="width: 100%;" >
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<p:outputLabel value="#{msgs.atc_header}"/>
+	            	</p:column>
+	            	<p:column style="width:900px;">
+	            		<p:dataTable id="atcsummarytable" var="atc" value="#{prodAppData.product.atcs}" style="width:100%;">
+		                    <p:column headerText="#{msgs.atc_code}">
+		                        <h:outputText value="#{atc.atcCode}"  style="#{processProdBnNA.findAtcChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		
+		                    <p:column headerText="#{msgs.atc_name}">
+		                        <h:outputText value="#{atc.atcName}"  style="#{processProdBnNA.findAtcChanged()?('color:red;'):('color:black;')}"/>
+		                    </p:column>
+		                </p:dataTable>
+	            	</p:column>
+	            </p:row>
+			</p:panelGrid>
         </p:tab>
 
         <p:tab title="#{msgs.application_detail}">
-            <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
-                <!--
-                <h:outputLabel value="#{msgs.product_drug_type}"/>
-                <h:outputLabel value="#{msgs[prodAppData.drugType.key]}"/>
-                -->
-                <h:outputLabel value="#{msgs.product_shelflife}:" style="font-weight: bold;"/>
-                    <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('ShelfLife')}">
-                     <div>
-                      <h:outputLabel value="#{prodAppData.product.shelfLife}" style="color:red;"/>
-                     </div>
-                 </ui:fragment>            
-                 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('ShelfLife')}">
-                     <div>
-                      <h:outputLabel value="#{prodAppData.product.shelfLife}"/>
-                     </div>
-                </ui:fragment>   
-
-                <h:outputLabel value="#{msgs.product_packsize}:" style="font-weight: bold;"/>
-                <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('PackSize')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.packSize}" style="color:red;"/>
-                   </div>
-                </ui:fragment>            
-                  <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('PackSize')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.packSize}" />
-                   </div>
-                </ui:fragment>  
-
-                <h:outputLabel value="#{msgs.product_conttype}"/>
-                 <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('ContType')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.contType}" style="color:red;"/>
-                   </div>
-                </ui:fragment>   
-        
-                 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('ContType')}">
-                    <div>
-                       <h:outputLabel value="#{prodAppData.product.contType}" />
-                   </div>
-                </ui:fragment> 
-
-                <h:outputLabel value="#{msgs.product_storcndtn}"/>
-                 <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('Storage')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.storageCndtn}" style="color:red;"/>
-                     </div>
-                </ui:fragment> 
-                 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('Storage')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.storageCndtn}" />
-                     </div>
-                </ui:fragment> 
-
-                <h:outputLabel value="#{msgs.prod_indications}"/>
-                <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('Indications')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.indications}" style="color:red;"/>
-                     </div>
-                </ui:fragment> 
-                <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('Indications')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.indications}" />
-                     </div>
-                </ui:fragment>
-
-                <h:outputLabel value="#{msgs.prod_posology}"/>
-                 <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('Posology')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.posology}" style="color:red;"/>
-                    </div>
-                </ui:fragment>
-                   <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('Posology')}">
-                    <div>
-                      <h:outputLabel value="#{prodAppData.product.posology}" />
-                    </div>
-                </ui:fragment>
-            </h:panelGrid>
+        	<p:panelGrid cellspacing="10" style="width: 100%;" >
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_shelflife}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<ui:fragment   rendered="#{processProdBnNA.isFieldChanged('ShelfLife')}">
+		                     <div>
+		                      	<h:outputLabel value="#{prodAppData.product.shelfLife}" style="color:red;"/>
+		                     </div>
+		                 </ui:fragment>            
+		                 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('ShelfLife')}">
+		                     <div>
+		                      	<h:outputLabel value="#{prodAppData.product.shelfLife}"/>
+		                     </div>
+		                </ui:fragment>   
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_packsize}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<ui:fragment   rendered="#{processProdBnNA.isFieldChanged('PackSize')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.packSize}" style="color:red;"/>
+		                   </div>
+		                </ui:fragment>            
+		                  <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('PackSize')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.packSize}" />
+		                   </div>
+		                </ui:fragment>
+	            	</p:column>
+	            </p:row>
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_conttype}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<ui:fragment   rendered="#{processProdBnNA.isFieldChanged('ContType')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.contType}" style="color:red;"/>
+		                   </div>
+		                </ui:fragment>
+		                 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('ContType')}">
+		                    <div>
+		                       <h:outputLabel value="#{prodAppData.product.contType}" />
+		                   </div>
+		                </ui:fragment>
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_storcndtn}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<ui:fragment   rendered="#{processProdBnNA.isFieldChanged('Storage')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.storageCndtn}" style="color:red;"/>
+		                     </div>
+		                </ui:fragment> 
+		                 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('Storage')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.storageCndtn}" />
+		                     </div>
+		                </ui:fragment>
+	            	</p:column>
+	            </p:row>
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.prod_indications}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<ui:fragment   rendered="#{processProdBnNA.isFieldChanged('Indications')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.indications}" style="color:red;"/>
+		                     </div>
+		                </ui:fragment> 
+		                <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('Indications')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.indications}" />
+		                     </div>
+		                </ui:fragment>
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.prod_posology}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<ui:fragment   rendered="#{processProdBnNA.isFieldChanged('Posology')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.posology}" style="color:red;"/>
+		                    </div>
+		                </ui:fragment>
+		                   <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('Posology')}">
+		                    <div>
+		                      <h:outputLabel value="#{prodAppData.product.posology}" />
+		                    </div>
+		                </ui:fragment>
+	            	</p:column>
+	            </p:row>
+			</p:panelGrid>
         </p:tab>
 
         <p:tab title="#{msgs.appl_status_country}"
@@ -230,9 +351,7 @@
                         <f:convertDateTime pattern="MMM dd, yyyy"/>
                     </h:outputText>
                 </p:column>
-
             </p:dataTable>
-
         </p:tab>
 
         <p:tab title="#{msgs.manufacturer_detail}">
@@ -260,20 +379,36 @@
 
         <p:tab title="#{msgs.product_pricing_comparison}"
                rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector)}">
-            <h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1 col2" var="prodAppData">
-                <p:outputLabel value="#{msgs.product_pricing_max}" for="msrp"/>
-                <p:outputLabel id="msrp" value="#{prodAppData.product.pricing.msrp}"/>
-
-                <p:outputLabel value="#{msgs.product_pricing_perdose}" for="priceperdose"/>
-                <p:outputLabel id="priceperdose" value="#{prodAppData.product.pricing.pricePerDose}"/>
-
-                <p:outputLabel value="#{msgs.product_pricing_perday}" for="priceperday"/>
-                <p:outputLabel id="priceperday" value="#{prodAppData.product.pricing.pricePerDay}"/>
-
-                <p:outputLabel value="#{msgs.product_pricing_treatcost}" for="treatcost"/>
-                <p:outputLabel id="treatcost" value="#{prodAppData.product.pricing.treatCost}"/>
-            </h:panelGrid>
-
+            <p:panelGrid cellspacing="10" style="width: 100%;" >
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_pricing_max}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<h:outputLabel value="#{prodAppData.product.pricing.msrp}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_pricing_perdose}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<h:outputLabel value="#{prodAppData.product.pricing.pricePerDose}"/>
+	            	</p:column>
+				</p:row>
+				<p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_pricing_perday}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<h:outputLabel value="#{prodAppData.product.pricing.pricePerDay}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.product_pricing_treatcost}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<h:outputLabel value="#{prodAppData.product.pricing.treatCost}"/>
+	            	</p:column>
+				</p:row>
+			</p:panelGrid>
 
             <p:dataTable id="pricetable" var="price" value="#{prodAppData.product.pricing.drugPrices}"
                          style="width:100%;">
@@ -284,26 +419,44 @@
                 <p:column headerText="#{msgs.drug_price_msrp}">
                     <h:outputText value="#{price.msrp}"/>
                 </p:column>
-
             </p:dataTable>
-
         </p:tab>
 
         <p:tab title="#{msgs.payment_info}"
                rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
-            <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
-
-                <h:outputLabel value="#{msgs.bank_name}" for="bankname"/>
-                <h:outputLabel id="bankname" value="#{prodAppData.bankName}"/>
-
-                <h:outputLabel value="#{msgs.reciept_no}" for="receiptno"/>
-                <h:outputLabel id="receiptno" value="#{prodAppData.receiptNo}"/>
-
-                <h:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"/>
-                <h:outputLabel id="feesubmitdt" value="#{prodAppData.feeSubmittedDt}">
-                    <f:convertDateTime pattern="MMM dd, yyyy"/>
-                </h:outputLabel>
-            </h:panelGrid>
+            <p:panelGrid cellspacing="10" style="width: 100%;" >
+	            <p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.bank_name}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<h:outputLabel value="#{prodAppData.bankName}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top"/>
+	            	<p:column styleClass="col2_top"/>
+				</p:row>
+				<p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.reciept_no}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<h:outputLabel value="#{prodAppData.receiptNo}"/>
+	            	</p:column>
+	            	<p:column styleClass="col1_top"/>
+	            	<p:column styleClass="col2_top"/>
+				</p:row>
+				<p:row>
+	            	<p:column styleClass="col1_top">
+	            		<h:outputLabel value="#{msgs.fee_submit_date}"/>
+	            	</p:column>
+	            	<p:column styleClass="col2_top">
+	            		<h:outputLabel id="feesubmitdt" value="#{prodAppData.feeSubmittedDt}">
+		                    <f:convertDateTime pattern="MMM dd, yyyy"/>
+		                </h:outputLabel>
+	            	</p:column>
+	            	
+				</p:row>
+			</p:panelGrid>
         </p:tab>
 
         <p:tab title="#{msgs.checklist}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">

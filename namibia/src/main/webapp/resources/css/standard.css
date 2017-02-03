@@ -76,8 +76,20 @@ body {
     width: 200px;
 }
 
+.col1_top{
+    vertical-align: top;
+    font-weight: bold;
+    text-align: right;
+    width: 200px;
+}
+
 .col2 {
     vertical-align: middle;
+    width: 350px;
+}
+
+.col2_top{
+    vertical-align: top;
     width: 350px;
 }
 
@@ -305,10 +317,12 @@ body {
 
 .ui-datatable thead th {
     white-space: normal !important;
+    border: solid 1px;
 }
 
 .ui-datatable tbody td {
     white-space: normal !important;
+    border: solid 1px;
 }
 
 .ui-inputfield {
@@ -336,4 +350,7 @@ body {
     padding: 5px;
     border: 2px solid;
     border-radius: 5px;
+}
+.ui-panelgrid td, .ui-panelgrid tr {
+    border-style: none
 }

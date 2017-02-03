@@ -826,8 +826,8 @@
 				<p:commandButton id="regBtn" value="#{processProdBn.buildStringByRegDlg(false)}"
 					icon="ui-icon-gear" ajax="false"
 					onclick="PrimeFaces.monitorDownload(start, stop);"
-					actionListener="#{processProdBnMZ.registerProduct(processProdBn.prodApplications)}"
-					update=":reghome:growl :reghome:messages :reghome :regdatedlg" />
+					action="#{processProdBnMZ.registerProductNA(processProdBn.prodApplications, '/public/productlist')}"
+					 />
 			</h:form>
 		</p:dialog>
 		
