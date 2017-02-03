@@ -12,8 +12,8 @@
                     <h1 class="title ui-widget-header ui-corner-all"> #{msgs.Userlist}</h1>
                 </div>
 
-                <p:growl id="growl" showDetail="true"/>
-                <p:messages id="messages" showDetail="true" showSummary="true"/>
+                <p:growl id="growl" showDetail="false"/>
+                <p:messages id="messages" showDetail="false" showSummary="true"/>
                 <p:dataTable id="users" var="user" value="#{userMBean.allUsers}"
                              rows="25" paginator="true"
                              paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
