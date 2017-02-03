@@ -17,7 +17,7 @@
             <p:dataTable id="applicantions" var="eachprod" value="#{prodAppMBean.savedAppList}"
                          rendered="#{not empty prodAppMBean.savedAppList}">
 
-                <p:column headerText="Product Name">
+                <p:column headerText="#{msgs.prod_name}">
                     <p:commandLink value="#{eachprod.product.prodName}"
                                    action="/secure/prodreghome.faces" ajax="false">
                         <f:param value="#{eachprod.id}" name="prodAppID"/>
