@@ -1,0 +1,192 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+        <h:form id="userlist">
+            <h:panelGroup id="content">
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.Userlist}</h1>
+                </div>
+
+                <p:growl id="growl" showDetail="false"/>
+                <p:messages id="messages" showDetail="false" showSummary="true"/>
+                <p:dataTable id="users" var="user" value="#{userMBean.allUsers}"
+                             rows="25" paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}" rowsPerPageTemplate="25,50,100,200">
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}" action="#{userMBean.addUser}"
+                                         oncomplete="PF('adduser').show();"
+                                         update=":adduserfrm :adduserfrm:rolepicklist"/>
+                    </f:facet>
+
+                    <p:column filterBy="#{user.name}"
+                              sortBy="#{user.name}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_name}"/>
+                        </f:facet>
+
+                        <p:commandLink value=" #{user.name}" oncomplete="PF('adduser').show();" update=":adduserfrm"
+                                       ajax="true">
+                            <f:setPropertyActionListener value="#{user}" target="#{userMBean.selectedUser}"/>
+                            <f:setPropertyActionListener value="#{true}" target="#{userMBean.edit}"/>
+                            <f:setPropertyActionListener value="#{userMBean.selectedUser.type}" target="#{userMBean.userType}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column filterBy="#{user.username}"
+                              sortBy="#{user.username}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_username}"/>
+                        </f:facet>
+
+                        #{user.username}
+                    </p:column>
+
+                    <p:column filterBy="#{user.email}"
+                              sortBy="#{user.email}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_email}"/>
+                        </f:facet>
+                        #{user.email}
+                    </p:column>
+
+                    <p:column filterBy="#{user.type}"
+                              sortBy="#{user.type}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_type}"/>
+                        </f:facet>
+                        #{user.type}
+                    </p:column>
+
+                    <p:column filterBy="#{user.companyName}"
+                              sortBy="#{user.companyName}">
+                     <!-- <p:column filterBy="#{user.applicant.appName}"
+                              sortBy="#{user.applicant.appName}"> -->
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.applicant}"/>
+                        </f:facet>
+                        #{user.companyName}
+                    </p:column>
+
+                    <p:column filterBy="#{user.enabled}"
+                              sortBy="#{user.enabled}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_enable}(true or false)"/>
+                        </f:facet>
+                        <p:outputLabel value="#{msgs.global_yes}" rendered="#{user.enabled}"/>
+                        <p:outputLabel value="#{msgs.global_no}" rendered="#{!user.enabled}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="adduser" modal="true" resizable="false" header="#{msgs.add_user}" dynamic="true" height="450px" width="800px">
+            <h:form id="adduserfrm">
+                <p:messages showSummary="true"/>
+
+                <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                    <ui:param name="userdata" value="#{userMBean.selectedUser}"/>
+                    <ui:param name="input" value="true"/>
+                </ui:decorate>
+
+                <h:inputHidden value="#{userMBean.selectedUser.userId}"/>
+                <h:inputHidden value="#{userMBean.selectedUser.password}"/>
+
+                <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
+                    <h:outputLabel value="#{msgs.User_username}"/>
+                    <p:inputText value="#{userMBean.selectedUser.username}" readonly="#{userMBean.edit}"/>
+
+                    <h:outputText value="#{msgs.User_type}"/>
+                    <p:selectOneMenu value="#{userMBean.userType}">
+                    <!-- <p:selectOneMenu value="#{userMBean.selectedUser.type}"> -->
+                        <!-- <f:selectItem itemLabel="#{msgs[userMBean.defType.key]}" itemValue=""/> -->
+                        <f:selectItems value="#{globalLists.userTypes}" var="type" itemLabel="#{msgs[type.key]}"/>
+                        <p:ajax event="change" listener="#{userMBean.typeChangeListenener}"
+                        		 update="gridContainer listContainer rolepicklist :adduserfrm:alllist :adduserfrm:btnlist" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+                <p:outputPanel id="gridContainer" layout="block">
+                	<h:panelGrid id="listContainer" columns="6" columnClasses="col1, col2, col2, col1, col1, col1" cellpadding="5" cellspacing="5"
+	                		rendered="#{applicantService.visAssignCompanyComp(userMBean.selectedUser, userMBean.userType)}">
+	                	<h:outputLabel id="lbllist" value="#{msgs.user_assigncompany}"/>
+	                    <p:selectOneMenu id="alllist" value="#{userMBean.userApp.applcntId}">
+	                       	<f:selectItem itemLabel="#{userMBean.applicName}" itemValue="#{userMBean.applicID}"/>
+	                        <f:selectItems value="#{applicantService.findAllApplicants(userMBean.applicID)}" var="licHolder"
+	                                      itemLabel="#{licHolder.appName}" itemValue="#{licHolder.applcntId}"/>
+	                    </p:selectOneMenu>
+	                    <p:commandButton id="btnlist" action="#{userMBean.cleanAssignCompany}" value="#{msgs.clean}"
+	                                     update=":userlist:users :userlist:messages :adduserfrm:alllist"
+	                                     rendered="#{applicantService.visibleCleanBtn(userMBean.applicID)}"/>
+	                    <h:outputText value=""/>
+	                    <h:outputText value=""/>
+	                    <h:outputText value=""/>
+	                </h:panelGrid>
+                </p:outputPanel>
+                <h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
+                	<p:commandButton action="#{userMBean.resetPassword}" value="#{msgs.reset_password}"
+                                     onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('adduser').hide()"
+                                     ajax="false"
+                                     update=":userlist:users :userlist:messages :adduserfrm"
+                                     rendered="#{userMBean.edit}"/>
+                    <h:outputText value="" rendered="#{!userMBean.edit}"/>
+                    <h:outputText value=""/>
+                    <h:outputText value="#{msgs.global_enable}"/>
+                    <p:selectBooleanButton value="#{userMBean.selectedUser.enabled}" onLabel="#{msgs.global_yes}"
+                                           offLabel="#{msgs.global_no}" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                    </p:selectBooleanButton>
+                </h:panelGrid>
+
+                <p:panel header="#{msgs.role}">
+                    <p:pickList id="rolepicklist" value="#{userMBean.roles}" effect="bounce"
+                                var="rolevar" style="align:center;" converter="#{roleConverter}"
+                                itemValue="#{rolevar}" itemLabel="#{rolevar.displayname}">
+                    </p:pickList>
+                </p:panel>
+
+                <p:blockUI block="adduserfrm" trigger=":adduserfrm:saveuserbtn :adduserfrm:updateuserbtn">
+                    <p:graphicImage value="/resources/images/ajax-loader.gif"/>
+                </p:blockUI>
+
+                <p:commandButton action="#{userMBean.saveUser}" value="#{msgs.global_add}" id="saveuserbtn"
+                                 ajax="false"
+                                 onclick="PF('statusDialog').show();"
+                                 oncomplete="if (!args.validationFailed) PF('adduser').hide()"
+                                 update=":userlist:users :userlist:messages :adduserfrm" 
+                                 rendered="#{!userMBean.edit}"/>
+                <p:commandButton action="#{userMBean.updateuser}" value="#{msgs.global_update}" id="updateuserbtn"
+                				 onclick="PF('statusDialog').show();"
+                                 oncomplete="if (!args.validationFailed) PF('adduser').hide()"
+                                 ajax="false"
+                                 update=":userlist:users :userlist:messages :adduserfrm" 
+                                 rendered="#{userMBean.edit}"/>
+                <p:commandButton action="#{userMBean.cancelUser}" immediate="true" value="#{msgs.global_cancel}"
+                                 oncomplete="PF('adduser').hide()" ajax="false"/>
+                                 
+                 <!-- <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}" immediate="true" ajax="false" icon="ui-icon-extlink"/> -->
+            </h:form>
+        </p:dialog>
+		<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+		
+		<script type="text/javascript">
+			function start() {
+			PF('statusDialog').show();
+			setTimeout(function() {
+				PF('statusDialog').hide();
+			}, 3000);
+			}
+				
+			function stop() {
+			PF('statusDialog').hide();
+			}
+		</script>
+    </ui:define>
+</ui:composition>

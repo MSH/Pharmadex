@@ -89,7 +89,6 @@ public class ApplicantService implements Serializable {
         return result;
     }
     
-    @Transactional
     public boolean visAssignCompanyComp(User user){
     	boolean vis = false;
     	if(user == null)
@@ -98,6 +97,22 @@ public class ApplicantService implements Serializable {
     		return vis;
     	
     	if(user.getType().equals(UserType.COMPANY))
+    		return true;
+    	else{
+    		if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null)
+    			return true;
+    	}
+    	return vis;
+    }
+    
+    public boolean visAssignCompanyComp(User user, UserType type){
+    	boolean vis = false;
+    	if(user == null)
+    		return vis;
+    	if(type == null)
+    		return vis;
+    	
+    	if(type.equals(UserType.COMPANY))
     		return true;
     	else{
     		if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null)
