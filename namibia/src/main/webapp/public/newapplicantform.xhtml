@@ -1,95 +1,103 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="../templates/admin_layout.xhtml">
-                
-    <ui:define name="content">
-        <div class="post" style="width: 1024px">
-            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.applicant_registration}</h1>
-        </div>
-	
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="../templates/admin_layout.xhtml">
+
+	<ui:define name="content">
+		<div class="post" style="width: 1024px">
+			<h1 class="title ui-widget-header ui-corner-all">
+				#{msgs.applicant_registration}</h1>
+		</div>
+
 		<h:form id="formapp" enctype="multipart/form-data">
-			<p:growl id="growl" showDetail="true" />
-	
-			<h:panelGrid columns="2" columnClasses="menu,content">
-				<ui:include src="applicantmenu.xhtml" />
+			<p:growl id="growl" showDetail="false" />
+			<h:form id="appreg">
+				<p:panel header="#{msgs.applicant_detail}">
+					<ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+						<ui:param name="applicantdata"
+							value="#{applicantMBean.selectedApplicant}"></ui:param>
+						<ui:param name="input" value="#{true}" />
+					</ui:decorate>
+				</p:panel>
 
-				<h:form id="appreg" >
-		            <p:panel header="#{msgs.applicant_detail}">
-		               <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
-		                   <ui:param name="applicantdata" value="#{applicantMBean.selectedApplicant}"></ui:param>
-		                   <ui:param name="input" value="#{true}"/>
-		               </ui:decorate>
-		            </p:panel>
+				<h:panelGroup id="selectuser">
+					<p:panel header="#{msgs.person_responsible}">
+						<h:panelGrid columns="1" cellpadding="10px">
+							<p:commandLink value="#{msgs.user_add}"
+								oncomplete="PF('newUserDlg').show()" immediate="true"
+								update=":newuser" style="font-weight: bolder; font-size: larger"
+								action="#{applicantMBean.initNewUser}" />
+						</h:panelGrid>
+						<p:dataTable id="usertable" var="applicantUser"
+							value="#{applicantMBean.usersByApplicant}" style="width:100%;"
+							selection="#{applicantMBean.selectResponsable}"
+							rowKey="#{applicantUser.username}" rowIndexVar="rowIndex">
+							<p:ajax event="rowSelectRadio"
+								listener="#{applicantMBean.onRowSelect}"
+								update="formapp:appreg:usertable" />
 
-		            <h:panelGroup id="selectuser">
-		                <p:panel header="#{msgs.person_responsible}">
-		                    <h:panelGrid columns="1" cellpadding="10px">
-		                    	<p:messages showSummary="true" showDetail="true" id="messages"/>
-		                        <p:commandLink value="#{msgs.user_add}" oncomplete="PF('newUserDlg').show()"
-		                                               immediate="true" update=":newuser"
-		                                               style="font-weight: bolder; font-size: larger"
-		                                               action="#{applicantMBean.initNewUser}"/>
-		                    </h:panelGrid>
-		                    <p:dataTable id="usertable" var="applicantUser" value="#{applicantMBean.usersByApplicant}"
-		                                 style="width:100%;" selection="#{applicantMBean.selectResponsable}"
-		                                 rowKey="#{applicantUser.username}" rowIndexVar="rowIndex"
-		                                 >
-				            	<p:ajax event="rowSelectRadio" listener="#{applicantMBean.onRowSelect}"
-				            	update="formapp:appreg:usertable"/>
-										
-				            	<p:column headerText="#{msgs.responsable}" selectionMode="single" />
-				                <p:column headerText="#{msgs.global_enable}" style="width:50px">
-				                	<h:outputText value="#{applicantMBean.userIsEnabled(applicantUser.enabled)}" style="align:center; color:red"/>
-				                </p:column>
-				            	<p:column headerText="#{msgs.User_name}">
-				            		<h:outputText value="#{applicantUser.name}"/>
-				            	</p:column>
-				
-					            <p:column headerText="#{msgs.User_username}">
-					                 <h:outputText value="#{applicantUser.username}"/>
-					            </p:column>
-					
-					            <p:column headerText="#{msgs.User_email}">
-					                 <h:outputText value="#{applicantUser.email}"/>
-					            </p:column>
-				            </p:dataTable>
-		                </p:panel>
-		            </h:panelGroup>
-        		</h:form>
-			</h:panelGrid>
+							<p:column headerText="#{msgs.responsable}" selectionMode="single" />
+							<p:column headerText="#{msgs.global_enable}" style="width:50px">
+								<h:outputText
+									value="#{applicantMBean.userIsEnabled(applicantUser.enabled)}"
+									style="align:center; color:red" />
+							</p:column>
+							<p:column headerText="#{msgs.User_name}">
+								<h:outputText value="#{applicantUser.name}" />
+							</p:column>
+
+							<p:column headerText="#{msgs.User_username}">
+								<h:outputText value="#{applicantUser.username}" />
+							</p:column>
+
+							<p:column headerText="#{msgs.User_email}">
+								<h:outputText value="#{applicantUser.email}" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					<div align="center" style="height: 60px">
+						<p:commandButton action="#{applicantMBean.submitApp}"
+							value="#{msgs.global_submit}" ajax="false" />
+						<p:commandButton action="#{applicantMBean.cancelApp}"
+							value="#{msgs.global_cancel}" ajax="false" immediate="true" />
+					</div>
+					</h:panelGroup>
+			</h:form>
 		</h:form>
 
-        <p:dialog header="#{msgs.user_add}" widgetVar="newUserDlg" id="newUserdlg" resizable="true" modal="true">
-            <h:form id="newuser">
-                <p:growl showSummary="true"/>
-                <p:messages id="messages" showDetail="true" showSummary="true" />
+		<p:dialog header="#{msgs.user_add}" widgetVar="newUserDlg"
+			id="newUserdlg" resizable="true" modal="true">
+			<h:form id="newuser">
+				<p:growl showSummary="true" />
+				<p:messages id="messages" showDetail="true" showSummary="true" />
 
-                <ui:decorate template="/templates/userdetailtmpl.xhtml">
-                    <ui:param name="userdata" value="#{applicantMBean.user}"/>
-                    <ui:param name="input" value="#{true}"/>
-                </ui:decorate>
+				<ui:decorate template="/templates/userdetailtmpl.xhtml">
+					<ui:param name="userdata" value="#{applicantMBean.user}" />
+					<ui:param name="input" value="#{true}" />
+				</ui:decorate>
 
-				<h:panelGrid columns="4" columnClasses="col1, col2, col1, col2" cellpadding="5" cellspacing="5">
-                    <h:outputLabel value="#{msgs.User_username} *"/>
-                    <p:inputText value="#{userMBean.selectedUser.username}" 
-                    			required="true" requiredMessage="#{msgs.User_username}"/>
+				<h:panelGrid columns="4" columnClasses="col1, col2, col1, col2"
+					cellpadding="5" cellspacing="5">
+					<h:outputLabel value="#{msgs.User_username} *" />
+					<p:inputText value="#{userMBean.selectedUser.username}"
+						required="true" requiredMessage="#{msgs.User_username}" />
 
-                    <h:outputText value="#{msgs.User_type}"/>
-                    <h:outputText value="#{msgs[userMBeanNA.userType.key]}"/>
-                </h:panelGrid>
-                
-                <h:panelGroup>
-                    <p:commandButton action="#{applicantMBean.newUser}"
-                                     value="#{msgs.global_add}"
-                                     oncomplete="if (!args.validationFailed) PF('newUserDlg').hide()"
-                                     update="newuser:messages formapp:appreg:usertable"/>
-                    <p:commandButton action="#{applicantMBean.cancelAddUser}" immediate="true" ajax="true"
-                                     value="#{msgs.global_cancel}" oncomplete="PF('newUserDlg').hide()"/>
-                </h:panelGroup>
-            </h:form>
-        </p:dialog>
+					<h:outputText value="#{msgs.User_type}" />
+					<h:outputText value="#{msgs[userMBeanNA.userType.key]}" />
+				</h:panelGrid>
 
-    </ui:define>
+				<h:panelGroup>
+					<p:commandButton action="#{applicantMBean.newUser}"
+						value="#{msgs.global_add}"
+						oncomplete="if (!args.validationFailed) PF('newUserDlg').hide()"
+						update="newuser:messages formapp:appreg:usertable" />
+					<p:commandButton action="#{applicantMBean.cancelAddUser}"
+						immediate="true" ajax="true" value="#{msgs.global_cancel}"
+						oncomplete="PF('newUserDlg').hide()" />
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
 </ui:composition>

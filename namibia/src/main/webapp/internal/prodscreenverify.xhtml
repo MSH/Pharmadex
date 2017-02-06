@@ -9,7 +9,7 @@
         <ui:include src="verificationpnl.xhtml"/>
     </p:tab>
     <p:tab title="#{msgs.prod_screening}"
-           rendered="#{(!processProdBn.displayVerify || (userSession.head || userSession.moderator || userSession.reviewer) ) and (userSession.head || userSession.staff || userSession.moderator || userSession.reviewer)}"
+           rendered="#{(!processProdBn.displayVerify || userSession.admin || (userSession.head || userSession.moderator || userSession.reviewer) ) and (userSession.head || userSession.staff || userSession.moderator || userSession.reviewer)}"
            id="checklisttab">
         <ui:include src="prescreenpnl.xhtml"/>
     </p:tab>

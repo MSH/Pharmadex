@@ -31,27 +31,40 @@ ul.ui-menu-child {
 
 
 	<div class="ui-widget ui-widget-header" style="height: 130px;">
-		<h:form>
+		<h:form id="logoForm">
 			<div id="logo">
-				<h:panelGrid columns="3" width="100%">
-					<a href="${request.contextPath}/public/registrationhome.faces">
-						<img src="${request.contextPath}/resources/images/header.png" />
-					</a>
-					<h:panelGrid columns="1" cellspacing="5">
+				<h:panelGrid columns="2" width="100%">
+					<h:panelGrid rows="1" columns="1" cellspacing="5">
+						<a href="${request.contextPath}/public/registrationhome.faces">
+							<img src="${request.contextPath}/resources/images/header.png" />
+						</a>
 					</h:panelGrid>
-
-					<h:panelGroup styleClass="logoutWelcomeId">
+					<h:panelGrid rows="1" columns="1" cellspacing="5"
+						styleClass="logoutWelcomeId">
 						<sec:isAuthenticated>
-							<p:commandLink
-								value="#{msgs.admin_loggedinas} #{userSession.loggedInUser} |"></p:commandLink>
-							<p:commandLink action="#{userSession.editUser}"
-								value="#{msgs.admin_settings} |" immediate="true" ajax="false">
-								<f:setPropertyActionListener
-									value="#{userSession.userAccess.user}"
-									target="#{registerUserMbean.user}" />
-							</p:commandLink>
-							<p:commandLink action="#{userAuthHandler.logout}"
-								value="#{msgs.admin_logout}" ajax="false" />
+							<h:panelGrid columns="1" rows="4">
+								<p:outputLabel style="color: #00ff00"
+									value="#{msgs.admin_loggedinas} #{userSession.loggedInUser}" />
+								<p:outputLabel style="color: #00ff00"
+									value="#{msgs.User_roles}: #{userSession.displayCurrentRole()}"
+									rendered="#{!userSession.multiRole}" />
+								<p:selectOneMenu id="switchRoles"
+									value="#{userSession.currentRole}" converter="#{roleConverter}"
+									rendered="#{userSession.multiRole}">
+									<f:selectItems value="#{userSession.rList}" var="role"
+										itemLabel="#{role.displayname}" itemValue="#{role}" />
+									<f:ajax update="logo" listener="#{userSession.goHome()}" />
+								</p:selectOneMenu>
+								<p:commandLink action="#{userSession.editUser}"
+									value="#{msgs.admin_settings}" immediate="true" ajax="false">
+									<f:setPropertyActionListener
+										value="#{userSession.userAccess.user}"
+										target="#{registerUserMbean.user}" />
+								</p:commandLink>
+								<p:commandLink action="#{userAuthHandler.logout}"
+									value="#{msgs.admin_logout}" ajax="false" />
+								<p:outputLabel />
+							</h:panelGrid>
 						</sec:isAuthenticated>
 						<sec:isAnonymous>
 							<h:panelGrid columns="1">
@@ -61,7 +74,7 @@ ul.ui-menu-child {
 								</h:outputLink>
 							</h:panelGrid>
 						</sec:isAnonymous>
-					</h:panelGroup>
+					</h:panelGrid>
 				</h:panelGrid>
 			</div>
 		</h:form>

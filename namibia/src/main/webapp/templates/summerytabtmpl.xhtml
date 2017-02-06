@@ -204,7 +204,7 @@
 			</p:panelGrid>
         </p:tab>
 
-        <p:tab title="#{msgs.atc_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
+        <p:tab title="#{msgs.atc_header}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
             <p:panelGrid cellspacing="10" style="width: 100%;" >
 	            <p:row>
 	            	<p:column styleClass="col1_top">
@@ -327,7 +327,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.appl_status_country}"
-               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
+               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
             <p:dataTable id="foreignStatusTable" var="appstatus" value="#{foreignAppStatus}"
                          style="width:100%;">
                 <p:column headerText="#{msgs.applicant_country}">
@@ -378,7 +378,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.product_pricing_comparison}"
-               rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector)}">
+               rendered="#{userSession.displayPricing and (userSession.staff||userSession.moderator||userSession.reviewer)}">
             <p:panelGrid cellspacing="10" style="width: 100%;" >
 	            <p:row>
 	            	<p:column styleClass="col1_top">
@@ -423,7 +423,7 @@
         </p:tab>
 
         <p:tab title="#{msgs.payment_info}"
-               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
+               rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
             <p:panelGrid cellspacing="10" style="width: 100%;" >
 	            <p:row>
 	            	<p:column styleClass="col1_top">
@@ -459,7 +459,7 @@
 			</p:panelGrid>
         </p:tab>
 
-        <p:tab title="#{msgs.checklist}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer||userSession.inspector}">
+        <p:tab title="#{msgs.checklist}" rendered="#{userSession.staff||userSession.moderator||userSession.reviewer}">
             <p:dataTable var="checkList" value="#{prodAppChecklists}" style="width:100%;">
                 <p:column style="width:100px">
                     <h:outputLabel value="#{checkList.checklist.module}"/>

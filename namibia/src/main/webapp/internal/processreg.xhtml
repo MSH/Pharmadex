@@ -303,9 +303,10 @@
 
 							<p:tab title="#{msgs.letters}" id="lettertab">
 								<h:panelGrid columns="1" cellpadding="5" cellspacing="5">
-									<p:commandButton value="#{prodAckLetterFormMZ.getCreateLetterBtnName(msgs.btn_create_acceptance)}"
+									<p:commandButton value="#{msgs.btn_create_ackletter}"
 										action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}"
-										oncomplete="PF('createAckLet').show()" update=":createAckLet" 
+										oncomplete="PF('createAckLet').show()" update=":createAckLet"
+										rendered="#{userSession.staff}" 
 										/>
 									<p:dataTable id="lettertable" value="#{processProdBn.letters}"
 										var="letter">

@@ -6,12 +6,12 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
 	<h:panelGrid id="btnpnlFirst" cellspacing="2" cellpadding="2" columns="4">
-         <p:commandButton id="completef" value="#{msgs.global_complete}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
+         <p:commandButton id="completef" value="#{msgs.global_approve}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"
                          update="reghome">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
-        <p:commandButton value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
+        <p:commandButton value="#{msgs.global_reject}" action="#{preScreenProdMBn.sendToApplicant}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
 <ui:remove>
@@ -76,12 +76,12 @@
     </p:dataTable>
 
 	<h:panelGrid id="btnpnlSecond" cellspacing="2" cellpadding="2" columns="4">
-        <p:commandButton id="complete" value="#{msgs.global_complete}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
+        <p:commandButton id="complete" value="#{msgs.global_approve}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"
                          update="reghome">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
-        <p:commandButton id="sendtoapp" value="#{msgs.send_to_app}" action="#{preScreenProdMBn.sendToApplicant}"
+        <p:commandButton id="sendtoapp" value="#{msgs.global_reject}" action="#{preScreenProdMBn.sendToApplicant()}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" ajax="false" icon="ui-icon-arrowreturnthick-1-w">
         </p:commandButton>
 <ui:remove>

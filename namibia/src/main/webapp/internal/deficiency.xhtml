@@ -21,8 +21,8 @@
 				</ui:decorate>
 
 				<div align="left">
-					<p:commandButton value="#{msgs.generate_report}" ajax="false"
-						actionListener="#{prodDeficiencyBn.createDeficiencyLetter}" 
+					<p:commandButton value="#{msgs.global_reject}" ajax="false"
+						actionListener="#{prodDeficiencyBn.reject}" 
 						update="@form messages"/>
 					<p:commandButton value="#{msgs.global_back}" immediate="true"
 						action="/internal/processreg" ajax="false">
