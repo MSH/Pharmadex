@@ -111,6 +111,16 @@ public class ProdDeficiencyBn implements Serializable {
         }
     }
     
+    /**
+     * For Namibia rejection is possible on screening step
+     * 
+     */
+    public void reject(){
+    	getProdApplicationsService().rejectProd(getProdApplications(), "");
+    	createDeficiencyLetter();
+    }
+    
+    
     public void createDeficiencyLetter(){
     	String s = getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications, days, dueDate, getProdAppChecklistsToApplicant());
     	if(!s.equals("persist")){
