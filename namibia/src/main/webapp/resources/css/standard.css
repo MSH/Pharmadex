@@ -97,6 +97,10 @@ body {
     vertical-align: middle;
 }
 
+.col4 {
+    width: 900px;
+}
+
 .ui-widget {
     font-size: 98% !important;
 }
@@ -317,12 +321,10 @@ body {
 
 .ui-datatable thead th {
     white-space: normal !important;
-    border: solid 1px;
 }
 
 .ui-datatable tbody td {
     white-space: normal !important;
-    border: solid 1px;
 }
 
 .ui-inputfield {
@@ -351,6 +353,16 @@ body {
     border: 2px solid;
     border-radius: 5px;
 }
+.ui-panelgrid {
+	width: 100%;
+}
 .ui-panelgrid td, .ui-panelgrid tr {
-    border-style: none
+    border: none
+}
+ .ui-panelgrid thead th {
+     border: none !important;
+}
+
+.ui-panelgrid tbody td {
+   border: none !important;
 }
