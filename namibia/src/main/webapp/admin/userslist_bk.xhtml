@@ -103,8 +103,6 @@
 
                     <h:outputText value="#{msgs.User_type}"/>
                     <p:selectOneMenu value="#{userMBean.userType}">
-                    <!-- <p:selectOneMenu value="#{userMBean.selectedUser.type}"> -->
-                        <!-- <f:selectItem itemLabel="#{msgs[userMBean.defType.key]}" itemValue=""/> -->
                         <f:selectItems value="#{globalLists.userTypes}" var="type" itemLabel="#{msgs[type.key]}"/>
                         <p:ajax event="change" listener="#{userMBean.typeChangeListenener}"
                         		 update="gridContainer listContainer rolepicklist :adduserfrm:alllist :adduserfrm:btnlist" />

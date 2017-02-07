@@ -32,9 +32,7 @@ import org.msh.pharmadex.service.LetterService;
 import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.Scrooge;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DualListModel;
-import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -84,15 +82,10 @@ public class UserMBean implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		userType = UserType.STAFF;
-		//allRoles = (List<Role>) roleDAO.findAll();
-		/*buildRolesList(UserType.STAFF);
-		selectedRoles = new ArrayList<Role>();
-		roles = new DualListModel<Role>(allRoles, selectedRoles);*/
-		typeChangeListenener();
 		selectedUser = new User();
 		selectedUser.setAddress(new Address());
 		selectedUser.setApplicant(new Applicant());
+		setUserType(UserType.STAFF);
 		userApp = new Applicant();
 	}
 
@@ -104,8 +97,8 @@ public class UserMBean implements Serializable {
 		return userType;
 	}
 
-	public void setUserType(UserType userType) {
-		this.userType = userType;
+	public void setUserType(UserType _userType) {
+		this.userType = _userType;
 		typeChangeListenener();
 	}
 
@@ -119,6 +112,10 @@ public class UserMBean implements Serializable {
 		}
 		allRoles.removeAll(selectedRoles);
 		roles = new DualListModel<Role>(allRoles, selectedRoles);
+		if(userType.equals(UserType.STAFF)){
+			cleanAssignCompany();
+			selectedUser.setApplicant(userApp);
+		}
 	}
 
 	public String goToResetPwd() {
@@ -260,7 +257,7 @@ public class UserMBean implements Serializable {
 		userApp = new Applicant();
 		applicName = "-";
 		applicID = new Long(-1);
-
+		
 		return "";
 	}
 
