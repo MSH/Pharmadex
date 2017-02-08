@@ -57,15 +57,17 @@ public class ProdAppChecklistService implements Serializable {
 	public boolean checkStrict(List<ProdAppChecklist> prodAppChecklists) {
 		if(prodAppChecklists != null){
 			for(ProdAppChecklist item : prodAppChecklists){
-				if(item.getStaffValue() != item.getValue()){
-					if(item.getStaffValue() != null){
-						if(item.getStaffValue() != item.getValue()){
-							return item.getStaffValue() != YesNoNA.NO;
+				if(item.getChecklist().isHeader()){
+					if(item.getStaffValue() != item.getValue()){
+						if(item.getStaffValue() != null){
+							if(item.getStaffValue() != item.getValue()){
+								return item.getStaffValue() != YesNoNA.NO;
+							}
+						}else{
+							return false;
 						}
-					}else{
-						return false;
 					}
-				}
+				}				
 			}
 			return true;
 		}else{
