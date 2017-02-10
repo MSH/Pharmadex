@@ -1,0 +1,36 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<p:commandButton icon="ui-icon-document" value="#{msgs.add_comment}"
+		oncomplete="PF('addcommentDlg').show()"/>
+
+	<p:dataTable id="commenttable" value="#{commentMBean.allcomments}"
+		var="it">
+		<p:column style="width:120px;">
+			<p:outputLabel styleClass="ui-icon ui-icon-comment"
+				style="display:inline-block;" />
+			<p:outputLabel value="#{it.userName}" styleClass="label" />
+
+			<div style="font-size: smaller;">
+				<h:outputLabel converter="javax.faces.DateTime"
+					value="#{it.dateCom}" />
+			</div>
+		</p:column>
+
+		<p:column>
+			<p:outputLabel value="#{it.type}" styleClass="label" />
+			<div style="padding-left: 5px; padding-top: 5px;">
+				<h:outputText value="#{it.comment}" escape="false" styleClass="text" />
+			</div>
+		</p:column>
+	</p:dataTable>
+</ui:composition>

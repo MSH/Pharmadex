@@ -162,7 +162,7 @@
                                     </ui:fragment>
                                     
 									
-		<h:outputLabel value="#{msgs.product_details}" />
+									<h:outputLabel value="#{msgs.product_details}" />
 									<p:commandButton value="#{msgs.click_here}"
 										action="processproddetail" ajax="false" target="_blank"
 										icon="ui-icon-search">
@@ -187,31 +187,7 @@
 
 							<p:tab title="#{msgs.prod_comments}" id="commentTab"
 								rendered="#{!userSession.company and !userSession.lab and !userSession.clinical}">
-								<p:commandButton icon="ui-icon-document" id="addCommentintab"
-									value="#{msgs.add_comment}" oncomplete="PF('dlgAjax').show()" />
-
-								<p:dataTable id="commenttable" value="#{processProdBn.comments}"
-									var="it">
-									<p:column style="width:120px;">
-										<p:outputLabel styleClass="ui-icon ui-icon-comment"
-											style="display:inline-block;" />
-										<p:outputLabel value="#{it.user.name}" styleClass="label" />
-
-										<div style="font-size: smaller;">
-											<h:outputLabel converter="javax.faces.DateTime"
-												value="#{it.date}" />
-										</div>
-									</p:column>
-
-									<p:column>
-										<div style="padding-left: 10px; padding-top: 10px;">
-											<h:outputText value="#{it.comment}" escape="false"
-												styleClass="text" />
-										</div>
-									</p:column>
-								</p:dataTable>
-
-
+								<ui:include src="allcomments.xhtml"/>
 							</p:tab>
 
 							<p:tab title="#{msgs.timeline}"
@@ -536,12 +512,13 @@
                                 </p:dataTable>
                             </p:panel>
                           </p:tab>
+                          
 						</p:tabView>
 
 						<p:blockUI block="processtab"
-							trigger=":reghome:processtab :reghome:saveMenuItem :reghome:addCommentMI :reghome:nextStepMI :reghome:registerMI :reghome:rejectMI :reghome:assignModMI
+							trigger=":reghome:processtab :reghome:saveMenuItem :reghome:nextStepMI :reghome:registerMI :reghome:rejectMI :reghome:assignModMI
             :reghome:processtab:feerecieved :reghome:processtab:appverify :reghome:processtab:prodverify :reghome:processtab:dosscomplete
-            :reghome:processtab:addDocBtn :addCommentFrm:submitButton :reghome:processtab:addCommentintab :addCommentFrmA:submitButtonA
+            :reghome:processtab:addDocBtn 
             :reghome:processtab:completef :reghome:processtab:complete">
 							<p:graphicImage value="/resources/images/ajax-loader.gif" />
 						</p:blockUI>
@@ -852,43 +829,6 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="#{msgs.add_comment}" widgetVar="dlg"
-			resizable="false" id="commentdlg" modal="true" dynamic="true">
-			<h:form id="addCommentFrm">
-				<h:panelGrid columns="2" style="margin-bottom:10px">
-					<h:outputLabel for="commenttext" value="Enter Comment:" />
-					<p:inputTextarea id="commenttext"
-						value="#{processProdBn.selComment.comment}" rows="5" cols="50" />
-					<!--                    <h:outputLabel value="Internal Comment"/>
-                                        <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
-                                        -->
-				</h:panelGrid>
-
-				<p:commandButton id="submitButton" value="#{msgs.global_submit}"
-					action="#{processProdBn.addComment}" oncomplete="PF('dlg').hide()"
-					ajax="false" />
-			</h:form>
-		</p:dialog>
-		
-		<p:dialog header="#{msgs.add_comment}" widgetVar="dlgAjax"
-			resizable="false" id="commentdlgA" modal="true" dynamic="true">
-			<h:form id="addCommentFrmA">
-				<h:panelGrid columns="2" style="margin-bottom:10px">
-					<h:outputLabel for="commenttext" value="Enter Comment:" />
-					<p:inputTextarea id="commenttextA"
-						value="#{processProdBn.selComment.comment}" rows="5" cols="50" />
-					<!--                    <h:outputLabel value="Internal Comment"/>
-                                        <p:selectBooleanCheckbox value="#{processProdBn.selComment.internal}" itemLabel="Yes"/>
-                                        -->
-				</h:panelGrid>
-
-				<p:commandButton id="submitButtonA" value="#{msgs.global_submit}"
-					action="#{processProdBn.addCommentAjax}"
-					oncomplete="PF('dlgAjax').hide()" ajax="true"
-					update=":reghome:processtab:commenttable :reghome:messages" />
-			</h:form>
-		</p:dialog>
-
 		<p:dialog header="#{msgs.open_app}" widgetVar="openAppDlg"
 			resizable="false" id="openAppDlg" modal="true" dynamic="true">
 			<h:form id="openAppFrm">
@@ -906,6 +846,24 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog header="#{msgs.add_comment}" widgetVar="addcommentDlg"
+			resizable="false" id="addcommentDlg" modal="true" dynamic="true">
+			<h:form>
+				<h:panelGrid columns="3" style="margin-bottom:10px">
+					<p:outputLabel value="#{msgs.comment}" for="addcomment"
+						styleClass="label" />
+					<pe:ckEditor id="addcomment" value="#{commentMBean.comment}"
+						height="200" width="700" 
+						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+						required="true" />
+					<p:message for="addcomment" />
+				</h:panelGrid>
+				<p:commandButton value="#{msgs.global_add}"
+					action="#{commentMBean.addComment()}"
+					oncomplete="PF('addcommentDlg').hide()" ajax="true" 
+					update=":reghome:processtab:commenttable"/>
+			</h:form>
+		</p:dialog>
 
 		<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
         			resizable="false" dynamic="true" showHeader="false">

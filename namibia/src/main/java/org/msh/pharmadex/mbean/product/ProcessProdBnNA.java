@@ -1,5 +1,7 @@
 package org.msh.pharmadex.mbean.product;
 
+import static org.msh.pharmadex.domain.enums.RegState.FEE;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -7,10 +9,11 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.service.CommentService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.JsfUtils;
@@ -26,7 +29,6 @@ import org.msh.pharmadex.util.JsfUtils;
 @ViewScoped
 public class ProcessProdBnNA implements Serializable {
    
-
 	@ManagedProperty(value = "#{processProdBn}")
     public ProcessProdBn processProdBn;
     @ManagedProperty(value = "#{userSession}")
@@ -36,16 +38,18 @@ public class ProcessProdBnNA implements Serializable {
     public ProdApplicationsService prodApplicationsService;
     @ManagedProperty(value = "#{reviewService}")
     public ReviewService reviewService;
+    
+    @ManagedProperty(value = "#{commentService}")
+    public CommentService commentService;
 
     private String changedFields;
-    protected boolean displayVerify = false;
-   // private Logger logger = LoggerFactory.getLogger(ProcessProdBn.class);
-    //private JasperPrint jasperPrint;
-   private boolean showFeedBackButton;
+   // protected boolean displayVerify = false;
+    //protected boolean displayScreen = false;
+    private boolean disableVerify = true;
+    private boolean prescreened = false;
+    private boolean showFeedBackButton;
     private List<ProdApplications> allAncestors;
-    private String backTo = "";
-    private FacesContext facesContext = FacesContext.getCurrentInstance();
-
+    
     @PostConstruct
     private void init() {
         //Long id = Scrooge.beanParam("Id");
@@ -132,6 +136,12 @@ public class ProcessProdBnNA implements Serializable {
   		this.reviewService = reviewService;
   	}
   	
+	public CommentService getCommentService() {
+		return commentService;
+	}
+	public void setCommentService(CommentService commentService) {
+		this.commentService = commentService;
+	}
 	/**
 	 * Issues #2339
 	 * Expiry date should be calculated as registration date + 365*5 (days)
@@ -139,5 +149,59 @@ public class ProcessProdBnNA implements Serializable {
 	public void dateChange() {
 		int countDay = 365*5;
 		getProcessProdBn().getProdApplications().setRegExpiryDate(JsfUtils.addDays(getProcessProdBn().getProdApplications().getRegistrationDate(), countDay));
+	}
+	
+	public boolean isDisableVerify() {
+		disableVerify = true;
+		ProdApplications prodApp = getProcessProdBn().getProdApplications();
+		if(prodApp == null)
+			return disableVerify;
+		
+		if(userSession.isStaff()){
+			if(prodApp.getRegState().ordinal() < RegState.SCREENING.ordinal()){
+				disableVerify = false; // edit tab
+			}
+		}
+		
+		return disableVerify;
+	}
+	
+	public boolean isPrescreened() {
+		prescreened = false;
+		ProdApplications prodApp = getProcessProdBn().getProdApplications();
+		if(prodApp == null)
+			return prescreened;
+		
+		if(userSession.isStaff()){
+			if (prodApp.getRegState().equals(RegState.FOLLOW_UP) || 
+					prodApp.getRegState().equals(RegState.VERIFY))
+				prescreened = true;
+		}
+		
+		return prescreened;
+	}
+
+	public void setPrescreened(boolean prescreened) {
+		this.prescreened = prescreened;
+	}
+	
+	public void changeStatusListener() {
+		try {
+			ProdApplications prodApp = getProcessProdBn().getProdApplications();
+			if (prodApp.getRegState().equals(RegState.NEW_APPL)) {
+				if (prodApp.isFeeReceived()) {
+					getProcessProdBn().getTimeLine().setRegState(FEE);
+					getProcessProdBn().addTimeline();
+				}
+			}
+			if (prodApp.getRegState().equals(RegState.FEE)) {
+				if (prodApp.isApplicantVerified() && prodApp.isProductVerified() && prodApp.isDossierReceived()) {
+					getProcessProdBn().getTimeLine().setRegState(RegState.VERIFY);
+					getProcessProdBn().addTimeline();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }

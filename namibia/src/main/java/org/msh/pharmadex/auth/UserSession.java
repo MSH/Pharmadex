@@ -443,6 +443,16 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 		//TODO not implemented yet
 		return false;
 	}
+	
+	public boolean isLabHead() {
+		//TODO not implemented yet
+		return false;
+    }
+	
+	public boolean isLabModerator() {
+		//TODO not implemented yet
+		return false;
+	}
 
 	public boolean isClinical() {
 		// TODO not implemented yet

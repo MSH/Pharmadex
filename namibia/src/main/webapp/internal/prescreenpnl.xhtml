@@ -6,9 +6,10 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
 	<h:panelGrid id="btnpnlFirst" cellspacing="2" cellpadding="2" columns="4">
-         <p:commandButton id="completef" value="#{msgs.global_approve}" actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
+         <p:commandButton id="completef" value="#{msgs.global_approve}" 
+         				actionListener="#{preScreenProdMBn.showAssignModeratorDlg()}"
                          rendered="#{preScreenProdMBn.displayScreenAction}" icon="ui-icon-check"
-                         update="reghome">
+                         update=":reghome:messages">
                <p:resetInput target=":reghome:processtab:completescreen" />
         </p:commandButton>
         <p:commandButton value="#{msgs.global_reject}" action="#{preScreenProdMBn.sendToApplicant}"
@@ -43,15 +44,15 @@
             <p:outputLabel value="#{msgs[globalLists.buildKeyMsgs(checkList.value)]}" rendered="#{checkList.checklist.header}"/>
         </p:column>
         <p:column headerText="#{msgs.UserType_STAFF}" style="width:165px">
-            <p:outputLabel value="#{msgs[globalLists.buildKeyMsgs(checkList.staffValue)]}" rendered="#{!processProdBn.prescreened}"/>
+            <p:outputLabel value="#{msgs[globalLists.buildKeyMsgs(checkList.staffValue)]}" rendered="#{!processProdBnNA.prescreened}"/>
             <p:selectOneButton id="console" value="#{checkList.staffValue}"
-                               rendered="#{checkList.checklist.header and processProdBn.prescreened}">
+                               rendered="#{checkList.checklist.header and processProdBnNA.prescreened}">
                 <f:selectItems value="#{globalLists.yesNoNA}" var="value" itemLabel="#{msgs[value.key]}"/>
             </p:selectOneButton>
         </p:column>
         <p:column headerText="#{msgs.global_remark}">
-        	<p:outputLabel value="#{checkList.staffComment}" rendered="#{!processProdBn.prescreened}"/>
-            <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBn.prescreened}"/>
+        	<p:outputLabel value="#{checkList.staffComment}" rendered="#{!processProdBnNA.prescreened}"/>
+            <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBnNA.prescreened}"/>
         </p:column>
         <p:column style="width:90px">
             <p:commandButton id="uploadLink"
@@ -61,7 +62,7 @@
             				 oncomplete="PF('moduledlg').show()" 
                              ajax='true'
                              process="@this"
-                             rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"
+                             rendered="#{!checkList.fileUploaded and processProdBnNA.prescreened}"
                              update="@this"/>
            
             <p:commandButton id="downloadLink" value="#{msgs.global_download}"

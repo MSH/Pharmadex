@@ -8,10 +8,7 @@
         <p:submenu label="#{msgs.Registration}">
             <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
                         id="saveMenuItem" rendered="#{userSession.staff}"
-                        ajax="false"/>
-            <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document" rendered="#{userSession.staff}"
-                        onclick="PF('dlg').show()" id="addCommentMI"/>
-                        
+                        ajax="false"/>         
             <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
                         onclick="PF('stepDlg').show()" id="nextStepMI"
                         rendered="#{processProdBnMZ.canNextStep}"/>

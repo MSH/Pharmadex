@@ -66,7 +66,7 @@ public class PreScreenProdMBn implements Serializable {
 	public String completeScreen() {
 		facesContext = FacesContext.getCurrentInstance();
 		resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-
+		
 		RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
 		prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
 		if (!retObject.getMsg().equals("persist")) {
@@ -77,7 +77,6 @@ public class PreScreenProdMBn implements Serializable {
 			ProdApplications prodApplications = processProdBn.getProdApplications();
 			prodApplications.setModerator(moderator);
 			prodApplicationsService.updateProdApp(prodApplications,userSession.getLoggedINUserID());
-
 			if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)
 					|| prodApplications.getRegState().equals(RegState.VERIFY)) {
 				timeLine = new TimeLine();
@@ -111,7 +110,7 @@ public class PreScreenProdMBn implements Serializable {
 		}
 		return "/internal/processprodlist";
 	}
-	
+
 	/**
 	 * Save checklist, check checklist, show assign moderator dlg in case of success
 	 */
@@ -130,7 +129,7 @@ public class PreScreenProdMBn implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, retObject.getMsg(), retObject.getMsg()));
 		}
 	}
-	
+
 	/**
 	 * Get moderator name for display at on screen forms
 	 * @return
@@ -143,7 +142,7 @@ public class PreScreenProdMBn implements Serializable {
 			return moderator.getName() + " (" + moderator.getUsername() + ")";
 		}
 	}
-	
+
 
 	public String getFileName() {
 		return fileName;
@@ -274,12 +273,14 @@ public class PreScreenProdMBn implements Serializable {
 	}
 
 	public boolean isDisplayScreenAction() {
-		if (processProdBn != null && processProdBn.getProdApplications() != null) {
-			if (processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL) || processProdBn.getProdApplications().getRegState().equals(RegState.FOLLOW_UP)
-					|| processProdBn.getProdApplications().getRegState().equals(RegState.FEE) || processProdBn.getProdApplications().getRegState().equals(RegState.VERIFY))
+		displayScreenAction = false;
+		ProdApplications prodApp = getProcessProdBn().getProdApplications();
+		if(prodApp == null)
+			return displayScreenAction;
+
+		if(userSession.isStaff()){
+			if (prodApp.getRegState().equals(RegState.FOLLOW_UP) || prodApp.getRegState().equals(RegState.VERIFY))
 				displayScreenAction = true;
-			else
-				displayScreenAction = false;
 		}
 		return displayScreenAction;
 	}
@@ -359,7 +360,4 @@ public class PreScreenProdMBn implements Serializable {
 	public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
 		this.prodApplicationsService = prodApplicationsService;
 	}
-
-	
-	
 }
