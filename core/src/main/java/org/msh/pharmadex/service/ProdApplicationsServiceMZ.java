@@ -1402,6 +1402,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			String verification = verificationBeforeComplete(prodApplications, loggedInUser, reviewInfos);
 			if(verification.equals("ok")){
 				prodApplicationsService.saveApplication(prodApplications, loggedInUser);
+				// create timeLine
+				prodApplicationsService.createTimeLineWithComment(prodApplications.getRegState(), prodApplications, prodApplications.getExecSummary());
 				return "persist";
 			}else 
 				return verification;

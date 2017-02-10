@@ -233,7 +233,7 @@ public class ReviewInfoBn implements Serializable {
 	public void findRevDef(RevDeficiency revDeficiency) {
 		this.revDeficiency = revDeficiency;
 		reviewComment = new ReviewComment();
-		revDeficiency.setAckComment(reviewComment);
+		this.revDeficiency.setAckComment(reviewComment);
 	}
 
 	public void reviewNA(DisplayReviewInfo displayReviewInfo) {
@@ -388,6 +388,8 @@ public class ReviewInfoBn implements Serializable {
 		try {
 			reviewComment.setFinalSummary(false);
 			reviewComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
+			reviewComment.setDate(new Date());
+			reviewComment.setReviewInfo(reviewInfo);
 			reviewInfo.setReviewStatus(ReviewStatus.FIR_RECIEVED);
 			reviewInfo.setSubmitDate(new Date());
 			revDeficiency.setAckComment(reviewComment);

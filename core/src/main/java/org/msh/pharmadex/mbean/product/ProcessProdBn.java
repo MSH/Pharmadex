@@ -992,7 +992,8 @@ public class ProcessProdBn implements Serializable {
 
 	public boolean isPrescreened() {
 		if (prodApplications != null && (prodApplications.getRegState().equals(RegState.NEW_APPL))
-				|| prodApplications.getRegState().equals(RegState.FOLLOW_UP) || prodApplications.getRegState().equals(RegState.VERIFY))
+				|| prodApplications.getRegState().equals(RegState.FOLLOW_UP) || 
+				prodApplications.getRegState().equals(RegState.VERIFY))
 			prescreened = true;
 		else{
 			prescreened = false;

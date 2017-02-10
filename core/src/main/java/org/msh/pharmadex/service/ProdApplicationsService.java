@@ -611,6 +611,16 @@ public class ProdApplicationsService implements Serializable {
 		timelineService.saveTimeLine(timeLine);
 	}
 	
+	public void createTimeLineWithComment(RegState regSt, ProdApplications prApp, String comm){
+		TimeLine timeLine = new TimeLine();
+		timeLine.setRegState(regSt);
+		timeLine.setProdApplications(prApp);
+		timeLine.setStatusDate(new Date());
+		timeLine.setUser(prApp.getUpdatedBy());
+		timeLine.setComment(comm);
+		timelineService.saveTimeLine(timeLine);
+	}
+	
 	@Transactional
 	public String rejectProd(ProdApplications _prodApp, String com) {
 		this.prodApp = _prodApp;
