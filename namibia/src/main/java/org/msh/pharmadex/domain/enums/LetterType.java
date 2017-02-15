@@ -20,7 +20,8 @@ public enum LetterType {
     CANCELLATION_LETTER,
     CANCELLATION_SENDER_LETTER,
     REJECT,
-    APPROVE;
+    APPROVE,
+    INVITATION;
 
 
     public String getKey() {

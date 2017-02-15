@@ -624,6 +624,56 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 		return null;
 	}
+	//TODO
+	/**
+	 * Create Invitation letter	 
+	 * @return Invitation letter
+	 */
+	public String createInvitationLetterScr(ProdApplications prodApp){
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
+		try {
+			File defScrPDF = File.createTempFile("" + prod.getProdName().split(" ")[0] + "_invitationScr", ".pdf");
+			JasperPrint jasperPrint;
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			URL resource = getClass().getClassLoader().getResource("/reports/invitation.jasper");
+				if(resource != null){
+				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
+			
+					net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(defScrPDF));
+					byte[] file = IOUtils.toByteArray(new FileInputStream(defScrPDF));
+					ProdAppLetter attachment = new ProdAppLetter();
+					attachment.setRegState(prodApp.getRegState());
+					attachment.setFile(file);
+					attachment.setProdApplications(prodApp);
+					attachment.setFileName(defScrPDF.getName());
+					
+					attachment.setTitle(bundle.getString("LetterType.INVITATION"));
+					attachment.setComment(bundle.getString("LetterType.INVITATION"));
+					attachment.setLetterType(LetterType.INVITATION);//ACK_SUBMITTED
+										
+					attachment.setUploadedBy(prodApp.getCreatedBy());					
+					attachment.setContentType("application/pdf");
+					
+					prodAppLetterDAO.save(attachment);
+					return "persist";
+				}else{
+					return "error";
+				}
+			/*}else{
+				return "error";
+			}*/
+		 
+		} catch (JRException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return "error";
+		} catch (IOException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			return "error";
+		} 
+	}
+	//TODO
 	/**
 	 * Create check_list letter and store it to letters
 	 * loggedINUserID -curUser(scr)
@@ -780,6 +830,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					attachment.setContentType("application/pdf");
 					//attachment.setLetterType(LetterType.ACK_SUBMITTED);//ACK_SUBMITTED
 					prodAppLetterDAO.save(attachment);
+					
+					//create Invitation Letter
+					createInvitationLetterScr(prodApp);
 					return "persist";
 				}else{
 					return "error";
