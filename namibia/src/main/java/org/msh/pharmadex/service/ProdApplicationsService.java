@@ -986,6 +986,26 @@ public class ProdApplicationsService implements Serializable {
 		}
 		return ans;
 	}
+
+	public String getSrcNumber(String prodAppNo) {
+		String number = "";
+		if(!"".equals(prodAppNo)){		
+			if(!"".equals(prodAppNo)){	
+				if(prodAppNo.contains("/")){
+					String [] n =   prodAppNo.split("/");
+					if(n.length>2){
+						number ="S"+n[3]+"/"+n[0];
+					}	
+				}else{
+					number = prodAppNo.substring(2,prodAppNo.length());
+					if(number.contains("-"))
+						number = "S"+number.replace("-", "/");
+				}
+					
+			}
+		}
+	  return number;
+	}
 	/**
 	 * Namibia specific app num gen, only if number is absent!
 	 * @param prodApp

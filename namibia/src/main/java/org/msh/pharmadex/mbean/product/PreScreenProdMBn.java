@@ -9,6 +9,7 @@ import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdAppChecklistService;
 import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
@@ -54,7 +55,8 @@ public class PreScreenProdMBn implements Serializable {
 	private UserService userService;
 	@ManagedProperty(value="#{prodApplicationsService}")
 	ProdApplicationsService prodApplicationsService;
-
+	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
+	private ProdApplicationsServiceMZ prodApplicationsServiceMZ;
 
 	private TimeLine timeLine = new TimeLine();
 	private User moderator;
@@ -62,11 +64,14 @@ public class PreScreenProdMBn implements Serializable {
 	private ProdAppChecklist prodAppChecklist;
 	private UploadedFile file;
 	private String fileName = "";
+	
+	//TODO
+	  private ProdApplications prodApplications;
 
 	public String completeScreen() {
 		facesContext = FacesContext.getCurrentInstance();
 		resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-		
+
 		RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
 		prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
 		if (!retObject.getMsg().equals("persist")) {
@@ -77,6 +82,7 @@ public class PreScreenProdMBn implements Serializable {
 			ProdApplications prodApplications = processProdBn.getProdApplications();
 			prodApplications.setModerator(moderator);
 			prodApplicationsService.updateProdApp(prodApplications,userSession.getLoggedINUserID());
+
 			if (prodApplications.getRegState().equals(RegState.NEW_APPL) || prodApplications.getRegState().equals(RegState.FOLLOW_UP)
 					|| prodApplications.getRegState().equals(RegState.VERIFY)) {
 				timeLine = new TimeLine();
@@ -96,6 +102,7 @@ public class PreScreenProdMBn implements Serializable {
 						processProdBn.getTimeLineList().add(timeLine);
 						processProdBn.setProdApplications(timeLine.getProdApplications());
 						processProdBn.setProduct(timeLine.getProdApplications().getProduct());
+						createDeficiencyLetter(getProdApplications());
 						facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
 					} else {
 						facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail")));
@@ -110,7 +117,7 @@ public class PreScreenProdMBn implements Serializable {
 		}
 		return "/internal/processprodlist";
 	}
-
+	
 	/**
 	 * Save checklist, check checklist, show assign moderator dlg in case of success
 	 */
@@ -120,7 +127,7 @@ public class PreScreenProdMBn implements Serializable {
 		RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
 		prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
 		if (retObject.getMsg().equals("persist")) {
-			if(prodAppChecklistService.checkStrict(prodAppChecklists)){
+			if(prodAppChecklistService.checkStrict(prodAppChecklists)){				
 				RequestContext.getCurrentInstance().execute("PF('completescreendlg').show()");
 			}else{
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("checklist_incomplete"),""));
@@ -129,7 +136,17 @@ public class PreScreenProdMBn implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, retObject.getMsg(), retObject.getMsg()));
 		}
 	}
-
+	
+	  public void createDeficiencyLetter(ProdApplications prodApplications){		  	
+	    	String s = getProdApplicationsServiceMZ().createCheckListLetterScr(prodApplications, null, getProdAppChecklists(), userSession.getLoggedINUserID(),true);
+	    	if(!s.equals("persist")){
+	    		facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"),""));
+	    		//facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
+	    	}else{
+	    		RequestContext.getCurrentInstance().execute("PF('letterSuccessDlg').show()");
+	    	}
+	    }
+	
 	/**
 	 * Get moderator name for display at on screen forms
 	 * @return
@@ -142,7 +159,7 @@ public class PreScreenProdMBn implements Serializable {
 			return moderator.getName() + " (" + moderator.getUsername() + ")";
 		}
 	}
-
+	
 
 	public String getFileName() {
 		return fileName;
@@ -360,4 +377,24 @@ public class PreScreenProdMBn implements Serializable {
 	public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
 		this.prodApplicationsService = prodApplicationsService;
 	}
+
+	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
+		return prodApplicationsServiceMZ;
+	}
+
+	public void setProdApplicationsServiceMZ(ProdApplicationsServiceMZ prodApplicationsServiceMZ) {
+		this.prodApplicationsServiceMZ = prodApplicationsServiceMZ;
+	}
+	//TODO
+	public ProdApplications getProdApplications() {
+		prodApplications = processProdBn.getProdApplications();
+		return prodApplications;
+	}
+
+	public void setProdApplications(ProdApplications prodApplications) {
+		this.prodApplications = prodApplications;
+	}
+	//TODO
+	
+	
 }

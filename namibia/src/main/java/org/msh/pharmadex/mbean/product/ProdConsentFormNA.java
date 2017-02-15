@@ -36,7 +36,8 @@ public class ProdConsentFormNA extends ProdConsentFormMZ implements Serializable
     public String submitApp() {
     	ProdApplications curA=getProdApplications();
     	curA.setProdAppNo(getProdApplicationsService().generateAppNo(getProdApplications()));
-    	
+    	curA.setProdSrcNo(getProdApplicationsService().getSrcNumber(curA.getProdAppNo()));
+    	    	
   	  if (curA.getParentApplication()!=null){
   		  Product oldPr=null;
   		  Product product =curA.getProduct();

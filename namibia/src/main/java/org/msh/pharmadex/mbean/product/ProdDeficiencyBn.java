@@ -122,7 +122,7 @@ public class ProdDeficiencyBn implements Serializable {
     
     
     public void createDeficiencyLetter(){
-    	String s = getProdApplicationsServiceMZ().createDeficiencyLetterScr(prodApplications, days, dueDate, getProdAppChecklistsToApplicant());
+    	String s = getProdApplicationsServiceMZ().createCheckListLetterScr(prodApplications, dueDate, getProdAppChecklists(), userSession.getLoggedINUserID(),false);
     	if(!s.equals("persist")){
     		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("global_fail")));
     	}else{
