@@ -34,6 +34,7 @@ public class UtilsByReports implements Serializable {
 	public static final String FTR_DATASOUTCE = "filterDataSource";
 	public static final String FTR_DATASOUTCE1  = "filterDataSource1";
 	public static final String FTR_DATASOUTCE2  = "filterDataSource2";
+	public static final String FTR_DATASOUTCE3  = "filterDataSource3";
 	public static final String FTR_A1DATASOUTCE ="filterA1DataSource";
 	public static final String FTR_A2DATASOUTCE = "filterA2DataSource";
 	public static final String FTR_F16DATASOUTCE = "filterF16DataSource";
@@ -44,6 +45,7 @@ public class UtilsByReports implements Serializable {
 	public static final String FLD_DEFICITEM_NAMEMZ = "defItemNameMZ";
 	public static final String FLD_PROD_NAME = "prodName";
 	public static final String FLD_REG_NUMBER = "regNumber";
+	public static final String FLD_SRC_NUMBER = "screeningNumber";
 	
 	public static String KEY_MODERNAME = "moderName";
 	public static String KEY_MODINITIALS = "modInitials";
@@ -130,6 +132,12 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_SAMPLECOMMENT="sampleComment";
 	public static String KEY_SAMPLECOMMENTBN="sampleCommentBN";
 	
+	public static String KEY_NAMERECEIVER="nameReceiver";	
+	public static String KEY_SUBMITNAME = "submitName" ;
+	public static String KEY_SCR_DATE= "srcDate" ;
+	public static String KEY_ISREJECTED = "isRejected";
+	public static String KEY_ISAPPROVED = "isApproved";
+		
 	private HashMap<String, Object> param = null;
 	private HashMap<String, Object> field = null;
 	private ProdApplications prodApps = null;
