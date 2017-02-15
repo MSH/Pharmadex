@@ -6,10 +6,14 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
 
 	<h:panelGrid cellspacing="10" cellpadding="10" columns="3" columnClasses="label value label">
-		<p:outputLabel value="#{msgs.number}" for="prodappno" />
-		<p:inputText id="prodappno" value="#{prodApp.prodAppNo}" required="true" />
-		<p:message for="prodappno" />
-
+		<p:outputLabel value="#{msgs.screen_number}" for="prodscrno" />
+		<p:outputLabel id="prodscrno" value="#{prodApp.prodSrcNo}" />
+		<p:outputLabel/>
+			
+		 <ui:remove>
+			<p:inputText id="prodappno" value="#{prodApp.prodAppNo}" required="true" />
+			<p:message for="prodappno" />
+		</ui:remove>
 		<p:outputLabel value="#{msgs.dosRecDate}" for="dosrecdate"/>
         <p:calendar value="#{prodApp.dosRecDate}" id="dosrecdate" showOn="button"
                 pattern="#{userAccessMBean.workspace.datePattern}"
