@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2017-02-15T16:19:16 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="come" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f91c579e-6123-4c5c-a23d-1b83b8c378a4">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="312" splitType="Stretch">
+			<textField>
+				<reportElement positionType="Float" x="30" y="2" width="523" height="30" uuid="bef2c38f-2a98-442f-84b3-d5f662a17ad5">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NAMIBIA MEDICINES REGULATORY COUNCIL"]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement positionType="Float" x="230" y="40" width="100" height="100" uuid="77109d58-6828-4b2e-afde-55101af74f15">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["na_namibia_header.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="30" y="147" width="523" height="28" uuid="c17c35c2-ee5d-4745-a518-bfbdd6cd3ccf"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MINISTRY OF HEALTH AND SOCIAL SERVICES"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="195" width="100" height="16" uuid="992c7a18-a45c-4113-a120-d69fab184c3d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Dear Sir/Madam"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="233" width="523" height="20" uuid="7a057cb5-9bc7-40d9-8d75-210dd5d18688">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RE: APPLICATION FOR REGISTRATION OF MEDICINES"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="282" width="523" height="30" uuid="913eb449-9b04-46e0-bba7-3594024d7a08"/>
+				<textFieldExpression><![CDATA["Please come and collect your application screening outcome from NMRC offices."]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>
