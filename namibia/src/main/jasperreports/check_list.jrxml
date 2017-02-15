@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2017-02-15T15:29:01 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cBlank_A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a596f8c7-0abe-479a-89b0-f5805bcdcb87">
+	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#FFFFFF"/>
+		</conditionalStyle>
+	</style>
+	<style name="Table 1_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 2_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 2_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Screening" uuid="a1469421-e998-4f5e-a8a0-849f014c9da8">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+		<field name="headP" class="java.lang.String"/>
+		<field name="moduleNo" class="java.lang.String"/>
+		<field name="name" class="java.lang.String"/>
+		<field name="value1" class="java.lang.String"/>
+		<field name="value2" class="java.lang.String"/>
+		<group name="headP">
+			<groupExpression><![CDATA[$F{headP}]]></groupExpression>
+		</group>
+	</subDataset>
+	<subDataset name="Screening1" uuid="a1469421-e998-4f5e-a8a0-849f014c9da8">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+		<field name="headP" class="java.lang.String"/>
+		<field name="moduleNo" class="java.lang.String"/>
+		<field name="name" class="java.lang.String"/>
+		<field name="value1" class="java.lang.String"/>
+		<field name="value2" class="java.lang.String"/>
+		<group name="headP">
+			<groupExpression><![CDATA[$F{headP}]]></groupExpression>
+		</group>
+	</subDataset>
+	<subDataset name="Screening2" uuid="a1469421-e998-4f5e-a8a0-849f014c9da8">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+		<field name="headP" class="java.lang.String"/>
+		<field name="moduleNo" class="java.lang.String"/>
+		<field name="name" class="java.lang.String"/>
+		<field name="value1" class="java.lang.String"/>
+		<field name="value2" class="java.lang.String"/>
+		<group name="headP">
+			<groupExpression><![CDATA[$F{headP}]]></groupExpression>
+		</group>
+	</subDataset>
+	<parameter name="curUser" class="java.lang.String"/>
+	<parameter name="submitName" class="java.lang.String"/>
+	<parameter name="srcDate" class="java.lang.String"/>
+	<parameter name="isApproved" class="java.lang.String"/>
+	<parameter name="isRejected" class="java.lang.String"/>
+	<parameter name="filterDataSource1" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="filterDataSource2" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="filterDataSource3" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="382" splitType="Stretch">
+			<textField>
+				<reportElement positionType="Float" x="30" y="202" width="523" height="28" uuid="34fc2500-cc30-4bd8-8264-7f66482c2240"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MINISTRY OF HEALTH AND SOCIAL SERVICES"]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="230" y="90" width="100" height="100" uuid="639fc924-7669-4c0c-9b4d-89658ec9489c">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["na_namibia_header.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="30" y="0" width="523" height="80" uuid="0dd9b089-4224-44b5-b850-c5824de26304">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NAMIBIA MEDICINES REGULATORY COUNCIL"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="30" y="260" width="523" height="50" uuid="cb8a021e-68bf-45ac-b93b-dc4537643e34"/>
+			</rectangle>
+			<textField>
+				<reportElement x="40" y="270" width="504" height="30" uuid="e2d54c49-7470-4191-b81a-7ae92efe480f"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SCREENING TEMPLATE FOR NEW APPLICATIONS FOR REGISTRATION"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="320" width="523" height="30" uuid="6fb25627-3d10-415a-8b59-785650e4ab48"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["The Screening Template is to be used on receipt of an application for registration of a medical product for human or veterinary use submitted to the <i>Namibia Medicine's Regulatory Council.</i>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="366" width="523" height="16" uuid="a4b1eeb4-1ffd-402e-bcce-deacfc377430">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["A separate application for each strength and pharmaceutical form is required"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="772">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<componentElement>
+				<reportElement positionType="Float" x="30" y="10" width="540" height="100" uuid="099be921-74e0-4961-b15c-ef1f19de3803">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Screening" uuid="718e3fa1-e486-4781-b686-6da87346d52a">
+						<dataSourceExpression><![CDATA[$P{filterDataSource1}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="530" uuid="76ff579e-f68a-407b-8e6a-d884023e22b3">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [4]"/>
+						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="530" height="30" uuid="2c3cbb93-9ce5-429e-9123-6b9916bdbd7f">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box padding="5"/>
+								<textElement>
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{headP}]]></textFieldExpression>
+							</textField>
+						</jr:tableHeader>
+						<jr:columnGroup width="530" uuid="84131899-2335-4356-87ca-27ce57627839">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [4]"/>
+							<jr:columnGroup width="530" uuid="72c3edb8-a215-4981-a999-3d165522c18f">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [4]"/>
+								<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+									<textField isStretchWithOverflow="true">
+										<reportElement x="0" y="0" width="530" height="30" uuid="23efa3bc-e818-4939-80f8-e99bb09f8d28"/>
+										<box padding="5"/>
+										<textElement>
+											<font isBold="true"/>
+										</textElement>
+										<textFieldExpression><![CDATA["Product and dossier information (C=Critical)"]]></textFieldExpression>
+									</textField>
+								</jr:tableHeader>
+								<jr:column width="50" uuid="2774d3f8-72e0-4423-a77e-6633f4429f52">
+									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+									<jr:detailCell style="Table_TD" height="30">
+										<textField isStretchWithOverflow="true">
+											<reportElement x="0" y="0" width="50" height="30" printWhenGroupChanges="headP" uuid="db3e0896-a884-4f89-b12e-a3c1dd51e99e"/>
+											<box padding="5"/>
+											<textFieldExpression><![CDATA[$F{moduleNo}]]></textFieldExpression>
+										</textField>
+									</jr:detailCell>
+								</jr:column>
+								<jr:column width="276" uuid="31d144fa-d7a3-42fa-8110-3c463239a4b9">
+									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+									<jr:detailCell style="Table_TD" height="30">
+										<textField isStretchWithOverflow="true">
+											<reportElement x="0" y="0" width="276" height="30" printWhenGroupChanges="headP" uuid="36af5dfe-3941-41c6-bb73-685a000c7e7f"/>
+											<box padding="5"/>
+											<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+										</textField>
+									</jr:detailCell>
+								</jr:column>
+								<jr:column width="59" uuid="5d953c75-e988-4b97-b9fb-cade139c62e7">
+									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+									<jr:detailCell style="Table_TD" height="30">
+										<textField isStretchWithOverflow="true">
+											<reportElement x="0" y="0" width="59" height="30" printWhenGroupChanges="headP" uuid="42a08a7d-9a0a-45f3-8a59-2ffe8bbc9865"/>
+											<box padding="5"/>
+											<textFieldExpression><![CDATA[$F{value1}]]></textFieldExpression>
+										</textField>
+									</jr:detailCell>
+								</jr:column>
+								<jr:column width="145" uuid="1efb0786-8364-45dd-9579-ef3722b7ddd6">
+									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+									<jr:detailCell style="Table_TD" height="30">
+										<textField isStretchWithOverflow="true">
+											<reportElement x="0" y="0" width="145" height="30" printWhenGroupChanges="headP" uuid="d8f92c3d-6873-4e37-9338-2fe8847e0b95"/>
+											<box padding="5"/>
+											<textFieldExpression><![CDATA[$F{value2}]]></textFieldExpression>
+										</textField>
+									</jr:detailCell>
+								</jr:column>
+							</jr:columnGroup>
+						</jr:columnGroup>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement positionType="Float" x="30" y="192" width="540" height="102" uuid="0a283896-aab5-4fc6-a2b5-4bf1a138f135">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Screening" uuid="06c2a223-10fa-4991-a3b0-f4f0e7aa13d5">
+						<dataSourceExpression><![CDATA[$P{filterDataSource2}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="529" uuid="4deefa46-79e2-432e-b388-a91b93875307">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [4]"/>
+						<jr:tableHeader style="Table 1_TH" height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="529" height="30" uuid="c4c088cd-b886-48ba-bce3-4cf6d1ac45a7">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box padding="5"/>
+								<textElement>
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{headP}]]></textFieldExpression>
+							</textField>
+						</jr:tableHeader>
+						<jr:columnGroup width="390" uuid="2ce4d41f-1aae-45a8-bf69-db392684a62c">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [2]"/>
+							<jr:tableHeader style="Table 1_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="390" height="30" printWhenGroupChanges="headP" uuid="d1f841bd-0ff2-495b-9cec-1adf194de041"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Critical Information"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:column width="52" uuid="c4327f6c-8d1b-4775-a579-39c5491ce311">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+								<jr:detailCell style="Table 1_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement x="0" y="0" width="52" height="30" printWhenGroupChanges="headP" uuid="2b3119a0-e8ff-4b54-b91b-b525b28badb4"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{moduleNo}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="338" uuid="a76d5474-b029-4aae-9047-98f4401b8704">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+								<jr:detailCell style="Table 1_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement x="0" y="0" width="338" height="30" printWhenGroupChanges="headP" uuid="ea78056c-36c9-499d-b39a-b065a0adf01b"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="68" uuid="cffa9036-c0b4-49ce-a9b8-5cc76e6d3bee">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:tableHeader style="Table 1_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="68" height="30" printWhenGroupChanges="headP" uuid="09581da1-69d3-452b-b7a3-311a6bd924fd"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Yes(Y)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 1_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="68" height="30" printWhenGroupChanges="headP" uuid="9c902b69-e630-4aab-91d4-eace21535063"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value1}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="71" uuid="4d77fbfa-b321-4b5d-9de8-f83216e1b629">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:tableHeader style="Table 1_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="71" height="30" printWhenGroupChanges="headP" uuid="b8d99127-a406-45d1-87f1-9d6744497306"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["No(N)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 1_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="71" height="30" printWhenGroupChanges="headP" uuid="680a2db0-76ff-4a60-9708-99b83b5e9fca"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value2}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement positionType="Float" x="30" y="302" width="540" height="100" uuid="b3ffb029-a0dd-42c5-8f64-0feae8e4e988">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 2_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 2_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 2_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Screening" uuid="3bd8996b-d739-49a4-9ba0-dff5b92010a9">
+						<dataSourceExpression><![CDATA[$P{filterDataSource3}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="530" uuid="6a1353cd-a7f9-40d0-97b1-848ccf0c2b8c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [4]"/>
+						<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="530" height="30" uuid="3a19e1dc-a6aa-41a6-ac64-44b74f589264"/>
+								<box padding="5"/>
+								<textElement>
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{headP}]]></textFieldExpression>
+							</textField>
+						</jr:tableHeader>
+						<jr:columnGroup width="390" uuid="492a91fe-de55-46b7-8a58-b841d06b495d">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [2]"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="390" height="30" uuid="a23ad167-a2b4-46fa-8916-cde74973efd2"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Critical Information"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:column width="52" uuid="674c9372-f99f-4e78-b4c6-7d4a97685514">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+								<jr:detailCell style="Table 2_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement key="" x="0" y="0" width="52" height="30" printWhenGroupChanges="headP" uuid="56b4daba-9c15-45dc-b5fb-2e25b92b2fc9"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{moduleNo}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="338" uuid="bda092d9-a3fa-4dc0-9f57-4f9d60653173">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+								<jr:detailCell style="Table 2_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement key="" x="0" y="0" width="338" height="30" printWhenGroupChanges="headP" uuid="efd4ad1f-2432-4245-8f74-4a4cff954efb"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="68" uuid="ae8cecae-9004-431e-81cf-60a6dde8912a">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="68" height="30" uuid="026ab01e-d9ed-465e-b30e-c3e04245fbb8"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Yes(Y)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 2_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement key="" x="0" y="0" width="68" height="30" printWhenGroupChanges="headP" uuid="5411dfd7-2f2e-4c1e-93ee-c5c980276c03"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value1}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="72" uuid="07658e40-935d-4602-bae2-2be9be4148f2">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="72" height="30" uuid="3f8a4bf4-b9d6-4e4e-8719-27ebcc65a5da"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["No(N)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 2_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="72" height="30" printWhenGroupChanges="headP" uuid="9be5aa6f-5ce4-4d84-812c-ac3f31ce0f48"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value2}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+			<break>
+				<reportElement x="0" y="181" width="500" height="1" uuid="8b660d44-99c0-48ff-912f-cd68459fa347">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+			</break>
+			<textField>
+				<reportElement positionType="Float" x="34" y="121" width="246" height="48" uuid="deb72407-4e1c-48e9-81b9-020636838f67">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement markup="html">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["____________________________________<br><br><sup> * </sup>Paper submissions"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="470" y="10" width="43" height="20" uuid="c420dc42-388b-40f2-b6d7-b0968027c6fb"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="513" y="10" width="40" height="20" uuid="2f90eaf8-04d1-45d8-a855-8c19bab38b95"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="581" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="30" y="10" width="523" height="42" uuid="7fecc743-8ccf-4874-bd59-3faa8071b0e3">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement markup="html">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" <sup> i  </sup> Acceptable reference products are those procured from countries with stringent regulatory authorities <br>(PICs countries and those SRA that NMRC aligns itself with) and/or  the reference product is<br> already registered with NMRC "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="84" width="150" height="16" uuid="e271d952-7982-4ab2-98e8-e7640772f1dc">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Screening outcome:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="100" width="100" height="16" uuid="07ddc796-6f98-4b5b-9a99-2b5deeb174ff">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Approved"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="130" y="100" width="20" height="16" uuid="349f5c65-a48c-4cbb-9173-670a92b141c4"/>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="171" y="100" width="382" height="16" uuid="37fd8e70-aa90-4b82-add4-b11cc435a46a">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["means the applicant has to pay the application fee for the next evaluation process"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="122" width="100" height="16" uuid="edaa5c25-1c5b-40b0-9a32-009e81f6b652">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Rejected"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="130" y="122" width="20" height="16" uuid="e287489e-5c70-452a-8a99-1f6533be32d1"/>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="172" y="122" width="382" height="16" uuid="6a1b6f73-137e-46b5-8f09-caacdba315f3">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["means the applicant has to come and collect his/her application dossier"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="154" width="100" height="16" uuid="291ca3f3-8093-410a-9d12-b0b07f4e7ad6">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Screened by:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="173" width="100" height="16" uuid="5f614d26-ac53-4308-832a-c03a6e72c4e3">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date screened:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="317" y="154" width="73" height="16" uuid="c4c4c8ba-3eec-420e-8b4f-b57e06f68ee6">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Submitted by:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="202" width="310" height="16" uuid="dfe08663-935b-468e-b28d-e9b28827f8ad">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Approved by: ________________________________"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="93" y="218" width="207" height="32" uuid="f9e97b75-eeae-4e76-b12f-287c074ed9ee">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement markup="html">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Mr. Johannes #Gaeseb<br>Registrar of Medicines"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="132" y="154" width="178" height="16" uuid="7838e388-5041-4b26-ae4e-cc449d07ddc8">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{curUser} == null ? "":$P{curUser}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="394" y="154" width="159" height="16" uuid="eb1f678f-84d7-495e-89e2-cd30bb5b0f4f">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="130" y="173" width="180" height="16" uuid="6ff60c19-621d-4940-a4c7-f58c9d9d10c1">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{srcDate} == null ? "":$P{srcDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="172" width="523" height="1" uuid="751708b3-c270-44b5-a3c1-75d862ab57e4">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="133" y="100" width="17" height="16" uuid="f0e4ef8e-844b-47e4-a9ca-77ede8cd7cc4"/>
+				<textFieldExpression><![CDATA[$P{isApproved} == null ? "":"X"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="132" y="124" width="15" height="15" uuid="c055ba1e-d9e9-4600-9045-3cc2836990dc">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{isRejected} == null ? "":"X"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="271" width="523" height="30" uuid="9707897c-d00a-4712-96f8-feefb9500c59">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NAMIBIA MEDICINES REGULATORY COUNCIL"]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement positionType="Float" x="230" y="309" width="100" height="100" uuid="2895da2a-8802-44a8-be39-09af4274f5ba">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["na_namibia_header.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="30" y="416" width="523" height="28" uuid="51215bac-7442-4498-8684-3d13ad739cc5"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MINISTRY OF HEALTH AND SOCIAL SERVICES"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="464" width="100" height="16" uuid="fdb2046c-3a99-40c0-87de-50ebd94b5d11">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Dear Sir/Madam"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="502" width="523" height="20" uuid="58863062-d733-45ac-a7f4-7a2084765b51">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RE: APPLICATION FOR REGISTRATION OF MEDICINES"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="30" y="551" width="523" height="30" uuid="114e0d99-15e6-423c-a5f5-f54293e209c3"/>
+				<textFieldExpression><![CDATA["Please come and collect your application screening outcome from NMRC offices."]]></textFieldExpression>
+			</textField>
+			<break>
+				<reportElement x="0" y="257" width="560" height="1" uuid="fae070ff-74ff-4960-8686-5e02a16cfbde"/>
+			</break>
+		</band>
+	</summary>
+</jasperReport>
