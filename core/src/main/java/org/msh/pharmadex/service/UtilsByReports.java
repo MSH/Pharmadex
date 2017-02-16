@@ -35,6 +35,8 @@ public class UtilsByReports implements Serializable {
 	public static final String FTR_DATASOUTCE1  = "filterDataSource1";
 	public static final String FTR_DATASOUTCE2  = "filterDataSource2";
 	public static final String FTR_DATASOUTCE3  = "filterDataSource3";
+	public static final String FTR_DATASOUTCE4  = "filterDataSource4";
+	public static final String FTR_DATASOUTCE5  = "filterDataSource5";
 	public static final String FTR_A1DATASOUTCE ="filterA1DataSource";
 	public static final String FTR_A2DATASOUTCE = "filterA2DataSource";
 	public static final String FTR_F16DATASOUTCE = "filterF16DataSource";
