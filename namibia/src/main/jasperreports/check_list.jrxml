@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-02-15T16:28:12 -->
+<!-- 2017-02-16T13:02:11 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cBlank_A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a596f8c7-0abe-479a-89b0-f5805bcdcb87">
 	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
 		<box>
@@ -128,6 +128,8 @@
 	<parameter name="filterDataSource1" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="filterDataSource2" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="filterDataSource3" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="filterDataSource4" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="filterDataSource5" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -483,6 +485,204 @@
 				</textElement>
 				<textFieldExpression><![CDATA["____________________________________<br><br><sup> * </sup>Paper submissions"]]></textFieldExpression>
 			</textField>
+			<componentElement>
+				<reportElement positionType="Float" x="31" y="409" width="540" height="100" uuid="6229edd5-0806-4839-a3bf-df3ee5042f2c">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 2_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 2_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 2_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Screening" uuid="e0fdb22d-90ad-4f10-965c-f6d1c0e96982">
+						<dataSourceExpression><![CDATA[$P{filterDataSource4}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="530" uuid="7b6fc6d3-6f6f-4461-9998-0f7bd3de141d">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [4]"/>
+						<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="530" height="30" uuid="0e193cfc-80aa-42e9-832c-6baca4a4504f"/>
+								<box padding="5"/>
+								<textElement>
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{headP}]]></textFieldExpression>
+							</textField>
+						</jr:tableHeader>
+						<jr:columnGroup width="390" uuid="a4966c4b-99e8-4b6b-ba8c-ebacd39b0528">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [2]"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="390" height="30" uuid="a9e319fd-dfec-42a7-a93e-a712f794fc92"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Critical Information"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:column width="52" uuid="ead3730d-609f-4af2-9060-f6712cab4ebd">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+								<jr:detailCell style="Table 2_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement key="" x="0" y="0" width="52" height="30" printWhenGroupChanges="headP" uuid="f352188e-95c6-4dac-b20c-1008121400c7"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{moduleNo}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="338" uuid="46cc2e2a-b3fd-457b-a7d7-8286b9c4ead7">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+								<jr:detailCell style="Table 2_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement key="" x="0" y="0" width="338" height="30" printWhenGroupChanges="headP" uuid="906c5192-f5e6-4510-b782-f37360f7aa5e"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="68" uuid="1eab450d-ad2a-4317-962a-21baa136325e">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="68" height="30" uuid="8f802aec-31d5-4284-915c-1e93b09ee0ce"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Yes(Y)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 2_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement key="" x="0" y="0" width="68" height="30" printWhenGroupChanges="headP" uuid="90e68ed1-2263-431c-b36c-76aa3a3b8e3c"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value1}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="72" uuid="2b6e5760-2219-42e9-b36c-1ed528816ef6">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="72" height="30" uuid="10433527-4bd5-4795-81bc-770f48f53743"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["No(N)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 2_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="72" height="30" printWhenGroupChanges="headP" uuid="165ed3c7-d2af-415d-b03e-8438afd25738"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value2}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement positionType="Float" x="31" y="523" width="540" height="100" uuid="cc0926b9-2917-4756-b1fb-d53191f672c3">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 2_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 2_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 2_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Screening" uuid="30244b11-9a56-44b1-b487-870d0a1c9dd3">
+						<dataSourceExpression><![CDATA[$P{filterDataSource5}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="530" uuid="c117e8da-0e49-425f-bb6a-7cce7209d7b1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [4]"/>
+						<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="530" height="30" uuid="65c7c64c-a2d5-48c6-8078-4ea1aa64fee1"/>
+								<box padding="5"/>
+								<textElement>
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{headP}]]></textFieldExpression>
+							</textField>
+						</jr:tableHeader>
+						<jr:columnGroup width="390" uuid="fea64cb3-9c5d-4d02-a4da-32e087adb678">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [2]"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="390" height="30" uuid="86bef3e0-19d8-427a-a46f-5eb6f8543ae5"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Critical Information"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:column width="52" uuid="3d880a74-7bbf-4af0-92a0-3429811349db">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+								<jr:detailCell style="Table 2_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement key="" x="0" y="0" width="52" height="30" printWhenGroupChanges="headP" uuid="a1a63a00-9dfc-4981-bd4f-6a411410023e"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{moduleNo}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="338" uuid="8d43b605-1608-4be2-801a-db31682ab87d">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+								<jr:detailCell style="Table 2_TD" height="30">
+									<textField isStretchWithOverflow="true">
+										<reportElement key="" x="0" y="0" width="338" height="30" printWhenGroupChanges="headP" uuid="582d0ad4-966e-414f-84cb-2573b22f2561"/>
+										<box padding="5"/>
+										<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="68" uuid="8bf7e46e-7bf7-452a-a2b9-a2d9dcb9a438">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="68" height="30" uuid="0737a03b-99a3-4916-aaa1-5f1dc5873ef0"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Yes(Y)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 2_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement key="" x="0" y="0" width="68" height="30" printWhenGroupChanges="headP" uuid="bdd2ff3a-8c30-43a6-9e1e-a81f4169d621"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value1}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="72" uuid="85d1f7ba-15e8-4e9b-9c9f-cb1e4e7a3586">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:tableHeader style="Table 2_TH" height="30" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="72" height="30" uuid="bfccf10b-3e89-4c91-a3ee-d1de07914905"/>
+									<box padding="5"/>
+									<textElement>
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["No(N)"]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:detailCell style="Table 2_TD" height="30">
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="72" height="30" printWhenGroupChanges="headP" uuid="d291c7a2-1f55-47c0-81f1-d89d3ff70122"/>
+									<box padding="5"/>
+									<textFieldExpression><![CDATA[$F{value2}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
 		</band>
 	</detail>
 	<pageFooter>
