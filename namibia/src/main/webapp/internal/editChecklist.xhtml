@@ -11,8 +11,8 @@
 		</div>
 
 		<h:form id="reghome">
-			<p:messages id="messages" showDetail="false" />
-			<p:growl id="growl" showSummary="true" showDetail="false"/>
+			<p:messages id="messages" showDetail="true" />
+			<p:growl id="growl" showSummary="true" />
 
 			<p:panel>
 				<h:panelGrid columns="2" border="0" cellpadding="0" cellspacing="2">
@@ -43,15 +43,14 @@
 					style="background-color: bisque;font-weight: bolder;">
 					<h:outputLabel value="#{checkList.name}" />
 				</p:column>
-				
-				<p:column headerText="#{msgs.checklist_moduleno}"
-					rendered="#{checkList.header}">
-					<h:outputLabel value="#{checkList.module}" />
-				</p:column>
 
 				<p:column headerText="#{msgs.checklist_moduleno}"
 					rendered="#{checkList.header}">
 					<h:outputLabel value="#{checkList.moduleNo}" />
+				</p:column>
+				<p:column headerText="#{msgs.checklist_module}"
+					rendered="#{checkList.header}">
+					<h:outputLabel value="#{checkList.module}" />
 				</p:column>
 				<p:column headerText="#{msgs.checklist_name}"
 					rendered="#{checkList.header}">
@@ -112,11 +111,16 @@
 							offLabel="#{msgs['ProdAppType.NEW_CHEMICAL_ENTITY']}"
 							onIcon="ui-icon-check" offIcon="ui-icon-close"
 							value="#{editCheckList.selectedItem.newMed}" />
+						
+						<p:selectBooleanButton onLabel="#{msgs['checklist_name']}"
+							offLabel="#{msgs['checklist_name']}" onIcon="ui-icon-check"
+							offIcon="ui-icon-close"
+							value="#{editCheckList.selectedItem.header}" />
 					</h:panelGrid>
-					<p:inputText id="moduleNo_input"
-						value="#{editCheckList.selectedItem.moduleNo}" />
 					<p:inputText id="module_input"
 						value="#{editCheckList.selectedItem.module}" />
+					<p:inputText id="module_no_input"
+						value="#{editCheckList.selectedItem.moduleNo}" />	
 					<h:panelGrid columns="2" border="0" cellpadding="0" cellspacing="2">
 						<p:commandButton action="#{editCheckList.saveWithSelected()}"
 							value="#{msgs.global_save}" oncomplete="PF('editDialog').hide()"
