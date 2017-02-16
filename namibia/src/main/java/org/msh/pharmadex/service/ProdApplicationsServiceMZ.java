@@ -144,6 +144,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private ArrayList<Screening> dataListA = new ArrayList<Screening>();
 	private ArrayList<Screening> dataListB = new ArrayList<Screening>();
 	private ArrayList<Screening> dataListC = new ArrayList<Screening>();
+	private ArrayList<Screening> dataListD = new ArrayList<Screening>();
+	private ArrayList<Screening> dataListE = new ArrayList<Screening>();
 	
 	//private class Screening2 extends Screening {}
 	
@@ -725,7 +727,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		
 		
 		if(checkLists.size()>0){
-			String headerA = "", headerB="",headerC="", moduleA = "", moduleB="", moduleC="";
+			String headerA = "", headerB="",headerC="", headerD = "", headerE="";
 			for(ProdAppChecklist item : checkLists){
 					Map<String,String> mp = new HashMap<String,String>();
 										
@@ -734,7 +736,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					if(!"".equals(item.getChecklist().getModuleNo())){
 						if(!item.getChecklist().isHeader()){
 							if("A".equals(item.getChecklist().getModuleNo())||"B".equals(item.getChecklist().getModuleNo()) 
-									||"C".equals(item.getChecklist().getModuleNo())){
+									||"C".equals(item.getChecklist().getModuleNo())||"D".equals(item.getChecklist().getModuleNo())||"E".equals(item.getChecklist().getModuleNo())){
 								result =item.getChecklist().getModuleNo()+" "+item.getChecklist().getName().toUpperCase();
 								if("A".equals(item.getChecklist().getModuleNo())){
 									headerA = result;
@@ -742,8 +744,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 									
 								}else if ("B".equals(item.getChecklist().getModuleNo())){
 									headerB =  result;
-								}else{
+								}else if ("C".equals(item.getChecklist().getModuleNo())){
 									 headerC = result;
+								}else if ("D".equals(item.getChecklist().getModuleNo())){
+									 headerD = result;
+								}else if ("E".equals(item.getChecklist().getModuleNo())){
+									 headerE = result;
 								}	
 								
 								//scr = createScreening(result,"","","","", "");													
@@ -762,7 +768,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 											  resAns2 =!item.isSendToApp()?" Yes ":" No ";
 											  result =  getName(item.getChecklist().getName()) ;
 											  Screening  scrCur = createScreening("","",mNo,result,resAns1, resAns2);
-											  addScreening(item,scrCur, headerA,headerB, headerC,moduleA, moduleB, moduleC);
+											  addScreening(item,scrCur, headerA);
 										  }else{
 											 // resAns1 = "YES".equals(item.getValue().name())?" Yes ":"";
 											 // resAns2 = "NO".equals(item.getValue().name())?" No ":"";
@@ -774,15 +780,20 @@ public class ProdApplicationsServiceMZ implements Serializable {
 												  Screening scrCur = createScreening("","",mNo,result,resAns1, resAns2);
 													scrCur.setHeadP(headerB);													
 													dataListB.add(scrCur);
-												}else{
+												}else if(item.getChecklist().getModule().equals("Module 3")){
 													Screening scrCur = createScreening("","",mNo,result,resAns1, resAns2);
 													scrCur.setHeadP(headerC);													
 													dataListC.add(scrCur);
-												}											  
-											  	
-										  }										 
-										  
-									  								  
+												}else if(item.getChecklist().getModule().equals("Module 4")){
+													Screening scrCur = createScreening("","",mNo,result,resAns1, resAns2);
+													scrCur.setHeadP(headerD);													
+													dataListD.add(scrCur);
+												}else if(item.getChecklist().getModule().equals("Module 5")){
+													Screening scrCur = createScreening("","",mNo,result,resAns1, resAns2);
+													scrCur.setHeadP(headerE);													
+													dataListE.add(scrCur);
+												}
+										  }							  
 								  }							  						 
 						  	}										
 					}				
@@ -804,7 +815,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				JRBeanCollectionDataSource dataSource = new  JRBeanCollectionDataSource(dataListC);
 				param.put(UtilsByReports.FTR_DATASOUTCE3,dataSource);
 			}
-			
+			//table D						
+			if(jasperMasterReport!=null){			
+				JRBeanCollectionDataSource dataSource = new  JRBeanCollectionDataSource(dataListD);
+				param.put(UtilsByReports.FTR_DATASOUTCE4,dataSource);
+			}
+			//table E						
+			if(jasperMasterReport!=null){			
+				JRBeanCollectionDataSource dataSource = new  JRBeanCollectionDataSource(dataListE);
+				param.put(UtilsByReports.FTR_DATASOUTCE5,dataSource);
+			}
 		//	JRMapArrayDataSource source = createCheckListSource(checkLists);			
 			//if(source != null){
 				if(resource != null){
@@ -857,7 +877,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	}
 
 
-	private void addScreening(ProdAppChecklist item,Screening scrCur, String headerA,String headerB,String headerC,String moduleA,String moduleB,String moduleC) {
+	private void addScreening(ProdAppChecklist item,Screening scrCur, String headerA) {
 		//result
 		if(item.getChecklist().getModule().equals("Module 1")){
 			scrCur.setHeadP(headerA);			
