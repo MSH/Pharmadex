@@ -221,12 +221,12 @@ public class EditCheckList implements Serializable {
 			if(item.getId().equals(itemToShift.getId())){
 				if(i<getFullList().size()-1){
 					Checklist nextItem = getFullList().get(i+1);
-					if(nextItem.isHeader()){ //logic is wrong in source :(
+			//if(nextItem.isHeader()){ //logic is wrong in source :(
 						getFullList().set(i, nextItem);
 						getFullList().set(i+1, item);
 						break;
 					}
-				}
+				//}
 			}
 			i++;
 		}
@@ -244,11 +244,11 @@ public class EditCheckList implements Serializable {
 			if(item.getId().equals(itemToShift.getId())){
 				if(i>0){
 					Checklist prevItem = getFullList().get(i-1);
-					if(prevItem.isHeader() == item.isHeader()){ //logic is wrong in source :(
+					//if(prevItem.isHeader() == item.isHeader()){ //logic is wrong in source :(
 						getFullList().set(i, prevItem);
 						getFullList().set(i-1, item);
 						break;
-					}
+					//}
 				}
 			}
 			i++;
