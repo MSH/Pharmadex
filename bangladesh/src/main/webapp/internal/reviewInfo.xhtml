@@ -172,7 +172,7 @@
                         </p:column>
 
                         <p:column>
-                            <p:commandButton id="revdefdetails" value="#{msgs.review_feedback_ack}"
+                            <p:commandButton id="revdefdetails" value="#{msgs.received}"
                                              action="#{reviewInfoBn.findRevDef(doc)}" ajax="true" rendered="#{!doc.resolved}"
                                              icon="ui-icon-check" oncomplete="PF('revDefDlg').show()"/>
                         </p:column>
