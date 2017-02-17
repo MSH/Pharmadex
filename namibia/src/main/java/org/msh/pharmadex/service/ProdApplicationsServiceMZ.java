@@ -726,43 +726,51 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			URL resource = getClass().getClassLoader().getResource("/reports/check_list.jasper");
 		
 		
+			
 		if(checkLists.size()>0){
+			boolean notAdd = false;
 			String headerA = "", headerB="",headerC="", headerD = "", headerE="";
 			for(ProdAppChecklist item : checkLists){
 					Map<String,String> mp = new HashMap<String,String>();
 										
 					String result = "";
 					//Screening scrCur = new Screening();
-					if(!"".equals(item.getChecklist().getModuleNo())){
-						if(!item.getChecklist().isHeader()){
-							if("A".equals(item.getChecklist().getModuleNo())||"B".equals(item.getChecklist().getModuleNo()) 
-									||"C".equals(item.getChecklist().getModuleNo())||"D".equals(item.getChecklist().getModuleNo())||"E".equals(item.getChecklist().getModuleNo())){
-								result =item.getChecklist().getModuleNo()+" "+item.getChecklist().getName().toUpperCase();
-								if("A".equals(item.getChecklist().getModuleNo())){
-									headerA = result;
-									dataListA.addAll(initAppInfo(headerA, prodApp.getApplicant(),srcDate, prod,dueDate));
-									
-								}else if ("B".equals(item.getChecklist().getModuleNo())){
-									headerB =  result;
-								}else if ("C".equals(item.getChecklist().getModuleNo())){
-									 headerC = result;
-								}else if ("D".equals(item.getChecklist().getModuleNo())){
-									 headerD = result;
-								}else if ("E".equals(item.getChecklist().getModuleNo())){
-									 headerE = result;
-								}	
-								
-								//scr = createScreening(result,"","","","", "");													
-							}								
+					if(item.getChecklist().getModule() !=null){
+					  if(!item.getChecklist().isHeader()){
+							  if(item.getChecklist().getModuleNo()!=null){
+								  if(!"".equals(item.getChecklist().getModuleNo())){
+									  if("A".equals(item.getChecklist().getModuleNo())||"B".equals(item.getChecklist().getModuleNo()) 
+												||"C".equals(item.getChecklist().getModuleNo())||"D".equals(item.getChecklist().getModuleNo())||"E".equals(item.getChecklist().getModuleNo())){
+											result =item.getChecklist().getModuleNo()+" "+item.getChecklist().getName().toUpperCase();
+											if("A".equals(item.getChecklist().getModuleNo())){
+												headerA = result;
+											}else if ("B".equals(item.getChecklist().getModuleNo())){
+												headerB =  result;
+											}else if ("C".equals(item.getChecklist().getModuleNo())){
+												 headerC = result;
+											}else if ("D".equals(item.getChecklist().getModuleNo())){
+												 headerD = result;
+											}else if ("E".equals(item.getChecklist().getModuleNo())){
+												 headerE = result;
+											}	
+											
+											//scr = createScreening(result,"","","","", "");													
+										}	
+								  }
+							  }														
 						  }else{
 							  // not head			
 							  String mNo = item.getChecklist().getModuleNo()!=null? item.getChecklist().getModuleNo():"";
-							 	  String[] modNo = mNo.split("\\.");
-								  if(modNo.length>2){
+							 	 // String[] modNo = mNo.split("\\.");
+								  //if(modNo.length>2){
 									
 										  String resAns1 = "";
 										  String resAns2 = "";
 										  if(item.getChecklist().getModule().equals("Module 1")){
+											  if(!notAdd){
+												  dataListA.addAll(initAppInfo(headerA, prodApp.getApplicant(),srcDate, prod,dueDate));
+												  notAdd = true;
+											  }
 											  resAns1 ="C";
 											 // resAns2 ="YES".equals(item.getValue().name())?" Yes ":" No ";
 											  resAns2 =!item.isSendToApp()?" Yes ":" No ";
@@ -794,7 +802,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 													dataListE.add(scrCur);
 												}
 										  }							  
-								  }							  						 
+								 // }							  						 
 						  	}										
 					}				
 				}
