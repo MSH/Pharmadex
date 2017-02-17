@@ -140,13 +140,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * Applications are in states by role users
 	 * They do not have other conditionals
 	 */
-		
-	private ArrayList<Screening> dataListA = new ArrayList<Screening>();
-	private ArrayList<Screening> dataListB = new ArrayList<Screening>();
-	private ArrayList<Screening> dataListC = new ArrayList<Screening>();
-	private ArrayList<Screening> dataListD = new ArrayList<Screening>();
-	private ArrayList<Screening> dataListE = new ArrayList<Screening>();
-	
+			
 	//private class Screening2 extends Screening {}
 	
 	public List<ProdApplications> getSubmittedApplications(UserSession userSession) {
@@ -683,6 +677,14 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	 * @return
 	 */
 	public String createCheckListLetterScr(ProdApplications prodApp, Date dueDate, List<ProdAppChecklist> checkLists, Long loggedINUserID, boolean flag){
+		
+		ArrayList<Screening> dataListA = new ArrayList<Screening>();
+		ArrayList<Screening> dataListB = new ArrayList<Screening>();
+		ArrayList<Screening> dataListC = new ArrayList<Screening>();
+		ArrayList<Screening> dataListD = new ArrayList<Screening>();
+		ArrayList<Screening> dataListE = new ArrayList<Screening>();
+
+		
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
@@ -775,8 +777,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 											 // resAns2 ="YES".equals(item.getValue().name())?" Yes ":" No ";
 											  resAns2 =!item.isSendToApp()?" Yes ":" No ";
 											  result =  getName(item.getChecklist().getName()) ;
-											  Screening  scrCur = createScreening("","",mNo,result,resAns1, resAns2);
-											  addScreening(item,scrCur, headerA);
+											  Screening  scrCur = createScreening(headerA,"",mNo,result,resAns1, resAns2);											 	
+											  dataListA.add(scrCur);
+											  //addScreening(item,scrCur, headerA, dataListA);
 										  }else{
 											 // resAns1 = "YES".equals(item.getValue().name())?" Yes ":"";
 											 // resAns2 = "NO".equals(item.getValue().name())?" No ":"";
@@ -885,13 +888,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	}
 
 
-	private void addScreening(ProdAppChecklist item,Screening scrCur, String headerA) {
+	/*private void addScreening(ProdAppChecklist item,Screening scrCur, String headerA, dataListA) {
 		//result
 		if(item.getChecklist().getModule().equals("Module 1")){
 			scrCur.setHeadP(headerA);			
 			dataListA.add(scrCur);
 		}
-	}
+	}*/
 
 
 	private ArrayList<Screening> initAppInfo(String headerA, Applicant applicant, String srcDate, Product prod, Date dueDate ) {
