@@ -11,7 +11,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.ReviewQuestion;
 import org.msh.pharmadex.domain.enums.CTDModule;
 import org.msh.pharmadex.domain.enums.ProdAppType;
@@ -41,7 +40,7 @@ public class EditReview implements Serializable{
 	/**
 	 * CTD module has a type String for ReviewQuestion, so take it apart and syncronize! 
 	 */
-	CTDModule selectedCTD = null;
+	CTDModule selectedCTD = CTDModule.ALL;
 
 	/**
 	 * initial filter value
@@ -130,7 +129,7 @@ public class EditReview implements Serializable{
 
 	public void setSelectedItem(ReviewQuestion selectedItem) {
 		this.selectedItem = selectedItem;
-		setSelectedCTD(CTDModule.valueOf(getSelectedItem().getCtdModule()));
+		setSelectedCTD(CTDModule.valueOfList(getSelectedItem().getCtdModule()));
 	}
 
 

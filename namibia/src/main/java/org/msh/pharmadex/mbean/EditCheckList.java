@@ -11,9 +11,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.domain.Checklist;
+import org.msh.pharmadex.domain.enums.CTDModule;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.service.ChecklistService;
-import org.springframework.transaction.annotation.Transactional;
 /**
  * Back end class for edit check list feature
  * @author Alex Kurasoff
@@ -40,6 +40,8 @@ public class EditCheckList implements Serializable {
 	private FacesContext context = FacesContext.getCurrentInstance();
 
 	private Checklist selectedItem;
+	
+	CTDModule selectedCTD = CTDModule.ALL;
 
 	@PostConstruct
 	public void init(){
@@ -112,6 +114,7 @@ public class EditCheckList implements Serializable {
 	}
 	public void setSelectedItem(Checklist selectedItem) {
 		this.selectedItem = selectedItem;
+		setSelectedCTD(CTDModule.valueOfList(getSelectedItem().getModule()));
 	}
 	/**
 	 * Recalc filtered list reload full list
@@ -279,4 +282,14 @@ public class EditCheckList implements Serializable {
 		setSelectedItem(newItem);
 	}
 
+	public CTDModule getSelectedCTD() {
+		return selectedCTD;
+	}
+
+	public void setSelectedCTD(CTDModule selectedCTD) {
+		if (getSelectedItem() != null){
+			getSelectedItem().setModule(selectedCTD.toString());
+		}
+		this.selectedCTD = selectedCTD;
+	}
 }

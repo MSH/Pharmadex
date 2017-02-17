@@ -56,7 +56,8 @@ public class CustomReviewDAO implements Serializable {
 				"        WHEN ri.reviewer_id = :reviewID THEN 'PRIMARY' " +
 				"        ELSE 'SECONDARY' " +
 				"    END AS rev_type, " +
-				"    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType, p.prod_name, pa.sra, pa.fastrack, pa.id, pa.regState, ri.sec_reviewer_id, ri.secreview " +
+				"    ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType, "
+				+ "p.prod_name, pa.sra, pa.fastrack, pa.id, pa.regState, ri.sec_reviewer_id, ri.secreview " +
 				"from review_info ri, prodapplications pa, product p " +
 				"where ri.prod_app_id = pa.id " +
 				"and pa.PROD_ID = p.id " +
@@ -93,6 +94,80 @@ public class CustomReviewDAO implements Serializable {
 		}
 		return prodTables;
 	}
+
+	/**
+	 * Method to fetch review info when the workspace configuration is set for detail review
+	 * ProdApplication regState=REVIEW_BOARD or regState=FOLLOW_UP
+	 * @param reviewID
+	 * @return
+	 */
+	public List<ReviewInfoTable> findReviewInfoByReviewer(Long reviewerID) {
+		List<Object[]> ris = entityManager.createNativeQuery("select ri.id, " +
+				"CASE " +
+				"        WHEN ri.reviewer_id = :reviewID THEN 'PRIMARY' " +
+				"        ELSE 'SECONDARY' " +
+				"    END AS rev_type, " 
+				+ " ri.reviewStatus, ri.assignDate, ri.submitDate, ri.ctdModule, ri.dueDate, ri.recomendType, "
+				+ " p.prod_name, pa.sra, pa.fastrack, pa.id, pa.regState, ri.sec_reviewer_id, ri.secreview "
+				+ " from review_info ri, prodapplications pa, product p "
+				+ " where ri.prod_app_id = pa.id "
+				+ " and pa.PROD_ID = p.id "
+				+ " and (ri.reviewer_id = :reviewID or ri.sec_reviewer_id = :reviewID )"
+				+ " and (pa.regState='" + RegState.REVIEW_BOARD.name() + "' or pa.regState='" + RegState.FOLLOW_UP.name() + "')")
+				.setParameter("reviewID", reviewerID)
+				.getResultList();
+
+		List<ReviewInfoTable> prodTables = new ArrayList<ReviewInfoTable>();
+
+		for (Object[] objArr : ris) {
+			ReviewInfoTable reviewInfoTable = null;
+			//very special case! Secondary can see review only in secondary stage!
+			Long secID = new Long(0);
+			if(objArr[13] != null)
+				secID = Long.valueOf("" + objArr[13]);
+
+			if(secID.intValue() == reviewerID.intValue()){
+				boolean isSec = Boolean.valueOf("" + objArr[14]);
+				ReviewStatus revSt = ReviewStatus.valueOf((String) objArr[2]);
+				if(isSec && (revSt.equals(ReviewStatus.SEC_REVIEW) || revSt.equals(ReviewStatus.FEEDBACK)))
+					reviewInfoTable = createItemReviewInfoTable(objArr);
+			}else
+				reviewInfoTable = createItemReviewInfoTable(objArr);
+
+			if(reviewInfoTable != null)
+				prodTables.add(reviewInfoTable);
+		}
+
+		return prodTables;
+	}
+
+	private ReviewInfoTable createItemReviewInfoTable(Object[] objArr){
+		ReviewInfoTable reviewInfoTable = new ReviewInfoTable();
+		reviewInfoTable.setId(Long.valueOf("" + objArr[0]));
+		reviewInfoTable.setRevType((String) objArr[1]);
+		reviewInfoTable.setReviewStatus((ReviewStatus.valueOf((String) objArr[2])));
+		reviewInfoTable.setAssignDate((Date) objArr[3]);
+		reviewInfoTable.setSubmittedDate((Date) objArr[4]);
+		reviewInfoTable.setCtdModule((String) objArr[5]);
+		reviewInfoTable.setDueDate((Date) objArr[6]);
+		if (objArr[7] != null)
+			reviewInfoTable.setRecomendType(RecomendType.valueOf((String) objArr[7]));
+		reviewInfoTable.setProdName((String) objArr[8]);
+		reviewInfoTable.setSra((Boolean) objArr[9]);
+		reviewInfoTable.setFastrack((Boolean) objArr[10]);
+		reviewInfoTable.setProdAppID(((BigInteger) objArr[11]).longValue());
+		String rst = (String)objArr[12];
+		reviewInfoTable.setRegState(RegState.valueOf(rst));
+		if(objArr[13] != null){
+			reviewInfoTable.setSecReviewerId(Long.valueOf("" + objArr[13]));
+		}else{
+			reviewInfoTable.setSecReviewerId(new Long(0));
+		}
+		reviewInfoTable.setSecondary(Boolean.valueOf("" + objArr[14]));
+
+		return reviewInfoTable;
+	}
+
 
 	/**
 	 * Method to fetch the review details from the Review table when the workspace configuration is for review detail false.

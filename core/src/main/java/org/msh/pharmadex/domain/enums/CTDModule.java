@@ -15,4 +15,14 @@ public enum CTDModule {
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());
     }
+    
+    public static CTDModule valueOfList(String val){
+    	if(val != null && val.length() > 0){
+    		for(CTDModule m : values()){
+    			if(m.name().equals(val))
+    				return m;
+    		}
+    	}
+    	return ALL;
+    }
 }

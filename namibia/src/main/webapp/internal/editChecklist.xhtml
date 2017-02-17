@@ -117,8 +117,12 @@
 							offIcon="ui-icon-close"
 							value="#{editCheckList.selectedItem.header}" />
 					</h:panelGrid>
-					<p:inputText id="module_input"
-						value="#{editCheckList.selectedItem.module}" />
+					<p:selectOneMenu id="module_input" value="#{editCheckList.selectedCTD}"
+						required="true"
+						requiredMessage="#{msgs.requiredvalue}">
+						<f:selectItems value="#{globalLists.cTDModules}" var="type"
+							itemLabel="#{msgs[type.key]}" />
+					</p:selectOneMenu>
 					<p:inputText id="module_no_input"
 						value="#{editCheckList.selectedItem.moduleNo}" />	
 					<h:panelGrid columns="2" border="0" cellpadding="0" cellspacing="2">

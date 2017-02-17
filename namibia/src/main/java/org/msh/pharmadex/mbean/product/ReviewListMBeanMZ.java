@@ -13,6 +13,7 @@ import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.ReviewServiceMZ;
 import org.msh.pharmadex.service.UserAccessService;
 
 @ManagedBean
@@ -25,11 +26,11 @@ public class ReviewListMBeanMZ implements Serializable {
 	@ManagedProperty(value = "#{reviewService}")
 	private ReviewService reviewService;
 
+
 	@ManagedProperty(value = "#{userAccessService}")
 	private UserAccessService userAccessService;
 
 	private List<ReviewInfoTable> reviewInfoTables;
-	private List<ReviewInfoTable> reviewTables;
 	private List<ReviewInfoTable> filteredReviewInfos;
 
 	private List<ReviewInfoTable> allReviews;
@@ -44,64 +45,14 @@ public class ReviewListMBeanMZ implements Serializable {
 	}
 
 	public List<ReviewInfoTable> getReviewInfoTables() {
-		if(reviewInfoTables == null){
-			reviewInfoTables = new ArrayList<ReviewInfoTable>();
-			List<ReviewInfoTable> list = reviewService.findRevInfoTableByReviewer(userSession.getLoggedINUserID());
-			if(list != null && list.size() > 0){
-				for(ReviewInfoTable item:list){
-					if(getNotRegisterStates().contains(item.getRegState()))
-						if(item.getSecReviewerId().equals(userSession.getLoggedINUserID())){
-							//very special case! Secondary can see review only in secondary stage!
-							if(item.isSecondary() && 
-									(item.getReviewStatus().equals(ReviewStatus.SEC_REVIEW) || 
-											item.getReviewStatus().equals(ReviewStatus.FEEDBACK))){ 
-								reviewInfoTables.add(item);
-							}
-						}else{
-							reviewInfoTables.add(item);
-						}
-				}
-			}
-		}
+		reviewInfoTables = reviewService.findRevInfoTableByReviewer(userSession.getLoggedINUserID());
 
 		return reviewInfoTables;
 	}
 
-	private List<RegState> getNotRegisterStates(){
-		List<RegState> list = new ArrayList<RegState>();
-		list.add(RegState.SAVED);
-		list.add(RegState.NEW_APPL);
-		list.add(RegState.FEE);
-		list.add(RegState.VERIFY);
-		list.add(RegState.SCREENING);
-		list.add(RegState.FOLLOW_UP);
-		list.add(RegState.REVIEW_BOARD);
-/*		list.add(RegState.RECOMMENDED);
-		list.add(RegState.NOT_RECOMMENDED);*/
-		return list;
-	}
-
 	public void setReviewInfoTables(List<ReviewInfoTable> reviewInfoTables) {
 		this.reviewInfoTables = reviewInfoTables;
-	}
-
-	public List<ReviewInfoTable> getReviewTables() {
-		if(null == reviewTables){
-			reviewTables = new ArrayList<ReviewInfoTable>();
-			List<ReviewInfoTable> list = reviewService.findReviewByReviewer(userSession.getLoggedINUserID());
-			if(list != null && list.size() > 0){
-				for(ReviewInfoTable item:list){
-					if(getNotRegisterStates().contains(item.getRegState()))
-						reviewTables.add(item);
-				}
-			}
-		}
-		return reviewTables;
-	}
-
-	public void setReviewTables(List<ReviewInfoTable> reviewTables) {
-		this.reviewTables = reviewTables;
-	}
+	}	
 
 	public List<ReviewInfoTable> getAllReviews() {
 		if (allReviews == null) {

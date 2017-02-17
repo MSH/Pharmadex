@@ -90,16 +90,15 @@ public class ReviewService implements Serializable {
 	public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID) {
 		if (reviewerID == null)
 			return null;
-		return customReviewDAO.findReviewInfoByReview(reviewerID);
+		return customReviewDAO.findReviewInfoByReviewer(reviewerID);
 
 	}
 
-	public List<ReviewInfoTable> findReviewByReviewer(Long reviewerID) {
+	/*public List<ReviewInfoTable> findRevInfoTableByReviewer(Long reviewerID) {
 		if (reviewerID == null)
 			return null;
-		return customReviewDAO.findReviewByReviewer(reviewerID);
-
-	}
+		return customReviewDAO.findReviewInfoByReview(reviewerID);
+	}*/
 
 	public List<ReviewInfoTable> findAllPriSecReview() {
 		return customReviewDAO.findAllPriSecReview();
