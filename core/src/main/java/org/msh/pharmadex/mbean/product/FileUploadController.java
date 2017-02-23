@@ -201,7 +201,7 @@ public class FileUploadController implements Serializable {
 		try {
 			reviewDetail.setFile(null);
 			reviewDetail.setFilename(null);
-
+			
 			FacesMessage msg = new FacesMessage(resourceBundle.getString("global_delete"), fname + " " + resourceBundle.getString("is_deleted"));
 			facesContext.addMessage(null, msg);
 		} catch (Exception e) {
