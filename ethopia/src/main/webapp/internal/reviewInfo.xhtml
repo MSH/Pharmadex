@@ -8,6 +8,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="../templates/process_reg_layout.xhtml">
     <ui:define name="content">
 
@@ -184,8 +185,10 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary1" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="revsummary1" required="true"
-                              width="700"/>
+                    <pe:ckEditor value="#{reviewInfoBn.reviewComment.comment}"
+                                 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+                                 id="revsummary1" required="true"
+                                 width="700"/>
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.reviewerFeedback}"
@@ -209,8 +212,10 @@
                     <p:message for="recomcb"/>
 
                     <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="revsummary" required="true"
-                              width="700"/>
+                    <pe:ckEditor value="#{reviewInfoBn.reviewComment.comment}"
+                                 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+                                 id="revsummary" required="true"
+                                 width="700"/>
                     <p:message for="revsummary"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitComment}"
@@ -224,8 +229,10 @@
             <h:form prependId="false">
                 <h:panelGrid columns="3" style="margin-bottom:10px">
                     <p:outputLabel value="#{msgs.User_comment}" for="addcomment" styleClass="label"/>
-                    <p:editor value="#{reviewInfoBn.reviewComment.comment}" id="addcomment" required="true"
-                              width="700"/>
+                    <pe:ckEditor value="#{reviewInfoBn.reviewComment.comment}"
+                                 toolbar="[['PasteText','PasteFromWord','-','Bold']]"
+                                 id="addcomment" required="true"
+                                 width="700"/>
                     <p:message for="addcomment"/>
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.submitComment}"

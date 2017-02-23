@@ -37,9 +37,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.ResourceBundle;
 
 /**
@@ -76,6 +74,9 @@ public class ReviewInfoBn implements Serializable {
 
     @ManagedProperty(value = "#{userAccessMBean}")
     private UserAccessMBean userAccessMBean;
+
+    @ManagedProperty(value = "#{timelineServiceET}")
+    TimelineServiceET timelineServiceET;
 
     private UploadedFile file;
     private ReviewInfo reviewInfo;
@@ -216,7 +217,7 @@ public class ReviewInfoBn implements Serializable {
         List<ReviewComment> comments = getReviewComments();
         if (comments!=null)
             if (comments.size()>0) {
-                for (int j = comments.size()-1; j != 0; j--) {
+                for (int j = comments.size()-1; j >= 0; j--) {
                     ReviewComment rc = getReviewComments().get(j);
                     if (rc.getRecomendType() != null && rc.getRecomendType().equals(RecomendType.FIR)) {
                         if (rc.isFinalSummary()) {
@@ -328,11 +329,28 @@ public class ReviewInfoBn implements Serializable {
         facesContext = FacesContext.getCurrentInstance();
         bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
+            if (reviewComment.getComment().length()>20000){
+                facesContext.addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,bundle.getString("global_fail"),bundle.getString("errorStringTooLong")));
+                return;
+            }
             RetObject retObject = reviewService.submitReviewInfo(reviewInfo, reviewComment, userSession.getLoggedINUserID());
             if (retObject.getMsg().equals("success")) {
                 reviewInfo = (ReviewInfo) retObject.getObj();
                 reviewComments.add(reviewComment);
+
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
+                if (reviewComment.getRecomendType().equals(RecomendType.FIR)){
+                    String comment = "FIR Requested";
+                    timelineServiceET.createTimeLineEvent(prodApplications, RegState.REVIEW_BOARD, reviewComment.getUser(), comment);
+                }else {
+                    String summary = "";
+                    if (!reviewInfo.isSecreview()){
+                        summary = reviewComment.getComment();
+                    }
+                    reviewInfo.setExecSummary(summary);
+                    String comment = (reviewInfo.isSecreview()) ? "Secondary review submitted" : "Primary review submitted";
+                    timelineServiceET.createTimeLineEvent(prodApplications, RegState.REVIEW_BOARD, reviewComment.getUser(), comment);
+                }
             } else if (retObject.getMsg().equals("close_def")) {
               facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
             }
@@ -401,6 +419,7 @@ public class ReviewInfoBn implements Serializable {
                 revDeficiency = (RevDeficiency) retObject.getObj();
                 reviewService.saveReviewInfo(reviewInfo);
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
+                timelineServiceET.createTimeLineEvent(prodApplications,RegState.REVIEW_BOARD,reviewComment.getUser(),"Assesment was resumed after FIR receiving.");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -434,6 +453,8 @@ public class ReviewInfoBn implements Serializable {
                 facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
                 reviewComments = getReviewComments();
                 revDeficiencies = null;
+                String fs_msg = bundle.getString(RegState.FOLLOW_UP.getKey());
+                timelineServiceET.createTimeLineEvent(prodApplications,RegState.FOLLOW_UP,reviewComment.getUser(),fs_msg);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -745,5 +766,13 @@ public class ReviewInfoBn implements Serializable {
 
     public void setSuspendDAO(SuspendDAO suspendDAO) {
         this.suspendDAO = suspendDAO;
+    }
+
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
     }
 }

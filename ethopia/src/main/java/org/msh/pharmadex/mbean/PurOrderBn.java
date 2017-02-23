@@ -3,11 +3,9 @@ package org.msh.pharmadex.mbean;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.CompanyType;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProdTable;
-import org.msh.pharmadex.service.CompanyService;
-import org.msh.pharmadex.service.DosageFormService;
-import org.msh.pharmadex.service.GlobalEntityLists;
-import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -49,6 +47,9 @@ public class PurOrderBn extends POrderBn {
     @ManagedProperty(value = "#{companyService}")
     private CompanyService companyService;
 
+    @ManagedProperty(value = "#{timelineServiceET}")
+    private TimelineServiceET timelineServiceET;
+
     private List<PurProd> purProds;
     private PurOrder purOrder;
     private List<POrderChecklist> pOrderChecklists;
@@ -57,6 +58,7 @@ public class PurOrderBn extends POrderBn {
     private boolean showWithdrawn;
     private boolean showSubmit;
     private POrderComment pOrderComment;
+    private User curUser;
 
     @PostConstruct
     private void init() {
@@ -74,12 +76,13 @@ public class PurOrderBn extends POrderBn {
             }
         } else {
             purOrder = new PurOrder(new Currency());
+            curUser = getUserService().findUser(getUserSession().getLoggedINUserID());
             if (getUserSession().isCompany()) {
-                User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
-                setApplicantUser(applicantUser);
-                setApplicant(applicantUser.getApplicant());
-                purOrder.setCreatedBy(applicantUser);
-                purOrder.setApplicantUser(applicantUser);
+                curUser = getUserService().findUser(getUserSession().getLoggedINUserID());
+                setApplicantUser(curUser);
+                setApplicant(curUser.getApplicant());
+                purOrder.setCreatedBy(curUser);
+                purOrder.setApplicantUser(curUser);
                 purOrder.setApplicant(getApplicant());
 
                 pOrderChecklists = new ArrayList<POrderChecklist>();
@@ -209,13 +212,23 @@ public class PurOrderBn extends POrderBn {
     public String saveOrder() {
         try {
             context = FacesContext.getCurrentInstance();
-//        purOrder.setCreatedBy(getApplicantUser());
+            String timeLineSubj="";
+            RegState timeLineState = RegState.NEW_APPL;
+            if (purOrder.getState()==null) {
+                purOrder.setState(AmdmtState.NEW_APPLICATION);
+                timeLineSubj = "Purchase order created";
+            }else if (purOrder.getState().equals(AmdmtState.NEW_APPLICATION)){
+                timeLineSubj = "Purchase order created";
+            }else{
+                timeLineSubj = "Purchase order updated";
+                timeLineState = RegState.REVIEW_BOARD;
+            }
+
             purOrder.setState(AmdmtState.NEW_APPLICATION);
             purOrder.setpOrderChecklists(pOrderChecklists);
             purOrder.setPurProds(purProds);
             purOrder.setApplicant(getApplicant());
             purOrder.setApplicantUser(getApplicantUser());
-
 
             if (getUserSession().isCompany())
                 purOrder.setApplicant(purOrder.getApplicant());
@@ -225,6 +238,7 @@ public class PurOrderBn extends POrderBn {
                 purOrder = (PurOrder) retValue.getObj();
                 String retMsg = super.saveOrder();
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
+                timelineServiceET.createTimeLineEvent(purOrder, timeLineState,curUser,timeLineSubj);
                 return "purorderlist";
             } else {
                 purOrder.setState(AmdmtState.SAVED);
@@ -251,7 +265,6 @@ public class PurOrderBn extends POrderBn {
 
             pOrderComment.setPurOrder(purOrder);
             pOrderComment.setExternal(true);
-//        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
             List<POrderComment> pOrderComments = pOrderService.findPOrderComments(purOrder);
             if (pOrderComments == null)
                 pOrderComments = new ArrayList<POrderComment>();
@@ -453,5 +466,13 @@ public class PurOrderBn extends POrderBn {
 
     public void setpOrderComment(POrderComment pOrderComment) {
         this.pOrderComment = pOrderComment;
+    }
+
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
     }
 }

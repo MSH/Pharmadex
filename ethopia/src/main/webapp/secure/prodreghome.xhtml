@@ -131,7 +131,7 @@
 
                             </p:dataTable>
 
-                            <h:outputLabel value="#{msgs.product_active}" style="width: 60px;" styleClass="label"/>
+                            <h:outputLabel value="#{msgs.inactive_substance}" style="width: 60px;" styleClass="label"/>
                             <p:dataTable id="expnttable" var="prodExp" value="#{prodRegAppMbean.selectedExipients}"
                                          style="width:100%;" editable="true"
                                          emptyMessage="#{msgs.prod_expnt_not_selected}"
@@ -540,7 +540,7 @@
                                 </p:column>
 
                                 <p:column headerText="#{msgs.filename}">
-                                    <h:outputText value="#{doc.fileName}"/>
+                                    <h:outputText value="#{doc.fileNameOnly}"/>
                                 </p:column>
 
                                 <p:column headerText="#{msgs.uploaddate}">

@@ -10,12 +10,6 @@ import java.util.Date;
  * Author: usrivastava
  */
 @Entity
-@Table(name = "timeline")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(
-        name="discriminator",
-        discriminatorType=DiscriminatorType.STRING
-)
 @DiscriminatorValue(value="PO")
 public class TimeLinePO extends TimeLineBase implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)

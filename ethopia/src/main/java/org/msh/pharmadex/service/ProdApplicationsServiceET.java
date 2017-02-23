@@ -261,16 +261,18 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
             params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
             prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
         }
-
-        if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
-            Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
-                @Override
-                public int compare(ProdApplications o1, ProdApplications o2) {
-                    return o1.getPriorityDate().compareTo(o2.getPriorityDate());
-                }
-            });
+        try {
+            if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
+                Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
+                    @Override
+                    public int compare(ProdApplications o1, ProdApplications o2) {
+                        return o1.getPriorityDate().compareTo(o2.getPriorityDate());
+                    }
+                });
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
-
         return prodApplicationses;
     }
 
@@ -564,8 +566,7 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 		
 		String ct = product.getContType()!=null? product.getContType():"";
 		utilsByReports.putNotNull(UtilsByReportsET.KEY_CONTTYPE,ct,true);
-		
-		//TODO				
+
 		 ArrayList<Manufac> dataList = new ArrayList<Manufac>();
 		 ArrayList<ActiveIngredient> dataList1 = new ArrayList<ActiveIngredient>();
 		 ArrayList<InactiveIngredient> dataList2 = new ArrayList<InactiveIngredient>();

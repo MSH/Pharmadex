@@ -1,19 +1,17 @@
 package org.msh.pharmadex.service;
 
-import org.msh.pharmadex.dao.iface.TimeLinePIPDAO;
-import org.msh.pharmadex.dao.iface.TimeLinePODAO;
-import org.msh.pharmadex.dao.iface.TimeLineSCDAO;
-import org.msh.pharmadex.dao.iface.TimelineDAO;
+import org.msh.pharmadex.util.StrTools;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.msh.pharmadex.dao.iface.TimelinePIPDAO;
+import org.msh.pharmadex.dao.iface.TimelinePODAO;
+import org.msh.pharmadex.dao.iface.TimelineSCDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.util.RetObject;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.faces.bean.ManagedProperty;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,15 +21,18 @@ import java.util.List;
 @Service
 public class TimelineServiceET extends TimelineService implements Serializable {
 
-    @ManagedProperty(value = "#{timeLineDAO}")
-    TimeLinePIPDAO timeLinePIPDAO;
+    @Autowired
+    TimelinePIPDAO timelinePIPDAO;
+    @Autowired
+    TimelinePODAO timelinePODAO;
+    @Autowired
+    TimelineSCDAO timelineSCDAO;
+    @Autowired
+    ReviewService reviewService;
+    @Autowired
+    ProdApplicationsService prodApplicationsService;
 
-    @ManagedProperty(value = "#{timeLineDAO}")
-    TimeLinePODAO timeLinePODAO;
-
-    @ManagedProperty(value = "#{timeLineDAO}")
-    TimeLineSCDAO timeLineSCDAO;
-
+    List<TimeLine> timeLineList;
 
     @Override
     public String validateStatusChange(TimeLine timeLine) {
@@ -52,10 +53,10 @@ public class TimelineServiceET extends TimelineService implements Serializable {
         } else if (timeLine.getRegState().equals(RegState.SCREENING) || timeLine.getRegState().equals(RegState.REGISTERED)) {
             ProdApplications prodApp = prodApplicationsService.findProdApplications(prodApplications.getId());
             prodApplications.setModerator(prodApp.getModerator());
-            if(prodApplications.getModerator()==null)
+            if (prodApplications.getModerator() == null)
                 return "valid_assign_moderator";
         } else if (timeLine.getRegState().equals(RegState.REVIEW_BOARD) || timeLine.getRegState().equals(RegState.REGISTERED)) {
-            if(reviewService.findReviews(prodApplications.getId()).size()==0)
+            if (reviewService.findReviews(prodApplications.getId()).size() == 0)
                 return "valid_assign_reviewer";
         }
         return "success";
@@ -64,45 +65,77 @@ public class TimelineServiceET extends TimelineService implements Serializable {
 
     public List<TimeLineBase> findTimelineByAppNo(Long prodApplications_Id, POrderBase order) {
         List<TimeLineBase> timeLineEvents = null;
-        if (order instanceof  PIPOrder) {
-            timeLineEvents = timeLinePIPDAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
-        }else if (order instanceof PurOrder){
-            timeLineEvents = timeLinePODAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
+        if (order instanceof PIPOrder) {
+            timeLineEvents = timelinePIPDAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
+        } else if (order instanceof PurOrder) {
+            timeLineEvents = timelinePODAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
         }
-        if(timeLineList != null && timeLineList.size() > 0)
-            Collections.sort(timeLineList, new Comparator<TimeLineBase>() {
 
-                @Override
-                public int compare(TimeLineBase o1, TimeLineBase o2) {
-                    Long id1 = o1.getId();
-                    Long id2 = o2.getId();
-                    return -id1.compareTo(id2);
-                }
-            });
         return timeLineEvents;
     }
 
-    public TimeLinePIPDAO getTimeLinePIPDAO() {
-        return timeLinePIPDAO;
+    public void createTimeLineEvent(POrderBase order, RegState state, User curUser, String comment) {
+        if (order instanceof PIPOrder) {
+            TimeLinePIP tl = new TimeLinePIP();
+            tl.setProdApplications((PIPOrder) order);
+            tl.setRegState(state);
+            tl.setComment(comment);
+            tl.setStatusDate(new Date());
+            tl.setUser(curUser);
+            timelinePIPDAO.saveAndFlush(tl);
+        } else if (order instanceof PurOrder) {
+            TimeLinePO tl = new TimeLinePO();
+            tl.setProdApplications((PurOrder) order);
+            tl.setRegState(state);
+            tl.setComment(comment);
+            tl.setStatusDate(new Date());
+            tl.setUser(curUser);
+            timelinePODAO.saveAndFlush(tl);
+        }
     }
 
-    public void setTimeLinePIPDAO(TimeLinePIPDAO timeLinePIPDAO) {
-        this.timeLinePIPDAO = timeLinePIPDAO;
+
+    public void createTimeLineEvent(SuspDetail order, RegState state, User curUser, String comment) {
+            TimeLineSC tl = new TimeLineSC();
+            tl.setProdApplications(order);
+            tl.setRegState(state);
+            tl.setComment(comment);
+            tl.setStatusDate(new Date());
+            tl.setUser(curUser);
+            timelineSCDAO.saveAndFlush(tl);
     }
 
-    public TimeLinePODAO getTimeLinePODAO() {
-        return timeLinePODAO;
+    public void createTimeLineEvent(ProdApplications prodApplications, RegState state, User curUser, String comment) {
+        TimeLine tl = new TimeLine();
+        tl.setProdApplications(prodApplications);
+        tl.setRegState(state);
+        tl.setComment(comment);
+        tl.setStatusDate(new Date());
+        tl.setUser(curUser);
+        timelineDAO.saveAndFlush(tl);
     }
 
-    public void setTimeLinePODAO(TimeLinePODAO timeLinePODAO) {
-        this.timeLinePODAO = timeLinePODAO;
+    public TimelinePIPDAO getTimelinePIPDAO() {
+        return timelinePIPDAO;
     }
 
-    public TimeLineSCDAO getTimeLineSCDAO() {
-        return timeLineSCDAO;
+    public void setTimelinePIPDAO(TimelinePIPDAO timelinePIPDAO) {
+        this.timelinePIPDAO = timelinePIPDAO;
     }
 
-    public void setTimeLineSCDAO(TimeLineSCDAO timeLineSCDAO) {
-        this.timeLineSCDAO = timeLineSCDAO;
+    public TimelinePODAO getTimelinePODAO() {
+        return timelinePODAO;
+    }
+
+    public void setTimelinePODAO(TimelinePODAO timelinePODAO) {
+        this.timelinePODAO = timelinePODAO;
+    }
+
+    public TimelineSCDAO getTimelineSCDAO() {
+        return timelineSCDAO;
+    }
+
+    public void setTimelineSCDAO(TimelineSCDAO timelineSCDAO) {
+        this.timelineSCDAO = timelineSCDAO;
     }
 }

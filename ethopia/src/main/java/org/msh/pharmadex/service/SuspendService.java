@@ -28,18 +28,7 @@ import org.hibernate.Session;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.ReviewInfoDAO;
 import org.msh.pharmadex.dao.iface.SuspendDAO;
-import org.msh.pharmadex.domain.Address;
-import org.msh.pharmadex.domain.LicenseHolder;
-import org.msh.pharmadex.domain.ProdAppLetter;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ProdCompany;
-import org.msh.pharmadex.domain.Product;
-import org.msh.pharmadex.domain.ReviewComment;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.SuspComment;
-import org.msh.pharmadex.domain.SuspDetail;
-import org.msh.pharmadex.domain.TimeLine;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RecomendType;
@@ -79,7 +68,7 @@ public class SuspendService implements Serializable {
 	private EntityManager entityManager;
 
 	@Autowired
-	private TimelineService timelineService;
+	private TimelineServiceET timelineServiceET;
 
 	@Autowired
 	private UserService userService;
@@ -209,13 +198,13 @@ public class SuspendService implements Serializable {
 	private void updateProdApp(RegState regState) {
 		//If registration status changes then update timeline as well
 		if (!prodApplications.getRegState().equals(regState)) {
-			TimeLine timeLine = new TimeLine();
+			TimeLineSC timeLine = new TimeLineSC();
 			timeLine.setRegState(regState);
-			timeLine.setComment("The application is suspended with Suspension number " + suspDetail.getSuspNo());
+			timeLine.setProdApplications(suspDetail);
+			String comment = "The application is suspended with Suspension number " + suspDetail.getSuspNo();
 			timeLine.setUser(loggedInUser);
 			timeLine.setStatusDate(new Date());
-			timeLine.setProdApplications(prodApplications);
-			timelineService.saveTimeLine(timeLine);
+			timelineServiceET.createTimeLineEvent(suspDetail,RegState.NEW_APPL,loggedInUser,comment);
 		}
 
 		prodApplications.setRegState(regState);
@@ -588,7 +577,7 @@ public class SuspendService implements Serializable {
 				//generate a suspension letter
 				//createSuspLetter(); // no need - Legesse 28/04
 				//update product applications
-				updateProdApp(RegState.SUSPEND);
+				updateProdApp(RegState.NEW_APPL);
 			} else if (suspDetail.getSuspensionStatus().equals(SuspensionStatus.RESULT)) {
 				//process is finished, set final state
 				if (suspDetail.getDecision().equals(RecomendType.SUSPEND)) {

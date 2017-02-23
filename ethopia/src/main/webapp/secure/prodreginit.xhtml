@@ -108,16 +108,21 @@
 
                     <!--update="@form :reghome:feePanel :reghome:checklisttable" process="@form"> -->
                     <p:commandButton value="#{msgs.calculate_fee}"
+                                     id = "calcFeeBtn"
                                      action="#{prodRegInit.checkAndCalculate}"
                                      update=":reghome:additionalPanel :reghome:feePanel :reghome:checklisttable" process="@form"
                                      ajax="false">
                         <f:param name="prodAppID" value="#{prodRegInit.prodTable.id}"/>
                     </p:commandButton>
                     <p:commandButton action="#{prodRegInit.regApp}"
+                                     id = "regAppBtn"
                                      ajax="false"
                                      value="Product Registration Application"
                                      rendered="#{prodRegInit.eligible}">
                     </p:commandButton>
+                    <p:blockUI block="regAppBtn" trigger="regAppBtn,calcFeeBtn">
+                        Please, wait a moment...
+                    </p:blockUI>
                 </p:panel>
 
                 <div style="height:10px"/>

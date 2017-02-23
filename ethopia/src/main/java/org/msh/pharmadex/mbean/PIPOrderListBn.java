@@ -5,7 +5,9 @@ import org.msh.pharmadex.domain.PIPOrder;
 import org.msh.pharmadex.domain.POrderBase;
 import org.msh.pharmadex.domain.User;
 //import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.service.TimelineServiceET;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.util.Scrooge;
@@ -38,6 +40,9 @@ public class PIPOrderListBn implements Serializable {
     @ManagedProperty(value = "#{POrderService}")
     protected POrderService pOrderService;
 
+    @ManagedProperty(value = "#{timelineServiceET}")
+    TimelineServiceET timelineServiceET;
+
     private PIPOrder pipOrder = new PIPOrder();
     private List<PIPOrder> pipOrders;
     private String pipNo;
@@ -53,7 +58,6 @@ public class PIPOrderListBn implements Serializable {
         curUser = userService.findUser(id);
     }
 
-
     public String openOrder() {
         Long pipId = Scrooge.beanParam("pipOrderID"); //from list xhtml
         PIPOrder pOrder = pOrderService.findPIPOrderByID(pipId);
@@ -64,9 +68,12 @@ public class PIPOrderListBn implements Serializable {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, bundle.getString("orderMsgOpening"),bundle.getString("orderResponsiblePerson")));
                     return "";
                 }
-            } else {
+            } else {//first open of PIP order
+                //set responsible person
                 pOrder.setResponsiblePerson(curUser);
                 pOrderService.updatePOrder(pOrder,curUser);
+                //log the starting of review
+                timelineServiceET.createTimeLineEvent(pOrder,RegState.REVIEW_BOARD,curUser,"Review started");
             }
 
         }
@@ -164,4 +171,11 @@ public class PIPOrderListBn implements Serializable {
         this.facesContext = facesContext;
     }
 
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
+    }
 }

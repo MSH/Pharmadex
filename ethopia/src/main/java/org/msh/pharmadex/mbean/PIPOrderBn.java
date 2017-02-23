@@ -1,6 +1,5 @@
 package org.msh.pharmadex.mbean;
 
-import org.msh.pharmadex.dao.iface.TimeLinePIPDAO;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.CompanyType;
@@ -39,6 +38,7 @@ public class PIPOrderBn extends POrderBn {
     private PIPProd pipProd;
     private boolean showWithdrawn;
     private boolean showSubmit;
+    private boolean showAddButton;
     private POrderComment pOrderComment;
     private ProdTable product;
     private List<Attachment> attachments;
@@ -49,8 +49,8 @@ public class PIPOrderBn extends POrderBn {
     private ProductService productService;
     @ManagedProperty(value = "#{companyService}")
     CompanyService companyService;
-    @ManagedProperty(value = "#{timeLinePIPDAO}")
-    private TimeLinePIPDAO timeLinePIPDAO;
+    @ManagedProperty(value = "#{timelineServiceET}")
+    private TimelineServiceET timelineServiceET;
 
     @PostConstruct
     private void init() {
@@ -70,7 +70,7 @@ public class PIPOrderBn extends POrderBn {
                 pipProds = pipOrder.getPipProds();
                 setApplicantUser(pipOrder.getApplicantUser());
                 setApplicant(pipOrder.getApplicantUser().getApplicant());
-            } else {
+            } else {//this is new order
                 pipOrder = new PIPOrder(new Currency());
                 if (getUserSession().isCompany()) {
                     User applicantUser = getUserService().findUser(getUserSession().getLoggedINUserID());
@@ -128,7 +128,9 @@ public class PIPOrderBn extends POrderBn {
         getpOrderDocs().add(getpOrderDoc());
         FacesMessage msg = new FacesMessage("Successful", getFile().getFileName() + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, msg);
-
+        if (!isShowSubmit()){//if it is mode, submit button can not be shown, save order
+            pOrderService.save(getpOrderDocs());
+        }
     }
 
     @Override
@@ -216,20 +218,22 @@ public class PIPOrderBn extends POrderBn {
     }
 
 
-    public void createTimeLineEvent(RegState state, String comment){
-        TimeLinePIP timeLine = new TimeLinePIP();
-        timeLine.setProdApplications(pipOrder);
-        timeLine.setRegState(state);
-        timeLine.setStatusDate(new Date());
-        timeLine.setComment(comment);
-        timeLine.setUser(curUser);
-        timeLinePIPDAO.saveAndFlush(timeLine);
-    }
-
     public String saveOrder() {
         try {
+            String timeLineSubj = "";
+            RegState timeLineState = RegState.NEW_APPL;
             context = FacesContext.getCurrentInstance();
-            pipOrder.setState(AmdmtState.NEW_APPLICATION);
+            if (pipOrder.getState()==null) {
+                pipOrder.setState(AmdmtState.NEW_APPLICATION);
+                timeLineSubj = "Pre-import order created";
+            }else if (pipOrder.getState().equals(AmdmtState.NEW_APPLICATION)){
+                timeLineSubj = "Pre-import order created";
+            }else{
+                timeLineSubj = "Pre-import order updated";
+                pipOrder.setState(AmdmtState.NEW_APPLICATION);
+                timeLineState = RegState.NEW_APPL;
+            }
+
             pipOrder.setpOrderChecklists(getpOrderChecklists());
             pipOrder.setPipProds(pipProds);
             pipOrder.setApplicant(getApplicant());
@@ -248,7 +252,7 @@ public class PIPOrderBn extends POrderBn {
                 pipOrder = (PIPOrder) retValue.getObj();
                 String retMsg = super.saveOrder();
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
-                createTimeLineEvent(RegState.NEW_APPL,"Pre-import order created");
+                timelineServiceET.createTimeLineEvent(pipOrder,timeLineState,curUser,timeLineSubj);
                 return "piporderlist";
             } else {
                 pipOrder.setState(AmdmtState.SAVED);
@@ -259,7 +263,8 @@ public class PIPOrderBn extends POrderBn {
                 if (retValue.getMsg().equals("error"))
                     context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), "Unable to create the order"));
                 if (pipOrder.getState().equals(RegState.NEW_APPL))
-                    createTimeLineEvent(RegState.NEW_APPL,bundle.getString("timeline_newapp"));
+                    timelineServiceET.createTimeLineEvent(pipOrder,timeLineState,curUser,timeLineSubj);
+
                 return "";
             }
         }catch (Exception ex){
@@ -285,7 +290,7 @@ public class PIPOrderBn extends POrderBn {
 
             pipOrder = (PIPOrder) pOrderService.saveOrder(pipOrder);
             context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("global.success")));
-            createTimeLineEvent(RegState.REJECTED,"PIP withdrown");
+            timelineServiceET.createTimeLineEvent(pipOrder,RegState.NEW_APPL,curUser,"PIP withdrown");
             return "piporderlist";
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -397,7 +402,7 @@ public class PIPOrderBn extends POrderBn {
         this.showWithdrawn = showWithdrawn;
     }
 
-    public boolean isShowSubmit() {
+    public boolean isShowAddButton(){
         if (pipOrder != null && pipOrder.getState() != null) {
             if (pipOrder.getState().equals(AmdmtState.WITHDRAWN) || pipOrder.getState().equals(AmdmtState.FEEDBACK)
                     || pipOrder.getState().equals(AmdmtState.SAVED))
@@ -407,6 +412,20 @@ public class PIPOrderBn extends POrderBn {
         } else {
             showSubmit = true;
         }
+        return showSubmit;
+    }
+
+    public boolean isShowSubmit() {
+        if (pipOrder != null && pipOrder.getState() != null){
+            if (pipOrder.getState().equals(AmdmtState.WITHDRAWN) || pipOrder.getState().equals(AmdmtState.FEEDBACK)
+                    || pipOrder.getState().equals(AmdmtState.SAVED))
+                showSubmit = true;
+            else
+                showSubmit = false;
+        } else {
+            showSubmit = true;
+        }
+
         return showSubmit;
     }
 
@@ -504,19 +523,19 @@ public class PIPOrderBn extends POrderBn {
         this.attachments = attachments;
     }
 
-    public TimeLinePIPDAO getTimeLinePIPDAO() {
-        return timeLinePIPDAO;
-    }
-
-    public void setTimeLinePIPDAO(TimeLinePIPDAO timeLinePIPDAO) {
-        this.timeLinePIPDAO = timeLinePIPDAO;
-    }
-
     public User getCurUser() {
         return curUser;
     }
 
     public void setCurUser(User curUser) {
         this.curUser = curUser;
+    }
+
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
     }
 }

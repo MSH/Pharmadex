@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.FastTrackMedService;
 import org.msh.pharmadex.service.LicenseHolderService;
@@ -15,6 +16,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,6 +81,7 @@ public class ProdRegAppMbeanET implements Serializable {
         product = prodRegAppMbean.getProduct();
         dosUom = new DosUom();
     }
+
 
     @Transactional
     public void saveApp() {

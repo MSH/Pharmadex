@@ -22,11 +22,14 @@
                                    value="Create Letter" ajax="false">
                     <p:message for="recId"/>
                     </p:commandButton>
-                  <p:commandButton action="#{testReportsBn.testNotification}"
+                    <p:commandButton action="#{testReportsBn.testNotification}"
                                    value="Notify" ajax="false">
+                        <p:message for="recId"/>
+                    </p:commandButton>
+                    <p:commandButton action="#{testReportsBn.testQuery}"
+                                   value="Test KPI" ajax="false">
                       <p:message for="recId"/>
-                  </p:commandButton>
-
+                    </p:commandButton>
             </h:panelGrid>
         </p:panel>
         </h:form>

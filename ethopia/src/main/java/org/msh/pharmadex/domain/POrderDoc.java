@@ -2,8 +2,11 @@ package org.msh.pharmadex.domain;
 
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.util.StrTools;
 
 import javax.persistence.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Author: usrivastava
@@ -44,6 +47,8 @@ public class POrderDoc extends CreationDetail {
     @Lob
     @Column(nullable = false)
     private byte[] file;
+
+    private String fileNameOnly;
 
     public Long getId() {
         return id;
@@ -124,5 +129,19 @@ public class POrderDoc extends CreationDetail {
 
     public void setPurOrder(PurOrder purOrder) {
         this.purOrder = purOrder;
+    }
+
+    public String getFileNameOnly() {
+        if (!StrTools.isEmptyString(fileName)){
+            Path path = Paths.get(fileName);
+            fileNameOnly = path.getFileName().toString();
+        }else{
+            fileNameOnly = fileName;
+        }
+        return fileNameOnly;
+    }
+
+    public void setFileNameOnly(String fileNameOnly) {
+        this.fileNameOnly = fileNameOnly;
     }
 }

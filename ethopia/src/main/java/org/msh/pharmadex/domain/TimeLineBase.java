@@ -29,12 +29,12 @@ public class TimeLineBase implements Serializable {
     @Column(length = 500)
     protected String comment;
 
+    @Column(length = 40)
+    protected String status;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
-
-    @Column(nullable = true)
-    private Date endDate;
 
     public Long getId() {
         return id;
@@ -76,11 +76,11 @@ public class TimeLineBase implements Serializable {
         this.user = user;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public String getStatus() {
+        return status;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

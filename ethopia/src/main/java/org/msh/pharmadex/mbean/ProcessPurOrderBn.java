@@ -1,7 +1,10 @@
 package org.msh.pharmadex.mbean;
 
+import org.hibernate.envers.internal.tools.StringTools;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.service.TimelineServiceET;
 import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.util.Scrooge;
 
@@ -62,6 +65,7 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
             } else {
                 pOrder.setResponsiblePerson(curUser);
                 pOrderService.updatePOrder(pOrder,curUser);
+                timelineServiceET.createTimeLineEvent(pOrder, RegState.PRE_SCREENING,curUser,"Processing of purchase order started");
             }
 
         }
@@ -95,13 +99,16 @@ public class ProcessPurOrderBn extends ProcessPOrderBn{
         pOrderBase.setState(AmdmtState.FEEDBACK);
         pOrderComment.setPurOrder((PurOrder) pOrderBase);
         pOrderComment.setExternal(true);
-//        pOrderComments = ((PurOrder) pOrderBase).getpOrderComments();
         pOrderComments = pOrderService.findPOrderComments(pOrderBase);
         if (pOrderComments == null)
             pOrderComments = new ArrayList<POrderComment>();
         pOrderComments.add(pOrderComment);
         ((PurOrder) pOrderBase).setpOrderComments(pOrderComments);
-        return saveApp();
+        String result = saveApp();
+        if (!StringTools.isEmpty(result)){
+            timelineServiceET.createTimeLineEvent(pOrderBase,RegState.FOLLOW_UP,curUser,"Sent to feedback to applicant");
+        }
+        return result;
     }
 
     public String newApp() {

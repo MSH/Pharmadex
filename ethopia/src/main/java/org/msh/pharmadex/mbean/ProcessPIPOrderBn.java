@@ -2,7 +2,10 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.UserRole;
 import org.msh.pharmadex.service.TimelineService;
+import org.msh.pharmadex.service.TimelineServiceET;
 import org.msh.pharmadex.util.RetObject;
 
 import javax.annotation.PostConstruct;
@@ -26,9 +29,6 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
 
     private List<PIPProd> pipProds;
 
-    @ManagedProperty(value = "#{timelineService}")
-    TimelineService timelineService;
-
     private java.util.ResourceBundle bundle;
 
     @PostConstruct
@@ -48,15 +48,23 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
             if (pipOrderID != null) {
                 pOrderBase = pOrderService.findPIPOrderByID(pipOrderID);
                 initVariables();
+                createStartingProcessEvent(timelineServiceET.findTimelineByAppNo(pipOrderID,pOrderBase));
             }
+
         }catch (Exception ec){
             ec.printStackTrace();
         }
 
     }
 
-    public void changeCSO(){
-
+    private void createStartingProcessEvent(List<TimeLineBase> tlist){
+        if (userService.userHasRole(curUser, UserRole.ROLE_STAFF)){//is CSO
+            for(TimeLineBase tl:tlist){
+                if (tl.getRegState().equals(RegState.PRE_SCREENING))
+                    return; //if exists - nothing to do
+            }
+        }
+        timelineServiceET.createTimeLineEvent(pOrderBase, RegState.PRE_SCREENING,curUser,"Process registration of order started");
     }
 
     @Override
@@ -70,6 +78,7 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         setApplicant(pOrderBase.getApplicantUser().getApplicant());
         setpOrderDocs(null);
         curUser = userService.findUser(userSession.getLoggedINUserID());
+
     }
 
     @Override
@@ -82,7 +91,9 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         if (pOrderComments == null)
             pOrderComments = new ArrayList<POrderComment>();
         pOrderComments.add(pOrderComment);
-        return saveApp();
+        String ret = saveApp();
+        timelineServiceET.createTimeLineEvent(pOrderBase, RegState.FOLLOW_UP,curUser,"PIP sent on "+bundle.getString("open_app"));
+        return ret;
     }
 
     @Override
@@ -159,14 +170,6 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
         this.pipProds = pipProds;
     }
 
-    public TimelineService getTimelineService() {
-        return timelineService;
-    }
-
-    public void setTimelineService(TimelineService timelineService) {
-        this.timelineService = timelineService;
-    }
-
     public java.util.ResourceBundle getBundle() {
         return bundle;
     }
@@ -174,4 +177,5 @@ public class ProcessPIPOrderBn extends ProcessPOrderBn {
     public void setBundle(ResourceBundle bundle) {
         this.bundle = bundle;
     }
+
 }

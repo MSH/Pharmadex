@@ -220,7 +220,8 @@
 
 
                     <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
-                                     oncomplete="PF('attachdlg').show()" rendered="#{pIPOrderBn.showSubmit}"
+                                     oncomplete="PF('attachdlg').show()"
+                                     rendered="#{pIPOrderBn.showAddButton}"
                                      action="#{pIPOrderBn.prepareUpload}"
                                      update=":attachdlg" id="addDocBtn"/>
 
@@ -231,7 +232,7 @@
                         </p:column>
 
                         <p:column headerText="#{msgs.filename}">
-                            <h:outputText value="#{doc.fileName}"/>
+                            <h:outputText value="#{doc.fileNameOnly}"/>
                         </p:column>
 
                         <p:column headerText="#{msgs.uploaddate}">
@@ -254,7 +255,7 @@
                             </p:commandButton>
                         </p:column>
 
-                        <p:column rendered="#{pIPOrderBn.showSubmit}">
+                        <p:column rendered="#{pIPOrderBn.showAddButton}">
                             <p:commandButton id="deleteattach"
                                              action="#{pIPOrderBn.deleteDoc(doc)}" ajax="false"
                                              icon="ui-icon-trash"

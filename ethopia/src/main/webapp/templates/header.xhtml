@@ -55,17 +55,6 @@
         </h:form>
     </div>
 
-    <!--        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-                <ul id="main">
-                    <li class="current_page_item"><a href="#{request.contextPath}/ui/home.jsf" >PrimeUI</a></li>
-                    <li><a href="#{request.contextPath}/mobile/index.jsf" >Registration</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">Inspection</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">TIPS</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">QSL</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">Narcotics Control</a></li>
-                    <li><a href="#{request.contextPath}/push/index.jsf">Administration</a></li>
-                </ul>
-    -->
     <div>
         <h:form prependId="false">
             <p:menubar>
@@ -179,6 +168,10 @@
                     </sec:isAuthenticated>
                 </p:submenu>
 
+                <sec:isAuthenticated>
+                    <p:menuitem value="#{msgs.repomainmenuitem}" url="/internal/reports.faces" rendered="#{userSession.csd||userSession.head||userSession.admin||userSession.cst||userSession.moderator}"/>
+
+                </sec:isAuthenticated>
 
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.licensing}"
@@ -213,16 +206,6 @@
                     </p:submenu>
                 </sec:isAuthenticated>
 
-                <!--
-                                <p:menuitem value="#{msgs.Tipc}" url="/public/tipchome.faces" icon="ui-icon-folder-collapsed"/>
-
-                                <p:menuitem value="#{msgs.Qsl}" url="/public/qslhome.faces" icon="ui-icon-folder-collapsed"/>
-
-                                <p:menuitem value="#{msgs.Narcotics}" url="/public/narcoticshome.faces"
-                                            icon="ui-icon-folder-collapsed"/>
-
-                -->
-
                 <sec:isAuthenticated>
                     <p:submenu label="#{msgs.Admin}" icon="ui-icon-key" rendered="#{userSession.admin}">
                         <p:menuitem value="#{msgs.admin_onlineusers}" url="/admin/loggedinuser_bk.faces"
@@ -241,14 +224,17 @@
                         <p:menuitem value="#{msgs.dos_form}" url="/admin/dosformlist.faces"
                                     icon="ui-icon-document"
                                     ajax="false"/>
-                        <p:menuitem value="Other" url="/admin/other.faces"
+
+                        <p:menuitem value="Import of legacy data" url="/admin/other.faces"
                                     icon="ui-icon-document"
                                     ajax="false"/>
+                        <!--
                         <p:menuitem value="Test of reports" url="/admin/testReports.faces"
                                     icon="ui-icon-document"
                                     ajax="false"/>
-                        <p:menuitem value="#{msgs.checklist}" url="/admin/checklists.faces" icon="ui-icon-document"   ajax="false"/>
-                     <p:menuitem value="#{msgs.prod_screening}" url="/admin/revchklists.faces" icon="ui-icon-document"  ajax="false"/>
+                        -->
+                        <p:menuitem value="#{msgs.checklist.concat(' ').concat(msgs.assessment)}" url="/admin/revchklists.faces" icon="ui-icon-document"   ajax="false"/>
+                        <p:menuitem value="#{msgs.checklist.concat(' ').concat(msgs.prod_screening)}" url="/admin/checklists.faces" icon="ui-icon-document"  ajax="false"/>
                       
 
                     </p:submenu>

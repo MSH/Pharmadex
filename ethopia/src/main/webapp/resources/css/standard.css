@@ -155,6 +155,7 @@ body {
 
 #menu ul {
     margin: 0;
+    text-align: left;
     padding-left: 10px;
     list-style: none;
 }

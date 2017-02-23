@@ -79,7 +79,7 @@ public class POrderService implements Serializable {
     CustomLicHolderDAO customLicHolderDAO;
 
     @Autowired
-    TimeLinePIPDAO timeLinePIPDAO;
+    TimelinePIPDAO timelinePIPDAO;
 
     @Autowired
     TimelineServiceET timelineServiceET;
@@ -496,26 +496,22 @@ public class POrderService implements Serializable {
     }
 
 
-    private void updateTimeLine(RegState state, String comment, PIPOrder order){
+    public void updateTimeLine(RegState state, String comment, PIPOrder order){
         TimeLinePIP tl = new TimeLinePIP();
         tl.setRegState(state);
         tl.setComment(comment);
         tl.setStatusDate(new Date());
         tl.setProdApplications(order);
         tl.setUser(curUser);
-        timeLinePIPDAO.saveAndFlush(tl);
-        List<TimeLineBase> events = timelineServiceET.findTimelineByAppNo(order.getId(), order);
-        if (events==null) return;
-        if (events.size()<2) return;
-        TimeLineBase prevEvent = events.get(events.size() - 1);
-        prevEvent.setEndDate(new Date());
+        timelinePIPDAO.saveAndFlush(tl);
     }
 
 
 
     public RetObject updatePOrder(POrderBase pOrderBase, User user) {
         curUser = user;
-        return updatePOrder(pOrderBase);
+        RetObject res = updatePOrder(pOrderBase);
+        return res;
     }
 
     public RetObject updatePOrder(POrderBase pOrderBase) {
@@ -525,19 +521,21 @@ public class POrderService implements Serializable {
             RetObject orderDoc = null;
             if (pipOrder.getState().equals(AmdmtState.APPROVED)) {
                 orderDoc = createApprovalLetter(pipOrder);
-                updateTimeLine(RegState.REGISTERED,"PIP registered",pipOrder);
+                timelineServiceET.createTimeLineEvent(pipOrder,RegState.REGISTERED,curUser,"PIP registered");
             } else if (pipOrder.getState().equals(AmdmtState.REJECTED)) {
                 orderDoc = createRejectionLetter(pipOrder, pipOrder.getpOrderComments().get(pipOrder.getpOrderComments().size()-1));
-                updateTimeLine(RegState.REJECTED,"PIP rejected",pipOrder);
+                timelineServiceET.createTimeLineEvent(pipOrder,RegState.REJECTED,curUser,"PIP rejected");
+
             }
         }
 
 
         if (pOrderBase instanceof PurOrder) {
             PurOrder purOrder = (PurOrder) pOrderBase;
-            if (!purOrder.getProcessor().equals(purOrder.getResponsiblePerson()))
-                if (purOrder.getResponsiblePerson()!=null && purOrder.getProcessor()!=null)
-                    purOrder.setProcessor(purOrder.getResponsiblePerson());
+
+            if (purOrder.getResponsiblePerson()!=null && purOrder.getProcessor()!=null)
+                if (!purOrder.getProcessor().equals(purOrder.getResponsiblePerson()))
+                     purOrder.setProcessor(purOrder.getResponsiblePerson());
             purOrder = purOrderDAO.save(purOrder);
             if (purOrder.getState().equals(AmdmtState.APPROVED)) {
                 createPOApprovalLetter(purOrder);
@@ -831,11 +829,11 @@ public class POrderService implements Serializable {
         this.purProdDAO = purProdDAO;
     }
 
-    public TimeLinePIPDAO getTimeLinePIPDAO() {
-        return timeLinePIPDAO;
+    public TimelinePIPDAO getTimelinePIPDAO() {
+        return timelinePIPDAO;
     }
 
-    public void setTimeLinePIPDAO(TimeLinePIPDAO timeLinePIPDAO) {
-        this.timeLinePIPDAO = timeLinePIPDAO;
+    public void setTimelinePIPDAO(TimelinePIPDAO timelinePIPDAO) {
+        this.timelinePIPDAO = timelinePIPDAO;
     }
 }

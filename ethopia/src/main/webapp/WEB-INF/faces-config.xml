@@ -14,6 +14,7 @@
         <locale-config>
             <default-locale>en</default-locale>
             <supported-locale>en</supported-locale>
+            <supported-locale>en_GB</supported-locale>
         </locale-config>
     </application>
     <lifecycle>

@@ -5,6 +5,8 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.RecomendType;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.UserRole;
 import org.msh.pharmadex.service.*;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
@@ -18,7 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.*;
 import java.util.ArrayList;
@@ -30,6 +34,8 @@ import java.util.ResourceBundle;
  * Backing bean to process the application made for registration
  * Author: usrivastava
  */
+@ManagedBean
+@ViewScoped
 public abstract class ProcessPOrderBn implements Serializable {
 
     protected POrderBase pOrderBase;
@@ -43,6 +49,8 @@ public abstract class ProcessPOrderBn implements Serializable {
     protected GlobalEntityLists globalEntityLists;
     @ManagedProperty(value = "#{prodApplicationsService}")
     protected ProdApplicationsService prodApplicationsService;
+    @ManagedProperty(value = "#{timelineServiceET}")
+    protected TimelineServiceET timelineServiceET;
 
     protected boolean displayReview;
     protected boolean displayReviewComment;
@@ -74,11 +82,13 @@ public abstract class ProcessPOrderBn implements Serializable {
         Long userId = userSession.getLoggedINUserID();
         curUser = userService.findUser(userId);
     }
+
     public void initComment() {
         pOrderComment = new POrderComment();
         pOrderComment.setUser(userService.findUser(userSession.getLoggedINUserID()));
         pOrderComment.setDate(new Date());
     }
+
 
     public StreamedContent fileDownload(POrderDoc doc) {
         InputStream ist=null;
@@ -137,7 +147,6 @@ public abstract class ProcessPOrderBn implements Serializable {
 
     public void feeRecievedListener() {
         try {
-            logger.error("Inside feeRecievedListener");
             User user = userService.findUser(userSession.getLoggedINUserID());
             pOrderBase.setUpdatedBy(user);
             pOrderBase.setProcessor(user);
@@ -217,6 +226,8 @@ public abstract class ProcessPOrderBn implements Serializable {
             saveApp();
             pOrderBase.setState(AmdmtState.SUBMITTED);
             pOrderBase.setReviewState(pOrderComment.getRecomendType());
+            if ((pOrderBase instanceof PIPOrder) || (pOrderBase instanceof PurOrder))
+                timelineServiceET.createTimeLineEvent(pOrderBase,pOrderBase.getReviewState().equals(RecomendType.RECOMENDED) ? RegState.RECOMMENDED : RegState.NOT_RECOMMENDED ,curUser,"Review finished");
             enterComment();
             String retObject = newApp();
         } catch (Exception ex) {
@@ -266,6 +277,7 @@ public abstract class ProcessPOrderBn implements Serializable {
         try {
             if (pOrderBase.getReviewState().equals(RecomendType.RECOMENDED)) {
                 pOrderBase.setState(AmdmtState.APPROVED);
+                timelineServiceET.createTimeLineEvent(pOrderBase,RegState.RECOMMENDED,curUser,"Order approved");
                 pOrderBase.setApprovalDate(new Date());
                 Date expDate = JsfUtils.addDate(new Date(), globalEntityLists.getWorkspace().getPipRegDuration());
 
@@ -313,7 +325,7 @@ public abstract class ProcessPOrderBn implements Serializable {
         resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
         try {
             if (pOrderBase.getReviewState().equals(RecomendType.NOT_RECOMENDED)) {
-//            pOrderBase.setReviewState(RecomendType.ACCEPTED);
+                timelineServiceET.createTimeLineEvent(pOrderBase,RegState.RECOMMENDED,curUser,"Order rejected");
                 pOrderBase.setState(AmdmtState.REJECTED);
                 pOrderBase.setApprovalDate(new Date());
                 enterComment();
@@ -435,7 +447,8 @@ public abstract class ProcessPOrderBn implements Serializable {
         if (userSession.isStaff()) {
             if (pOrderBase.getState() != null) {
                 if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION) ||
-                        pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK)) {
+                        pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK)
+                        || pOrderBase.getState().equals(AmdmtState.SAVED)) {
                     displayReview = true;
                 } else if (pOrderBase.getReviewState().equals(RecomendType.FEEDBACK)) {
                     displayReview = true;
@@ -456,6 +469,7 @@ public abstract class ProcessPOrderBn implements Serializable {
     }
 
     public boolean isDisplayReviewComment() {
+        if (pOrderBase.getReviewState()==null) return  false;
         if (pOrderBase.getState() != null) {
             if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION) ||
                     pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK))
@@ -547,5 +561,13 @@ public abstract class ProcessPOrderBn implements Serializable {
 
     public void setResponsiblePerson(User responsiblePerson) {
         this.responsiblePerson = responsiblePerson;
+    }
+
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
     }
 }

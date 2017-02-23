@@ -2,12 +2,8 @@ package org.msh.pharmadex.mbean.product;
 
 import static javax.faces.context.FacesContext.getCurrentInstance;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
@@ -18,14 +14,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ReviewComment;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.TimeLine;
-import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.*;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.domain.enums.UserRole;
 import org.msh.pharmadex.service.ProdApplicationsServiceET;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.RegistrationUtil;
@@ -33,7 +26,6 @@ import org.msh.pharmadex.util.RetObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
 /**
@@ -66,10 +58,39 @@ public class ProcessProdBnET implements Serializable {
     private void init() {
         //Long id = Scrooge.beanParam("Id");
    	    ProdApplications pa= processProdBn.getProdApplications();
-        if (pa!=null)changedFields=pa.getAppComment();
+        if (pa!=null) {
+            changedFields = pa.getAppComment();
+            createStartOfProcessingsEvent();
+        }
     	if (changedFields==null) changedFields="";
     }
 
+    /**
+     * Create event PRE_SCREENING when CSO opens submitted application for the first time (i.e. registration process started)
+     */
+    private void createStartOfProcessingsEvent(){
+
+        if (!processProdBn.getProdApplications().getRegState().equals(RegState.NEW_APPL))
+            return; //only for newly created applications
+        if (!processProdBn.getUserService().userHasRole(processProdBn.getLoggedInUser(), UserRole.ROLE_STAFF))
+            return; //only for CSOs
+        List<TimeLine> tlist = processProdBn.getTimeLineList();
+        if (tlist!=null){
+            for(TimeLine tl:tlist){
+                if (tl.getRegState().equals(RegState.PRE_SCREENING))
+                    return;
+            }
+        }
+        //if not found...
+        TimeLine preTL = new TimeLine();
+        preTL.setProdApplications(processProdBn.prodApplications);
+        preTL.setUser(processProdBn.loggedInUser);
+        preTL.setRegState(RegState.PRE_SCREENING);
+        preTL.setStatusDate(Calendar.getInstance().getTime());
+        preTL.setComment("Application processing started");
+        processProdBn.getTimelineService().saveTimeLine(preTL);
+
+    }
 
     public boolean isDisplayVerify() {
         if (userSession.isAdmin() || userSession.isHead() || userSession.isModerator())

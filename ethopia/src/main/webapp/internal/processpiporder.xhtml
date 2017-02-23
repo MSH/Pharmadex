@@ -34,7 +34,7 @@
                                     id="changeCSO"
                                     icon="ui-icon-document"
                                     oncomplete="PF('chngRespPerson').show()"
-                                    rendered="#{not empty processPIPOrderBn.pOrderBase.responsiblePerson and userSession.csd}"
+                                    rendered="#{not empty processPIPOrderBn.pOrderBase.responsiblePerson and (userSession.csd or userSession.cst)}"
                                     />
 
                     </p:submenu>
@@ -327,7 +327,7 @@
                                     </p:column>
 
                                     <p:column headerText="#{msgs.filename}">
-                                        <h:outputText value="#{doc.fileName}"/>
+                                        <h:outputText value="#{doc.fileNameOnly}"/>
                                     </p:column>
 
                                     <p:column headerText="#{msgs.uploaddate}">
@@ -420,6 +420,7 @@
                                  update=":reghome:growl :reghome:messages :reghome"/>
             </h:form>
         </p:dialog>
+
         <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" id="reviewDlg"
                   modal="true" dynamic="true">
             <h:form prependId="false">
@@ -453,7 +454,8 @@
                               width="700"/>
                     <p:message for="addcomment"/>
                 </h:panelGrid>
-                <p:commandButton value="#{msgs.global_submit}" action="#{processPIPOrderBn.addComment}"
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{processPIPOrderBn.addComment}"
                                  oncomplete="if (!args.validationFailed) PF('commentDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>

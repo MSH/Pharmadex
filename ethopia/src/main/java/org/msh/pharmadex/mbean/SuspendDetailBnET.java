@@ -74,6 +74,9 @@ public class SuspendDetailBnET implements Serializable {
     @ManagedProperty(value = "#{timelineService}")
     private TimelineService timelineService;
 
+    @ManagedProperty(value = "#{timelineServiceET}")
+    private TimelineServiceET timelineServiceET;
+
     private Logger logger = LoggerFactory.getLogger(SuspendDetailBnET.class);
     private UploadedFile file;
     private SuspDetail suspDetail;
@@ -286,6 +289,7 @@ public class SuspendDetailBnET implements Serializable {
             if (retObject.getMsg().equals("persist")) {
                 suspDetail = (SuspDetail) retObject.getObj();
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("moderator_add_success")));
+                timelineServiceET.createTimeLineEvent(suspDetail,RegState.REVIEW_BOARD,loggedInUser,"Review started");
             }
         } catch (Exception e) {
             logger.error("Problems saving moderator {}", "suspendetailbn", e);
@@ -906,6 +910,7 @@ public class SuspendDetailBnET implements Serializable {
     }
 
     public SuspDetail getParentSuspension() {
+        if (suspDetail==null) return null;
         if (suspDetail.getParentId()!=null){
             parentSuspension = suspendService.findSuspDetail(suspDetail.getParentId());
         }
@@ -914,5 +919,13 @@ public class SuspendDetailBnET implements Serializable {
 
     public void setParentSuspension(SuspDetail parentSuspension) {
         this.parentSuspension = parentSuspension;
+    }
+
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
     }
 }

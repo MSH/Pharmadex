@@ -5,6 +5,8 @@ import org.msh.pharmadex.domain.enums.AgeGroup;
 import org.msh.pharmadex.domain.enums.AgentType;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +20,11 @@ public class GlobalListsET {
     public List<SRA> sras;
 
     public List<AgentType> getAgentTypes() {
-        return Arrays.asList(AgentType.values());
+        List<AgentType> res = new ArrayList<AgentType>();
+        res.add(AgentType.FIRST);
+        res.add(AgentType.SECOND);
+        return res;
+        //return Arrays.asList(AgentType.values()); //only first and second, but save existing third agents
     }
 
     public List<AgeGroup> getAgeGroupes() {

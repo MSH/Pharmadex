@@ -2,7 +2,10 @@ package org.msh.pharmadex.mbean;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.UserRole;
 import org.msh.pharmadex.service.POrderService;
+import org.msh.pharmadex.service.TimelineServiceET;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.util.Scrooge;
@@ -34,6 +37,8 @@ public class PurOrderListBn implements Serializable {
     private UserSession userSession;
     @ManagedProperty(value = "#{userService}")
     private UserService userService;
+    @ManagedProperty(value = "#{timelineServiceET}")
+    TimelineServiceET timelineServiceET;
 
     private PurOrder purOrder = new PurOrder();
     private List<PurOrder> purOrders;
@@ -62,6 +67,7 @@ public class PurOrderListBn implements Serializable {
             } else {
                 pOrder.setResponsiblePerson(curUser);
                 pOrderService.updatePOrder(pOrder,curUser);
+                createStartingProcessEvent(timelineServiceET.findTimelineByAppNo(pOrder.getId(),pOrder));
             }
 
         }
@@ -69,6 +75,16 @@ public class PurOrderListBn implements Serializable {
 
         return "/internal/purorder.xhtml";
     }
+
+        private void createStartingProcessEvent(List<TimeLineBase> tlist){
+            if (userService.userHasRole(curUser, UserRole.ROLE_STAFF)){//is CSO
+                for(TimeLineBase tl:tlist){
+                    if (tl.getRegState().equals(RegState.PRE_SCREENING))
+                        return; //if exists - nothing to do
+                }
+            }
+            timelineServiceET.createTimeLineEvent(purOrder, RegState.PRE_SCREENING,curUser,"Process registration of order started");
+        }
 
     public String searchPurOrder(){
             POrderBase pOrderBase = pOrderService.findPOrder(pipNo, true);
@@ -159,5 +175,13 @@ public class PurOrderListBn implements Serializable {
 
     public void setBundle(ResourceBundle bundle) {
         this.bundle = bundle;
+    }
+
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
     }
 }

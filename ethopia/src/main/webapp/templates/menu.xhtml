@@ -18,9 +18,8 @@
                         ajax="false"/>
             <p:menuitem value="#{msgs.fasttrack_list}" action="/admin/fasttracklist.faces" icon="ui-icon-document"
                         ajax="false"/>
-             <p:menuitem value="#{msgs.checklist}" action="/admin/checklists.faces" icon="ui-icon-document"
-                        ajax="false"/>
-
+            <p:menuitem value="#{msgs.checklist.concat(' ').concat(msgs.assessment)}" action="/admin/revchklists.faces" icon="ui-icon-document"   ajax="false"/>
+            <p:menuitem value="#{msgs.checklist.concat(' ').concat(msgs.prod_screening)}" action="/admin/checklists.faces" icon="ui-icon-document"  ajax="false"/>
         </p:submenu>
     </p:menu>
 
