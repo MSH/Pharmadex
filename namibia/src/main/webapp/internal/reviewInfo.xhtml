@@ -4,201 +4,315 @@
 
 <!-- Creates the table with passed in values of product -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:pe="http://primefaces.org/ui/extensions"
-                template="../templates/process_reg_layout.xhtml">
-                
-    <ui:define name="content">
-        <h:form id="reviewHome" enctype="multipart/form-data">
-            <p:growl id="growl" showSummary="true"/>
-            <p:messages showDetail="true" showSummary="true"/>
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../templates/process_reg_layout.xhtml">
 
-            <div style="width:1054px">
-                <ui:decorate template="/templates/prodbannertempl.xhtml">
-                    <ui:param name="prodApp" value="#{reviewInfoBn.prodApplications}"/>
-                </ui:decorate>
-            </div>
+	<ui:define name="content">
+		<h:form id="reviewHome" enctype="multipart/form-data">
+			<p:growl id="growl" showSummary="true" showDetail="false" />
+			<p:messages id="reviewMessages" showDetail="false" showSummary="true" />
 
-            <div align="center" style="background: #2191c0; padding: 5px; border-radius: 5px;">
-                <p:outputLabel value="#{reviewInfoBn.revType}"
-                               style="align-content: center; font-weight: bold; color:darkred;"/>
-            </div>
+			<div style="width: 1054px">
+				<ui:decorate template="/templates/prodbannertempl.xhtml">
+					<ui:param name="prodApp" value="#{reviewInfoBn.prodApplications}" />
+				</ui:decorate>
+			</div>
 
-            <div align="right">
-                <p:commandButton value="#{msgs.product_details}" immediate="true" action="/internal/processreg"
-                                 ajax="false">
-                        <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
-                </p:commandButton>
-                <!--  -->
-                <p:commandButton id="printBtn" value="#{msgs.global_print}"
-                                 onclick="PrimeFaces.monitorDownload(start, stop);"
-                                 actionListener="#{reviewInfoBnMZ.createFileReviewDetail()}"
-                                 ajax="false" icon="ui-icon-arrowthick-1-s">
-                	<p:fileDownload value="#{reviewInfoBnMZ.fileReviewDetail}" />
-               	</p:commandButton>
-                <!-- 25072016
-                <p:commandButton value="#{msgs.approve_review}"
-                                 action="#{reviewInfoBn.approveReview}"
-                                 update=":reviewHome"
-                                 ajax="false"
-                                 rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}">
-                        <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
-                </p:commandButton> -->
-                <p:commandButton value="#{msgs.send_to_review}" action="#{reviewInfoBn.initComment}"
-                                 update=":reviewHome" oncomplete="PF('feedbackDlg').show()"
-                                 ajax="true"
-                                 rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}"/>
-                <p:commandButton value="#{msgs.global_save}" action="#{reviewInfoBn.saveReview}" ajax="true"
-                                 update=":reviewHome" process="@this"
-                                 rendered="#{userSession.reviewer and !reviewInfoBn.reviewInfo.submitted}"/>
-                <p:commandButton value="#{msgs.global_submit}" oncomplete="PF('reviewDlg').show()"
-                                 ajax="true" action="#{reviewInfoBn.initComment}"
-                                 rendered="#{reviewInfoBnMZ.visibleSubmitBtn()}"/>
-                <p:commandButton value="#{msgs.global_back}" immediate="true"
-                                 action="#{reviewInfoBn.getBackTo()}"
-                                 ajax="false">
-                                <f:param name="prodAppID" value="#{reviewInfoBn.idProdAppSource}"/>
-                </p:commandButton>
-            </div>
+			<div align="center"
+				style="background: #2191c0; padding: 5px; border-radius: 5px;">
+				<p:outputLabel value="#{reviewInfoBn.revType}"
+					style="align-content: center; font-weight: bold; color:darkred;" />
+			</div>
 
-            <p:tabView dynamic="true" id="detailtab" style="width: 99%;" cache="false">
-            	<p:ajax event="tabChange" listener="#{reviewInfoBnMZ.onTabChange}" />
-                <p:tab title="#{msgs.review_detail}">
-                    <p:accordionPanel value="#{reviewInfoBn.displayReviewQs}" var="header1" id="displayReviewQsacp"
-                    					cache="false" activeIndex="#{reviewInfoBn.header1ActIndex}">
-                        <p:ajax event="tabChange" listener="#{reviewInfoBn.onChangeHdr1}" update=":reviewHome:detailtab"/>
-                        <p:tab title="#{header1.header1}">
-                            <p:tabView orientation="left" value="#{header1.header2s}" var="header2"
-                            			cache="false" activeIndex="#{reviewInfoBn.header2ActIndex}">
-                            	<p:ajax event="tabChange" listener="#{reviewInfoBn.onChangeHdr2}" update=":reviewHome:detailtab"/>
-                                <p:tab title="#{header2.header2}">
-                                    <p:dataTable value="#{header2.displayReviewInfos}" var="quest"
-                                                 styleClass="borderless">
-                                        <p:column headerText="#{msgs.complete_review}">
+			<div align="right">
+				<p:commandButton value="#{msgs.product_details}" immediate="true"
+					action="/internal/processreg" ajax="false">
+					<f:param name="prodAppID"
+						value="#{reviewInfoBn.prodApplications.id}" />
+				</p:commandButton>
+				<p:commandButton id="printBtn" value="#{msgs.global_print}"
+					onclick="PrimeFaces.monitorDownload(start, stop);"
+					actionListener="#{reviewInfoBnMZ.createFileReviewDetail()}"
+					ajax="false" icon="ui-icon-arrowthick-1-s">
+					<p:fileDownload value="#{reviewInfoBnMZ.fileReviewDetail}" />
+				</p:commandButton>
+				<p:commandButton value="#{msgs.send_to_review}"
+					action="#{reviewInfoBn.initComment}" update=":reviewHome"
+					oncomplete="PF('feedbackDlg').show()" ajax="true"
+					rendered="#{userSession.moderator and reviewInfoBn.reviewInfo.submitted}" />
+				<p:commandButton value="#{msgs.global_save}"
+					action="#{reviewInfoBn.saveReview}" ajax="true"
+					update=":reviewHome" process="@this"
+					rendered="#{reviewInfoBn.visibleSubmitBtn()}" />
+				<p:commandButton value="#{msgs.global_submit}"
+					oncomplete="PF('reviewDlg').show()" ajax="true"
+					action="#{reviewInfoBn.initComment}"
+					rendered="#{reviewInfoBn.visibleSubmitBtn()}" />
+				<p:commandButton value="#{msgs.global_back}" immediate="true"
+					action="#{reviewInfoBn.getBackTo()}" ajax="false">
+					<f:param name="prodAppID" value="#{reviewInfoBn.idProdAppSource}" />
+				</p:commandButton>
+			</div>
 
-                                            <p:commandButton value="#{quest.save?msgs.global_update:msgs.global_add}"
-                                                             action="#{reviewInfoBn.updateReview(quest)}"
-                                                             ajax="false" rendered="#{reviewInfoBnMZ.visibleUpdateBtn()}">
-                                            </p:commandButton>
-                                            <p:commandButton value="#{msgs.view_response}"
-                                                             action="#{reviewInfoBn.updateReview(quest)}"
-                                                             ajax="false" rendered="#{reviewInfoBnMZ.visibleViewRespBtn()}">
-                                            </p:commandButton>
-                                            <p:commandButton value="#{msgs.global_na}"
-                                                             action="#{reviewInfoBn.reviewNA(quest)}"
-                                                             ajax="true"
-                                                             update=":reviewHome:detailtab:displayReviewQsacp"
-                                                             rendered="#{reviewInfoBnMZ.visibleUpdateBtn()}">
-                                            </p:commandButton>
+			<p:tabView dynamic="true" id="detailtab" style="width: 99%;"
+				cache="false">
+				<p:ajax event="tabChange" listener="#{reviewInfoBnMZ.onTabChange}" />
+				<p:tab title="#{msgs.review_detail}">
+					<p:accordionPanel value="#{reviewInfoBn.displayReviewQs}"
+						var="header1" id="displayReviewQsacp" cache="false"
+						activeIndex="#{reviewInfoBn.header1ActIndex}">
+						<p:ajax event="tabChange" listener="#{reviewInfoBn.onChangeHdr1}"
+							update=":reviewHome:detailtab" />
+						<p:tab title="#{header1.header1}">
+							<p:tabView orientation="left" value="#{header1.header2s}"
+								var="header2" cache="false"
+								activeIndex="#{reviewInfoBn.header2ActIndex}">
+								<p:ajax event="tabChange"
+									listener="#{reviewInfoBn.onChangeHdr2}"
+									update=":reviewHome:detailtab" />
+								<p:tab title="#{header2.header2}">
+									<p:dataTable value="#{header2.displayReviewInfos}" var="quest"
+										styleClass="borderless">
+										<p:column headerText="#{msgs.review_evaluation_units}">
+											<h:outputText value="#{quest.question}" escape="false" />
+										</p:column>
+										<p:column headerText="#{msgs.review_info_satisf}"
+											style="width:165px">
+											<p:outputLabel
+												value="#{msgs[globalLists.buildKeyMsgs(quest.answer)]}"
+												rendered="#{reviewInfoBn.readOnly}" />
+											<p:commandLink
+												actionListener="#{reviewInfoBn.reviewQuestionListener(quest)}"
+												resetValues="true" styleClass="ui-icon ui-icon-pencil"
+												ajax='true' update=":reviewHome:growl reviewerRespDlg"
+												rendered="#{reviewInfoBn.visibleShowReply(quest)}">
+											</p:commandLink>
+											<p:selectOneButton id="console" value="#{quest.answer}"
+												rendered="#{!reviewInfoBn.readOnly}">
+												<f:selectItems value="#{globalLists.yesNoNA}" var="value"
+													itemLabel="#{msgs[value.key]}" />
+												<p:ajax
+													listener="#{reviewInfoBn.reviewQuestionListener(quest)}"
+													update=":reviewHome:detailtab :reviewHome:growl reviewerRespDlg" />
+											</p:selectOneButton>
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+							</p:tabView>
 
-                                            <h:panelGroup layout="block"
-                                                          styleClass="#{reviewInfoBnMZ.buildStyleClassName(quest)}">
-                                                <h:outputText value="#{quest.question}" escape="false"/>
-                                            </h:panelGroup>
-                                        </p:column>
-                                    </p:dataTable>
-                                </p:tab>
-                            </p:tabView>
+							<div style="height: 10px;" />
+						</p:tab>
+					</p:accordionPanel>
+				</p:tab>
+				<p:tab title="#{msgs.global_comment}">
+					<ui:include src="allcomments.xhtml" />
+				</p:tab>
+				<p:tab title="#{msgs.deficiency_reports}"
+					rendered="#{userSession.moderator || userSession.reviewer}">
+					<p:commandButton icon="ui-icon-document"
+						value="#{msgs.generate_report}"
+						oncomplete="PF('attachDlg').show()"
+						action="#{reviewInfoBn.initRevDef}" />
 
-                            <div style="height: 10px;"/>
-                        </p:tab>
-                    </p:accordionPanel>
-                </p:tab>
-                <p:tab title="#{msgs.global_comment}">
-                	<ui:include src="allcomments.xhtml"/>
-                </p:tab>
-                <p:tab title="#{msgs.deficiency_reports}" rendered="#{userSession.moderator || userSession.reviewer}">
-                    <p:commandButton icon="ui-icon-document" value="#{msgs.generate_report}"
-                                     oncomplete="PF('attachDlg').show()" action="#{reviewInfoBn.initRevDef}"/>
+					<p:dataTable id="attachtable"
+						value="#{reviewInfoBn.revDeficiencies}" var="doc" rowStyleClass="">
 
-                    <p:dataTable id="attachtable" value="#{reviewInfoBn.revDeficiencies}" var="doc" rowStyleClass="">
+						<p:column headerText="#{msgs.title}">
+							<h:outputText value="#{doc.prodAppLetter.title}" />
+						</p:column>
 
-                        <p:column headerText="#{msgs.title}">
-                            <h:outputText value="#{doc.prodAppLetter.title}"/>
-                        </p:column>
+						<p:column headerText="#{msgs.filename}">
+							<h:outputText value="#{doc.prodAppLetter.fileName}" />
+						</p:column>
 
-                        <p:column headerText="#{msgs.filename}">
-                            <h:outputText value="#{doc.prodAppLetter.fileName}"/>
-                        </p:column>
+						<p:column headerText="#{msgs.uploaddate}">
+							<h:outputText converter="javax.faces.DateTime"
+								value="#{doc.createdDate}" />
+						</p:column>
 
-                        <p:column headerText="#{msgs.uploaddate}">
-                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
-                        </p:column>
+						<p:column headerText="#{msgs.uploadedby}">
+							<h:outputText value="#{doc.user.name}" />
+						</p:column>
 
-                        <p:column headerText="#{msgs.uploadedby}">
-                            <h:outputText value="#{doc.user.name}"/>
-                        </p:column>
+						<p:column>
+							<p:commandButton id="downloadLink"
+								value="#{msgs.global_download}" ajax="false"
+								onclick="PrimeFaces.monitorDownload(start, stop)"
+								icon="ui-icon-arrowthichk-n">
+								<p:fileDownload
+									value="#{reviewInfoBn.fileDownload(doc.prodAppLetter)}" />
+							</p:commandButton>
 
-                        <p:column>
-                            <p:commandButton id="downloadLink" value="#{msgs.global_download}"
-                            				 ajax="false"
-                                             onclick="PrimeFaces.monitorDownload(start, stop)"
-                                             icon="ui-icon-arrowthichk-n">
-                                <p:fileDownload value="#{reviewInfoBn.fileDownload(doc.prodAppLetter)}"/>
-                            </p:commandButton>
+						</p:column>
 
-                        </p:column>
+						<p:column>
+							<p:commandButton id="revdefdetails"
+								action="#{reviewInfoBn.findRevDef(doc)}" ajax="true"
+								rendered="#{!doc.resolved}" icon="ui-icon-search"
+								oncomplete="PF('revDefDlg').show()" />
+						</p:column>
+					</p:dataTable>
+				</p:tab>
+			</p:tabView>
 
-                        <p:column>
-                            <p:commandButton id="revdefdetails"
-                                             action="#{reviewInfoBn.findRevDef(doc)}" ajax="true" rendered="#{!doc.resolved}"
-                                             icon="ui-icon-search" oncomplete="PF('revDefDlg').show()"/>
-                        </p:column>
-                    </p:dataTable>
-                </p:tab>
-            </p:tabView>
-                       
-			<p:blockUI block="detailtab"
-						trigger=":reviewHome:detailtab">
-					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+			<p:blockUI block="detailtab" trigger=":reviewHome:detailtab">
+				<p:graphicImage value="/resources/images/ajax-loader.gif" />
 			</p:blockUI>
-        </h:form>
+		</h:form>
 
-        <p:dialog header="#{msgs.review_feedback}" widgetVar="feedbackDlg" id="feedbackdlg"
-                  modal="true" dynamic="true">
-            <h:form prependId="false">
-                <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary1" styleClass="label"/>
-                    <pe:ckEditor id="revsummary1" value="#{reviewInfoBn.reviewComment.comment}"
-								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
-								 required="true" />
-                    <p:message for="revsummary"/>
-                </h:panelGrid>
-                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.reviewerFeedback}"
-                                 oncomplete="PF('feedbackDlg').hide()" ajax="false">
-                        <f:param name="prodAppID" value="#{reviewInfoBn.prodApplications.id}"/>
-                </p:commandButton>
-            </h:form>
-        </p:dialog>
+		<p:dialog header="#{msgs.reviewer_response}"
+			widgetVar="reviewerRespDlg" id="reviewerRespDlg" modal="true"
+			dynamic="true" width="850px" position="top">
+			<h:form id="reviewerRespForm" prependId="false">
+				<div align="right">
+					<p:commandButton value="#{msgs.global_submit}"
+						actionListener="#{reviewInfoBn.reviewAnswerListener(true)}"
+						rendered="#{reviewInfoBn.visibleSubmitBtn()}"
+						ajax="true"
+						update=":reviewHome:detailtab :reviewHome:growl answerFooter" />
+					<p:commandButton value="#{msgs.global_cancel}"
+						actionListener="#{reviewInfoBn.reviewAnswerListener(false)}"
+						update=":reviewHome:detailtab :reviewHome:growl answerFooter"
+						ajax="true" />
+				</div>
+				<p:tabView>
+					<p:tab title="#{msgs.answer}">
+						<div align="right">
+							<p:outputLabel value="#{msgs.dont_insert_table}"
+								styleClass="hint" rendered="#{reviewInfoBn.visibleSubmitBtn()}" />
+						</div>
+						<h:panelGrid columns="2">
+							<p:panel style="width:380px; border:none">
+								<h:outputText
+									value="#{reviewDetailBn.reviewDetail.reviewQuestions.question}"
+									escape="false" />
+							</p:panel>
+							<h:panelGrid columns="1" cellspacing="5px">
+								<p:tabView>
+									<p:tab title="#{msgs.pri_processor}">
+										<pe:ckEditor
+											value="#{reviewDetailBn.reviewDetail.otherComment}"
+											height="300" width="350px"
+											toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+											rendered="#{reviewInfoBn.primaryReviewerJob()}" />
+										<h:outputText escape="false"
+											value="#{reviewDetailBn.reviewDetail.otherComment}"
+											rendered="#{!reviewInfoBn.primaryReviewerJob()}" />
+									</p:tab>
+									<p:tab title="#{msgs.sec_processor}"
+										rendered="#{reviewInfoBn.hasSecondReviewer()}">
+										<pe:ckEditor value="#{reviewDetailBn.reviewDetail.secComment}"
+											height="300" width="350px"
+											toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+											rendered="#{reviewInfoBn.secondReviewerJob()}" />
+										<h:outputText escape="false"
+											value="#{reviewDetailBn.reviewDetail.secComment}"
+											rendered="#{!reviewInfoBn.secondReviewerJob()}" />
+									</p:tab>
+								</p:tabView>
+							</h:panelGrid>
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="#{msgs.upload_file}">
+						<h:panelGrid columns="1" cellspacing="5px" id="fileUplPnl"
+							width="98%">
+							<p:fileUpload
+								fileUploadListener="#{reviewDetailBn.handleFileUpload}"
+								mode="advanced" dragDropSupport="true"
+								update="filePnl imgpnl answerFooter" sizeLimit="100000000"
+								rendered="#{reviewInfoBn.visibleSubmitBtn()}"
+								 />
+						</h:panelGrid>
+						<h:panelGrid columns="2" cellspacing="5px" id="filePnl"
+							width="98%">
+							<p:commandButton id="deleteattach"
+								actionListener="#{reviewDetailBn.deleteAttachment()}"
+								ajax="true" icon="ui-icon-trash"
+								update="filePnl imgpnl answerFooter"
+								rendered="#{reviewDetailBn.hasAttachment() and reviewInfoBn.visibleSubmitBtn()}" />
+							<p:outputLabel value="#{reviewDetailBn.reviewDetail.filename}" />
+						</h:panelGrid>
+						<h:panelGrid id="imgpnl" columns="1" columnClasses="label value"
+							cellspacing="5px">
+							<p:graphicImage id="imggr" value="#{imageStreamer.image}"
+								rendered="#{reviewDetailBn.fileImg}" cache="false" width="400">
+								<f:param name="revdetid"
+									value="#{reviewDetailBn.reviewDetail.id}" />
+							</p:graphicImage>
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+				<h:panelGrid columns="2" columnClasses="label value"
+					cellspacing="5px">
+					<p:outputLabel value="#{msgs.module}:" />
+					<p:inputText value="#{reviewDetailBn.reviewDetail.volume}"
+						rendered="#{reviewInfoBn.visibleSubmitBtn()}" />
+					<p:outputLabel value="#{reviewDetailBn.reviewDetail.volume}"
+						rendered="#{!reviewInfoBn.visibleSubmitBtn()}" />
+				</h:panelGrid>
+				<h:panelGrid id="answerFooter" columns="1">
+					<p:messages id="reviewDeatailMessages" showDetail="false"
+						showSummary="true" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" id="reviewDlg"
-                  modal="true" dynamic="true">
-            <h:form prependId="false">
-                <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb" styleClass="label"/>
-                    <p:selectOneMenu id="recomcb" value="#{reviewInfoBn.reviewComment.recomendType}" required="true"
-                                     requiredMessage="#{msgs.recommendation_valid}">
-                        <f:selectItem itemLabel="-"/>
-                        <f:selectItems value="#{reviewInfoBnMZ.revRecomendTypes}" var="type"
-                                       itemLabel="#{msgs[type.key]}"/>
-                    </p:selectOneMenu>
-                    <p:message for="recomcb"/>
+		<p:dialog header="#{msgs.review_feedback}" widgetVar="feedbackDlg"
+			id="feedbackdlg" modal="true" dynamic="true">
+			<h:form prependId="false">
+				<h:panelGrid columns="3" style="margin-bottom:10px">
+					<p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary1"
+						styleClass="label" />
+					<pe:ckEditor id="revsummary1"
+						value="#{reviewInfoBn.reviewComment.comment}" height="200"
+						width="700"
+						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+						required="true" />
+					<p:message for="revsummary" />
+				</h:panelGrid>
+				<p:commandButton value="#{msgs.global_submit}"
+					action="#{reviewInfoBn.reviewerFeedback}"
+					oncomplete="PF('feedbackDlg').hide()" ajax="false">
+					<f:param name="prodAppID"
+						value="#{reviewInfoBn.prodApplications.id}" />
+				</p:commandButton>
+			</h:form>
+		</p:dialog>
 
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
-                    <pe:ckEditor id="revsummary" value="#{reviewInfoBn.reviewComment.comment}"
-								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
-								 required="true" />
-                    <p:message for="revsummary"/>
-                </h:panelGrid>
-                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBnMZ.submitComment}"
-                                 oncomplete="if(!args.validationFailed) PF('reviewDlg').hide()" ajax="false"/>
-            </h:form>
-        </p:dialog>
+		<p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg"
+			id="reviewDlg" modal="true" dynamic="true">
+			<h:form prependId="false">
+				<h:panelGrid columns="3" style="margin-bottom:10px">
+					<p:outputLabel value="#{msgs.recommendation}" for="recomcb"
+						styleClass="label" />
+					<p:selectOneMenu id="recomcb"
+						value="#{reviewInfoBn.reviewComment.recomendType}" required="true"
+						requiredMessage="#{msgs.recommendation_valid}">
+						<f:selectItem itemLabel="-" />
+						<f:selectItems value="#{reviewInfoBnMZ.revRecomendTypes}"
+							var="type" itemLabel="#{msgs[type.key]}" />
+					</p:selectOneMenu>
+					<p:message for="recomcb" />
+
+					<p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary"
+						styleClass="label" />
+					<pe:ckEditor id="revsummary"
+						value="#{reviewInfoBn.reviewComment.comment}" height="200"
+						width="700"
+						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+						required="true" />
+					<p:message for="revsummary" />
+				</h:panelGrid>
+				<p:commandButton value="#{msgs.global_submit}"
+					action="#{reviewInfoBnMZ.submitComment}"
+					oncomplete="if(!args.validationFailed) PF('reviewDlg').hide()"
+					ajax="false" />
+			</h:form>
+		</p:dialog>
 
 		<p:dialog header="#{msgs.add_comment}" widgetVar="addcommentDlg"
 			resizable="false" id="addcommentDlg" modal="true" dynamic="true">
@@ -214,71 +328,81 @@
 				</h:panelGrid>
 				<p:commandButton value="#{msgs.global_add}"
 					action="#{commentMBean.addComment()}"
-					oncomplete="PF('addcommentDlg').hide()" ajax="true" 
-					update=":reviewHome:detailtab:commenttable"/>
+					oncomplete="PF('addcommentDlg').hide()" ajax="true"
+					update=":reviewHome:detailtab:commenttable" />
 			</h:form>
 		</p:dialog>
 
-        <p:dialog header="#{msgs.generate_report}" widgetVar="attachDlg" id="attachDlg"
-                  modal="true" dynamic="true">
-            <h:form prependId="false">
-                <h:panelGrid columns="3" cellspacing="10" cellpadding="10">
-					<p:outputLabel value="#{msgs.global_duedate}:" styleClass="label" for="duedate"/>
-                    <p:calendar value="#{reviewInfoBn.revDeficiency.dueDate}" id="duedate" showOn="button"
-                                pattern="#{userAccessMBean.workspace.datePattern}" 
-                                required="true" requiredMessage="#{msgs.global_duedate}"/>
-                    <p:message for="duedate"/>
-					
-                    <p:outputLabel value="#{msgs.global_summary}" for="sum" styleClass="label"/>
-                    <pe:ckEditor id="sum" value="#{reviewInfoBn.reviewComment.comment}"
-								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
-								 required="true" />
-                    <p:message for="sum"/>
+		<p:dialog header="#{msgs.generate_report}" widgetVar="attachDlg"
+			id="attachDlg" modal="true" dynamic="true">
+			<h:form prependId="false">
+				<h:panelGrid columns="3" cellspacing="10" cellpadding="10">
+					<p:outputLabel value="#{msgs.global_duedate}:" styleClass="label"
+						for="duedate" />
+					<p:calendar value="#{reviewInfoBn.revDeficiency.dueDate}"
+						id="duedate" showOn="button"
+						pattern="#{userAccessMBean.workspace.datePattern}" required="true"
+						requiredMessage="#{msgs.global_duedate}" />
+					<p:message for="duedate" />
+
+					<p:outputLabel value="#{msgs.global_summary}" for="sum"
+						styleClass="label" />
+					<pe:ckEditor id="sum" value="#{reviewInfoBn.reviewComment.comment}"
+						height="200" width="700"
+						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+						required="true" />
+					<p:message for="sum" />
 				</h:panelGrid>
-                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBnMZ.generateLetter}"
-                                 oncomplete="PF('attachDlg').hide()" ajax="false"/>
-            </h:form>
-        </p:dialog>
-
-        <p:dialog header="#{msgs.review_feedback_ack}" widgetVar="revDefDlg" id="revDefDlg"
-                  modal="true" dynamic="true">
-            <h:form prependId="false">
-                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
-                    <p:outputLabel value="#{msgs.global_sentdate}:" styleClass="label"/>
-                    <p:outputLabel value="#{reviewInfoBn.revDeficiency.createdDate}">
-                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                    </p:outputLabel>
-                    <p:outputLabel/>
-
-                    <p:outputLabel value="#{msgs.global_duedate}:" styleClass="label"/>
-                    <p:outputLabel value="#{reviewInfoBn.revDeficiency.dueDate}">
-                        <f:convertDateTime pattern="MMM dd, yyyy"/>
-                    </p:outputLabel>
-                    <p:outputLabel/>
-
-                    <p:outputLabel value="#{msgs.submitted_date}:" styleClass="label" for="acksubmitdt"/>
-                    <p:calendar value="#{reviewInfoBn.revDeficiency.ackDate}" id="acksubmitdt" showOn="button"
-                                pattern="#{userAccessMBean.workspace.datePattern}" required="true"/>
-                    <p:message for="acksubmitdt"/>
-
-                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revcommsummary" styleClass="label"/>
-                    <pe:ckEditor id="revcommsummary" value="#{reviewInfoBn.revDeficiency.ackComment.comment}"
-								 height="200" width="700"
-								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
-								 required="true" />
-                    <p:message for="revcommsummary"/>
-                </h:panelGrid>
-                <p:commandButton value="#{msgs.global_submit}" action="#{reviewInfoBn.revDefAck}"
-                                 oncomplete="PF('reviewDlg').hide()" ajax="false"/>
-            </h:form>
-        </p:dialog>
-        
-        <p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
-        			resizable="false" dynamic="true" showHeader="false">
-		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+				<p:commandButton value="#{msgs.global_submit}"
+					action="#{reviewInfoBnMZ.generateLetter}"
+					oncomplete="PF('attachDlg').hide()" ajax="false" />
+			</h:form>
 		</p:dialog>
-	
+
+		<p:dialog header="#{msgs.review_feedback_ack}" widgetVar="revDefDlg"
+			id="revDefDlg" modal="true" dynamic="true">
+			<h:form prependId="false">
+				<h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10"
+					cellspacing="10">
+					<p:outputLabel value="#{msgs.global_sentdate}:" styleClass="label" />
+					<p:outputLabel value="#{reviewInfoBn.revDeficiency.createdDate}">
+						<f:convertDateTime pattern="MMM dd, yyyy" />
+					</p:outputLabel>
+					<p:outputLabel />
+
+					<p:outputLabel value="#{msgs.global_duedate}:" styleClass="label" />
+					<p:outputLabel value="#{reviewInfoBn.revDeficiency.dueDate}">
+						<f:convertDateTime pattern="MMM dd, yyyy" />
+					</p:outputLabel>
+					<p:outputLabel />
+
+					<p:outputLabel value="#{msgs.submitted_date}:" styleClass="label"
+						for="acksubmitdt" />
+					<p:calendar value="#{reviewInfoBn.revDeficiency.ackDate}"
+						id="acksubmitdt" showOn="button"
+						pattern="#{userAccessMBean.workspace.datePattern}" required="true" />
+					<p:message for="acksubmitdt" />
+
+					<p:outputLabel value="#{msgs.reviewer_summary}"
+						for="revcommsummary" styleClass="label" />
+					<pe:ckEditor id="revcommsummary"
+						value="#{reviewInfoBn.revDeficiency.ackComment.comment}"
+						height="200" width="700"
+						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+						required="true" />
+					<p:message for="revcommsummary" />
+				</h:panelGrid>
+				<p:commandButton value="#{msgs.global_submit}"
+					action="#{reviewInfoBn.revDefAck}"
+					oncomplete="PF('reviewDlg').hide()" ajax="false" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="statusDialog" draggable="false"
+			closable="false" resizable="false" dynamic="true" showHeader="false">
+			<p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+
 		<script type="text/javascript">
 	        function start() {
 	        	PF('statusDialog').show();
