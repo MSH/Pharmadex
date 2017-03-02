@@ -1,7 +1,5 @@
 package org.msh.pharmadex.service;
 
-import java.util.List;
-
 import org.msh.pharmadex.domain.enums.YesNoNA;
 
 /**
@@ -16,12 +14,13 @@ public class DisplayReviewInfo {
     private YesNoNA answer;
     private boolean save;
 
-    public DisplayReviewInfo(Long id, Long reviewDetailID, String question, boolean save, Long reviewInfoID) {
+    public DisplayReviewInfo(Long id, Long reviewDetailID, String question, boolean save, Long reviewInfoID, YesNoNA ans) {
         this.id = id;
         this.question = question;
         this.save = save;
         this.reviewDetailID = reviewDetailID;
         this.reviewInfoID = reviewInfoID;
+        this.answer = ans;
     }
 
     public Long getId() {

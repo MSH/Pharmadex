@@ -274,7 +274,7 @@ public class ReviewService implements Serializable {
 						header1.add(dispHeader1);
 					}
 				}
-				questions.add(new DisplayReviewInfo(rq.getId(), rd.getId(), rq.getQuestion(), rd.isAnswered(), ri.getId()));
+				questions.add(new DisplayReviewInfo(rq.getId(), rd.getId(), rq.getQuestion(), rd.isAnswered(), ri.getId(), rd.getAnswer()));
 			}
 		}
 		return header1;

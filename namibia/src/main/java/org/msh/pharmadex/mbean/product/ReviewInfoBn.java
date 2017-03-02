@@ -35,7 +35,6 @@ import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.ReviewQuestion;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -896,7 +895,7 @@ public class ReviewInfoBn implements Serializable {
 			bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 			ReviewDetail detail = reviewService.findReviewDetails(item);
 			if(detail != null){
-				return isReadOnly() && (detail.getAnswer() != null && detail.getAnswer()==YesNoNA.NO);
+				return (isReadOnly() && detail.getAnswer() != null);
 			}else{
 				return false;
 			}
