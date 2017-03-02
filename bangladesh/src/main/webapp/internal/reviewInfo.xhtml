@@ -415,7 +415,7 @@
         <p:dialog header="#{msgs.global_print}" widgetVar="printDlg"
 			resizable="false" id="printDlg" modal="true" dynamic="true">
 			<h:form id="printform">
-				<h:panelGrid columns="3" style="margin-bottom:10px">
+				<h:panelGrid columns="2" style="margin-bottom:10px" cellspacing="10" columnClasses="col1, col2">
 					<p:outputLabel value="#{msgs.label_papersubmition}" for="ppsubdate" />
 					<p:calendar
 						value="#{reviewInfoBn.ppsubdate}"
@@ -423,23 +423,21 @@
 						pattern="#{userAccessMBean.workspace.datePattern}">
 						<f:validator validatorId="pastDateValidator" />
 					</p:calendar>
-					<p:message for="ppsubdate" />
 
 					<p:outputLabel value="#{msgs.label_typemdf}" for="typedmf" />
 					<p:inputText id="typedmf" value="#{reviewInfoBn.prodApplications.typeDmf}"
-						required="true" />
-					<p:message for="typedmf" />
+						required="true" style="width: 100%"/>
 
-					<p:outputLabel for="haslic" value="#{msgs.label_haslicense}" />
-					<p:selectBooleanCheckbox id="haslic" value="#{reviewInfoBn.prodApplications.hasLicence}"/>
-					<p:message for="haslic" showSummary="true" />
+					<p:outputLabel value="#{msgs.label_haslicense}" style="word-wrap:break-word;" />
+					<p:selectBooleanCheckbox id="haslic" value="#{reviewInfoBn.prodApplications.hasLicence}" />
+					<p:outputLabel />
 				</h:panelGrid>
-
+										
 				<p:commandButton id="printBtn" value="#{msgs.global_print}"
 					icon="ui-icon-gear" ajax="false"
-					onclick="PrimeFaces.monitorDownload(start, stop);"
+					onclick="PrimeFaces.monitorDownload(start, stop); PF('printDlg').hide()"
 					actionListener="#{reviewInfoBn.createFileReviewDetail()}"
-					update=":reghome:growl :reghome:messages :reghome">
+					update=":reviewHome:growl :reviewHome">
 					
 					<p:fileDownload value="#{reviewInfoBn.fileReviewDetail}" />
 				</p:commandButton>

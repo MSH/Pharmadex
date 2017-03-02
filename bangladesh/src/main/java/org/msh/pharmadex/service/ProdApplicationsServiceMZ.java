@@ -1093,6 +1093,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 			InputStream ist = new ByteArrayInputStream((IOUtils.toByteArray(new FileInputStream(detailPDF))));
 			StreamedContent download = new DefaultStreamedContent(ist, "pdf", fileName + ".pdf");
+			
+			prodApplicationsDAO.updateApplication(prodApp);
 			return download;
 		} catch (IOException e) {
 			e.printStackTrace();

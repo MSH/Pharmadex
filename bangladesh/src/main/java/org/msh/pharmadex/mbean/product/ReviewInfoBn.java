@@ -990,13 +990,10 @@ public class ReviewInfoBn implements Serializable {
 	}
 	
 	public void createFileReviewDetail(){
-		//RequestContext.getCurrentInstance().execute("PF('printDlg').hide()");
 		if(prodApplications == null)
 			Scrooge.goToHome();
-		else{
+		else
 			fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications, getPpsubdate());
-			//RequestContext.getCurrentInstance().execute("PF('printDlg').hide()");
-		}
 	}
 	
 	public StreamedContent getFileReviewDetail() {
