@@ -45,10 +45,10 @@ import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.DisplayReviewQ;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
+import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.component.accordionpanel.AccordionPanel;
@@ -84,6 +84,9 @@ public class ReviewInfoBn implements Serializable {
 
 	@ManagedProperty(value = "#{prodApplicationsService}")
 	private ProdApplicationsService prodApplicationsService;
+	
+	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
+	ProdApplicationsServiceMZ prodApplicationsServiceMZ;
 
 	@ManagedProperty(value = "#{userService}")
 	private UserService userService;
@@ -122,6 +125,7 @@ public class ReviewInfoBn implements Serializable {
 	private int header2ActIndex = 0;
 
 	private Date ppsubdate;
+	private StreamedContent fileReviewDetail;
 	
 	@PostConstruct
 	private void init() {
@@ -596,6 +600,14 @@ public class ReviewInfoBn implements Serializable {
 		this.prodApplicationsService = prodApplicationsService;
 	}
 
+	public ProdApplicationsServiceMZ getProdApplicationsServiceMZ() {
+		return prodApplicationsServiceMZ;
+	}
+
+	public void setProdApplicationsServiceMZ(ProdApplicationsServiceMZ prodApplicationsServiceMZ) {
+		this.prodApplicationsServiceMZ = prodApplicationsServiceMZ;
+	}
+
 	public List<RevDeficiency> getRevDeficiencies(){
 		if (revDeficiencies == null) {
 			if(getReviewInfo() != null)
@@ -977,5 +989,22 @@ public class ReviewInfoBn implements Serializable {
 		this.ppsubdate = ppsubdate;
 	}
 	
+	public void createFileReviewDetail(){
+		//RequestContext.getCurrentInstance().execute("PF('printDlg').hide()");
+		if(prodApplications == null)
+			Scrooge.goToHome();
+		else{
+			fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications, getPpsubdate());
+			//RequestContext.getCurrentInstance().execute("PF('printDlg').hide()");
+		}
+	}
 	
+	public StreamedContent getFileReviewDetail() {
+		//RequestContext.getCurrentInstance().execute("PF('printDlg').hide()");
+		return fileReviewDetail;
+	}
+
+	public void setFileReviewDetail(StreamedContent fileReviewDetail) {
+		this.fileReviewDetail = fileReviewDetail;
+	}
 }

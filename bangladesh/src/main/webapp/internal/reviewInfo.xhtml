@@ -438,8 +438,11 @@
 				<p:commandButton id="printBtn" value="#{msgs.global_print}"
 					icon="ui-icon-gear" ajax="false"
 					onclick="PrimeFaces.monitorDownload(start, stop);"
-					actionListener="#{processProdBnMZ.registerProduct(processProdBn.prodApplications)}"
-					update=":reghome:growl :reghome:messages :reghome :regdatedlg" />
+					actionListener="#{reviewInfoBn.createFileReviewDetail()}"
+					update=":reghome:growl :reghome:messages :reghome">
+					
+					<p:fileDownload value="#{reviewInfoBn.fileReviewDetail}" />
+				</p:commandButton>
 			</h:form>
 		</p:dialog>
         

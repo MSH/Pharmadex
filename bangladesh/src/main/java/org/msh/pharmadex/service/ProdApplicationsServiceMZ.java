@@ -76,9 +76,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-import org.msh.pharmadex.service.Manufac;
-import org.msh.pharmadex.service.ManufacFP;
-
 /**
  */
 @Service
@@ -1078,7 +1075,10 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 	}
 
-	public StreamedContent createReviewDetailsFile(ProdApplications prodApplications) {
+	public StreamedContent createReviewDetailsFile(ProdApplications prodApplications, Date ppsubdate) {
+		// ppsubdate - PAPER SUBMISSION:
+		// prodApp.getTypeDmf() - TYPE II DMF # (if any):
+		// prodApp.isHasLicence() - For domestic site, has the applicant provided a copy of a current and satisfactory site licence issued by DGDA? Or from WHO, USFDA, MHRA, TGA, EU, Canada, PIC/s country
 		this.prodApp = prodApplications;
 		this.product = prodApp.getProduct();
 		context = FacesContext.getCurrentInstance();
