@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.UserAccess;
@@ -537,6 +538,45 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 			}
 		}
 	}
+	/**
+	 * Is this user responsible for an applicant
+	 * @return
+	 */
+	public boolean isResponsible(){
+		if(isCompany()){
+			User user = getUserAccess().getUser();
+			if(user != null){
+				Applicant applicant = user.getApplicant();
+				if(applicant != null){
+					return applicant.getContactName().equalsIgnoreCase(user.getUsername());
+				}else{
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * Get Id of applicant if current user is company user, otherwise 0
+	 * @return
+	 */
+	public long getUserApplicantId(){
+		User user = getUserAccess().getUser();
+		if(user != null){
+			Applicant applicant = user.getApplicant();
+			if(applicant != null){
+				return applicant.getApplcntId();
+			}else{
+				return 0;
+			}
+		}else{
+			return 0;
+		}
+	}
+	
 	/**
 	 * Go to home page
 	 */
