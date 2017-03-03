@@ -321,7 +321,7 @@ public class ApplicantService implements Serializable {
 	 * Save agent agreement given
 	 * @param agentAgreement
 	 */
-	public void saveAgentAgreement(AgentAgreement agentAgreement) {
-		agentAgreementDAO.save(agentAgreement);
+	public AgentAgreement saveAgentAgreement(AgentAgreement agentAgreement) {
+		return agentAgreementDAO.save(agentAgreement);
 	}
 }

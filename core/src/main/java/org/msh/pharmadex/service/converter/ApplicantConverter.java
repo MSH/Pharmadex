@@ -49,6 +49,8 @@ public class ApplicantConverter implements Converter, Serializable {
                 for (Applicant p : getApplicantList()) {
                     if (String.valueOf(p.getApplcntId()).equalsIgnoreCase(submittedValue))
                         return p;
+                    if(p.getAppName().equals(submittedValue))
+                    	return p;
                 }
             } catch (NumberFormatException exception) {
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid Applicant"));

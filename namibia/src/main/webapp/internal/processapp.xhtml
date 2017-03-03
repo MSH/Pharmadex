@@ -128,18 +128,18 @@
 								<p:column>
 									<f:facet name="header">
 										<h:outputText value="" />
+										<p:commandLink
+											actionListener="#{applicantMBean.createAgentAgreement()}"
+											styleClass="ui-icon ui-icon-plusthick" ajax='true'
+											resetValues="true" oncomplete="PF('editDialog').show()"
+											update="editDialog agentsTable growl">
+										</p:commandLink>
 									</f:facet>
 									<h:panelGrid id="cmd_panel" columns="3" border="0"
 										cellpadding="0" cellspacing="2">
 										<p:commandLink
 											actionListener="#{applicantMBean.selectAgentAgreement(agentAgreement)}"
 											styleClass="ui-icon ui-icon-pencil" ajax='true'
-											resetValues="true" oncomplete="PF('editDialog').show()"
-											update="editDialog agentsTable growl">
-										</p:commandLink>
-										<p:commandLink
-											actionListener="#{applicantMBean.createAgentAgreement()}"
-											styleClass="ui-icon ui-icon-plusthick" ajax='true'
 											resetValues="true" oncomplete="PF('editDialog').show()"
 											update="editDialog agentsTable growl">
 										</p:commandLink>
@@ -296,13 +296,13 @@
 				<p:panel>
 					<h:panelGrid columns="4" cellspacing="5" width="98%">
 						<p:outputLabel value="#{msgs.global_startdate}" />
-						<p:calendar value="#{applicantMBean.selectedAgentAgreement.start}"
+						<p:calendar value="#{applicantMBean.startDate}"
 							id="startDate" showOn="button" required="true"
 							pattern="#{userAccessMBean.workspace.datePattern}">
 						</p:calendar>
 						<p:outputLabel value="#{msgs.global_enddate}" />
 						<p:calendar
-							value="#{applicantMBean.selectedAgentAgreement.finish}"
+							value="#{applicantMBean.finishDate}"
 							id="finDate" showOn="button" required="true"
 							pattern="#{userAccessMBean.workspace.datePattern}">
 						</p:calendar>
@@ -319,7 +319,6 @@
 				<p:commandButton
 					actionListener="#{applicantMBean.saveSelectedAgreement()}"
 					value="#{msgs.global_save}" id="saveagreementbtn"
-					oncomplete="if (!args.validationFailed) PF('editDialog').hide()"
 					ajax="true" update=":reghome:agents growl" />
 			</h:form>
 		</p:dialog>
