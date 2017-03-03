@@ -117,7 +117,7 @@ ul.ui-menu-child {
 							ajax="false" />
 					</p:submenu>
 					<p:menuitem value="#{msgs.applicant_detail}" ajax="false"
-						rendered="#{userSession.responsible}"
+						rendered="#{userSession.isResponsible(userSession.userAccess.user.applicant)}"
 						action="/internal/processapp.faces ">
 						<f:param name="sourcePage" value="/home.faces" />
 						<f:param name="appID" value="#{userSession.userApplicantId}" />

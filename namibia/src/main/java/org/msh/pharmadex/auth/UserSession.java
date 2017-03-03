@@ -542,12 +542,12 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 	 * Is this user responsible for an applicant
 	 * @return
 	 */
-	public boolean isResponsible(){
+	public boolean isResponsible(Applicant applicant){
 		if(isCompany()){
 			User user = getUserAccess().getUser();
 			if(user != null){
-				Applicant applicant = user.getApplicant();
-				if(applicant != null){
+				//Applicant applicant = user.getApplicant();
+				if(applicant != null && applicant.getContactName() != null){
 					return applicant.getContactName().equalsIgnoreCase(user.getUsername());
 				}else{
 					return false;

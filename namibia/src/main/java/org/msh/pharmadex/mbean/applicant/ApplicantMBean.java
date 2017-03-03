@@ -98,7 +98,8 @@ public class ApplicantMBean implements Serializable {
 			selectResponsable = new User();
 		}
 
-		agentAgreements = getApplicantService().fetchAgentAgreements(getSelectedApplicant());
+		if(getSelectedApplicant() != null && getSelectedApplicant().getApplcntId() != null && getSelectedApplicant().getApplcntId() > 0)
+			agentAgreements = getApplicantService().fetchAgentAgreements(getSelectedApplicant());
 
 		String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
 		if (srcPage != null){

@@ -14,7 +14,7 @@
 					<p:submenu label="#{msgs.Registration}">
 						<p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk"
 							action="#{applicantMBean.saveApp}" ajax="false"
-							rendered="#{userSession.staff || userSession.admin || userSession.responsible}" />
+							rendered="#{userSession.staff || userSession.admin || userSession.isResponsible(applicantMBean.selectedApplicant)}" />
 						<p:menuitem value="#{msgs.register_applicant}" immediate="true"
 							icon="ui-icon-check" action="#{applicantMBean.registerApplicant}"
 							ajax="false" rendered="#{applicantMBean.visibleRegister()}" />
@@ -42,7 +42,7 @@
 					</p:panel>
 
 					<h:panelGroup id="selectuser"
-						rendered="#{userSession.staff || userSession.admin || userSession.responsible}">
+						rendered="#{userSession.staff || userSession.admin || userSession.isResponsible(applicantMBean.selectedApplicant)}">
 						<p:panel header="#{msgs.person_responsible}">
 							<h:panelGrid columns="1" cellpadding="10px">
 								<p:commandLink value="#{msgs.user_lookup}"
@@ -93,7 +93,7 @@
 					</h:panelGroup>
 
 					<h:panelGroup id="agents"
-						rendered="#{userSession.staff || userSession.admin || userSession.responsible}">
+						rendered="#{userSession.staff || userSession.admin || userSession.isResponsible(applicantMBean.selectedApplicant)}">
 						<p:panel header="#{msgs.agentList}">
 							<p:dataTable id="agentsTable" var="agentAgreement"
 								value="#{applicantMBean.agentAgreements}" style="width:100%;">
@@ -125,7 +125,7 @@
 										value="#{applicantMBean.userIsEnabled(agentAgreement.active)}"
 										style="align:center; color:red" />
 								</p:column>
-								<p:column>
+								<p:column rendered="#{userSession.admin || userSession.isResponsible(applicantMBean.selectedApplicant)}">
 									<f:facet name="header">
 										<h:outputText value="" />
 										<p:commandLink
