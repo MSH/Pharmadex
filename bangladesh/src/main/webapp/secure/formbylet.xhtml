@@ -8,5 +8,12 @@
 	<h:panelGrid cellspacing="10" cellpadding="10" columns="3" columnClasses="label value label">
 		<p:outputLabel value="#{msgs.number}" for="prodappno" />
 		<p:outputLabel id="prodappno" value="#{prodApp.prodAppNo}" />
+		<p:outputLabel value="" for="prodappno" />
+		
+		<p:outputLabel value="#{msgs.dosRecDate}" for="dosrecdate"/>
+        <p:calendar value="#{prodApp.dosRecDate}" id="dosrecdate" showOn="button"
+                pattern="#{userAccessMBean.workspace.datePattern}"
+                required="true" requiredMessage="#{msgs.dosRecDate}: #{msgs.valueReq}"/>
+        <p:message for="dosrecdate" showSummary="true" showDetail="false"/>
 	</h:panelGrid>
 </ui:composition>

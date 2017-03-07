@@ -1206,6 +1206,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		context = FacesContext.getCurrentInstance();		 
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
 
+		prodApp.getDosRecDate();
+		prodApp = prodApplicationsDAO.updateApplication(prodApp);
+		
 		Product prod = productDAO.findProduct(prodApp.getProduct().getId());
 		try {
 			File invoicePDF =  null;
