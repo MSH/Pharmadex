@@ -16,7 +16,7 @@ public class ErrorLog implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @Temporal(TemporalType.DATE)
+    /*@Temporal(TemporalType.DATE)*/
     @Column(nullable = false)
     private Date errorDate;
 

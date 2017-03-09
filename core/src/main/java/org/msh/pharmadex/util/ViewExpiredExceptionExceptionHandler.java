@@ -79,28 +79,31 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 StringWriter errors = new StringWriter();
                 t.printStackTrace(new PrintWriter(errors));
                 errorLog.setStackTrace(errors.toString().substring(0, 255));
-//                errorLog.setUser(userSession);
                 errorLogDAO.save(errorLog);
-
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
-
-            if (t instanceof ViewExpiredException) {
+           if (t instanceof ViewExpiredException) {
                 ViewExpiredException vee = (ViewExpiredException) t;
                 try {
                     // Push some useful stuff to the request scope for use in the page
+                	log.log(Level.SEVERE, "ViewExpiredException!", t);
+                    //redirect home page
                     requestMap.put("currentViewId", vee.getViewId());
-                    navigationHandler.handleNavigation(facesContext, null, "/home.faces");
-                    facesContext.renderResponse();
+                    String url = facesContext.getExternalContext().getRequestContextPath();
+					facesContext.getExternalContext().redirect(url + "/home.faces");
+                } catch (IOException e) {
+					e.printStackTrace();
                 } finally {
                     i.remove();
                 }
             }else if(t instanceof FacesException) {
             	FacesException vee = (FacesException) t;
                 try {
+                	log.log(Level.SEVERE, "FacesException!", t);
+                    //redirect home page
+                    requestMap.put("currentViewId", vee.getMessage());
                 	String url = facesContext.getExternalContext().getRequestContextPath();
 					facesContext.getExternalContext().redirect(url + "/home.faces");
 				} catch (IOException e) {
@@ -110,6 +113,9 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 }
 			}else if(t instanceof ELException){
 				try {
+					log.log(Level.SEVERE, "ELException!", t);
+                    //redirect home page
+                    requestMap.put("currentViewId", t.getMessage());
 		    		String url = facesContext.getExternalContext().getRequestContextPath();
 		    		facesContext.getExternalContext().redirect(url + "/home.faces");
 				} catch (IOException e) {
@@ -123,7 +129,8 @@ public class ViewExpiredExceptionExceptionHandler extends ExceptionHandlerWrappe
                 log.log(Level.SEVERE, "Critical Exception!", t);
                 //redirect error page
                 requestMap.put("exceptionMessage", t.getMessage());
-                navigationHandler.handleNavigation(facesContext, null, "/pages/error.faces");
+                //navigationHandler.handleNavigation(facesContext, null, "/pages/error.faces");
+                navigationHandler.handleNavigation(facesContext, null, "/home.faces");
                 facesContext.renderResponse();
             }
         }
