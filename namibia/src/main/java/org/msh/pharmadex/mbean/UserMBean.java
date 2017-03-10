@@ -324,7 +324,7 @@ public class UserMBean implements Serializable {
 			Hibernate.initialize(this.selectedUser.getApplicant());
 			this.selectedRoles = this.selectedUser.getRoles();
 			roles.setTarget(selectedRoles);
-			if (this.selectedUser.getApplicant() != null){
+			if (this.selectedUser.getApplicant() != null && this.selectedUser.getApplicant().getApplcntId() != null){
 				userApp = applicantService.findApplicant(this.selectedUser.getApplicant().getApplcntId());
 				applicName = userApp.getAppName();
 				applicID = userApp.getApplcntId();
