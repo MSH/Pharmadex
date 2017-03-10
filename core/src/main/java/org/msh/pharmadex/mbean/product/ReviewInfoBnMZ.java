@@ -27,6 +27,7 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
 import org.msh.pharmadex.service.ReviewServiceMZ;
+import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.TabChangeEvent;
@@ -51,6 +52,9 @@ public class ReviewInfoBnMZ implements Serializable {
 
 	@ManagedProperty(value = "#{userSession}")
 	private UserSession userSession;
+	
+	@ManagedProperty(value = "#{timelineService}")
+    private TimelineService timeLineService;
 
 	private FacesContext facesContext = FacesContext.getCurrentInstance();
 	private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -70,6 +74,9 @@ public class ReviewInfoBnMZ implements Serializable {
 				getReviewInfoBn().setReviewInfo(reviewInfo);
 				getReviewInfoBn().setReviewComment(reviewComment);
 				getReviewInfoBn().getReviewComments().add(reviewComment);
+				
+				// create TimeLine
+				timeLineService.createTimeLine(bundle.getString(reviewInfo.getRecomendType().getKey()), getReviewInfoBn().getProdApplications().getRegState(), getReviewInfoBn().getProdApplications(), userSession.getUserAccess().getUser());
 				facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
 			} else if (retObject.getMsg().equals("close_def")) {
 				facesContext.addMessage(null, new FacesMessage(bundle.getString("resolve_def")));
@@ -238,4 +245,13 @@ public class ReviewInfoBnMZ implements Serializable {
 		this.fileReviewDetail = fileReviewDetail;
 	}
 
+	public TimelineService getTimeLineService() {
+		return timeLineService;
+	}
+
+	public void setTimeLineService(TimelineService timeLineService) {
+		this.timeLineService = timeLineService;
+	}
+
+	
 }

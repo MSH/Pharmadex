@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -119,4 +120,16 @@ public class TimelineService implements Serializable {
         return retObject;
     }
 
+    public TimeLine createTimeLine(String comm, RegState rstate, ProdApplications prodApp, User user){
+    	TimeLine tl = new TimeLine();
+    	tl.setComment(comm);
+        tl.setRegState(rstate);
+        tl.setProdApplications(prodApp);
+        tl.setUser(user);
+        tl.setStatusDate(new Date());
+        
+        tl = timelineDAO.saveAndFlush(tl);
+        prodApplicationsService.updateProdApp(prodApp, tl.getUser().getUserId());
+    	return tl;
+    }
 }

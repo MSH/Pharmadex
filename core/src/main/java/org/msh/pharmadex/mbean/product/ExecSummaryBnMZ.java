@@ -21,6 +21,7 @@ import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
+import org.msh.pharmadex.service.TimelineService;
 
 /**
  * Backing bean to capture review of products
@@ -38,6 +39,12 @@ public class ExecSummaryBnMZ implements Serializable {
     
     @ManagedProperty(value = "#{execSummaryBn}")
     private ExecSummaryBn execSummaryBn;
+    
+    @ManagedProperty(value = "#{timelineService}")
+    private TimelineService timeLineService;
+    
+    private FacesContext facesContext = FacesContext.getCurrentInstance();
+	private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
     public String submit(){
         try {
@@ -72,6 +79,9 @@ public class ExecSummaryBnMZ implements Serializable {
             
             String result = prodApplicationsServiceMZ.submitExecSummary(getExecSummaryBn().getProdApplications(), userSession.getLoggedINUserID(), getExecSummaryBn().getReviewInfos());
             if (result.equals("persist")) {
+            	// create TimeLine
+				timeLineService.createTimeLine(getExecSummaryBn().getProdApplications().getExecSummary(), getExecSummaryBn().getProdApplications().getRegState(), getExecSummaryBn().getProdApplications(), userSession.getUserAccess().getUser());
+				
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
                 return "processreg";
             } else if (result.equals("state_error")) {
@@ -115,4 +125,13 @@ public class ExecSummaryBnMZ implements Serializable {
 	public void setExecSummaryBn(ExecSummaryBn execSummaryBn) {
 		this.execSummaryBn = execSummaryBn;
 	}
+
+	public TimelineService getTimeLineService() {
+		return timeLineService;
+	}
+
+	public void setTimeLineService(TimelineService timeLineService) {
+		this.timeLineService = timeLineService;
+	}
+	
 }
