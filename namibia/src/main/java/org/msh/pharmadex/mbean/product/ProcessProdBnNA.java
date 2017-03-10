@@ -204,4 +204,18 @@ public class ProcessProdBnNA implements Serializable {
 			ex.printStackTrace();
 		}
 	}
+	
+	public boolean getCanNextStep() {
+		try {
+			RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
+
+			if((userSession.isAdmin() || userSession.isModerator() || userSession.isHead()) 
+					&& !curRegState.equals(RegState.REGISTERED) && !curRegState.equals(RegState.REJECTED)
+					&& !curRegState.equals(RegState.FOLLOW_UP))
+				return true;
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

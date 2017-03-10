@@ -214,8 +214,8 @@
                                         #{timeline.user.name}
                                     </p:column>
 
-									<p:column headerText="#{msgs.global_comment}">
-                                        #{timeline.comment}
+									<p:column headerText="#{msgs.global_comment}" >
+										<h:outputText value="#{timeline.comment}" escape="false"/>
                                     </p:column>
 								</p:dataTable>
 							</p:tab>

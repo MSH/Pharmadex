@@ -47,6 +47,7 @@ import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
 import org.msh.pharmadex.util.Scrooge;
@@ -89,6 +90,9 @@ public class ReviewInfoBn implements Serializable {
 
 	@ManagedProperty(value = "#{reviewDetailBn}")
 	private ReviewDetailBn reviewDetailBn;
+	
+	@ManagedProperty(value = "#{timelineService}")
+    private TimelineService timeLineService;
 
 	@Temporal(TemporalType.DATE)
 	private Date submitDate;
@@ -271,6 +275,8 @@ public class ReviewInfoBn implements Serializable {
 		reviewInfo.setReviewStatus(ReviewStatus.FEEDBACK);
 		RetObject retObject = reviewService.saveReviewInfo(reviewInfo);
 		reviewInfo = (ReviewInfo) retObject.getObj();
+		
+		timeLineService.createTimeLine(bundle.getString(reviewInfo.getReviewStatus().getKey()), prodApplications.getRegState(), prodApplications, userSession.getUserAccess().getUser());
 		return "/internal/processreg";
 	}
 
@@ -938,14 +944,12 @@ public class ReviewInfoBn implements Serializable {
 		}
 	}
 
+	public TimelineService getTimeLineService() {
+		return timeLineService;
+	}
 
-	/*public void goToHome() {
-		try {
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			String url = facesContext.getExternalContext().getRequestContextPath();
-			facesContext.getExternalContext().redirect(url + "/home.faces");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
+	public void setTimeLineService(TimelineService timeLineService) {
+		this.timeLineService = timeLineService;
+	}
+	
 }
