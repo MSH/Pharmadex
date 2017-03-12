@@ -207,10 +207,12 @@ public class ReviewService implements Serializable {
 		ReviewDetail reviewDetail;
 		User curUser = userService.findUser(loggedInUser);
 		for (ReviewQuestion reviewQuestion : reviewQuestions) {
-			if(reviewInfo.getCtdModule().toString().equals(reviewQuestion.getCtdModule()) || reviewInfo.getCtdModule().equals(CTDModule.ALL)){
-				reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false, curUser);
-				reviewDetails.add(reviewDetail);
-			}
+			if(reviewInfo.getCtdModule()!=null){
+				if(reviewInfo.getCtdModule().toString().equals(reviewQuestion.getCtdModule()) || reviewInfo.getCtdModule().equals(CTDModule.ALL)){
+					reviewDetail = new ReviewDetail(reviewQuestion, reviewInfo, false, curUser);
+					reviewDetails.add(reviewDetail);
+				}
+			}				
 		}
 
 		reviewDetails = reviewDetailDAO.save(reviewDetails);
