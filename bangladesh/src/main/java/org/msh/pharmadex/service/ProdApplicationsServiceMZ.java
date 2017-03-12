@@ -1132,6 +1132,9 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	}
 	
 	public String initReviewDetailsFile1(Date ppsubdate, String typeDmf, boolean isHasLicence, Long userID) throws JRException, SQLException {
+		context = FacesContext.getCurrentInstance();		 
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+		
 		List<JasperPrint> listJasperPrint = new ArrayList<JasperPrint>();
 		JasperPrint jasperPrint = null, jasperPrint2 = null;
 
@@ -1217,9 +1220,14 @@ public class ProdApplicationsServiceMZ implements Serializable {
 					User reviewer2 = revinf.getSecReviewer();					
 					createReviewer(reviewer2,revinf.getUpdatedDate(),revinf.getRecomendType(),dataList);					
 				}	
-				modComment = revinf.getModcomment()!=null?revinf.getModcomment():"";				
+				//modComment = revinf.getModcomment()!=null?revinf.getModcomment():"";				
 			}			
 		}
+		if(prodApp!=null){
+			if(prodApp.getExecSummary() != null)
+				modComment = prodApp.getExecSummary();
+		}
+		
 		utilsByReports.putNotNull(UtilsByReports.KEY_MODCOMMENT, modComment, true);	
 		utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY, execsumary, false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
