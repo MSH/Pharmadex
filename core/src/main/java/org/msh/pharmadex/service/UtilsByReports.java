@@ -139,7 +139,15 @@ public class UtilsByReports implements Serializable {
 	public static String KEY_SCR_DATE= "srcDate" ;
 	public static String KEY_ISREJECTED = "isRejected";
 	public static String KEY_ISAPPROVED = "isApproved";
-		
+	
+	public static String KEY_PAPER_SUBMISSION ="paperSubmission";
+	public static String KEY_TYPE_DMF = "typeDMF";
+	public static String KEY_IS_HAS_LICENCE = "isHasLicence";
+	public static String KEY_TYPE_MANUFACT = "typeManufact";
+	public static String KEY_MODCOMMENT = "modComment";
+	public static String KEY_POSOLOGY= "posology";
+	public static String KEY_COUNT="count";
+	
 	private HashMap<String, Object> param = null;
 	private HashMap<String, Object> field = null;
 	private ProdApplications prodApps = null;
