@@ -437,10 +437,10 @@
 					icon="ui-icon-gear" ajax="false"
 					onclick="PrimeFaces.monitorDownload(start, stop); PF('printDlg').hide()"
 					actionListener="#{reviewInfoBn.createFileReviewDetail()}"
-					update=":reviewHome:growl :reviewHome">
-					
-					<p:fileDownload value="#{reviewInfoBn.fileReviewDetail}" />
-				</p:commandButton>
+					update=":reviewHome:growl :reviewHome :messages">
+									
+				</p:commandButton>			
+ 
 			</h:form>
 		</p:dialog>
         
@@ -459,7 +459,8 @@
 	
 	        function stop() {
 	        	PF('statusDialog').hide();
-	        }
+	        }	        
+	       
 	    </script>
 	</ui:define>
 </ui:composition>
