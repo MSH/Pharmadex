@@ -5,8 +5,10 @@
 package org.msh.pharmadex.mbean.product;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -992,9 +994,19 @@ public class ReviewInfoBn implements Serializable {
 	public void createFileReviewDetail(){
 		if(prodApplications == null)
 			Scrooge.goToHome();
-		else
-			fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications, getPpsubdate());
-	}
+		else{
+			FacesMessage msg;
+			//fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications, getPpsubdate());			
+			String s = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications, getPpsubdate(),userSession.getLoggedINUserID());
+	    	if(!s.equals("persist")){
+	    		msg = new FacesMessage(bundle.getString("global_fail"),  bundle.getString("upload_fail"));
+	    		facesContext.addMessage(null, msg);
+	    	}else{	    		   		
+	    		msg = new FacesMessage(bundle.getString("global.success"),  bundle.getString("upload_success"));
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+	    	}
+		}
+	}	
 	
 	public StreamedContent getFileReviewDetail() {
 		//RequestContext.getCurrentInstance().execute("PF('printDlg').hide()");
