@@ -47,6 +47,7 @@ import org.msh.pharmadex.domain.ProdExcipient;
 import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.RevDeficiency;
+import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
@@ -54,6 +55,7 @@ import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
@@ -921,6 +923,37 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		
 	}
 */
+	private JRMapArrayDataSource createReviewDetailLetterSource(String name, Product product, ProdApplications prodApp, boolean isHasLicence, String execSummary){
+		//JRMapArrayDataSource
+		HashMap<String, Object> field =new  HashMap<String, Object>();
+		utilsByReports.initField(field, prodApp, product);
+		if("subreport".equals(name)){
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_GENNAME,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_PRODNAME,"",false);	 
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_INN,"",false);
+			String isHL = "";
+			if(isHasLicence){
+				isHL = "Yes";
+			}else{
+				isHL = "No";
+			}
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_IS_HAS_LICENCE,isHL,true);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_DOSFORM,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_PRODSTRENGTH,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_PROD_ROUTE_ADMINISTRATION,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_POSOLOGY,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_APPNAME,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COMPANY_PHONE,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COMPANY_FAX,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_COMPANY_EMAIL,"",false);
+			utilsByReports.putFieldNotNull(UtilsByReports.KEY_EXECSUMMARY,execSummary,true);
+			
+		}
+		List<Map<String, Object>> res = new ArrayList<Map<String, Object>>();
+		res.add(field);		
+		return 	new JRMapArrayDataSource(res.toArray());	
+	}
 	private JRMapArrayDataSource createRegLetterSource(String name, Product product, ProdApplications prodApp){
 	
 		HashMap<String, Object> field = new HashMap<String, Object>();
@@ -1075,7 +1108,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 	}
 
-	public StreamedContent createReviewDetailsFile(ProdApplications prodApplications, Date ppsubdate) {
+	public String createReviewDetailsFile(ProdApplications prodApplications, Date ppsubdate, Long UserID) {//List<StreamedContent>
 		// ppsubdate - PAPER SUBMISSION:
 		// prodApp.getTypeDmf() - TYPE II DMF # (if any):
 		// prodApp.isHasLicence() - For domestic site, has the applicant provided a copy of a current and satisfactory site licence issued by DGDA? Or from WHO, USFDA, MHRA, TGA, EU, Canada, PIC/s country
@@ -1083,35 +1116,28 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		this.product = prodApp.getProduct();
 		context = FacesContext.getCurrentInstance();
 		bundle = context.getApplication().getResourceBundle(context, "msgs");
-
-		File detailPDF = null;
-		String fileName = product.getProdName().split(" ")[0] + "_Review";
-		try{
-			detailPDF = File.createTempFile(fileName, ".pdf");
-			JasperPrint jasperPrint = initReviewDetailsFile();
-			net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(detailPDF));
-
-			InputStream ist = new ByteArrayInputStream((IOUtils.toByteArray(new FileInputStream(detailPDF))));
-			StreamedContent download = new DefaultStreamedContent(ist, "pdf", fileName + ".pdf");
-			
-			prodApplicationsDAO.updateApplication(prodApp);
-			return download;
-		} catch (IOException e) {
-			e.printStackTrace();
+		String res = "";	
+		try{			
+			res = initReviewDetailsFile1(ppsubdate, prodApp.getTypeDmf(),prodApp.isHasLicence(),UserID);
+			prodApplicationsDAO.updateApplication(prodApp);			
 		} catch (JRException e) {
 			e.printStackTrace();
+			return "error";
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return "error";
 		}
-		return null;
+		return res;
 	}
-
-	public JasperPrint initReviewDetailsFile() throws JRException, SQLException {
-		JasperPrint jasperPrint;
+	
+	public String initReviewDetailsFile1(Date ppsubdate, String typeDmf, boolean isHasLicence, Long userID) throws JRException, SQLException {
+		List<JasperPrint> listJasperPrint = new ArrayList<JasperPrint>();
+		JasperPrint jasperPrint = null, jasperPrint2 = null;
 
 		Properties prop = fetchReviewDetailsProperties();
 		if(prop == null)
-			return null;
+			return "error";
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		utilsByReports.init(param, prodApp, product);
 		utilsByReports.putNotNull(UtilsByReports.KEY_PRODNAME, "", false);
@@ -1124,6 +1150,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		utilsByReports.putNotNull(UtilsByReports.KEY_DOSFORM, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_DOSREC_DATE, "", false);
 
+		String date = ppsubdate!=null? utilsByReports.getDateformat().format(ppsubdate):"";
+		utilsByReports.putNotNull(UtilsByReports.KEY_PAPER_SUBMISSION,date , true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_TYPE_DMF,typeDmf , true);
+		utilsByReports.putNotNull(UtilsByReports.KEY_IS_HAS_LICENCE,isHasLicence+"" , true);
+					
 		int t = 0;
 		if(prodApp != null){
 			ProdAppType type = prodApp.getProdAppType();
@@ -1133,35 +1164,196 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				else if(type.equals(ProdAppType.GENERIC))
 					t = 2;
 				/*else if(type.equals(ProdAppType.RECOGNIZED))
-					t = 3;*/
+					t = 3;
 				else if(type.equals(ProdAppType.RENEW))
-					t = 4;
+					t = 4;*/
 			}
 		}
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPTYPE, t);
-
+		int typeManufact = 0;
+		if(prodApp.getApplicant()!=null){
+			if(prodApp.getApplicant().getApplicantType()!=null){
+				String name = prodApp.getApplicant().getApplicantType().getName();
+				if(name.equals("Manufacturer")){
+					typeManufact=1;
+				}else{
+					typeManufact=2;
+				}
+			}
+		}
+		utilsByReports.putNotNull(UtilsByReports.KEY_TYPE_MANUFACT, typeManufact);
+		
+		ArrayList<Reviewer> dataList = new ArrayList<Reviewer>();		
+		String modComment = "", execsumary = "";;
+		List<ReviewInfo> list = reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(prodApp.getId());
+		if(list != null && list.size() > 0){
+			for(ReviewInfo revinf:list){
+				List<ReviewComment>	listRC=	revinf.getReviewComments();
+				for(ReviewComment com:listRC){
+					if(com.getComment()!=null){
+						if(com.isFinalSummary()){
+							if(revinf.getReviewer()!=null){
+								if(com.getUser()!=null){
+									if(revinf.getReviewer().equals(com.getUser())){
+										execsumary = bundle.getString("pri_processor") + ":<br>" + com.getComment()+"<br>";
+									}
+								}
+							}
+							if(revinf.getSecReviewer()!=null){
+								if(com.getUser()!=null){
+									if(revinf.getSecReviewer().equals(com.getUser())){
+										execsumary += (execsumary.isEmpty()?"":"<br>") + bundle.getString("sec_processor") + ":<br>" + com.getComment()+ "<br>";
+									}
+								}
+							}						
+						}
+					}
+				}
+				if(revinf.getReviewer()!=null){
+					User reviewer1 = revinf.getReviewer();					
+					createReviewer(reviewer1,revinf.getUpdatedDate(),revinf.getRecomendType(),dataList);
+				}
+				if(revinf.getSecReviewer()!=null){
+					User reviewer2 = revinf.getSecReviewer();					
+					createReviewer(reviewer2,revinf.getUpdatedDate(),revinf.getRecomendType(),dataList);					
+				}	
+				modComment = revinf.getModcomment()!=null?revinf.getModcomment():"";				
+			}			
+		}
+		utilsByReports.putNotNull(UtilsByReports.KEY_MODCOMMENT, modComment, true);	
+		utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY, execsumary, false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPNAME, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPADDRESS, "", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_APPUSERNAME, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_APPTELLFAX, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_APPEMAIL, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_EXECSUMMARY, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPTELLFAX, "", false);	
 		utilsByReports.putNotNull(UtilsByReports.KEY_INN, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_PROD_ROUTE_ADMINISTRATION, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_PHONE, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_PROD_ROUTE_ADMINISTRATION, "", false);	
+		utilsByReports.putNotNull(UtilsByReports.KEY_APPEMAIL, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_EMAIL,"", false);
 		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_FAX, "", false);
-		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_EMAIL, "", false);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COMPANY_PHONE, "", false);		
 
 		utilsByReports.putNotNull(JRParameter.REPORT_LOCALE, locale);
+				
+		JRBeanCollectionDataSource dataSource = new  JRBeanCollectionDataSource(dataList);
+		param.put(UtilsByReports.FTR_DATASOUTCE,dataSource);
+		
+		URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report1.jasper");
+		JRMapArrayDataSource  source = createReviewDetailLetterSource("subreport", product, prodApp, isHasLicence,execsumary);
 
-		JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApp, bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
-		URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report.jasper");
-		if(source != null){
-			jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
-			return jasperPrint;
-		}else
-			return  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
+		
+		String name = product.getProdName().split(" ")[0] + "_Review1";
+		if(source != null){			
+			jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);// new JRMapArrayDataSource(source.toArray()));
+			if(jasperPrint!=null){
+				createAttachmentFile(name, "Review1", jasperPrint, userID);				
+			}			
+		}else{			
+			jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
+			if(jasperPrint!=null){
+				createAttachmentFile(name, "Review1", jasperPrint, userID);				
+			}			
+		}  
+		int count = jasperPrint.getPages().size();
+		String fileName = product.getProdName().split(" ")[0] + "_Review2"; 
+		String res = initReviewDetailsFile2(count,fileName, userID);
+		return res;
+		//return listJasperPrint;
 	}
+	
+	public String initReviewDetailsFile2(int count,String name, Long userID){
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+		
+		Properties prop = fetchReviewDetailsProperties();
+		if(prop == null)
+			return null;
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		utilsByReports.init(param, prodApp, product);
+		utilsByReports.putNotNull(UtilsByReports.KEY_COUNT, count);
+		
+		JasperPrint jasperPrint;	
+		URL resource = getClass().getClassLoader().getResource("/reports/review_detail_report2.jasper");
+		JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApp, bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
+								
+		if(resource != null){
+			try {			
+				if(source != null){							
+					jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);					
+				}else{
+					jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
+				}
+				createAttachmentFile(name,"Review2",jasperPrint,userID);
+			} catch (JRException e) {				
+				e.printStackTrace();
+				return "error";
+			}
+			return "persist";
+			
+		}else{
+			return "error";
+		}			
+	}
+	private String createAttachmentFile(String name, String title,JasperPrint jasperPrint, Long userID){						
+		try {
+			File defScrPDF = File.createTempFile(name, ".pdf");
+			try {
+				net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(defScrPDF));
+				byte[] file = IOUtils.toByteArray(new FileInputStream(defScrPDF));
+				ProdAppLetter attachment = new ProdAppLetter();
+				attachment.setRegState(prodApp.getRegState());
+				attachment.setFile(file);
+				attachment.setProdApplications(prodApp);
+				attachment.setFileName(defScrPDF.getName());
+				
+				attachment.setTitle(title);
+				attachment.setComment(title);
+				attachment.setLetterType(LetterType.OTHER);//ACK_SUBMITTED
+									
+				attachment.setUploadedBy(userService.findUser(userID));					
+				attachment.setContentType("application/pdf");
+				
+				prodAppLetterDAO.save(attachment);
+				return "persist";
+			} catch (JRException e) {					
+				e.printStackTrace();
+				return "error";
+			}			
+		}catch (IOException e) {				
+			e.printStackTrace();
+			return "error";
+		}	 
+	 }
+	/**
+	 * 
+	 * @param curUser -  cur User
+	 * @param date -  update date
+	 * @param reviewStatus - review Status
+	 * @param dataList - list with all reviewer
+	 */
+	private void createReviewer(User curUser, Date date, RecomendType reviewStatus, ArrayList<Reviewer> dataList) {
+		Reviewer reviewer = new Reviewer();
+		reviewer.setFIO("");
+		if(curUser.getName()!=null)
+			reviewer.setFIO(curUser.getName());
+		
+		reviewer.setAccepted("");
+		reviewer.setRejected("");
+		if(reviewStatus!=null){			
+			if(reviewStatus.equals(RecomendType.RECOMENDED)){
+				reviewer.setAccepted("1");				
+			}else if(reviewStatus.equals(RecomendType.NOT_RECOMENDED)){
+				reviewer.setRejected("1");				
+			}			
+		}		
+		reviewer.setUpdateDate("");
+		if(date!=null){
+			String updateDate = utilsByReports.getDateformat().format(date);
+			reviewer.setUpdateDate(updateDate);
+		}					
+		dataList.add(reviewer);
+	}
+
 
 	/**
 	 * Read necessary properties for review details (for Porto language)
@@ -1443,15 +1635,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			String strCurDate =	getDateMZFormat(date,"dd 'de' MMMM 'de' yyyy");		
 			utilsByReports.putNotNull(UtilsByReports.KEY_CURDATE, strCurDate, true);
 			
-			//TODO	
-			/*List<ProdAppChecklist> checkLists = checkListService.findProdAppChecklistByProdApp(prodApp.getId());
-			JRMapArrayDataSource source = createDeficiencySource(checkLists);*/
-			JRMapArrayDataSource source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApp,bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
-
+			JRMapArrayDataSource  source = ReviewDetailPrintMZ.createReviewSourcePorto(prodApp,bundle, prop, prodCompanyDAO, customReviewDAO, reviewInfoDAO, param);
+			
 			URL resource = getClass().getClassLoader().getResource("/reports/rev_def_letter.jasper");
 			if(source != null){
 				if(resource != null){
-					jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);
+					jasperPrint = JasperFillManager.fillReport(resource.getFile(), param,source);
 					net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(defScrPDF));
 					byte[] file = IOUtils.toByteArray(new FileInputStream(defScrPDF));
 					ProdAppLetter attachment = new ProdAppLetter();
