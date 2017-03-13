@@ -24,6 +24,7 @@ import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.mbean.product.ReviewInfoTable;
 import org.msh.pharmadex.mbean.product.ReviewItemReport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,8 @@ public class CustomReviewDAO implements Serializable {
 	@PersistenceContext
 	EntityManager entityManager;
 
+	@Autowired
+	private ReviewQDAO reviewQDAO;
 	/**
 	 * Method to fetch review info when the workspace configuration is set for detail review
 	 * @param reviewID
@@ -285,60 +288,62 @@ public class CustomReviewDAO implements Serializable {
 				.getResultList();
 		if(listInfo != null && listInfo.size() > 0){
 			for(ReviewInfo info:listInfo){
-				List<ReviewDetail> listDetail = entityManager
+				List<ReviewDetail> listDetail = reviewQDAO.findReviewSummary(info.getReviewer().getUserId(), info.getId());
+				/*List<ReviewDetail> listDetail = entityManager
 						.createQuery("select rd from ReviewDetail rd where rd.reviewInfo.id=:revinfoId "
-								+ " and ("
-								+ " (rd.otherComment != null and not(rd.otherComment is empty))"
-								+ " or (rd.secComment != null and not(rd.secComment is empty))"
-								+ " or rd.file != null"
-								+ ") order by rd.id")
+								+ 
+								"order by rd.reviewQuestions.id")
 						.setParameter("revinfoId", info.getId())
-						.getResultList();
+						.getResultList();*/
 				if(listDetail != null && listDetail.size() > 0){
+					
 					String firstReviewer = info.getReviewer().getName();
 					String secondReviewer = info.getSecReviewer() != null ? info.getSecReviewer().getName() : null;
 					for(ReviewDetail det:listDetail){
-						ReviewItemReport item = new ReviewItemReport();
-						if(det.getOtherComment() != null && !det.getOtherComment().trim().equals("")){
-							item.setFirstRevName(firstReviewer);
-							item.setFirstRevComment(det.getOtherComment());
-						}
-						if(secondReviewer != null && det.getSecComment() != null && !det.getSecComment().trim().equals("")){
-							item.setSecondRevName(secondReviewer);
-							item.setSecondRevComment(det.getSecComment());
-						}
-
-						item.setHeader1(det.getReviewQuestions().getHeader1());
-						item.setHeader2(det.getReviewQuestions().getHeader2());
-						item.setDetailId(det.getId());
-						item.setQuestionId(det.getReviewQuestions().getId());
-						item.setReviewQuestion(det.getReviewQuestions().getQuestion());
-						item.setPages(det.getVolume());
-						item.setNo_reason(det.getNoReason());
-						String answ = det.getAnswer()+"";
-						if(answ.equals("NO")){
-							item.setAnswer("NO");
-						}else if(answ.equals("YES")){
-							item.setAnswer("YES");
-						}						
-						
-						if(det.getFile() != null){
-							// only pictures
-							if(det.getFilename() != null && !det.getFilename().equals("")){
-								String fname = det.getFilename();
-								fname = fname.toLowerCase(); //AK because of clipping tool :) 20161220
-								if(fname.endsWith(".png") || fname.endsWith(".bmp")
-										|| fname.endsWith(".jpeg") || fname.endsWith(".jpg"))
-									item.setFile(det.getFile());
+						String answ = det.getAnswer()!=null?det.getAnswer()+"":"";
+						if(!answ.equals("NA")){
+							ReviewItemReport item = new ReviewItemReport();
+							if(det.getOtherComment() != null && !det.getOtherComment().trim().equals("")){
+								item.setFirstRevName(firstReviewer);
+								item.setFirstRevComment(det.getOtherComment());
 							}
-						}
-
-						if(list == null)
-							list = new ArrayList<ReviewItemReport>();
-						list.add(item);
-
-						mapHeaderIds.put(det.getReviewQuestions().getHeader1(), det.getReviewQuestions().getId());
+							if(secondReviewer != null && det.getSecComment() != null && !det.getSecComment().trim().equals("")){
+								item.setSecondRevName(secondReviewer);
+								item.setSecondRevComment(det.getSecComment());
+							}
+	
+							item.setHeader1(det.getReviewQuestions().getHeader1());
+							item.setHeader2(det.getReviewQuestions().getHeader2());
+							item.setDetailId(det.getId());
+							item.setQuestionId(det.getReviewQuestions().getId());
+							item.setReviewQuestion(det.getReviewQuestions().getQuestion());
+							item.setPages(det.getVolume());
+							item.setNo_reason(det.getNoReason());
+							
+							if(answ.equals("NO")){
+								item.setAnswer("NO");
+							}else if(answ.equals("YES")){
+								item.setAnswer("YES");
+							}							
+							if(det.getFile() != null){
+								// only pictures
+								if(det.getFilename() != null && !det.getFilename().equals("")){
+									String fname = det.getFilename();
+									fname = fname.toLowerCase(); //AK because of clipping tool :) 20161220
+									if(fname.endsWith(".png") || fname.endsWith(".bmp")
+											|| fname.endsWith(".jpeg") || fname.endsWith(".jpg"))
+										item.setFile(det.getFile());
+								}
+							}	
+							if(list == null)
+								list = new ArrayList<ReviewItemReport>();
+							list.add(item);
+	
+							mapHeaderIds.put(det.getReviewQuestions().getHeader1(), det.getReviewQuestions().getId());					 
+					  }//
+					
 					}
+				 
 				}
 			}
 		}
