@@ -1254,12 +1254,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		if(source != null){			
 			jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, source);// new JRMapArrayDataSource(source.toArray()));
 			if(jasperPrint!=null){
-				createAttachmentFile(name, "Review1", jasperPrint, userID);				
+				createAttachmentFile(name, "1", jasperPrint, userID);				
 			}			
 		}else{			
 			jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 			if(jasperPrint!=null){
-				createAttachmentFile(name, "Review1", jasperPrint, userID);				
+				createAttachmentFile(name, "1", jasperPrint, userID);				
 			}			
 		}  
 		int count = jasperPrint.getPages().size();
@@ -1291,7 +1291,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				}else{
 					jasperPrint =  JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource(1));
 				}
-				createAttachmentFile(name,"Review2",jasperPrint,userID);
+				createAttachmentFile(name,"2",jasperPrint,userID);
 			} catch (JRException e) {				
 				e.printStackTrace();
 				return "error";
@@ -1314,11 +1314,13 @@ public class ProdApplicationsServiceMZ implements Serializable {
 				attachment.setProdApplications(prodApp);
 				attachment.setFileName(defScrPDF.getName());
 				
-				attachment.setTitle(title);
-				attachment.setComment(title);
+				User userName = userService.findUser(userID);
+				
+				attachment.setTitle("QoS report, part"+title);
+				attachment.setComment(userName.getName()+title);
 				attachment.setLetterType(LetterType.OTHER);//ACK_SUBMITTED
 									
-				attachment.setUploadedBy(userService.findUser(userID));					
+				attachment.setUploadedBy(userName);					
 				attachment.setContentType("application/pdf");
 				
 				prodAppLetterDAO.save(attachment);
