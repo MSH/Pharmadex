@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-03-13T17:06:04 -->
+<!-- 2017-03-13T19:20:01 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -652,7 +652,7 @@
 								<textElement verticalAlignment="Middle" markup="html">
 									<font size="8" isBold="false"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{accepted} == null ? "" : ($F{accepted}.equals("1")? "X SATISFACTORY" : "SATISFACTORY")]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{accepted} == null ? "" : ($F{accepted}.equals("1")? "SATISFACTORY" : "")]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -686,7 +686,7 @@
 								<textElement verticalAlignment="Middle" markup="html">
 									<font size="8" isBold="false"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{rejected} == null ? "" : ($F{rejected}.equals("1")? "X UNSATISFACTORY" : "UNSATISFACTORY")]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{rejected} == null ? "" : ($F{rejected}.equals("1")? "UNSATISFACTORY" : "")]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -697,7 +697,7 @@
 	<detail>
 		<band height="700" splitType="Stretch">
 			<textField>
-				<reportElement x="32" y="44" width="216" height="16" uuid="f15763cd-4166-4743-9d63-43932a38a698">
+				<reportElement positionType="Float" x="32" y="44" width="216" height="16" uuid="f15763cd-4166-4743-9d63-43932a38a698">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
