@@ -836,8 +836,7 @@ public class ReviewInfoBn implements Serializable {
 						if(detail.getVolume()!=null && detail.getVolume().length()>0){
 							String err = hasCurrentAnswer(detail);
 							if(err == null){ // no empty fields
-								getReviewDetailBn().saveReview(true);
-								RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
+								successAnswer();
 							}else{
 								facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 										err, ""));
@@ -849,15 +848,23 @@ public class ReviewInfoBn implements Serializable {
 
 					}else{
 						//answer is YES or NA, Save it!
-						getReviewDetailBn().saveReview(true);
-						RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
+						if(detail.getAnswer().equals(YesNoNA.YES)){ //only reference to dossier is mandatory
+							if(detail.getVolume()!=null && detail.getVolume().length()>0){
+								successAnswer();
+							}else{
+								facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+										bundle.getString("reference_is_mandatory"), ""));
+							}
+
+						}else{ //Not Applicable
+							successAnswer();
+						}
 					}
 				}else{
 					//Cancel, restore previous answer
 					detail.setAnswer(getReviewDetailBn().getPrevAnswer());
 					setDisplayReviewQs(null);
-					getReviewDetailBn().saveReview(true);
-					RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
+					successAnswer();
 				}
 			}else{
 				//close dialogue, global fail
@@ -869,6 +876,13 @@ public class ReviewInfoBn implements Serializable {
 			RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
 		}
+	}
+	/**
+	 * Answer is successful
+	 */
+	public void successAnswer() {
+		getReviewDetailBn().saveReview(true);
+		RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
 	}
 
 	/**
@@ -975,7 +989,7 @@ public class ReviewInfoBn implements Serializable {
 			return false;
 		}
 	}
-	
+
 	public void initPrintReview() {
 		//if (prodApplications.getProdRegNo() == null || prodApplications.getProdRegNo().equals(""))
 		//	prodApplications.setProdRegNo(RegistrationUtil.generateRegNo("" + (productService.findAllRegisteredProduct().size() + 1), prodApplications.getProdAppNo()));
@@ -1016,4 +1030,19 @@ public class ReviewInfoBn implements Serializable {
 	public void setFileReviewDetail(StreamedContent fileReviewDetail) {
 		this.fileReviewDetail = fileReviewDetail;
 	}
+	/**
+	 * Simple zero to init the first tab
+	 * @return
+	 */
+	public String getActiveTabIndex(){
+		return "0";
+	}
+	/**
+	 * Complementary to previous
+	 * @param index
+	 */
+	public void setActiveTabIndex(String index){
+		//System.out.println(index);
+	}
+
 }
