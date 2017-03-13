@@ -219,7 +219,7 @@
 									escape="false" />
 							</p:panel>
 							<h:panelGrid columns="1" cellspacing="5px">
-								<p:tabView>
+								<p:tabView activeIndex="#{reviewInfoBn.activeTabIndex}">
 									<p:tab title="#{msgs.pri_processor}">
 										<pe:ckEditor
 											value="#{reviewDetailBn.reviewDetail.otherComment}"
