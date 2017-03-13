@@ -38,6 +38,7 @@ import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
@@ -86,7 +87,7 @@ public class ReviewInfoBn implements Serializable {
 
 	@ManagedProperty(value = "#{prodApplicationsService}")
 	private ProdApplicationsService prodApplicationsService;
-	
+
 	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
 	ProdApplicationsServiceMZ prodApplicationsServiceMZ;
 
@@ -128,7 +129,7 @@ public class ReviewInfoBn implements Serializable {
 
 	private Date ppsubdate;
 	private StreamedContent fileReviewDetail;
-	
+
 	@PostConstruct
 	private void init() {
 		try {
@@ -204,7 +205,11 @@ public class ReviewInfoBn implements Serializable {
 		//        StreamedContent download = new DefaultStreamedContent(ist, "image/jpg", "After3.jpg");
 		return download;
 	}
-
+	/**
+	 * Download a letter given
+	 * @param doc
+	 * @return
+	 */
 	public StreamedContent fileDownload(ProdAppLetter doc) {
 		InputStream ist = new ByteArrayInputStream(doc.getFile());
 		StreamedContent download = new DefaultStreamedContent(ist, doc.getContentType(), doc.getFileName());
@@ -900,7 +905,7 @@ public class ReviewInfoBn implements Serializable {
 			if(!(detail.getSecComment()!=null && detail.getSecComment().length()>0))
 				return bundle.getString("comment_is_mandatory");
 		}
-		
+
 		// reasons is empty
 		if(!(detail.getNoReason() != null && detail.getNoReason().length() > 0))
 			return bundle.getString("reasons_is_mandatory");
@@ -1004,7 +1009,7 @@ public class ReviewInfoBn implements Serializable {
 	public void setPpsubdate(Date ppsubdate) {
 		this.ppsubdate = ppsubdate;
 	}
-	
+
 	public void createFileReviewDetail(){
 		if(prodApplications == null)
 			Scrooge.goToHome();
@@ -1012,16 +1017,16 @@ public class ReviewInfoBn implements Serializable {
 			FacesMessage msg;
 			//fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications, getPpsubdate());			
 			String s = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications, getPpsubdate(),userSession.getLoggedINUserID());
-	    	if(!s.equals("persist")){
-	    		msg = new FacesMessage(bundle.getString("global_fail"),  bundle.getString("upload_fail"));
-	    		facesContext.addMessage(null, msg);
-	    	}else{	    		   		
-	    		msg = new FacesMessage(bundle.getString("global.success"),  bundle.getString("upload_success"));
+			if(!s.equals("persist")){
+				msg = new FacesMessage(bundle.getString("global_fail"),  bundle.getString("upload_fail"));
+				facesContext.addMessage(null, msg);
+			}else{	    		   		
+				msg = new FacesMessage(bundle.getString("global.success"),  bundle.getString("upload_success"));
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-	    	}
+			}
 		}
 	}	
-	
+
 	public StreamedContent getFileReviewDetail() {
 		//RequestContext.getCurrentInstance().execute("PF('printDlg').hide()");
 		return fileReviewDetail;
@@ -1043,6 +1048,56 @@ public class ReviewInfoBn implements Serializable {
 	 */
 	public void setActiveTabIndex(String index){
 		//System.out.println(index);
+	}
+
+	/**
+	 * Get list of letters for the related application
+	 * @return
+	 */
+	public List<ProdAppLetter> getLetters(){
+		if(getReviewInfo() != null){
+			ProdApplications pA = getReviewInfo().getProdApplications();
+			if(pA != null){
+				List<ProdAppLetter> letters = prodApplicationsService.findAllLettersByProdApp(pA.getId());
+				return letters;
+			}else{
+				return null;
+			}
+		}else{
+			return null;
+		}
+	}
+	/**
+	 * Delete a given letter
+	 * @param let given letter
+	 */
+	public void deleteLetter(ProdAppLetter let) {
+		List<ProdAppLetter> letters = getLetters();
+		if(letters != null){
+			getLetters().remove(let);
+			facesContext = FacesContext.getCurrentInstance();
+			bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+			try {
+				prodApplicationsServiceMZ.deleteProdAppLetter(let);
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), ""));
+			} catch (Exception e) {
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Reviewer can delete only other letters!!!
+	 * @param let
+	 * @return
+	 */
+	public boolean canDeleteLetter(ProdAppLetter let){
+		if(let != null){
+			return let.getLetterType() == LetterType.OTHER;
+		}else{
+			return false;
+		}
 	}
 
 }

@@ -221,14 +221,14 @@ public class ReviewDetailPrintMZ implements Serializable {
 			while(it.hasNext()){
 				String header = it.next();
 				List<ReviewItemReport> list = map.get(header);
-				Collections.sort(list, new Comparator<ReviewItemReport>() {
+/*				Collections.sort(list, new Comparator<ReviewItemReport>() {
 					@Override
 					public int compare(ReviewItemReport o1, ReviewItemReport o2) {
 						Long id1 = o1.getQuestionId();
 						Long id2 = o2.getQuestionId();
 						return id1.compareTo(id2);
 					}
-				});
+				});*/
 				for(ReviewItemReport item:list){
 					printItemReview(res, header, item);
 				}
