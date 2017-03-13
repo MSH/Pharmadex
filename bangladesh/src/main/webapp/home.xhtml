@@ -34,7 +34,6 @@
                                             action="/public/productlist.faces"/>
                                 <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
                                             url="/public/applicantlist.faces"/>
-                                <p:menuitem value="#{msgs.Home_download}" url="/public/downloads.faces" ajax="false"/>
                             </p:submenu>
 
                             <sec:isAuthenticated>
@@ -51,14 +50,6 @@
                                                 ajax="false"/>
                                 </p:submenu>
                             </sec:isAuthenticated>
-
-                            <p:submenu label="#{msgs.home_links}">
-                                <p:menuitem value="#{msgs.Home_aboutus}" url="/public/aboutus.faces" ajax="false"/>
-                                <p:menuitem value="#{msgs.Home_guidelines}" url="/public/guidelines.faces" ajax="false"/>
-                                <p:menuitem value="#{msgs.Home_newsevents}" url="/public/newsevent.faces" ajax="false"/>
-                                <p:menuitem value="#{msgs.Home_contactus}" url="/public/contactus.faces" ajax="false"/>
-                            </p:submenu>
-
                         </p:menu>
 
                         <!-- end three column -->
