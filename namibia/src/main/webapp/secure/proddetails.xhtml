@@ -39,16 +39,37 @@
                      required="true" requiredMessage="#{msgs.valid_gen_name}" onblur="value=value.toUpperCase()"
                      cols="100" rows="1"/>
         <p:message for="prodGenName" showSummary="true" showDetail="false"/>
-
-        <p:outputLabel value="#{msgs.dos_form}" for="dosForm"/>
-        <p:selectOneMenu id="dosForm" value="#{prodRegAppMbean.product.dosForm.uid}"
-                         requiredMessage="#{msgs.valid_dos_form}" required="true">
-            <f:selectItem itemLabel="-" itemValue=""/>
-            <f:selectItems value="#{globalEntityLists.dosageForms}" var="dosForm" itemLabel="#{dosForm.dosForm}"
-                           itemValue="#{dosForm.uid}"/>
-        </p:selectOneMenu>
+	</h:panelGrid>
+	
+	<h:form prependId="false">
+	<h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3, col3">
+		<p:outputLabel value="#{msgs.dos_form}" for="dosForm" />
+        <p:autoComplete id="dosForm" value="#{prodRegAppMbean.mainIt}" 
+					    completeMethod="#{prodRegAppMbean.completeDosforms}" 
+					    converter="#{dosFormItemConverter}" 
+					    var="main" itemLabel="#{main.name}" itemValue="#{main}"
+					    scrollHeight="200" dropdown="true"
+					    required="true" requiredMessage="#{msgs.valid_dos_form}">
+				<p:ajax event="itemSelect" listener="#{prodRegAppMbean.onItemSelectMain}" update="@form" process="@form"/>
+		</p:autoComplete>
+		
+		<p:autoComplete id="items" value="#{prodRegAppMbean.subIt}" 
+					    completeMethod="#{prodRegAppMbean.completeDosformsSub}" 
+					    var="it" itemLabel="#{it.name}" itemValue="#{it}"
+					    scrollHeight="200" dropdown="true"
+					    converter="#{dosFormSubItemConverter}">
+				<p:ajax event="itemSelect" listener="#{prodRegAppMbean.onItemSelect}"/>
+		</p:autoComplete>
         <p:message for="dosForm" showSummary="true" showDetail="false"/>
-
+	</h:panelGrid>
+	</h:form>
+	<h:panelGrid columns="6" cellpadding="10px" cellspacing="10px" columnClasses="col1, col3, col1, col3, col3, col3"> 
+        <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
+        <p:inputTextarea id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
+                     required="true" requiredMessage="#{msgs.dos_strength}: #{msgs.valueReq}"
+                     cols="15" rows="1">
+        </p:inputTextarea>
+        
         <p:outputLabel value="#{msgs.dos_unit}" for="dosUnit"/>
         <p:selectOneMenu id="dosUnit" value="#{prodRegAppMbean.product.dosUnit.id}"
                          requiredMessage="#{msgs.valid_dos_form}" required="true">
@@ -56,15 +77,13 @@
             <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
                            itemValue="#{dosUom.id}"/>
         </p:selectOneMenu>
-        <p:message for="dosUnit" showSummary="true" showDetail="false"/>
         
-        <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
-        <p:inputTextarea id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
-                     required="true" requiredMessage="#{msgs.dos_strength}: #{msgs.valueReq}"
-                     cols="100" rows="1">
-        </p:inputTextarea>
+        
+        <p:message for="dosUnit" showSummary="true" showDetail="false"/>
         <p:message for="dosStrength" severity="error" showSummary="true" showDetail="false"/>
-
+	</h:panelGrid>
+	
+	<h:panelGrid columns="3" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3"> 
         <p:outputLabel value="#{msgs.admin_route}" for="adminroutecb"/>
         <p:selectOneMenu id="adminroutecb" value="#{prodRegAppMbean.product.adminRoute.id}" required="true"
                          requiredMessage="#{msgs.valid_value_req}">
