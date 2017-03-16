@@ -14,15 +14,15 @@ public class DosFormItem implements Serializable{
 	private String name = "";
 	private String fullName = "";
 	private boolean main = false;
-	
+
 	public DosFormItem() {
 		super();
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -42,5 +42,10 @@ public class DosFormItem implements Serializable{
 
 	public void setMain(boolean main) {
 		this.main = main;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

@@ -31,11 +31,26 @@ public class FilterMBean implements Serializable, HttpSessionBindingListener{
 	public Date startDate;
 	public Date endDate;
 	
+	public String yearRange = "c-50:c";
+	private String minYear = "";
+	
 	@PostConstruct
 	private void init() {
 		products = loadDefaultProducts();
+		minYear = productService.getMinRegistrationYearInDB();
+				
 	}
 	
+	public String getYearRange() {
+		if(!minYear.isEmpty())
+			yearRange = minYear + ":c";
+		return yearRange;
+	}
+
+	public void setYearRange(String yearRange) {
+		this.yearRange = yearRange;
+	}
+
 	public void filterClick(){
 		setProducts(loadProducts());
 	}

@@ -60,6 +60,10 @@ public class ProductService implements Serializable {
         return productDAO.findProductsByState(RegState.REGISTERED);
     }
     
+    public String getMinRegistrationYearInDB() {
+    	return productDAO.getMinRegistrationYearInDB();
+    }
+    
     public List<ProdTable> findRegisteredProduct(Long innId, Date start, Date end) {
         return productDAO.findProductsByFilter(RegState.REGISTERED, innId, start, end);
     }

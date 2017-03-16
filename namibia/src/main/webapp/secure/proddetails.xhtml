@@ -42,11 +42,11 @@
 	</h:panelGrid>
 	
 	<h:form prependId="false">
-	<h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2, col3, col3">
+	<h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2_200, col2_200, col3">
 		<p:outputLabel value="#{msgs.dos_form}" for="dosForm" />
         <p:autoComplete id="dosForm" value="#{prodRegAppMbean.mainIt}" 
 					    completeMethod="#{prodRegAppMbean.completeDosforms}" 
-					    converter="#{dosFormItemConverter}" 
+					    converter="#{dosFormItemConverter}" forceSelection="true"
 					    var="main" itemLabel="#{main.name}" itemValue="#{main}"
 					    scrollHeight="200" dropdown="true"
 					    required="true" requiredMessage="#{msgs.valid_dos_form}">
@@ -56,14 +56,14 @@
 		<p:autoComplete id="items" value="#{prodRegAppMbean.subIt}" 
 					    completeMethod="#{prodRegAppMbean.completeDosformsSub}" 
 					    var="it" itemLabel="#{it.name}" itemValue="#{it}"
-					    scrollHeight="200" dropdown="true"
+					    scrollHeight="200" dropdown="true" forceSelection="true"
 					    converter="#{dosFormSubItemConverter}">
 				<p:ajax event="itemSelect" listener="#{prodRegAppMbean.onItemSelect}"/>
 		</p:autoComplete>
         <p:message for="dosForm" showSummary="true" showDetail="false"/>
 	</h:panelGrid>
 	</h:form>
-	<h:panelGrid columns="6" cellpadding="10px" cellspacing="10px" columnClasses="col1, col3, col1, col3, col3, col3"> 
+	<h:panelGrid columns="6" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2_200, col1_100, col3, col3, col3"> 
         <p:outputLabel value="#{msgs.dos_strength}" for="dosStrength"/>
         <p:inputTextarea id="dosStrength" value="#{prodRegAppMbean.product.dosStrength}" title="DosStrength"
                      required="true" requiredMessage="#{msgs.dos_strength}: #{msgs.valueReq}"

@@ -28,15 +28,15 @@
 					
 					<p:outputLabel value="#{msgs.global_startdate}" />
 					<p:calendar value="#{filterMBean.startDate}"
-							id="startDate" showOn="button" required="true"
-							navigator="true"
+							id="startDate" showOn="button"
+							navigator="true" yearRange="#{filterMBean.yearRange}" 
 							pattern="#{userAccessMBean.workspace.datePattern}">
 					</p:calendar>
 					
 					<p:outputLabel value="#{msgs.global_enddate}" />
 					<p:calendar value="#{filterMBean.endDate}"
-							id="endDate" showOn="button" required="true"
-							navigator="true"
+							id="endDate" showOn="button" 
+							navigator="true" yearRange="#{filterMBean.yearRange}"
 							pattern="#{userAccessMBean.workspace.datePattern}">
 					</p:calendar>
 						

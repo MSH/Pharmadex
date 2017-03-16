@@ -121,7 +121,8 @@ public class DosageFormService implements Serializable {
 					}
 					res.add(it);
 				}
-			}
+			}else
+				res = new ArrayList<DosFormItem>();
 		}
 		return res;
 	}

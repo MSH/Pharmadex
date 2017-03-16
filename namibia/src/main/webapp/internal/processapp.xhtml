@@ -154,6 +154,43 @@
 						</p:panel>
 					</h:panelGroup>
 
+					<h:panelGroup id="agentsFor"
+						rendered="#{userSession.staff || userSession.admin}">
+						<p:panel header="#{msgs.agentFor}">
+							<p:dataTable id="agentsForTable" var="agentf"
+								value="#{applicantMBean.myAgentAgreements}" style="width:100%;">
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="#{msgs.global_name}" />
+									</f:facet>
+									<h:outputText value="#{agentf.applicant.appName}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="#{msgs.global_startdate}" />
+									</f:facet>
+									<h:outputLabel converter="javax.faces.DateTime"
+										value="#{agentf.start}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="#{msgs.global_enddate}" />
+									</f:facet>
+									<h:outputLabel converter="javax.faces.DateTime"
+										value="#{agentf.finish}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="#{msgs.global_enable}" />
+									</f:facet>
+									<h:outputText
+										value="#{applicantMBean.userIsEnabled(agentf.active)}"
+										style="align:center; color:red" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</h:panelGroup>
+					
 					<p:outputPanel id="detailsgroup" autoUpdate="true">
 						<p:panel header="#{msgs.regDetailsLabel}"
 							rendered="#{applicantMBean.visibleDetailsgroupPnl()}">

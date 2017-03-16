@@ -75,6 +75,7 @@ public class ApplicantMBean implements Serializable {
 	private List<ProdApplications> prodNotRegApplicationses;
 	private AgentAgreement selectedAgentAgreement;
 	private List<AgentAgreement> agentAgreements = new ArrayList<AgentAgreement>();
+	private List<AgentAgreement> myAgentAgreements = new ArrayList<AgentAgreement>();
 	private Date startDate = null;
 	private Date finishDate = null;
 	private Applicant selectedAgent = null;
@@ -98,8 +99,10 @@ public class ApplicantMBean implements Serializable {
 			selectResponsable = new User();
 		}
 
-		if(getSelectedApplicant() != null && getSelectedApplicant().getApplcntId() != null && getSelectedApplicant().getApplcntId() > 0)
+		if(getSelectedApplicant() != null && getSelectedApplicant().getApplcntId() != null && getSelectedApplicant().getApplcntId() > 0){
 			agentAgreements = getApplicantService().fetchAgentAgreements(getSelectedApplicant());
+			myAgentAgreements = getApplicantService().fetchMyApplicants(getSelectedApplicant());
+		}
 
 		String srcPage = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("sourcePage");
 		if (srcPage != null){
@@ -528,9 +531,18 @@ public class ApplicantMBean implements Serializable {
 		return agentAgreements;
 	}
 
-
 	public void setAgentAgreements(List<AgentAgreement> agentAgreements) {
 		this.agentAgreements = agentAgreements;
+	}
+	
+	
+
+	public List<AgentAgreement> getMyAgentAgreements() {
+		return myAgentAgreements;
+	}
+
+	public void setMyAgentAgreements(List<AgentAgreement> myAgentAgreements) {
+		this.myAgentAgreements = myAgentAgreements;
 	}
 
 	/**

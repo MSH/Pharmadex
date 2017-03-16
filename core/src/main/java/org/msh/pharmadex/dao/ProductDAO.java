@@ -1,6 +1,7 @@
 package org.msh.pharmadex.dao;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -190,32 +191,60 @@ public class ProductDAO implements Serializable {
 		return prodTables;
 	}
 
+	public String getMinRegistrationYearInDB() {
+		String year = "";
+		String q = "select min(pa.registrationDate)" +
+				" from prodApplications pa" +
+				" where pa.regState = :regState ";
+		
+		Object y = entityManager
+				.createNativeQuery(q)
+				.setParameter("regState", "" + RegState.REGISTERED)
+				.getSingleResult();
+		
+		Date d = (Date) y;
+		year = (d.getYear() + 1900) + "";
+		return year;
+	}
 	/**
 	 * Register products by filter
 	 * @return
 	 */
 	public List<ProdTable> findProductsByFilter(RegState regState, Long innId, Date start, Date end) {
+		String addFrom = "", addAnd = "";
+		
+		if(innId != null && innId > 0){
+			addFrom = ", prodinn pinn, inn itinn ";
+			addAnd = " and pinn.prod_id = p.id" +
+					" and pinn.INN_ID = itinn.id" +
+					" and itinn.id = " + innId;
+		}
+		
 		String q = "select p.id as id, p.prod_name as prodName, p.gen_name as genName, "
 				+ "p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, "
 				+ "c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID, p.fnm as fnm " +
-				"from prodApplications pa, product p, applicant a, prod_company pc, company c, prodinn pinn, inn itinn " +
-				"where pa.PROD_ID = p.id " +
-				"and a.applcntId = pa.APP_ID " +
-				"and c.id = pc.company_id " +
-				"and pc.prod_id = p.id " +
-				"and pa.regState = :regState " +
-				"and pc.companyType = :companyType " +
-				"and pinn.prod_id = p.id " +
-				"and pinn.INN_ID = itinn.id " +
-				"and pa.active = :active ";
-		
-		if(innId != null && innId > 0)
-			q += "and itinn.id = " + innId;
+				"from prodApplications pa, product p, applicant a, prod_company pc, company c" + addFrom +
+				" where pa.PROD_ID = p.id " +
+				" and a.applcntId = pa.APP_ID " +
+				" and c.id = pc.company_id " +
+				" and pc.prod_id = p.id " +
+				" and pa.regState = :regState " +
+				" and pc.companyType = :companyType " +
+				" and pa.active = :active " +
+				addAnd;
+
+		SimpleDateFormat dt = new SimpleDateFormat("yyyyy-MM-dd");
 		
 		if(start != null && end != null){
-			String st = (start.getYear() + 1900) + "-" + (start.getMonth() + 1) + "-" + start.getDate();
-			String en = (end.getYear() + 1900) + "-" + (end.getMonth() + 1) + "-" + end.getDate();
+			String st = dt.format(start);
+			String en = dt.format(end);
 			q += " and (pa.registrationDate between '" + st + "' and '" + en + "')";
+		}else if(start != null && end == null){
+			String st = dt.format(start);
+			q += " and pa.registrationDate >= '" + st + "'";
+		}else if(start == null && end != null){
+			String en = dt.format(end);
+			q += " and pa.registrationDate <= '" + en + "'";
 		}
 		
 		List<Object[]> products = entityManager

@@ -76,6 +76,13 @@ body {
     width: 200px;
 }
 
+.col1_100 {
+    vertical-align: middle;
+    font-weight: bold;
+    text-align: left;
+    width: 100px;
+}
+
 .col1_top{
     vertical-align: top;
     font-weight: bold;
@@ -86,6 +93,11 @@ body {
 .col2 {
     vertical-align: middle;
     width: 350px;
+}
+
+.col2_200 {
+    vertical-align: middle;
+    width: 200px;
 }
 
 .col2_top{
