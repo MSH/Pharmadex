@@ -2,6 +2,7 @@ package org.msh.pharmadex.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,6 +58,10 @@ public class ProductService implements Serializable {
 
     public List<ProdTable> findAllRegisteredProduct() {
         return productDAO.findProductsByState(RegState.REGISTERED);
+    }
+    
+    public List<ProdTable> findRegisteredProduct(Long innId, Date start, Date end) {
+        return productDAO.findProductsByFilter(RegState.REGISTERED, innId, start, end);
     }
 
     @Transactional
