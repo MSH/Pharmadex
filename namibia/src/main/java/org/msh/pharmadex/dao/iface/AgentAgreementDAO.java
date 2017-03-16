@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AgentAgreementDAO extends JpaRepository<AgentAgreement, Long> {
 	List<AgentAgreement> findByApplicant(Applicant applicant);
+	List<AgentAgreement> findByAgent(Applicant agent);
 
 }

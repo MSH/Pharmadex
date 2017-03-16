@@ -310,13 +310,22 @@ public class ApplicantService implements Serializable {
         return applicantDAO.isUsernameDuplicated(applicantName);
     }
     /**
-     * Fetch all agent agrrements for this applicant
+     * Fetch all agent agreements for this applicant
      * @param selectedApplicant
      * @return
      */
 	public List<AgentAgreement> fetchAgentAgreements(Applicant selectedApplicant) {
 		return agentAgreementDAO.findByApplicant(selectedApplicant);
 	}
+	/**
+	 * Fetch all applicants to whom I'm agent
+	 * @param agent - me
+	 * @return
+	 */
+	public List<AgentAgreement> fetchMyApplicants(Applicant agent) {
+		return agentAgreementDAO.findByAgent(agent);
+	}
+	
 	/**
 	 * Save agent agreement given
 	 * @param agentAgreement

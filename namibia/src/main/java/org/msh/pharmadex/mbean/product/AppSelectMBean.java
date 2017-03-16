@@ -283,14 +283,14 @@ public class AppSelectMBean implements Serializable {
 				List<AgentAgreement> agreements = new ArrayList<AgentAgreement>();
 
 				if(curApplicant != null && curApplicant.getApplcntId() != null && curApplicant.getApplcntId() > 0)
-					agreements = getApplicantService().fetchAgentAgreements(curApplicant);
+					agreements = getApplicantService().fetchMyApplicants(curApplicant);
 
 				applicants.add(curApplicant);
 				if(agreements != null && agreements.size() > 0){
 					Date today = new Date();
 					for(AgentAgreement aa:agreements){
 						if(aa.getActive() && today.after(aa.getStart()) && today.before(aa.getFinish()))
-							applicants.add(aa.getAgent());
+							applicants.add(aa.getApplicant());
 					}
 				}
 			}else{
