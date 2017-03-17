@@ -7,10 +7,10 @@
     <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
         <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
         <p:selectBooleanButton id="feerecieved"
-                               value="#{processProdBn.prodApplications.feeReceived}"
+                               value="#{processProdBn.prodApplications.prescreenfeeReceived}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check" offIcon="ui-icon-close" 
-                               style="width:60px" disabled="#{processProdBnNA.disableVerify}">
+                               style="width:60px" disabled="#{processProdBnNA.readyToScreening}">
             <p:ajax listener="#{processProdBnNA.changeStatusListener}"
             		update="reghome:processtab reghome:banerstate"/>
         </p:selectBooleanButton>
@@ -22,7 +22,7 @@
                                value="#{processProdBn.prodApplications.applicantVerified}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check" offIcon="ui-icon-close" 
-                               style="width:60px" disabled="#{processProdBnNA.disableVerify}">
+                               style="width:60px" disabled="#{processProdBnNA.readyToScreening}">
             <p:ajax listener="#{processProdBnNA.changeStatusListener}"
             		update="reghome:processtab reghome:banerstate"/>
         </p:selectBooleanButton>
@@ -33,7 +33,7 @@
                                value="#{processProdBn.prodApplications.productVerified}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check" offIcon="ui-icon-close" 
-                               style="width:60px" disabled="#{processProdBnNA.disableVerify}">
+                               style="width:60px" disabled="#{processProdBnNA.readyToScreening}">
             <p:ajax listener="#{processProdBnNA.changeStatusListener}"
             		update="reghome:processtab reghome:banerstate"/>
         </p:selectBooleanButton>
@@ -44,7 +44,7 @@
                                value="#{processProdBn.prodApplications.dossierReceived}"
                                onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
                                onIcon="ui-icon-check" offIcon="ui-icon-close" 
-                               style="width:60px" disabled="#{processProdBnNA.disableVerify}">
+                               style="width:60px" disabled="#{processProdBnNA.readyToScreening}">
             <p:ajax listener="#{processProdBnNA.changeStatusListener}"
             		update="reghome:processtab reghome:banerstate"/>
         </p:selectBooleanButton>

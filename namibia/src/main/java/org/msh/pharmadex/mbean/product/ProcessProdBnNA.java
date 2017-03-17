@@ -28,114 +28,114 @@ import org.msh.pharmadex.util.JsfUtils;
 @ManagedBean
 @ViewScoped
 public class ProcessProdBnNA implements Serializable {
-   
+
 	@ManagedProperty(value = "#{processProdBn}")
-    public ProcessProdBn processProdBn;
-    @ManagedProperty(value = "#{userSession}")
-    public UserSession userSession;
-    
-    @ManagedProperty(value = "#{prodApplicationsService}")
-    public ProdApplicationsService prodApplicationsService;
-    @ManagedProperty(value = "#{reviewService}")
-    public ReviewService reviewService;
-    
-    @ManagedProperty(value = "#{commentService}")
-    public CommentService commentService;
+	public ProcessProdBn processProdBn;
+	@ManagedProperty(value = "#{userSession}")
+	public UserSession userSession;
 
-    private String changedFields;
-   // protected boolean displayVerify = false;
-    //protected boolean displayScreen = false;
-    private boolean disableVerify = true;
-    private boolean prescreened = false;
-    private boolean showFeedBackButton;
-    private List<ProdApplications> allAncestors;
-    
-    @PostConstruct
-    private void init() {
-        //Long id = Scrooge.beanParam("Id");
-   	    ProdApplications pa= processProdBn.getProdApplications();
-        if (pa!=null)changedFields=pa.getAppComment();
-    	if (changedFields==null) changedFields="";
-    }
-    public boolean isFieldChanged(String fieldname){
-  	  //получим список из review_info.changedFields  если в списке нет, то false
-   //   	 String fieldname = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("fieldvalue");
-      	   
-      	if (changedFields.contains(fieldname)) return true;
-      	return false;
-      }
-      
-     public boolean findInnChanged(){
-    	  //получим список из review_info.changedFields  если в списке нет, то false
-         	if (changedFields.contains("inns")) return true;
-        	return false;
-      }
-     
-     public boolean findExcipientChanged(){
-  	  	  //получим список из review_info.changedFields  если в списке нет, то false
-  	       	if (changedFields.contains("excipients"))
-                  return true;
-              else
-  	      	    return false;
-  	    }
-     public boolean findAtcChanged(){
-  	  	  //получим список из review_info.changedFields  если в списке нет, то false
-  	       	if (changedFields.contains("Atc")) return true;
-  	      	return false;
-  	    }
-      
-     public boolean findCompaniesChanged(){
- 		if (changedFields.contains("ProdCompanies")) return true;
-       	return false;
-    }
-     
-     public void setShowFeedBackButton(boolean showFeedBackButton) {
-          this.showFeedBackButton = showFeedBackButton;
-      }
+	@ManagedProperty(value = "#{prodApplicationsService}")
+	public ProdApplicationsService prodApplicationsService;
+	@ManagedProperty(value = "#{reviewService}")
+	public ReviewService reviewService;
 
-      public List<ProdApplications> getAllAncestors(){
-          if (allAncestors==null){
-          ProdApplications prod = processProdBn.getProdApplications();
-          allAncestors = getProdApplicationsService().getAllAncestor(prod);
-          }
-          return allAncestors;
-      }
+	@ManagedProperty(value = "#{commentService}")
+	public CommentService commentService;
+
+	private String changedFields;
+	// protected boolean displayVerify = false;
+	//protected boolean displayScreen = false;
+	private boolean disableVerify = true;
+	private boolean prescreened = false;
+	private boolean showFeedBackButton;
+	private List<ProdApplications> allAncestors;
+
+	@PostConstruct
+	private void init() {
+		//Long id = Scrooge.beanParam("Id");
+		ProdApplications pa= processProdBn.getProdApplications();
+		if (pa!=null)changedFields=pa.getAppComment();
+		if (changedFields==null) changedFields="";
+	}
+	public boolean isFieldChanged(String fieldname){
+		//получим список из review_info.changedFields  если в списке нет, то false
+		//   	 String fieldname = (String) UIComponent.getCurrentComponent(FacesContext.getCurrentInstance()).getAttributes().get("fieldvalue");
+
+		if (changedFields.contains(fieldname)) return true;
+		return false;
+	}
+
+	public boolean findInnChanged(){
+		//получим список из review_info.changedFields  если в списке нет, то false
+		if (changedFields.contains("inns")) return true;
+		return false;
+	}
+
+	public boolean findExcipientChanged(){
+		//получим список из review_info.changedFields  если в списке нет, то false
+		if (changedFields.contains("excipients"))
+			return true;
+		else
+			return false;
+	}
+	public boolean findAtcChanged(){
+		//получим список из review_info.changedFields  если в списке нет, то false
+		if (changedFields.contains("Atc")) return true;
+		return false;
+	}
+
+	public boolean findCompaniesChanged(){
+		if (changedFields.contains("ProdCompanies")) return true;
+		return false;
+	}
+
+	public void setShowFeedBackButton(boolean showFeedBackButton) {
+		this.showFeedBackButton = showFeedBackButton;
+	}
+
+	public List<ProdApplications> getAllAncestors(){
+		if (allAncestors==null){
+			ProdApplications prod = processProdBn.getProdApplications();
+			allAncestors = getProdApplicationsService().getAllAncestor(prod);
+		}
+		return allAncestors;
+	}
 
 
-      public void setAllAncestors(List<ProdApplications> allAncestors) {
-          this.allAncestors = allAncestors;
-      }
+	public void setAllAncestors(List<ProdApplications> allAncestors) {
+		this.allAncestors = allAncestors;
+	}
 
-      public ProcessProdBn getProcessProdBn() {
-          return processProdBn;
-      }
+	public ProcessProdBn getProcessProdBn() {
+		return processProdBn;
+	}
 
-      public void setProcessProdBn(ProcessProdBn processProdBn) {
-          this.processProdBn = processProdBn;
-      }
+	public void setProcessProdBn(ProcessProdBn processProdBn) {
+		this.processProdBn = processProdBn;
+	}
 
-      public UserSession getUserSession() {
-          return userSession;
-      }
+	public UserSession getUserSession() {
+		return userSession;
+	}
 
-      public void setUserSession(UserSession userSession) {
-          this.userSession = userSession;
-      }
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
 
-      public ProdApplicationsService getProdApplicationsService() {
-          return prodApplicationsService;
-      }
+	public ProdApplicationsService getProdApplicationsService() {
+		return prodApplicationsService;
+	}
 
-      public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
-          this.prodApplicationsService = prodApplicationsService;
-      }
-      public ReviewService getReviewService() {
-  		return reviewService;
-  	}
-  	public void setReviewService(ReviewService reviewService) {
-  		this.reviewService = reviewService;
-  	}
-  	
+	public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
+		this.prodApplicationsService = prodApplicationsService;
+	}
+	public ReviewService getReviewService() {
+		return reviewService;
+	}
+	public void setReviewService(ReviewService reviewService) {
+		this.reviewService = reviewService;
+	}
+
 	public CommentService getCommentService() {
 		return commentService;
 	}
@@ -150,41 +150,41 @@ public class ProcessProdBnNA implements Serializable {
 		int countDay = 365*5;
 		getProcessProdBn().getProdApplications().setRegExpiryDate(JsfUtils.addDays(getProcessProdBn().getProdApplications().getRegistrationDate(), countDay));
 	}
-	
+
 	public boolean isDisableVerify() {
 		disableVerify = true;
 		ProdApplications prodApp = getProcessProdBn().getProdApplications();
 		if(prodApp == null)
 			return disableVerify;
-		
+
 		if(userSession.isStaff()){
 			if(prodApp.getRegState().ordinal() < RegState.SCREENING.ordinal()){
 				disableVerify = false; // edit tab
 			}
 		}
-		
+
 		return disableVerify;
 	}
-	
+
 	public boolean isPrescreened() {
 		prescreened = false;
 		ProdApplications prodApp = getProcessProdBn().getProdApplications();
 		if(prodApp == null)
 			return prescreened;
-		
+
 		if(userSession.isStaff()){
 			if (prodApp.getRegState().equals(RegState.FOLLOW_UP) || 
 					prodApp.getRegState().equals(RegState.VERIFY))
 				prescreened = true;
 		}
-		
+
 		return prescreened;
 	}
 
 	public void setPrescreened(boolean prescreened) {
 		this.prescreened = prescreened;
 	}
-	
+
 	public void changeStatusListener() {
 		try {
 			ProdApplications prodApp = getProcessProdBn().getProdApplications();
@@ -194,17 +194,38 @@ public class ProcessProdBnNA implements Serializable {
 					getProcessProdBn().addTimeline();
 				}
 			}
-			if (prodApp.getRegState().equals(RegState.FEE)) {
-				if (prodApp.isApplicantVerified() && prodApp.isProductVerified() && prodApp.isDossierReceived()) {
-					getProcessProdBn().getTimeLine().setRegState(RegState.VERIFY);
-					getProcessProdBn().addTimeline();
-				}
+			//if (prodApp.getRegState().equals(RegState.FEE)) {
+			if (isReadyToScreening()) {
+				getProcessProdBn().getTimeLine().setRegState(RegState.VERIFY);
+				getProcessProdBn().addTimeline();
 			}
+			//}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
+	/**
+	 * Is this application ready to screening
+	 * @param prodApp
+	 * @return
+	 */
+	public boolean isReadyToScreening() {
+		ProdApplications prodApp = getProcessProdBn().getProdApplications();
+		if (prodApp != null){
+			return prodApp.isPrescreenfeeReceived() && prodApp.isApplicantVerified() && prodApp.isProductVerified() && prodApp.isDossierReceived();
+		}else{
+			return false;
+		}
+	}
 	
+	/**
+	 * Dummy setter to obey bean spec
+	 * @param dummy
+	 */
+	public void setReadyToScreening(boolean dummy){
+
+	}
+
 	public boolean getCanNextStep() {
 		try {
 			RegState curRegState = getProcessProdBn().getProdApplications().getRegState();
