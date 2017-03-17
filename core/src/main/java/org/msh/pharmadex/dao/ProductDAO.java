@@ -3,6 +3,9 @@ package org.msh.pharmadex.dao;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +19,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Hibernate;
+import org.msh.pharmadex.dao.iface.DosageFormDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.DosUom;
+import org.msh.pharmadex.domain.Inn;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.domain.enums.CompanyType;
@@ -45,6 +50,8 @@ public class ProductDAO implements Serializable {
 	EntityManager entityManager;
 	@Autowired
 	private WorkspaceDAO workspaceDAO;
+	@Autowired
+	private InnDAO innDAO;
 
 	@Transactional
 	public Product findProduct(long id) {
@@ -211,49 +218,43 @@ public class ProductDAO implements Serializable {
 	 * @return
 	 */
 	public List<ProdTable> findProductsByFilter(RegState regState, Long innId, Date start, Date end) {
-		String addFrom = "", addAnd = "";
+		String addJoin = "", addAnd = "";
 		
 		if(innId != null && innId > 0){
-			addFrom = ", prodinn pinn, inn itinn ";
-			addAnd = " and pinn.prod_id = p.id" +
-					" and pinn.INN_ID = itinn.id" +
-					" and itinn.id = " + innId;
+			Inn inn = innDAO.findInnById(innId);
+			addJoin = " left join p.inns inn";
+			addAnd = " and (inn.id = " + innId + " or p.dosStrength like '%" + inn.getName() + "%'" + ")";
 		}
 		
-		String q = "select p.id as id, p.prod_name as prodName, p.gen_name as genName, "
-				+ "p.prod_cat as prodCategory, a.appName, pa.registrationDate, pa.regExpiryDate, "
-				+ "c.companyName as manufName, pa.prodRegNo, p.prod_desc, pa.id as prodAppID, p.fnm as fnm " +
-				"from prodApplications pa, product p, applicant a, prod_company pc, company c" + addFrom +
-				" where pa.PROD_ID = p.id " +
-				" and a.applcntId = pa.APP_ID " +
-				" and c.id = pc.company_id " +
-				" and pc.prod_id = p.id " +
-				" and pa.regState = :regState " +
-				" and pc.companyType = :companyType " +
-				" and pa.active = :active " +
-				addAnd;
+		String ctype = CompanyType.FIN_PROD_MANUF + "";
+		String rstate = regState + "";
+		
+		String sql = "select p.id, p.prodName, p.genName, p.prodCategory, a.appName, "
+				+ "pa.registrationDate, pa.regExpiryDate, p.manufName, pa.prodRegNo, p.prodDesc, pa.id, p.fnm "
+				+ " from Product p"
+				+ " join p.prodApplicationses pa"
+				+ " join pa.applicant a"
+				+ " join p.prodCompanies pc"
+				+ addJoin
+				+ " where pc.companyType like '" + ctype + "'"
+				+ " and pa.active = 1 "
+				+ " and pa.regState like '" + rstate + "'"
+				+ addAnd;
 
 		SimpleDateFormat dt = new SimpleDateFormat("yyyyy-MM-dd");
-		
 		if(start != null && end != null){
 			String st = dt.format(start);
 			String en = dt.format(end);
-			q += " and (pa.registrationDate between '" + st + "' and '" + en + "')";
+			sql += " and (pa.registrationDate between '" + st + "' and '" + en + "')";
 		}else if(start != null && end == null){
 			String st = dt.format(start);
-			q += " and pa.registrationDate >= '" + st + "'";
+			sql += " and pa.registrationDate >= '" + st + "'";
 		}else if(start == null && end != null){
 			String en = dt.format(end);
-			q += " and pa.registrationDate <= '" + en + "'";
+			sql += " and pa.registrationDate <= '" + en + "'";
 		}
 		
-		List<Object[]> products = entityManager
-				.createNativeQuery(q)
-				.setParameter("active", true)
-				.setParameter("regState", "" + regState)
-				.setParameter("companyType", "" + CompanyType.FIN_PROD_MANUF)
-				.getResultList();
-
+		List<Object[]> products = entityManager.createQuery(sql).getResultList();
 		List<ProdTable> prodTables = new ArrayList<ProdTable>();
 		ProdTable prodTable;
 		for (Object[] objArr : products) {
@@ -261,7 +262,7 @@ public class ProductDAO implements Serializable {
 			prodTable.setId(Long.valueOf("" + objArr[0]));
 			prodTable.setProdName((String) objArr[1]);
 			prodTable.setGenName((String) objArr[2]);
-			prodTable.setProdCategory(ProdCategory.valueOf((String) objArr[3]));
+			prodTable.setProdCategory((ProdCategory) objArr[3]);
 			prodTable.setAppName((String) objArr[4]);
 			prodTable.setRegDate((Date) objArr[5]);
 			prodTable.setRegExpiryDate((Date) objArr[6]);
@@ -272,6 +273,14 @@ public class ProductDAO implements Serializable {
 			prodTable.setFnm((String) objArr[11]);
 			prodTables.add(prodTable);
 		}
+		
+		Collections.sort(prodTables, new Comparator<ProdTable>() {
+			@Override
+			public int compare(ProdTable o1, ProdTable o2) {
+				return o1.getProdName().compareTo(o2.getProdName());
+			}
+		});
+		
 		return prodTables;
 	}
 
