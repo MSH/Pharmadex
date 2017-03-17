@@ -206,6 +206,14 @@ public class ProdRegAppMbean implements Serializable {
 	public List<DosFormItem> completeDosformsSub(String query) {
         return JsfUtils.completeSuggestions(query, dosageFormService.findSubDosFormByMain(mainIt));
     }
+	
+	public boolean hideSubList(){
+		List<DosFormItem> list = dosageFormService.findSubDosFormByMain(mainIt);
+		if(list != null && list.size() > 0)
+			return true;
+		
+		return false;
+	}
 
 	public void onItemSelectMain(SelectEvent event) {
 		if(event.getObject() instanceof DosFormItem){

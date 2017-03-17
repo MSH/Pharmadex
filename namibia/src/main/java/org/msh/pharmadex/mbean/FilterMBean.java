@@ -90,7 +90,7 @@ public class FilterMBean implements Serializable, HttpSessionBindingListener{
 	}
 
 	public List<ProdTable> loadDefaultProducts(){
-		List<ProdTable> products = productService.findAllRegisteredProduct();
+		List<ProdTable> products = productService.findRegisteredProduct(null, null, getEndDate());
 		currentInn = null;
 		startDate = null;
 		endDate = new Date();

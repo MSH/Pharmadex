@@ -13,40 +13,57 @@
         <h:form prependId="false">
         	<p:growl id="growl" showDetail="false" showSummary="true" />
 	        <p:panel toggleable="true" toggleSpeed="250" header="#{msgs.filter_regprods}">
-	        	<h:panelGrid columns="4" cellspacing="5" columnClasses="col1, col2, col1, col2" >
-	            	<p:outputLabel value="#{msgs.product_innname}"/>
-	                <p:autoComplete id="alllist" value="#{filterMBean.currentInn}" 
+	        	<p:panelGrid style="width: 100%;">
+	            	<p:row>
+	            		<p:column >
+	            			<p:outputLabel value="#{msgs.product_innname}" styleClass="label"/>
+	            		</p:column>
+	            		<p:column colspan="4" >
+	            			<p:outputLabel value="#{msgs.registration_date}" styleClass="label"/>
+	            		</p:column>
+	            		<p:column >
+	            			<p:commandButton action="#{filterMBean.filterClick()}" value="#{msgs.global_filter}"
+	                                 update=":products growl"/>
+	            		</p:column>
+	            	</p:row>
+	            	<p:row>
+	            		<p:column >
+	            			<p:autoComplete id="alllist" value="#{filterMBean.currentInn}" 
 					                completeMethod="#{globalEntityLists.completeInnCodes}" 
 					                converter="#{innConverter}"
 					                var="it" itemLabel="#{it.name}" itemValue="#{it.id}" forceSelection="true"
 					                scrollHeight="200">
-						<p:ajax event="itemSelect" listener="#{filterMBean.onItemSelect}" update="@form"
-					    		process="@form"/>
-					</p:autoComplete>
-					<p:outputLabel/>
-					<p:outputLabel/>
-					
-					<p:outputLabel value="#{msgs.global_startdate}" />
-					<p:calendar value="#{filterMBean.startDate}"
-							id="startDate" showOn="button"
-							navigator="true" yearRange="#{filterMBean.yearRange}" 
-							pattern="#{userAccessMBean.workspace.datePattern}">
-					</p:calendar>
-					
-					<p:outputLabel value="#{msgs.global_enddate}" />
-					<p:calendar value="#{filterMBean.endDate}"
-							id="endDate" showOn="button" 
-							navigator="true" yearRange="#{filterMBean.yearRange}"
-							pattern="#{userAccessMBean.workspace.datePattern}">
-					</p:calendar>
-						
-					<p:commandButton action="#{filterMBean.filterClick()}" value="#{msgs.global_filter}"
-	                                 update=":products growl"/>
-	                <p:commandButton action="#{filterMBean.clearClick()}" value="#{msgs.global_clear}"
+								<p:ajax event="itemSelect" listener="#{filterMBean.onItemSelect}" update="@form"
+							    		process="@form"/>
+							</p:autoComplete>
+	            		</p:column>
+	            		<p:column >
+	            			<p:outputLabel value="from" />
+	            		</p:column>
+	            		<p:column >
+	            			<p:calendar value="#{filterMBean.startDate}"
+									id="startDate" showOn="button"
+									navigator="true" yearRange="#{filterMBean.yearRange}" 
+									pattern="#{userAccessMBean.workspace.datePattern}">
+							</p:calendar>
+	            		</p:column>
+	            		<p:column >
+	            			<p:outputLabel value="to" />
+	            		</p:column>
+	            		<p:column >
+	            			<p:calendar value="#{filterMBean.endDate}"
+									id="endDate" showOn="button" 
+									navigator="true" yearRange="#{filterMBean.yearRange}"
+									pattern="#{userAccessMBean.workspace.datePattern}">
+							</p:calendar>
+	            		</p:column>
+	            		
+	            		<p:column >
+	            			<p:commandButton action="#{filterMBean.clearClick()}" value="#{msgs.global_clear}"
 	                                 update=":products :startDate :endDate :alllist"/>
-	                <p:outputLabel/>
-					<p:outputLabel/>
-				</h:panelGrid>
+	            		</p:column>
+	            	</p:row>
+	            </p:panelGrid>
 	        </p:panel>
 		</h:form>
 		
