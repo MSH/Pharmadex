@@ -558,8 +558,18 @@ public class ProcessProdBn implements Serializable {
 		timeLine = new TimeLine();
 		return "/internal/processprodlist";  //To change body of created methods use File | Settings | File Templates.
 	}
-
+	/**
+	 * For non Ajax
+	 * @return
+	 */
 	public String save() {
+		silentSave();
+		return "/internal/processprodlist";
+	}
+	/**
+	 * For Ajax
+	 */
+	public void silentSave() {
 		facesContext = getCurrentInstance();
 		try {
 			prodApplications = prodApplicationsService.saveApplication(prodApplications, userSession.getLoggedINUserID());
@@ -569,7 +579,6 @@ public class ProcessProdBn implements Serializable {
 			e.printStackTrace();
 			facesContext.addMessage(null, new FacesMessage(e.getMessage()));
 		}
-		return "/internal/processprodlist";
 	}
 
 	public String registerProduct() {
@@ -1263,5 +1272,20 @@ public class ProcessProdBn implements Serializable {
 		this.loggedInUser = loggedInUser;
 	}
 
+	/**
+	 * Should we render Update App fee button and tab itself
+	 * @return
+	 */
+	public boolean isApplicationFee(){
+		if(getProdApplications() != null){
+			return getProdApplications().getRegState().equals(RegState.SCREENING) || getProdApplications().getBankName() != null;
+		}else{
+			return false;
+		}
+	}
+
+	public void setApplicationFee(){
+		//nothing to do
+	}
 
 }
