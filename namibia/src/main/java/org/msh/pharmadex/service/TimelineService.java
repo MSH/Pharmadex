@@ -95,7 +95,7 @@ public class TimelineService implements Serializable {
 		
 		RetObject ret = new RetObject(); //!!!! temporary
 		ret.setMsg("persist");
-		return null;
+		return ret;
 	}
 
 	public String validateStatusChange(TimeLine timeLine) {

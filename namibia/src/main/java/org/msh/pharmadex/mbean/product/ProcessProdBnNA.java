@@ -54,7 +54,6 @@ public class ProcessProdBnNA implements Serializable {
 	private boolean showFeedBackButton;
 	private List<ProdApplications> allAncestors;
 	
-	private boolean showTabAppFee = false;
 	private boolean showTabAttach = false;
 	private boolean showFeeRecBtn = false;
 	private boolean visibleAssignBtn = false;
@@ -258,16 +257,6 @@ public class ProcessProdBnNA implements Serializable {
 	}
 	
 	
-	public boolean isShowTabAppFee() {
-		showTabAppFee = userSession.isCompany() || userSession.isStaff() || userSession.isAdmin();
-		//if(userSession.isModerator() || userSession.isHead() || userSession.isAdmin())
-		//	showTabAppFee = true;
-		return showTabAppFee;
-	}
-	
-	public void setShowTabAppFee(boolean showTabAppFee) {
-		this.showTabAppFee = showTabAppFee;
-	}
 	public boolean isShowTabAttach() {
 		showTabAttach = true;
 		//userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer||userSession.lab
