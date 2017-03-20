@@ -4,25 +4,60 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-	<!-- <h:outputLabel value="#{msgs.confirm_payment}" styleClass="label"/> -->
+	<p:commandButton value="#{msgs.global_update}"
+		ajax="true"
+		oncomplete="PF('createAppFee').show()"
+		rendered="#{processProdBn.applicationFee}" />
+	<p:panelGrid columns="2" cellspacing="10" columnClasses="label, value"
+		styleClass="grid" 
+		id="displayAppFee">
+		<p:outputLabel value="#{msgs.bank_name}" styleClass="label" />
+		<p:outputLabel value="#{processProdBn.prodApplications.bankName}"
+			style="width: 400px;" />
 
-    <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
-        <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
-        <p:inputText id="bankname" value="#{processProdBn.prodApplications.bankName}" required="true"
-        				requiredMessage="#{msgs.bank_missing}" style="width: 400px;"/>
+		<p:outputLabel value="#{msgs.reciept_no}" styleClass="label" />
+		<p:outputLabel value="#{processProdBn.prodApplications.receiptNo}" />
 
-        <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
-        <p:inputText id="receiptno" value="#{processProdBn.prodApplications.receiptNo}"/>
+		<p:outputLabel value="#{msgs.fee_submit_date}" styleClass="label" />
+		<p:outputLabel value="#{processProdBn.prodApplications.submitDate}"
+			pattern="#{userAccessMBean.workspace.datePattern}" />
+	</p:panelGrid>
 
-        <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
-        <p:calendar value="#{processProdBn.prodApplications.submitDate}" id="feesubmitdt" showOn="button"
-                pattern="#{userAccessMBean.workspace.datePattern}"  required="true"
-        				requiredMessage="Fee Submission Date is missing"/>
+	<p:dialog header="#{msgs.app_fee}" widgetVar="createAppFee"
+		id="createAppFee" resizable="false" modal="true" dynamic="true">
+		<h:form>
+		<p:messages id="messages" showDetail="false" showSummary="true" />
+			<h:panelGrid columns="2" cellspacing="10"
+				columnClasses="label, value" styleClass="grid">
+				<p:outputLabel value="#{msgs.bank_name}" for="bankname"
+					styleClass="label" />
+				<p:inputText id="bankname"
+					value="#{processProdBn.prodApplications.bankName}" required="true"
+					requiredMessage="#{msgs.bank_missing}" style="width: 400px;" />
 
-		<p:commandButton value="#{msgs.global_submit}" icon="ui-icon-disk"
-						action="#{processProdBn.save}" ajax="false"/>
-		
-        <p:outputLabel/>
-                        
-    </h:panelGrid>
+				<p:outputLabel value="#{msgs.reciept_no}" for="receiptno"
+					styleClass="label" />
+				<p:inputText id="receiptno"
+					value="#{processProdBn.prodApplications.receiptNo}" />
+
+				<p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"
+					styleClass="label" />
+				<p:calendar value="#{processProdBn.prodApplications.submitDate}"
+					id="feesubmitdt" showOn="button"
+					pattern="#{userAccessMBean.workspace.datePattern}" required="true"
+					requiredMessage="Fee Submission Date is missing" />
+
+				<p:commandButton value="#{msgs.global_submit}" icon="ui-icon-disk"
+					action="#{processProdBn.silentSave()}" ajax="true" 
+					update=":#{component.namingContainer.parent.namingContainer.clientId}
+					 messages" 
+					oncomplete="if (!args.validationFailed) PF('createAppFee').hide()"/>
+				<p:commandButton id="cancellet" type="button"
+					value="#{msgs.global_cancel}" onclick="PF('createAppFee').hide()"
+					icon="ui-icon-close" ajax="false"
+					update=":#{component.namingContainer.parent.namingContainer.clientId}
+					 messages"  />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
 </ui:composition>
