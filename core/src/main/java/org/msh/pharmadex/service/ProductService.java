@@ -128,9 +128,11 @@ public class ProductService implements Serializable {
                     issue = true;
                 }
             }else {
-                if (prodApplications.getBankName().equalsIgnoreCase("") || prodApplications.getFeeSubmittedDt() == null) {
-                    issues.add("no_fee");
-                    issue = true;
+                if ((prodApplications.getBankName() != null && prodApplications.getBankName().equalsIgnoreCase("")) || prodApplications.getFeeSubmittedDt() == null) {
+                	if((prodApplications.getPrescreenBankName() != null && prodApplications.getPrescreenBankName().equalsIgnoreCase("")) || prodApplications.getPrescreenfeeSubmittedDt() == null) {
+	                	issues.add("no_fee");
+	                    issue = true;
+                	}
                 }
             }
 

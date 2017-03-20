@@ -9,20 +9,35 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
-		oncomplete="PF('assignreviewdlg').show()"
-		actionListener="#{prodReviewBnMZ.initProcessorAdd}" ajax="true"
-		rendered="#{(userSession.moderator||userSession.admin) and !processProdBnMZ.visibleExecSumeryBtn}"
+	<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="10" cellspacing="10" columnClasses="col3, col3">
+		<p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerec"/>
+	    <p:selectBooleanButton id="feerec"
+	                               value="#{processProdBn.prodApplications.feeReceived}"
+	                               onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+	                               onIcon="ui-icon-check" offIcon="ui-icon-close" 
+	                               style="width:60px" disabled="#{processProdBnNA.showFeeRecBtn}">
+	    	<p:ajax listener="#{processProdBnNA.changeStatusListener}"
+	            		update="reghome:processtab reghome:banerstate"/>
+	   	</p:selectBooleanButton>
+	   	
+	   	<p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+			oncomplete="PF('assignreviewdlg').show()"
+			actionListener="#{prodReviewBnMZ.initProcessorAdd}" ajax="true"
+			rendered="#{processProdBnNA.visibleAssignBtn}"
+			
+			update=":reghome:processtab:assignreviewDlg" process="@this">
+			<p:resetInput target=":reghome:processtab:reviewerForm" />
+		</p:commandButton>
+		<p:outputLabel />
 		
-		update=":reghome:processtab:assignreviewDlg" process="@this">
-		<p:resetInput target=":reghome:processtab:reviewerForm" />
-	</p:commandButton>
-	<p:commandButton value="#{msgs.execsummary}" icon="ui-icon-gear"
-		ajax="false" id="execsumm"
-		action="#{processProdBnMZ.executiveSummary()}"
-		rendered="#{processProdBnMZ.visibleExecSumeryBtn}">
-		<f:param name="prodAppID" value="#{processProdBn.prodApplications.id}" />
-	</p:commandButton>
+		<p:commandButton value="#{msgs.execsummary}" icon="ui-icon-gear"
+			ajax="false" id="execsumm"
+			action="#{processProdBnMZ.executiveSummary()}"
+			rendered="#{processProdBnNA.visibleExecSumeryBtn}">
+			<f:param name="prodAppID" value="#{processProdBn.prodApplications.id}" />
+		</p:commandButton>
+		<p:outputLabel />
+	</h:panelGrid>
 
 	<div style="height: 10px" />
 

@@ -12,11 +12,15 @@ import javax.faces.bean.ViewScoped;
 
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.CommentService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.JsfUtils;
+import org.msh.pharmadex.util.Scrooge;
+import org.primefaces.event.TabChangeEvent;
 
 
 
@@ -49,6 +53,12 @@ public class ProcessProdBnNA implements Serializable {
 	private boolean prescreened = false;
 	private boolean showFeedBackButton;
 	private List<ProdApplications> allAncestors;
+	
+	private boolean showTabAppFee = false;
+	private boolean showTabAttach = false;
+	private boolean showFeeRecBtn = false;
+	private boolean visibleAssignBtn = false;
+	private boolean visibleExecSumeryBtn = false;
 
 	@PostConstruct
 	private void init() {
@@ -200,6 +210,11 @@ public class ProcessProdBnNA implements Serializable {
 				getProcessProdBn().addTimeline();
 			}
 			//}
+			
+			if(prodApp.getRegState().equals(RegState.SCREENING)){
+				getProcessProdBn().getTimeLine().setRegState(RegState.APPL_FEE);
+				getProcessProdBn().addTimeline();
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -210,6 +225,8 @@ public class ProcessProdBnNA implements Serializable {
 	 * @return
 	 */
 	public boolean isReadyToScreening() {
+		if(userSession.isCompany())
+			return true;
 		ProdApplications prodApp = getProcessProdBn().getProdApplications();
 		if (prodApp != null){
 			return prodApp.isPrescreenfeeReceived() && prodApp.isApplicantVerified() && prodApp.isProductVerified() && prodApp.isDossierReceived();
@@ -239,4 +256,80 @@ public class ProcessProdBnNA implements Serializable {
 			return false;
 		}
 	}
+	
+	
+	public boolean isShowTabAppFee() {
+		showTabAppFee = userSession.isCompany() || userSession.isStaff() || userSession.isAdmin();
+		//if(userSession.isModerator() || userSession.isHead() || userSession.isAdmin())
+		//	showTabAppFee = true;
+		return showTabAppFee;
+	}
+	
+	public void setShowTabAppFee(boolean showTabAppFee) {
+		this.showTabAppFee = showTabAppFee;
+	}
+	public boolean isShowTabAttach() {
+		showTabAttach = true;
+		//userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer||userSession.lab
+		return showTabAttach;
+	}
+	public void setShowTabAttach(boolean showTabAttach) {
+		this.showTabAttach = showTabAttach;
+	}
+	
+	public void onTabChange(TabChangeEvent event) {
+		if(processProdBn.getProdApplications() == null){
+			Scrooge.goToHome();
+			return ;
+		}
+		//processProdBn.save();
+	}
+	public boolean isShowFeeRecBtn() {
+		showFeeRecBtn = true;
+		if(processProdBn.getProdApplications().getRegState().equals(RegState.SCREENING)){
+			if(userSession.isModerator())
+				showFeeRecBtn = false;
+		}else if(processProdBn.getProdApplications().getRegState().equals(RegState.APPL_FEE)){
+			showFeeRecBtn = true;
+		}
+		return showFeeRecBtn;
+	}
+	public void setShowFeeRecBtn(boolean showFeeRecBtn) {
+		this.showFeeRecBtn = showFeeRecBtn;
+	}
+	
+	public boolean isVisibleAssignBtn() {
+		visibleAssignBtn = false;
+		if(userSession.isModerator() || userSession.isAdmin()){
+			if((processProdBn.getProdApplications().getRegState().equals(RegState.APPL_FEE) && processProdBn.getProdApplications().isFeeReceived())
+					&& !isVisibleExecSumeryBtn())
+				visibleAssignBtn = true;
+		}
+		return visibleAssignBtn;
+	}
+	public void setVisibleAssignBtn(boolean visibleAssignBtn) {
+		this.visibleAssignBtn = visibleAssignBtn;
+	}
+	
+	public boolean isVisibleExecSumeryBtn() {
+		if((userSession.isModerator() || userSession.isAdmin() || userSession.isHead()) 
+				&& processProdBn.getUserAccessMBean().isDetailReview()){
+			// if All ReviewInfo in state ACCEPTED
+			List<ReviewInfo> list = processProdBn.getReviewInfos();
+			if(list != null && list.size() > 0){
+				for(ReviewInfo rinfo:list){
+					if(!rinfo.getReviewStatus().equals(ReviewStatus.ACCEPTED)){
+						visibleExecSumeryBtn = false;
+						return visibleExecSumeryBtn;
+					}
+				}
+				visibleExecSumeryBtn = true;
+			}
+		}
+		return visibleExecSumeryBtn;
+	}
+	public void setVisibleExecSumeryBtn(boolean visibleExecSumeryBtn) {
+		this.visibleExecSumeryBtn = visibleExecSumeryBtn;
+	}
+	
 }

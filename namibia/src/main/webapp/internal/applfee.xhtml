@@ -1,0 +1,28 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- <h:outputLabel value="#{msgs.confirm_payment}" styleClass="label"/> -->
+
+    <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
+        <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
+        <p:inputText id="bankname" value="#{processProdBn.prodApplications.bankName}" required="true"
+        				requiredMessage="#{msgs.bank_missing}" style="width: 400px;"/>
+
+        <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
+        <p:inputText id="receiptno" value="#{processProdBn.prodApplications.receiptNo}"/>
+
+        <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
+        <p:calendar value="#{processProdBn.prodApplications.submitDate}" id="feesubmitdt" showOn="button"
+                pattern="#{userAccessMBean.workspace.datePattern}"  required="true"
+        				requiredMessage="Fee Submission Date is missing"/>
+
+		<p:commandButton value="#{msgs.global_submit}" icon="ui-icon-disk"
+						action="#{processProdBn.save}" ajax="false"/>
+		
+        <p:outputLabel/>
+                        
+    </h:panelGrid>
+</ui:composition>

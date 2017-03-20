@@ -1596,10 +1596,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.VERIFY);
+			regState.add(RegState.APPL_FEE);
 		} 
 		if (userSession.isModerator()) {
 			regState.add(RegState.FOLLOW_UP);
 			regState.add(RegState.SCREENING);
+			regState.add(RegState.APPL_FEE);
 			regState.add(RegState.VERIFY);
 			regState.add(RegState.REVIEW_BOARD);
 			params.put("moderatorId", userSession.getLoggedINUserID());
@@ -1623,6 +1625,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.RECOMMENDED);
 			regState.add(RegState.NOT_RECOMMENDED);
 			regState.add(RegState.REJECTED);
+			regState.add(RegState.APPL_FEE);
 		} 
 		if (userSession.isStaff()) {
 			regState.add(RegState.NEW_APPL);

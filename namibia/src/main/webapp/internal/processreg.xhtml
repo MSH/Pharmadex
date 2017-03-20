@@ -32,7 +32,7 @@
 						<p:tabView id="processtab" style="width: 830px;"
 							activeIndex="#{processProdBn.selectedTab}" dynamic="true"
 							cache="false">
-							<p:ajax event="tabChange" listener="#{processProdBnMZ.onTabChange}" />
+							<p:ajax event="tabChange" listener="#{processProdBnNA.onTabChange}" />
 							<p:tab title="#{msgs.application_info}" id="infotab">
 								<h:panelGrid columns="4" cellspacing="10"
 									columnClasses="col1, col2, col1, col2">
@@ -221,8 +221,7 @@
 							</p:tab>
 
 							<p:tab title="#{msgs.attachments}" id="attachtab"
-								rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer||userSession.lab}">
-
+								rendered="#{processProdBnNA.showTabAttach}">
 								<h:panelGrid columns="1" cellpadding="5" cellspacing="5">
 									<p:outputLabel value="#{msgs.reg_form_attach_hint2}"
 										styleClass="hint" />
@@ -375,6 +374,13 @@
 								
 							</p:tab>
 
+							<p:tab title="#{msgs.app_fee}" id="appfee"
+								rendered="#{processProdBnNA.showTabAppFee}">
+								<ui:include src="applfee.xhtml" />
+								<f:param name="sourcePage" 
+									value="/internal/processreg.faces:#{each.prodApplications.id}" />
+							</p:tab>
+							
 							<p:tab title="#{msgs.assessment}" id="process"
 								rendered="#{processProdBnMZ.showAssessment}">
 								<ui:include src="reviewertable.xhtml" />
