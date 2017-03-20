@@ -128,11 +128,9 @@ public class ProductService implements Serializable {
                     issue = true;
                 }
             }else {
-                if ((prodApplications.getBankName() != null && prodApplications.getBankName().equalsIgnoreCase("")) || prodApplications.getFeeSubmittedDt() == null) {
-                	if((prodApplications.getPrescreenBankName() != null && prodApplications.getPrescreenBankName().equalsIgnoreCase("")) || prodApplications.getPrescreenfeeSubmittedDt() == null) {
-	                	issues.add("no_fee");
-	                    issue = true;
-                	}
+                if (!checkFee(prodApplications)) {
+                    issues.add("no_fee");
+                    issue = true;
                 }
             }
 
@@ -211,6 +209,25 @@ public class ProductService implements Serializable {
 
         }
     }
+    /**
+     * Check fee
+     * @param prodApplications
+     * @return
+     */
+	public boolean checkFee(ProdApplications prodApplications) {
+		String bankName = "";
+		Date feeSubmited = null;
+		if(prodApplications.getBankName() != null){
+			bankName = prodApplications.getBankName();
+			feeSubmited = prodApplications.getFeeSubmittedDt();
+		}else{
+			if(prodApplications.getPrescreenBankName() != null){
+				bankName = prodApplications.getPrescreenBankName();
+				feeSubmited = prodApplications.getPrescreenfeeSubmittedDt();
+			}
+		}
+		return (bankName.length()>0) && (feeSubmited != null);
+	}
 
     public RetObject findDrugPriceByProd(Long prodID) {
         RetObject retObject;
