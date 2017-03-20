@@ -58,7 +58,7 @@ public class TimelineService implements Serializable {
 		String msg = validateStatusChange(timeLine);
 		TimeLine timeline;
 		if (msg.equals("success")) {
-			//TODO retObject = addMilestone(timeLine);
+			retObject = addMilestone(timeLine);
 			if(retObject.getMsg().equalsIgnoreCase("persist")){
 				timeline = timelineDAO.saveAndFlush(timeLine);
 				retObject = prodApplicationsService.updateProdApp(timeline.getProdApplications(), timeline.getUser().getUserId());
@@ -93,6 +93,8 @@ public class TimelineService implements Serializable {
 		}
 		//TODO if reg state is Application fee received, add unique MS_REV_START
 		
+		RetObject ret = new RetObject(); //!!!! temporary
+		ret.setMsg("persist");
 		return null;
 	}
 
