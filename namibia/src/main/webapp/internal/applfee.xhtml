@@ -4,15 +4,14 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:commandButton value="#{msgs.global_update}"
-		ajax="true"
+	<p:commandButton value="#{msgs.global_update}" ajax="true"
 		oncomplete="PF('createAppFee').show()"
 		rendered="#{processProdBn.applicationFee}" />
 	<p:panelGrid columns="2" cellspacing="10" columnClasses="label, value"
-		styleClass="grid" 
-		id="displayAppFee">
+		styleClass="grid" id="displayAppFee">
 		<p:outputLabel value="#{msgs.bank_name}" styleClass="label" />
-		<p:outputLabel value="#{processProdBn.prodApplications.bankName}"
+		<p:outputLabel id="applFeeBank"
+			value="#{processProdBn.prodApplications.bankName}"
 			style="width: 400px;" />
 
 		<p:outputLabel value="#{msgs.reciept_no}" styleClass="label" />
@@ -26,7 +25,7 @@
 	<p:dialog header="#{msgs.app_fee}" widgetVar="createAppFee"
 		id="createAppFee" resizable="false" modal="true" dynamic="true">
 		<h:form>
-		<p:messages id="messages" showDetail="false" showSummary="true" />
+			<p:messages id="messages" showDetail="false" showSummary="true" />
 			<h:panelGrid columns="2" cellspacing="10"
 				columnClasses="label, value" styleClass="grid">
 				<p:outputLabel value="#{msgs.bank_name}" for="bankname"
@@ -48,15 +47,15 @@
 					requiredMessage="Fee Submission Date is missing" />
 
 				<p:commandButton value="#{msgs.global_submit}" icon="ui-icon-disk"
-					action="#{processProdBn.silentSave()}" ajax="true" 
-					update=":#{component.namingContainer.parent.namingContainer.clientId}
-					 messages" 
-					oncomplete="if (!args.validationFailed) PF('createAppFee').hide()"/>
+					action="#{processProdBn.silentSave()}" ajax="true"
+					update=":#{component.namingContainer.parent.namingContainer.clientId}:displayAppFee
+					 :#{component.namingContainer.parent.namingContainer.clientId}:createAppFee"
+					oncomplete="if (!args.validationFailed) PF('createAppFee').hide()"
+					process="@form" />
 				<p:commandButton id="cancellet" type="button"
 					value="#{msgs.global_cancel}" onclick="PF('createAppFee').hide()"
 					icon="ui-icon-close" ajax="false"
-					update=":#{component.namingContainer.parent.namingContainer.clientId}
-					 messages"  />
+					/>
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>
