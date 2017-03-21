@@ -1,25 +1,27 @@
 <!-- Creates the table with passed in values of product -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
 	<p:commandButton value="#{msgs.global_update}" ajax="true"
 		oncomplete="PF('createAppFee').show()"
-		rendered="#{processProdBn.applicationFee}" />
+		rendered="#{processProdBn.applicationFee}"/>
 	<p:panelGrid columns="2" cellspacing="10" columnClasses="label, value"
 		styleClass="grid" id="displayAppFee">
-		<p:outputLabel value="#{msgs.bank_name}" styleClass="label" />
+		<p:outputLabel value="#{msgs.bank_name}" />
 		<p:outputLabel id="applFeeBank"
 			value="#{processProdBn.prodApplications.bankName}"
 			style="width: 400px;" />
 
-		<p:outputLabel value="#{msgs.reciept_no}" styleClass="label" />
+		<p:outputLabel value="#{msgs.reciept_no}" />
 		<p:outputLabel value="#{processProdBn.prodApplications.receiptNo}" />
 
-		<p:outputLabel value="#{msgs.fee_submit_date}" styleClass="label" />
-		<p:outputLabel value="#{processProdBn.prodApplications.submitDate}"
-			pattern="#{userAccessMBean.workspace.datePattern}" />
+		<p:outputLabel value="#{msgs.fee_submit_date}"/>
+		<h:outputText value="#{processProdBn.prodApplications.feeSubmittedDt}">
+        	<f:convertDateTime pattern="#{userAccessMBean.workspace.datePattern}"/>
+        </h:outputText>
 	</p:panelGrid>
 
 	<p:dialog header="#{msgs.app_fee}" widgetVar="createAppFee"
@@ -41,7 +43,7 @@
 
 				<p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt"
 					styleClass="label" />
-				<p:calendar value="#{processProdBn.prodApplications.submitDate}"
+				<p:calendar value="#{processProdBn.prodApplications.feeSubmittedDt}"
 					id="feesubmitdt" showOn="button"
 					pattern="#{userAccessMBean.workspace.datePattern}" required="true"
 					requiredMessage="Fee Submission Date is missing" />
@@ -54,8 +56,7 @@
 					process="@form" />
 				<p:commandButton id="cancellet" type="button"
 					value="#{msgs.global_cancel}" onclick="PF('createAppFee').hide()"
-					icon="ui-icon-close" ajax="false"
-					/>
+					icon="ui-icon-close" ajax="false"/>
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>
