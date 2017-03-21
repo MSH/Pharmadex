@@ -4,6 +4,7 @@ package org.msh.pharmadex.domain.enums;
  * Author: usrivastava
  */
 public enum RegState {
+	//Registration states
     SAVED,
     NEW_APPL,
     FEE,
@@ -22,7 +23,14 @@ public enum RegState {
     SUSPEND,
     CANCEL,
     RENEWED,
-    ARCHIVE;
+    ARCHIVE,
+    //Milestones
+    MS_START,
+    MS_SCR_START,
+    MS_SCR_END,
+    MS_REV_START,
+    MS_REV_END,
+    MS_END;
 
     public String getKey() {
         return getClass().getSimpleName().concat("." + name());
