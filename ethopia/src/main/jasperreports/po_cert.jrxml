@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-06-01T13:10:47 -->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2017-02-23T13:54:53 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -370,14 +370,14 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[PURCHASE ORDER CERTIFICATE]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="41" y="207" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="41" y="207" width="322" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="41" y="227" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+				<reportElement x="41" y="227" width="322" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
@@ -399,7 +399,7 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[To,]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="41" y="187" width="236" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
+				<reportElement positionType="FixRelativeToBottom" x="41" y="187" width="322" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -875,12 +875,9 @@ and pip.id = $P{piporderid}]]>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="75" splitType="Stretch">
+		<band height="70" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="30" width="497" height="20" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
+				<reportElement x="0" y="0" width="497" height="22" uuid="dfe1630b-4d3c-465a-b0ae-0f177c9b4d4b"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -894,14 +891,6 @@ and pip.id = $P{piporderid}]]>
 					<paragraph leftIndent="10" rightIndent="10"/>
 				</textElement>
 				<text><![CDATA[Food Medicine and Health Care Administration and Control Authority ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="572" height="20" uuid="9d4891fa-5d5f-46ac-b783-31af6e9dcefe"/>
-				<textElement>
-					<font size="10" isBold="false"/>
-					<paragraph leftIndent="10" rightIndent="10"/>
-				</textElement>
-				<text><![CDATA[This certificate only valid if the product registration status is valid]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
