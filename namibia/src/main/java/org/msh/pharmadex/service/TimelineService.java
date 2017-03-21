@@ -1,20 +1,27 @@
 package org.msh.pharmadex.service;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import javax.faces.context.FacesContext;
+
 import org.msh.pharmadex.dao.iface.TimelineDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
-import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.ProdAppChecklist;
+import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Review;
+import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.TimeLine;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.util.RetObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Author: usrivastava
@@ -38,9 +45,11 @@ public class TimelineService implements Serializable {
 	@Autowired
 	ProdApplicationsService prodApplicationsService;
 
+
+
 	public List<TimeLine> findTimelineByApp(Long prodApplications_Id) {
 		timeLineList = timelineDAO.findByProdApplications_IdOrderByStatusDateDesc(prodApplications_Id);
-		if(timeLineList != null && timeLineList.size() > 0)
+		/*		if(timeLineList != null && timeLineList.size() > 0)
 			Collections.sort(timeLineList, new Comparator<TimeLine>() {
 				@Override
 				public int compare(TimeLine o1, TimeLine o2) {
@@ -48,7 +57,7 @@ public class TimelineService implements Serializable {
 					Long id2 = o2.getId();
 					return -id1.compareTo(id2);
 				}
-			});
+			});*/
 		return timeLineList;
 	}
 
@@ -58,14 +67,13 @@ public class TimelineService implements Serializable {
 		String msg = validateStatusChange(timeLine);
 		TimeLine timeline;
 		if (msg.equals("success")) {
-			retObject = addMilestone(timeLine);
-			if(retObject.getMsg().equalsIgnoreCase("persist")){
-				timeline = timelineDAO.saveAndFlush(timeLine);
-				retObject = prodApplicationsService.updateProdApp(timeline.getProdApplications(), timeline.getUser().getUserId());
-				timeline.setProdApplications((ProdApplications) retObject.getObj());
-				retObject.setObj(timeline);
-				retObject.setMsg("persist");
-			}
+			timeline = timelineDAO.saveAndFlush(timeLine);
+			retObject = prodApplicationsService.updateProdApp(timeline.getProdApplications(), timeline.getUser().getUserId());
+			timeline.setProdApplications((ProdApplications) retObject.getObj());
+			retObject.setObj(timeline);
+			retObject.setMsg("persist");
+			addMilestone(timeLine); //at this place related prodapplication has id!
+
 		} else {
 			retObject.setMsg(msg);
 			retObject.setObj(null);
@@ -76,25 +84,101 @@ public class TimelineService implements Serializable {
 	/**
 	 * For some timelines we should add extra timeline called milestone
 	 * Milestone is unique timeline that we are using to build performance reports
+	 * Milestone's logic is very simple, if milestone is not exist, then create it. 
+	 * Sometimes we will need to change status date, however we will never add a milestone if a milestone with same state is existed. 
+	 * Legacy events like VERIFY, SCREENING etc are triggers 
 	 * @param timeline
 	 * @return
 	 */
-	private RetObject addMilestone(TimeLine timeline) {
+	private void addMilestone(TimeLine timeline) {
+		//The first VERIFY event always start an application as well as screening
 		if(timeline.getRegState().equals(RegState.VERIFY)){
-			//TODO set MS_START
-			//TODO set MS_SCR_START
+			TimeLine msStart = searchTimelineFor(timeline.getProdApplications().getId(), RegState.MS_START);
+			if(msStart == null){
+				msStart = createMileStone(RegState.MS_START, timeline);
+				msStart = timelineDAO.saveAndFlush(msStart);
+				TimeLine msScrStart = createMileStone(RegState.MS_SCR_START, timeline);
+				msStart = timelineDAO.saveAndFlush(msScrStart);
+			}
 		}
+		//End of screening is the latest screening date
+		if(timeline.getRegState().equals(RegState.SCREENING)){
+			TimeLine msScrEnd = searchTimelineFor(timeline.getProdApplications().getId(), RegState.MS_SCR_END);
+			if(msScrEnd == null){
+				msScrEnd = createMileStone(RegState.MS_SCR_END, timeline);
+			}else{
+				msScrEnd.setStatusDate(timeline.getStatusDate());
+			}
+			msScrEnd = timelineDAO.saveAndFlush(msScrEnd);
+		}
+		//When an application registers or rejects first time it always finishes an evaluation. In addition if screening is not finished yet - finish it!
 		if(timeline.getRegState().equals(RegState.REGISTERED) || timeline.getRegState().equals(RegState.REJECTED)){
-			//TODO set unique MS_END
-			//TODO set unique MS_SCR_END
+			TimeLine msEnd = searchTimelineFor(timeline.getProdApplications().getId(), RegState.MS_END);
+			if(msEnd == null){
+				msEnd = createMileStone(RegState.MS_END, timeline);
+				msEnd = timelineDAO.saveAndFlush(msEnd);
+			}
+			TimeLine msScrEnd = searchTimelineFor(timeline.getProdApplications().getId(), RegState.MS_SCR_END);
+			if(msScrEnd == null){
+				msScrEnd = createMileStone(RegState.MS_SCR_END, timeline);
+				msScrEnd = timelineDAO.saveAndFlush(msScrEnd);
+			}
 		}
+		// Application fee received is definitely start of review
+		if(timeline.getRegState().equals(RegState.APPL_FEE)){
+			TimeLine msRevStart = searchTimelineFor(timeline.getProdApplications().getId(), RegState.MS_REV_START);
+			if(msRevStart == null){
+				msRevStart = createMileStone(RegState.MS_REV_START, timeline);
+				msRevStart = timelineDAO.saveAndFlush(msRevStart);
+			}
+		}
+		//End of review is the latest executive summary
 		if(timeline.getRegState().equals(RegState.RECOMMENDED) || timeline.getRegState().equals(RegState.NOT_RECOMMENDED)){
-			//TODO set unique MS_REV_END or change date to existed one 
+			TimeLine msRevEnd = searchTimelineFor(timeline.getProdApplications().getId(), RegState.MS_REV_END);
+			if(msRevEnd == null){
+				msRevEnd = createMileStone(RegState.MS_REV_END, timeline);
+			}else{
+				msRevEnd.setStatusDate(timeline.getStatusDate());
+			}
+			msRevEnd = timelineDAO.saveAndFlush(msRevEnd);
 		}
-		//TODO if reg state is Application fee received, add unique MS_REV_START
-		
-		RetObject ret = new RetObject(); //!!!! temporary
-		ret.setMsg("persist");
+
+	}
+
+	/**
+	 * Search for time lime for application with regState given, first or last
+	 * @param applicationId
+	 * @param regState
+	 * @return null, if not found
+	 */
+	private TimeLine searchTimelineFor(Long applicationId, RegState regState) {
+		TimeLine ret = null;
+		List<TimeLine> events = findTimelineByApp(applicationId);
+		if(events!=null){
+			for(TimeLine event : events){
+				if(event.getRegState().equals(regState)){
+					ret = event;
+				}
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Create a milestone with regState and based on timeline given
+	 * @param regState
+	 * @param timeline
+	 * @return
+	 */
+	private TimeLine createMileStone(RegState regState, TimeLine timeline) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+		TimeLine ret = new TimeLine();
+		ret.setRegState(regState);
+		ret.setStatusDate(timeline.getStatusDate());
+		ret.setProdApplications(timeline.getProdApplications());
+		ret.setUser(timeline.getUser());
+		ret.setComment(resourceBundle.getString(ret.getRegState().getKey()));
 		return ret;
 	}
 
@@ -158,6 +242,7 @@ public class TimelineService implements Serializable {
 
 		tl = timelineDAO.saveAndFlush(tl);
 		prodApplicationsService.updateProdApp(prodApp, tl.getUser().getUserId());
+		addMilestone(tl);
 		return tl;
 	}
 }
