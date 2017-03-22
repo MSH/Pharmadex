@@ -3,28 +3,16 @@ package org.msh.pharmadex.mbean;
 import static javax.faces.context.FacesContext.getCurrentInstance;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.Comment;
-import org.msh.pharmadex.domain.ProdApplications;
-import org.msh.pharmadex.domain.ReviewComment;
-import org.msh.pharmadex.domain.ReviewInfo;
-import org.msh.pharmadex.domain.User;
-import org.msh.pharmadex.mbean.product.ProcessProdBn;
-import org.msh.pharmadex.mbean.product.ReviewInfoBn;
-import org.msh.pharmadex.service.CommentService;
 import org.msh.pharmadex.service.DashboardService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.Scrooge;
@@ -37,6 +25,8 @@ import org.msh.pharmadex.util.Scrooge;
 @ViewScoped
 public class DashboardMBean implements Serializable {
 
+	private static final long serialVersionUID = 4866135420621315047L;
+	
 	private FacesContext facesContext = FacesContext.getCurrentInstance();
 	protected ResourceBundle resourceBundle;
 	
@@ -60,7 +50,9 @@ public class DashboardMBean implements Serializable {
 	}
 
 	public void loadList(){
-		if(isReport_2()){
+		if(isReport_1()){
+			list = dashboardService.getListTimesProcess();
+		}else if(isReport_2()){
 			list = dashboardService.getListByPercentNemList();
 		}else if(isReport_3()){
 			list = dashboardService.getListByPercentApprovedList();
@@ -68,11 +60,17 @@ public class DashboardMBean implements Serializable {
 	}
 	
 	public String getTitle(){
+		if(isReport_1())
+			return resourceBundle.getString("title_times");
 		if(isReport_2())
 			return resourceBundle.getString("title_perNemList");
 		if(isReport_3())
 			return resourceBundle.getString("title_perAppl");
 		return "";
+	}
+	
+	public boolean isReport_1(){
+		return numreport.equals("1");
 	}
 	
 	public boolean isReport_2(){

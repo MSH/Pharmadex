@@ -19,6 +19,10 @@ public class DashboardService implements Serializable {
 	@Autowired
 	DashboardDAO dashboardDAO;
 	
+	public List<ItemDashboard> getListTimesProcess(){
+		return dashboardDAO.getListTimesProcess();
+	}
+	
 	public List<ItemDashboard> getListByPercentNemList(){
 		return dashboardDAO.getListByPercentNemList();
 	}

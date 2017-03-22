@@ -31,7 +31,19 @@
                     <h:outputText value="#{item.total}"/>
                 </p:column>
                 
-                <p:column >
+                <p:column headerText="#{msgs.col_avgscreening}" rendered="#{dashboardMBean.report_1}">
+                    <h:outputText value="#{item.avg_screening}"/>
+                </p:column>
+                
+                <p:column headerText="#{msgs.col_avgreview}" rendered="#{dashboardMBean.report_1}">
+                    <h:outputText value="#{item.avg_review}"/>
+                </p:column>
+                
+                <p:column headerText="#{msgs.col_avgtotal}" rendered="#{dashboardMBean.report_1}">
+                    <h:outputText value="#{item.avg_total}"/>
+                </p:column>
+                
+                <p:column rendered="#{dashboardMBean.report_2 or dashboardMBean.report_3}">
                 	<f:facet name="header">
                 		<h:outputText value="#{msgs.col_count}" rendered="#{dashboardMBean.report_2}"/>
                 		<h:outputText value="#{msgs.col_countReg}" rendered="#{dashboardMBean.report_3}"/>
@@ -39,7 +51,7 @@
                     <h:outputText value="#{item.count}"/>
                 </p:column>
                 
-                <p:column >
+                <p:column rendered="#{dashboardMBean.report_2 or dashboardMBean.report_3}">
                 	<f:facet name="header">
                 		<h:outputText value="#{msgs.col_percent}" rendered="#{dashboardMBean.report_2}"/>
                 		<h:outputText value="#{msgs.col_percReg}" rendered="#{dashboardMBean.report_3}"/>
