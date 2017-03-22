@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+                
+	<ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{dashboardMBean.title}</h1>
+        </div>
+        <h:form prependId="false">
+        	<p:growl id="growl" showDetail="false" showSummary="true" />
+        	<p:commandButton action="#{dashboardMBean.loadList()}" value="#{msgs.btn_createDashboard}"
+	                                 update=":items growl"/>
+	        <p:dataTable id="items" var="item" value="#{dashboardMBean.list}"
+                         widgetVar="itemstable"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,40,100">
+                <p:column headerText="#{msgs.col_year}">
+                    <h:outputText value="#{item.year}"/>
+                </p:column>
+                
+                <p:column headerText="#{msgs.col_quarter}">
+                    <h:outputText value="#{item.quarter}"/>
+                </p:column>
+                
+                <p:column headerText="#{msgs.col_total}">
+                    <h:outputText value="#{item.total}"/>
+                </p:column>
+                
+                <p:column >
+                	<f:facet name="header">
+                		<h:outputText value="#{msgs.col_count}" rendered="#{dashboardMBean.report_2}"/>
+                		<h:outputText value="#{msgs.col_countReg}" rendered="#{dashboardMBean.report_3}"/>
+                	</f:facet>
+                    <h:outputText value="#{item.count}"/>
+                </p:column>
+                
+                <p:column >
+                	<f:facet name="header">
+                		<h:outputText value="#{msgs.col_percent}" rendered="#{dashboardMBean.report_2}"/>
+                		<h:outputText value="#{msgs.col_percReg}" rendered="#{dashboardMBean.report_3}"/>
+                	</f:facet>
+                    <h:outputText value="#{item.percent}"/>
+                </p:column>
+                
+                <p:column headerText="#{msgs.col_countRej}" rendered="#{dashboardMBean.report_3}">
+                    <h:outputText value="#{item.count_other}"/>
+                </p:column>
+                
+                <p:column headerText="#{msgs.col_percRej}" rendered="#{dashboardMBean.report_3}">
+                    <h:outputText value="#{item.percent_other}"/>
+                </p:column>
+            </p:dataTable>
+
+            <h:panelGrid columns="2" width="100%">
+                <p:panel>
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="items" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/pdf.png"/>
+                        <p:dataExporter type="pdf" target="items" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="items" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="items" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+                </p:panel>
+            </h:panelGrid>
+		</h:form>
+    </ui:define>
+</ui:composition>

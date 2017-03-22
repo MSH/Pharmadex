@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import static org.msh.pharmadex.domain.enums.RegState.FEE;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +36,8 @@ public class ProcessProdBnNA implements Serializable {
 
 	@ManagedProperty(value = "#{processProdBn}")
 	public ProcessProdBn processProdBn;
+	@ManagedProperty(value = "#{processProdBnMZ}")
+	public ProcessProdBnMZ processProdBnMZ;
 	@ManagedProperty(value = "#{userSession}")
 	public UserSession userSession;
 
@@ -58,13 +61,14 @@ public class ProcessProdBnNA implements Serializable {
 	private boolean showFeeRecBtn = false;
 	private boolean visibleAssignBtn = false;
 	private boolean visibleExecSumeryBtn = false;
-
+	
 	@PostConstruct
 	private void init() {
 		//Long id = Scrooge.beanParam("Id");
 		ProdApplications pa= processProdBn.getProdApplications();
 		if (pa!=null)changedFields=pa.getAppComment();
 		if (changedFields==null) changedFields="";
+		
 	}
 	public boolean isFieldChanged(String fieldname){
 		//получим список из review_info.changedFields  если в списке нет, то false
@@ -319,6 +323,19 @@ public class ProcessProdBnNA implements Serializable {
 	}
 	public void setVisibleExecSumeryBtn(boolean visibleExecSumeryBtn) {
 		this.visibleExecSumeryBtn = visibleExecSumeryBtn;
+	}
+	
+	
+	public ProcessProdBnMZ getProcessProdBnMZ() {
+		return processProdBnMZ;
+	}
+	public void setProcessProdBnMZ(ProcessProdBnMZ processProdBnMZ) {
+		this.processProdBnMZ = processProdBnMZ;
+	}
+	public String rejectProduct(ProdApplications prodApplications) {
+		prodApplications.setRegistrationDate(new Date());
+		
+		return getProcessProdBnMZ().rejectProduct(prodApplications);
 	}
 	
 }

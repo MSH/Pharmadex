@@ -122,7 +122,17 @@ ul.ui-menu-child {
 						<f:param name="sourcePage" value="/home.faces" />
 						<f:param name="appID" value="#{userSession.userApplicantId}" />
 					</p:menuitem>
-
+					<p:submenu label="#{msgs.menu_dashboard}" 
+						rendered="#{!userSession.company}">
+						<p:menuitem value="#{msgs.dashboard_perNemList}"
+							action="/internal/dashboard.faces" ajax="false">
+							<f:param name="numreport" value="2" />
+						</p:menuitem>
+						<p:menuitem value="#{msgs.dashboard_perAppl}"
+							action="/internal/dashboard.faces" ajax="false" >
+							<f:param name="numreport" value="3" />
+						</p:menuitem>
+					</p:submenu>
 				</sec:isAuthenticated>
 
 			</p:menubar>
