@@ -288,7 +288,7 @@ public class CustomReviewDAO implements Serializable {
 				.getResultList();
 		if(listInfo != null && listInfo.size() > 0){
 			for(ReviewInfo info:listInfo){
-				List<ReviewDetail> listDetail = reviewQDAO.findReviewSummary(info.getReviewer().getUserId(), info.getId());
+				List<ReviewDetail> listDetail = reviewQDAO.findReviewSummary2Module(info.getReviewer().getUserId(), info.getId());
 				/*List<ReviewDetail> listDetail = entityManager
 						.createQuery("select rd from ReviewDetail rd where rd.reviewInfo.id=:revinfoId "
 								+ 
