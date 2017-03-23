@@ -5,7 +5,7 @@ public class Reviewer {
 	private String FIO;
 	private String updateDate;
 	private String accepted;
-	private String rejected;
+	/*private String rejected;*/
 	
 	public String getFIO() {
 		return FIO;
@@ -27,12 +27,12 @@ public class Reviewer {
 	public void setAccepted(String accepted) {
 		this.accepted = accepted;
 	}
-	
+	/*
 	public String getRejected() {
 		return rejected;
 	}
 	public void setRejected(String rejected) {
 		this.rejected = rejected;
-	}
+	}*/
 
 }
