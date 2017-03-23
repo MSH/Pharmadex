@@ -1348,12 +1348,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			reviewer.setFIO(curUser.getName());
 		
 		reviewer.setAccepted("");
-		reviewer.setRejected("");
+		//reviewer.setRejected("");
 		if(reviewStatus!=null){			
 			if(reviewStatus.equals(RecomendType.RECOMENDED)){
-				reviewer.setAccepted("1");				
+				reviewer.setAccepted("0");				
 			}else if(reviewStatus.equals(RecomendType.NOT_RECOMENDED)){
-				reviewer.setRejected("1");				
+				reviewer.setAccepted("1");				
 			}			
 		}		
 		reviewer.setUpdateDate("");
