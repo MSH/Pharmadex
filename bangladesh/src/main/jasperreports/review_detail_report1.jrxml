@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-03-13T19:20:01 -->
+<!-- 2017-03-23T15:40:52 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_letter" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="6c5209d4-7159-49c7-82ce-21ad5d79045f">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -91,7 +91,6 @@
 		<field name="FIO" class="java.lang.String"/>
 		<field name="updateDate" class="java.lang.String"/>
 		<field name="accepted" class="java.lang.String"/>
-		<field name="rejected" class="java.lang.String"/>
 	</subDataset>
 	<subDataset name="Empty Dataset1" uuid="52bb14bf-745d-422c-8900-be0c927d22be"/>
 	<parameter name="appNum" class="java.lang.String"/>
@@ -564,27 +563,31 @@
 						<jr:detailCell style="Table 2_TD" height="50">
 							<textField isStretchWithOverflow="true">
 								<reportElement positionType="Float" x="0" y="0" width="100" height="25" uuid="5762d4be-51ae-46fa-b7e8-011b75759505"/>
-								<box padding="5">
+								<box padding="3">
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="rgba(0, 0, 0, 0.0)"/>
 									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="rgba(0, 0, 0, 0.0)"/>
 									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="rgba(0, 0, 0, 0.0)"/>
 									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="rgba(0, 0, 0, 0.0)"/>
 								</box>
-								<textElement markup="html">
+								<textElement verticalAlignment="Middle" markup="html">
 									<font size="8"/>
+									<paragraph tabStopWidth="30"/>
 								</textElement>
 								<textFieldExpression><![CDATA["QUALITY REVIEWER:"]]></textFieldExpression>
 							</textField>
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" x="0" y="25" width="100" height="25" uuid="4d7ec57f-b930-495b-8331-f0b43aadf4b4"/>
-								<box padding="5">
+								<reportElement positionType="Float" x="0" y="25" width="100" height="25" uuid="4d7ec57f-b930-495b-8331-f0b43aadf4b4">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box padding="3">
 									<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<leftPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<rightPen lineColor="rgba(0, 0, 0, 0.0)"/>
 								</box>
-								<textElement markup="html">
+								<textElement verticalAlignment="Middle" markup="html">
 									<font size="8"/>
+									<paragraph tabStopWidth="30"/>
 								</textElement>
 								<textFieldExpression><![CDATA["DATE:"]]></textFieldExpression>
 							</textField>
@@ -594,99 +597,68 @@
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:detailCell style="Table 2_TD" height="50">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" x="0" y="0" width="170" height="25" uuid="946c0804-f8da-4c10-8975-9ceb704481b4"/>
-								<box padding="5">
+								<reportElement positionType="Float" x="0" y="0" width="170" height="25" uuid="946c0804-f8da-4c10-8975-9ceb704481b4">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box padding="3">
 									<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<leftPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<rightPen lineColor="rgba(0, 0, 0, 0.0)"/>
 								</box>
-								<textElement markup="html">
+								<textElement verticalAlignment="Middle" markup="html">
 									<font size="8"/>
+									<paragraph tabStopWidth="30"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{FIO}]]></textFieldExpression>
 							</textField>
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" x="0" y="25" width="170" height="25" uuid="c657ab4b-19da-4130-93ab-250a158b09ab"/>
-								<box padding="5">
+								<reportElement positionType="Float" x="0" y="25" width="170" height="25" uuid="c657ab4b-19da-4130-93ab-250a158b09ab">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box padding="3">
 									<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<leftPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<rightPen lineColor="rgba(0, 0, 0, 0.0)"/>
 								</box>
-								<textElement markup="html">
+								<textElement verticalAlignment="Middle" markup="html">
 									<font size="8"/>
+									<paragraph tabStopWidth="30"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{updateDate}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="140" uuid="296c98bd-2371-4511-92d0-832310346489">
+					<jr:column width="256" uuid="296c98bd-2371-4511-92d0-832310346489">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:detailCell style="Table 2_TD" height="50">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" x="0" y="0" width="140" height="25" uuid="f0c06151-eaab-4ecd-bbc1-90fe46269c95"/>
-								<box padding="5">
+								<reportElement positionType="Float" x="0" y="0" width="256" height="25" uuid="f0c06151-eaab-4ecd-bbc1-90fe46269c95">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box padding="3">
 									<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<leftPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
 									<rightPen lineColor="rgba(0, 0, 0, 0.0)"/>
 								</box>
-								<textElement markup="html">
+								<textElement verticalAlignment="Middle" markup="html">
 									<font size="8"/>
+									<paragraph tabStopWidth="30"/>
 								</textElement>
 								<textFieldExpression><![CDATA["OVERALL QUALITY REVIEW RESULT:"]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true">
-								<reportElement key="" positionType="Float" x="0" y="25" width="140" height="25" uuid="c7d78db2-61e3-4dcc-8c2e-b44678325497">
-									<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<textField>
+								<reportElement positionType="Float" x="0" y="25" width="256" height="25" uuid="e8e37aa2-dc9c-4917-9532-f25b8f7b6197">
 									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 								</reportElement>
-								<box padding="5">
-									<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<leftPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<rightPen lineColor="rgba(0, 0, 0, 0.0)"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="html">
-									<font size="8" isBold="false"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{accepted} == null ? "" : ($F{accepted}.equals("1")? "SATISFACTORY" : "")]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="116" uuid="4e0c4845-fa29-4a55-8cc2-d51ee0dae39b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:detailCell style="Table 2_TD" height="50">
-							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" x="0" y="0" width="116" height="25" uuid="56e3c933-d262-4af0-9b04-822c72a02b75"/>
-								<box padding="5">
-									<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<leftPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<rightPen lineColor="rgba(0, 0, 0, 0.0)"/>
-								</box>
-								<textElement markup="html">
+								<box padding="3"/>
+								<textElement verticalAlignment="Middle">
 									<font size="8"/>
+									<paragraph tabStopWidth="30"/>
 								</textElement>
-								<textFieldExpression><![CDATA[""]]></textFieldExpression>
-							</textField>
-							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" x="0" y="25" width="116" height="25" uuid="12c9ebe2-911a-4f41-b33d-cd86c0909cb2">
-									<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-								</reportElement>
-								<box padding="5">
-									<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<leftPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
-									<rightPen lineColor="rgba(0, 0, 0, 0.0)"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="html">
-									<font size="8" isBold="false"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{rejected} == null ? "" : ($F{rejected}.equals("1")? "UNSATISFACTORY" : "")]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{accepted} == null ? "" : ($F{accepted}.equals("0")? "SATISFACTORY" : ( $F{accepted}.equals("1")? "UNSATISFACTORY":""))]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -695,7 +667,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="700" splitType="Stretch">
+		<band height="580" splitType="Stretch">
 			<textField>
 				<reportElement positionType="Float" x="32" y="44" width="216" height="16" uuid="f15763cd-4166-4743-9d63-43932a38a698">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
