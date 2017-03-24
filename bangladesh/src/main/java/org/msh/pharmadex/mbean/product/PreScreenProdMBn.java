@@ -66,13 +66,7 @@ public class PreScreenProdMBn implements Serializable {
 	public String completeScreen() {
 		facesContext = FacesContext.getCurrentInstance();
 		resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-
-		RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
-		prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
-		if (!retObject.getMsg().equals("persist")) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, retObject.getMsg(), retObject.getMsg()));
-			return "";
-		}
+		saveCheckList();
 		if(prodAppChecklistService.checkStrict(prodAppChecklists)){
 			ProdApplications prodApplications = processProdBn.getProdApplications();
 			prodApplications.setModerator(moderator);
@@ -110,6 +104,20 @@ public class PreScreenProdMBn implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("checklist_incomplete"),""));
 		}
 		return "/internal/processprodlist";
+	}
+	/**
+	 * Save the checklist
+	 */
+	public void saveCheckList() {
+		facesContext = FacesContext.getCurrentInstance();
+		resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+		RetObject retObject = prodAppChecklistService.saveProdAppChecklists(prodAppChecklists);
+		prodAppChecklists = (List<ProdAppChecklist>) retObject.getObj();
+		if (!retObject.getMsg().equals("persist")) {
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, retObject.getMsg(), retObject.getMsg()));
+		}else{
+			facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
+		}
 	}
 	
 	/**
