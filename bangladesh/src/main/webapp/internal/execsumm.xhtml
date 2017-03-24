@@ -84,7 +84,6 @@
             <p:panel header="#{msgs.executive_summary}">
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="inputgrid"
                              rendered="#{execSummaryBn.editExecSumm}">
-                             
                     <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
                     <p:selectOneMenu id="recomcb" value="#{execSummaryBn.prodApplications.regState}"
                              required="true" requiredMessage="#{msgs.recommendation_valid}">
@@ -92,7 +91,11 @@
                         <f:selectItems value="#{execSummaryBn.nextSteps}" var="type"
                                        itemLabel="#{msgs[type.key]}"/>
                     </p:selectOneMenu>
-
+					
+					<p:outputLabel/>
+                	<p:commandButton value="#{msgs.btn_copyComments}" ajax="true"
+								oncomplete="PF('addEval').show()"/>
+		
                     <p:outputLabel value="#{msgs.summary}" for="summary"/>
                     <pe:ckEditor id="summary" value="#{execSummaryBn.prodApplications.execSummary}"
 								 height="500" width="700"
@@ -113,6 +116,27 @@
 
         <div style="height: 10px;"/>
 
-
+	<p:dialog header="#{msgs.btn_copyComments}" widgetVar="addEval" width="450px" height="450px"
+		id="addEval" resizable="false" modal="true" dynamic="true" closable="false">
+		<h:form>
+			<p:messages id="messages" showDetail="false" showSummary="true" />
+			<h:panelGrid columns="1" cellspacing="10" styleClass="grid">
+				<pe:ckEditor id="evaltext" value="#{execSummaryBn.evalSummary}"
+								 height="300" width="400"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
+								 required="true" requiredMessage="#{msgs.summary_empty_valid}"/>
+			</h:panelGrid>
+			<h:panelGrid columns="2" cellspacing="10" styleClass="grid">
+				<p:commandButton value="#{msgs.global_submit}" icon="ui-icon-disk"
+					action="#{execSummaryBn.addEvalSummary()}" ajax="true"
+					update=":reviewHome:summary"
+					oncomplete="if (!args.validationFailed) PF('addEval').hide()"
+					process="@form" />
+				<p:commandButton id="cancellet" type="button"
+					value="#{msgs.global_cancel}" onclick="PF('addEval').hide()"
+					icon="ui-icon-close" ajax="false"/>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
     </ui:define>
 </ui:composition>

@@ -27,6 +27,7 @@
             <div align="right">
                 <p:commandButton value="#{msgs.notif_recieving}" action="/secure/samplerecieving" ajax="false" rendered="#{sampleDetailBn.displayRec}">
                     <f:param name="sampleTestID" value="#{sampleDetailBn.sampleTest.id}"/>
+                    <f:param name="backTo" value="#{sampleDetailBn.getBackTo()}"/>
                 </p:commandButton>
                 <p:commandButton value="#{msgs.global_submit}" action="#{sampleDetailBn.initComment}" ajax="true" oncomplete="PF('submitSampleDlg').show()"
                                  update=":reviewHome :submitsamplefrm" process="@form" rendered="#{sampleDetailBn.displaySubmit}"/>
@@ -53,8 +54,6 @@
                             <h:outputText value="#{msgs.global_curr_status}" styleClass="label"/>
                             <h:outputText value="#{msgs[sampleDetailBn.sampleTest.sampleTestStatus.key]}"
                                           styleClass="label"/>
-
-
                             <p:outputLabel value="#{msgs.item_requested}" for="itm_req" styleClass="label"/>
                             <p:dataList id="itm_req" value="#{sampleDetailBn.sampleTest.sampleTypes}" var="type">
                                 #{msgs[type.key]}
@@ -71,15 +70,10 @@
                             <p:outputLabel value="#{sampleDetailBn.sampleTest.resultDt}"
                                            rendered="#{not empty sampleDetailBn.sampleTest.resultDt}"
                                            converter="javax.faces.DateTime"/>
-
-
                         </h:panelGrid>
                     </p:panel>
-
-
                 </p:tab>
                 <p:tab title="#{msgs.Sample_detail}">
-
                     <p:dataTable id="commenttable" value="#{sampleDetailBn.sampleComments}" var="it">
                         <p:column style="width:200px;">
                             <p:outputLabel styleClass="ui-icon ui-icon-comment"
@@ -102,13 +96,8 @@
                             #{it.sampleTestStatus}
                         </p:column>
                     </p:dataTable>
-
-
                 </p:tab>
-
             </p:tabView>
-
-
         </h:form>
 
         <p:dialog header="#{msgs.submit_sample_result}" widgetVar="submitSampleDlg" id="submitSampleDlg"

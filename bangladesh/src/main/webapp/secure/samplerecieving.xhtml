@@ -31,6 +31,7 @@
                 <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/lab/sampletestdetail"
                                  ajax="false">
                         <f:param name="sampleTestID" value="#{sampleRecBn.sampleTest.id}"/>
+                        <f:param name="backTo" value="#{sampleDetailBn.getBackTo()}"/>
                 </p:commandButton>
             </div>
 
