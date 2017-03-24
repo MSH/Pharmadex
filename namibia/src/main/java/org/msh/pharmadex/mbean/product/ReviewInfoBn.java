@@ -35,6 +35,7 @@ import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.ReviewQuestion;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -123,6 +124,8 @@ public class ReviewInfoBn implements Serializable {
 
 	private int header1ActIndex = 0;
 	private int header2ActIndex = 0;
+	
+	private YesNoNA curAnswer;
 
 	@PostConstruct
 	private void init() {
@@ -158,6 +161,14 @@ public class ReviewInfoBn implements Serializable {
 		}
 	}
 
+	public YesNoNA getCurAnswer() {
+		return curAnswer;
+	}
+
+	public void setCurAnswer(YesNoNA curAnswer) {
+		this.curAnswer = curAnswer;
+	}
+	
 	private void buildIdApp(){
 		int index = backTo.indexOf(":");
 		if(index != -1){
@@ -798,6 +809,7 @@ public class ReviewInfoBn implements Serializable {
 		bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 		ReviewDetail detail = reviewService.findReviewDetails(item);
 		if(detail != null){
+			curAnswer = item.getAnswer();
 			getReviewDetailBn().setReviewDetail(detail);
 			getReviewDetailBn().setPrevAnswer(detail.getAnswer());
 			detail.setAnswer(item.getAnswer());
@@ -824,24 +836,33 @@ public class ReviewInfoBn implements Serializable {
 				if(save){
 					if(detail.getAnswer().equals(YesNoNA.NO)){
 						if(detail.getVolume()!=null && detail.getVolume().length()>0){
-							if(hasCurrentAnswer(detail)){
-								getReviewDetailBn().saveReview(true);
-								RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
+							String err = hasCurrentAnswer(detail);
+							if(err == null){ // no empty fields
+								successAnswer();
 							}else{
 								facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-										bundle.getString("comment_is_mandatory"), ""));
+										err, ""));
 							}
 						}else{
 							facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 									bundle.getString("reference_is_mandatory"), ""));
 						}
-
 					}else{
 						//answer is YES or NA, Save it!
-						getReviewDetailBn().saveReview(true);
-						RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
+						if(detail.getAnswer().equals(YesNoNA.YES)){ //only reference to dossier is mandatory
+							if(detail.getVolume()!=null && detail.getVolume().length()>0){
+								successAnswer();
+							}else{
+								facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+										bundle.getString("reference_is_mandatory"), ""));
+							}
+
+						}else{ //Not Applicable
+							successAnswer();
+						}
 					}
 				}else{
+					curAnswer = null;
 					//Cancel, restore previous answer
 					detail.setAnswer(getReviewDetailBn().getPrevAnswer());
 					setDisplayReviewQs(null);
@@ -859,28 +880,32 @@ public class ReviewInfoBn implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ""));
 		}
 	}
+	
+	public void successAnswer() {
+		getReviewDetailBn().saveReview(true);
+		RequestContext.getCurrentInstance().execute("PF('reviewerRespDlg').hide()");
+	}
 
 	/**
 	 * Has the detail answer from the current reviewer?
 	 * @param detail
 	 * @return
 	 */
-	private boolean hasCurrentAnswer(ReviewDetail detail) {
-		if(primaryReviewerJob()){
-			if(detail.getOtherComment()!= null && detail.getOtherComment().length()>0){
-				return true;
-			}else{
-				return false;
-			}
+	private String hasCurrentAnswer(ReviewDetail detail) {
+		if(primaryReviewerJob()){// comment is empty
+			if(!(detail.getOtherComment() != null && detail.getOtherComment().length() > 0))
+				return bundle.getString("comment_is_mandatory");
 		}
-		if(secondReviewerJob()){
-			if(detail.getSecComment()!=null && detail.getSecComment().length()>0){
-				return true;
-			}else{
-				return false;
-			}
+		if(secondReviewerJob()){// comment is empty
+			if(!(detail.getSecComment()!=null && detail.getSecComment().length()>0))
+				return bundle.getString("comment_is_mandatory");
 		}
-		return true; //seems as impossible
+
+		// reasons is empty
+		/*if(!(detail.getNoReason() != null && detail.getNoReason().length() > 0))
+			return bundle.getString("reasons_is_mandatory");*/
+
+		return null; //seems as impossible
 	}
 
 	/**
@@ -952,4 +977,8 @@ public class ReviewInfoBn implements Serializable {
 		this.timeLineService = timeLineService;
 	}
 	
+	public String formatQuestionHeaders(ReviewQuestion question){
+		return "<b><p style='margin-left: 20px'>"+question.getHeader1()+ "</p>"
+				+"<p style='margin-left: 40px'>" +question.getHeader2() + "</p></b>";
+	}
 }

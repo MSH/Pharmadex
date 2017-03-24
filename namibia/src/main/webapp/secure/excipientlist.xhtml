@@ -1,0 +1,100 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <h:form id="exclist">
+            <h:panelGroup id="content">
+
+                <div class="post">
+                    <h1 class="title ui-widget-header ui-corner-all"> #{msgs.list_excipient}</h1>
+                </div>
+
+                <p:growl id="growl" showDetail="true"/>
+                <p:messages id="messages" showDetail="true" showSummary="true"/>
+                <p:dataTable id="excs" var="excip" value="#{innMBean.allExcipients}"
+               				 filteredValue="#{innMBean.filteredExcipients}" 
+                             rows="25" paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+                             currentPageReportTemplate="{startRecord} - {endRecord} of {totalRecords}" rowsPerPageTemplate="25,50,100,200">
+                    <f:facet name="header">
+                        <p:commandButton value="#{msgs.global_add}" action="#{innMBean.addExcipient()}"
+                                         oncomplete="PF('expDlg').show();"
+                                         update=":excform">
+                             <f:setPropertyActionListener value="#{true}" target="#{innMBean.newExc}"/>
+                             <f:setPropertyActionListener value="/admin/excipientlist.faces" target="#{innMBean.backTo}"/>      
+                        </p:commandButton>
+                    </f:facet>
+
+                    <p:column filterBy="#{excip.name}"
+                              sortBy="#{excip.name}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.User_name}"/>
+                        </f:facet>
+
+                        <p:commandLink value=" #{excip.name}" oncomplete="PF('expDlg').show();" update=":excform"
+                                       ajax="true" >
+							<f:setPropertyActionListener value="#{excip}" target="#{innMBean.selectedExcipient}"/>
+							<f:setPropertyActionListener value="#{excip.name}" target="#{innMBean.oldNameExp}"/>
+							<f:setPropertyActionListener value="#{false}" target="#{innMBean.newExc}"/>
+							<f:setPropertyActionListener value="/admin/excipientlist.faces" target="#{innMBean.backTo}"/>
+                        </p:commandLink>
+                    </p:column>
+                 </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="expDlg" modal="true" 
+         			resizable="false" header="#{msgs.change_excipient}" 
+         			dynamic="true"
+         			height="90px" width="850px">
+            <h:form id="excform">
+                <p:messages showSummary="true"/>
+
+				<h:panelGrid columns="3" columnClasses="col1, col2, col2" cellpadding="5" cellspacing="5">
+                    <h:outputLabel value="#{msgs.User_name}" for="excname"/>
+                    <p:inputTextarea id="excname" value="#{innMBean.selectedExcipient.name}"
+                    	cols="100" rows="2"
+                    	required="true" requiredMessage="#{msgs.User_name}"/>
+					<p:message for="excname" showSummary="true" showDetail="false"/>
+                </h:panelGrid>
+
+                <p:commandButton action="#{innMBean.saveExcipient()}" value="#{msgs.global_save}" id="saveexc"
+                                 ajax="false"
+                                 onclick="PF('statusDialog').show();"
+                                 oncomplete="if (!args.validationFailed) PF('excDlg').hide()"
+                                 update=":exclist:excs :exclist:messages :excform" 
+                                 rendered="#{innMBean.newExc}"/>
+                <p:commandButton action="#{innMBean.updateExcipient()}" value="#{msgs.global_update}" id="updateexc"
+                                 ajax="false"
+                                 onclick="PF('statusDialog').show();"
+                                 oncomplete="if (!args.validationFailed) PF('excDlg').hide()"
+                                 update=":exclist:excs :exclist:messages :excform" 
+                                 rendered="#{!innMBean.newExc}"/>
+				<p:commandButton action="#{innMBean.cancelExcipient()}" immediate="true" value="#{msgs.global_cancel}"
+                                 oncomplete="PF('excDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+        
+		<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
+        			resizable="false" dynamic="true" showHeader="false">
+		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+		
+		<script type="text/javascript">
+			function start() {
+			PF('statusDialog').show();
+			setTimeout(function() {
+				PF('statusDialog').hide();
+			}, 3000);
+			}
+				
+			function stop() {
+			PF('statusDialog').hide();
+			}
+		</script>
+    </ui:define>
+</ui:composition>
