@@ -34,6 +34,7 @@
                            action="/internal/lab/sampletestdetail.faces"
                            ajax="false" immediate="true">
                 <f:param name="sampleTestID" value="#{sample.id}"/>
+                <f:param name="backTo" value="#{backTo}"/>
                 <p:outputLabel value="#{sample.reqDt}">
                     <f:convertDateTime pattern="MMM dd, yyyy"/>
                 </p:outputLabel>

@@ -10,6 +10,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.service.ProdApplicationsServiceAdd;
@@ -140,4 +141,9 @@ public class ProcessProdBnBg implements Serializable {
 	public void setReviewService(ReviewService reviewService) {
 		this.reviewService = reviewService;
 	}
+	public List<ProdAppLetter> getListLetters(Long prodAppID) {
+		List<ProdAppLetter> letters = getProcessProdBn().getProdApplicationsService().findAllLettersByProdApp(prodAppID);
+		return letters;
+	}
+	
 }

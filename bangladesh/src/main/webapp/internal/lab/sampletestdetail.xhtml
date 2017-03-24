@@ -37,7 +37,7 @@
                                                  update=":reviewHome" process="@form" rendered="#{userSession.lab||userSession.admin||userSession.labModerator}"/>
                 -->
                 <p:commandButton value="#{msgs.global_back}" immediate="true"
-                                 action="/internal/processreg"
+                                 action="#{sampleDetailBn.getBackTo()}"
                                  ajax="false">
                     <f:param name="prodAppID" value="#{sampleDetailBn.sampleTest.prodApplications.id}"/>
                 </p:commandButton>

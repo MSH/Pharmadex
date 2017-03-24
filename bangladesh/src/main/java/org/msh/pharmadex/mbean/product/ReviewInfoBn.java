@@ -37,6 +37,7 @@ import org.msh.pharmadex.domain.RevDeficiency;
 import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.ReviewQuestion;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.LetterType;
 import org.msh.pharmadex.domain.enums.RecomendType;
@@ -129,6 +130,7 @@ public class ReviewInfoBn implements Serializable {
 
 	private Date ppsubdate;
 	private StreamedContent fileReviewDetail;
+	private YesNoNA curAnswer;
 
 	@PostConstruct
 	private void init() {
@@ -162,6 +164,14 @@ public class ReviewInfoBn implements Serializable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public YesNoNA getCurAnswer() {
+		return curAnswer;
+	}
+
+	public void setCurAnswer(YesNoNA curAnswer) {
+		this.curAnswer = curAnswer;
 	}
 
 	private void buildIdApp(){
@@ -813,6 +823,7 @@ public class ReviewInfoBn implements Serializable {
 		bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 		ReviewDetail detail = reviewService.findReviewDetails(item);
 		if(detail != null){
+			curAnswer = item.getAnswer();
 			getReviewDetailBn().setReviewDetail(detail);
 			getReviewDetailBn().setPrevAnswer(detail.getAnswer());
 			detail.setAnswer(item.getAnswer());
@@ -850,7 +861,6 @@ public class ReviewInfoBn implements Serializable {
 							facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 									bundle.getString("reference_is_mandatory"), ""));
 						}
-
 					}else{
 						//answer is YES or NA, Save it!
 						if(detail.getAnswer().equals(YesNoNA.YES)){ //only reference to dossier is mandatory
@@ -860,12 +870,12 @@ public class ReviewInfoBn implements Serializable {
 								facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 										bundle.getString("reference_is_mandatory"), ""));
 							}
-
 						}else{ //Not Applicable
 							successAnswer();
 						}
 					}
 				}else{
+					curAnswer = null;
 					//Cancel, restore previous answer
 					detail.setAnswer(getReviewDetailBn().getPrevAnswer());
 					setDisplayReviewQs(null);
@@ -1100,4 +1110,8 @@ public class ReviewInfoBn implements Serializable {
 		}
 	}
 
+	public String formatQuestionHeaders(ReviewQuestion question){
+		return "<b><p style='margin-left: 20px'>"+question.getHeader1()+ "</p>"
+				+"<p style='margin-left: 40px'>" +question.getHeader2() + "</p></b>";
+	}
 }

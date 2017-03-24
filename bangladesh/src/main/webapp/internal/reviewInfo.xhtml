@@ -108,7 +108,7 @@
 											</p:commandLink>
 											<p:selectOneButton id="console" value="#{quest.answer}"
 												rendered="#{!reviewInfoBn.readOnly}">
-												<f:selectItems value="#{globalLists.yesNoNA}" var="value"
+												<f:selectItems value="#{globalLists.yesNo}" var="value"
 													itemLabel="#{msgs[value.key]}" />
 												<p:ajax
 													listener="#{reviewInfoBn.reviewQuestionListener(quest)}"
@@ -242,6 +242,12 @@
 						</p:column>
 					</p:dataTable>
 				</p:tab>
+				<p:tab title="#{msgs.sample_request}" id="sampletab">
+				<!-- rendered="#{processProdBn.displaySample}" -->
+					<ui:include src="samplerequestpnl.xhtml" >
+						<ui:param name="backTo" value="/internal/reviewInfo" />
+					</ui:include>
+				</p:tab>
 			</p:tabView>
 
 			<p:blockUI block="detailtab" trigger=":reviewHome:detailtab">
@@ -249,9 +255,9 @@
 			</p:blockUI>
 		</h:form>
 
-		<p:dialog header="#{msgs.reviewer_response}"
+		<p:dialog header="#{msgs.reviewer_response} - #{reviewInfoBn.curAnswer}"
 			widgetVar="reviewerRespDlg" id="reviewerRespDlg" modal="true"
-			dynamic="true" width="850px" position="top">
+			dynamic="true" width="850px" position="top" closable="false">
 			<h:form id="reviewerRespForm" prependId="false">
 				<div align="right">
 					<p:commandButton value="#{msgs.global_submit}"
@@ -263,6 +269,18 @@
 						update=":reviewHome:detailtab :reviewHome:growl answerFooter"
 						ajax="true" />
 				</div>
+				<h:panelGrid id="answerFooter" columns="1">
+					<p:messages id="reviewDeatailMessages" showDetail="false"
+						showSummary="true" />
+				</h:panelGrid>
+				<h:panelGrid columns="2" columnClasses="label value"
+					cellspacing="5px">
+					<p:outputLabel value="#{msgs.module}:" />
+					<p:inputText value="#{reviewDetailBn.reviewDetail.volume}"
+						rendered="#{reviewInfoBn.visibleSubmitBtn()}"/>
+					<p:outputLabel value="#{reviewDetailBn.reviewDetail.volume}"
+						rendered="#{!reviewInfoBn.visibleSubmitBtn()}" />
+				</h:panelGrid>
 				<p:tabView>
 					<p:tab title="#{msgs.answer}">
 						<div align="right">
@@ -270,10 +288,11 @@
 								styleClass="hint" rendered="#{reviewInfoBn.visibleSubmitBtn()}" />
 						</div>
 						<h:panelGrid columns="2">
-							<p:panel style="width:380px; border:none">
-								<h:outputText
-									value="#{reviewDetailBn.reviewDetail.reviewQuestions.question}"
-									escape="false" />
+							<p:panel style="width:380px; border:none;">
+								<h:outputText escape="false"
+											value="#{reviewInfoBn.formatQuestionHeaders(reviewDetailBn.reviewDetail.reviewQuestions)}" />
+								<h:outputText escape="false" 
+									value="#{reviewDetailBn.reviewDetail.reviewQuestions.question}"/>
 							</p:panel>
 							<h:panelGrid columns="1" cellspacing="5px">
 								<p:tabView activeIndex="#{reviewInfoBn.activeTabIndex}">
@@ -339,18 +358,7 @@
 						</h:panelGrid>
 					</p:tab>
 				</p:tabView>
-				<h:panelGrid columns="2" columnClasses="label value"
-					cellspacing="5px">
-					<p:outputLabel value="#{msgs.module}:" />
-					<p:inputText value="#{reviewDetailBn.reviewDetail.volume}"
-						rendered="#{reviewInfoBn.visibleSubmitBtn()}" />
-					<p:outputLabel value="#{reviewDetailBn.reviewDetail.volume}"
-						rendered="#{!reviewInfoBn.visibleSubmitBtn()}" />
-				</h:panelGrid>
-				<h:panelGrid id="answerFooter" columns="1">
-					<p:messages id="reviewDeatailMessages" showDetail="false"
-						showSummary="true" />
-				</h:panelGrid>
+				
 			</h:form>
 		</p:dialog>
 

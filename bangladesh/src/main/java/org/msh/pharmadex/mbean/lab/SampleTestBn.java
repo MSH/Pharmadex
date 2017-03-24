@@ -5,7 +5,11 @@
 package org.msh.pharmadex.mbean.lab;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -23,12 +27,13 @@ import org.msh.pharmadex.domain.enums.SampleTestStatus;
 import org.msh.pharmadex.domain.lab.SampleComment;
 import org.msh.pharmadex.domain.lab.SampleTest;
 import org.msh.pharmadex.mbean.product.ProcessProdBn;
+import org.msh.pharmadex.mbean.product.ProcessProdBnBg;
+import org.msh.pharmadex.mbean.product.ReviewInfoBn;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.SampleTestService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.RetObject;
-import org.msh.pharmadex.util.Scrooge;
 
 /**
  * Backing bean to capture review of products
@@ -56,24 +61,52 @@ public class SampleTestBn implements Serializable {
 
     @ManagedProperty(value = "#{processProdBn}")
     private ProcessProdBn processProdBn;
+    
+    @ManagedProperty(value = "#{processProdBnBg}")
+    private ProcessProdBnBg processProdBnBg;
 
+    @ManagedProperty(value = "#{reviewInfoBn}")
+    private ReviewInfoBn reviewInfoBn;
+    
     private List<SampleTest> sampleTests;
     private SampleTest sampleTest;
     private SampleComment sampleComment;
     private FacesContext facesContext = FacesContext.getCurrentInstance();
     private ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 
+    private boolean isReview = false;
+    
     @PostConstruct
     public void init(){
-        if(sampleTests==null){
-            if(processProdBn.getProdApplications()!=null){
-                sampleTests = sampleTestService.findSampleForProd(processProdBn.getProdApplications().getId());
-                sampleTest = new SampleTest(processProdBn.getProdApplications());
-            }
+        if(sampleTests == null){
+        	ProdApplications prodApp = getProdApplication();
+        	
+        	if(prodApp != null){
+        		sampleTests = sampleTestService.findSampleForProd(prodApp.getId());
+                sampleTest = new SampleTest(prodApp);
+        	}
         }
     }
+    
+    public ProdApplications getProdApplication(){
+    	ProdApplications prodApp = processProdBn.getProdApplications();
+    	if(prodApp == null){
+    		prodApp = reviewInfoBn.getProdApplications();
+    		isReview = true;
+    	}
+    	
+    	return prodApp;
+    }
+    
+    public boolean isReview() {
+		return isReview;
+	}
 
-    public void addSample() {
+	public void setReview(boolean isReview) {
+		this.isReview = isReview;
+	}
+
+	public void addSample() {
     	// by used in countries
     	createSample();
 
@@ -89,8 +122,6 @@ public class SampleTestBn implements Serializable {
     
     public void createSample(){
     	facesContext = FacesContext.getCurrentInstance();
-        ProdApplications prodApplications = processProdBn.getProdApplications();
-
         if (sampleTest == null) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("processor_add_error")));
         }
@@ -113,7 +144,7 @@ public class SampleTestBn implements Serializable {
 
     public void initSampleAdd() {
         sampleTest.setSampleComments(new ArrayList<SampleComment>());
-        ProdApplications prodApplications = processProdBn.getProdApplications();
+        ProdApplications prodApplications = getProdApplication();
         sampleTest.setProdApplications(prodApplications);
         DosageForm dosForm = sampleTestService.findDosQuantity(sampleTest.getProdApplications().getId());
         String str = (dosForm.getSampleSize() != null ?dosForm.getSampleSize():"") + " " + (dosForm.getDosForm() != null ?dosForm.getDosForm():"");
@@ -122,11 +153,11 @@ public class SampleTestBn implements Serializable {
     }
 
     public void createConfirmLetter(){
-        ProdApplications prodapp = processProdBn.getProdApplications();
-        if (prodapp!=null){
-            List<ProdAppLetter> letters = processProdBn.getLetters();
+        ProdApplications prodapp = getProdApplication();
+        if (prodapp != null){
+            List<ProdAppLetter> letters = processProdBnBg.getListLetters(getProdApplication().getId());
             ProdAppLetter letter = null;
-            if (letters!=null){
+            if (letters != null){
                 for(ProdAppLetter let:letters){
                        if (let.getLetterType() != null && let.getLetterType().equals(LetterType.SAMPLE_TEST_RESULT)){
                            letter = let;
@@ -211,5 +242,28 @@ public class SampleTestBn implements Serializable {
 
     public void setSampleComment(SampleComment sampleComment) {
         this.sampleComment = sampleComment;
+    }
+
+	public ReviewInfoBn getReviewInfoBn() {
+		return reviewInfoBn;
+	}
+
+	public void setReviewInfoBn(ReviewInfoBn reviewInfoBn) {
+		this.reviewInfoBn = reviewInfoBn;
+	}
+
+	public ProcessProdBnBg getProcessProdBnBg() {
+		return processProdBnBg;
+	}
+
+	public void setProcessProdBnBg(ProcessProdBnBg processProdBnBg) {
+		this.processProdBnBg = processProdBnBg;
+	}
+    
+    public String goToBack(){
+    	if(isReview())
+    		return "/internal/reviewInfo";
+    	
+    	return "/internal/processreg";
     }
 }
