@@ -43,7 +43,7 @@ public class DashboardDAO implements Serializable {
 					+ " LEFT JOIN timeline revEnd on pa.ID = revEnd.PROD_APP_ID and revEnd.regState='" + RegState.MS_REV_END + "'"
 					+ " JOIN timeline appEnd on pa.ID = appEnd.PROD_APP_ID and appEnd.regState='" + RegState.MS_END + "'"
 					+ " where pa.regState='" + RegState.REGISTERED + "' or pa.regState='" + RegState.REJECTED + "'"
-					+ " Group by y,q";
+					+ " Group by y DESC,q DESC";
 
 		List<Object[]> list = entityManager.createNativeQuery(sql).getResultList();
 		if(list != null && list.size() > 0){
@@ -61,14 +61,14 @@ public class DashboardDAO implements Serializable {
 			}
 		}
 
-		Collections.sort(items, new Comparator<ItemDashboard>() {
+/*		Collections.sort(items, new Comparator<ItemDashboard>() {
 			@Override
 			public int compare(ItemDashboard o1, ItemDashboard o2) {
 				Integer i1 = new Integer(o1.getYear());
 				Integer i2 = new Integer(o2.getYear());
 				return i1.compareTo(i2);
 			}
-		});
+		});*/
 
 		return items;
 	}
@@ -84,7 +84,7 @@ public class DashboardDAO implements Serializable {
 				+ " FROM prodapplications pa"
 				+ " left join product p on p.id=pa.PROD_ID and (p.fnm is not null and length(trim(p.fnm))>0 and p.prod_cat like '" + prodCat + "')"
 				+ " where pa.regState like '" + regState + "'"
-				+ " group by year(pa.registrationDate), quarter(pa.registrationDate)";
+				+ " group by year(pa.registrationDate) DESC, quarter(pa.registrationDate) DESC";
 
 		List<Object[]> list = entityManager.createNativeQuery(sql).getResultList();
 		if(list != null && list.size() > 0){
@@ -100,14 +100,14 @@ public class DashboardDAO implements Serializable {
 			}
 		}
 
-		Collections.sort(items, new Comparator<ItemDashboard>() {
+/*		Collections.sort(items, new Comparator<ItemDashboard>() {
 			@Override
 			public int compare(ItemDashboard o1, ItemDashboard o2) {
 				Integer i1 = new Integer(o1.getYear());
 				Integer i2 = new Integer(o2.getYear());
 				return i1.compareTo(i2);
 			}
-		});
+		});*/
 
 		return items;
 	}
@@ -125,7 +125,7 @@ public class DashboardDAO implements Serializable {
 				+ " FROM prodapplications pa"
 				+ " where pa.regState like '" + regStateReg + "'"
 				+ " or pa.regState like '" + regStateRej + "'"
-				+ " group by year(pa.registrationDate), quarter(pa.registrationDate)";
+				+ " group by year(pa.registrationDate) DESC, quarter(pa.registrationDate) DESC";
 
 		List<Object[]> list = entityManager.createNativeQuery(sql).getResultList();
 		if(list != null && list.size() > 0){
@@ -143,14 +143,14 @@ public class DashboardDAO implements Serializable {
 			}
 		}
 
-		Collections.sort(items, new Comparator<ItemDashboard>() {
+/*		Collections.sort(items, new Comparator<ItemDashboard>() {
 			@Override
 			public int compare(ItemDashboard o1, ItemDashboard o2) {
 				Integer i1 = new Integer(o1.getYear());
 				Integer i2 = new Integer(o2.getYear());
 				return i1.compareTo(i2);
 			}
-		});
+		});*/
 
 		return items;
 	}
