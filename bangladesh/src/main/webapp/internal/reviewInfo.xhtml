@@ -499,13 +499,14 @@
 					<p:outputLabel value="#{msgs.label_papersubmition}" for="ppsubdate" />
 					<p:calendar value="#{reviewInfoBn.ppsubdate}" id="ppsubdate"
 						showOn="button" required="true"
-						pattern="#{userAccessMBean.workspace.datePattern}">
+						pattern="#{userAccessMBean.workspace.datePattern}"
+						requiredMessage="#{msgs.label_papersubmition} is mandatory">
 						<f:validator validatorId="pastDateValidator" />
 					</p:calendar>
 
 					<p:outputLabel value="#{msgs.label_typemdf}" for="typedmf" />
 					<p:inputText id="typedmf"
-						value="#{reviewInfoBn.prodApplications.typeDmf}" required="true"
+						value="#{reviewInfoBn.prodApplications.typeDmf}" required="false"
 						style="width: 100%" />
 
 					<p:outputLabel value="#{msgs.label_haslicense}"
@@ -520,7 +521,7 @@
 					onclick="PrimeFaces.monitorDownload(start, stop); PF('printDlg').hide()"
 					actionListener="#{reviewInfoBn.createFileReviewDetail()}"
 					update="reviewHome:growl reviewHome:messages"
-					oncomplete="PF('letterSuccessDlg').show()">
+					oncomplete="if (!args.validationFailed) PF('letterSuccessDlg').show()">
 
 				</p:commandButton>
 
