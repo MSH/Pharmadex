@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 
-    <h:panelGrid id="btnpnl" cellspacing="10" cellpadding="10" columns="4">
+    <h:panelGrid id="btnpnl" cellspacing="1" cellpadding="1" columns="4">
         <p:commandButton value="Print" type="button" icon="ui-icon-print">
             <p:printer target="checkListTbl"/>
         </p:commandButton>
@@ -42,16 +42,18 @@
 
     <p:dataTable var="checkList" value="#{preScreenProdMBnET.prodAppChecklists}"
                  style="width:100%;" id="checkListTbl">
-        <p:column headerText="">
+        <p:column headerText="" styleClass="chkMin">
             <h:outputLabel value="#{checkList.checklist.moduleNo}"/>
         </p:column>
+
         <p:column>
             <h:outputLabel value="#{checkList.checklist.name}"/>
         </p:column>
-        <p:column headerText="#{msgs.applicant}">
+
+        <p:column headerText="#{msgs.applicant}" styleClass="chkYesNo">
             <p:outputLabel value="#{checkList.value}"/>
         </p:column>
-        <p:column headerText="#{msgs.UserType_STAFF}">
+        <p:column headerText="#{msgs.UserType_STAFF}" style="padding: 0,0,0,0 width: 60px" styleClass="chkYesNoEdit">
             <p:outputLabel value="#{checkList.staffValue}" rendered="#{!processProdBn.prescreened}"/>
             <p:selectOneButton id="console" value="#{checkList.staffValue}"
                                rendered="#{checkList.checklist.header and processProdBn.prescreened}">
@@ -59,10 +61,10 @@
             </p:selectOneButton>
         </p:column>
         <p:column headerText="#{msgs.global_remark}">
-            <p:outputLabel value="#{checkList.staffComment}" rendered="#{!processProdBn.prescreened}"/>
-            <p:inputText value="#{checkList.staffComment}" rendered="#{processProdBn.prescreened}"/>
+            <p:outputLabel value="#{checkList.staffComment}" style="width: 100%" rendered="#{!processProdBn.prescreened}"/>
+            <p:inputText value="#{checkList.staffComment}" style="width: 100%" rendered="#{processProdBn.prescreened}"/>
         </p:column>
-        <p:column>
+        <p:column headerText="" styleClass="chkMin" >
             <p:commandButton icon="ui-icon-document" onclick="PF('moduledlg').show()"
                              action="#{preScreenProdMBnET.setProdAppChecklist(checkList)}"
                              rendered="#{!checkList.fileUploaded and processProdBn.prescreened}"/>

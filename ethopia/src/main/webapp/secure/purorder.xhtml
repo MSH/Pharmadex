@@ -19,6 +19,11 @@
                                  oncomplete="PF('withdrawDlg').show()" id="withdraw"
                                  >
                 </p:commandButton>
+                <p:commandButton value="#{msgs.add_comment}"
+                                 rendered="#{purOrderBn.showComment}"
+                                 action="#{purOrderBn.initComment}"
+                                 oncomplete="PF('commentDlg').show()"
+                />
                 <p:commandButton value="#{msgs.global_submit}" rendered="#{purOrderBn.showSubmit}"
                                  oncomplete="if (!args.validationFailed) PF('confirmDlg').show()"
                                  update="messages growl"/>
@@ -190,7 +195,7 @@
             <p:panel header="#{msgs.global_comment}"
                      rendered="#{not empty purOrderBn.purOrder and not empty purOrderBn.purOrder.pOrderComments}">
                 <p:dataTable id="commenttable" value="#{purOrderBn.purOrder.pOrderComments}" var="it">
-                    <p:column style="width:120px;" rendered="#{it.external}">
+                    <p:column style="width:120px;">
                         <p:outputLabel styleClass="ui-icon ui-icon-comment"
                                        style="display:inline-block;"/>
                         <p:outputLabel value="#{it.user.name}" styleClass="label"/>
@@ -200,14 +205,14 @@
                         </div>
                     </p:column>
 
-                    <p:column rendered="#{it.external}">
+                    <p:column >
                         <div style="padding-left:10px;padding-top:10px;">
                             <h:outputText value="#{it.comment}"
                                           escape="false"
                                           styleClass="text"/>
                         </div>
                     </p:column>
-                    <p:column rendered="#{it.external}">
+                    <p:column >
                         #{it.recomendType}
                     </p:column>
                 </p:dataTable>
@@ -513,6 +518,20 @@
                 </h:panelGrid>
                 <p:commandButton value="#{msgs.global_submit}" action="#{purOrderBn.withdraw}"
                                  oncomplete="PF('withdrawDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.add_comment}" widgetVar="commentDlg" id="commentDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="addcomment" styleClass="label"/>
+                    <p:editor value="#{purOrderBn.pOrderComment.comment}" id="addcomment" required="true"
+                              width="700"/>
+                    <p:message for="addcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{purOrderBn.addComment}"
+                                 oncomplete="if (!args.validationFailed) PF('commentDlg').hide()" ajax="false"/>
             </h:form>
         </p:dialog>
 

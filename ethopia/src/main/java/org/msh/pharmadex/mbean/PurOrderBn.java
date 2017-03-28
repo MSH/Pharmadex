@@ -1,8 +1,12 @@
 package org.msh.pharmadex.mbean;
 
+import org.msh.pharmadex.dao.iface.PurOrderDAO;
 import org.msh.pharmadex.domain.*;
+import org.msh.pharmadex.domain.Currency;
+import org.msh.pharmadex.domain.ResourceBundle;
 import org.msh.pharmadex.domain.enums.AmdmtState;
 import org.msh.pharmadex.domain.enums.CompanyType;
+import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.service.*;
@@ -19,9 +23,9 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,14 +63,19 @@ public class PurOrderBn extends POrderBn {
     private boolean showSubmit;
     private POrderComment pOrderComment;
     private User curUser;
+    private boolean showComment;
+    private FacesContext facesContext;
+    private java.util.ResourceBundle resourceBundle;
 
     @PostConstruct
     private void init() {
         String purOrderSt = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purOrderID");
         if (purOrderSt != null){
             if (!purOrderSt.equals("")) {
+                curUser = getUserService().findUser(getUserSession().getLoggedINUserID());
                 Long purOrderID = Long.valueOf(purOrderSt);
                 purOrder = getpOrderService().findPurOrderEager(purOrderID);
+                purOrder.getpOrderComments();
                 if (purOrder.getCurrency() == null)
                     purOrder.setCurrency(new Currency());
                 pOrderChecklists = purOrder.getpOrderChecklists();
@@ -423,6 +432,19 @@ public class PurOrderBn extends POrderBn {
         this.companyService = companyService;
     }
 
+    public boolean isShowComment(){
+        showComment = false;
+        if (purOrder != null && purOrder.getState() != null) {
+            if (purOrder.getState().equals(AmdmtState.FEEDBACK))
+                showComment = true;
+        }
+        return showComment;
+    }
+
+    public void setShowComment(boolean showComment) {
+        this.showComment = showComment;
+    }
+
     public boolean isShowWithdrawn() {
         if (purOrder != null && purOrder.getState() != null) {
             if (purOrder.getState().equals(AmdmtState.WITHDRAWN) || purOrder.getState().equals(AmdmtState.APPROVED)
@@ -456,6 +478,65 @@ public class PurOrderBn extends POrderBn {
         return showSubmit;
     }
 
+    public void addComment() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            if (!userSession.isStaff())
+                purOrder.setReviewState(RecomendType.FEEDBACK);
+            else
+                purOrder.setReviewState(RecomendType.COMMENT);
+            pOrderComment.setRecomendType(purOrder.getReviewState());
+            enterComment();
+            String retObject = newApp();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), ex.getMessage()));
+        }
+    }
+
+    public String newApp() {
+        facesContext = FacesContext.getCurrentInstance();
+        getResourceBundle();
+        try {
+            if (purProds == null || purProds.size() == 0) {
+                FacesMessage error = new FacesMessage(resourceBundle.getString("valid_no_app_user"));
+                error.setSeverity(SEVERITY_ERROR);
+                facesContext.addMessage(null, error);
+                return null;
+            }
+            RetObject retObject = pOrderService.updatePOrder(purOrder);
+            if (!retObject.getMsg().equals("persist")) {
+                facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), retObject.getMsg()));
+                return null;
+            } else {
+                //purOrder = (PurOrder) retObject.getObj();
+                purOrder = getpOrderService().findPurOrderEager(purOrder.getId());
+            }
+
+            if (purOrder == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("global_fail"), resourceBundle.getString("global_fail")));
+                return null;
+            }
+
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("app_save_success")));
+            return "/public/processpurorderlist.faces";
+        } catch (Exception e) {
+            e.printStackTrace();
+            facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail"), e.getMessage()));
+            return null;
+        }
+    }
+
+    private void enterComment() {
+        List<POrderComment> pOrderComments = pOrderService.findPOrderComments(purOrder);
+        if (pOrderComments == null)
+            pOrderComments = new ArrayList<POrderComment>();
+        pOrderComment.setExternal(false);
+        pOrderComments.add(pOrderComment);
+        pOrderComment.setPurOrder(purOrder);
+        purOrder.setpOrderComments(pOrderComments);
+    }
+
     public void setShowSubmit(boolean showSubmit) {
         this.showSubmit = showSubmit;
     }
@@ -474,5 +555,22 @@ public class PurOrderBn extends POrderBn {
 
     public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
         this.timelineServiceET = timelineServiceET;
+    }
+
+    public FacesContext getFacesContext() {
+        return facesContext;
+    }
+
+    public void setFacesContext(FacesContext facesContext) {
+        this.facesContext = facesContext;
+    }
+
+    public java.util.ResourceBundle getResourceBundle() {
+        resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+        return resourceBundle;
+    }
+
+    public void setResourceBundle(java.util.ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 }

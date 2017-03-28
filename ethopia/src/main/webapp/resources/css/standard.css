@@ -69,6 +69,29 @@ body {
     width: auto;
 }
 
+.chkMin {
+    vertical-align: middle;
+    text-align: right;
+    width: 20px;
+}
+.chkQuests {
+    vertical-align: middle;
+    text-align: right;
+    width: 200px;
+}
+
+.chkYesNo {
+    vertical-align: middle;
+    text-align: right;
+    width: 40px;
+}
+.chkYesNoEdit {
+    vertical-align: middle;
+    text-align: right;
+    width: 100px;
+    padding: 0px,0px,0px,0px;
+    margin: 0 auto;
+}
 .col1 {
     vertical-align: middle;
     font-weight: bold;
@@ -83,6 +106,14 @@ body {
 
 .col3 {
     vertical-align: middle;
+}
+
+.repoCol1 {
+    vertical-align: middle;
+    text-align: right;
+    width: 50px;
+    padding: 0, 0, 0, 0;
+    margin: 0;
 }
 
 .ui-widget {

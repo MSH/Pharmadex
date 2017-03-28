@@ -26,9 +26,13 @@
                         listener="#{processProdBnET.changeStatusListener}" process=":reghome:processtab:verifypnl"/>
             </p:selectBooleanButton>
 
-            <p:outputLabel value="#{msgs.priority_no}" for="priordt" styleClass="label"/>
-            <p:calendar value="#{processProdBn.prodApplications.priorityDate}" id="priordt" showOn="button"/>
-
+            <!--<p:outputLabel value="#{msgs.priority_no}" for="priordt" styleClass="label"/> -->
+            <p:commandLink value="#{msgs.priority_no}" for="priordt" styleClass="label"
+                           oncomplete="PF('verifQueue').show()" />
+            <p:calendar value="#{processProdBn.prodApplications.priorityDate}"
+                        pattern="dd.MM.yyyy HH:mm" showButtonPanel="true"
+                        stepMinute="5" minHour="8" maxHour="19" mindate="#{now}"
+                        id="priordt" showOn="button"/>
             <p:outputLabel value="#{msgs.fee_amt}" styleClass="label"/>
             <h:outputText value="#{processProdBn.prodApplications.feeAmt}">
                 <f:convertNumber type="currency" currencySymbol="$"/>
@@ -79,14 +83,46 @@
         </h:panelGrid>
     </h:panelGrid>
 
-    <!--
-        <h:outputLabel value="Issue acknowledgement letter" style="font-weight: bold; font-size: larger;"/>
-        <h:outputLabel/>
-        <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="20">
-            <h:outputLabel value="Acknowledgement letter details"/>
-            <p:inputText/>
-        </h:panelGrid>
-    -->
+    <p:dialog id="verifQueue" widgetVar="verifQueue" header="#{msgs.prod_not_verified}" width="60%">
+        <h:form>
+            <p:dataTable scrollable="true" widgetVar="vqTable" id = "vqTable"
+                         value="#{processProdBnET.verApps}" var="app" >
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.application_no}" />
+                    </f:facet>
+                    <h:outputText value="#{app.prodAppNo}" />
+                </p:column>
 
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.priority_no}"/>
+                    </f:facet>
+                    <h:outputText value="#{app.priorityDate}" />
+                </p:column>
+
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prod_name}"/>
+                    </f:facet>
+                    <h:outputText value="#{app.product.prodName}" />
+                </p:column>
+
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.applicant}"/>
+                    </f:facet>
+                    <h:outputText value="#{app.applicant.appName}" />
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton
+                value="#{msgs.global_close}"
+                oncomplete="PF('verifQueue').hide()"
+            />
+
+        </h:form>
+    </p:dialog>
 
 </ui:composition>

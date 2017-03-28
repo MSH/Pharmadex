@@ -5,27 +5,22 @@ import static javax.faces.context.FacesContext.getCurrentInstance;
 import java.io.Serializable;
 import java.util.*;
 import java.util.ResourceBundle;
-
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.*;
-import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.domain.enums.RegState;
-import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.domain.enums.UserRole;
+import org.msh.pharmadex.domain.enums.*;
 import org.msh.pharmadex.service.ProdApplicationsServiceET;
 import org.msh.pharmadex.service.ReviewService;
+import org.msh.pharmadex.service.TimelineServiceET;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.msh.pharmadex.util.RetObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import net.sf.jasperreports.engine.JasperPrint;
 
 /**
@@ -43,6 +38,8 @@ public class ProcessProdBnET implements Serializable {
     public ProdApplicationsServiceET prodApplicationsServiceET;
     @ManagedProperty(value = "#{reviewService}")
     public ReviewService reviewService;
+    @ManagedProperty(value="#{timelineServiceET}")
+    private TimelineServiceET timelineServiceET;
 
     private String changedFields;
     protected boolean displayVerify = false;
@@ -53,6 +50,7 @@ public class ProcessProdBnET implements Serializable {
     private String backTo = "";
     private FacesContext facesContext = FacesContext.getCurrentInstance();
 	protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+    private List<ProdApplications> verApps;
 
     @PostConstruct
     private void init() {
@@ -63,6 +61,8 @@ public class ProcessProdBnET implements Serializable {
             createStartOfProcessingsEvent();
         }
     	if (changedFields==null) changedFields="";
+        verApps = prodApplicationsServiceET.getApplicationsOnVerifying();
+
     }
 
     /**
@@ -82,14 +82,8 @@ public class ProcessProdBnET implements Serializable {
             }
         }
         //if not found...
-        TimeLine preTL = new TimeLine();
-        preTL.setProdApplications(processProdBn.prodApplications);
-        preTL.setUser(processProdBn.loggedInUser);
-        preTL.setRegState(RegState.PRE_SCREENING);
-        preTL.setStatusDate(Calendar.getInstance().getTime());
-        preTL.setComment("Application processing started");
-        processProdBn.getTimelineService().saveTimeLine(preTL);
-
+        timelineServiceET.createTimeLineEvent(processProdBn.prodApplications,RegState.PRE_SCREENING,
+                processProdBn.getLoggedInUser(),"Application processing started");
     }
 
     public boolean isDisplayVerify() {
@@ -113,12 +107,25 @@ public class ProcessProdBnET implements Serializable {
         processProdBn.prodApplications.setPrescreenfeeReceived(true);
     }
 
+    public void changeVerificationVersion(ProdApplications prodApplications){
+        if (userSession.isModerator()) {
+                Integer ver = 1;
+                if (prodApplications.getVerNumber() != null) {
+                    ver = prodApplications.getVerNumber();
+                    if (prodApplications.isFeeReceived())
+                        ver++;
+                    else
+                        ver--;
+                }
+            }
+    }
+
     public void changeStatusListener() {
-        logger.error("Inside changeStatusListener");
-        processProdBn.save();
         ProdApplications prodApplications = processProdBn.getProdApplications();
         TimeLine timeLine = new TimeLine();
 
+        if (prodApplications.getPriorityDate()==null)
+            prodApplications.setPriorityDate(Calendar.getInstance().getTime());
         if (prodApplications.getRegState().equals(RegState.NEW_APPL)) {
             timeLine.setRegState(RegState.FEE);
             processProdBn.setTimeLine(timeLine);
@@ -127,22 +134,23 @@ public class ProcessProdBnET implements Serializable {
         if (prodApplications.getRegState().equals(RegState.FEE)) {
             if (prodApplications.isApplicantVerified() && prodApplications.isProductVerified() && prodApplications.isDossierReceived()) {
                 timeLine.setRegState(RegState.VERIFY);
+                changeVerificationVersion(prodApplications);
                 processProdBn.setTimeLine(timeLine);
                 processProdBn.addTimeline();
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_WARN,
-                                "Please send sample request letter if required for processing the application.",
-                                "Please send sample request letter if required for processing the application."));
+                if (!prodApplications.getProdAppType().equals(ProdAppType.RENEW)) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                    resourceBundle.getString("global_warning"),
+                                    "Please send sample request letter if required for processing the application."));
+                }
             }
         }
         if (prodApplications.getRegState().equals(RegState.SCREENING)) {
             timeLine.setRegState(RegState.FEE)  ;
             processProdBn.setTimeLine(timeLine);
             processProdBn.addTimeline();
-            prodApplications.setPriorityDate(new Date());
-
         }
-
+        if ("".equals(processProdBn.save())) return;
         processProdBn.setSelectedTab(2);
     }
 
@@ -198,9 +206,7 @@ public class ProcessProdBnET implements Serializable {
         review.setReviewStatus(ReviewStatus.FEEDBACK);
         RetObject retObject = reviewService.saveReviewInfo(review);
         if (retObject.getMsg().equals("persist")) {
-            timeLine.setProdApplications(prodApplications);
-            processProdBn.getTimelineService().saveTimeLine(timeLine);
-            processProdBn.getTimeLineList().add(timeLine);
+            timelineServiceET.createTimeLineEvent(prodApplications,prodApplications.getRegState(),processProdBn.getLoggedInUser(),resourceBundle.getString("status_change_success"));
             facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("status_change_success")));
         }else{
             facesContext.addMessage(null, new FacesMessage(retObject.getMsg()));
@@ -228,14 +234,13 @@ public class ProcessProdBnET implements Serializable {
 
 				String retValue = getProcessProdBn().getProdApplicationsService().registerProd(prodApplications);
 				if(retValue.equals("created")) {
-					System.out.println("Product moved to registered");
-					getProcessProdBn().setTimeLineList(null);
 					prodApplicationsServiceET.createRegCert(prodApplications);
 					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global.success"), resourceBundle.getString("status_change_success")));
+                    String msg = resourceBundle.getString("appregistered");
+                    timelineServiceET.createTimeLineEvent(prodApplications, prodApplications.getRegState(), processProdBn.getLoggedInUser(), msg);
 				}else{
 					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString("global_fail"), "Error registering the product"));
 				}
-				getProcessProdBn().setTimeLine(new TimeLine());
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();
@@ -329,5 +334,19 @@ public class ProcessProdBnET implements Serializable {
         this.backTo = backTo;
     }
 
+    public List<ProdApplications> getVerApps() {
+        return verApps;
+    }
 
+    public void setVerApps(List<ProdApplications> verApps) {
+        this.verApps = verApps;
+    }
+
+    public TimelineServiceET getTimelineServiceET() {
+        return timelineServiceET;
+    }
+
+    public void setTimelineServiceET(TimelineServiceET timelineServiceET) {
+        this.timelineServiceET = timelineServiceET;
+    }
 }

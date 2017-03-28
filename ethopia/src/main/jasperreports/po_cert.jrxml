@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2017-02-23T13:54:53 -->
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2017-03-21T15:23:14 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PIP Acknowlegement" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="183a80a0-9556-4f80-abba-6edcf5c66984">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -336,7 +336,8 @@ and pip.id = $P{piporderid}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="419" splitType="Stretch">
+		<band height="427" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<image>
 				<reportElement x="247" y="0" width="75" height="70" uuid="eccf5dca-4b6d-48e3-8e7e-b4b2bdef059a"/>
 				<imageExpression><![CDATA["logo_header.png"]]></imageExpression>
@@ -369,37 +370,37 @@ and pip.id = $P{piporderid}]]>
 				</textElement>
 				<text><![CDATA[PURCHASE ORDER CERTIFICATE]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="41" y="207" width="322" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="41" y="210" width="322" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address1}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="41" y="227" width="322" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="41" y="233" width="322" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{address2}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="40" y="247" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="40" y="255" width="236" height="20" uuid="cdca1d07-5238-4e18-8532-75c337d1cd61"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{countryName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="3" y="188" width="38" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
+				<reportElement positionType="Float" x="3" y="188" width="38" height="20" uuid="c3ae6475-ab2a-4e2a-8551-9eaeb01f90d7"/>
 				<textElement>
 					<font size="12"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<text><![CDATA[To,]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="FixRelativeToBottom" x="41" y="187" width="322" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="41" y="187" width="322" height="20" uuid="9aca97a3-3aaa-428d-9cd4-2d71165d1554"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -412,7 +413,7 @@ and pip.id = $P{piporderid}]]>
 				</jr:Code128>
 			</componentElement>
 			<staticText>
-				<reportElement x="1" y="267" width="751" height="46" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
+				<reportElement positionType="Float" x="1" y="279" width="751" height="46" uuid="f41aeaf7-cb2e-4e52-83bd-6cc7ce8f94bd"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -420,15 +421,15 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[It is hereby certified that the Food Medicine and Health Care Administration and Control authority of Ehtiopia (FMHACA) has approved your Purchase Order of the below products subject to the general terms and conditions of the attached contract. ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="313" width="181" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
+				<reportElement positionType="Float" x="1" y="325" width="181" height="19" uuid="843e5e72-f4c3-4540-a84f-5912be4ee1a5"/>
 				<textElement textAlignment="Justified">
 					<font size="10"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
 				</textElement>
 				<text><![CDATA[Your application number is ]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="182" y="313" width="181" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="182" y="325" width="181" height="19" uuid="c2431f78-f617-4a54-a837-bc9fd3bc39d2"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 					<paragraph leftIndent="10" rightIndent="10"/>
@@ -436,7 +437,7 @@ and pip.id = $P{piporderid}]]>
 				<textFieldExpression><![CDATA[$F{pipNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="380" width="751" height="27" uuid="371a8efc-87fe-49dd-a03a-5e4fa2680ede"/>
+				<reportElement positionType="Float" x="1" y="390" width="751" height="27" uuid="371a8efc-87fe-49dd-a03a-5e4fa2680ede"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 					<paragraph leftIndent="10" rightIndent="10" spacingBefore="10" spacingAfter="10"/>
@@ -444,36 +445,36 @@ and pip.id = $P{piporderid}]]>
 				<text><![CDATA[Please use the above application number for any future correspondence with FMHACA.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="3" y="332" width="180" height="20" uuid="be7f4be6-3e57-4f59-9830-d1199c040e0f"/>
+				<reportElement positionType="Float" x="3" y="346" width="180" height="20" uuid="be7f4be6-3e57-4f59-9830-d1199c040e0f"/>
 				<textElement>
 					<font isBold="false"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<text><![CDATA[Approval Date]]></text>
 			</staticText>
-			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="183" y="332" width="180" height="20" uuid="33cd60b4-ea68-4499-b14c-03956433e055"/>
+			<textField isStretchWithOverflow="true" pattern="MMMMM dd, yyyy">
+				<reportElement positionType="Float" x="183" y="346" width="180" height="20" uuid="33cd60b4-ea68-4499-b14c-03956433e055"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{approvalDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="363" y="332" width="180" height="20" uuid="395f23fe-8ade-4565-b7c3-48e248f0a620"/>
+				<reportElement positionType="Float" x="363" y="346" width="180" height="20" uuid="395f23fe-8ade-4565-b7c3-48e248f0a620"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[Expiry Date]]></text>
 			</staticText>
-			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="543" y="332" width="208" height="20" uuid="c69aea80-dadc-470e-ba26-faaf9a252fd8"/>
+			<textField isStretchWithOverflow="true" pattern="MMMMM dd, yyyy">
+				<reportElement positionType="Float" x="543" y="346" width="208" height="20" uuid="c69aea80-dadc-470e-ba26-faaf9a252fd8"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{expiryDate}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="543" y="312" width="180" height="20" uuid="a1dfed6a-d639-4999-bfd9-eb91abafad72"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="543" y="324" width="180" height="20" uuid="a1dfed6a-d639-4999-bfd9-eb91abafad72"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -481,18 +482,52 @@ and pip.id = $P{piporderid}]]>
 				<patternExpression><![CDATA[$P{pattern}]]></patternExpression>
 			</textField>
 			<staticText>
-				<reportElement x="363" y="313" width="180" height="20" uuid="89684b83-fa3d-4e84-bbb1-4dd50acbcce0"/>
+				<reportElement positionType="Float" x="363" y="325" width="180" height="20" uuid="89684b83-fa3d-4e84-bbb1-4dd50acbcce0"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[Total Price]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="13" y="166" width="126" height="22" uuid="6a29d76d-b1aa-4d3c-9855-5da7d25818d9"/>
+				<reportElement positionType="Float" x="13" y="166" width="126" height="22" uuid="6a29d76d-b1aa-4d3c-9855-5da7d25818d9"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="23" y="208" width="340" height="1" uuid="91bfae73-ad42-4502-9df7-6594d021d677">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="38" y="231" width="328" height="1" uuid="d2acb37e-1108-4e17-b13d-46b8f8ceef47">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="39" y="254" width="328" height="1" uuid="23bacb64-b85a-4cdb-abaf-d4d926633034">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="345" width="752" height="1" uuid="ff2c7813-e07e-48de-a4ba-c5729616035e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

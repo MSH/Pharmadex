@@ -10,4 +10,9 @@ public class RepoAppEvent {
     public Date eventTime;
     public String appType;
     public int index;
+    public String userId;
+
+    public String toString(){
+        return appType + ": " + status + " " + eventTime.toString();
+    }
 }

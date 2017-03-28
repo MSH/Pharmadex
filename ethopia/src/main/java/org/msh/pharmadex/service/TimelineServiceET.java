@@ -105,7 +105,7 @@ public class TimelineServiceET extends TimelineService implements Serializable {
             timelineSCDAO.saveAndFlush(tl);
     }
 
-    public void createTimeLineEvent(ProdApplications prodApplications, RegState state, User curUser, String comment) {
+    public TimeLine createTimeLineEvent(ProdApplications prodApplications, RegState state, User curUser, String comment) {
         TimeLine tl = new TimeLine();
         tl.setProdApplications(prodApplications);
         tl.setRegState(state);
@@ -113,6 +113,7 @@ public class TimelineServiceET extends TimelineService implements Serializable {
         tl.setStatusDate(new Date());
         tl.setUser(curUser);
         timelineDAO.saveAndFlush(tl);
+        return tl;
     }
 
     public TimelinePIPDAO getTimelinePIPDAO() {

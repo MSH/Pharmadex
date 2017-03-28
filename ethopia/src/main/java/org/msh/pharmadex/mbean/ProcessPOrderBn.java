@@ -469,7 +469,8 @@ public abstract class ProcessPOrderBn implements Serializable {
     }
 
     public boolean isDisplayReviewComment() {
-        if (pOrderBase.getReviewState()==null) return  false;
+//        if (pOrderBase.getReviewState()==null) return  false;
+        if (pOrderBase.getId()==null) return  false;
         if (pOrderBase.getState() != null) {
             if (pOrderBase.getState().equals(AmdmtState.NEW_APPLICATION) ||
                     pOrderBase.getState().equals(AmdmtState.REVIEW) || pOrderBase.getState().equals(AmdmtState.FEEDBACK))

@@ -43,7 +43,7 @@
                     <p:growl id="growl" showDetail="true" showSummary="true"/>
                     <p:panel id="data" columns="3" cellspacing="10px" columnClasses="col1, col2, col3" >
                         <p:outputLabel value="Start date: " for="startd"/>
-                        <p:calendar id="startd" value="#{kpiBean.startDate}" showOn="button" required="false"/>
+                        <p:calendar id="startd" value="#{kpiBean.startDate}" mindate="03-03-2017" showOn="button" required="false"/>
                         <p:message for="startd"/>
 
                         <p:outputLabel value="End date: " for="endd"/>
@@ -87,8 +87,11 @@
                         />
                     </p:panel>
                     <p:panel id="reportTable" header="#{kpiBean.reportType}" >
-                        <p:dataTable id="timetable" var="apps" value="#{kpiBean.results3}" style="width:100%;" rendered="#{kpiBean.reportKind=='3'}">
-                            <p:column headerText="Application number" >
+                        <p:dataTable id="timetable" var="apps" value="#{kpiBean.results3}"
+                                     tableStyle="table-layout: auto;"
+                                     style="width:100%;"
+                                     rendered="#{kpiBean.reportKind=='3' and kpiBean.department=='CSD'}">
+                            <p:column headerText="Application number"  >
                                 <h:outputText value="#{apps.appNo}"/>
                             </p:column>
                             <p:column headerText="Submited" style="text-align:center" width="70">
@@ -110,6 +113,35 @@
                                 <h:outputText value="#{apps.total}" style="text-align:right"/>
                             </p:column>
                         </p:dataTable>
+                        <p:dataTable id="timetable2" var="apps" value="#{kpiBean.results3}"
+                                     style="width:100%;"
+                                     rendered="#{kpiBean.reportKind=='3' and kpiBean.department=='RD'}">
+                            <p:column headerText="Application number" styleClass="chkYesNoEdit">
+                                <h:outputText value="#{apps.appNo}"/>
+                            </p:column>
+                            <p:column headerText="Queue" style="text-align:center" width="70">
+                                <h:outputText value="#{apps.queued}" style="text-align:right"/>
+                            </p:column>
+                            <p:column headerText="Reviewed" style="text-align:center" width="70">
+                                <h:outputText value="#{apps.underReview}" style="text-align:right"/>
+                            </p:column>
+                            <p:column headerText="Another review operations" style="text-align:center" width="70">
+                                <h:outputText value="#{apps.waiting}" style="text-align:right"/>
+                            </p:column>
+                            <p:column headerText="Returned for completeness" style="text-align:center" width="90">
+                                <h:outputText value="#{apps.fir}" style="text-align:right"/>
+                            </p:column>
+                            <p:column headerText="Approved" style="text-align:center"  width="70">
+                                <h:outputText value="#{apps.approved}" style="text-align:right"/>
+                            </p:column>
+                            <p:column headerText="Rejected" style="text-align:center" width="70">
+                                <h:outputText value="#{apps.rejected}" style="text-align:right"/>
+                            </p:column>
+                            <p:column headerText="Total" style="text-align:center" width="100">
+                                <h:outputText value="#{apps.total}" style="text-align:right"/>
+                            </p:column>
+                        </p:dataTable>
+
                         <p:dataTable id="overall" var="ovrall" value="#{kpiBean.results1}" style="width:100%;" rendered="#{kpiBean.reportKind=='1'}">
                             <p:column headerText="Indicator" style="text-align:center" width="170">
                                 <h:outputText value="#{ovrall.kpiName}" style="text-align:right"/>
@@ -223,7 +255,6 @@
                             </p:column>
 
                         </p:dataTable>
-
                     </p:panel>
                 </h:panelGroup>
             </h:panelGrid>

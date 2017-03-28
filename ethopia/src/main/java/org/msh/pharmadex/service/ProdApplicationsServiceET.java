@@ -38,6 +38,7 @@ import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
+import org.msh.pharmadex.mbean.GlobalLists;
 import org.msh.pharmadex.util.RegistrationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,11 +79,10 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
     
     private ProdApplications prodApp;
     
-/*  @ManagedProperty(value = "#{licenseHolderService}")
-    private LicenseHolderService licenseHolderService;
-    */
     @Autowired
     private CustomLicHolderDAO customLicHolderDAO;
+
+    private List<ProdApplications> applicationsOnVerifying;
       	
     @Override
     public List<RegState> nextStepOptions(RegState regState, UserSession userSession, boolean reviewStatus) {
@@ -312,6 +312,21 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 
     }
 
+    public List<ProdApplications> getApplicationsOnVerifying(){
+        //if (applicationsOnVerifying!=null) return applicationsOnVerifying;
+        List<ProdApplications> prodApplicationses = null;
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        List<RegState> regState = new ArrayList<RegState>();
+        regState.add(RegState.VERIFY);
+        params.put("regState", regState);
+        applicationsOnVerifying = prodApplicationsDAO.getProdAppByParams(params);
+        return applicationsOnVerifying;
+    }
+
+    public void setApplicationsOnVerifying(List<ProdApplications> applicationsOnVerifying) {
+        this.applicationsOnVerifying = applicationsOnVerifying;
+    }
+
     public List<ProdApplications> getFeedbackApplications(UserSession userSession) {
         List<ProdApplications> prodApplicationses = null;
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -479,13 +494,12 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 	public JasperPrint initRegCert(){
 		product = productDAO.findProduct(prodApp.getProduct().getId());
 		JasperPrint jasperPrint = null;
-		System.out.println("product found");
+
 		String regDt = DateFormat.getDateInstance().format(prodApp.getRegistrationDate());
 		String expDt = DateFormat.getDateInstance().format(prodApp.getRegExpiryDate());
 
 		URL resource = getClass().getResource("/reports/reg_letter.jasper");
-		System.out.println("resource found");
-		
+
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		utilsByReports.init(param, prodApp, product);
 		param.put("prodappid", prodApp.getId());
@@ -683,8 +697,8 @@ public class ProdApplicationsServiceET extends ProdApplicationsService {
 						
 			try {			
 				jasperPrint = JasperFillManager.fillReport(resource.getFile(), param, new JREmptyDataSource());
-                if (jasperPrint.getPages().size()>1)
-                    jasperPrint.removePage(jasperPrint.getPages().size()-1);
+                //if (jasperPrint.getPages().size()>1)
+                    //jasperPrint.removePage(jasperPrint.getPages().size()-1);
 			} catch (JRException e) {				
 				e.printStackTrace();
 			} 

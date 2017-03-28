@@ -4,10 +4,7 @@ import net.sf.jasperreports.engine.JRException;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.SuspDetail;
 import org.msh.pharmadex.domain.enums.RecomendType;
-import org.msh.pharmadex.service.KpiService;
-import org.msh.pharmadex.service.ProdApplicationsService;
-import org.msh.pharmadex.service.Scheduler;
-import org.msh.pharmadex.service.SuspendService;
+import org.msh.pharmadex.service.*;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -26,8 +23,8 @@ public class TestReportsBn {
 
     private String recId;
 
-    @ManagedProperty(value = "#{prodApplicationsService}")
-    private ProdApplicationsService prodApplicationsService;
+    @ManagedProperty(value = "#{prodApplicationsServiceET}")
+    private ProdApplicationsServiceET prodApplicationsServiceET;
 
     @ManagedProperty(value = "#{suspendService}")
     private SuspendService suspendService;
@@ -45,9 +42,9 @@ public class TestReportsBn {
 
     public void startCheckingRegCertificate(){
         long id = Long.parseLong(recId);
-        ProdApplications prodApp = prodApplicationsService.findProdApplications(id);
-        prodApplicationsService.createRegCert(prodApp);
-        prodApplicationsService.createAckLetter(prodApp);
+        ProdApplications prodApp = prodApplicationsServiceET.findProdApplications(id);
+        prodApplicationsServiceET.createRegCert(prodApp);
+        prodApplicationsServiceET.createAckLetter(prodApp);
     }
 
     public void testQuery(){
@@ -95,12 +92,12 @@ public class TestReportsBn {
         this.recId = recId;
     }
 
-    public ProdApplicationsService getProdApplicationsService() {
-        return prodApplicationsService;
+    public ProdApplicationsServiceET getProdApplicationsServiceET() {
+        return prodApplicationsServiceET;
     }
 
-    public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
-        this.prodApplicationsService = prodApplicationsService;
+    public void setProdApplicationsServiceET(ProdApplicationsServiceET prodApplicationsServiceET) {
+        this.prodApplicationsServiceET = prodApplicationsServiceET;
     }
 
     public SuspendService getSuspendService() {

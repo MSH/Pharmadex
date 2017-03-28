@@ -50,21 +50,20 @@ public class KpiBean {
             return;
         }
         if ("List of Applications, Status and Processing Time by Employee".equals(reportType)) {
-            if (employee!=null)
-            results3 = kpiService.makeAppStatusReportCSD(startDate, endDate, employee.getUserId());
-            else {
-                facesContext.addMessage(null, new FacesMessage("piprepo_chooseemployee"));
-                return;
-            }
-        } else if ("List of Applications, Status and Processing Time by Employee".equals(reportType)) {
-            if (employee!=null)
-                results3 = kpiService.makeAppStatusReportCSD(startDate, endDate, employee.getUserId());
-            else {
-                facesContext.addMessage(null, new FacesMessage("piprepo_chooseemployee"));
-                return;
-            }
+               if (employee!=null)
+                   if ("RD".equals(department)) {
+                       results3 = kpiService.makeAppStatusReportReg(startDate, endDate, employee.getUserId());
+                   }else {
+                       results3 = kpiService.makeAppStatusReportCSD(startDate, endDate, employee.getUserId());
+                   }
+               else{
+                   facesContext.addMessage(null, new FacesMessage("piprepo_chooseemployee"));
+                   return;
+               }
         } else if ("Overall Application Status and Processing Time Customer Service Directorate".equals(reportType)) {
-            results1 = kpiService.createCSDreport1(startDate, endDate);
+            Long employeeId = null;
+            if (employee != null) employeeId = employee.getUserId();
+            results3 = kpiService.makeAppStatusReportReg(startDate, endDate,employeeId);
         } else if ("Overall Application Status and Processing Time Registration Directorate".equals(reportType)) {
             results1r = kpiService.createRegReport12(startDate, endDate,null);
         } else if ("Applications Status by Employee for Registration Directorate".equals(reportType)) {
@@ -108,7 +107,7 @@ public class KpiBean {
         department = "RD";
     }
 
-    public void prepareReport3() {
+    public void prepareReport3Reg() {
         prepareReportsDate();
         executorVisible = true;
         employee = null;
