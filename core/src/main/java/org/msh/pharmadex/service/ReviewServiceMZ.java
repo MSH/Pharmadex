@@ -108,10 +108,12 @@ public class ReviewServiceMZ implements Serializable {
 			}
 		}
 		List<ReviewComment> reviewComments = reviewInfo.getReviewComments();
+		reviewInfo.setExecSummary("");
 		for (ReviewComment rc : reviewComments) {
 			if (rc.getRecomendType() != null) {
 				reviewInfo.setRecomendType(rc.getRecomendType());
-				reviewInfo.setExecSummary(rc.getComment());
+				String prev = reviewInfo.getExecSummary();
+				reviewInfo.setExecSummary(prev + rc.getComment());
 			}
 		}
 		return getReviewService().saveReviewInfo(reviewInfo);
