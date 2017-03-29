@@ -48,7 +48,6 @@ import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.CompanyService;
-import org.msh.pharmadex.service.DosageFormService;
 import org.msh.pharmadex.service.GlobalEntityLists;
 import org.msh.pharmadex.service.InnService;
 import org.msh.pharmadex.service.ProdApplicationsService;
@@ -56,11 +55,9 @@ import org.msh.pharmadex.service.ProductService;
 import org.msh.pharmadex.service.ReportService;
 import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
-import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.SelectEvent;
+import org.primefaces.event.FlowEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -109,9 +106,6 @@ public class ProdRegAppMbean implements Serializable {
 	private TimelineService timelineService;
 	@ManagedProperty(value = "#{attachmentDAO}")
 	private AttachmentDAO attachmentDAO;
-	
-	@ManagedProperty(value = "#{dosageFormService}")
-	private DosageFormService dosageFormService;
 
 	private List<ProdInn> selectedInns;
 	private List<ProdExcipient> selectedExipients;
@@ -139,18 +133,15 @@ public class ProdRegAppMbean implements Serializable {
 	private boolean showfull;
 	private String appType;
 
-	private DosFormItem mainIt;
-	private DosFormItem subIt;
-	
 	private boolean crуateEditTimeLine = false;
-
+	
 	@PostConstruct
 	private void init() {
 		Long prodAppID;
 		try {
 			userSession.setProdAppID(null);
 			//prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
-			prodAppID = Scrooge.beanParam("prodAppID");
+			prodAppID = getParam("prodAppID");
 		} catch (NumberFormatException nfe) {
 			prodAppID = null;
 		}
@@ -191,6 +182,18 @@ public class ProdRegAppMbean implements Serializable {
 				pricing = new Pricing(drugPrices, product);
 				product.setPricing(pricing);
 
+				// responsable User in prodApplications - prodApplications.getApplicantUser()
+				applicantUser = prodApplications.getApplicantUser();
+
+				if(applicantUser == null)
+					applicantUser = prodApplications.getCreatedBy();
+				if(applicantUser == null)
+					applicantUser = getLoggedInUser();
+
+				prodApplications.setApplicant(applicantUser.getApplicant());
+				Hibernate.initialize(applicantUser.getApplicant());
+				prodApplications.setApplicantUser(applicantUser);
+
 				prodApplications.setCreatedBy(getLoggedInUser());
 			}
 		} else {
@@ -201,64 +204,34 @@ public class ProdRegAppMbean implements Serializable {
 				prepareUpload();
 	}
 
-	public List<DosFormItem> completeDosforms(String query) {
-        return JsfUtils.completeSuggestions(query, dosageFormService.findMainDosForms());
-    }
-	
-	public List<DosFormItem> completeDosformsSub(String query) {
-        return JsfUtils.completeSuggestions(query, dosageFormService.findSubDosFormByMain(mainIt));
-    }
-	
-	public boolean hideSubList(){
-		List<DosFormItem> list = dosageFormService.findSubDosFormByMain(mainIt);
-		if(list != null && list.size() > 0)
-			return true;
-		
-		return false;
-	}
-
-	public void onItemSelectMain(SelectEvent event) {
-		if(event.getObject() instanceof DosFormItem){
-			mainIt = (DosFormItem) event.getObject();
-			subIt = null;
-			
-			List<DosFormItem> list = dosageFormService.findSubDosFormByMain(mainIt);
-			if(list != null){
-				if(list.size() == 1)
-					subIt = list.get(0);
-				if(list.size() > 0 && !list.get(0).getName().trim().isEmpty())
-					subIt = list.get(0);
-			}
-		}	
-	}
-	
-	public void onItemSelect(SelectEvent event) {
-		if(event.getObject() instanceof DosFormItem){
-			subIt = (DosFormItem) event.getObject();
-		}
-	}
-	
-	public DosFormItem getMainIt() {
-		return mainIt;
-	}
-
-	public void setMainIt(DosFormItem maintIt) {
-		this.mainIt = maintIt;
-	}
-
-	public DosFormItem getSubIt() {
-		return subIt;
-	}
-
-	public void setSubIt(DosFormItem subIt) {
-		this.subIt = subIt;
-	}
-
 	@PreDestroy
 	private void destroyBn() {
 		System.out.println("--------------------------------------");
 		System.out.println("------ProdRegAppMbean Bean destroyed-----");
 		System.out.println("--------------------------------------");
+	}
+	
+	private Long getParam(String parameter){
+		context = FacesContext.getCurrentInstance();
+		String procId=null;
+		if (context.getExternalContext().getFlash()!=null){
+			Object id = context.getExternalContext().getFlash().get(parameter);
+			String name="";
+			if (id!=null)
+				name = id.getClass().getName();
+			if (name.toLowerCase().endsWith("long"))
+				return (Long) context.getExternalContext().getFlash().get(parameter);
+			else if (name.toLowerCase().endsWith("string"))
+				procId = (String) context.getExternalContext().getFlash().get(parameter);
+		}
+		if (procId==null){
+			if (context.getExternalContext().getRequestParameterMap()!=null)
+				procId = context.getExternalContext().getRequestParameterMap().get(parameter);
+		}
+		if (procId!=null){
+			return Long.parseLong(procId);
+		}
+		return null;
 	}
 
 	public void PDF() {
@@ -293,6 +266,7 @@ public class ProdRegAppMbean implements Serializable {
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
+		//TODO
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 		try {
@@ -374,6 +348,7 @@ public class ProdRegAppMbean implements Serializable {
 			ex.printStackTrace();
 			context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
 		}
+
 	}
 
 	public StreamedContent fileDownload() {
@@ -433,6 +408,7 @@ public class ProdRegAppMbean implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 		try {
+
 			FacesMessage msg = new FacesMessage(resourceBundle.getString("global_delete"), attach.getFileName() + resourceBundle.getString("is_deleted"));
 			attachmentDAO.delete(attach);
 			attachments = null;
@@ -442,11 +418,41 @@ public class ProdRegAppMbean implements Serializable {
 			facesContext.addMessage(null, msg);
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
+
+
 	}
-	
-	public DosageForm findDosageFormByItem(){
-		DosageForm df = dosageFormService.findDosageFormByItem(mainIt, subIt);
-		return df;
+
+
+	//fires everytime you click on next or prev button on the wizard
+	public String onFlowProcess(FlowEvent event) {
+		context = FacesContext.getCurrentInstance();
+		String currentWizardStep = event.getOldStep();
+		String nextWizardStep = event.getNewStep();
+		try {
+			initializeNewApp(nextWizardStep);
+			if (currentWizardStep.equals("prodreg")) {
+				if (applicant == null || applicant.getApplcntId()==null) {
+					FacesMessage msg1 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Applicant not selected", "Select an Applicant.");
+					context.addMessage(null, msg1);
+					nextWizardStep = currentWizardStep; // keep wizard on current step if error
+				}
+				if (applicantUser == null) {
+					FacesMessage msg2 = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Applicant user not selected", "Select person responsible for the application");
+					context.addMessage(null, msg2);
+					nextWizardStep = currentWizardStep; // keep wizard on current step if error
+				}
+
+			}
+			if (!currentWizardStep.equals("prodreg")){
+				saveApp();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesMessage msg = new FacesMessage(e.getMessage(), "Detail....");
+			context.addMessage(null, msg);
+			nextWizardStep = currentWizardStep; // keep wizard on current step if error
+		}
+		return nextWizardStep; // return new step if all ok
 	}
 
 	//Used to initialize field values only for new applications. For saved applications the values are assigned in setprodapplications
@@ -513,10 +519,10 @@ public class ProdRegAppMbean implements Serializable {
 					mChecklist = checklistService.getETChecklists(prodApplications, false);
 				if (allChecklist==null) allChecklist=new  ArrayList <Checklist>();
 				if ( mChecklist!=null) {
-					for (Checklist ch: mChecklist) {
-						if (!allChecklist.contains(ch))
-							allChecklist.add(ch);
-					}
+					 for (Checklist ch: mChecklist) {
+						 if (!allChecklist.contains(ch))
+							 allChecklist.add(ch);
+					 }
 				}
 				//variations checklists not found
 				if (allChecklist.size()==0)
@@ -611,26 +617,19 @@ public class ProdRegAppMbean implements Serializable {
 
 	}
 
+
 	@Transactional
 	public void saveApp() {
 		context = FacesContext.getCurrentInstance();
-		product.setUseCategories(useCategories);
-		DosageForm df = dosageFormService.findDosageFormByItem(mainIt, subIt);
-		if(df == null){
-			String err = bundle.getString("save_app_error") + " Error. Not found selected Dosage Form";
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), err));
-			return ;
-		}
-		product.setDosForm(df);
-		//TODO
-		if(prodApplications.getRegState() != null && prodApplications.getRegState().equals(RegState.REGISTERED))
-			crуateEditTimeLine = true;
+		product.setUseCategories(useCategories);	
 		try {
+			if(prodApplications.getRegState() != null && prodApplications.getRegState().equals(RegState.REGISTERED))
+				crуateEditTimeLine = true;
 			if (prodAppChecklists != null){
 				prodApplicationsService.saveProdAppChecklists(prodAppChecklists);
 			}
 			RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, userSession.getLoggedINUserID());
-			if (retObject.getMsg().equals("persist")) {//prodApplications.getProduct().getDosForm()
+			if (retObject.getMsg().equals("persist")) {
 				prodApplications = (ProdApplications) retObject.getObj();
 				setFieldValues();
 				context.addMessage(null, new FacesMessage(bundle.getString("app_save_success")));
@@ -642,8 +641,29 @@ public class ProdRegAppMbean implements Serializable {
 			e.printStackTrace();
 			context.addMessage(null, new FacesMessage(bundle.getString("save_app_error")));
 		}
+
 	}
 
+	public String exit() {
+		context = FacesContext.getCurrentInstance();
+		try {
+			if(crуateEditTimeLine){
+				TimeLine timeLine = new TimeLine();
+				timeLine.setComment(bundle.getString("msgs_editApp"));
+				timeLine.setRegState(prodApplications.getRegState());
+				timeLine.setProdApplications(prodApplications);
+				timeLine.setUser(getLoggedInUser());
+				timeLine.setStatusDate(new Date());
+				timelineService.saveTimeLine(timeLine);
+			}
+			return "/internal/processreg.faces";
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
+			return "";
+		}
+	}
+	
 	public String removeInn(ProdInn prodInn) {
 		context = FacesContext.getCurrentInstance();
 		try {
@@ -804,28 +824,9 @@ public class ProdRegAppMbean implements Serializable {
 			context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
 			return "";
 		}
+
 	}
 
-	public String exit() {
-		context = FacesContext.getCurrentInstance();
-		try {
-			if(crуateEditTimeLine){
-				TimeLine timeLine = new TimeLine();
-				timeLine.setComment(bundle.getString("msgs_editApp"));
-				timeLine.setRegState(prodApplications.getRegState());
-				timeLine.setProdApplications(prodApplications);
-				timeLine.setUser(getLoggedInUser());
-				timeLine.setStatusDate(new Date());
-				timelineService.saveTimeLine(timeLine);
-			}
-			return "/internal/processreg.faces";
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			context.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), ex.getMessage()));
-			return "";
-		}
-	}
-	
 	public ProdApplications getProdApplications() {
 		if (prodApplications == null || userSession.getProdAppID() != null) {
 			initProdApps(userSession.getProdAppID());
@@ -858,12 +859,6 @@ public class ProdRegAppMbean implements Serializable {
 				if (prodApplications.getProduct().getId()==null) product=prodApplications.getProduct();
 				else product = productService.findProduct(prodApplications.getProduct().getId());
 				adjustProduct();
-				DosFormItem[] vals = dosageFormService.findSaveDosForm(product.getDosForm().getUid());
-				if(vals != null && vals.length == 2){
-					mainIt = vals[0];
-					subIt = vals[1];
-				}
-				
 				selectedInns = product.getInns();
 				selectedExipients = product.getExcipients();
 				selectedAtcs = product.getAtcs();
@@ -878,7 +873,7 @@ public class ProdRegAppMbean implements Serializable {
 					for(ProdCompany pc:companies)
 						Hibernate.initialize(pc.getCompany());
 				}*/
-
+				
 				//Hibernate.initialize(prodApplications.getApplicant());
 				applicant = prodApplications.getApplicant();
 
@@ -1180,15 +1175,6 @@ public class ProdRegAppMbean implements Serializable {
 		this.attachment = attachment;
 	}
 
-	
-
-	public DosageFormService getDosageFormService() {
-		return dosageFormService;
-	}
-
-	public void setDosageFormService(DosageFormService dosageFormService) {
-		this.dosageFormService = dosageFormService;
-	}
 
 	public List<Attachment> getAttachments() {
 		try {
