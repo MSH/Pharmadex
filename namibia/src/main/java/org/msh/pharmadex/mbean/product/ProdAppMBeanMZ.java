@@ -26,14 +26,18 @@ public class ProdAppMBeanMZ implements Serializable {
 
 	@ManagedProperty(value = "#{userSession}")
 	protected UserSession userSession;
+	
+	@ManagedProperty(value = "#{prodRegInit}")
+	protected ProdRegInit prodRegInit;
 
 	protected List<ProdApplications> submmittedAppList;
 	protected List<ProdApplications> processProdAppList;
+	protected List<ProdApplications> rejectedProdAppList;
 	private List<ProdApplications> filteredApps;
 
 	protected FacesContext facesContext = getCurrentInstance();
 	protected java.util.ResourceBundle resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
-
+	
 	@PostConstruct
     private void init() {
 		processProdAppList = prodApplicationsServiceMZ.getProcessProdAppList(userSession);
@@ -85,6 +89,14 @@ public class ProdAppMBeanMZ implements Serializable {
 	public void setSubmmittedAppList(List<ProdApplications> submmittedAppList) {
 		this.submmittedAppList = submmittedAppList;
 	}
+	
+	public ProdRegInit getProdRegInit() {
+		return prodRegInit;
+	}
+
+	public void setProdRegInit(ProdRegInit prodRegInit) {
+		this.prodRegInit = prodRegInit;
+	}
 
 	public String buildColReviewStatus(ProdApplications prodApp){
 		if(prodApp != null && prodApp.getReviewStatus() != null){
@@ -92,4 +104,15 @@ public class ProdAppMBeanMZ implements Serializable {
 		}
 		return "";
 	}
+
+	public List<ProdApplications> getRejectedProdAppList() {
+		if(rejectedProdAppList == null)
+			rejectedProdAppList = prodApplicationsServiceMZ.getRejectedApplications(userSession);
+		return rejectedProdAppList;
+	}
+
+	public void setRejectedProdAppList(List<ProdApplications> rejectedProdAppList) {
+		this.rejectedProdAppList = rejectedProdAppList;
+	}
+
 }

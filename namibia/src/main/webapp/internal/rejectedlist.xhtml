@@ -7,20 +7,20 @@
 	
 	<ui:define name="regcontent">
 		<div class="post">
-			<h1 class="title ui-widget-header ui-corner-all">#{msgs.submitted_applications}</h1>
+			<h1 class="title ui-widget-header ui-corner-all">#{msgs.rejected}</h1>
 		</div>
 
 		<h:form prependId="false">
 			<h:outputFormat id="noRecordsFound"
 				value="#{msgs.label_no_records_found}"
-				rendered="#{empty prodAppMBeanMZ.submmittedAppList}">
+				rendered="#{empty prodAppMBeanMZ.rejectedProdAppList}">
 				<f:param value="#{msgs.lable_products}" />
 			</h:outputFormat>
 
 			<p:dataTable id="applicantions" 
 			    var="eachprod"
-				value="#{prodAppMBeanMZ.submmittedAppList}"
-				rendered="#{not empty prodAppMBeanMZ.submmittedAppList}"
+				value="#{prodAppMBeanMZ.rejectedProdAppList}"
+				rendered="#{not empty prodAppMBeanMZ.rejectedProdAppList}"
 				filteredValue="#{prodAppMBeanMZ.filteredApps}"
 				paginator="true" rows="20" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -30,7 +30,7 @@
 					<p:commandLink value="#{eachprod.product.prodName}" action="/internal/processreg" 
 								ajax="false" >
 						<f:param name="prodAppID" value="#{eachprod.id}" />
-						<f:param name="sourcePage" value="/secure/submittedproducts.xhtml"/>
+						<f:param name="sourcePage" value="/internal/rejectedlist.xhtml"/>
 					</p:commandLink>
 				</p:column>
 
@@ -62,7 +62,7 @@
 			</p:dataTable>
 
 			<h:panelGrid columns="2" width="100%"
-				rendered="#{not empty prodAppMBeanMZ.submmittedAppList}">
+				rendered="#{not empty prodAppMBeanMZ.rejectedProdAppList}">
 				<p:panel>
 					<h:commandLink>
 						<p:graphicImage value="/resources/images/excel.png" />

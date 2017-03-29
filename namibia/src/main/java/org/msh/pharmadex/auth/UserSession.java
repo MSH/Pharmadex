@@ -21,12 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import org.msh.pharmadex.domain.AgentAgreement;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.Role;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.UserAccess;
 import org.msh.pharmadex.domain.Workspace;
 import org.msh.pharmadex.mbean.product.ProdAppInit;
+import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.DisplayReviewInfo;
 import org.msh.pharmadex.service.UserAccessService;
 import org.msh.pharmadex.service.UserService;
@@ -56,7 +58,9 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
 	@ManagedProperty(value = "#{userAccessService}")
 	private UserAccessService userAccessService;
-
+	@ManagedProperty(value = "#{applicantService}")
+	public ApplicantService applicantService;
+	
 	@ManagedProperty(value = "#{onlineUserBean}")
 	private OnlineUserBean onlineUserBean;
 	private String sessionID;
@@ -310,6 +314,13 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 		this.onlineUserBean = onlineUserBean;
 	}
 
+	public ApplicantService getApplicantService() {
+		return applicantService;
+	}
+	public void setApplicantService(ApplicantService applicantService) {
+		this.applicantService = applicantService;
+	}
+	
 	public String getWorkspaceName() {
 		return workspaceName;
 	}
@@ -558,6 +569,32 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 		}else{
 			return false;
 		}
+	}
+	/**
+	 * applicant is agent 
+	 * @return
+	 */
+	public boolean isAgent(Applicant prodApp_Applicant){
+		if(isCompany()){
+			User user = getUserAccess().getUser();
+			if(user == null)
+				return false;
+			
+			Applicant curAppl = user.getApplicant();
+			if(curAppl == null)
+				return false;
+			
+			List<AgentAgreement> agents = getApplicantService().fetchAgentAgreements(curAppl);
+
+			for(AgentAgreement ag:agents){
+				if(ag.getAgent() != null && ag.getAgent().getApplcntId().intValue() == prodApp_Applicant.getApplcntId().intValue()){
+					if(ag.getFinish().after(new Date()))
+						return true;
+				}
+			}
+			//List<AgentAgreement> agentAgreements = getApplicantService().fetchAgentAgreements(getSelectedApplicant());
+		}
+		return false;
 	}
 	/**
 	 * Get Id of applicant if current user is company user, otherwise 0

@@ -12,10 +12,14 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.AgentAgreement;
+import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CommentService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
@@ -48,7 +52,7 @@ public class ProcessProdBnNA implements Serializable {
 
 	@ManagedProperty(value = "#{commentService}")
 	public CommentService commentService;
-
+	
 	private String changedFields;
 	// protected boolean displayVerify = false;
 	//protected boolean displayScreen = false;
@@ -155,6 +159,7 @@ public class ProcessProdBnNA implements Serializable {
 	public void setCommentService(CommentService commentService) {
 		this.commentService = commentService;
 	}
+
 	/**
 	 * Issues #2339
 	 * Expiry date should be calculated as registration date + 365*5 (days)
@@ -325,7 +330,6 @@ public class ProcessProdBnNA implements Serializable {
 		this.visibleExecSumeryBtn = visibleExecSumeryBtn;
 	}
 	
-	
 	public ProcessProdBnMZ getProcessProdBnMZ() {
 		return processProdBnMZ;
 	}
@@ -338,4 +342,48 @@ public class ProcessProdBnNA implements Serializable {
 		return getProcessProdBnMZ().rejectProduct(prodApplications);
 	}
 	
+	public boolean visCreateNew(){
+		boolean res = false;
+		if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.REJECTED)){
+			if(userSession.isStaff()) // by Screener
+				return true;
+			
+			Applicant applicant = getProcessProdBn().getProdApplications().getApplicant();
+			// by Responsable of Applicant
+			if(userSession.isResponsible(applicant))
+				return true;
+			
+			if(userSession.isAgent(applicant))
+				return true;
+			/*if(userSession.isCompany() || userSession.isStaff() || userSession.isResponsible(applicant))
+				return true;*/
+		}
+		return res;
+	}
+	
+	public String createNewApplicationByRejProduct(){
+		ProdApplications prodApp = getProcessProdBn().getProdApplications();
+		//ProdApplications prodApp = getProdApplicationsServiceMZ().getProdApplicationsService().findProdApplications(getRejProdApp());
+		if(prodApp != null){
+			Product prod = prodApp.getProduct();
+			
+			ProdApplications newProdApp = new ProdApplications();
+			newProdApp.setProduct(prod);
+			newProdApp.setApplicant(prodApp.getApplicant());
+			newProdApp.setProdAppType(prodApp.getProdAppType());
+			newProdApp.setRegState(RegState.SAVED);
+			newProdApp.setApplicantUser(prodApp.getApplicantUser());
+			Long curUserID = userSession.getLoggedINUserID();
+			newProdApp = getProdApplicationsService().saveApplication(newProdApp, curUserID);
+			
+			//setRejProdApp(newProdApp.getId());
+			
+			Scrooge.setBeanParam("prodAppID", newProdApp.getId());
+			//getProcessProdBnNA().createNewApplicationByRejProduct();
+			
+			return "/secure/prodreghome.faces";
+		}
+		
+		return null;
+	}
 }

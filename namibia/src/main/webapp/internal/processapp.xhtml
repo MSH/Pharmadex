@@ -92,8 +92,7 @@
 						</p:panel>
 					</h:panelGroup>
 
-					<h:panelGroup id="agents"
-						rendered="#{userSession.staff || userSession.admin || userSession.isResponsible(applicantMBean.selectedApplicant)}">
+					<h:panelGroup id="agents">
 						<p:panel header="#{msgs.agentList}">
 							<p:dataTable id="agentsTable" var="agentAgreement"
 								value="#{applicantMBean.agentAgreements}" style="width:100%;">
@@ -133,6 +132,7 @@
 											styleClass="ui-icon ui-icon-plusthick" ajax='true'
 											resetValues="true" oncomplete="PF('editDialog').show()"
 											update="editDialog agentsTable growl">
+											<p:resetInput target="editDialog agentsTable" />
 										</p:commandLink>
 									</f:facet>
 									<h:panelGrid id="cmd_panel" columns="3" border="0"
@@ -154,8 +154,7 @@
 						</p:panel>
 					</h:panelGroup>
 
-					<h:panelGroup id="agentsFor"
-						rendered="#{userSession.staff || userSession.admin}">
+					<h:panelGroup id="agentsFor">
 						<p:panel header="#{msgs.agentFor}">
 							<p:dataTable id="agentsForTable" var="agentf"
 								value="#{applicantMBean.myAgentAgreements}" style="width:100%;">
@@ -314,7 +313,7 @@
 
 		<p:dialog modal="true" widgetVar="editDialog"
 			header="#{msgs.label_edit}" id="editDialog" dynamic="true"
-			width="600px">
+			width="600px" closable="false">
 			<h:form id="editAgentAgreementForm">
 				<h:panelGrid columns="2" cellspacing="5" width="98%">
 					<h:outputLabel value="#{msgs.applicant}" />
@@ -352,6 +351,7 @@
 					</h:panelGrid>
 				</p:panel>
 				<p:commandButton value="#{msgs.global_cancel}" ajax="true"
+					actionListener="#{applicantMBean.cancelSelectedAgreement()}"
 					oncomplete="PF('editDialog').hide()" />
 				<p:commandButton
 					actionListener="#{applicantMBean.saveSelectedAgreement()}"

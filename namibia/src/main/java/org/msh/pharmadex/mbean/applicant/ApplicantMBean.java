@@ -629,6 +629,15 @@ public class ApplicantMBean implements Serializable {
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, error, ""));
 		}else
 			globalFail();
+		
+		cancelSelectedAgreement();
+	}
+	
+	public void cancelSelectedAgreement(){
+		setSelectedAgent(null);
+		setStartDate(null);
+		setFinishDate(null);
+		setSelectedAgentAgreement(null);
 	}
 
 	public String varificationSelectAgreement(){
@@ -641,7 +650,14 @@ public class ApplicantMBean implements Serializable {
 			if(agentAgreements != null && agentAgreements.size() > 0){
 				for(AgentAgreement ag:agentAgreements){
 					if(ag.getAgent() != null){
-						if(ag.getId().intValue() != getSelectedAgentAgreement().getId().intValue()){
+						if(getSelectedAgentAgreement() != null && getSelectedAgentAgreement().getId() != null){ // edit
+							if(ag.getId().intValue() != getSelectedAgentAgreement().getId().intValue()){
+								if(ag.getAgent().getApplcntId().intValue() == agentID.intValue()){
+									err = resourceBundle.getString("error_dublicate_agent");
+									break;
+								}
+							}
+						}else{// create new
 							if(ag.getAgent().getApplcntId().intValue() == agentID.intValue()){
 								err = resourceBundle.getString("error_dublicate_agent");
 								break;

@@ -182,7 +182,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.RECOMMENDED);
 			regState.add(RegState.NOT_RECOMMENDED);
-			regState.add(RegState.REJECTED);
+			//regState.add(RegState.REJECTED);
 		} 
 		if (userSession.isStaff()) {
 			regState.add(RegState.NEW_APPL);
@@ -190,6 +190,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.FEE);
 			regState.add(RegState.VERIFY);
 			regState.add(RegState.FOLLOW_UP);
+			//regState.add(RegState.REJECTED);
+			//params.put("userId", userSession.getLoggedINUserID());
 		}
 		if (userSession.isCompany()) {
 			regState.add(RegState.NEW_APPL);
@@ -206,7 +208,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.SUSPEND);
 			regState.add(RegState.DEFAULTED);
 			regState.add(RegState.NOT_RECOMMENDED);
-			regState.add(RegState.REJECTED);
+			//regState.add(RegState.REJECTED);
 			params.put("userId", userSession.getLoggedINUserID());
 		}
 		if (userSession.isLab()) {
@@ -223,6 +225,36 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
 		}
 
+		params.put("regState", regState);
+		prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
+
+		if (userSession.isModerator() || userSession.isReviewer() || userSession.isHead() || userSession.isLab()) {
+			Collections.sort(prodApplicationses, new Comparator<ProdApplications>() {
+				@Override
+				public int compare(ProdApplications o1, ProdApplications o2) {
+					Date d1 = o1.getPriorityDate();
+					Date d2 = o2.getPriorityDate();
+					if(d1 != null && d2 != null)
+						return d1.compareTo(d2);
+					return 0;
+				}
+			});
+		}
+
+		return prodApplicationses;
+	}
+
+	public List<ProdApplications> getRejectedApplications(UserSession userSession) {
+		List<ProdApplications> prodApplicationses = null;
+		HashMap<String, Object> params = new HashMap<String, Object>();
+
+		List<RegState> regState = new ArrayList<RegState>();
+		regState.add(RegState.REJECTED);
+		
+		
+		if (userSession.isCompany()) 
+			params.put("userId", userSession.getLoggedINUserID());
+		
 		params.put("regState", regState);
 		prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
 
@@ -1624,7 +1656,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.RECOMMENDED);
 			regState.add(RegState.NOT_RECOMMENDED);
-			regState.add(RegState.REJECTED);
+			//regState.add(RegState.REJECTED);
 			regState.add(RegState.APPL_FEE);
 		} 
 		if (userSession.isStaff()) {
@@ -1649,7 +1681,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.SUSPEND);
 			regState.add(RegState.DEFAULTED);
 			regState.add(RegState.NOT_RECOMMENDED);
-			regState.add(RegState.REJECTED);
+			//regState.add(RegState.REJECTED);
 			params.put("userId", userSession.getLoggedINUserID());
 		}
 		if (userSession.isLab()) {

@@ -58,8 +58,8 @@ import org.msh.pharmadex.service.TimelineService;
 import org.msh.pharmadex.service.UserService;
 import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.RetObject;
+import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.FlowEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -148,7 +148,7 @@ public class ProdRegAppMbean implements Serializable {
 		try {
 			userSession.setProdAppID(null);
 			//prodAppID = Long.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("prodAppID"));
-			prodAppID = getParam("prodAppID");
+			prodAppID = Scrooge.beanParam("prodAppID");
 		} catch (NumberFormatException nfe) {
 			prodAppID = null;
 		}
@@ -257,29 +257,6 @@ public class ProdRegAppMbean implements Serializable {
 		System.out.println("--------------------------------------");
 		System.out.println("------ProdRegAppMbean Bean destroyed-----");
 		System.out.println("--------------------------------------");
-	}
-
-	private Long getParam(String parameter){
-		context = FacesContext.getCurrentInstance();
-		String procId=null;
-		if (context.getExternalContext().getFlash()!=null){
-			Object id = context.getExternalContext().getFlash().get(parameter);
-			String name="";
-			if (id!=null)
-				name = id.getClass().getName();
-			if (name.toLowerCase().endsWith("long"))
-				return (Long) context.getExternalContext().getFlash().get(parameter);
-			else if (name.toLowerCase().endsWith("string"))
-				procId = (String) context.getExternalContext().getFlash().get(parameter);
-		}
-		if (procId==null){
-			if (context.getExternalContext().getRequestParameterMap()!=null)
-				procId = context.getExternalContext().getRequestParameterMap().get(parameter);
-		}
-		if (procId!=null){
-			return Long.parseLong(procId);
-		}
-		return null;
 	}
 
 	public void PDF() {

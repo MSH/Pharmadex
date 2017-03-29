@@ -206,8 +206,6 @@ public class AppSelectMBean implements Serializable {
 		//        logger.error("Selected company is " + selectedApplicant.getAppName());
 		logger.error("event " + event.getSource());
 		gmpChangeListener();
-
-
 	}
 
 	// when save pressed
