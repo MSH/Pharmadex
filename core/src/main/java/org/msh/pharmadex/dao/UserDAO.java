@@ -149,6 +149,12 @@ public class UserDAO implements Serializable {
 				.setParameter("roleId", 6)
 				.getResultList();  //To change body of created methods use File | Settings | File Templates.
 	}
+	
+	public List<User> findScreeners() {
+		return entityManager.createQuery("select u from User u left join u.roles r where r.roleId = :roleId")
+				.setParameter("roleId", 3)
+				.getResultList();  //To change body of created methods use File | Settings | File Templates.
+	}
 
 	public boolean isUsernameDuplicated(String username) {
 		if(username == null)
