@@ -50,43 +50,206 @@ public class DashboardMBean implements Serializable {
 	}
 
 	public void loadList(){
-		if(isReport_1()){
+		if(isReport(1)){
 			list = dashboardService.getListTimesProcess();
-		}else if(isReport_2()){
+		}else if(isReport(2)){
 			list = dashboardService.getListByPercentNemList();
-		}else if(isReport_3()){
+		}else if(isReport(3)){
 			list = dashboardService.getListByPercentApprovedList();
-		}else if(isReport_4()){
+		}else if(isReport(4)){
 			list = dashboardService.getListByApplicant();
+		}else if(isReport(5)){
+			list = dashboardService.getListByGenName();
 		}
 	}
 	
 	public String getTitle(){
-		if(isReport_1())
+		if(isReport(1))
 			return resourceBundle.getString("title_times");
-		if(isReport_2())
+		if(isReport(2))
 			return resourceBundle.getString("title_perNemList");
-		if(isReport_3())
+		if(isReport(3))
 			return resourceBundle.getString("title_perAppl");
-		if(isReport_4())
+		if(isReport(4))
 			return resourceBundle.getString("title_byApplicant");
+		if(isReport(5))
+			return resourceBundle.getString("title_generic");
 		return "";
 	}
 	
-	public boolean isReport_1(){
-		return numreport.equals("1");
+	public boolean isReport(int n){
+		return numreport.equals(String.valueOf(n));
 	}
 	
-	public boolean isReport_2(){
-		return numreport.equals("2");
+	public boolean renderedColumn(int numCol){
+		if(isReport(1) && numCol <= 6) // 1-6
+			return true;
+		
+		if(isReport(2) && numCol <= 5)
+			return true;
+			
+		if(isReport(3) && numCol <= 7)
+			return true;
+		
+		if(isReport(4) && numCol <= 4)
+			return true;
+		
+		if(isReport(5) && numCol <= 3)
+			return true;
+		
+		return false;
 	}
 	
-	public boolean isReport_3(){
-		return numreport.equals("3");
+	public String headerColumn(int numCol){
+		if(isReport(1)){
+			switch (numCol) {
+			case 1:
+				return resourceBundle.getString("col_year");
+			case 2:
+				return resourceBundle.getString("col_quarter");
+			case 3:
+				return resourceBundle.getString("col_total");
+			case 4:
+				return resourceBundle.getString("col_avgscreening");
+			case 5:
+				return resourceBundle.getString("col_avgreview");
+			case 6:
+				return resourceBundle.getString("col_avgtotal");
+			}
+		}
+		if(isReport(2)){
+			switch (numCol) {
+			case 1:
+				return resourceBundle.getString("col_year");
+			case 2:
+				return resourceBundle.getString("col_quarter");
+			case 3:
+				return resourceBundle.getString("col_total");
+			case 4:
+				return resourceBundle.getString("col_count");
+			case 5:
+				return resourceBundle.getString("col_percent");
+			}
+		}
+		if(isReport(3)){
+			switch (numCol) {
+			case 1:
+				return resourceBundle.getString("col_year");
+			case 2:
+				return resourceBundle.getString("col_quarter");
+			case 3:
+				return resourceBundle.getString("col_total");
+			case 4:
+				return resourceBundle.getString("col_countReg");
+			case 5:
+				return resourceBundle.getString("col_percReg");
+			case 6:
+				return resourceBundle.getString("col_countRej");
+			case 7:
+				return resourceBundle.getString("col_percRej");
+			}
+		}
+		if(isReport(4)){
+			switch (numCol) {
+			case 1:
+				return resourceBundle.getString("col_appName");
+			case 2:
+				return resourceBundle.getString("col_regInNemList");
+			case 3:
+				return resourceBundle.getString("col_other");
+			case 4:
+				return resourceBundle.getString("col_total");
+			}
+		}
+		if(isReport(5)){
+			switch (numCol) {
+			case 1:
+				return resourceBundle.getString("col_genname");
+			case 2:
+				return resourceBundle.getString("col_nemlist");
+			case 3:
+				return resourceBundle.getString("col_total_1");
+			}
+		}
+
+		return "";
 	}
 	
-	public boolean isReport_4(){
-		return numreport.equals("4");
+	public String valueColumn(int numCol, ItemDashboard item){
+		if(item == null)
+			return "";
+		
+		if(isReport(1)){
+			switch (numCol) {
+			case 1:
+				return String.valueOf(item.getYear());
+			case 2:
+				return String.valueOf(item.getQuarter());
+			case 3:
+				return String.valueOf(item.getTotal());
+			case 4:
+				return String.valueOf(item.getAvg_screening());
+			case 5:
+				return String.valueOf(item.getAvg_review());
+			case 6:
+				return String.valueOf(item.getAvg_total());
+			}
+		}
+		if(isReport(2)){
+			switch (numCol) {
+			case 1:
+				return String.valueOf(item.getYear());
+			case 2:
+				return String.valueOf(item.getQuarter());
+			case 3:
+				return String.valueOf(item.getTotal());
+			case 4:
+				return String.valueOf(item.getCount());
+			case 5:
+				return String.valueOf(item.getPercent());
+			}
+		}
+		if(isReport(3)){
+			switch (numCol) {
+			case 1:
+				return String.valueOf(item.getYear());
+			case 2:
+				return String.valueOf(item.getQuarter());
+			case 3:
+				return String.valueOf(item.getTotal());
+			case 4:
+				return String.valueOf(item.getCount());
+			case 5:
+				return String.valueOf(item.getPercent());
+			case 6:
+				return String.valueOf(item.getCount_other());
+			case 7:
+				return String.valueOf(item.getPercent_other());
+			}
+		}
+		if(isReport(4)){
+			switch (numCol) {
+			case 1:
+				return String.valueOf(item.getName());
+			case 2:
+				return String.valueOf(item.getCount());
+			case 3:
+				return String.valueOf(item.getCount_other());
+			case 4:
+				return String.valueOf(item.getTotal());
+			}
+		}
+		if(isReport(5)){
+			switch (numCol) {
+			case 1:
+				return String.valueOf(item.getName());
+			case 2:
+				return String.valueOf(item.getCount());
+			case 3:
+				return String.valueOf(item.getCount_other());
+			}
+		}
+		return "";
 	}
 	
 	public List<ItemDashboard> getList() {
@@ -100,11 +263,9 @@ public class DashboardMBean implements Serializable {
 		return dashboardService;
 	}
 
-
 	public void setDashboardService(DashboardService dashboardService) {
 		this.dashboardService = dashboardService;
 	}
-
 
 	public UserSession getUserSession() {
 		return userSession;
@@ -122,5 +283,18 @@ public class DashboardMBean implements Serializable {
 		this.userService = userService;
 	}
 	
-	
+	/*
+                <p:column headerText="#{msgs.col_appName}" rendered="#{dashboardMBean.report}">
+                    <h:outputText value="#{item.name}"/>
+                </p:column>
+                <p:column headerText="#{msgs.col_regInNemList}" rendered="#{dashboardMBean.report}">
+                    <h:outputText value="#{item.count}"/>
+                </p:column>
+                <p:column headerText="#{msgs.col_other}" rendered="#{dashboardMBean.report}">
+                    <h:outputText value="#{item.count_other}"/>
+                </p:column>
+                <p:column headerText="#{msgs.col_total}" rendered="#{dashboardMBean.report}">
+                    <h:outputText value="#{item.total}"/>
+                </p:column>
+	 */
 }

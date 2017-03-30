@@ -19,66 +19,26 @@
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,40,100">
-                <p:column headerText="#{msgs.col_year}" rendered="#{!dashboardMBean.report_4}">
-                    <h:outputText value="#{item.year}"/>
+                <p:column headerText="#{dashboardMBean.headerColumn(1)}" rendered="#{dashboardMBean.renderedColumn(1)}">
+                    <h:outputText value="#{dashboardMBean.valueColumn(1, item)}"/>
                 </p:column>
-                
-                <p:column headerText="#{msgs.col_quarter}" rendered="#{!dashboardMBean.report_4}">
-                    <h:outputText value="#{item.quarter}"/>
+                <p:column headerText="#{dashboardMBean.headerColumn(2)}" rendered="#{dashboardMBean.renderedColumn(2)}">
+                    <h:outputText value="#{dashboardMBean.valueColumn(2, item)}"/>
                 </p:column>
-                
-                <p:column headerText="#{msgs.col_total}" rendered="#{!dashboardMBean.report_4}">
-                    <h:outputText value="#{item.total}"/>
+                <p:column headerText="#{dashboardMBean.headerColumn(3)}" rendered="#{dashboardMBean.renderedColumn(3)}">
+                    <h:outputText value="#{dashboardMBean.valueColumn(3, item)}"/>
                 </p:column>
-                
-                <p:column headerText="#{msgs.col_avgscreening}" rendered="#{dashboardMBean.report_1}">
-                    <h:outputText value="#{item.avg_screening}"/>
+                <p:column headerText="#{dashboardMBean.headerColumn(4)}" rendered="#{dashboardMBean.renderedColumn(4)}">
+                    <h:outputText value="#{dashboardMBean.valueColumn(4, item)}"/>
                 </p:column>
-                
-                <p:column headerText="#{msgs.col_avgreview}" rendered="#{dashboardMBean.report_1}">
-                    <h:outputText value="#{item.avg_review}"/>
+                <p:column headerText="#{dashboardMBean.headerColumn(5)}" rendered="#{dashboardMBean.renderedColumn(5)}">
+                    <h:outputText value="#{dashboardMBean.valueColumn(5, item)}"/>
                 </p:column>
-                
-                <p:column headerText="#{msgs.col_avgtotal}" rendered="#{dashboardMBean.report_1}">
-                    <h:outputText value="#{item.avg_total}"/>
+                <p:column headerText="#{dashboardMBean.headerColumn(6)}" rendered="#{dashboardMBean.renderedColumn(6)}">
+                    <h:outputText value="#{dashboardMBean.valueColumn(6, item)}"/>
                 </p:column>
-                
-                <p:column rendered="#{dashboardMBean.report_2 or dashboardMBean.report_3}">
-                	<f:facet name="header">
-                		<h:outputText value="#{msgs.col_count}" rendered="#{dashboardMBean.report_2}"/>
-                		<h:outputText value="#{msgs.col_countReg}" rendered="#{dashboardMBean.report_3}"/>
-                	</f:facet>
-                    <h:outputText value="#{item.count}"/>
-                </p:column>
-                
-                <p:column rendered="#{dashboardMBean.report_2 or dashboardMBean.report_3}">
-                	<f:facet name="header">
-                		<h:outputText value="#{msgs.col_percent}" rendered="#{dashboardMBean.report_2}"/>
-                		<h:outputText value="#{msgs.col_percReg}" rendered="#{dashboardMBean.report_3}"/>
-                	</f:facet>
-                    <h:outputText value="#{item.percent}"/>
-                </p:column>
-                
-                <p:column headerText="#{msgs.col_countRej}" rendered="#{dashboardMBean.report_3}">
-                    <h:outputText value="#{item.count_other}"/>
-                </p:column>
-                
-                <p:column headerText="#{msgs.col_percRej}" rendered="#{dashboardMBean.report_3}">
-                    <h:outputText value="#{item.percent_other}"/>
-                </p:column>
-                
-                
-                <p:column headerText="#{msgs.col_appName}" rendered="#{dashboardMBean.report_4}">
-                    <h:outputText value="#{item.appName}"/>
-                </p:column>
-                <p:column headerText="#{msgs.col_regInNemList}" rendered="#{dashboardMBean.report_4}">
-                    <h:outputText value="#{item.count}"/>
-                </p:column>
-                <p:column headerText="#{msgs.col_other}" rendered="#{dashboardMBean.report_4}">
-                    <h:outputText value="#{item.count_other}"/>
-                </p:column>
-                <p:column headerText="#{msgs.col_total}" rendered="#{dashboardMBean.report_4}">
-                    <h:outputText value="#{item.total}"/>
+                <p:column headerText="#{dashboardMBean.headerColumn(7)}" rendered="#{dashboardMBean.renderedColumn(7)}">
+                    <h:outputText value="#{dashboardMBean.valueColumn(7, item)}"/>
                 </p:column>
             </p:dataTable>
 

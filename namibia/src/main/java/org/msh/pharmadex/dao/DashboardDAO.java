@@ -148,10 +148,39 @@ public class DashboardDAO implements Serializable {
 			for(Object[] val:list){
 				ItemDashboard it = new ItemDashboard();
 				if(val[0] != null){
-					it.setAppName((String)val[0]);
+					it.setName((String)val[0]);
 					it.setCount(((BigInteger)val[1]).intValue());
 					it.setCount_other(((BigInteger)val[2]).intValue());
 					it.setTotal(((BigInteger)val[3]).intValue());
+					items.add(it);
+				}
+			}
+		}
+
+		return items;
+	}
+
+	public List<ItemDashboard> getListByGenName() {
+		List<ItemDashboard> items = null;
+
+		String regState = RegState.REGISTERED + "";
+		
+		String sql = "select p.gen_name, count(p.id), count(distinct(a.applcntId))"
+				+ " FROM prodapplications pa"
+				+ " left join product p on p.id=pa.PROD_ID and (p.fnm is not null and length(trim(p.fnm))>0)"
+				+ " left join applicant a on a.applcntId=pa.APP_ID"
+				+ " where pa.regState like '" + regState + "' and not isnull(p.gen_name)"
+				+ " group by p.gen_name ASC";
+		
+		List<Object[]> list = entityManager.createNativeQuery(sql).getResultList();
+		if(list != null && list.size() > 0){
+			items = new ArrayList<ItemDashboard>();
+			for(Object[] val:list){
+				ItemDashboard it = new ItemDashboard();
+				if(val[0] != null){
+					it.setName((String)val[0]);
+					it.setCount(((BigInteger)val[1]).intValue());
+					it.setCount_other(((BigInteger)val[2]).intValue());
 					items.add(it);
 				}
 			}

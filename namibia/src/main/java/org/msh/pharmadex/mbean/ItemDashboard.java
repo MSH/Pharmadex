@@ -21,7 +21,7 @@ public class ItemDashboard implements Serializable{
 	private double avg_review = 0;
 	private double avg_total = 0;
 	
-	private String appName = "";
+	private String name = "";
 	
 	public int getYear() {
 		return year;
@@ -108,11 +108,11 @@ public class ItemDashboard implements Serializable{
 		this.avg_total = avg_total;
 	}
 	
-	public String getAppName() {
-		return appName;
+	public String getName() {
+		return name;
 	}
-	public void setAppName(String appName) {
-		this.appName = appName;
+	public void setName(String n) {
+		this.name = n;
 	}
 	public double round(double val, int col){
 		double value = new BigDecimal(val).setScale(col, RoundingMode.UP).doubleValue();

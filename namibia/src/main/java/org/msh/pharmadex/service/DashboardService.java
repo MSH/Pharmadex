@@ -34,4 +34,8 @@ public class DashboardService implements Serializable {
 	public List<ItemDashboard> getListByApplicant(){
 		return dashboardDAO.getListByApplicant();
 	}
+	
+	public List<ItemDashboard> getListByGenName(){
+		return dashboardDAO.getListByGenName();
+	}
 }
