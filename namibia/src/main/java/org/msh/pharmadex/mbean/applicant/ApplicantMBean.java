@@ -16,6 +16,7 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.servlet.http.HttpServletRequest;
 
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.dao.ApplicantListDTO;
 import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.domain.AgentAgreement;
 import org.msh.pharmadex.domain.Applicant;
@@ -57,7 +58,7 @@ public class ApplicantMBean implements Serializable {
 	private Applicant selectedApplicant;
 	private List<Applicant> allApplicant;
 	private List<Applicant> allStateApplicant;
-	private List<Applicant> filteredApplicant;
+	private List<ApplicantListDTO> filteredApplicant;
 	private User user;
 	@ManagedProperty(value = "#{userSession}")
 	private UserSession userSession;
@@ -336,6 +337,17 @@ public class ApplicantMBean implements Serializable {
 
 		return allApplicant;
 	}
+	/**
+	 * Get all registered applicants to display
+	 * @return
+	 */
+	public List<ApplicantListDTO> getAllForList(){
+		return applicantService.getAllRegisteredForList();
+	}
+	
+	public void setAllForList(List<ApplicantListDTO> dummy){
+		//nothing to do, only obey bean specifications
+	}
 
 	public void setAllApplicant(List<Applicant> allApplicant) {
 		this.allApplicant = allApplicant;
@@ -361,11 +373,11 @@ public class ApplicantMBean implements Serializable {
 		this.user = userService.findUser(user.getUserId());
 	}
 
-	public List<Applicant> getFilteredApplicant() {
+	public List<ApplicantListDTO> getFilteredApplicant() {
 		return filteredApplicant;
 	}
 
-	public void setFilteredApplicant(List<Applicant> filteredApplicant) {
+	public void setFilteredApplicant(List<ApplicantListDTO> filteredApplicant) {
 		this.filteredApplicant = filteredApplicant;
 	}
 

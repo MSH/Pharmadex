@@ -9,9 +9,11 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Checklist;
 import org.msh.pharmadex.domain.FeeSchedule;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.service.ChecklistService;
 import org.msh.pharmadex.service.GlobalEntityLists;
+import org.msh.pharmadex.service.UserService;
 import org.primefaces.context.RequestContext;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -40,6 +42,9 @@ public class ProdRegInit implements Serializable {
 
     @ManagedProperty(value = "#{checklistService}")
     private ChecklistService checklistService;
+    
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
 
     private String[] selSRA;
     private boolean eml = false;
@@ -150,7 +155,15 @@ public class ProdRegInit implements Serializable {
         this.userSession = userSession;
     }
 
-    public String[] getSelSRA() {
+    public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public String[] getSelSRA() {
         return selSRA;
     }
 
@@ -284,6 +297,14 @@ public class ProdRegInit implements Serializable {
 
     public void setShowVariationType(boolean showVariationType) {
         this.showVariationType = showVariationType;
+    }
+    
+	public List<User> getScreeners() {
+		return getUserService().findScreeners(true);
+	}
+    
+    public void setScreeners(List<User> dummy){
+    	//only to obey bean specifications
     }
 
 

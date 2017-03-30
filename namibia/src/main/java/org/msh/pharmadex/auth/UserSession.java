@@ -418,7 +418,7 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 	 * show by user STAFF and Admin
 	 */
 	public boolean displayAppRegMZ() {
-		if(isAdmin() )
+		if(isAdmin() || isStaff() )
 			return true;
 
 		return false;

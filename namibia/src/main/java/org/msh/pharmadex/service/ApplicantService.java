@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.msh.pharmadex.dao.ApplicantDAO;
+import org.msh.pharmadex.dao.ApplicantListDTO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.iface.AgentAgreementDAO;
 import org.msh.pharmadex.dao.iface.ApplicantTypeDAO;
@@ -332,5 +333,12 @@ public class ApplicantService implements Serializable {
 	 */
 	public AgentAgreement saveAgentAgreement(AgentAgreement agentAgreement) {
 		return agentAgreementDAO.save(agentAgreement);
+	}
+	/**
+	 * Get registered applicants for display
+	 * @return
+	 */
+	public List<ApplicantListDTO> getAllRegisteredForList() {
+		return applicantDAO.getApplicantsForLists(true);
 	}
 }
