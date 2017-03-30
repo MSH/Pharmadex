@@ -282,19 +282,4 @@ public class DashboardMBean implements Serializable {
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
-	
-	/*
-                <p:column headerText="#{msgs.col_appName}" rendered="#{dashboardMBean.report}">
-                    <h:outputText value="#{item.name}"/>
-                </p:column>
-                <p:column headerText="#{msgs.col_regInNemList}" rendered="#{dashboardMBean.report}">
-                    <h:outputText value="#{item.count}"/>
-                </p:column>
-                <p:column headerText="#{msgs.col_other}" rendered="#{dashboardMBean.report}">
-                    <h:outputText value="#{item.count_other}"/>
-                </p:column>
-                <p:column headerText="#{msgs.col_total}" rendered="#{dashboardMBean.report}">
-                    <h:outputText value="#{item.total}"/>
-                </p:column>
-	 */
 }
