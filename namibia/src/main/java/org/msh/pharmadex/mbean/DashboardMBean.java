@@ -56,6 +56,8 @@ public class DashboardMBean implements Serializable {
 			list = dashboardService.getListByPercentNemList();
 		}else if(isReport_3()){
 			list = dashboardService.getListByPercentApprovedList();
+		}else if(isReport_4()){
+			list = dashboardService.getListByApplicant();
 		}
 	}
 	
@@ -66,6 +68,8 @@ public class DashboardMBean implements Serializable {
 			return resourceBundle.getString("title_perNemList");
 		if(isReport_3())
 			return resourceBundle.getString("title_perAppl");
+		if(isReport_4())
+			return resourceBundle.getString("title_byApplicant");
 		return "";
 	}
 	
@@ -79,6 +83,10 @@ public class DashboardMBean implements Serializable {
 	
 	public boolean isReport_3(){
 		return numreport.equals("3");
+	}
+	
+	public boolean isReport_4(){
+		return numreport.equals("4");
 	}
 	
 	public List<ItemDashboard> getList() {

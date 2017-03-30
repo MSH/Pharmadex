@@ -61,15 +61,6 @@ public class DashboardDAO implements Serializable {
 			}
 		}
 
-/*		Collections.sort(items, new Comparator<ItemDashboard>() {
-			@Override
-			public int compare(ItemDashboard o1, ItemDashboard o2) {
-				Integer i1 = new Integer(o1.getYear());
-				Integer i2 = new Integer(o2.getYear());
-				return i1.compareTo(i2);
-			}
-		});*/
-
 		return items;
 	}
 	
@@ -99,15 +90,6 @@ public class DashboardDAO implements Serializable {
 				items.add(it);
 			}
 		}
-
-/*		Collections.sort(items, new Comparator<ItemDashboard>() {
-			@Override
-			public int compare(ItemDashboard o1, ItemDashboard o2) {
-				Integer i1 = new Integer(o1.getYear());
-				Integer i2 = new Integer(o2.getYear());
-				return i1.compareTo(i2);
-			}
-		});*/
 
 		return items;
 	}
@@ -143,14 +125,37 @@ public class DashboardDAO implements Serializable {
 			}
 		}
 
-/*		Collections.sort(items, new Comparator<ItemDashboard>() {
-			@Override
-			public int compare(ItemDashboard o1, ItemDashboard o2) {
-				Integer i1 = new Integer(o1.getYear());
-				Integer i2 = new Integer(o2.getYear());
-				return i1.compareTo(i2);
+		return items;
+	}
+	
+	public List<ItemDashboard> getListByApplicant() {
+		List<ItemDashboard> items = null;
+
+		String regState = RegState.REGISTERED + "";
+		
+		String sql = "select a.appName, count(p.id),"
+				+ " count(pa.id) - count(p.id),"
+				+ " count(pa.id)"
+				+ " FROM prodapplications pa"
+				+ " left join product p on p.id=pa.PROD_ID and (p.fnm is not null and length(trim(p.fnm))>0)"
+				+ " left join applicant a on a.applcntId=pa.APP_ID"
+				+ " where pa.regState like '" + regState + "'"
+				+ " group by a.appName ASC";
+		 
+		List<Object[]> list = entityManager.createNativeQuery(sql).getResultList();
+		if(list != null && list.size() > 0){
+			items = new ArrayList<ItemDashboard>();
+			for(Object[] val:list){
+				ItemDashboard it = new ItemDashboard();
+				if(val[0] != null){
+					it.setAppName((String)val[0]);
+					it.setCount(((BigInteger)val[1]).intValue());
+					it.setCount_other(((BigInteger)val[2]).intValue());
+					it.setTotal(((BigInteger)val[3]).intValue());
+					items.add(it);
+				}
 			}
-		});*/
+		}
 
 		return items;
 	}

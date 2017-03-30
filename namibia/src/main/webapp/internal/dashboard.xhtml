@@ -19,15 +19,15 @@
                          paginator="true" rows="20" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="20,40,100">
-                <p:column headerText="#{msgs.col_year}">
+                <p:column headerText="#{msgs.col_year}" rendered="#{!dashboardMBean.report_4}">
                     <h:outputText value="#{item.year}"/>
                 </p:column>
                 
-                <p:column headerText="#{msgs.col_quarter}">
+                <p:column headerText="#{msgs.col_quarter}" rendered="#{!dashboardMBean.report_4}">
                     <h:outputText value="#{item.quarter}"/>
                 </p:column>
                 
-                <p:column headerText="#{msgs.col_total}">
+                <p:column headerText="#{msgs.col_total}" rendered="#{!dashboardMBean.report_4}">
                     <h:outputText value="#{item.total}"/>
                 </p:column>
                 
@@ -65,6 +65,20 @@
                 
                 <p:column headerText="#{msgs.col_percRej}" rendered="#{dashboardMBean.report_3}">
                     <h:outputText value="#{item.percent_other}"/>
+                </p:column>
+                
+                
+                <p:column headerText="#{msgs.col_appName}" rendered="#{dashboardMBean.report_4}">
+                    <h:outputText value="#{item.appName}"/>
+                </p:column>
+                <p:column headerText="#{msgs.col_regInNemList}" rendered="#{dashboardMBean.report_4}">
+                    <h:outputText value="#{item.count}"/>
+                </p:column>
+                <p:column headerText="#{msgs.col_other}" rendered="#{dashboardMBean.report_4}">
+                    <h:outputText value="#{item.count_other}"/>
+                </p:column>
+                <p:column headerText="#{msgs.col_total}" rendered="#{dashboardMBean.report_4}">
+                    <h:outputText value="#{item.total}"/>
                 </p:column>
             </p:dataTable>
 

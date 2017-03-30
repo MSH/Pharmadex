@@ -30,4 +30,8 @@ public class DashboardService implements Serializable {
 	public List<ItemDashboard> getListByPercentApprovedList(){
 		return dashboardDAO.getListByPercentApprovedList();
 	}
+	
+	public List<ItemDashboard> getListByApplicant(){
+		return dashboardDAO.getListByApplicant();
+	}
 }
