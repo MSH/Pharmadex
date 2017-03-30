@@ -210,6 +210,7 @@
 										<pe:ckEditor
 											value="#{reviewDetailBn.reviewDetail.otherComment}"
 											height="300" width="350px"
+											customConfig="#{request.contextPath}/resources/js/CKEconfig.js"
 											toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 											rendered="#{reviewInfoBn.primaryReviewerJob()}" />
 										<h:outputText escape="false"
@@ -220,6 +221,7 @@
 										rendered="#{reviewInfoBn.hasSecondReviewer()}">
 										<pe:ckEditor value="#{reviewDetailBn.reviewDetail.secComment}"
 											height="300" width="350px"
+											customConfig="#{request.contextPath}/resources/js/CKEconfig.js"
 											toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 											rendered="#{reviewInfoBn.secondReviewerJob()}" />
 										<h:outputText escape="false"
@@ -271,6 +273,7 @@
 					<pe:ckEditor id="revsummary1"
 						value="#{reviewInfoBn.reviewComment.comment}" height="200"
 						width="700"
+						customConfig="#{request.contextPath}/resources/js/CKEconfig.js"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 						required="true" />
 					<p:message for="revsummary" />
@@ -304,6 +307,7 @@
 					<pe:ckEditor id="revsummary"
 						value="#{reviewInfoBn.reviewComment.comment}" height="200"
 						width="700"
+						customConfig="#{request.contextPath}/resources/js/CKEconfig.js"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 						required="true" />
 					<p:message for="revsummary" />
@@ -322,6 +326,7 @@
 					<p:outputLabel value="#{msgs.comment}" for="addcomment"
 						styleClass="label" />
 					<pe:ckEditor id="addcomment" value="#{commentMBean.comment}"
+					customConfig="#{request.contextPath}/resources/js/CKEconfig.js"
 						height="200" width="700"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 						required="true" />
@@ -350,6 +355,7 @@
 						styleClass="label" />
 					<pe:ckEditor id="sum" value="#{reviewInfoBn.reviewComment.comment}"
 						height="200" width="700"
+						customConfig="#{request.contextPath}/resources/js/CKEconfig.js"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 						required="true" />
 					<p:message for="sum" />
@@ -389,6 +395,7 @@
 					<pe:ckEditor id="revcommsummary"
 						value="#{reviewInfoBn.revDeficiency.ackComment.comment}"
 						height="200" width="700"
+						customConfig="#{request.contextPath}/resources/js/CKEconfig.js"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 						required="true" />
 					<p:message for="revcommsummary" />

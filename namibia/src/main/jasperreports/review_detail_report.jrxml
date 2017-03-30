@@ -596,7 +596,7 @@
 				<reportElement x="415" y="0" width="100" height="100" uuid="0bd5e045-8a13-4f57-a92a-df4068b5641f">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
-				<imageExpression><![CDATA["na_namibia_header.png"]]></imageExpression>
+				<imageExpression><![CDATA["na_namibia_header_old.png"]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement positionType="Float" x="32" y="148" width="523" height="16" uuid="4bfe7bec-4c62-46ad-b3d0-45c2296aa68e">
