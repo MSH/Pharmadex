@@ -253,12 +253,12 @@
 									<p:outputLabel value="#{msgs.reg_form_attach_hint2}"
 										styleClass="hint" />
 
-
 									<p:commandButton icon="ui-icon-document"
 										value="#{msgs.adddocument}"
 										oncomplete="PF('attachdlg').show()"
 										action="#{fileUploadController.prepareUpload}"
-										update=":attachdlg" id="addDocBtn" />
+										update=":attachdlg" id="addDocBtn" 
+										rendered="#{processProdBnBg.visibleAddAttachBtn()}"/>
 
 									<p:dataTable id="attachtable"
 										value="#{fileUploadController.attachments}" var="doc">

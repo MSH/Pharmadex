@@ -13,6 +13,7 @@ import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.ProdAppLetter;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Workspace;
+import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.service.ProdApplicationsServiceAdd;
 import org.msh.pharmadex.service.ReviewService;
 import org.msh.pharmadex.util.JsfUtils;
@@ -144,6 +145,20 @@ public class ProcessProdBnBg implements Serializable {
 	public List<ProdAppLetter> getListLetters(Long prodAppID) {
 		List<ProdAppLetter> letters = getProcessProdBn().getProdApplicationsService().findAllLettersByProdApp(prodAppID);
 		return letters;
+	}
+	public boolean visibleSaveBtn(){
+		if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.REGISTERED))
+			return false;
+		if(userSession.isStaff())
+			return true;
+		return false;
+	}
+	
+	public boolean visibleAddAttachBtn(){
+		RegState rs = getProcessProdBn().getProdApplications().getRegState();
+		if(rs.equals(RegState.REGISTERED))
+			return false;
+		return true;
 	}
 	
 }
