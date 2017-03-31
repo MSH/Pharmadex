@@ -38,6 +38,7 @@ public class DashboardMBean implements Serializable {
 	public DashboardService dashboardService;
 
 	private List<ItemDashboard> list;
+	public List<ItemDashboard> filteredList;
 	
 	private String numreport = "";
 	
@@ -282,4 +283,13 @@ public class DashboardMBean implements Serializable {
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
+
+	public List<ItemDashboard> getFilteredList() {
+		return filteredList;
+	}
+
+	public void setFilteredList(List<ItemDashboard> filteredList) {
+		this.filteredList = filteredList;
+	}
+	
 }
