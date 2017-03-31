@@ -165,12 +165,21 @@ public class DashboardDAO implements Serializable {
 
 		String regState = RegState.REGISTERED + "";
 		
-		String sql = "select p.gen_name, count(p.id), count(distinct(a.applcntId))"
+		/*String sql = "select p.gen_name, count(p.id), count(distinct(a.applcntId))"
 				+ " FROM prodapplications pa"
 				+ " left join product p on p.id=pa.PROD_ID and (p.fnm is not null and length(trim(p.fnm))>0)"
 				+ " left join applicant a on a.applcntId=pa.APP_ID"
 				+ " where pa.regState like '" + regState + "' and not isnull(p.gen_name)"
-				+ " group by p.gen_name ASC";
+				+ " group by p.gen_name ASC";*/
+		
+		String sql = "select active.name, count(p.id), count(distinct(a.applcntId))"
+				+ " FROM inn active"
+				+ " join prodinn prin on prin.INN_ID = active.id"
+				+ " join product p on p.id = prin.prod_id"
+				+ " join prodapplications pa on pa.PROD_ID=p.id and (p.fnm is not null and length(trim(p.fnm))>0)"
+				+ " join applicant a on a.applcntId=pa.APP_ID"
+				+ " where pa.regState like '" + regState + "'"
+				+ " group by active.name ASC";
 		
 		List<Object[]> list = entityManager.createNativeQuery(sql).getResultList();
 		if(list != null && list.size() > 0){
