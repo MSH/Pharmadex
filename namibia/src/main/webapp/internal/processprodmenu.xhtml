@@ -7,7 +7,7 @@
     <p:menu style="width:198px">
         <p:submenu label="#{msgs.Registration}">
             <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
-                        id="saveMenuItem" rendered="#{userSession.company || userSession.staff || userSession.admin}"
+                        id="saveMenuItem" rendered="#{processProdBnNA.visibleSaveBtn()}"
                         ajax="false"/>         
             <p:menuitem value="#{msgs.global_followup}" icon="ui-icon-document"
                         onclick="PF('stepDlg').show()" id="nextStepMI"

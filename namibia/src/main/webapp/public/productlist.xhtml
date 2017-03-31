@@ -7,7 +7,8 @@
                 template="../templates/registration_layout.xhtml">
                 
 	<ui:define name="regcontent">
-        <div class="post">
+		<ui:include src="../templates/registerproductstempl.xhtml"/>
+        <!-- <div class="post">
             <h1 class="title ui-widget-header ui-corner-all"> #{msgs.registration_product}</h1>
         </div>
         <h:form prependId="false">
@@ -65,8 +66,8 @@
 	            	</p:row>
 	            </p:panelGrid>
 	        </p:panel>
-		</h:form>
+		</h:form> -->
 		
-		<ui:include src="../templates/registerproductstempl.xhtml"/>
+		
     </ui:define>
 </ui:composition>

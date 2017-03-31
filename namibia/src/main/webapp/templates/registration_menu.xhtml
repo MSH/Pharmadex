@@ -2,7 +2,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" 
-                xmlns:sec="http://www.springframework.org/security/facelets/tags">
+                xmlns:sec="http://www.springframework.org/security/facelets/tags"
+                xmlns:f="http://java.sun.com/jsf/core">
         
            <p:menuitem value="#{msgs.registration_applicant}" icon="ui-icon-home" url="/public/applicantlist.faces"
                             ajax="false"/>
@@ -25,9 +26,10 @@
             	<p:separator rendered="#{!isleftmenu and userSession.displayRegistrationFormItemMZ()}"/>
                 <p:submenu label="#{msgs.registration_form}" 
                            rendered="#{userSession.displayRegistrationFormItemMZ()}">
+                    
                     <p:menuitem value="#{msgs.product_registration_form}" icon="ui-icon-gear"
                                 action="/secure/prodreginit.faces" ajax="false"
-                                rendered="#{!userSession.admin}"/>
+                                rendered="#{!userSession.admin}" />
                     <p:menuitem value="#{msgs.applicant_registration_form}" icon="ui-icon-gear"
                                 action="#{navigationBean.regApplicantAction}"
                                 ajax="false" rendered="#{userSession.displayAppRegMZ()}"/>

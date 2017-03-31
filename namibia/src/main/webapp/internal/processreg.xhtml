@@ -227,11 +227,11 @@
 										styleClass="hint" />
 
 
-									<p:commandButton icon="ui-icon-document"
+									<p:commandButton id="addDocBtn"  icon="ui-icon-document"
 										value="#{msgs.adddocument}"
 										oncomplete="PF('attachdlg').show()"
 										action="#{fileUploadController.prepareUpload}"
-										update=":attachdlg" id="addDocBtn" />
+										update=":attachdlg" rendered="#{processProdBnNA.visibleAddAttachBtn()}"/>
 
 									<p:dataTable id="attachtable"
 										value="#{fileUploadController.attachments}" var="doc">

@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:form prependId="false">
+    	<p:messages id="messages" showDetail="true"/>
+
+            <p:panel header="#{msgs.process_review_list}">
+                <p:dataTable id="reviews" var="eachprod" value="#{reviewListMBeanMZ.reviewInfoTables}"
+                             filteredValue="#{reviewListMBeanMZ.filteredReviewInfos}"
+                        rowStyleClass="#{eachprod.pastDue?'colored':null}" 
+                        rendered="#{reviewListMBeanMZ.workspace.detailReview}">
+
+
+                    <p:column filterBy="#{eachprod.prodName}"
+                              sortBy="#{eachprod.prodName}" >
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.prod_name}"/>
+                        </f:facet>
+                        <p:commandLink id="viewLink" value="#{eachprod.prodName}" action="/internal/reviewInfo.faces"
+                                       ajax="false"
+                                       style="#{eachprod.fastrack?(eachprod.sra?'color:#a52a2a;':'color: green;'):(eachprod.sra?'color:blue;':'')}">
+                            <f:param name="reviewInfoID" value="#{eachprod.id}"/>
+                            <f:param name="sourcePage" value="/internal/processreviewlist.faces" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column filterBy="#{eachprod.revType}"
+                              sortBy="#{eachprod.revType}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.review_type}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.revType}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{msgs[eachprod.reviewStatus.key]}"
+                              sortBy="#{msgs[eachprod.reviewStatus.key]}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.review_status}"/>
+                        </f:facet>
+                        <h:outputText value="#{msgs[eachprod.reviewStatus.key]}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{eachprod.ctdModule}"
+                              sortBy="#{eachprod.ctdModule}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.module}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.ctdModule}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{eachprod.assignDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.assigndate}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.assignDate}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{eachprod.dueDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_duedate}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.dueDate}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{eachprod.submittedDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.submitted_date}"/>
+                        </f:facet>
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submittedDate}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{msgs[eachprod.recomendType.key]}"
+                              sortBy="#{msgs[eachprod.recomendType.key]}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_decision}"/>
+                        </f:facet>
+                        <h:outputText value="#{msgs[eachprod.recomendType.key]}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+</ui:composition>

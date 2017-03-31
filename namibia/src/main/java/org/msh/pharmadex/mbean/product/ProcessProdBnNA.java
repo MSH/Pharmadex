@@ -355,15 +355,12 @@ public class ProcessProdBnNA implements Serializable {
 			
 			if(userSession.isAgent(applicant))
 				return true;
-			/*if(userSession.isCompany() || userSession.isStaff() || userSession.isResponsible(applicant))
-				return true;*/
 		}
 		return res;
 	}
 	
 	public String createNewApplicationByRejProduct(){
 		ProdApplications prodApp = getProcessProdBn().getProdApplications();
-		//ProdApplications prodApp = getProdApplicationsServiceMZ().getProdApplicationsService().findProdApplications(getRejProdApp());
 		if(prodApp != null){
 			Product prod = prodApp.getProduct();
 			
@@ -376,14 +373,26 @@ public class ProcessProdBnNA implements Serializable {
 			Long curUserID = userSession.getLoggedINUserID();
 			newProdApp = getProdApplicationsService().saveApplication(newProdApp, curUserID);
 			
-			//setRejProdApp(newProdApp.getId());
-			
 			Scrooge.setBeanParam("prodAppID", newProdApp.getId());
-			//getProcessProdBnNA().createNewApplicationByRejProduct();
 			
 			return "/secure/prodreghome.faces";
 		}
 		
 		return null;
+	}
+	
+	public boolean visibleSaveBtn(){
+		if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.REGISTERED))
+			return false;
+		if(userSession.isCompany() || userSession.isStaff() || userSession.isAdmin())
+			return true;
+		return false;
+	}
+	
+	public boolean visibleAddAttachBtn(){
+		RegState rs = getProcessProdBn().getProdApplications().getRegState();
+		if(rs.equals(RegState.REGISTERED))
+			return false;
+		return true;
 	}
 }

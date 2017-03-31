@@ -627,4 +627,14 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 		}
 	}
 
+	public String defaultHomePage(){
+		if(isCompany() || isStaff())
+			return "../templates/submittedproducts_templ.xhtml";
+		if(isModerator() || isHead() || isAdmin())
+			return "../templates/processprodlisttempl.xhtml";
+		if(isReviewer())
+			return "../templates/processreviewlisttempl.xhtml";
+			
+		return "../templates/registerproductstempl.xhtml";
+	}
 }

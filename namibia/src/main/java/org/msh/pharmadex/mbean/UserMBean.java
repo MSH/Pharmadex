@@ -1,5 +1,6 @@
 package org.msh.pharmadex.mbean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +11,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -86,7 +88,7 @@ public class UserMBean implements Serializable {
 		selectedUser.setAddress(new Address());
 		selectedUser.setApplicant(new Applicant());
 		setUserType(UserType.STAFF);
-		userApp = new Applicant();
+		userApp = new Applicant();   
 	}
 
 	public void onRowSelect() {
