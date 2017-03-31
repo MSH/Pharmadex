@@ -1278,6 +1278,9 @@ public class ProcessProdBn implements Serializable {
 	 */
 	public boolean isApplicationFee(){
 		if(getProdApplications() != null){
+			if(getProdApplications().getRegState().equals(RegState.REGISTERED))
+				return false;
+			
 			return getProdApplications().getRegState().equals(RegState.SCREENING) || getProdApplications().getBankName() != null;
 		}else{
 			return false;
