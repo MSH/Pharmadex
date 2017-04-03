@@ -1290,5 +1290,18 @@ public class ProcessProdBn implements Serializable {
 	public void setApplicationFee(){
 		//nothing to do
 	}
+	
+	public boolean isApplicationActive(){
+		if(getProdApplications() != null){
+			RegState rs = getProdApplications().getRegState();
+			return !(rs.equals(RegState.REGISTERED) || rs.equals(RegState.REJECTED) || rs.equals(RegState.CANCEL));
+		}else{
+			return false;
+		}
+	}
+	
+	public void setApplicationActive(boolean b){
+		//nothing to do
+	}
 
 }
