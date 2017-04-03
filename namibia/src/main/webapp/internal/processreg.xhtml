@@ -795,7 +795,7 @@
 
 					<p:outputLabel value="#{msgs.expiry_date}" for="expiryDate" />
 					<p:calendar value="#{processProdBn.prodApplications.regExpiryDate}"
-						id="expiryDate" showOn="button" required="true"
+						id="expiryDate" showOn="button" disabled="true" required="true"
 						pattern="#{userAccessMBean.workspace.datePattern}" />
 					<p:message for="expiryDate" />
 

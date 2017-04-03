@@ -96,26 +96,9 @@ ul.ui-menu-child {
 				</p:submenu>
 
 				<sec:isAuthenticated>
-					<p:submenu label="#{msgs.Admin}" icon="ui-icon-key"
-						rendered="#{userSession.admin}">
-						<p:menuitem value="#{msgs.admin_onlineusers}"
-							url="/admin/loggedinuser_bk.faces" icon="ui-icon-document"
-							ajax="false" />
-						<p:menuitem value="#{msgs.Userlist}"
-							url="/admin/userslist_bk.faces" icon="ui-icon-gear" ajax="false" />
-						<p:menuitem value="#{msgs.admin_rolelist}"
-							url="/admin/rolelist_bk.faces" icon="ui-icon-document"
-							ajax="false" />
-						<p:menuitem value="#{msgs.admin_useraccess}"
-							url="/admin/useraccesslist_bk.faces" icon="ui-icon-document"
-							ajax="false" />
-						<p:menuitem value="#{msgs.checklist}"
-							action="/internal/editChecklist.faces" icon="ui-icon-document"
-							ajax="false" />
-						<p:menuitem value="#{msgs.review_questions}"
-							action="/internal/editReview.faces" icon="ui-icon-document"
-							ajax="false" />
-					</p:submenu>
+					<ui:decorate template="/templates/menu.xhtml"/>
+					
+					
 					<p:menuitem value="#{msgs.applicant_detail}" ajax="false"
 						rendered="#{userSession.isResponsible(userSession.userAccess.user.applicant)}"
 						action="/internal/processapp.faces ">
