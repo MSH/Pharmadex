@@ -270,7 +270,8 @@
 										<p:column>
 											<p:commandButton id="deleteattach"
 												action="#{fileUploadController.deleteDoc(doc)}" ajax="false"
-												icon="ui-icon-trash" update=":reghome:attachtab:attachtable" />
+												icon="ui-icon-trash" update=":reghome:attachtab:attachtable" 
+												rendered="#{processProdBn.applicationActive}"/>
 										</p:column>
 									</p:dataTable>
 								</h:panelGrid>
@@ -319,7 +320,7 @@
 										<p:column style="width: 30px;">
 											<p:commandButton id="deletelet"
 												action="#{processProdBnMZ.deleteLetter(letter)}"
-												rendered="#{userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer}"
+												rendered="#{processProdBn.applicationActive and (userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer)}"
 												icon="ui-icon-trash" ajax="true" immediate="true"
 												update=":reghome:processtab:lettertable :reghome:messages"/>
 										</p:column>
@@ -794,7 +795,7 @@
 
 					<p:outputLabel value="#{msgs.expiry_date}" for="expiryDate" />
 					<p:calendar value="#{processProdBn.prodApplications.regExpiryDate}"
-						id="expiryDate" showOn="button" disabled="true" required="true"
+						id="expiryDate" showOn="button" required="true"
 						pattern="#{userAccessMBean.workspace.datePattern}" />
 					<p:message for="expiryDate" />
 
