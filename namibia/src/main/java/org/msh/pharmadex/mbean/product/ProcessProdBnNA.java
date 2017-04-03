@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import static org.msh.pharmadex.domain.enums.RegState.FEE;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -12,18 +13,15 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.msh.pharmadex.auth.UserSession;
-import org.msh.pharmadex.domain.AgentAgreement;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
-import org.msh.pharmadex.service.ApplicantService;
 import org.msh.pharmadex.service.CommentService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ReviewService;
-import org.msh.pharmadex.util.JsfUtils;
 import org.msh.pharmadex.util.Scrooge;
 import org.primefaces.event.TabChangeEvent;
 
@@ -163,12 +161,38 @@ public class ProcessProdBnNA implements Serializable {
 	/**
 	 * Issues #2339
 	 * Expiry date should be calculated as registration date + 365*5 (days)
+	 * Issues #2557
+	 * 31.03 current or next year
 	 */
 	public void dateChange() {
-		int countDay = 365*5;
-		getProcessProdBn().getProdApplications().setRegExpiryDate(JsfUtils.addDays(getProcessProdBn().getProdApplications().getRegistrationDate(), countDay));
+		Calendar march = Calendar.getInstance();
+		march.set(Calendar.MONTH, 2);
+		march.set(Calendar.DAY_OF_MONTH, 31);
+		
+		Calendar rDate = Calendar.getInstance();
+		rDate.setTime(getProcessProdBn().getProdApplications().getRegistrationDate());
+		
+		if(rDate.after(march) || equalDates(rDate, march)){
+			march.add(Calendar.YEAR, 1);
+		}
+		getProcessProdBn().getProdApplications().setRegExpiryDate(march.getTime());
 	}
 
+	private boolean equalDates(Calendar c, Calendar c1){
+        if(c.get(Calendar.YEAR) == c1.get(Calendar.YEAR) &&
+        		c.get(Calendar.MONTH) == c1.get(Calendar.MONTH) &&
+        		c.get(Calendar.DAY_OF_MONTH) == c1.get(Calendar.DAY_OF_MONTH))
+        	return true;
+        return false;
+    }
+	
+	public static Date addDays(Date dt, int countDay){
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DAY_OF_YEAR, countDay);
+        return c.getTime();
+    }
+	
 	public boolean isDisableVerify() {
 		disableVerify = true;
 		ProdApplications prodApp = getProcessProdBn().getProdApplications();
