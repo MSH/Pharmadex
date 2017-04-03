@@ -42,6 +42,9 @@
                     <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
                                 url="/secure/savedproducts.faces"
                                 rendered="#{userSession.displaySavedItemMZ()}"/>
+                    <p:menuitem value="#{msgs.menu_payment}" icon="ui-icon-document"
+                                url="/secure/paymentrequired.faces"
+                                rendered="#{userSession.displayPaymentList}"/>
                 </p:submenu>
                 
 				<p:separator rendered="#{!isleftmenu and (userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator)}"/>

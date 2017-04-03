@@ -38,6 +38,7 @@ import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.CustomReviewDAO;
+import org.msh.pharmadex.dao.PaymentRequiredDAO;
 import org.msh.pharmadex.dao.ProdApplicationsDAO;
 import org.msh.pharmadex.dao.ProductCompanyDAO;
 import org.msh.pharmadex.dao.ProductDAO;
@@ -66,6 +67,7 @@ import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.domain.enums.UseCategory;
 import org.msh.pharmadex.domain.enums.YesNoNA;
 import org.msh.pharmadex.domain.lab.SampleTest;
+import org.msh.pharmadex.mbean.product.ProdTable;
 import org.msh.pharmadex.util.RetObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -107,6 +109,8 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	private ProductCompanyDAO prodCompanyDAO;
 	@Autowired
 	private ProdAppLetterDAO prodAppLetterDAO;
+	@Resource
+	private PaymentRequiredDAO paymentRequiredDAO;
 
 	@Autowired
 	UserService userService;
@@ -1777,6 +1781,16 @@ public class ProdApplicationsServiceMZ implements Serializable {
 	public void setProdApplicationsService(ProdApplicationsService prodApplicationsService) {
 		this.prodApplicationsService = prodApplicationsService;
 	}
+	
+	
+
+	public PaymentRequiredDAO getPaymentRequiredDAO() {
+		return paymentRequiredDAO;
+	}
+
+	public void setPaymentRequiredDAO(PaymentRequiredDAO paymentRequiredDAO) {
+		this.paymentRequiredDAO = paymentRequiredDAO;
+	}
 
 	public ArrayList<ProdApplications> findExpiringProd() {
 		Calendar currDate = Calendar.getInstance();
@@ -1788,5 +1802,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 
 		ArrayList<ProdApplications> prodApps = prodApplicationsDAO.findProdExpiring(params);
 		return prodApps;
+	}
+	
+	public List<ProdTable> getPaymentReqApplications(UserSession userSession) {
+		List<ProdTable> prodApplicationses = null;
+		
+		prodApplicationses = paymentRequiredDAO.getPaymentReqApplications(userSession.getLoggedINUserID());
+		return prodApplicationses;
 	}
 }

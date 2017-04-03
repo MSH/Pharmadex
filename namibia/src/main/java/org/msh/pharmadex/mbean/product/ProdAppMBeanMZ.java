@@ -33,6 +33,8 @@ public class ProdAppMBeanMZ implements Serializable {
 	protected List<ProdApplications> submmittedAppList;
 	protected List<ProdApplications> processProdAppList;
 	protected List<ProdApplications> rejectedProdAppList;
+	protected List<ProdTable> paymentReqProdAppList;
+	protected List<ProdTable> filteredReqProdAppList;
 	private List<ProdApplications> filteredApps;
 
 	protected FacesContext facesContext = getCurrentInstance();
@@ -78,6 +80,14 @@ public class ProdAppMBeanMZ implements Serializable {
 	public void setFilteredApps(List<ProdApplications> filteredApps) {
 		this.filteredApps = filteredApps;
 	}
+	
+	public List<ProdTable> getFilteredReqProdAppList() {
+		return filteredReqProdAppList;
+	}
+
+	public void setFilteredReqProdAppList(List<ProdTable> filteredReqProdAppList) {
+		this.filteredReqProdAppList = filteredReqProdAppList;
+	}
 
 	public List<ProdApplications> getSubmmittedAppList() {
 		if(submmittedAppList == null){
@@ -113,6 +123,16 @@ public class ProdAppMBeanMZ implements Serializable {
 
 	public void setRejectedProdAppList(List<ProdApplications> rejectedProdAppList) {
 		this.rejectedProdAppList = rejectedProdAppList;
+	}
+
+	public List<ProdTable> getPaymentReqProdAppList() {
+		if(paymentReqProdAppList == null)
+			paymentReqProdAppList = prodApplicationsServiceMZ.getPaymentReqApplications(userSession);
+		return paymentReqProdAppList;
+	}
+
+	public void setPaymentReqProdAppList(List<ProdTable> paymentReqProdAppList) {
+		this.paymentReqProdAppList = paymentReqProdAppList;
 	}
 
 }

@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:o="http://omnifaces.org/ui"
+                template="../templates/registration_layout.xhtml">
+                
+	<ui:define name="regcontent">
+        <p:messages id="messages" showDetail="true"/>
+        
+        <h:form prependId="false">
+        	<div class="post">
+				<h1 class="title ui-widget-header ui-corner-all">#{msgs.paymentReq}</h1>
+			</div>
+			<h:outputFormat id="noRecordsFound"
+				value="#{msgs.label_no_records_found}"
+				rendered="#{empty prodAppMBeanMZ.paymentReqProdAppList}">
+				<f:param value="#{msgs.lable_products}" />
+			</h:outputFormat>
+            <p:dataTable id="products" var="prodApps" value="#{prodAppMBeanMZ.paymentReqProdAppList}"
+                         widgetVar="prodTable"
+                         filteredValue="#{prodAppMBeanMZ.filteredApps}"
+                         paginator="true" rows="20" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="20,40,100">
+                <p:column filterBy="#{prodApps.prodName}" sortBy="#{prodApps.prodName}"
+                			filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prod_name}"/>
+                    </f:facet>
+                    <p:commandLink value="#{prodApps.prodName}" action="/internal/processreg" 
+								ajax="false" >
+						<f:param name="prodAppID" value="#{prodApps.prodAppID}" />
+						<f:param name="sourcePage" value="/secure/submittedproducts.xhtml"/>
+					</p:commandLink>
+                </p:column>
+
+                <p:column filterBy="#{prodApps.genName}"
+                          sortBy="#{prodApps.genName}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.prodgenname}"/>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.genName}"/>
+                </p:column>
+
+                <p:column filterBy="#{prodApps.prodCategory}" filterMatchMode="exact" headerText="#{msgs.prod_cat}"
+                          sortBy="#{prodApps.prodCategory}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('prodTable').filter()">
+                            <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{globalLists.prodCategories}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.prodCategory}"/>
+                </p:column>
+                
+				<p:column filterBy="#{prodApps.regState}"
+                          sortBy="#{prodApps.regState}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.registration_status}"/>
+                    </f:facet>
+                    <h:outputText value="#{msgs[prodApps.regState.key]}"/>
+                </p:column>
+                
+                <p:column filterBy="#{prodApps.appName}"
+                          sortBy="#{prodApps.appName}"
+                          filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.registration_applicant}"/>
+                    </f:facet>
+                    <h:outputText value="#{prodApps.appName}"/>
+                </p:column>
+            </p:dataTable>
+
+            <h:panelGrid columns="2" width="100%">
+                <p:panel>
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/excel.png"/>
+                        <p:dataExporter type="xls" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/pdf.png"/>
+                        <p:dataExporter type="pdf" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/csv.png"/>
+                        <p:dataExporter type="csv" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <p:graphicImage value="/resources/images/xml.png"/>
+                        <p:dataExporter type="xml" target="products" fileName="#{msgs.product_list}"/>
+                    </h:commandLink>
+                </p:panel>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

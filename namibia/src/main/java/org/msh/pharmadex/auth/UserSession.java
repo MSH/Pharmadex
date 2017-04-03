@@ -11,7 +11,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.persistence.NoResultException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -636,5 +635,11 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 			return "../templates/processreviewlisttempl.xhtml";
 			
 		return "../templates/registerproductstempl.xhtml";
+	}
+	
+	public boolean isDisplayPaymentList(){
+		if(isCompany())
+			return true;
+		return false;
 	}
 }
