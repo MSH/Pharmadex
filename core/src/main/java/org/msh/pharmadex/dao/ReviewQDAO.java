@@ -76,7 +76,7 @@ public class ReviewQDAO implements Serializable{
     
     @Transactional
     public List<ReviewDetail> findReviewSummary2Module(Long userID, Long reviewInfoID){
-        return entityManager.createQuery("select rd from ReviewDetail rd where rd.reviewInfo.reviewer.userId = :userID and rd.reviewInfo.id = :reviewInfoID and rd.reviewQuestions.ctdModule like 'MODULE_2'")
+        return entityManager.createQuery("select rd from ReviewDetail rd where rd.reviewInfo.reviewer.userId = :userID and rd.reviewInfo.id = :reviewInfoID and rd.reviewQuestions.ctdModule like 'MODULE_3'")
                 .setParameter("userID", userID)
                 .setParameter("reviewInfoID", reviewInfoID)
                 .getResultList();

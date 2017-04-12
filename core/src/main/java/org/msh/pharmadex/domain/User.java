@@ -56,7 +56,7 @@ public class User extends CreationDetail implements Serializable {
     @Column(length = 255)
     private String comments;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "applcntId")
     private Applicant applicant;
 

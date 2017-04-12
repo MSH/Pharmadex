@@ -37,7 +37,7 @@ public class UserDAO implements Serializable {
 
 	public User findUser(Long id) {
 		User user = null;
-/*		List<User> list = entityManager.createQuery("select u from User u where u.userId = :userid")
+		/*		List<User> list = entityManager.createQuery("select u from User u where u.userId = :userid")
 				.setParameter("userid", id)
 				.getResultList();
 		if(list != null && list.size() > 0)
@@ -125,7 +125,10 @@ public class UserDAO implements Serializable {
 			user.setApplicant(null);
 			user.setCompanyName("");
 		}
-		user = entityManager.merge(user);
+		if(user.getApplicant()!=null){
+			entityManager.merge(user.getApplicant());
+		}
+		entityManager.persist(user);
 		return user;
 	}
 
@@ -149,7 +152,7 @@ public class UserDAO implements Serializable {
 				.setParameter("roleId", 6)
 				.getResultList();  //To change body of created methods use File | Settings | File Templates.
 	}
-	
+
 	public List<User> findScreeners() {
 		return entityManager.createQuery("select u from User u left join u.roles r where r.roleId = :roleId")
 				.setParameter("roleId", 3)
