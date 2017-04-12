@@ -18,6 +18,7 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.msh.pharmadex.domain.ReviewDetail;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.enums.CTDModule;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
@@ -280,7 +281,7 @@ public class CustomReviewDAO implements Serializable {
 	}
 
 	public Map<String, List<ReviewItemReport>> getReviewListByReportNew(Long prodAppId) {
-		List<ReviewItemReport> list = null;
+		List<ReviewItemReport> list = new ArrayList<ReviewItemReport>();
 		final Map<String, Long> mapHeaderIds = new HashMap<String, Long>();
 		List<ReviewInfo> listInfo = entityManager.createQuery("select ri from ReviewInfo ri "
 				+ " where ri.prodApplications.id=:prodAppId")
@@ -288,62 +289,62 @@ public class CustomReviewDAO implements Serializable {
 				.getResultList();
 		if(listInfo != null && listInfo.size() > 0){
 			for(ReviewInfo info:listInfo){
-				List<ReviewDetail> listDetail = reviewQDAO.findReviewSummary2Module(info.getReviewer().getUserId(), info.getId());
-				/*List<ReviewDetail> listDetail = entityManager
+				if(info.getCtdModule() == CTDModule.ALL || info.getCtdModule() == CTDModule.MODULE_3){
+					List<ReviewDetail> listDetail = reviewQDAO.findReviewSummary2Module(info.getReviewer().getUserId(), info.getId());
+					/*List<ReviewDetail> listDetail = entityManager
 						.createQuery("select rd from ReviewDetail rd where rd.reviewInfo.id=:revinfoId "
 								+ 
 								"order by rd.reviewQuestions.id")
 						.setParameter("revinfoId", info.getId())
 						.getResultList();*/
-				if(listDetail != null && listDetail.size() > 0){
-					
-					String firstReviewer = info.getReviewer().getName();
-					String secondReviewer = info.getSecReviewer() != null ? info.getSecReviewer().getName() : null;
-					for(ReviewDetail det:listDetail){
-						String answ = det.getAnswer()!=null?det.getAnswer()+"":"";
-						if(!answ.equals("NA")){
-							ReviewItemReport item = new ReviewItemReport();
-							if(det.getOtherComment() != null && !det.getOtherComment().trim().equals("")){
-								item.setFirstRevName(firstReviewer);
-								item.setFirstRevComment(det.getOtherComment());
-							}
-							if(secondReviewer != null && det.getSecComment() != null && !det.getSecComment().trim().equals("")){
-								item.setSecondRevName(secondReviewer);
-								item.setSecondRevComment(det.getSecComment());
-							}
-	
-							item.setHeader1(det.getReviewQuestions().getHeader1());
-							item.setHeader2(det.getReviewQuestions().getHeader2());
-							item.setDetailId(det.getId());
-							item.setQuestionId(det.getReviewQuestions().getId());
-							item.setReviewQuestion(det.getReviewQuestions().getQuestion());
-							item.setPages(det.getVolume());
-							item.setNo_reason(det.getNoReason());
-							
-							if(answ.equals("NO")){
-								item.setAnswer("NO");
-							}else if(answ.equals("YES")){
-								item.setAnswer("YES");
-							}							
-							if(det.getFile() != null){
-								// only pictures
-								if(det.getFilename() != null && !det.getFilename().equals("")){
-									String fname = det.getFilename();
-									fname = fname.toLowerCase(); //AK because of clipping tool :) 20161220
-									if(fname.endsWith(".png") || fname.endsWith(".bmp")
-											|| fname.endsWith(".jpeg") || fname.endsWith(".jpg"))
-										item.setFile(det.getFile());
+					if(listDetail != null && listDetail.size() > 0){
+
+						String firstReviewer = info.getReviewer().getName();
+						String secondReviewer = info.getSecReviewer() != null ? info.getSecReviewer().getName() : null;
+						for(ReviewDetail det:listDetail){
+							String answ = det.getAnswer()!=null?det.getAnswer()+"":"";
+							if(!answ.equals("NA")){
+								ReviewItemReport item = new ReviewItemReport();
+								if(det.getOtherComment() != null && !det.getOtherComment().trim().equals("")){
+									item.setFirstRevName(firstReviewer);
+									item.setFirstRevComment(det.getOtherComment());
 								}
-							}	
-							if(list == null)
-								list = new ArrayList<ReviewItemReport>();
-							list.add(item);
-	
-							mapHeaderIds.put(det.getReviewQuestions().getHeader1(), det.getReviewQuestions().getId());					 
-					  }//
-					
+								if(secondReviewer != null && det.getSecComment() != null && !det.getSecComment().trim().equals("")){
+									item.setSecondRevName(secondReviewer);
+									item.setSecondRevComment(det.getSecComment());
+								}
+								String header1= det.getReviewQuestions().getHeader1() + "<br>" + "Note: Copy and Paste the Relevant Tables from Applicant QOS for each Section";
+								item.setHeader1(header1);
+								item.setHeader2(det.getReviewQuestions().getHeader2());
+								item.setDetailId(det.getId());
+								item.setQuestionId(det.getReviewQuestions().getId());
+								item.setReviewQuestion(det.getReviewQuestions().getQuestion());
+								item.setPages(det.getVolume());
+								item.setNo_reason(det.getNoReason());
+
+								if(answ.equals("NO")){
+									item.setAnswer("NO");
+								}else if(answ.equals("YES")){
+									item.setAnswer("YES");
+								}							
+								if(det.getFile() != null){
+									// only pictures
+									if(det.getFilename() != null && !det.getFilename().equals("")){
+										String fname = det.getFilename();
+										fname = fname.toLowerCase(); //AK because of clipping tool :) 20161220
+										if(fname.endsWith(".png") || fname.endsWith(".bmp")
+												|| fname.endsWith(".jpeg") || fname.endsWith(".jpg"))
+											item.setFile(det.getFile());
+									}
+								}	
+								list.add(item);
+
+								mapHeaderIds.put(header1, det.getReviewQuestions().getOrd().longValue());					 
+							}//
+
+						}
+
 					}
-				 
 				}
 			}
 		}

@@ -83,7 +83,7 @@ public class ExecSummaryBn implements Serializable {
                 if(isAddCom)
                 	execSummary = buildExecComment();
                 
-                buildEvalSummary();
+                setEvalSummary(execSummary);
             }
         }catch (Exception ex){
 
@@ -98,7 +98,6 @@ public class ExecSummaryBn implements Serializable {
     		List<String> recComm = new ArrayList<String>();
     		List<String> notRecComm = new ArrayList<String>();
     		for(ReviewInfo info:reviewInfos){
-    			evalSummary += info.getExecSummary();
     			if(info.getRecomendType().equals(recom))
     				recComm.add(info.getExecSummary());
     			if(info.getRecomendType().equals(notRecom))
@@ -119,13 +118,7 @@ public class ExecSummaryBn implements Serializable {
     	return addComment;
     }
     
-    public void buildEvalSummary(){
-    	if(reviewInfos != null && reviewInfos.size() > 0){
-    		for(ReviewInfo info:reviewInfos){
-    			evalSummary += info.getExecSummary();
-    		}
-    	}
-    }
+ 
     
     public String getEvalSummary() {
 		return evalSummary;

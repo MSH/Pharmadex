@@ -18,9 +18,11 @@ import org.msh.pharmadex.domain.ReviewComment;
 import org.msh.pharmadex.domain.ReviewInfo;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
+import org.msh.pharmadex.domain.enums.CTDModule;
 import org.msh.pharmadex.domain.enums.RecomendType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
+import org.msh.pharmadex.mbean.GlobalLists;
 import org.msh.pharmadex.mbean.UserAccessMBean;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProductService;
@@ -44,6 +46,9 @@ public class ProdReviewBnMZ implements Serializable {
 
     @ManagedProperty(value = "#{processProdBn}")
     private ProcessProdBn processProdBn;
+    
+    @ManagedProperty(value = "#{globalLists}")
+    private GlobalLists globalList;
 
     @ManagedProperty(value = "#{reviewService}")
     private ReviewService reviewService;
@@ -119,6 +124,44 @@ public class ProdReviewBnMZ implements Serializable {
             }
         }
     }
+    /**
+     * Get all unassigned CTD modules
+     * @return
+     */
+    public List<CTDModule> getAvailModules(){
+    	List<CTDModule> ret = new ArrayList<CTDModule>();
+    	List<CTDModule> current = reviewService.fetchExistedModules(processProdBn.getProdApplications());
+    	if(current.contains(CTDModule.ALL)){
+    		return ret; //nothing to assign!
+    	}
+    	for(CTDModule mod :globalList.getcTDModules()){
+    		if(!current.contains(mod)){
+    			ret.add(mod);
+    		}
+    	}
+    	if(current.size()>0){
+    		ret.remove(CTDModule.ALL);
+    	}
+    	return ret;
+    }
+    
+    public void setAvailModules(List<CTDModule> modules){
+    	//nothing to do, for specifications only
+    }
+    
+    /**
+     * Do we have available modules?
+     * @return
+     */
+    public boolean isModules(){
+    	return getAvailModules().size()>0;
+    }
+    
+    public void setModules(boolean mod){
+    	//nothing to do, for specifications only
+    }
+    
+    
 
     public void changeReviewer() {
         try {
@@ -341,6 +384,14 @@ public class ProdReviewBnMZ implements Serializable {
 
 	public void setDialogHeader(String dialogHeader) {
 		this.dialogHeader = dialogHeader;
+	}
+
+	public GlobalLists getGlobalList() {
+		return globalList;
+	}
+
+	public void setGlobalList(GlobalLists globalList) {
+		this.globalList = globalList;
 	}
 
 }

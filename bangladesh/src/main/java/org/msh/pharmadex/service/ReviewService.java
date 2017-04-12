@@ -160,7 +160,7 @@ public class ReviewService implements Serializable {
 			Hibernate.initialize(reviewInfo.getSecReviewer());
 			Hibernate.initialize(reviewInfo.getReviewComments());
 		}
-		
+
 		return reviewInfo;
 	}
 
@@ -389,8 +389,8 @@ public class ReviewService implements Serializable {
 		RetObject retObject = new RetObject();
 		//Changed 20170118 ReviewInfo returnvalue = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(reviewInfo.getReviewer().getUserId(), reviewInfo.getProdApplications().getId());
 		ReviewInfo returnValue = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_IdAndCtdModule(reviewInfo.getReviewer().getUserId(),
-																						 reviewInfo.getProdApplications().getId(),
-																						 reviewInfo.getCtdModule());
+				reviewInfo.getProdApplications().getId(),
+				reviewInfo.getCtdModule());
 		if (returnValue == null) {
 			retObject.setObj(reviewInfoDAO.saveAndFlush(reviewInfo));
 			retObject.setMsg("success");
@@ -405,12 +405,12 @@ public class ReviewService implements Serializable {
 		retObject.setObj(reviewInfoDAO.save(reviewInfo));
 		retObject.setMsg("success");
 		return retObject;*/
-		
+
 		RetObject retObject = new RetObject();
 		//Changed 20170118ReviewInfo returnvalue = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_Id(reviewInfo.getReviewer().getUserId(), reviewInfo.getProdApplications().getId());
 		ReviewInfo returnValue = reviewInfoDAO.findByReviewer_UserIdAndProdApplications_IdAndCtdModule(reviewInfo.getReviewer().getUserId(),
-				 reviewInfo.getProdApplications().getId(),
-				 reviewInfo.getCtdModule());
+				reviewInfo.getProdApplications().getId(),
+				reviewInfo.getCtdModule());
 		if (returnValue == null) {
 			retObject.setObj(reviewInfoDAO.saveAndFlush(reviewInfo));
 			retObject.setMsg("success");
@@ -419,7 +419,7 @@ public class ReviewService implements Serializable {
 			retObject.setMsg("success");
 		}else
 			retObject.setMsg("exist");
-		
+
 		return retObject;
 	}
 
@@ -463,7 +463,7 @@ public class ReviewService implements Serializable {
 		ReviewDetail rd = reviewDetailDAO.findOne(reviewDetailID);
 		rd.setAnswered(true);
 		rd.setUpdatedBy(userService.findUser(loggedINUserId));
-		
+
 		rd = reviewDetailDAO.saveAndFlush(rd);
 		return rd;
 	}
@@ -612,7 +612,7 @@ public class ReviewService implements Serializable {
 
 	}
 
-	
+
 	@Transactional
 	public String submitFir(RevDeficiency revDeficiency, ReviewComment reviewComment, Long loggedInUser) {
 		if(revDeficiency==null)
@@ -658,5 +658,22 @@ public class ReviewService implements Serializable {
 		comments.add(comment);
 		saveReviewInfo(reviewInfo);
 		return comment;
+	}
+	/**
+	 * Fetch already assigned modules
+	 * @param prodApplications
+	 * @return empty list if nothing
+	 */
+	public List<CTDModule> fetchExistedModules(ProdApplications prodApplications) {
+		List<CTDModule> ret = new ArrayList<CTDModule>();
+		List<ReviewInfo> infos = reviewInfoDAO.findByProdApplications_IdOrderByAssignDateAsc(prodApplications.getId());
+		if(infos != null){
+			for(ReviewInfo ri : infos){
+				if(!ret.contains(ri.getCtdModule())){
+					ret.add(ri.getCtdModule());
+				}
+			}
+		}
+		return ret;
 	}
 }
