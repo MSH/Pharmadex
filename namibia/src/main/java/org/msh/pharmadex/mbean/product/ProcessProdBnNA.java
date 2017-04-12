@@ -323,7 +323,7 @@ public class ProcessProdBnNA implements Serializable {
 	public boolean isVisibleAssignBtn() {
 		visibleAssignBtn = false;
 		if(userSession.isModerator() || userSession.isAdmin()){
-			if((processProdBn.getProdApplications().getRegState().equals(RegState.APPL_FEE) && processProdBn.getProdApplications().isFeeReceived())
+			if((processProdBn.getProdApplications().isFeeReceived())
 					&& !isVisibleExecSumeryBtn())
 				visibleAssignBtn = true;
 		}

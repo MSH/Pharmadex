@@ -1,58 +1,142 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="../templates/layout.xhtml">
-                
-<ui:define name="content">
-	<h:form id="srafrm">
-		<p:panel header="#{msgs.workspace_title}">
-			<h:panelGrid id="content" columns="3" cellspacing="10" columnClasses="col1, col2, col3">
-				<p:outputLabel value="#{msgs.label_patterndate}" for="dpat"/>
-				<p:inputText id="dpat" required="true" 
-					value="#{workspaceMBean.ws.datePattern}" 
-					disabled="#{!workspaceMBean.editws}"/>
-				<p:message for="dpat"/>
-				
-				<p:outputLabel value="#{msgs.label_name}" for="name"/>
-				<p:inputText id="name" required="true" 
-					value="#{workspaceMBean.ws.name}" 
-					disabled="#{!workspaceMBean.editws}"/>
-				<p:message for="name"/>
-				
-				<p:outputLabel value="#{msgs.label_prodregduration}" for="regdur"/>
-				<p:inputText id="regdur" required="true" 
-					value="#{workspaceMBean.ws.prodRegDuration}" 
-					disabled="#{!workspaceMBean.editws}"/>
-				<p:message for="regdur"/>
-				
-				<p:outputLabel value="#{msgs.label_registrarName}" for="regname"/>
-				<p:inputText id="regname" required="true" 
-					 value="#{workspaceMBean.ws.registrarName}" 
-					disabled="#{!workspaceMBean.editws}"/>
-				<p:message for="regname"/>
-				
-				<!-- <p:outputLabel value="#{msgs.label_registrarRank}" for="regrank"/>
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="../templates/layout.xhtml">
+
+	<ui:define name="content">
+		<p:growl id="growl" showDetail="false" />
+		<p:messages id="messages" showDetail="false" showSummary="true" />
+		<h:form id="srafrm">
+			<p:panel header="#{msgs.workspace_title}">
+				<h:panelGrid id="content" columns="3" cellspacing="10"
+					columnClasses="col1, col2, col3">
+					<p:outputLabel value="#{msgs.label_patterndate}" for="dpat" />
+					<p:inputText id="dpat" required="true"
+						value="#{workspaceMBean.ws.datePattern}"
+						disabled="#{!workspaceMBean.editws}" />
+					<p:message for="dpat" />
+
+					<p:outputLabel value="#{msgs.label_name}" for="name" />
+					<p:inputText id="name" required="true"
+						value="#{workspaceMBean.ws.name}"
+						disabled="#{!workspaceMBean.editws}" />
+					<p:message for="name" />
+
+					<p:outputLabel value="#{msgs.label_prodregduration}" for="regdur" />
+					<p:inputText id="regdur" required="true"
+						value="#{workspaceMBean.ws.prodRegDuration}"
+						disabled="#{!workspaceMBean.editws}" />
+					<p:message for="regdur" />
+
+					<p:outputLabel value="#{msgs.label_registrarName}" for="regname" />
+					<p:inputText id="regname" required="true"
+						value="#{workspaceMBean.ws.registrarName}"
+						disabled="#{!workspaceMBean.editws}" />
+					<p:message for="regname" />
+
+					<!-- <p:outputLabel value="#{msgs.label_registrarRank}" for="regrank"/>
 				<p:inputText id="regrank" value="#{workspaceMBean.ws.registrarRank}" required="true" style="width:200px;"/>
 				<p:message for="regrank"/> -->
-				
-				<!-- <p:outputLabel value="#{msgs.label_countrylink}" for="country"/>
+
+					<!-- <p:outputLabel value="#{msgs.label_countrylink}" for="country"/>
 				<p:inputText id="country" value="#{workspaceMBean.ws.name}" required="true" style="width:200px;"/>
 				<p:message for="country"/> -->
-			</h:panelGrid>
-			
-			<h:panelGrid columns="2" style="margin-top:10px">
-				<p:commandButton id="update" value="#{msgs.global_update}"
-						icon="ui-icon-disk" ajax="false" 
-						action="#{workspaceMBean.update()}"
-						update="@form" disabled="#{workspaceMBean.editws}"/>
-				<p:commandButton id="save" value="#{msgs.global_save}"
-						icon="ui-icon-disk" ajax="true" 
-						action="#{workspaceMBean.save()}" disabled="#{!workspaceMBean.editws}"
-						update="@form"/>
-			</h:panelGrid>
-		</p:panel>
-	</h:form>
-</ui:define>
+				</h:panelGrid>
+				<h:panelGrid id="holidays" columns="1" cellspacing="10">
+					<p:dataTable id="allholidays" var="allholidays"
+						value="#{workspaceMBean.fetchAllHolidays()}" style="width:100%;">
+						<f:facet name="header">
+                   #{msgs['Calendar.holidays']}
+                </f:facet>
+						<p:column headerText="#{msgs['Calendar.year']}">
+							<p:outputLabel value="#{allholidays.year}" />
+						</p:column>
+						<p:column headerText="#{msgs['Calendar.weekends']}">
+							<p:outputLabel value="#{allholidays.weekends}" />
+						</p:column>
+						<p:column headerText="#{msgs['Calendar.public']}">
+							<p:commandLink id="holidays" value="#{allholidays.holidays}"
+								ajax="true"
+								action="#{workspaceMBean.passYear(allholidays.year)}"
+								oncomplete="PF('editPHDialog').show()"
+								update="publicHolidaysDialog"
+								 />
+						</p:column>
+					</p:dataTable>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" style="margin-top:10px">
+					<p:commandButton id="update" value="#{msgs.global_update}"
+						icon="ui-icon-disk" ajax="false"
+						action="#{workspaceMBean.update()}" update="@form"
+						disabled="#{workspaceMBean.editws}" />
+					<p:commandButton id="save" value="#{msgs.global_save}"
+						icon="ui-icon-disk" ajax="true" action="#{workspaceMBean.save()}"
+						update="@form" />
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+
+		<p:dialog modal="true" widgetVar="editPHDialog"
+			header="#{msgs.label_edit}" id="publicHolidaysDialog" dynamic="false">
+			<style type="text/css">
+.holiday a {
+	color: red !important;
+}
+</style>
+
+			<h:form id="publicHolidaysForm">
+				<h:outputScript>
+					/*<![CDATA[*/
+					function paintDate(date) {
+						var day = date.getDay();
+						var specialDays = [#{workspaceMBean.getSpecialDays()}];
+						  for (var i = 0; i < specialDays.length; i++) {
+					             var sDate = new Date(specialDays[i]);
+					             
+					             var compare1 = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+					             var compare2 = new Date(sDate.getFullYear(),sDate.getMonth(),sDate.getDate());
+					             
+					             if(compare1.getTime() == compare2.getTime()) {
+					 				return [day!=6 && day!=0, 'holiday'];
+					             }
+					         }
+					         
+					         return [true, ''];
+					}
+					/*]]>*/
+				</h:outputScript>
+				<h:panelGrid columns="1" cellspacing="10">
+					<p:calendar value="#{workspaceMBean.tmpDate}" id="eventDate"
+						mode="inline" pattern="#{userAccessMBean.workspace.datePattern}"
+						required="true" pages="4" mindate="#{workspaceMBean.minDate}"
+						maxdate="#{workspaceMBean.maxDate}" beforeShowDay="paintDate"
+						requiredMessage="#{msgs.global_date}: #{msgs.valueReq}">
+						<p:ajax event="dateSelect" process="@this" update="eventName"
+							listener="#{workspaceMBean.fetchEventByDate()}" />
+					</p:calendar>
+					<h:panelGrid columns="4" cellspacing="10">
+						<p:outputLabel for="eventName" value="#{msgs['Calendar.holiday']}" />
+						<p:inputText id="eventName" value="#{workspaceMBean.tmpString}"
+							required="true" style="width: 400px;" />
+						<p:commandButton id="update" value="#{msgs.global_update}"
+							icon="ui-icon-disk" ajax="true"
+							action="#{workspaceMBean.saveHoliday()}"
+							update="growl srafrm, @form" />
+						<p:commandButton id="delete" value="#{msgs.global_delete}"
+							icon="ui-icon-disk" ajax="true"
+							action="#{workspaceMBean.removeEvent()}"
+							update="growl srafrm, @form" />
+					</h:panelGrid>
+
+					<p:commandButton id="cancelHoli" type="button"
+						value="#{msgs.global_cancel}" onclick="PF('editPHDialog').hide()"
+						icon="ui-icon-close" ajax="false" />
+				</h:panelGrid>
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
 </ui:composition>

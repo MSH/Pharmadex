@@ -93,7 +93,7 @@
 											</p:commandLink>
 											<p:selectOneButton id="console" value="#{quest.answer}"
 												rendered="#{!reviewInfoBn.readOnly}">
-												<f:selectItems value="#{globalLists.yesNo}" var="value"
+												<f:selectItems value="#{globalLists.yesNoNA}" var="value"
 													itemLabel="#{msgs[value.key]}" />
 												<p:ajax
 													listener="#{reviewInfoBn.reviewQuestionListener(quest)}"
