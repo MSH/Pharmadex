@@ -18,6 +18,7 @@
 		<p:resetInput target=":reghome:processtab:reviewerForm" />
 	</p:commandButton>
 	<p:commandButton value="#{msgs.execsummary}" icon="ui-icon-gear"
+		immediate="true"
 		ajax="false" id="execsumm"
 		action="#{processProdBnMZ.executiveSummary()}"
 		rendered="#{processProdBnMZ.visibleExecSumeryBtn}">
@@ -92,6 +93,7 @@
 
 		<p:column>
 			<p:commandButton icon="ui-icon-person"
+				immediate="true"
 				oncomplete="PF('assignreviewdlg').show()"
 				actionListener="#{prodReviewBnMZ.initProcessorChange(reviewInfo)}" ajax="true"
 				rendered="#{(userSession.moderator||userSession.admin) and !(reviewInfo.reviewStatus eq 'ACCEPTED')}"
@@ -100,6 +102,7 @@
 			</p:commandButton>
 
 			<p:commandButton id="deletereviewinfo"
+				immediate="true"
 				action="#{prodReviewBnMZ.deleteReviewInfo(reviewInfo)}"
 				icon="ui-icon-trash"
 				update="@form :reghome:messages"

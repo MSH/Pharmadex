@@ -50,7 +50,8 @@
 			<p:outputLabel value="#{msgs.checklist_module}" for="modulecb" rendered="#{prodReviewBnMZ.assign}"/>
 			<p:selectOneMenu id="modulecb"
 					value="#{prodReviewBnMZ.reviewInfo.ctdModule}"
-					requiredMessage="#{msgs.recommendation_valid}" rendered="#{prodReviewBnMZ.assign}">
+					required="true"
+					requiredMessage="#{msgs['CTDModule.valid']}" rendered="#{prodReviewBnMZ.assign}">
 					<f:selectItem itemLabel="-" />
 					<f:selectItems value="#{prodReviewBnMZ.availModules}" var="type"
 						itemLabel="#{msgs[type.key]}" />
