@@ -52,7 +52,7 @@
 					value="#{prodReviewBnMZ.reviewInfo.ctdModule}"
 					requiredMessage="#{msgs.recommendation_valid}" rendered="#{prodReviewBnMZ.assign}">
 					<f:selectItem itemLabel="-" />
-					<f:selectItems value="#{globalLists.cTDModules}" var="type"
+					<f:selectItems value="#{prodReviewBnMZ.availModules}" var="type"
 						itemLabel="#{msgs[type.key]}" />
 			</p:selectOneMenu>
 

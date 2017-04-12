@@ -108,7 +108,7 @@
 											</p:commandLink>
 											<p:selectOneButton id="console" value="#{quest.answer}"
 												rendered="#{!reviewInfoBn.readOnly}">
-												<f:selectItems value="#{globalLists.yesNo}" var="value"
+												<f:selectItems value="#{globalLists.yesNoNA}" var="value"
 													itemLabel="#{msgs[value.key]}" />
 												<p:ajax
 													listener="#{reviewInfoBn.reviewQuestionListener(quest)}"
@@ -159,7 +159,8 @@
 					<p:commandButton icon="ui-icon-document"
 						value="#{msgs.generate_report}"
 						oncomplete="PF('attachDlg').show()"
-						action="#{reviewInfoBn.initRevDef}" />
+						action="#{reviewInfoBn.initRevDef}"
+						rendered="#{reviewInfoBnMZ.visibleSubmitBtn()}" />
 
 					<p:dataTable id="attachtable"
 						value="#{reviewInfoBn.revDeficiencies}" var="doc" rowStyleClass="">

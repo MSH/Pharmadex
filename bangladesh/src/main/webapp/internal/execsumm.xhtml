@@ -105,10 +105,9 @@
                 <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid"
                              rendered="#{!execSummaryBn.editExecSumm}">
                     <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
-                    <p:outputLabel value="#{execSummaryBn.execSummaryState}"/>
+                    <p:outputLabel value="#{execSummaryBn.prodApplications.regState}"/>
                     <p:outputLabel value="Summary"/>
-                    <p:outputLabel value="#{execSummaryBn.prodApplications.execSummary}" escape="false"
-                                   rendered="#{execSummaryBn.readOnly}"/>
+                    <p:outputLabel value="#{execSummaryBn.prodApplications.execSummary}" escape="false"/>
                 </h:panelGrid>
             </p:panel>
 
@@ -129,7 +128,7 @@
 			<h:panelGrid columns="2" cellspacing="10" styleClass="grid">
 				<p:commandButton value="#{msgs.global_submit}" icon="ui-icon-disk"
 					action="#{execSummaryBn.addEvalSummary()}" ajax="true"
-					update=":reviewHome:summary"
+					update=":reviewHome"
 					oncomplete="if (!args.validationFailed) PF('addEval').hide()"
 					process="@form" />
 				<p:commandButton id="cancellet" type="button"

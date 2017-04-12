@@ -156,7 +156,7 @@
 				<textElement textAlignment="Center" markup="html">
 					<font fontName="SansSerif" size="11" isBold="true" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[Module 1 Administrative and Prescribing Information REVIEW TEMPLATE<br>
+				<text><![CDATA[QUALITY OVERALL SUMMARY (QOS) AND QUALITY REVIEW TEMPLATE<br>
 (Question-based Review format)]]></text>
 			</staticText>
 			<textField>

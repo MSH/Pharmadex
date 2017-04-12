@@ -12,7 +12,7 @@
 	<p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
 		oncomplete="PF('assignreviewdlg').show()"
 		actionListener="#{prodReviewBnMZ.initProcessorAdd}" ajax="true"
-		rendered="#{(userSession.moderator||userSession.admin) and !processProdBnMZ.visibleExecSumeryBtn}"
+		rendered="#{(userSession.moderator||userSession.admin) and !processProdBnMZ.visibleExecSumeryBtn and prodReviewBnMZ.modules}"
 		
 		update=":reghome:processtab:assignreviewDlg" process="@this">
 		<p:resetInput target=":reghome:processtab:reviewerForm" />
