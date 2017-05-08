@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+                
+    <h:panelGrid columns="4" cellpadding="10px" cellspacing="6px" id="appdetail" width="100%"
+                 columnClasses="col1, col2, col1, col2">
+        <p:outputLabel value="#{msgs.applicant_name}*" />
+        <p:inputText value="#{applicantdata.appName}" rendered="#{input}"
+                     onblur="value=value.toUpperCase()"
+                     required="true" requiredMessage="#{msgs.valid_applicant_name}">
+                </p:inputText>
+
+        <h:outputLabel value="#{applicantdata.appName}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+        <ui:decorate template="/templates/addrtempl.xhtml">
+            <ui:param name="addressdata" value="#{applicantdata.address}"/>
+            <ui:param name="input" value="#{input}"/>
+        </ui:decorate>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+        <o:outputLabel value="#{msgs.applicant_type}*"/>
+        <p:autoComplete id="mod" value="#{applicantdata.applicantType}" rendered="#{input}"
+                        completeMethod="#{applicantMBean.completeApplicantTypeList}" dropdown="true"
+                        var="it" itemLabel="#{it.name}" itemValue="#{it}" forceSelection="true"
+                        required="true" requiredMessage="#{msgs.valid_applicantType}"
+                         scrollHeight="200">
+            <o:converter converterId="omnifaces.ListConverter" list="#{globalEntityLists.applicantTypes}"/>
+        </p:autoComplete>
+        <h:outputLabel value="#{applicantdata.applicantType}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <h:outputLabel/>
+        <h:outputLabel/>
+
+        <h:outputLabel value="#{msgs.applicant_filenumber}"/>
+        <p:inputText value="#{applicantdata.fileNumber}" rendered="#{input}"/>
+        <h:outputLabel value="#{applicantdata.fileNumber}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_phone}*" style="text-align: right"/>
+        <p:inputText value="#{applicantdata.phoneNo}" required="true" requiredMessage="#{msgs.valid_phoneno}" rendered="#{input}"/>
+        <h:outputLabel value="#{applicantdata.phoneNo}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_faxno}"/>
+        <p:inputText value="#{applicantdata.faxNo}" rendered="#{input}"/>
+        <h:outputLabel value="#{applicantdata.faxNo}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_website}"/>
+        <p:inputText value="#{applicantdata.website}" rendered="#{input}"/>
+        <h:outputLabel value="#{applicantdata.website}" rendered="#{!input}" style="font-weight: bold;"/>
+
+        <p:outputLabel value="#{msgs.applicant_email}"/>
+        <p:inputText value="#{applicantdata.email}" rendered="#{input}"/>
+        <h:outputLabel value="#{applicantdata.email}" rendered="#{!input}" style="font-weight: bold;"/>
+    </h:panelGrid>
+
+
+</ui:composition>

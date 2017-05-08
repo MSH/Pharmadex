@@ -1,0 +1,111 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+	<h:panelGroup id="selectuser">
+		<p:panel header="#{msgs.person_responsible}">
+			<h:panelGrid columns="1" cellpadding="10px">
+				<p:commandLink value="#{msgs.user_lookup}"
+					rendered="#{userSession.admin || userSession.staff}"
+					oncomplete="PF('addUserDlg').show()" immediate="true"
+					style="font-weight: bolder; font-size: larger"
+					update="@parent:addUser">
+					<p:resetInput target="@parent:addUser" />
+				</p:commandLink>
+				<p:outputLabel value="#{msgs.user_lookup_info}" styleClass="hint"
+					rendered="#{userSession.admin || userSession.staff}" />
+				<p:commandLink value="#{msgs.user_add}"
+					oncomplete="PF('newUserDlg').show()" immediate="true"
+					update="@parent:newuser"
+					style="font-weight: bolder; font-size: larger"
+					action="#{applicantMBean.initNewUser}" />
+			</h:panelGrid>
+
+			<p:dataTable id="usertable" var="applicantUser"
+				widgetVar="applusertable" value="#{applicantMBean.usersByApplicant}"
+				style="width:100%;" selection="#{applicantMBean.selectResponsable}"
+				rowKey="#{applicantUser.username}" rowIndexVar="rowIndex"
+				update="@parent:usertable">
+				<p:ajax event="rowSelectRadio"
+					listener="#{applicantMBean.onRowSelect}" update="@this" />
+
+				<p:column headerText="#{msgs.responsable}" selectionMode="single" />
+				<p:column headerText="#{msgs.global_enable}" style="width:50px">
+					<h:outputText
+						value="#{applicantMBean.userIsEnabled(applicantUser.enabled)}"
+						style="align:center; color:red" />
+				</p:column>
+				<p:column headerText="#{msgs.User_name}">
+					<h:outputText value="#{applicantUser.name}" />
+				</p:column>
+
+				<p:column headerText="#{msgs.User_username}">
+					<h:outputText value="#{applicantUser.username}" />
+				</p:column>
+
+				<p:column headerText="#{msgs.User_email}">
+					<h:outputText value="#{applicantUser.email}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</h:panelGroup>
+
+	<p:dialog header="#{msgs.user_add}" widgetVar="addUserDlg"
+		id="addUserDlg" resizable="false" modal="true" height="100px"
+		width="400px">
+		<h:form id="addUser">
+			<p:outputLabel value="#{msgs.userselect_info}" styleClass="hint" />
+			<h:panelGrid columns="2" cellspacing="5" columnClasses="label, value"
+				styleClass="grid">
+				<h:outputLabel value="#{msgs.User_name}" for="username" />
+				<p:autoComplete id="username" value="#{applicantMBean.user}"
+					completeMethod="#{applicantMBean.completeUserList}" dropdown="true"
+					var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+					forceSelection="true" converter="#{userConverter}"
+					scrollHeight="200">
+				</p:autoComplete>
+
+				<h:panelGroup style="width:300px">
+					<p:commandButton
+						actionListener="#{applicantMBean.addSelectUserInList()}"
+						value="#{msgs.global_add}"
+						oncomplete="if (!args.validationFailed) PF('addUserDlg').hide()"
+						update="@widgetVar(applusertable)" process="@form" />
+
+					<p:commandButton action="#{applicantMBean.cancelAddUser}"
+						immediate="true" ajax="true" value="#{msgs.global_cancel}"
+						oncomplete="PF('addUserDlg').hide()" />
+				</h:panelGroup>
+				<h:outputLabel />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="#{msgs.user_add}" widgetVar="newUserDlg"
+		id="newUserDlg" resizable="true" modal="true">
+		<h:form id="newuser">
+			<p:growl id="newusergrowl" showSummary="true" />
+			<p:messages id="newusermess" />
+
+			<ui:decorate template="/templates/userdetailtmpl.xhtml">
+				<ui:param name="userdata" value="#{applicantMBean.user}" />
+				<ui:param name="input" value="#{true}" />
+			</ui:decorate>
+
+
+			<h:panelGroup>
+				<p:commandButton action="#{applicantMBean.newUser}"
+					value="#{msgs.global_add}"
+					oncomplete="if (!args.validationFailed) PF('newUserDlg').hide()"
+					update="@widgetVar(applusertable) newusergrowl newusermess"
+					process="@form" />
+				<p:commandButton action="#{applicantMBean.cancelAddUser}"
+					immediate="true" ajax="true" value="#{msgs.global_cancel}"
+					oncomplete="PF('newUserDlg').hide()" />
+			</h:panelGroup>
+
+
+		</h:form>
+	</p:dialog>
+</ui:composition>
