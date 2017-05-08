@@ -52,9 +52,9 @@ public class ReviewInfoBnMZ implements Serializable {
 
 	@ManagedProperty(value = "#{userSession}")
 	private UserSession userSession;
-	
+
 	@ManagedProperty(value = "#{timelineService}")
-    private TimelineService timeLineService;
+	private TimelineService timeLineService;
 
 	private FacesContext facesContext = FacesContext.getCurrentInstance();
 	private ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
@@ -74,7 +74,7 @@ public class ReviewInfoBnMZ implements Serializable {
 				getReviewInfoBn().setReviewInfo(reviewInfo);
 				getReviewInfoBn().setReviewComment(reviewComment);
 				getReviewInfoBn().getReviewComments().add(reviewComment);
-				
+
 				// create TimeLine
 				timeLineService.createTimeLine(bundle.getString(reviewInfo.getRecomendType().getKey()), getReviewInfoBn().getProdApplications().getRegState(), getReviewInfoBn().getProdApplications(), userSession.getUserAccess().getUser());
 				facesContext.addMessage(null, new FacesMessage(bundle.getString("global.success")));
@@ -217,14 +217,17 @@ public class ReviewInfoBnMZ implements Serializable {
 
 	public List<RecomendType> getRevRecomendTypes() {
 		List<RecomendType> recomendTypes = new ArrayList<RecomendType>();
-		if (!getReviewInfoBn().getProdApplications().getRegState().equals(RegState.SUSPEND)){
-			recomendTypes.add(RecomendType.RECOMENDED);
-			recomendTypes.add(RecomendType.NOT_RECOMENDED);
-			//recomendTypes.add(RecomendType.FEEDBACK);
-		}else{
-			recomendTypes.add(RecomendType.REGISTER);
-			recomendTypes.add(RecomendType.SUSPEND);
-			recomendTypes.add(RecomendType.CANCEL);
+		if(getReviewInfoBn() != null && getReviewInfoBn().getProdApplications() != null
+				&& getReviewInfoBn().getProdApplications().getRegState() != null){
+			if (!getReviewInfoBn().getProdApplications().getRegState().equals(RegState.SUSPEND)){
+				recomendTypes.add(RecomendType.RECOMENDED);
+				recomendTypes.add(RecomendType.NOT_RECOMENDED);
+				//recomendTypes.add(RecomendType.FEEDBACK);
+			}else{
+				recomendTypes.add(RecomendType.REGISTER);
+				recomendTypes.add(RecomendType.SUSPEND);
+				recomendTypes.add(RecomendType.CANCEL);
+			}
 		}
 		return recomendTypes;
 	}
@@ -253,5 +256,5 @@ public class ReviewInfoBnMZ implements Serializable {
 		this.timeLineService = timeLineService;
 	}
 
-	
+
 }
