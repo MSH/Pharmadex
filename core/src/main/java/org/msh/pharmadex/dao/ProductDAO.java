@@ -223,7 +223,7 @@ public class ProductDAO implements Serializable {
 		if(innId != null && innId > 0){
 			Inn inn = innDAO.findInnById(innId);
 			addJoin = " left join p.inns inn";
-			addAnd = " and (inn.id = " + innId + " or p.dosStrength like '%" + inn.getName() + "%'" + ")";
+			addAnd = " and (inn.inn = " + innId + " or p.dosStrength like '%" + inn.getName() + "%'" + ")";
 		}
 		
 		String ctype = CompanyType.FIN_PROD_MANUF + "";
