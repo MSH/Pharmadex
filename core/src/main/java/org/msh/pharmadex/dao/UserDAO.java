@@ -182,4 +182,18 @@ public class UserDAO implements Serializable {
 		else
 			return false;
 	}
+
+	public List<User> findAdmins() {
+		return entityManager.createQuery("select u from User u left join u.roles r where r.roleId = :roleId")
+				.setParameter("roleId", 2)
+				.getResultList(); 
+	}
+	/**
+	 * Reload user from the database
+	 * @param selectedUser
+	 */
+	public void reloadUser(User selectedUser) {
+		entityManager.refresh(selectedUser);
+		
+	}
 }
