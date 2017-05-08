@@ -3,7 +3,6 @@ package org.msh.pharmadex.mbean;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 
 @ManagedBean
