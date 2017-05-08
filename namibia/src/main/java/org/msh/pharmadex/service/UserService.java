@@ -16,6 +16,8 @@ import javax.persistence.NoResultException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +30,12 @@ import java.util.List;
 public class UserService implements Serializable {
 
 	private static final long serialVersionUID = -4704319317657081206L;
+	private Pattern pattern;
+
+	private static final String EMAIL_PATTERN =
+			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
 	@Autowired
 	UserDAO userDAO;
 
@@ -43,35 +51,35 @@ public class UserService implements Serializable {
 	@Autowired
 	private ReflectionSaltSource saltSource;
 
-	private Long userId=null;
-	private User user=null;
 
-	public Long getUserId() {
-		return userId;
+	public UserService(){
+		pattern = Pattern.compile(EMAIL_PATTERN);
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+
+
+	public Pattern getPattern() {
+		return pattern;
 	}
 
-	public User getUser() {
-		return user;
+
+
+	public void setPattern(Pattern pattern) {
+		this.pattern = pattern;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+
 	/**
 	 * calls very often some cache implemented
 	 * @param id
 	 * @return
 	 */
 	public User findUser(Long id) {
-		if(getUserId() != id){
-			setUser(userDAO.findUser(id));
-			setUserId(id);
+		if(id!=null && id>0){
+			return userDAO.findUser(id);
+		}else{
+			return null;
 		}
-		return getUser();
 	}
 
 	public List<User> findAllUsers() {
@@ -233,6 +241,72 @@ public class UserService implements Serializable {
 
 	public boolean isEmailDuplicated(String email) {
 		return userDAO.isEmailDuplicated(email);
+	}
+	/**
+	 * Find all admin users
+	 * @return empty list if not found
+	 */
+	public List<User> findAdmins() {
+		return userDAO.findAdmins();
+	}
+	/**
+	 * Validate eMail for a user given
+	 * Rules:
+	 * <ul>
+	 * <li>Empty eMail allows only for Company user
+	 * <li>If email not empty, then structure of address should be checked unconditionally
+	 * </ul>
+	 * @param selectedUser
+	 * @return error key that may be resolved from message bundle or empty 
+	 */
+	public String validateEmail(User selectedUser) {
+		if(selectedUser != null){
+			if(!hasEmail(selectedUser) && selectedUser.isCompany()){
+				return "";
+			}
+			if(!hasEmail(selectedUser)){
+				return "email_is_empty";
+			}
+			String email = selectedUser.getEmail().trim();
+			if(!pattern.matcher(email).matches()){
+				return "valid_email";
+			}
+			return "";
+		}
+		return "global_fail";
+	}
+
+	/**
+	 * Has the user eMail
+	 * @param selectedUser the user
+	 * @return
+	 */
+	public boolean hasEmail(User selectedUser) {
+		return selectedUser.getEmail() != null && selectedUser.getEmail().trim().length()>0;
+	}
+
+
+	/**
+	 * Reload user's record from the database
+	 * @param selectedUser
+	 */
+	public void reloadUser(User selectedUser) {
+		userDAO.reloadUser(selectedUser);
+
+	}
+	/**
+	 * This is a dummy method only for compatibility with logout
+	 * @return
+	 */
+	public Long getUserId() {
+		return new Long(0);
+	}
+	/**
+	 * This is a dummy method only for compatibility with logout
+	 * @param userId
+	 */
+	public void setUserId(Long userId) {
+		//nothing to do
 	}
 
 }

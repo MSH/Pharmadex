@@ -42,119 +42,119 @@ public class ApplicantService implements Serializable {
 	private static final long serialVersionUID = 7443010009876023006L;
 
 	@Resource
-    ApplicantDAO applicantDAO;
+	ApplicantDAO applicantDAO;
 
-    @Autowired
-    UserService userService;
+	@Autowired
+	UserService userService;
 
-    @Autowired
-    ApplicantTypeDAO applicantTypeDAO;
+	@Autowired
+	ApplicantTypeDAO applicantTypeDAO;
 
-    @Autowired
-    ProdApplicationsDAO prodApplicationsDAO;
+	@Autowired
+	ProdApplicationsDAO prodApplicationsDAO;
 
-    @Autowired
-    RoleDAO roleDAO;
-    
-    @Autowired
-    AgentAgreementDAO agentAgreementDAO;
+	@Autowired
+	RoleDAO roleDAO;
 
-    @Autowired
-    GlobalEntityLists globalEntityLists;
+	@Autowired
+	AgentAgreementDAO agentAgreementDAO;
 
-    @Autowired
-    ApplicantConverter applicantConverter;
+	@Autowired
+	GlobalEntityLists globalEntityLists;
 
-    private List<Applicant> applicants;
+	@Autowired
+	ApplicantConverter applicantConverter;
 
-    @Transactional
-    public Applicant findApplicant(long id) {
-        return applicantDAO.findApplicant(id);
-    }
+	private List<Applicant> applicants;
 
-    /**
-     * получим список всех апликантов из БД
-     * если selectApplicantId != null тогда из полученного списка уберем апликанта с таким идом
-     * Это делается чтоб в выпадающих списках не двоилось значение с уже установленным
-     * @param selectApplicantId - ид апликанта, которого надо исключить из списка
-     * @return
-     */
-    @Transactional
-    public List<Applicant> findAllApplicants(Long selectApplicantId) {
-    	List<Applicant> result = new ArrayList<Applicant>();
-    	List<Applicant> list = applicantDAO.findAllApplicants();
-    	if(selectApplicantId != null && selectApplicantId > 0){
-    		if(list != null)
-    			for(Applicant apl:list){
-    				if(apl.getApplcntId().intValue() != selectApplicantId.intValue())
-    					result.add(apl);
-    			}
-    		
-    	}else
-    		result.addAll(list);
-        return result;
-    }
-    
-    public boolean visAssignCompanyComp(User user){
-    	boolean vis = false;
-    	if(user == null)
-    		return vis;
-    	if(user.getType() == null)
-    		return vis;
-    	
-    	if(user.getType().equals(UserType.COMPANY))
-    		return true;
-    	else{
-    		if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null)
-    			return true;
-    	}
-    	return vis;
-    }
-    
-    public boolean visAssignCompanyComp(User user, UserType type){
-    	boolean vis = false;
-    	if(user == null)
-    		return vis;
-    	if(type == null)
-    		return vis;
-    	
-    	if(type.equals(UserType.COMPANY))
-    		return true;
-    	else{
-    		if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null)
-    			return true;
-    	}
-    	return vis;
-    }
-    
-    @Transactional
-    public boolean visibleCleanBtn(Long applicantID){
-    	boolean vis = false;
-    	if(applicantID != null && applicantID > 0)
-    		return true;
+	@Transactional
+	public Applicant findApplicant(long id) {
+		return applicantDAO.findApplicant(id);
+	}
 
-    	return vis;
-    }
+	/**
+	 * получим список всех апликантов из БД
+	 * если selectApplicantId != null тогда из полученного списка уберем апликанта с таким идом
+	 * Это делается чтоб в выпадающих списках не двоилось значение с уже установленным
+	 * @param selectApplicantId - ид апликанта, которого надо исключить из списка
+	 * @return
+	 */
+	@Transactional
+	public List<Applicant> findAllApplicants(Long selectApplicantId) {
+		List<Applicant> result = new ArrayList<Applicant>();
+		List<Applicant> list = applicantDAO.findAllApplicants();
+		if(selectApplicantId != null && selectApplicantId > 0){
+			if(list != null)
+				for(Applicant apl:list){
+					if(apl.getApplcntId().intValue() != selectApplicantId.intValue())
+						result.add(apl);
+				}
 
-    @Transactional
-    public List<Applicant> getRegApplicants() {
-        applicants = applicantDAO.findRegApplicants();
-        return applicants;
-    }
+		}else
+			result.addAll(list);
+		return result;
+	}
 
-    @Transactional
-    public List<Applicant> getPendingApplicants() {
-        System.out.println("inside getPendingApplicants");
-        return applicantDAO.findPendingApplicant();
-    }
-    
-    @Transactional
-    public List<Applicant> getApplicantsNotRegistered() {
-        System.out.println("inside getApplicantsNotRegistered");
-        List<Applicant> list = applicantDAO.findApplicantsNotRegistered();
-        if(list != null && list.size() > 0){
-        	// sort by state NEW_APPLICATION 
-        	Collections.sort(list, new Comparator<Applicant>() {
+	public boolean visAssignCompanyComp(User user){
+		boolean vis = false;
+		if(user == null)
+			return vis;
+		if(user.getType() == null)
+			return vis;
+
+		if(user.getType().equals(UserType.COMPANY))
+			return true;
+		else{
+			if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null)
+				return true;
+		}
+		return vis;
+	}
+
+	public boolean visAssignCompanyComp(User user, UserType type){
+		boolean vis = false;
+		if(user == null)
+			return vis;
+		if(type == null)
+			return vis;
+
+		if(type.equals(UserType.COMPANY))
+			return true;
+		else{
+			if(user.getApplicant() != null && user.getApplicant().getApplcntId() != null)
+				return true;
+		}
+		return vis;
+	}
+
+	@Transactional
+	public boolean visibleCleanBtn(Long applicantID){
+		boolean vis = false;
+		if(applicantID != null && applicantID > 0)
+			return true;
+
+		return vis;
+	}
+
+	@Transactional
+	public List<Applicant> getRegApplicants() {
+		applicants = applicantDAO.findRegApplicants();
+		return applicants;
+	}
+
+	@Transactional
+	public List<Applicant> getPendingApplicants() {
+		System.out.println("inside getPendingApplicants");
+		return applicantDAO.findPendingApplicant();
+	}
+
+	@Transactional
+	public List<Applicant> getApplicantsNotRegistered() {
+		System.out.println("inside getApplicantsNotRegistered");
+		List<Applicant> list = applicantDAO.findApplicantsNotRegistered();
+		if(list != null && list.size() > 0){
+			// sort by state NEW_APPLICATION 
+			Collections.sort(list, new Comparator<Applicant>() {
 				@Override
 				public int compare(Applicant o1, Applicant o2) {
 					int t1 = o1.getState().ordinal();
@@ -162,59 +162,69 @@ public class ApplicantService implements Serializable {
 					return t1 > t2 ? 1:-1;
 				}
 			});
-        }
-        return list;
-    }
+		}
+		return list;
+	}
 
-    @Transactional
-    public Applicant saveApp(Applicant applicant, User userParam) {
-        applicant.setState(ApplicantState.NEW_APPLICATION);
-        userParam.setType(UserType.COMPANY);
+	@Transactional
+	public Applicant saveApp(Applicant applicant, User userParam) {
+		applicant.setState(ApplicantState.NEW_APPLICATION);
+		userParam.setType(UserType.COMPANY);
 
-        if (applicant.getUsers() == null) {
-            applicant.setUsers(new ArrayList<User>());
-            applicant.getUsers().add(userParam);
-        }
+		if (applicant.getUsers() == null) {
+			applicant.setUsers(new ArrayList<User>());
+			applicant.getUsers().add(userParam);
+		}
 
-        for (User user : applicant.getUsers()) {
-        	if(user != null){
-	            if (user.getType().equals(UserType.COMPANY)) {
-	                user.setApplicant(applicant);
-	                applicant.setContactName(user.getName());
-	            }
-	            List<Role> rList = user.getRoles();
-	            Role r;
-	            if (rList == null || user.getRoles().size() < 1) {
-	                rList = new ArrayList<Role>();
-	                r = roleDAO.findOne(1);
-	                rList.add(r);
-	            }
-	            r = roleDAO.findOne(4);
-	            rList.add(r);
-	            user.setRoles(rList);
-        	}
-        }
-        Applicant a = applicantDAO.updateApplicant(applicant);
-        System.out.println("applicant id = " + applicant.getApplcntId());
-//        globalEntityLists.setRegApplicants(null);
-        applicantConverter.setApplicantList(null);
-        applicants = null;
-        return a;
-       // }
-    }
-    
-    @Transactional
-    public Applicant submitApp(Applicant applicant) {
-        applicant.setState(ApplicantState.NEW_APPLICATION);
+		for (User user : applicant.getUsers()) {
+			if(user != null){
+				if (user.getType().equals(UserType.COMPANY)) {
+					user.setApplicant(applicant);
+					applicant.setContactName(user.getName());
+				}
+				List<Role> rList = user.getRoles();
+				Role r;
+				if (rList == null || user.getRoles().size() < 1) {
+					rList = new ArrayList<Role>();
+					r = roleDAO.findOne(1);
+					rList.add(r);
+				}
+				r = roleDAO.findOne(4);
+				rList.add(r);
+				user.setRoles(rList);
+			}
+		}
+		Applicant a = applicantDAO.updateApplicant(applicant);
+		System.out.println("applicant id = " + applicant.getApplcntId());
+		//        globalEntityLists.setRegApplicants(null);
+		applicantConverter.setApplicantList(null);
+		applicants = null;
+		return a;
+		// }
+	}
 
-        Applicant a = applicantDAO.saveApplicant(applicant);
-        System.out.println("applicant id = " + applicant.getApplcntId());
-        applicantConverter.setApplicantList(null);
-        applicants = null;
-        return a;
-    }
+	/**
+	 * Submit a new applicant
+	 * @param applicant new applicant
+	 * @param registerIt register or not register
+	 * @return
+	 */
+	@Transactional
+	public Applicant submitApp(Applicant applicant, boolean registerIt) {
+		if(registerIt){
+			applicant.setState(ApplicantState.REGISTERED);	
+		}else{
+			applicant.setState(ApplicantState.NEW_APPLICATION);
+		}
 
-    /*@Transactional
+		Applicant a = applicantDAO.saveApplicant(applicant);
+		System.out.println("applicant id = " + applicant.getApplcntId());
+		applicantConverter.setApplicantList(null);
+		applicants = null;
+		return a;
+	}
+
+	/*@Transactional
     public Applicant updateApp(Applicant applicant, User user) {
         try {
             System.out.println("applicant id = " + applicant.getApplcntId());
@@ -250,71 +260,71 @@ public class ApplicantService implements Serializable {
             return null;
         }
     }
-    */
-    @Transactional
-    public Applicant updateApp(Applicant applicant, ApplicantState newState) {
-        try {
-            System.out.println("applicant id = " + applicant.getApplcntId());
-            if(newState != null)
-            	applicant.setState(newState);
-            applicant = applicantDAO.updateApplicant(applicant);
+	 */
+	@Transactional
+	public Applicant updateApp(Applicant applicant, ApplicantState newState) {
+		try {
+			System.out.println("applicant id = " + applicant.getApplcntId());
+			if(newState != null)
+				applicant.setState(newState);
+			applicant = applicantDAO.updateApplicant(applicant);
 
-            applicants = null;
-            return applicant;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    @Transactional
-    public Applicant findApplicantByProduct(Long id) {
-        return applicantDAO.findApplicantByProduct(id);
-    }
-
-    @Transactional
-    public List<ProdApplications> findRegProductForApplicant(Long appID) {
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("appID", appID);
-        params.put("regState", RegState.REGISTERED);
-        List<ProdApplications> prodApps = prodApplicationsDAO.getProdAppByParams(params);
-        return prodApps;
-    }
-    
-    @Transactional
-    public List<ProdApplications> findProductNotRegForApplicant(Long appID) {
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("appID", appID);
-        List<RegState> listSt = new ArrayList<RegState>();
-        // добавим состояния которые не зарегистрированные, т.е. в процессе регистрации
-        for(RegState st:RegState.values()){
-        	if(!st.equals(RegState.REGISTERED))
-        		listSt.add(st);
-        }
-        params.put("regState", listSt);
-        List<ProdApplications> prodApps = prodApplicationsDAO.getProdAppByParams(params);
-        return prodApps;
-    }
+			applicants = null;
+			return applicant;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 
-    public User getDefaultUser(Long applcntId) {
-        return applicantDAO.findApplicantDefaultUser(applcntId);
-    }
+	@Transactional
+	public Applicant findApplicantByProduct(Long id) {
+		return applicantDAO.findApplicantByProduct(id);
+	}
 
-    @Transactional
-    public List<ApplicantType> findAllApplicantTypes() {
-        return applicantTypeDAO.findAll();
-    }
+	@Transactional
+	public List<ProdApplications> findRegProductForApplicant(Long appID) {
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("appID", appID);
+		params.put("regState", RegState.REGISTERED);
+		List<ProdApplications> prodApps = prodApplicationsDAO.getProdAppByParams(params);
+		return prodApps;
+	}
 
-    public boolean isApplicantDuplicated(String applicantName) {
-        return applicantDAO.isUsernameDuplicated(applicantName);
-    }
-    /**
-     * Fetch all agent agreements for this applicant
-     * @param selectedApplicant
-     * @return
-     */
+	@Transactional
+	public List<ProdApplications> findProductNotRegForApplicant(Long appID) {
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("appID", appID);
+		List<RegState> listSt = new ArrayList<RegState>();
+		// добавим состояния которые не зарегистрированные, т.е. в процессе регистрации
+		for(RegState st:RegState.values()){
+			if(!st.equals(RegState.REGISTERED))
+				listSt.add(st);
+		}
+		params.put("regState", listSt);
+		List<ProdApplications> prodApps = prodApplicationsDAO.getProdAppByParams(params);
+		return prodApps;
+	}
+
+
+	public User getDefaultUser(Long applcntId) {
+		return applicantDAO.findApplicantDefaultUser(applcntId);
+	}
+
+	@Transactional
+	public List<ApplicantType> findAllApplicantTypes() {
+		return applicantTypeDAO.findAll();
+	}
+
+	public boolean isApplicantDuplicated(String applicantName) {
+		return applicantDAO.isUsernameDuplicated(applicantName);
+	}
+	/**
+	 * Fetch all agent agreements for this applicant
+	 * @param selectedApplicant
+	 * @return
+	 */
 	public List<AgentAgreement> fetchAgentAgreements(Applicant selectedApplicant) {
 		return agentAgreementDAO.findByApplicant(selectedApplicant);
 	}
@@ -326,7 +336,7 @@ public class ApplicantService implements Serializable {
 	public List<AgentAgreement> fetchMyApplicants(Applicant agent) {
 		return agentAgreementDAO.findByAgent(agent);
 	}
-	
+
 	/**
 	 * Save agent agreement given
 	 * @param agentAgreement
@@ -340,5 +350,13 @@ public class ApplicantService implements Serializable {
 	 */
 	public List<ApplicantListDTO> getAllRegisteredForList() {
 		return applicantDAO.getApplicantsForLists(true);
+	}
+	/**
+	 * Merge the selectedApplicant to the cyrrent session
+	 * @param selectedApplicant
+	 */
+	public void mergeApplicant(Applicant selectedApplicant) {
+		applicantDAO.merge(selectedApplicant);
+		
 	}
 }

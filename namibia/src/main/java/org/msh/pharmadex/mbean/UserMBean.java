@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.hibernate.Hibernate;
 import org.hibernate.exception.ConstraintViolationException;
 import org.msh.pharmadex.auth.PassPhrase;
+import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.dao.iface.RoleDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.Address;
@@ -58,6 +59,7 @@ public class UserMBean implements Serializable {
 	@ManagedProperty(value = "#{workspaceDAO}")
 	WorkspaceDAO workspaceDAO;
 
+
 	FacesContext facesContext = FacesContext.getCurrentInstance();
 	java.util.ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 	private User selectedUser;
@@ -92,7 +94,7 @@ public class UserMBean implements Serializable {
 	public void onRowSelect() {
 		setEdit(true);
 	}
-	
+
 	public UserType getUserType() {
 		return userType;
 	}
@@ -132,114 +134,173 @@ public class UserMBean implements Serializable {
 	}
 
 	public String saveUser() {
-		facesContext = FacesContext.getCurrentInstance();
-		if (selectedUser.getUserId() != null && selectedUser.getUserId() == 0)
-			selectedUser.setUserId(null);
-		selectedUser.setType(userType);
 		selectedUser.setRoles(roles.getTarget());
-		selectedUser.setApplicant(getUserApp());
-		
-		if(selectedUser != null && selectedUser.getUsername().isEmpty()){
-			String username = selectedUser.getName().replaceAll("\\s", "");
-			selectedUser.setUsername(username);
-		}
-		/*if (selectedUser != null && selectedUser.getApplicant() != null && selectedUser.getApplicant().getApplcntId() != null)
+		if(validateEmail()){
+			facesContext = FacesContext.getCurrentInstance();
+			if (selectedUser.getUserId() != null && selectedUser.getUserId() == 0)
+				selectedUser.setUserId(null);
+			selectedUser.setType(userType);
+			
+			selectedUser.setApplicant(getUserApp());
+
+			if(selectedUser != null && selectedUser.getUsername().isEmpty()){
+				String username = selectedUser.getName().replaceAll("\\s", "");
+				selectedUser.setUsername(username);
+			}
+			/*if (selectedUser != null && selectedUser.getApplicant() != null && selectedUser.getApplicant().getApplcntId() != null)
             selectedUser.setApplicant(applicantService.findApplicant(selectedUser.getApplicant().getApplcntId()));
         else
             selectedUser.setApplicant(null);*/
-		if (isEdit()) {
-			updateuser();
-			return "";
-		}
+			if (isEdit()) {
+				updateuser();
+				return "";
+			}
 
-		if (userService.isUsernameDuplicated(selectedUser.getUsername())) {
-			FacesMessage msg = new FacesMessage(selectedUser.getUsername() + " "
-					+ bundle.getString("valid_user_exist"));
-			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-			facesContext.addMessage(null, msg);
-			facesContext.validationFailed();
-			return "";
-		}
+			if (userService.isUsernameDuplicated(selectedUser.getUsername())) {
+				FacesMessage msg = new FacesMessage(selectedUser.getUsername() + " "
+						+ bundle.getString("valid_user_exist"));
+				msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+				facesContext.addMessage(null, msg);
+				facesContext.validationFailed();
+				return "";
+			}
 
-		if (userService.isEmailDuplicated(selectedUser.getEmail())) {
-			FacesMessage msg = new FacesMessage(selectedUser.getEmail() + " "
-					+ bundle.getString("valid_email_exist"));
-			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-			facesContext.addMessage(null, msg);
-			facesContext.validationFailed();
-			return "";
-		}
+			if(getUserService().hasEmail(getSelectedUser())){
+				if (userService.isEmailDuplicated(selectedUser.getEmail())) {
+					FacesMessage msg = new FacesMessage(selectedUser.getEmail() + " "
+							+ bundle.getString("valid_email_exist"));
+					msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+					facesContext.addMessage(null, msg);
+					facesContext.validationFailed();
+					return "";
+				}
+			}
 
-		String password = PassPhrase.getNext();
-		selectedUser.setPassword(password);
-		selectedUser.setRegistrationDate(new Date());
-		Letter letter = letterService.findByLetterType(LetterType.NEW_USER_REGISTRATION);
-		Mail mail = new Mail();
-		mail.setMailto(selectedUser.getEmail());
-		mail.setSubject(letter.getSubject());
-		mail.setMailto(selectedUser.getEmail());
-		mail.setUser(selectedUser);
-		mail.setDate(new Date());
-		mail.setMessage(bundle.getString("email_user_reg1") + selectedUser.getUsername() + bundle.getString("email_user_reg2") + password + bundle.getString("email_user_reg3"));
-		String retvalue;
-		try {
-			retvalue = userService.createUser(selectedUser);
-			allUsers = null;
-		} catch (ConstraintViolationException e) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
-			return "";
-		} catch (Exception e) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
-			e.printStackTrace();
-			return "";
-		}
-		if (!retvalue.equalsIgnoreCase("persisted")) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), retvalue));
-			return "";
-		} else {
-			try {
-				mailService.sendMail(mail, false);
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("send_password_success")));
-				FacesContext context = FacesContext.getCurrentInstance();
-				HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-				WebUtils.setSessionAttribute(request, "userMBean", null);
-				return "/admin/userslist_bk.faces";
-			} catch (Exception e) {
-				e.printStackTrace();
+			String password = PassPhrase.getNext();
+			selectedUser.setPassword(password);
+			selectedUser.setRegistrationDate(new Date());
+			Letter letter = letterService.findByLetterType(LetterType.NEW_USER_REGISTRATION);
+			String address = calculateAddress();
+			if(address != null){
+				Mail mail = new Mail();
+				mail.setMailto(selectedUser.getEmail());
+				mail.setSubject(letter.getSubject());
+				mail.setMailto(address);
+				mail.setUser(selectedUser);
+				mail.setDate(new Date());
+				mail.setMessage(bundle.getString("email_user_reg1") + selectedUser.getUsername() + bundle.getString("email_user_reg2") + password + bundle.getString("email_user_reg3"));
+				String retvalue;
+				try {
+					retvalue = userService.createUser(selectedUser);
+					allUsers = null;
+				} catch (ConstraintViolationException e) {
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
+					return "";
+				} catch (Exception e) {
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
+					e.printStackTrace();
+					return "";
+				}
+				if (!retvalue.equalsIgnoreCase("persisted")) {
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), retvalue));
+					return "";
+				} else {
+					try {
+						mailService.sendMail(mail, false);
+						facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("send_password_success") +" ("+address+")", ""));
+						FacesContext context = FacesContext.getCurrentInstance();
+						HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+						WebUtils.setSessionAttribute(request, "userMBean", null);
+						return "/admin/userslist_bk.faces";
+					} catch (Exception e) {
+						e.printStackTrace();
+						facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
+						return "";
+					}
+				}
+			}else{
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
 				return "";
 			}
+		}else{
+			return "";
 		}
-
+	}
+	/**
+	 * Validate selected user's email
+	 * Rules:
+	 * <ul>
+	 * <li>Empty eMail allows only for Company user
+	 * <li>If email not empty, then structure of address should be checked unconditionally
+	 * </ul>
+	 * @return
+	 */
+	public boolean validateEmail() {
+		String errKey = getUserService().validateEmail(getSelectedUser());
+		if(errKey.length()>0){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString(errKey), bundle.getString(errKey)));
+			getUserService().reloadUser(getSelectedUser());
+			return false;
+		}else{
+			return true;
+		}
 	}
 
+	/**
+	 * Calculate the address password will be send
+	 * If user has password - to user, otherwise to admin
+	 * @return null if cannot resolve
+	 */
+	private String calculateAddress() {
+		String ret = "";
+		if(getUserService().hasEmail(getSelectedUser())){
+			ret= selectedUser.getEmail();
+		}else{
+			List<User> admins = getUserService().findAdmins();
+			if(admins != null & admins.size()>0){
+				ret= admins.get(0).getEmail();
+			}else{
+				return null;
+			}
+		}
+		if (ret.trim().length()>0){
+			return ret;
+		}else{
+			return null;
+		}
+	}
+
+
+
 	public String updateuser() {
-		selectedUser.setType(userType);
 		selectedUser.setRoles(roles.getTarget());
-		selectedUser.setApplicant(getUserApp());
+		if(validateEmail()){
+			selectedUser.setType(userType);
+			
+			selectedUser.setApplicant(getUserApp());
 
-		selectedUser.setUpdatedDate(new Date());
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		try {
-			selectedUser = userService.updateUser(selectedUser);
-			allUsers = null;
-		} catch (ConstraintViolationException e) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
-		} catch (Exception e) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
-			e.printStackTrace();
+			selectedUser.setUpdatedDate(new Date());
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			try {
+				selectedUser = userService.updateUser(selectedUser);
+				allUsers = null;
+			} catch (ConstraintViolationException e) {
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_exists")));
+			} catch (Exception e) {
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
+				e.printStackTrace();
+			}
+			if (selectedUser != null) {
+				setEdit(false);
+				selectedUser = new User();
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), selectedUser.getName() + bundle.getString("global.success")));
+				FacesContext context = FacesContext.getCurrentInstance();
+				HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+				WebUtils.setSessionAttribute(request, "userMBean", null);
+			} else {
+				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("no_user")));
+			}
 		}
-		if (selectedUser != null) {
-			setEdit(false);
-			selectedUser = new User();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), selectedUser.getName() + bundle.getString("global.success")));
-			FacesContext context = FacesContext.getCurrentInstance();
-			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-			WebUtils.setSessionAttribute(request, "userMBean", null);
-		} else {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("no_user")));
-		}
-
 		return backTo;
 	}
 
@@ -257,51 +318,61 @@ public class UserMBean implements Serializable {
 		userApp = new Applicant();
 		applicName = "-";
 		applicID = new Long(-1);
-		
+
 		return "";
 	}
 
 	public String resetPassword() {
-		String password = PassPhrase.getNext();
-		selectedUser.setPassword(password);
-		System.out.println("Password == " + password);
-		selectedUser.setUpdatedDate(new Date());
-		Mail mail = new Mail();
-		mail.setMailto(selectedUser.getEmail());
-		mail.setSubject("Password Reset");
-		//        mail.setSubject(bundle.getString("reset_pwd_sub"));
-		mail.setUser(selectedUser);
-		mail.setDate(new Date());
-		mail.setMessage("Your password has been successfully reset In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		try {
-			selectedUser = userService.updateUser(userService.passwordGenerator(selectedUser));
-		} catch (Exception e) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
-			e.printStackTrace();
-			return "";
-		}
-		if (selectedUser == null) {
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("save_error")));
-			return "";
-		} else {
-			try {
-				String sender = workspaceDAO.findAll().get(0).getRegistraremail();
-				if (sender==null)
-					sender = "info@msh.org";
-				else if ("".equals(sender))
-					sender = "info@msh.org";
-				mailService.sendMailFromSender(mail, false,sender);
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("global.success"), bundle.getString("send_password_success")));
-				FacesContext context = FacesContext.getCurrentInstance();
-				HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-				WebUtils.setSessionAttribute(request, "userMBean", null);
-				return "/admin/userslist_bk.faces";
-			} catch (Exception e) {
-				e.printStackTrace();
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
+		if(validateEmail()){
+			String email = calculateAddress();
+			if(email != null){
+				String password = PassPhrase.getNext();
+				selectedUser.setPassword(password);
+				System.out.println("Password == " + password);
+				selectedUser.setUpdatedDate(new Date());
+				Mail mail = new Mail();
+				mail.setMailto(email);
+				mail.setSubject("Password Reset");
+				//        mail.setSubject(bundle.getString("reset_pwd_sub"));
+				mail.setUser(selectedUser);
+				mail.setDate(new Date());
+				mail.setMessage("Your password has been successfully reset In order to access the system please use the username '" + selectedUser.getUsername() + "' and password '" + password + "' ");
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				try {
+					selectedUser = userService.updateUser(userService.passwordGenerator(selectedUser));
+				} catch (Exception e) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), e.getMessage()));
+					e.printStackTrace();
+					return "";
+				}
+				if (selectedUser == null) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("save_error")));
+					return "";
+				} else {
+					try {
+						String sender = workspaceDAO.findAll().get(0).getRegistraremail();
+						if (sender==null)
+							sender = "info@msh.org";
+						else if ("".equals(sender))
+							sender = "info@msh.org";
+						mailService.sendMailFromSender(mail, false,sender);
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, bundle.getString("send_password_success") +" ("+email+")", ""));
+						FacesContext context = FacesContext.getCurrentInstance();
+						HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+						WebUtils.setSessionAttribute(request, "userMBean", null);
+						return "/admin/userslist_bk.faces";
+					} catch (Exception e) {
+						e.printStackTrace();
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
+						return "";
+					}
+				}
+			}else{
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, bundle.getString("global_fail"), bundle.getString("email_error")));
 				return "";
 			}
+		}else{
+			return "";
 		}
 
 	}
@@ -340,7 +411,7 @@ public class UserMBean implements Serializable {
 
 	public List<User> getAllUsers() {
 		//if(allUsers==null)
-			allUsers = userService.findAllUsers();
+		allUsers = userService.findAllUsers();
 		return allUsers;
 	}
 
@@ -350,7 +421,7 @@ public class UserMBean implements Serializable {
 
 	public DualListModel<Role> getRoles() {
 		if (roles != null) {
-			
+
 		}
 		return roles;
 	}
@@ -460,7 +531,7 @@ public class UserMBean implements Serializable {
 		allRoles = new ArrayList<Role>();
 		if(listRoles == null)
 			listRoles = (List<Role>) roleDAO.findAll();
-		
+
 		if(type != null){
 			List<UserRole> list = type.getRolesList();
 			if(list != null && list.size() > 0){
@@ -471,4 +542,5 @@ public class UserMBean implements Serializable {
 			}
 		}
 	}
+
 }

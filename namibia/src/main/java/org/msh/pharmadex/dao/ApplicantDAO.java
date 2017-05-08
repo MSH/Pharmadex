@@ -194,5 +194,12 @@ public class ApplicantDAO implements Serializable {
 		}
 		return ret;
 	}
+	/**
+	 * Merge an applicant to the current session
+	 * @param applicant
+	 */
+	public void merge(Applicant applicant) {
+		entityManager.merge(applicant);
+	}
 }
 

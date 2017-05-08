@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean;
 import static javax.faces.context.FacesContext.getCurrentInstance;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -68,15 +69,15 @@ public class CommentMBean implements Serializable {
 		try {
 			prodApp = getProcessProdBn().getProdApplications();
 			revInfo = getReviewInfoBn().getReviewInfo();
-			
+
 			if(prodApp == null && revInfo != null){ // form reviewInfo
 				revComment = true;
 				prodApp = revInfo.getProdApplications();
 			}
-			
+
 			if(userSession.getLoggedINUserID() != null)
 				curUser = userService.findUser(userSession.getLoggedINUserID());
-			
+
 			if(prodApp != null){
 				prodAppID = prodApp.getId();
 				allcomments = commentService.findAllCommentsByApp(prodAppID);
@@ -87,21 +88,29 @@ public class CommentMBean implements Serializable {
 			facesContext.addMessage(null, new FacesMessage("Use the link within the system to access this page."));
 		}
 	}
-	
+
 	private void sortAllCommentsList(){
-		if(allcomments != null)
-			Collections.sort(allcomments, new Comparator<CommentTable>() {
-			@Override
-			public int compare(CommentTable o1, CommentTable o2) {
-				Date d1 = o1.getDateCom();
-				Date d2 = o2.getDateCom();
-				if(d1 != null && d2 != null)
-					return -d1.compareTo(d2);
-				return 0;
+		if(allcomments != null){
+			List<CommentTable> tmp = new ArrayList<CommentTable>();
+			for(CommentTable ct : allcomments){
+				if(ct != null){
+					tmp.add(ct);
+				}
 			}
-		});
+			Collections.sort(tmp, new Comparator<CommentTable>() {
+				@Override
+				public int compare(CommentTable o1, CommentTable o2) {
+					Date d1 = o1.getDateCom();
+					Date d2 = o2.getDateCom();
+					if(d1 != null && d2 != null)
+						return -d1.compareTo(d2);
+					return 0;
+				}
+			});
+			setAllcomments(tmp);
+		}
 	}
-	
+
 	public void addComment() {
 		if(isRevComment()){
 			revcommItem = new ReviewComment();
@@ -110,7 +119,7 @@ public class CommentMBean implements Serializable {
 			revcommItem.setComment(vefirComment());
 			revcommItem.setFinalSummary(false);
 			revcommItem.setReviewInfo(revInfo);
-			
+
 			revcommItem = commentService.saveReviewComment(revcommItem);
 			CommentTable item = createCommentTable(revcommItem);
 			allcomments.add(item);
@@ -120,7 +129,7 @@ public class CommentMBean implements Serializable {
 			commItem.setUser(curUser);
 			commItem.setComment(vefirComment());
 			commItem.setProdApplications(prodApp);
-			
+
 			commItem = commentService.saveComment(commItem);
 			CommentTable item = createCommentTable(commItem);
 			allcomments.add(item);
@@ -135,7 +144,7 @@ public class CommentMBean implements Serializable {
 		comment = "";
 		return res;
 	}
-	
+
 	public boolean isRevComment() {
 		return revComment;
 	}
@@ -183,7 +192,7 @@ public class CommentMBean implements Serializable {
 		this.userSession = userSession;
 	}
 
-	
+
 	public UserService getUserService() {
 		return userService;
 	}
@@ -204,7 +213,7 @@ public class CommentMBean implements Serializable {
 		CommentTable item = new CommentTable(it.getDate(), it.getUser().getName(), it.getComment(), null);
 		return item;
 	}
-	
+
 	private CommentTable createCommentTable(ReviewComment it){
 		String str = (it.getRecomendType() != null ? it.getRecomendType().getKey() : "");
 		CommentTable item = new CommentTable(it.getDate(), it.getUser().getName(), it.getComment(), str);

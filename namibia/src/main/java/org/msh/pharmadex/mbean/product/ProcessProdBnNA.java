@@ -3,6 +3,7 @@ package org.msh.pharmadex.mbean.product;
 import static org.msh.pharmadex.domain.enums.RegState.FEE;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,8 +16,12 @@ import javax.faces.bean.ViewScoped;
 import org.msh.pharmadex.auth.UserSession;
 import org.msh.pharmadex.domain.Applicant;
 import org.msh.pharmadex.domain.ProdApplications;
+import org.msh.pharmadex.domain.ProdCompany;
+import org.msh.pharmadex.domain.ProdExcipient;
+import org.msh.pharmadex.domain.ProdInn;
 import org.msh.pharmadex.domain.Product;
 import org.msh.pharmadex.domain.ReviewInfo;
+import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
 import org.msh.pharmadex.service.CommentService;
@@ -418,5 +423,44 @@ public class ProcessProdBnNA implements Serializable {
 		if(rs.equals(RegState.REGISTERED))
 			return false;
 		return true;
+	}
+	/**
+	 * Get full list of product manufacturers (Inns included)
+	 * @return
+	 */
+	public List<ProdCompany> getProdCompanies() {
+		List<ProdCompany> prodCompanies = new ArrayList<ProdCompany>();
+
+		Product prod = getProcessProdBn().getProduct();
+		if(prod==null){
+			prod = getProcessProdBn().getProdRegAppMbean().getProduct();
+		}
+		if(prod != null){
+			List<ProdCompany> comps = prod.getProdCompanies();
+			List<ProdInn> inns = prod.getInns();
+			
+
+			if(comps != null && comps.size() > 0)
+				prodCompanies.addAll(comps);
+
+			if(inns != null && inns.size() > 0){
+				for(ProdInn inn:inns){
+					if(inn.getCompany() != null){
+						ProdCompany pcom = new ProdCompany(prod, inn.getCompany(), CompanyType.API_MANUF);
+						prodCompanies.add(pcom);
+					}
+				}
+			}
+
+/*			if(excs != null && excs.size() > 0){
+				for(ProdExcipient exc:excs){
+					if(exc.getCompany() != null){
+						ProdCompany pcom = new ProdCompany(prod, exc.getCompany(), CompanyType.EXC_MANUF);
+						prodCompanies.add(pcom);
+					}
+				}
+			}*/
+		}
+		return prodCompanies;
 	}
 }

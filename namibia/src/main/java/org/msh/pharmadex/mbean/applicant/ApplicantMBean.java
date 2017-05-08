@@ -75,10 +75,7 @@ public class ApplicantMBean implements Serializable {
 	private List<ProdApplications> prodApplicationses;
 	private List<ProdApplications> prodNotRegApplicationses;
 	private AgentAgreement selectedAgentAgreement;
-	private List<AgentAgreement> agentAgreements = new ArrayList<AgentAgreement>();
 	private List<AgentAgreement> myAgentAgreements = new ArrayList<AgentAgreement>();
-	private Date startDate = null;
-	private Date finishDate = null;
 	private Applicant selectedAgent = null;
 
 	@PostConstruct
@@ -101,7 +98,6 @@ public class ApplicantMBean implements Serializable {
 		}
 
 		if(getSelectedApplicant() != null && getSelectedApplicant().getApplcntId() != null && getSelectedApplicant().getApplcntId() > 0){
-			agentAgreements = getApplicantService().fetchAgentAgreements(getSelectedApplicant());
 			myAgentAgreements = getApplicantService().fetchMyApplicants(getSelectedApplicant());
 		}
 
@@ -155,12 +151,15 @@ public class ApplicantMBean implements Serializable {
 			user = new User();
 		}
 	}
-
-	public String submitApp() {
+	/**
+	 * Submit a new applicant
+	 * @param registerIt register or not
+	 * @return
+	 */
+	public String submitApp(boolean registerIt) {
 		if(varificationApplicant(true)){
 			selectedApplicant.setSubmitDate(new Date());
-			applicantService.submitApp(selectedApplicant);
-
+			applicantService.submitApp(selectedApplicant, registerIt);
 			facesContext = FacesContext.getCurrentInstance();
 			HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 			WebUtils.setSessionAttribute(request, "applicantMBean", null);
@@ -170,6 +169,11 @@ public class ApplicantMBean implements Serializable {
 		return null;
 	}
 
+
+	/**
+	 * Save an applicant
+	 * @return
+	 */
 	public String saveApp() {
 		if(varificationApplicant(false)){
 			selectedApplicant.setUpdatedDate(new Date());
@@ -275,7 +279,7 @@ public class ApplicantMBean implements Serializable {
 			roles.add(role);
 		user.setRoles(roles);
 
-		User verifUser = userService.findByUsernameOrEmail(user);
+		User verifUser = userService.findUserByUsername(user.getName());
 		if(verifUser != null){// dublicate
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			facesContext.validationFailed();
@@ -344,7 +348,7 @@ public class ApplicantMBean implements Serializable {
 	public List<ApplicantListDTO> getAllForList(){
 		return applicantService.getAllRegisteredForList();
 	}
-	
+
 	public void setAllForList(List<ApplicantListDTO> dummy){
 		//nothing to do, only obey bean specifications
 	}
@@ -370,7 +374,9 @@ public class ApplicantMBean implements Serializable {
 	}
 
 	public void setUser(User user) {
-		this.user = userService.findUser(user.getUserId());
+		if(user!=null){
+			this.user = userService.findUser(user.getUserId());
+		}
 	}
 
 	public List<ApplicantListDTO> getFilteredApplicant() {
@@ -540,14 +546,20 @@ public class ApplicantMBean implements Serializable {
 	 * @return
 	 */
 	public List<AgentAgreement> getAgentAgreements(){
-		return agentAgreements;
+		if(getSelectedApplicant() != null){
+			return getSelectedApplicant().getAgents();
+		}else{
+			return null;
+		}
 	}
 
 	public void setAgentAgreements(List<AgentAgreement> agentAgreements) {
-		this.agentAgreements = agentAgreements;
+		if(getSelectedApplicant() != null){
+			getSelectedApplicant().setAgents(agentAgreements);
+		}
 	}
-	
-	
+
+
 
 	public List<AgentAgreement> getMyAgentAgreements() {
 		return myAgentAgreements;
@@ -593,7 +605,7 @@ public class ApplicantMBean implements Serializable {
 			selectedAgent = getSelectedAgentAgreement().getAgent();
 		else
 			selectedAgent = null;*/
-		
+
 		return selectedAgent;
 	}
 	/**
@@ -623,44 +635,49 @@ public class ApplicantMBean implements Serializable {
 		return null;
 	}
 	/**
-	 * Save currently selected agent agreement
+	 * Add currently selected agent agreement to the applicant instance or replace it
 	 */
 	public void saveSelectedAgreement(){
 		facesContext = FacesContext.getCurrentInstance();
 		resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
 		if(getSelectedAgentAgreement() != null && getSelectedApplicant() != null){
-			getSelectedAgentAgreement().setApplicant(getSelectedApplicant());
+			//getSelectedAgentAgreement().setApplicant(getSelectedApplicant());
 
 			String error = varificationSelectAgreement();
 			if(error.isEmpty()){
-				getApplicantService().saveAgentAgreement(getSelectedAgentAgreement());
-				agentAgreements = getApplicantService().fetchAgentAgreements(getSelectedApplicant());
-				
+				if(getSelectedApplicant().getAgents() == null){
+					getSelectedApplicant().setAgents(new ArrayList<AgentAgreement>());
+				}
+				getSelectedAgentAgreement().setApplicant(getSelectedApplicant());
+				if(!getSelectedApplicant().getAgents().contains(selectedAgentAgreement)){
+					getSelectedApplicant().getAgents().add(selectedAgentAgreement);
+				}
 				RequestContext.getCurrentInstance().execute("PF('editDialog').hide()");
 			}else
 				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, error, ""));
 		}else
 			globalFail();
-		
+
 		cancelSelectedAgreement();
 	}
-	
+
+
 	public void cancelSelectedAgreement(){
 		setSelectedAgent(null);
-		setStartDate(null);
-		setFinishDate(null);
 		setSelectedAgentAgreement(null);
 	}
 
 	public String varificationSelectAgreement(){
 		String err = "";
 		if(getSelectedApplicant() != null && getSelectedAgentAgreement() != null && getSelectedAgent() != null){
-			if(getSelectedApplicant().getApplcntId().intValue() == getSelectedAgent().getApplcntId().intValue()){
-				err = resourceBundle.getString("error_agent");
+			if(getSelectedApplicant().getApplcntId()!= null){
+				if(getSelectedApplicant().getApplcntId().intValue() == getSelectedAgent().getApplcntId().intValue()){
+					return resourceBundle.getString("error_agent");
+				}
 			}
 			Long agentID = getSelectedAgent().getApplcntId();
-			if(agentAgreements != null && agentAgreements.size() > 0){
-				for(AgentAgreement ag:agentAgreements){
+			if(getAgentAgreements()	!= null && getAgentAgreements().size() > 0){
+				for(AgentAgreement ag:getAgentAgreements()){
 					if(ag.getAgent() != null){
 						if(getSelectedAgentAgreement() != null && getSelectedAgentAgreement().getId() != null){ // edit
 							if(ag.getId().intValue() != getSelectedAgentAgreement().getId().intValue()){
@@ -688,7 +705,7 @@ public class ApplicantMBean implements Serializable {
 				if(getStartDate().getTime() >= getFinishDate().getTime()){
 					setStartDate(getSelectedAgentAgreement().getStart());
 					setFinishDate(getSelectedAgentAgreement().getFinish());
-					
+
 					err = resourceBundle.getString("error_date");
 					return err;
 				}else{
@@ -727,6 +744,7 @@ public class ApplicantMBean implements Serializable {
 		if(agreement != null){
 			agreement.setActive(!agreement.getActive());
 			setSelectedAgentAgreement(agreement);
+			setSelectedAgent(getSelectedAgentAgreement().getAgent());
 			saveSelectedAgreement();
 		}else{
 			globalFail();
@@ -734,18 +752,30 @@ public class ApplicantMBean implements Serializable {
 	}
 
 	public Date getStartDate() {
-		return startDate;
+		if(getSelectedAgentAgreement() != null){
+			return getSelectedAgentAgreement().getStart();
+		}
+		return null;
 	}
 
 	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+		if(getSelectedAgentAgreement() != null){
+			getSelectedAgentAgreement().setStart(startDate);
+		}
 	}
 
 	public Date getFinishDate() {
-		return finishDate;
+		if(getSelectedAgentAgreement() != null){
+			return getSelectedAgentAgreement().getFinish();
+		}
+		return null;
 	}
 
 	public void setFinishDate(Date finishDate) {
-		this.finishDate = finishDate;
+		if(getSelectedAgentAgreement() != null){
+			getSelectedAgentAgreement().setFinish(finishDate);
+		}
 	}
+
+
 }
