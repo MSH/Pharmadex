@@ -222,4 +222,13 @@ public class User extends CreationDetail implements Serializable {
     public String toString() {
         return getName();    //To change body of overridden methods use File | Settings | File Templates.
     }
+    @Transient
+	public boolean isCompany() {
+		List<Role> roles = getRoles();
+		if(roles != null && roles.size()==1){
+			return roles.get(0).getRoleId() == 4;
+		}else{
+			return false;
+		}
+	}
 }
