@@ -238,6 +238,7 @@ public class ReviewInfoBnMZ implements Serializable {
 			Scrooge.goToHome();
 		else
 			fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFile(prodApplications);
+			//fileReviewDetail = getProdApplicationsServiceMZ().createReviewDetailsFileDocx(prodApplications);
 	}
 
 	public StreamedContent getFileReviewDetail() {
