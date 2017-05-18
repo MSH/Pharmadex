@@ -36,7 +36,7 @@
                 </p:submenu>
                 
 				<p:separator rendered="#{!isleftmenu and (userSession.company||userSession.staff||userSession.admin)}"/>
-                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff||userSession.admin}">
+                <p:submenu label="#{msgs.current_applications}" rendered="#{userSession.company||userSession.staff||userSession.admin||userSession.receiver}">
                     <p:menuitem value="#{msgs.submitted_applications}" icon="ui-icon-document"
                                 url="/secure/submittedproducts.faces"/>
                     <p:menuitem value="#{msgs.saved_applications}" icon="ui-icon-document"
@@ -48,7 +48,7 @@
                 </p:submenu>
                 
 				<p:separator rendered="#{!isleftmenu and (userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator)}"/>
-                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator || userSession.head}">
+                <p:submenu label="#{msgs.reg_processing}" rendered="#{userSession.admin||userSession.staff||userSession.reviewer||userSession.moderator || userSession.head ||userSession.receiver}">
                     <p:menuitem value="#{msgs.process_review_list}" icon="ui-icon-document"
                                 url="/internal/processreviewlist.faces" rendered="#{userSession.reviewer}"/>
                     <p:menuitem value="#{msgs.product_reg_process}" icon="ui-icon-document" rendered="#{!userSession.reviewer}"

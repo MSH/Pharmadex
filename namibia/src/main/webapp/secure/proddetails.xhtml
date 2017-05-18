@@ -42,7 +42,7 @@
 	</h:panelGrid>
 	
 	<h:form prependId="false">
-	<h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2_200, col2_200, col3">
+	<h:panelGrid columns="4" cellpadding="10px" cellspacing="10px" columnClasses="col1, col2_200, col2, col3">
 		<p:outputLabel value="#{msgs.dos_form}" for="dosForm" />
         <p:autoComplete id="dosForm" value="#{prodRegAppMbean.mainIt}" 
 					    completeMethod="#{prodRegAppMbean.completeDosforms}" 
@@ -54,6 +54,7 @@
 		</p:autoComplete>
 		
 		<p:autoComplete id="items" value="#{prodRegAppMbean.subIt}" 
+						size="40"
 					    completeMethod="#{prodRegAppMbean.completeDosformsSub}" 
 					    var="it" itemLabel="#{it.name}" itemValue="#{it}"
 					    scrollHeight="200" dropdown="true" forceSelection="true"

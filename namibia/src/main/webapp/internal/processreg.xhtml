@@ -32,136 +32,178 @@
 						<p:tabView id="processtab" style="width: 830px;"
 							activeIndex="#{processProdBn.selectedTab}" dynamic="true"
 							cache="false">
-							<p:ajax event="tabChange" listener="#{processProdBnNA.onTabChange}" />
+							<p:ajax event="tabChange"
+								listener="#{processProdBnNA.onTabChange}" />
 							<p:tab title="#{msgs.application_info}" id="infotab">
 								<h:panelGrid columns="4" cellspacing="10"
 									columnClasses="col1, col2, col1, col2">
 
-										<h:outputLabel value="#{msgs.prodName}:" />
-									   <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('prodName')}">
-                                     <div>
-                                      <h:outputLabel value="#{processProdBn.product.prodName}" style="color: red;"/>
-                                     </div>
-                                    </ui:fragment>
-									  <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('prodName')}">
-                                     <div>
-									<h:outputLabel value="#{processProdBn.product.prodName}" />
-                                      </div>
-                                    </ui:fragment>
-                                    
+									<h:outputLabel value="#{msgs.prodName}:" />
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('prodName')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.prodName}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('prodName')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.prodName}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.prod_cat}:" />
-								    <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('prodCategory')}">                                                         
-                                    <div>
-											<h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}" style="color: red;"/>
-                                   </div>
-                                    </ui:fragment> 
-                                    <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('prodCategory')}">                                                         
-                                    <div>
-											<h:outputLabel value="#{msgs[processProdBn.product.prodCategory.key]}" />
-                                   </div>
-                                    </ui:fragment>
-                                    
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('prodCategory')}">
+										<div>
+											<h:outputLabel
+												value="#{msgs[processProdBn.product.prodCategory.key]}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('prodCategory')}">
+										<div>
+											<h:outputLabel
+												value="#{msgs[processProdBn.product.prodCategory.key]}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.prodgenname}:" />
-									  <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('genName')}">                                                                                             
-                                    <div>
-                                        <h:outputLabel value="#{processProdBn.product.genName}" style="color: red;"/>
-                                    </div>
-                                    </ui:fragment>
-									 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('genName')}">                                                                                             
-                                    <div>
-									<h:outputLabel value="#{processProdBn.product.genName}" />
-                                    </div>
-                                    </ui:fragment>
-                                    
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('genName')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.genName}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('genName')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.genName}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.prod_app_type}:" />
 									<h:outputLabel
 										value="#{msgs[processProdBn.prodApplications.prodAppType.key]}" />
 
 									<h:outputLabel value="#{msgs.dos_form}" />
-									  <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('dosForm')}">                                                                                             
-                                    <div>
-                                         <h:outputLabel value="#{processProdBn.product.dosForm.dosForm}" style="color: red;"/>
-                                     </div>
-                                    </ui:fragment>  
-									 <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('dosForm')}">                                                                                             
-                                    <div>
-                                    <h:outputLabel value="#{processProdBn.product.dosForm.dosForm}" />
-                                   </div>
-                                    </ui:fragment>  
-                                    
-									<h:outputLabel value="#{msgs.dos_strength}"	style="font-weight: bold;" />
-									 <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('dosStrength')}">                                                                                             
-                                    <div>
-                                       <h:outputLabel value="#{processProdBn.product.dosStrength}"  style="color: red;"/>
-                                    </div>
-                                    </ui:fragment>
-                                     <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('dosStrength')}">                                                                                             
-                                      <div>
-                                    	<h:outputLabel value="#{processProdBn.product.dosStrength}" />
-                                    </div>
-                                    </ui:fragment>
-                                    	
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('dosForm')}">
+										<div>
+											<h:outputLabel
+												value="#{processProdBn.product.dosForm.dosForm}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('dosForm')}">
+										<div>
+											<h:outputLabel
+												value="#{processProdBn.product.dosForm.dosForm}" />
+										</div>
+									</ui:fragment>
+
+									<h:outputLabel value="#{msgs.dos_strength}"
+										style="font-weight: bold;" />
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('dosStrength')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.dosStrength}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('dosStrength')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.dosStrength}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.dos_unit}" />
-									  <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('dosUnit')}">                                                                                             
-                                    <div>
-                                         <h:outputLabel value="#{processProdBn.product.dosUnit.uom}" style="color: red;"/>
-                                     </div>
-                                    </ui:fragment>
-                                     <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('dosUnit')}">                                                                                             
-                                    <div>
-									<h:outputLabel value="#{processProdBn.product.dosUnit.uom}" />
-                                      </div>
-                                    </ui:fragment>
-                                    
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('dosUnit')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.dosUnit.uom}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('dosUnit')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.dosUnit.uom}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.admin_route}" />
-									  <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('adminRoute')}">                                                                                             
-                                    <div>
-                                      <h:outputLabel value="#{msgs[processProdBn.product.adminRoute.key]}" style="color: red;"/>
-                                     </div>
-                                    </ui:fragment>
-                                    <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('adminRoute')}">                                                                                             
-                                    <div>
-                                   		<h:outputLabel	value="#{msgs[processProdBn.product.adminRoute.key]}" />
-                                     </div>
-                                    </ui:fragment>
-									
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('adminRoute')}">
+										<div>
+											<h:outputLabel
+												value="#{msgs[processProdBn.product.adminRoute.key]}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('adminRoute')}">
+										<div>
+											<h:outputLabel
+												value="#{msgs[processProdBn.product.adminRoute.key]}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.age_group}" />
-									 <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('ageGroup')}">                                                                                             
-                                    <div>
-                                        <h:outputLabel value="#{msgs[processProdBn.product.ageGroup.key]}" style="color: red;"/>
-                                    </div>
-                                    </ui:fragment>
-                                     <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('ageGroup')}">                                                                                             
-                                    <div>
-									<h:outputLabel 	value="#{msgs[processProdBn.product.ageGroup.key]}" />
-				                    </div>
-                                    </ui:fragment>				
-									
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('ageGroup')}">
+										<div>
+											<h:outputLabel
+												value="#{msgs[processProdBn.product.ageGroup.key]}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('ageGroup')}">
+										<div>
+											<h:outputLabel
+												value="#{msgs[processProdBn.product.ageGroup.key]}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.product_pharmclassif}" />
-									 <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('pharmClassif')}">                                                                                             
-                                    <div>
-                                      <h:outputLabel value="#{processProdBn.product.pharmClassif.displayName}"  style="color: red;"/>
-                                    </div>
-                                    </ui:fragment>
-                                     <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('pharmClassif')}">                                                                                             
-                                    <div>
-									<h:outputLabel  value="#{processProdBn.product.pharmClassif.displayName}" />
-                                    </div>
-                                    </ui:fragment>
-                                    
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('pharmClassif')}">
+										<div>
+											<h:outputLabel
+												value="#{processProdBn.product.pharmClassif.displayName}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('pharmClassif')}">
+										<div>
+											<h:outputLabel
+												value="#{processProdBn.product.pharmClassif.displayName}" />
+										</div>
+									</ui:fragment>
+
 									<h:outputLabel value="#{msgs.prod_desc}" />
-									       <ui:fragment   rendered="#{processProdBnNA.isFieldChanged('prodDesc')}">                                                                                             
-                                    <div>
-                                        <h:outputLabel value="#{processProdBn.product.prodDesc}"  style="color: red;"/>
-                                     </div>
-                                    </ui:fragment>
-                                     <ui:fragment   rendered="#{!processProdBnNA.isFieldChanged('prodDesc')}">                                                                                             
-                                    <div>
-                         			<h:outputLabel value="#{processProdBn.product.prodDesc}" />
-                                       </div>
-                                    </ui:fragment>
-                                    
-									
+									<ui:fragment
+										rendered="#{processProdBnNA.isFieldChanged('prodDesc')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.prodDesc}"
+												style="color: red;" />
+										</div>
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{!processProdBnNA.isFieldChanged('prodDesc')}">
+										<div>
+											<h:outputLabel value="#{processProdBn.product.prodDesc}" />
+										</div>
+									</ui:fragment>
+
+
 									<h:outputLabel value="#{msgs.product_details}" />
 									<p:commandButton value="#{msgs.click_here}"
 										action="processproddetail" ajax="false" target="_blank"
@@ -187,11 +229,11 @@
 
 							<p:tab title="#{msgs.prod_comments}" id="commentTab"
 								rendered="#{!userSession.company and !userSession.lab and !userSession.clinical}">
-								<ui:include src="allcomments.xhtml"/>
+								<ui:include src="allcomments.xhtml" />
 							</p:tab>
 
 							<p:tab title="#{msgs.timeline}"
-								rendered="#{userSession.admin||userSession.head||userSession.moderator||userSession.reviewer||userSession.staff}"
+								rendered="#{userSession.admin||userSession.head||userSession.moderator||userSession.reviewer||userSession.staff||userSession.receiver}"
 								id="timelinetab">
 
 								<p:dataTable id="timelinetbl" var="timeline"
@@ -214,9 +256,9 @@
                                         #{timeline.user.name}
                                     </p:column>
 
-									<p:column headerText="#{msgs.global_comment}" >
-										<h:outputText value="#{timeline.comment}" escape="false"/>
-                                    </p:column>
+									<p:column headerText="#{msgs.global_comment}">
+										<h:outputText value="#{timeline.comment}" escape="false" />
+									</p:column>
 								</p:dataTable>
 							</p:tab>
 
@@ -227,11 +269,12 @@
 										styleClass="hint" />
 
 
-									<p:commandButton id="addDocBtn"  icon="ui-icon-document"
+									<p:commandButton id="addDocBtn" icon="ui-icon-document"
 										value="#{msgs.adddocument}"
 										oncomplete="PF('attachdlg').show()"
 										action="#{fileUploadController.prepareUpload}"
-										update=":attachdlg" rendered="#{processProdBnNA.visibleAddAttachBtn()}"/>
+										update=":attachdlg"
+										rendered="#{processProdBnNA.visibleAddAttachBtn()}" />
 
 									<p:dataTable id="attachtable"
 										value="#{fileUploadController.attachments}" var="doc">
@@ -270,8 +313,8 @@
 										<p:column>
 											<p:commandButton id="deleteattach"
 												action="#{fileUploadController.deleteDoc(doc)}" ajax="false"
-												icon="ui-icon-trash" update=":reghome:attachtab:attachtable" 
-												rendered="#{processProdBn.applicationActive}"/>
+												icon="ui-icon-trash" update=":reghome:attachtab:attachtable"
+												rendered="#{processProdBn.applicationActive}" />
 										</p:column>
 									</p:dataTable>
 								</h:panelGrid>
@@ -282,15 +325,14 @@
 									<p:commandButton value="#{msgs.btn_create_ackletter}"
 										action="#{prodAckLetterFormMZ.initParametrs(processProdBn.prodApplications)}"
 										oncomplete="PF('createAckLet').show()" update=":createAckLet"
-										rendered="#{userSession.staff}" 
-										/>
+										rendered="#{prodAckLetterFormMZ.isAllowed(processProdBn.prodApplications)}" />
 									<p:dataTable id="lettertable" value="#{processProdBn.letters}"
 										var="letter">
-									<ui:remove>
-										<p:column headerText="#{msgs.title}">
-											<h:outputText value="#{letter.title}" />
-										</p:column>
-									</ui:remove>	
+										<ui:remove>
+											<p:column headerText="#{msgs.title}">
+												<h:outputText value="#{letter.title}" />
+											</p:column>
+										</ui:remove>
 										<p:column headerText="#{msgs.filename}">
 											<h:outputText value="#{letter.fileName}" />
 										</p:column>
@@ -322,7 +364,7 @@
 												action="#{processProdBnMZ.deleteLetter(letter)}"
 												rendered="#{processProdBn.applicationActive and (userSession.admin||userSession.staff||userSession.moderator||userSession.reviewer)}"
 												icon="ui-icon-trash" ajax="true" immediate="true"
-												update=":reghome:processtab:lettertable :reghome:messages"/>
+												update=":reghome:processtab:lettertable :reghome:messages" />
 										</p:column>
 									</p:dataTable>
 								</h:panelGrid>
@@ -370,28 +412,29 @@
 							<p:tab title="#{msgs.reg_cert}" id="regcerttab"
 								rendered="#{processProdBn.showCert}">
 								<ui:include src="tabcertificates.xhtml">
-									<ui:param name="prodAppID" value="#{processProdBn.prodApplications}"/>
+									<ui:param name="prodAppID"
+										value="#{processProdBn.prodApplications}" />
 								</ui:include>
-								
+
 							</p:tab>
 
 							<p:tab title="#{msgs.app_fee}" id="appfee"
 								rendered="#{processProdBn.applicationFee}">
 								<ui:include src="applfee.xhtml" />
-								<f:param name="sourcePage" 
+								<f:param name="sourcePage"
 									value="/internal/processreg.faces:#{each.prodApplications.id}" />
 							</p:tab>
-							
+
 							<p:tab title="#{msgs.assessment}" id="process"
 								rendered="#{processProdBnMZ.showAssessment}">
 								<ui:include src="reviewertable.xhtml" />
-								<f:param name="sourcePage" 
+								<f:param name="sourcePage"
 									value="/internal/processreg.faces:#{each.prodApplications.id}" />
 							</p:tab>
 
 							<p:tab title="#{msgs.suspend_info}" id="susp"
 								rendered="#{(userSession.admin || userSession.head) and !empty processProdBn.suspDetails}">
-								<ui:include src="tabsuspend.xhtml"/>
+								<ui:include src="tabsuspend.xhtml" />
 							</p:tab>
 
 							<p:tab title="#{msgs.deficiency_reports}" id="fir"
@@ -436,90 +479,95 @@
 									</p:column>
 								</p:dataTable>
 							</p:tab>
-							<p:tab title="#{msgs.prev_applications}" rendered="#{!empty processProdBnBg.allAncestors}" id="parent">
-                                <p:panel header="#{msgs.recieved_applications}">
-                                    <p:dataTable id="applicantions" var="eachprod" value="#{processProdBnBg.allAncestors}">
-                                       <p:column filterBy="#{eachprod.product.prodName}"
-                                        sortBy="#{eachprod.product.prodName}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.prod_name}"/>
-                                        </f:facet>
-                                        <p:commandLink id="viewLink1" value="#{eachprod.product.prodName}"
-                                                       action="/internal/processreg"
-                                                       ajax="false" immediate="true"
-                                                       style="#{eachprod.fastrack?'color: #a52a2a;':''}">                                            <f:param name="prodAppID" value="#{eachprod.id}"/>
-                                            <f:param name="backTo" value="#{processProdBn.prodApplications}:/internal/processreg.faces" />
-                                        </p:commandLink>
-                                     </p:column>
+							<p:tab title="#{msgs.prev_applications}"
+								rendered="#{!empty processProdBnBg.allAncestors}" id="parent">
+								<p:panel header="#{msgs.recieved_applications}">
+									<p:dataTable id="applicantions" var="eachprod"
+										value="#{processProdBnBg.allAncestors}">
+										<p:column filterBy="#{eachprod.product.prodName}"
+											sortBy="#{eachprod.product.prodName}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.prod_name}" />
+											</f:facet>
+											<p:commandLink id="viewLink1"
+												value="#{eachprod.product.prodName}"
+												action="/internal/processreg" ajax="false" immediate="true"
+												style="#{eachprod.fastrack?'color: #a52a2a;':''}">
+												<f:param name="prodAppID" value="#{eachprod.id}" />
+												<f:param name="backTo"
+													value="#{processProdBn.prodApplications}:/internal/processreg.faces" />
+											</p:commandLink>
+										</p:column>
 
 
-                                    <p:column filterBy="#{eachprod.product.genName}"
-                                               sortBy="#{eachprod.product.genName}">
-                                         <f:facet name="header">
-                                             <h:outputText value="#{msgs.prodgenname}"/>
-                                                </f:facet>
-                                                <h:outputText value="#{eachprod.product.genName}"/>
-                                    </p:column>
- 
-                                    <p:column filterBy="#{eachprod.prodAppNo}"
-                                              sortBy="#{eachprod.prodAppNo}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.application_no}"/>
-                                        </f:facet>
-                                        <h:outputText value="#{eachprod.prodAppNo}"/>
-                                    </p:column>
+										<p:column filterBy="#{eachprod.product.genName}"
+											sortBy="#{eachprod.product.genName}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.prodgenname}" />
+											</f:facet>
+											<h:outputText value="#{eachprod.product.genName}" />
+										</p:column>
 
-                                    <p:column filterBy="#{msgs[eachprod.prodAppType.key]}"
-                                              sortBy="#{msgs[eachprod.prodAppType.key]}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.prod_app_type}"/>
-                                        </f:facet>
-                                        <h:outputText value="#{msgs[eachprod.prodAppType.key]}"/>
-                                    </p:column>
+										<p:column filterBy="#{eachprod.prodAppNo}"
+											sortBy="#{eachprod.prodAppNo}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.application_no}" />
+											</f:facet>
+											<h:outputText value="#{eachprod.prodAppNo}" />
+										</p:column>
+
+										<p:column filterBy="#{msgs[eachprod.prodAppType.key]}"
+											sortBy="#{msgs[eachprod.prodAppType.key]}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.prod_app_type}" />
+											</f:facet>
+											<h:outputText value="#{msgs[eachprod.prodAppType.key]}" />
+										</p:column>
 
 
-                                    <p:column filterBy="#{msgs[eachprod.regState.key]}"
-                                              sortBy="#{msgs[eachprod.regState.key]}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.registration_status}"/>
-                                        </f:facet>
-                                        <h:outputText value="#{msgs[eachprod.regState.key]}"/>
-                                    </p:column>
+										<p:column filterBy="#{msgs[eachprod.regState.key]}"
+											sortBy="#{msgs[eachprod.regState.key]}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.registration_status}" />
+											</f:facet>
+											<h:outputText value="#{msgs[eachprod.regState.key]}" />
+										</p:column>
 
-                                    <p:column filterBy="#{msgs[eachprod.reviewStatus.key]}"
-                                              sortBy="#{msgs[eachprod.reviewStatus.key]}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.review_status}"/>
-                                        </f:facet>
-                                        <h:outputText value="#{msgs[eachprod.reviewStatus.key]}"/>
-                                    </p:column>
+										<p:column filterBy="#{msgs[eachprod.reviewStatus.key]}"
+											sortBy="#{msgs[eachprod.reviewStatus.key]}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.review_status}" />
+											</f:facet>
+											<h:outputText value="#{msgs[eachprod.reviewStatus.key]}" />
+										</p:column>
 
-                                    <p:column sortBy="#{eachprod.submitDate}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.submitted_date}"/>
-                                        </f:facet>
-                                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
-                                    </p:column>
+										<p:column sortBy="#{eachprod.submitDate}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.submitted_date}" />
+											</f:facet>
+											<h:outputLabel converter="javax.faces.DateTime"
+												value="#{eachprod.submitDate}" />
+										</p:column>
 
-                                    <p:column sortBy="#{eachprod.applicant.appName}"
-                                              filterBy="#{eachprod.applicant.appName}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.applicant_name}"/>
-                                        </f:facet>
-                                        <h:outputLabel value="#{eachprod.applicant.appName}"/>
-                                    </p:column>
+										<p:column sortBy="#{eachprod.applicant.appName}"
+											filterBy="#{eachprod.applicant.appName}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.applicant_name}" />
+											</f:facet>
+											<h:outputLabel value="#{eachprod.applicant.appName}" />
+										</p:column>
 
-                                    <p:column sortBy="#{eachprod.product.manufName}"
-                                              filterBy="#{eachprod.product.manufName}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.manuf_name}"/>
-                                        </f:facet>
-                                        <h:outputLabel value="#{eachprod.product.manufName}"/>
-                                    </p:column> 
-                                </p:dataTable>
-                            </p:panel>
-                          </p:tab>
-                          
+										<p:column sortBy="#{eachprod.product.manufName}"
+											filterBy="#{eachprod.product.manufName}">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.manuf_name}" />
+											</f:facet>
+											<h:outputLabel value="#{eachprod.product.manufName}" />
+										</p:column>
+									</p:dataTable>
+								</p:panel>
+							</p:tab>
+
 						</p:tabView>
 
 						<p:blockUI block="processtab"
@@ -556,20 +604,21 @@
 		</p:dialog>
 
 		<p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg"
-			resizable="false" id="moderatordlg" modal="true" dynamic="true" width="400px"
+			resizable="false" id="moderatordlg" modal="true" dynamic="true"
+			width="400px"
 			rendered="#{userSession.head||userSession.admin||userSession.staff}">
-			
+
 			<h:form id="moderatorForm" prependId="false">
 				<h:panelGrid columns="2" style="margin-bottom:10px"
-						cellpadding="10px" cellspacing="6px" columnClasses="label value">
-					<p:outputLabel value="#{msgs.moderator_name}"/>
+					cellpadding="10px" cellspacing="6px" columnClasses="label value">
+					<p:outputLabel value="#{msgs.moderator_name}" />
 
 					<p:autoComplete id="mod" value="#{processProdBn.moderator}"
 						completeMethod="#{globalEntityLists.completeModeratorList}"
 						dropdown="true" var="it" itemLabel="#{it.name}"
 						itemValue="#{it.userId}" forceSelection="true"
-						converter="#{userConverter}" scrollHeight="200"
-						required="true" requiredMessage="#{msgs.choose_moderator}">
+						converter="#{userConverter}" scrollHeight="200" required="true"
+						requiredMessage="#{msgs.choose_moderator}">
 					</p:autoComplete>
 				</h:panelGrid>
 
@@ -582,29 +631,33 @@
 		<p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg"
 			resizable="false" id="attachdlg" modal="true" dynamic="true">
 			<h:form prependId="false">
-				<h:panelGrid columns="2" style="margin-bottom:10px" columnClasses="label value">
+				<h:panelGrid columns="2" style="margin-bottom:10px"
+					columnClasses="label value">
 					<p:outputLabel for="attachtitle" value="#{msgs.title}" />
 					<p:inputText id="attachtitle"
-						value="#{fileUploadController.attach.title}" required="true" 
-						 style="width: 400px;"/>
-					
+						value="#{fileUploadController.attach.title}" required="true"
+						style="width: 400px;" />
+
 					<h:outputLabel for="attachcomment" value="#{msgs.global_comment}" />
 					<p:inputTextarea id="attachcomment"
-						value="#{fileUploadController.attach.comment}" rows="5" style="width: 400px;"/>
+						value="#{fileUploadController.attach.comment}" rows="5"
+						style="width: 400px;" />
 				</h:panelGrid>
 
 				<p:fileUpload
 					fileUploadListener="#{fileUploadController.handleFileUpload}"
 					mode="advanced" auto="true"
-					update=":reghome:growl :reghome:messages :attachPnl" multiple="false"
-					sizeLimit="100000000">
+					update=":reghome:growl :reghome:messages :attachPnl"
+					multiple="false" sizeLimit="100000000">
 				</p:fileUpload>
-				
-				<h:panelGrid id="attachPnl" columns="2" style="margin-bottom:10px" columnClasses="label value">
-                    <p:outputLabel value="#{msgs.filename}" rendered="#{not empty fileUploadController.attach.fileName}"/>
-                    <p:outputLabel value="#{fileUploadController.attach.fileName}"/>
-                </h:panelGrid>
-                
+
+				<h:panelGrid id="attachPnl" columns="2" style="margin-bottom:10px"
+					columnClasses="label value">
+					<p:outputLabel value="#{msgs.filename}"
+						rendered="#{not empty fileUploadController.attach.fileName}" />
+					<p:outputLabel value="#{fileUploadController.attach.fileName}" />
+				</h:panelGrid>
+
 				<p:commandButton id="adddoc" value="#{msgs.global_submit}"
 					action="#{fileUploadController.addDocument}"
 					oncomplete="if (!args.validationFailed) PF('attachdlg').hide()"
@@ -777,8 +830,9 @@
 		</p:dialog>
 
 
-		<p:dialog header="#{processProdBn.buildStringByRegDlg(true)}" widgetVar="regDlg"
-			resizable="false" id="regdlg" modal="true" dynamic="true">
+		<p:dialog header="#{processProdBn.buildStringByRegDlg(true)}"
+			widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
+			dynamic="true">
 			<h:form id="regdatedlg">
 				<h:panelGrid columns="3" style="margin-bottom:10px">
 					<p:outputLabel value="#{msgs.registration_date}" id="regstartdate"
@@ -788,8 +842,8 @@
 						id="regDate" showOn="button" required="true"
 						pattern="#{userAccessMBean.workspace.datePattern}">
 						<f:validator validatorId="pastDateValidator" />
-						<p:ajax event="dateSelect" listener="#{processProdBnNA.dateChange}"
-							update=":regdatedlg" />
+						<p:ajax event="dateSelect"
+							listener="#{processProdBnNA.dateChange}" update=":regdatedlg" />
 					</p:calendar>
 					<p:message for="regstartdate" />
 
@@ -805,34 +859,35 @@
 						required="true" />
 					<p:message for="regnumber" showSummary="true" />
 
-					
+
 				</h:panelGrid>
 
-				<p:commandButton id="regBtn" value="#{processProdBn.buildStringByRegDlg(false)}"
+				<p:commandButton id="regBtn"
+					value="#{processProdBn.buildStringByRegDlg(false)}"
 					icon="ui-icon-gear" ajax="false"
 					onclick="PrimeFaces.monitorDownload(start, stop);"
-					action="#{processProdBnMZ.registerProductNA(processProdBn.prodApplications, '/public/productlist')}"
-					 />
+					action="#{processProdBnMZ.registerProductNA(processProdBn.prodApplications, '/public/productlist')}" />
 			</h:form>
 		</p:dialog>
-		
+
 		<p:dialog header="#{msgs.reject_summary}" widgetVar="rejectDlg"
 			resizable="false" id="rejectdlg" modal="true" dynamic="true">
 			<h:form id="rejectdatedlg">
-				<h:panelGrid columns="3" cellspacing="10" cellpadding="10" columnClasses="label value label">
-					<p:outputLabel value="#{msgs.global_summary}" for="sum"/>
+				<h:panelGrid columns="3" cellspacing="10" cellpadding="10"
+					columnClasses="label value label">
+					<p:outputLabel value="#{msgs.global_summary}" for="sum" />
 					<pe:ckEditor id="sum" value="#{processProdBnMZ.rejectSumm}"
 						height="250" width="450"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
-						required="true" requiredMessage="#{msgs.reject_summary}"/>
+						required="true" requiredMessage="#{msgs.reject_summary}" />
 					<p:message for="sum" />
 				</h:panelGrid>
-				
+
 				<p:commandButton id="rejectBtn" value="#{msgs.global_reject}"
-                                 icon="ui-icon-gear" ajax="false"
-                                 onclick="PrimeFaces.monitorDownload(start, stop);"
-                                 actionListener="#{processProdBnNA.rejectProduct(processProdBn.prodApplications)}"
-                                 update=":reghome:growl :reghome:messages :reghome :rejectdatedlg"/>
+					icon="ui-icon-gear" ajax="false"
+					onclick="PrimeFaces.monitorDownload(start, stop);"
+					actionListener="#{processProdBnNA.rejectProduct(processProdBn.prodApplications)}"
+					update=":reghome:growl :reghome:messages :reghome :rejectdatedlg" />
 			</h:form>
 		</p:dialog>
 
@@ -860,23 +915,23 @@
 					<p:outputLabel value="#{msgs.comment}" for="addcomment"
 						styleClass="label" />
 					<pe:ckEditor id="addcomment" value="#{commentMBean.comment}"
-						height="200" width="700" 
+						height="200" width="700"
 						toolbar="[['PasteText','PasteFromWord','-','Bold', '-','NumberedList', 'BulletedList']]"
 						required="true" />
 					<p:message for="addcomment" />
 				</h:panelGrid>
 				<p:commandButton value="#{msgs.global_add}"
 					action="#{commentMBean.addComment()}"
-					oncomplete="PF('addcommentDlg').hide()" ajax="true" 
-					update=":reghome:processtab:commenttable"/>
+					oncomplete="PF('addcommentDlg').hide()" ajax="true"
+					update=":reghome:processtab:commenttable" />
 			</h:form>
 		</p:dialog>
 
-		<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" 
-        			resizable="false" dynamic="true" showHeader="false">
-		    <p:graphicImage value="/resources/images/ajax-loader.gif" />
+		<p:dialog modal="true" widgetVar="statusDialog" draggable="false"
+			closable="false" resizable="false" dynamic="true" showHeader="false">
+			<p:graphicImage value="/resources/images/ajax-loader.gif" />
 		</p:dialog>
-		
+
 		<script type="text/javascript">
 			function start() {
 			PF('statusDialog').show();

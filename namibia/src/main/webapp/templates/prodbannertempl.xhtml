@@ -46,8 +46,10 @@
             </tr>
             <tr>
                 <td>
-                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
-                    <h:outputLabel value="#{prodApp.prodAppNo}" styleClass="title"/>
+                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title" rendered="#{prodApp.applicationNum}"/>
+                    <h:outputLabel value="#{prodApp.prodAppNo}" styleClass="title" rendered="#{prodApp.applicationNum}"/>
+                    <h:outputLabel value="#{msgs.screening_no}: " styleClass="title" rendered="#{prodApp.screeningNum}"/>
+                    <h:outputLabel value="#{prodApp.prodSrcNo}" styleClass="title" rendered="#{prodApp.screeningNum}"/>
                 </td>
                 <td align="right">
                     <h:outputLabel value="#{msgs.applicationResp}: " styleClass="title"/>

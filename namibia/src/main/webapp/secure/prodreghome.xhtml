@@ -15,7 +15,7 @@
 
         <h:form id="reghome" enctype="multipart/form-data">
             <p:growl id="growl" showSummary="true" autoUpdate="true"/>
-            <p:messages showSummary="true" showDetail="true" id="messages"/>
+            <p:messages showSummary="true" showDetail="false" id="messages"/>
             <pe:ajaxErrorHandler/>
             <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="true"
                       flowListener="#{prodRegAppMbeanMZ.onFlowProcess}" 
@@ -417,7 +417,7 @@
 
                 <p:tab id="payment" title="#{msgs.payment_info}">
                     <p:panel header="#{msgs.payment_info}">
-                        <ui:decorate template="payment.xhtml">
+                        <ui:decorate template="../templates/prescrpayment.xhtml">
                             <ui:param name="prodApp" value="#{prodRegAppMbean.prodApplications}"/>
                         </ui:decorate>
                     </p:panel>

@@ -6,7 +6,7 @@
     <p:tab title="#{msgs.prod_verification}" id="verficationtab">
         <ui:include src="verificationpnl.xhtml"/>
     </p:tab>
-    <p:tab title="#{msgs.prod_screening}" id="checklisttab">
+    <p:tab title="#{msgs.prod_screening}" id="checklisttab" rendered="#{!userSession.receiver}">
         <ui:include src="prescreenpnl.xhtml"/>
     </p:tab>
 </ui:composition>

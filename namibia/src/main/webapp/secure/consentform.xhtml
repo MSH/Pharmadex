@@ -45,7 +45,6 @@
 
                         <p>is correct and true, and reflects the total information available. I further certify that I have examined the following statements and I attest to their accuracy.</p>
 
-                        <p>
                             <ol>
                                 <li>The current edition of the WHO guideline on “Good manufacturing practices for pharmaceutical products” Guideline, is applied in full in all premises involved in the manufacture of this product.</li>
                                 <li>The formulation per dosage form correlates with the master formula and with the batch manufacturing record forms.</li>
@@ -62,41 +61,8 @@
                                 <li>All the documentation referred to in this certificate is available for review during a GMP inspection.</li>
                                 <li>Any clinical trials including BE study were conducted according to WHO’s “Guidelines for good clinical practice (GCP) for trials on pharmaceutical products</li>
                             </ol>
-                        </p>
-
-                        <p:panel header="#{msgs.Lbl_ackLetter}" rendered="#{!userSession.company}">
-                            <h:panelGrid cellspacing="10" cellpadding="10" columns="3"
-                                         columnClasses="label value label">
-                                <ui:include src="formbylet.xhtml">
-                                	<ui:param name="prodApp" value="#{prodConsentFormMZ.prodApplications}"/>
-                                </ui:include>
-                                <ui:remove>
-                                	<p:outputLabel value="#{msgs.screen_number}" for="prodappno"/>
-                                	<p:inputText id="prodappno" value="#{prodConsentFormMZ.prodappno}"
-                                             required="true"/>
-                                	<p:message for="prodappno"/>
-                                
-                                	<p:outputLabel value="#{msgs.user_sender}" for="sender"/>
-                                	<p:inputText value="#{prodConsentFormMZ.sender}" id="sender"
-                                             required="true"/>
-                                	<p:message for="sender"/>
-                                
-                                	<p:outputLabel value="#{msgs.user_position}:" for="receiver"/>
-                                	<p:inputText value="#{prodConsentFormMZ.prodApplications.position}" id="receiver"
-                                             required="true"/>
-                                	<p:message for="receiver"/>
-
-                                
-                                	<p:outputLabel value="#{msgs.changepwd_passinuse}:" for="pass"/>
-                                	<p:password id="pass" value="#{prodConsentFormMZ.password}" required="true"/>
-                                	<p:message for="pass"/>
-                                </ui:remove>
-                            </h:panelGrid>
-                        </p:panel>
-
                     </div>
                 </p:panel>
-
             </h:panelGrid>
 
             <h:panelGroup>

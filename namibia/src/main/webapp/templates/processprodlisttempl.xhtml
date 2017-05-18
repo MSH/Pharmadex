@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <h:form prependId="false">
-    	<p:messages id="messages" showDetail="true"/>
+    	<p:messages id="messages" showDetail="false"/>
 
             <p:panel header="#{msgs.registration_product}" rendered="#{userSession.admin || userSession.head}">
                 <h:panelGrid columns="3" cellpadding="5">
@@ -57,7 +57,14 @@
                         </f:facet>
                         <h:outputText value="#{eachprod.product.genName}"/>
                     </p:column>
-
+					<p:column filterBy="#{eachprod.prodSrcNo}"
+                              sortBy="#{eachprod.prodSrcNo}"
+                              filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
+						<f:facet name="header">
+							<h:outputText value="#{msgs.screening_no}"/>
+						</f:facet>
+							<h:outputText value="#{eachprod.prodSrcNo}" />
+					</p:column>
                     <p:column filterBy="#{eachprod.prodAppNo}"
                               sortBy="#{eachprod.prodAppNo}"
                               filterStyle="width: 90%;" style="margin: 5px; padding: 5px;">
