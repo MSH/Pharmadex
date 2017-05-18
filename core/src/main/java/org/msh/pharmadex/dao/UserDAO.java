@@ -129,6 +129,7 @@ public class UserDAO implements Serializable {
 			entityManager.merge(user.getApplicant());
 		}
 		entityManager.persist(user);
+		entityManager.flush();
 		return user;
 	}
 
@@ -193,7 +194,9 @@ public class UserDAO implements Serializable {
 	 * @param selectedUser
 	 */
 	public void reloadUser(User selectedUser) {
-		entityManager.refresh(selectedUser);
-		
+		if(selectedUser.getUserId() != null && selectedUser.getUserId()>0){
+			entityManager.refresh(selectedUser);
+		}
+
 	}
 }
