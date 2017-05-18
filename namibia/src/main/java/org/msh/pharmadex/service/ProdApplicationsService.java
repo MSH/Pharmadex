@@ -986,7 +986,11 @@ public class ProdApplicationsService implements Serializable {
 		}
 		return ans;
 	}
-
+	/**
+	 * Really Screening number should be generated before app number, but historically.. don't mind
+	 * @param prodAppNo
+	 * @return
+	 */
 	public String getSrcNumber(String prodAppNo) {
 		String number = "";
 		if(!"".equals(prodAppNo)){		

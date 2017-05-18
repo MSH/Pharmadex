@@ -73,7 +73,7 @@ public class DashboardDAO implements Serializable {
 		String sql = "select year(pa.registrationDate), quarter(pa.registrationDate),"
 				+ " count(pa.id), count(p.id)"
 				+ " FROM prodapplications pa"
-				+ " left join product p on p.id=pa.PROD_ID and (p.fnm is not null and length(trim(p.fnm))>0 and p.prod_cat like '" + prodCat + "')"
+				+ " left join product p on p.id=pa.PROD_ID and p.fnm='YES' and p.prod_cat like '" + prodCat + "'"
 				+ " where pa.regState like '" + regState + "'"
 				+ " group by year(pa.registrationDate) DESC, quarter(pa.registrationDate) DESC";
 

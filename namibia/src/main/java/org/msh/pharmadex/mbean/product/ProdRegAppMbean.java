@@ -771,7 +771,7 @@ public class ProdRegAppMbean implements Serializable {
 
 			}
 
-			prodApplications.setProdAppNo(prodApplicationsService.generateAppNo(prodApplications));
+			//prodApplications.setProdAppNo(prodApplicationsService.generateAppNo(prodApplications)); no valid more AK 20170512
 			prodApplications.setRegState(RegState.NEW_APPL);
 			prodApplications.setSubmitDate(new Date());
 			TimeLine timeLine = new TimeLine();

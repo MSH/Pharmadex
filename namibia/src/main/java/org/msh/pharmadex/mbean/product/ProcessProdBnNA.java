@@ -312,14 +312,18 @@ public class ProcessProdBnNA implements Serializable {
 		//processProdBn.save();
 	}
 	public boolean isShowFeeRecBtn() {
-		showFeeRecBtn = true;
-		if(processProdBn.getProdApplications().getRegState().equals(RegState.SCREENING)){
-			if(userSession.isModerator())
-				showFeeRecBtn = false;
-		}else if(processProdBn.getProdApplications().getRegState().equals(RegState.APPL_FEE)){
+		try {
 			showFeeRecBtn = true;
+			if(processProdBn.getProdApplications().getRegState().equals(RegState.SCREENING)){
+				if(userSession.isModerator())
+					showFeeRecBtn = false;
+			}else if(processProdBn.getProdApplications().getRegState().equals(RegState.APPL_FEE)){
+				showFeeRecBtn = true;
+			}
+			return showFeeRecBtn;
+		} catch (Exception e) {
+			return false;
 		}
-		return showFeeRecBtn;
 	}
 	public void setShowFeeRecBtn(boolean showFeeRecBtn) {
 		this.showFeeRecBtn = showFeeRecBtn;
@@ -373,19 +377,23 @@ public class ProcessProdBnNA implements Serializable {
 	
 	public boolean visCreateNew(){
 		boolean res = false;
-		if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.REJECTED)){
-			if(userSession.isStaff()) // by Screener
-				return true;
-			
-			Applicant applicant = getProcessProdBn().getProdApplications().getApplicant();
-			// by Responsable of Applicant
-			if(userSession.isResponsible(applicant))
-				return true;
-			
-			if(userSession.isAgent(applicant))
-				return true;
+		try {
+			if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.REJECTED)){
+				if(userSession.isStaff()) // by Screener
+					return true;
+				
+				Applicant applicant = getProcessProdBn().getProdApplications().getApplicant();
+				// by Responsable of Applicant
+				if(userSession.isResponsible(applicant))
+					return true;
+				
+				if(userSession.isAgent(applicant))
+					return true;
+			}
+			return res;
+		} catch (Exception e) {
+			return false;
 		}
-		return res;
 	}
 	
 	public String createNewApplicationByRejProduct(){
@@ -411,11 +419,15 @@ public class ProcessProdBnNA implements Serializable {
 	}
 	
 	public boolean visibleSaveBtn(){
-		if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.REGISTERED))
+		try {
+			if(getProcessProdBn().getProdApplications().getRegState().equals(RegState.REGISTERED))
+				return false;
+			if(userSession.isCompany() || userSession.isStaff() || userSession.isAdmin())
+				return true;
 			return false;
-		if(userSession.isCompany() || userSession.isStaff() || userSession.isAdmin())
-			return true;
-		return false;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public boolean visibleAddAttachBtn(){

@@ -2,6 +2,7 @@ package org.msh.pharmadex.mbean.product;
 
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.domain.enums.YesNoNA;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,7 +23,7 @@ public class ProdTable implements Serializable {
     private String manufName;
     private String prodDesc;
     private Long prodAppID;
-    private String fnm;
+    private YesNoNA fnm;
     private RegState regState;
 
     public Long getId() {
@@ -113,11 +114,11 @@ public class ProdTable implements Serializable {
         this.prodAppID = prodAppID;
     }
 
-	public String getFnm() {
+	public YesNoNA getFnm() {
 		return fnm;
 	}
 
-	public void setFnm(String fnm) {
+	public void setFnm(YesNoNA fnm) {
 		this.fnm = fnm;
 	}
 

@@ -37,6 +37,7 @@ public class FilterMBean implements Serializable, HttpSessionBindingListener{
 	@PostConstruct
 	private void init() {
 		products = loadDefaultProducts();
+		filteredProducts = loadDefaultProducts();
 		minYear = productService.getMinRegistrationYearInDB();
 				
 	}
@@ -53,6 +54,7 @@ public class FilterMBean implements Serializable, HttpSessionBindingListener{
 
 	public void filterClick(){
 		setProducts(loadProducts());
+		setFilteredProducts(loadProducts());
 	}
 	
 	public void clearClick(){

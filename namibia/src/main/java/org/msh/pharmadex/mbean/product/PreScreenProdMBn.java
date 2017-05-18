@@ -2,11 +2,13 @@ package org.msh.pharmadex.mbean.product;
 
 import org.apache.commons.io.IOUtils;
 import org.msh.pharmadex.auth.UserSession;
+import org.msh.pharmadex.domain.Mail;
 import org.msh.pharmadex.domain.ProdAppChecklist;
 import org.msh.pharmadex.domain.ProdApplications;
 import org.msh.pharmadex.domain.TimeLine;
 import org.msh.pharmadex.domain.User;
 import org.msh.pharmadex.domain.enums.RegState;
+import org.msh.pharmadex.service.MailService;
 import org.msh.pharmadex.service.ProdAppChecklistService;
 import org.msh.pharmadex.service.ProdApplicationsService;
 import org.msh.pharmadex.service.ProdApplicationsServiceMZ;
@@ -57,6 +59,8 @@ public class PreScreenProdMBn implements Serializable {
 	ProdApplicationsService prodApplicationsService;
 	@ManagedProperty(value = "#{prodApplicationsServiceMZ}")
 	private ProdApplicationsServiceMZ prodApplicationsServiceMZ;
+	@ManagedProperty(value = "#{mailService}")
+	MailService mailService;
 
 	private TimeLine timeLine = new TimeLine();
 	private User moderator;
@@ -103,6 +107,7 @@ public class PreScreenProdMBn implements Serializable {
 						processProdBn.setProdApplications(timeLine.getProdApplications());
 						processProdBn.setProduct(timeLine.getProdApplications().getProduct());
 						createDeficiencyLetter(getProdApplications());
+						sendMailToParties();
 						facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global.success")));
 					} else {
 						facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("global_fail")));
@@ -117,7 +122,49 @@ public class PreScreenProdMBn implements Serializable {
 		}
 		return "/internal/processprodlist";
 	}
-	
+	/**
+	 * Send notifications to Moderator and Initiator
+	 */
+	private void sendMailToParties() {
+		facesContext = FacesContext.getCurrentInstance();
+		resourceBundle = facesContext.getApplication().getResourceBundle(facesContext, "msgs");
+		User moderator = getProdApplications().getModerator();
+		User responsible = getProdApplications().getApplicantUser();
+		if(moderator != null && moderator.getEmail()!=null){
+			Mail modMail = new Mail();
+			initMail(modMail);
+			modMail.setMailto(moderator.getEmail());
+			modMail.setSubject(resourceBundle.getString("relatedtoscrnum") +" " + getProdApplications().getProdSrcNo());
+			modMail.setMessage(resourceBundle.getString("youaremoderator"));
+			mailService.sendMail(modMail, true);
+			facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("moderatormailsent")));
+		}else{
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("moderatoremailerr"),""));
+		}
+		if(responsible != null && responsible.getEmail()!=null){
+			Mail respMail = new Mail();
+			initMail(respMail);
+			respMail.setMailto(responsible.getEmail());
+			respMail.setSubject(resourceBundle.getString("relatedtoscrnum") +" " + getProdApplications().getProdSrcNo());
+			String mess = String.format(resourceBundle.getString("applfeenotification"), responsible.getName(), getProdApplications().getProdSrcNo());
+			respMail.setMessage(mess);
+			mailService.sendMail(respMail, true);
+			facesContext.addMessage(null, new FacesMessage(resourceBundle.getString("responsiblemailsent")));
+		}else{
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, resourceBundle.getString("responsiblemailerr"),""));
+		}
+		
+	}
+	/**
+	 * Init very common mail fields
+	 * @param mail
+	 */
+	public void initMail(Mail mail) {
+		mail.setDate(new Date());
+		mail.setUser(getUserSession().getLoggedInUserObj());
+		mail.setProdApplications(getProdApplications());
+	}
+
 	/**
 	 * Save checklist, check checklist, show assign moderator dlg in case of success
 	 */
@@ -391,6 +438,12 @@ public class PreScreenProdMBn implements Serializable {
 		return prodApplications;
 	}
 
+	public MailService getMailService() {
+		return mailService;
+	}
+	public void setMailService(MailService mailService) {
+		this.mailService = mailService;
+	}
 	public void setProdApplications(ProdApplications prodApplications) {
 		this.prodApplications = prodApplications;
 	}

@@ -17,6 +17,7 @@ import org.msh.pharmadex.domain.enums.CTDModule;
 import org.msh.pharmadex.domain.enums.CompanyType;
 import org.msh.pharmadex.domain.enums.ForeignAppStatusType;
 import org.msh.pharmadex.domain.enums.LetterType;
+import org.msh.pharmadex.domain.enums.PayType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.ProdCategory;
 import org.msh.pharmadex.domain.enums.ProdDrugType;
@@ -154,4 +155,8 @@ public class GlobalLists implements Serializable {
 		}
 		return null;
 	}
+    
+    public List<PayType> getPayTypes(){
+    	 return Arrays.asList(PayType.values());
+    }
 }

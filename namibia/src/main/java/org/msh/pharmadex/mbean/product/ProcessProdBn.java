@@ -527,7 +527,14 @@ public class ProcessProdBn implements Serializable {
 			String retValue = timelineService.validateStatusChange(timeLine);
 
 			if (retValue.equalsIgnoreCase("success")) {
+				//assign numbers
 				prodApplications.setRegState(timeLine.getRegState());
+				if(timeLine.getRegState() == RegState.VERIFY){
+					prodApplications.setProdSrcNo(getProdApplicationsService().getSrcNumber(getProdApplicationsService().generateAppNo(prodApplications)));
+				}
+				if(timeLine.getRegState() == RegState.APPL_FEE){
+					prodApplications.setProdAppNo(getProdApplicationsService().generateAppNo(prodApplications));
+				}
 				RetObject retObject = prodApplicationsService.updateProdApp(prodApplications, loggedInUser.getUserId());
 				if (retObject.getMsg().equals("persist")) {
 					prodApplications = (ProdApplications) retObject.getObj();

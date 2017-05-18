@@ -228,6 +228,12 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.FOLLOW_UP);
 			params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
 		}
+		
+		if(userSession.isReceiver()){
+			regState.add(RegState.NEW_APPL);
+			regState.add(RegState.FEE);
+			regState.add(RegState.VERIFY);
+		}
 
 		params.put("regState", regState);
 		prodApplicationses = prodApplicationsDAO.getProdAppByParams(params);
@@ -330,7 +336,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		//excipient
 		utilsByReports.putNotNull(UtilsByReports.KEY_EXCIPIENT, "", false);
 
-		String fnm = (product != null) ? product.getFnm():"";
+		String fnm = (product != null) ? product.getFnm().toString():"";
 		boolean flag = (fnm != null && fnm.length() > 0) ? true: false;
 		utilsByReports.putNotNull(UtilsByReports.KEY_FNM, flag);
 
@@ -1386,7 +1392,7 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			
 			ArrayList<Dataset1> dataList = new ArrayList<Dataset1>();		
 			Dataset1 ds = new Dataset1();
-			ds.setScreeningNumber(getSrcNumber(prodApp.getProdAppNo()));
+			ds.setScreeningNumber(prodApp.getProdSrcNo());
 			dataList.add(ds);
 			
 			JasperReport  jasperMasterReport = (JasperReport)JRLoader.loadObject(new File(resource.getFile()));			
@@ -1617,7 +1623,11 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			}
 		}
 	}
-
+	/**
+	 * Get applications to process (Process product applications)
+	 * @param userSession
+	 * @return
+	 */
 	public List<ProdApplications> getProcessProdAppList(UserSession userSession) {
 		List<ProdApplications> prodApplicationses = null;
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -1664,7 +1674,6 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.APPL_FEE);
 		} 
 		if (userSession.isStaff()) {
-			regState.add(RegState.NEW_APPL);
 			regState.add(RegState.SCREENING);
 			regState.add(RegState.FEE);
 			regState.add(RegState.VERIFY);
@@ -1700,6 +1709,10 @@ public class ProdApplicationsServiceMZ implements Serializable {
 			regState.add(RegState.REVIEW_BOARD);
 			regState.add(RegState.FOLLOW_UP);
 			params.put("prodAppType", ProdAppType.NEW_CHEMICAL_ENTITY);
+		}
+		
+		if(userSession.isReceiver()){
+			regState.add(RegState.NEW_APPL);
 		}
 
 		params.put("regState", regState);

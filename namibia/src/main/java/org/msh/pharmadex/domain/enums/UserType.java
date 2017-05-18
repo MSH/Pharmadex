@@ -17,6 +17,7 @@ public enum UserType {
     public List<UserRole> getRolesList(){
     	List<UserRole> roles = new ArrayList<UserRole>();
     	if(this.equals(STAFF)){
+    		roles.add(UserRole.ROLE_RECEIVER);
     		roles.add(UserRole.ROLE_STAFF);
     		roles.add(UserRole.ROLE_MODERATOR);
     		roles.add(UserRole.ROLE_REVIEWER);

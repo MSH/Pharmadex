@@ -66,8 +66,6 @@ public class ProdRegInit implements Serializable {
         prodAppTypes = new ArrayList<ProdAppType>();
         prodAppTypes.add(ProdAppType.GENERIC);
         prodAppTypes.add(ProdAppType.NEW_CHEMICAL_ENTITY);
-        prodAppTypes.add(ProdAppType.RENEW);
-        prodAppTypes.add(ProdAppType.VARIATION);
     }
 
     public void calculate() {

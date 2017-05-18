@@ -84,6 +84,13 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 		else
 			return "";
 	}
+	
+	public User getLoggedInUserObj(){
+		if (userAccess != null)
+			return userAccess.getUser();
+		else
+			return null;
+	}
 
 	/* public void setLoggedInUser(String loggedInUser) {
         this.loggedInUser = loggedInUser;
@@ -270,6 +277,10 @@ public class UserSession implements Serializable, HttpSessionBindingListener {
 
 	public boolean isHead() {
 		return getRoles().contains("ROLE_HEAD");
+	}
+	
+	public boolean isReceiver(){
+		return getRoles().contains("ROLE_RECEIVER");
 	}
 
 

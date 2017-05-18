@@ -65,7 +65,7 @@ public class UserMBean implements Serializable {
 	private User selectedUser;
 	private UserType userType;
 	private List<User> allUsers;
-	private DualListModel<Role> roles;
+	private DualListModel<Role> roles = new DualListModel<Role>();
 	private List<Role> allRoles;
 	private List<Role> listRoles;
 	private List<Role> selectedRoles;
@@ -82,14 +82,14 @@ public class UserMBean implements Serializable {
 		throw new Exception();
 	}
 
-	@PostConstruct
+/*	@PostConstruct
 	private void init() {
 		selectedUser = new User();
 		selectedUser.setAddress(new Address());
 		selectedUser.setApplicant(new Applicant());
 		setUserType(UserType.STAFF);
 		userApp = new Applicant();   
-	}
+	}*/
 
 	public void onRowSelect() {
 		setEdit(true);
@@ -420,9 +420,6 @@ public class UserMBean implements Serializable {
 	}
 
 	public DualListModel<Role> getRoles() {
-		if (roles != null) {
-
-		}
 		return roles;
 	}
 

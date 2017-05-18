@@ -1,5 +1,6 @@
 package org.msh.pharmadex.domain;
 
+import org.msh.pharmadex.domain.enums.PayType;
 import org.msh.pharmadex.domain.enums.ProdAppType;
 import org.msh.pharmadex.domain.enums.RegState;
 import org.msh.pharmadex.domain.enums.ReviewStatus;
@@ -50,10 +51,16 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
     @Column(length = 500)
     private String bankName;
+    
+    @Enumerated(EnumType.STRING)
+    private PayType payType;
 
     @Column(length = 500)
     private String prescreenBankName;
-
+    
+    @Enumerated(EnumType.STRING)
+    private PayType prescreenPayType;
+    
     @Column(length = 255)
     private String feeAmt;
 
@@ -271,7 +278,15 @@ public class ProdApplications extends CreationDetail implements Serializable {
         return bankName;
     }
 
-    public void setBankName(String bankName) {
+    public PayType getPayType() {
+		return payType;
+	}
+
+	public void setPayType(PayType payType) {
+		this.payType = payType;
+	}
+
+	public void setBankName(String bankName) {
         this.bankName = bankName;
     }
 
@@ -282,8 +297,17 @@ public class ProdApplications extends CreationDetail implements Serializable {
     public void setPrescreenBankName(String prescreenBankName) {
         this.prescreenBankName = prescreenBankName;
     }
+    
+    public PayType getPrescreenPayType() {
+		return prescreenPayType;
+	}
 
-    public String getFeeAmt() {
+	public void setPrescreenPayType(PayType prescreenPayType) {
+		this.prescreenPayType = prescreenPayType;
+	}
+
+
+	public String getFeeAmt() {
         return feeAmt;
     }
 
@@ -688,6 +712,52 @@ public class ProdApplications extends CreationDetail implements Serializable {
 
 	public void setProdSrcNo(String prodSrcNo) {
 		this.prodSrcNo = prodSrcNo;
+	}
+	/**
+	 * The application number is screening number
+	 * @return
+	 */
+	@Transient
+	public boolean isScreeningNum(){
+		return (hasScreeningNum()) && (!hasApplNum()) && (!hasRegNum());
+	}
+	
+	/**
+	 * The application number is application number
+	 * @return
+	 */
+	@Transient
+	public boolean isApplicationNum(){
+		return hasApplNum() && !hasRegNum();
+	}
+	
+	/**
+	 * This application has registration number
+	 * @return
+	 */
+	@Transient
+	private boolean hasRegNum() {
+		return getProdRegNo() != null && getProdRegNo().length()>4;
+	}
+
+
+	/**
+	 * This application has application number
+	 * @return
+	 */
+	@Transient
+	private boolean hasApplNum() {
+		return getProdAppNo() != null && getProdAppNo().length()>5;
+	}
+
+
+	/**
+	 * This application has screening number
+	 * @return
+	 */
+	@Transient
+	private boolean hasScreeningNum() {
+		return getProdSrcNo() != null && getProdSrcNo().length()>5;
 	}
 }
 
