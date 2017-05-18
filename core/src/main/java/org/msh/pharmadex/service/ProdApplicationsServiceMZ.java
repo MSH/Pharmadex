@@ -1,6 +1,7 @@
 package org.msh.pharmadex.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -68,11 +69,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 /**
@@ -921,6 +924,39 @@ public class ProdApplicationsServiceMZ implements Serializable {
 		}
 		return null;
 	}
+	
+	public StreamedContent createReviewDetailsFileDocx(ProdApplications prodApplications) {
+		this.prodApp = prodApplications;
+		this.product = prodApp.getProduct();
+		context = FacesContext.getCurrentInstance();
+		bundle = context.getApplication().getResourceBundle(context, "msgs");
+
+		File detailPDF = null;
+		String fileName = product.getProdName().split(" ")[0] + "_Review";
+		try{
+			detailPDF = File.createTempFile(fileName, ".docx");
+			JasperPrint jasperPrint = initReviewDetailsFile();
+			exportReportToDocx(jasperPrint, new FileOutputStream(detailPDF));
+
+			InputStream ist = new ByteArrayInputStream((IOUtils.toByteArray(new FileInputStream(detailPDF))));
+			StreamedContent download = new DefaultStreamedContent(ist, "docx", fileName + ".docx");
+			return download;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JRException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	protected void exportReportToDocx(JasperPrint jasperPrint, FileOutputStream baos) throws JRException{
+		   JRDocxExporter exporter = new JRDocxExporter();    
+		   exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+		   exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
+		   exporter.exportReport(); 
+		}
 
 	public JasperPrint initReviewDetailsFile() throws JRException, SQLException {
 		JasperPrint jasperPrint;
