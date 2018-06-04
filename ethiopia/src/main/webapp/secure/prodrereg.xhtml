@@ -1,0 +1,504 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:o="http://omnifaces.org/ui"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_reg}</h1>
+        </div>
+
+        <h:form id="rereg" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true" autoUpdate="true"/>
+            <p:messages showSummary="true" showDetail="true" id="messages"/>
+            <pe:ajaxErrorHandler/>
+
+            <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="true"
+                      activeIndex="#{reRegBean.selectedTab}" immediatly="true"
+                      flowListener="#{reRegBean.onFlowProcess}" >
+                <pe:ajaxErrorHandler/>
+
+                <p:tab id="applicationdata" title="#{msgs.applicant}">
+                    <!-- Primary application data (applicant, apllicant user, manufacturer) -->
+                    <p:panel header="#{msgs.applicant}">
+                        <h:panelGroup rendered="#{not empty reRegBean.prodApp.applicant}">
+                            <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                                <ui:param name="applicantdata" value="#{reRegBean.prodApp.applicant}"/>
+                                <ui:param name="input" value="false"/>
+                            </ui:decorate>
+                        </h:panelGroup>
+                    </p:panel>
+                    <p:panel header="#{msgs.person_responsible}">
+                        <h:panelGroup id="userdetail">
+                            <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                                <ui:param name="userdata" value="#{reRegBean.curUser}"/>
+                                <ui:param name="input" value="false"/>
+                            </ui:decorate>
+                        </h:panelGroup>
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="proddetails" title="#{msgs.product_details}">
+                    <p:panel header="#{msgs.product_details}">
+                        <ui:include src="/secure/legacyprod/proddetailslegacy.xhtml"/>
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="appdetails" title="#{msgs.application_detail}">
+                    <p:panel header="#{msgs.application_detail}">
+                        <ui:include src="/secure/legacyprod/prodcompositionslegacy.xhtml"/>
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="applicationStatus" title="#{msgs.appl_status_country}">
+                    <p:panel header="#{msgs.appl_status_country}" id="statusPnl">
+                        <p:messages/>
+                        <h:panelGrid columns="1" cellspacing="10" id="foreignstatusgrid" width="100%">
+
+                            <p:outputLabel styleClass="hint" value="#{msgs.foreign_cntry_hint}"/>
+                            <p:outputLabel value="#{msgs.foreign_country_status_txt}" styleClass="label"/>
+
+
+                            <p:dataTable id="foreignStatusTable" var="appstatus"
+                                         value="#{reRegBean.foreignAppStatuses}"
+                                         style="width:100%;">
+                                <f:facet name="header">
+                                    <p:commandLink id="addStatusBtn" value="#{msgs.global_add}"
+                                                   oncomplete="PF('addForeignStatusDlg').show()"
+                                                   action="#{reRegBean.initAddForeignStatus}"
+                                                   update=":addForeignStatus"
+                                    >
+                                    </p:commandLink>
+                                </f:facet>
+                                <p:column headerText="#{msgs.applicant_country}">
+                                    <h:outputText value="#{appstatus.country.countryName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.foreign_country_status_type}">
+                                    <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.prod_name}">
+                                    <h:outputText value="#{appstatus.prodName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_holder}">
+                                    <h:outputText value="#{appstatus.mktAuthHolder}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_cert}">
+                                    <h:outputText value="#{appstatus.mktAuthCert}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_date}">
+                                    <h:outputText value="#{appstatus.mktAuthDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{reRegBean.removeAppStatus(appstatus)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":addForeignStatus :rereg:foreignStatusTable :rereg:growl"
+                                                     immediate="true"
+                                    >
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+
+                        <p:blockUI block="statusPnl" trigger=":rereg:foreignStatusTable:addStatusBtn">
+                            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+
+
+                    </p:panel>
+
+                </p:tab>
+
+                <p:tab id="manufdetail" title="#{msgs.manufacturer_detail}">
+                    <p:panel header="#{msgs.manufacturer_detail}" id="manufPnl">
+                        <p:messages/>
+                        <h:panelGrid columns="1" cellspacing="10" id="companygrid" width="100%">
+
+                            <p:outputLabel value="#{msgs.manuf_detail_txt}" styleClass="label"/>
+
+
+                            <p:dataTable id="companyTable" var="company" value="#{reRegBean.companies}"
+                                         style="width:100%;">
+                                <f:facet name="header">
+                                    <p:commandLink id="addManufBtn" value="#{msgs.global_add}"
+                                                   oncomplete="PF('addCompanyDlg').show()"
+                                                   action="#{reRegBean.initAddCompany}" update=":addcompany"
+                                                   process="@form :addcompany">
+                                    </p:commandLink>
+                                </f:facet>
+                                <p:column headerText="#{msgs.applicant_name}">
+                                    <h:outputText value="#{company.company.companyName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_country}">
+                                    <h:outputText value="#{company.company.address.country.countryName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_type}">
+                                    <h:outputText value="#{msgs[company.companyType.key]}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_phone}">
+                                    <h:outputText value="#{company.company.phoneNo}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{reRegBean.removeCompany(company)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":addcompany :rereg:companyTable :rereg:growl"
+                                                     immediate="true"
+                                    >
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:panelGrid>
+
+                        <p:blockUI block="manufPnl" trigger=":rereg:companyTable:addManufBtn">
+                            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+                    </p:panel>
+                </p:tab>
+
+                <!-- NAVIGATION burrons -->
+                <div align="right">
+                    <p:commandButton value="#{msgs.global_save}" action="#{reRegBean.saveApp}"
+                                         update=":rereg :rereg:growl" ajax="true" process="@form" id="proddetailSaveBtn" rendered="false"/>
+                    <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                         action="#{reRegBean.cancel}"
+                                         ajax="false"/>
+                    <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"
+                                         id="proddetailBackBtn"/>
+                    <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="proddetailNxtBtn"/>
+                </div>
+            </p:wizard>
+
+            <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException"
+                                    update="exceptionDialog"
+                                    onexception="PF('exceptionDialog').show();"/>
+            <p:ajaxExceptionHandler type="java.lang.NullPointerException"
+                                    update="exceptionDialog"
+                                    onexception="PF('exceptionDialog').show();"/>
+            <p:ajaxExceptionHandler type="java.lang.Exception"
+                                    update="exceptionDialog"
+                                    onexception="PF('exceptionDialog').show();"/>
+            <p:dialog id="exceptionDialog" header="Exception occured!" widgetVar="exceptionDialog"
+                      height="500px" dynamic="true">
+
+
+                <p:button onclick="document.location.href = document.location.href;"
+                          value="Reload!"
+                        />
+            </p:dialog>
+        </h:form>
+
+        <p:dialog header="#{msgs.add_active_substance}" widgetVar="addInnDlg" id="addInndlg" resizable="true"
+                  modal="true" dynamic="true">
+            <h:form id="addInnFrm">
+                <pe:ajaxErrorHandler/>
+                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+                    <p:outputLabel value="#{msgs.product_innname}" for="innname"/>
+                    <p:autoComplete id="innname" value="#{reRegBean.prodInn.inn}"
+                                    completeMethod="#{globalEntityLists.completeInnCodes}"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{innConverter}"
+                                    forceSelection="false" required="true"
+                                    requiredMessage="#{msgs.product_innname_valid}">
+                    </p:autoComplete>
+                    <p:message for="innname" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.dos_strength}" for="innqty"/>
+                    <p:inputText id="innqty" value="#{reRegBean.prodInn.dosStrength}" required="true"/>
+                    <p:message for="innqty" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.dos_unit}" for="innunit"/>
+                    <p:selectOneMenu id="innunit" value="#{reRegBean.prodInn.dosUnit}"
+                                     converter="omnifaces.SelectItemsConverter"
+                                     requiredMessage="#{msgs.valid_dos_form}" required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
+                                       itemValue="#{dosUom}"/>
+                        <f:ajax render="select_item"/>
+                    </p:selectOneMenu>
+                    <p:message for="innunit" showSummary="true"/>
+
+                    <h:outputLabel value="#{msgs.inn_ref}" for="innref"/>
+                    <p:inputText id="innref" value="#{reRegBean.prodInn.refStd}"/>
+
+                    <h:outputLabel/>
+
+                    <h:panelGroup>
+                        <p:commandButton action="#{reRegBean.addProdInn}" value="#{msgs.global_add}"
+                                         oncomplete="if(!args.validationFailed) PF('addInnDlg').hide()"
+                        />
+                        <p:commandButton action="#{reRegBean.cancelAddInn}" immediate="true"
+                                         value="#{msgs.global_cancel}"
+                                         ajax="true"
+                                         oncomplete="PF('addInnDlg').hide()" update=":addInnFrm"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.product_active}" widgetVar="addExpntDlg" id="addExpntdlg" resizable="true" modal="true"
+                  dynamic="true">
+            <h:form id="addExpFrm">
+                <pe:ajaxErrorHandler/>
+                <h:panelGrid columns="3" cellspacing="5" columnClasses="label value label" styleClass="grid">
+                    <p:outputLabel value="#{msgs.product_active}" for="expname"/>
+                    <p:autoComplete id="expname" value="#{reRegBean.prodExcipient.excipient}"
+                                    completeMethod="#{globalEntityLists.completeExcipients}"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it}" converter="#{excipientConverter}"
+                                    forceSelection="false" required="true"
+                                    requiredMessage="#{msgs.product_innname_valid}">
+                    </p:autoComplete>
+                    <p:message for="expname" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.dos_strength}" for="expqty"/>
+                    <p:inputText id="expqty" value="#{reRegBean.prodExcipient.dosStrength}" required="true"/>
+                    <p:message for="expqty" showSummary="true"/>
+
+                    <p:outputLabel value="#{msgs.dos_unit}" for="expunit"/>
+                    <p:selectOneMenu id="expunit" value="#{reRegBean.prodExcipient.dosUnit.id}"
+                                     requiredMessage="#{msgs.valid_dos_form}" required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.dosUoms}" var="dosUom" itemLabel="#{dosUom.uom}"
+                                       itemValue="#{dosUom.id}"/>
+                    </p:selectOneMenu>
+                    <p:message for="expunit" showSummary="true"/>
+
+                    <h:outputLabel value="#{msgs.inn_funct}" for="expfunct"/>
+                    <p:inputText id="expfunct" value="#{reRegBean.prodExcipient.function}"/>
+                    <p:message for="expfunct" showSummary="true"/>
+
+
+                    <h:outputLabel value="#{msgs.inn_ref}" for="expref"/>
+                    <p:inputText id="expref" value="#{reRegBean.prodExcipient.refStd}"/>
+
+                    <h:outputLabel/>
+
+                    <h:panelGroup>
+                        <p:commandButton action="#{reRegBean.addProdExcipient}" value="#{msgs.global_add}"
+                                         oncomplete="!if(args.validationFailed) addExpntDlg.hide()"
+                                         update=":rereg:expnttable :addExpFrm :rereg:growl"/>
+                        <p:commandButton action="#{reRegBean.cancelAddExcipient}" immediate="true"
+                                         value="#{msgs.global_cancel}"
+                                         ajax="true"
+                                         oncomplete="PF('addExpntDlg').hide()" update=":addExpFrm"/>
+                    </h:panelGroup>
+                    <h:outputLabel/>
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="ATC Lookup" widgetVar="addAtcDlg" resizable="true" modal="true" dynamic="true">
+            <h:form id="atcdetail">
+                <h:panelGrid columns="2" cellspacing="5" columnClasses="label, value" styleClass="grid"
+                             id="atclookupgrid">
+                    <h:outputLabel value="#{msgs.atc_name}" for="atcname"/>
+                    <p:autoComplete id="atcname" value="#{reRegBean.atc}"
+                                    completeMethod="#{globalEntityLists.completeAtcNames}"
+                                    var="it" itemLabel="#{it.atcName}" itemValue="#{it}" converter="#{atcConverter}"
+                                    forceSelection="true">
+                        <p:ajax event="itemSelect" listener="#{reRegBean.updateAtc}" update=":atcdetail"/>
+                    </p:autoComplete>
+
+                    <h:outputLabel value="#{msgs.atc_code}" for="atccode"/>
+                    <p:outputLabel value="#{reRegBean.atc.atcCode}" id="atccode"/>
+                </h:panelGrid>
+
+
+                <p:tree value="#{reRegBean.selAtcTree}" var="node" id="treeMultiple" selectionMode="single">
+                    <p:treeNode>
+                        <h:outputText value="#{node}"/>
+                    </p:treeNode>
+                </p:tree>
+
+
+                <h:outputLabel/>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{reRegBean.addAtc}" value="#{msgs.global_add}"
+                                     update=":rereg:atctable :atcdetail :atcdetail:treeMultiple"
+                                     oncomplete="PF('addAtcDlg').hide()"/>
+                    <p:commandButton action="#{reRegBean.cancelAddInn}" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addAtcDlg').hide()"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.company_info}" widgetVar="addCompanyDlg" id="addCompanydlg" resizable="true"
+                  modal="true" dynamic="true">
+            <h:form id="addcompany">
+                <p:messages showSummary="true"/>
+                <ui:decorate template="/secure/legacyprod/prodcompanylegacy.xhtml">
+                    <ui:param name="companydata" value="#{reRegBean.selectedCompany}"/>
+                    <ui:param name="input" value="#{true}"/>
+                </ui:decorate>
+
+                <h:outputLabel/>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{reRegBean.addCompany}" value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('addCompanyDlg').hide()" process="@form"
+                                     update="@form :rereg:companygrid :rereg:companyTable :rereg:growl"/>
+                    <p:commandButton action="#{reRegBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addCompanyDlg').hide()" ajax="false" process="@form"
+                                     update=":addcompany :rereg:companyTable"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.foreign_country_status_txt}" widgetVar="addForeignStatusDlg" id="addForeignStatusdlg"
+                  dynamic="true"
+                  resizable="true" modal="true">
+            <h:form id="addForeignStatus">
+                <p:messages showSummary="true"/>
+
+                <h:panelGrid id="foreignstatustable" columns="2" columnClasses="label value">
+                    <p:outputLabel value="#{msgs.foreign_country_status_type}" for="forStatuscb"
+                                   styleClass="fy-required-field"/>
+                    <p:selectOneMenu id="forStatuscb"
+                                     value="#{reRegBean.selForeignAppStatus.foreignAppStatusType}"
+                                     required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalLists.foreignAppStatusType}" var="prodcat"
+                                       itemLabel="#{msgs[prodcat.key]}"/>
+                    </p:selectOneMenu>
+
+
+                    <p:outputLabel value="#{msgs.applicant_country}" for="statusCntry"/>
+                    <p:selectOneMenu value="#{reRegBean.selForeignAppStatus.country.id}" required="true"
+                                     id="statusCntry">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.countries}" var="cntry"
+                                       itemLabel="#{cntry.countryName}"
+                                       itemValue="#{cntry.id}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="otherprodname" value="#{msgs.prod_name}"/>
+                    <p:inputText value="#{reRegBean.selForeignAppStatus.prodName}" required="true"
+                                 id="otherprodname"/>
+
+                    <p:outputLabel for="mktauthholder" value="#{msgs.mkt_auth_holder}"/>
+                    <p:inputText value="#{reRegBean.selForeignAppStatus.mktAuthHolder}" required="true"
+                                 id="mktauthholder"/>
+
+                    <p:outputLabel for="mktauthcert" value="#{msgs.mkt_auth_cert}"/>
+                    <p:inputText value="#{reRegBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
+
+                    <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
+                    <p:calendar value="#{reRegBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate"
+                    			navigator="true" showOn="button" rendered="true"
+                                pattern="#{userAccessMBean.workspace.datePattern}">
+                       <f:validator validatorId="pastDateValidator"/>
+                    </p:calendar>
+                </h:panelGrid>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{reRegBean.addForStatus()}" value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('addForeignStatusDlg').hide()"
+                                     ajax="true"
+                                     update=":rereg:foreignstatusgrid :addForeignStatus" process="@form"/>
+                    <p:commandButton action="#{reRegBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addForeignStatusDlg').hide()" ajax="true" process="@form"
+                                     update=":rereg:foreignstatusgrid :addForeignStatus"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.product_pricing_comparison}" widgetVar="addPricingDlg" id="addPricingdlg"
+                  resizable="true" dynamic="true"
+                  modal="true">
+            <h:form id="addpricing">
+                <h:panelGrid columns="3" columnClasses="label value" cellpadding="10" cellspacing="10">
+                    <h:outputLabel value="#{msgs.drug_price_name}" for="dpname"/>
+                    <p:inputText id="dpname" value="#{drugPriceMBean.selectedDrugPrice.drugName}"
+                                 title="#{msgs.product_pricing_perdose}"
+                                 requiredMessage="#{msgs.valid_value_req}">
+                    </p:inputText>
+                    <p:message for="dpname" showSummary="true" showDetail="false"/>
+
+                    <h:outputLabel value="#{msgs.drug_price_msrp}" for="dpmsrp"/>
+                    <p:inputText id="dpmsrp" value="#{drugPriceMBean.selectedDrugPrice.msrp}"
+                                 title="#{msgs.product_pricing_max}"
+                                 required="true" requiredMessage="#{msgs.valid_value_req}">
+                    </p:inputText>
+                    <p:message for="dpmsrp" showSummary="true" showDetail="false"/>
+                </h:panelGrid>
+
+
+                <h:panelGroup>
+                    <p:commandButton action="#{drugPriceMBean.addDrugPrice}" value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('addPricingDlg').hide()"
+                                     update=":rereg:pricetable :rereg:growl :addpricing"/>
+                    <p:commandButton action="#{drugPriceMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addPricingDlg').hide()" ajax="false"
+                                     update=":addpricing :rereg:pricingTable"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachDlg" resizable="false"
+                  dynamic="true">
+            <h:form id="attachfrm">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.title}"/>
+                    <p:inputText value="#{ReRegBean.attachment.title}"/>
+                    <p:outputLabel value="#{msgs.global_comment}"/>
+                    <p:inputTextarea value="#{ReRegBean.attachment.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{ReRegBean.handleFileUpload}"
+                              mode="advanced" process=":attachfrm" auto="true"
+                              update=":rereg:growl :rereg:messages"
+                              multiple="false"
+                              sizeLimit="10000000000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{ReRegBean.addDocument}" process=":attachfrm"
+                                 oncomplete="PF('attachDlg').hide()"
+                                 update=":rereg:growl :rereg:messages :rereg :attachfrm"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
+                  resizable="false">
+            <p:graphicImage value="demo/images/ajaxloadingbar.gif"/>
+        </p:dialog>
+
+    </ui:define>
+    <script type="text/javascript">
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+
+        function expandAccPnl(){
+            $('#accordian').find('a[tabIndex-1]:first').click();
+        }
+    </script>
+</ui:composition>

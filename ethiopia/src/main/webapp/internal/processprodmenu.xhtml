@@ -1,0 +1,113 @@
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:menu style="width:198px">
+        <p:submenu label="#{msgs.Registration}">
+            <p:menuitem value="#{msgs.global_save}" icon="ui-icon-disk" action="#{processProdBn.save}"
+                        id="saveMenuItem"
+                        ajax="false"/>
+            <p:menuitem value="#{msgs.global_comment}" icon="ui-icon-document"
+                        onclick="PF('dlg').show()" id="addCommentMI"/>
+            <p:menuitem value="#{msgs.global_nextstep}" icon="ui-icon-document"
+                        onclick="PF('stepDlg').show()" id="nextStepMI"
+                        rendered="#{userSession.admin||processProdBn.checkReviewStatus||userSession.moderator}"/>
+            <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-document"
+                        action="/internal/reject.faces" ajax="false"
+                        rendered="#{processProdBn.canReject}">
+                <f:param value="#{processProdBn.prodApplications.id}" name="prodAppID"/>
+            </p:menuitem>
+            <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
+                        rendered="#{userSession.reviewer and !userAccessMBean.detailReview}"
+                        action="/internal/review" ajax="false">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+            </p:menuitem>
+
+            <!-- Feedback -->
+            <p:menuitem value="#{msgs.open_app}" action="#{processProdBn.initOpenToApp()}"
+                        rendered="#{processProdBnET.showFeedBackButton}"
+                        ajax="true" icon="ui-icon-extlink" oncomplete="PF('openAppDlg').show()"/>
+
+            <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-gear"
+                        rendered="#{userSession.reviewer and userAccessMBean.detailReview}"
+                        action="/internal/reviewInfo" ajax="false">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+            </p:menuitem>
+
+            <p:menuitem value="#{msgs.global_exit}" action="#{processProdBn.cancel}"
+                        immediate="true" ajax="false"
+                        icon="ui-icon-extlink"/>
+            <p:menuitem value="Return to #{msgs.global_suspend}" icon="ui-icon-gear"
+                        action="suspenddetail" ajax="false"
+                        rendered="#{processProdBnET.showReturnToSuspensionButton}">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="suspDetailID" value="#{processProdBn.suspId}"/>
+            </p:menuitem>
+
+
+            <p:menuitem value="#{msgs.register_product}" icon="ui-icon-gear"
+                        oncomplete="PF('regDlg').show()" id="registerMI" action="#{processProdBn.initRegistration}"
+                        rendered="#{processProdBn.canRegister}"/>
+
+            <p:menuitem value="#{msgs.assignmoderator}" icon="ui-icon-gear"
+                        onclick="PF('moderatordlg').show()"
+                        rendered="#{processProdBn.registered}" id="assignModMI"/>
+
+            <p:menuitem value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+                        oncomplete="PF('assignreviewdlg').show()"
+                        action="#{processProdBn.initProcessorAdd}" id="assignProMI" rendered="false"/>
+            <!--rendered="#{userSession.moderator||userSession.admin}"/>-->
+
+        </p:submenu>
+        <p:submenu label="#{msgs.post_registration}" rendered="#{processProdBn.registered or processProdBn.suspended}">
+            <!--
+            <p:menuitem value="#{msgs.renew}" icon="ui-icon-gear"
+                        action="#{processProdBn.sendToRenew}" ajax="false">
+                <f:param name="prodID" value="#{processProdBn.product.id}"/>
+                <f:param name="appID" value="#{processProdBn.prodApplications.applicant.applcntId}"/>
+            </p:menuitem>
+
+            <p:menuitem value="#{msgs.global_resume}" icon="ui-icon-gear"
+                        action="#{processProdBn.sendRenewAfterSuspension}" ajax="false"
+                        rendered="#{processProdBn.suspended}"
+                        >
+                <f:param name="prodID" value="#{processProdBn.product.id}"/>
+                <f:param name="appID" value="#{processProdBn.prodApplications.id}"/>
+            </p:menuitem>
+            -->
+            <p:menuitem value="#{msgs.global_resume}" icon="ui-icon-gear"
+                        action="/internal/suspenddetail.faces" ajax="false"
+                        rendered="#{processProdBn.suspended}">
+                <f:param name="prodID" value="#{processProdBn.product.id}"/>
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msgs.issue_invoice}" icon="ui-icon-gear"
+                        oncomplete="PF('invoicedlg').show()"
+                        rendered="false"
+                        action="#{renewalMbn.initInvoice()}">
+            </p:menuitem>
+            <p:menuitem value="#{msgs.send_reminder}" icon="ui-icon-gear"
+                        action="#{renewalMbn.sendReminder}"
+                        rendered="false" update=":reghome:growl"/>
+            <p:menuitem value="#{msgs.report_payment}" icon="ui-icon-gear"
+                        action="#{renewalMbn.preparePayment()}"
+                        oncomplete="PF('reportpaymentdlg').show()"
+                        rendered="false" update=":reghome:growl" ajax="true"/>
+            <p:menuitem value="#{msgs.global_suspend}" icon="ui-icon-gear"
+                        action="suspenddetail" ajax="false"
+                        rendered="#{userSession.head and !processProdBn.suspended}">
+                <f:param name="prodAppID" value="#{processProdBn.prodApplications.id}"/>
+                <f:param name="suspDetailID" value="#{processProdBn.suspId}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear"
+                        oncomplete="PF('dlgAmdment').show()" rendered="false"
+                        update=":reghome:growl"/>
+            <!--        <p:menuitem value="#{msgs.amendment}" icon="ui-icon-gear" ajax="false" action="amdmtCategory.faces"
+                                rendered="#{userSession.company||userSession.admin}" />
+             -->
+        </p:submenu>
+    </p:menu>
+
+
+</ui:composition>

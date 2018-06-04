@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:sec="http://www.springframework.org/security/facelets/tags"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.Home_guidelines}</h1>
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <td style="width: 790px;vertical-align: top;">
+                        <p:panel>
+                            <h:panelGrid cellspacing="10" cellpadding="10" columns="1">
+                                Click on the link below to download the latest registration guideline. <br/>
+                                <h:outputLink
+                                        value="../public/RegistrationGuideline.pdf">Registration Guideline</h:outputLink>
+                            </h:panelGrid>
+                        </p:panel>
+                    </td>
+
+
+                    <td style="vertical-align: top; ">
+                        <h:form>
+                            <p:menu style="width:260px;">
+                                <p:submenu label="#{msgs.home_quicklinks}">
+                                    <p:menuitem value="#{msgs.registration_product}" ajax="false"
+                                                action="/public/productlist.faces"/>
+                                    <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
+                                                url="/public/applicantlist.faces"/>
+                                    <p:menuitem value="#{msgs.registerme}" url="/pages/registeruser.faces"
+                                                ajax="false"/>
+                                </p:submenu>
+
+                                <sec:isAuthenticated>
+                                    <p:submenu label="#{msgs.admin_loggedinuser}">
+                                        <p:menuitem value="#{msgs.application_status}"
+                                                    action="/secure/submittedproducts.faces" ajax="false"
+                                                    rendered="#{userSession.company}"/>
+                                        <p:menuitem value="#{msgs.applicant_detail}" action="/public/processapplicant.faces"
+                                                    ajax="false" rendered="#{userSession.company}">
+                                                <f:param name="sourcePage" value="/public/applicantlist.faces"/>
+               									<f:param name="appID" value="#{userSession.applcantID}"/>
+                                        </p:menuitem>
+                                        <p:menuitem value="#{msgs.usersettings_preferences}"
+                                                    action="/secure/usersettings.faces"
+                                                    ajax="false"/>
+                                    </p:submenu>
+                                </sec:isAuthenticated>
+
+                                <p:submenu label="#{msgs.home_links}">
+                                    <p:menuitem value="#{msgs.Home_aboutus}" url="/public/aboutus.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_guidelines}" url="/public/guidelines.faces"
+                                                ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_newsevents}" url="/public/newsevent.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_contactus}" url="/public/contactus.faces" ajax="false"/>
+                                </p:submenu>
+
+                            </p:menu>
+
+                            <!-- end three column -->
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+    </ui:define>
+</ui:composition>

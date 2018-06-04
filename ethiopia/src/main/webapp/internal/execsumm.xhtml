@@ -1,0 +1,121 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reviewHome">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showDetail="true" showSummary="true"/>
+
+            <div style="width:1054px">
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="prodApp" value="#{execSummaryBn.prodApplications}"/>
+                </ui:decorate>
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <div align="right">
+                <p:commandButton value="#{msgs.global_back}" immediate="true" action="/internal/processreg"
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{execSummaryBn.prodApplications.id}"/>
+                </p:commandButton>
+                <p:commandButton value="#{msgs.global_submit}" action="#{execSummaryBn.submit}"
+                                 rendered="#{execSummaryBn.editExecSumm}"
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{execSummaryBn.prodApplications.id}"/>
+                </p:commandButton>
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <ui:repeat value="#{execSummaryBn.reviewInfos}" var="each">
+                <p:fieldset legend="#{execSummaryBn.buildReviewerNames(each)}" style="margin-bottom:20px">
+                    <h:panelGrid columns="4" cellpadding="10" cellspacing="10">
+                        <p:outputLabel value="#{msgs.checklist_module}:" styleClass="label"/>
+                        <p:outputLabel value="#{each.ctdModule}"/>
+
+                        <p:outputLabel value="#{msgs.review_status}:" styleClass="label"/>
+
+                        <p:outputLabel value="#{each.reviewStatus}"/>
+
+                        <p:outputLabel value="#{msgs.assigndate}:" styleClass="label"/>
+
+                        <p:outputLabel value="#{each.assignDate}">
+                            <f:convertDateTime pattern="MMM dd, yyyy"/>
+                        </p:outputLabel>
+
+                        <p:outputLabel value="#{msgs.global_duedate}:" styleClass="label"/>
+
+                        <p:outputLabel value="#{each.dueDate}">
+                            <f:convertDateTime pattern="MMM dd, yyyy"/>
+                        </p:outputLabel>
+
+                        <p:outputLabel value="#{msgs.submitted_date}:" styleClass="label"/>
+
+                        <p:outputLabel value="#{each.submitDate}">
+                            <f:convertDateTime pattern="MMM dd, yyyy"/>
+                        </p:outputLabel>
+
+                        <p:commandLink value="#{msgs.detail_review}" ajax="false"
+                                       action="/internal/reviewInfo.faces">
+                            <f:param name="reviewInfoID" value="#{each.id}"/>
+                            <f:param name="sourcePage" value="#{execSummaryBn.prodApplications.id}:/internal/execsumm.faces" />
+                        </p:commandLink>
+                    </h:panelGrid>
+                    <p:panel>
+                        <h:panelGrid columns="2" cellspacing="10" cellpadding="10">
+                            <h:outputText value="#{msgs.reviewer_summary}:" styleClass="label"/>
+                            <h:outputText value="#{each.execSummary}" escape="false"/>
+
+                            <h:outputText/>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:fieldset>
+
+                <div style="height: 10px;"/>
+            </ui:repeat>
+
+            <p:panel header="#{msgs.executive_summary}">
+                <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="inputgrid"
+                             rendered="#{execSummaryBn.editExecSumm}">
+                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
+
+                    <p:selectOneMenu id="recomcb" value="#{execSummaryBn.prodApplications.regState}"
+                                     requiredMessage="#{msgs.recommendation_valid}">
+                        <f:selectItem itemLabel="-"/>
+                        <f:selectItems value="#{execSummaryBn.nextSteps}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Summary"/>
+					<pe:ckEditor value="#{execSummaryBn.prodApplications.execSummary}"
+								 height="500" width="700"
+								 toolbar="[['PasteText','PasteFromWord','-','Bold']]"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2" cellpadding="10" cellspacing="10" id="reviewgrid"
+                             rendered="#{!execSummaryBn.editExecSumm}">
+                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb"/>
+                    <p:outputLabel value="#{execSummaryBn.execSummaryState}"/>
+                    <p:outputLabel value="Summary"/>
+                    <p:outputLabel value="#{execSummaryBn.prodApplications.execSummary}" escape="false"
+                                   rendered="#{execSummaryBn.readOnly}"/>
+                </h:panelGrid>
+            </p:panel>
+
+        </h:form>
+
+        <div style="height: 10px;"/>
+
+
+    </ui:define>
+</ui:composition>

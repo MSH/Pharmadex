@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="templates/admin_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.Home_Welcome}</h1>
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <td style="width: 790px;padding-right: 10px">
+                        <p:galleria value="#{galleriaBean.images}" var="image" showCaptions="true" panelWidth="750"
+                                    panelHeight="350">
+                            <p:graphicImage value="/resources/images/galleria/#{image.imageName}"
+                                            alt="#{image.imageName}"
+                                            title="#{image.imageDesc}" width="750px" height="340px"/>
+
+                        </p:galleria>
+                    </td>
+
+
+                    <td style="vertical-align: top; ">
+                        <h:form>
+                            <p:menu style="width:260px;">
+                                <p:submenu label="#{msgs.home_quicklinks}">
+                                    <p:menuitem value="#{msgs.registration_product}" ajax="false"
+                                                action="/public/productlist.faces"/>
+                                    <p:menuitem value="#{msgs.registration_applicant}" ajax="false"
+                                                url="/public/applicantlist.faces"/>
+                                </p:submenu>
+
+                                <sec:isAuthenticated>
+                                    <p:submenu label="#{msgs.admin_loggedinuser}">
+                                        <p:menuitem value="#{msgs.application_status}"
+                                                    action="/secure/submittedproducts.faces" ajax="false"
+                                                    rendered="#{userSession.company}"/>
+                                       <p:menuitem value="#{msgs.applicant_detail}" action="/public/processapplicant.faces"
+                                                    ajax="false" rendered="#{userSession.company}">
+                                          		<f:param name="sourcePage" value="/public/applicantlist.faces"/>
+               									<f:param name="appID" value="#{userSession.applcantID}"/>
+                                        </p:menuitem>
+                                        <p:menuitem value="#{msgs.usersettings_preferences}"
+                                                    action="/secure/usersettings.faces"
+                                                    ajax="false"/>
+                                    </p:submenu>
+                                </sec:isAuthenticated>
+
+                                <p:submenu label="#{msgs.home_links}">
+                                    <p:menuitem value="#{msgs.Home_aboutus}" url="/public/aboutus.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_guidelines}" url="/public/guidelines.faces"
+                                                ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_newsevents}" url="/public/newsevent.faces" ajax="false"/>
+                                    <p:menuitem value="#{msgs.Home_contactus}" url="/public/contactus.faces" ajax="false"/>
+                                </p:submenu>
+
+                            </p:menu>
+
+                            <!-- end three column -->
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="content">
+
+                <p>The Ethiopian Food, Medicines and Health care administration and Control Authority (EFMHACA) is the National Regulatory Body of Ethiopia which is under the Ministry of Health.
+                    The Authority is responsible to ensure the quality, safety and/or efficacy of medicines, food, cosmetics and medical devices, the standards of health and health related institutions,
+                    the healthcare practice, and competence and ethics of Health professionals.
+
+                </p>
+
+                <p>
+                    EFMHACA was established under the Ethiopian Food, Medicines and Health care Administration and Control Authority establishment council of Ministers Regulation No. 189/2010.
+                    After repealing the drug administration and control proclamation 176/1999, FMHACA became operational as of July 17, 2010. Its budget is from the Ethiopian government.
+                    It is mandated by the Food, Medicines and Health care Administration and Control proclamation 661/2009.
+                </p>
+
+                <p>
+                    The Authority is found at the Ethiopian capital, Addis Ababa, in Addis Ababa City Administration at a distance of 5km from Bole international airport.
+                    Its address is at <br/>
+                    Africa Avenue, near wolosefer,
+                    <br/>Kirkos sub city, 02/03 kebelle, 02 House number,
+                    <br/>Tel: +251-115-524120/22,
+                    <br/>fax: +251-115-52411392,
+                    <br/>Website: fmhaca.gov.et,
+                    <br/>E-mail: regulatory@fmhaca.gov.et.
+                </p>
+
+                <h2>
+                    Vision
+                </h2>
+
+                <p>Quality health services and products to all citizens</p>
+
+                <h2>
+                    Mission
+                </h2>
+
+                <p>To promote and protect the public health by ensuring safety, efficacy and quality of health and health related products and services through product quality assessment and registration;
+                    licensing and inspection of health professionals, health institutions, pharmaceutical and food establishments,
+                    and provision of up-to-date regulatory information while promoting proper use of health and health related products and services including proper use of medicines. </p>
+
+                <h2>
+                    Objectives
+                </h2>
+
+                <p>To protect the health of consumers by ensuring:-
+                <ul>
+                    <li>Food safety and quality</li>
+                    <li>Safety, efficacy, quality and proper use of medicines </li>
+                    <li>Competence and ethics of health professionals </li>
+                    <li>The standards of health institution and </li>
+                    <li>The hygiene and environmental health protection suitability for individuals and community health </li>
+                </ul>
+                </p>
+
+
+            </div>
+
+
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

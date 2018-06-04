@@ -1,0 +1,535 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/admin_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reghome">
+
+            <h:panelGrid columns="2" columnClasses="menu,content" cellpadding="10px">
+                <p:menu style="width:198px">
+                    <p:submenu label="#{msgs.pur_order}">
+                        <p:menuitem value="#{msgs.global_save}" icon="ui-icon-gear"
+                                    action="#{processPurOrderBn.saveApp}" ajax="false"
+                                    rendered="#{!userSession.company and empty processPurOrderBn.pOrderBase.approvalDate}"/>
+                        <p:menuitem value="#{msgs.complete_review}" icon="ui-icon-document"
+                                    action="#{processPurOrderBn.initComment}"
+                                    oncomplete="PF('reviewDlg').show()" id="review"
+                                    rendered="#{processPurOrderBn.displayReview and not userSession.csd}"/>
+                        <p:menuitem value="#{msgs.add_comment}" icon="ui-icon-document"
+                                    action="#{processPurOrderBn.initComment}"
+                                    oncomplete="PF('commentDlg').show()" id="reviewcomment"
+                                    rendered="#{processPurOrderBn.displayReviewComment}"/>
+                        <p:menuitem value="#{msgs.open_app}" icon="ui-icon-document"
+                                    action="#{processPurOrderBn.initComment}"
+                                    oncomplete="PF('withdrawDlg').show()" id="withdraw"
+                                    rendered="#{processPurOrderBn.showWithdrawn}"/>
+                        <p:menuitem value="#{msgs.global_cancel}" immediate="true"
+                                    icon="ui-icon ui-icon-circle-triangle-w"
+                                    action="#{processPurOrderBn.cancel}" ajax="false"/>
+                        <p:menuitem value="#{msgs.orderChangeCSO}"
+                                    id="changeCSO"
+                                    icon="ui-icon-document"
+                                    oncomplete="PF('chngRespPerson').show()"
+                                    rendered="#{not empty processPurOrderBn.pOrderBase.responsiblePerson and userSession.csd}"
+                        />
+
+                    </p:submenu>
+                    <p:submenu label="#{msgs.approve_review}"
+                               rendered="#{userSession.cst and empty processPurOrderBn.pOrderBase.approvalDate and not processPurOrderBn.displayReview}">
+                        <p:menuitem value="#{msgs.global_approve}" icon="ui-icon-gear"
+                                    oncomplete="PF('approveDlg').show()" action="#{processPurOrderBn.initApprove}"
+                                    rendered="#{userSession.cst}"/>
+                        <p:menuitem value="#{msgs.global_reject}" icon="ui-icon-gear"
+                                    oncomplete="PF('rejectDlg').show()" action="#{processPurOrderBn.initReject}"
+                                    rendered="#{userSession.cst}"/>
+                    </p:submenu>
+
+                </p:menu>
+
+                <h:panelGroup styleClass="ui-widget">
+                    <h1 class="title ui-widget-header ui-corner-all">
+                        <table class="banner">
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{processPurOrderBn.pOrderBase.applicant.appName}"
+                                                   styleClass="title"
+                                                   style="font-weight: bold; font-size: 1.5em"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.application_status}: "
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{msgs[processPurOrderBn.pOrderBase.state.key]}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel value="#{msgs.application_no}: " styleClass="title"/>
+                                    <h:outputFormat value="#{processPurOrderBn.pOrderBase.pipNo}" styleClass="title"/>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.submitted_date}: " styleClass="title"/>
+                                    <h:outputFormat value="#{processPurOrderBn.pOrderBase.submitDate}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.review_status}: "
+                                                   rendered="#{not empty processPurOrderBn.pOrderBase.reviewState}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                    <h:outputLabel value="#{msgs[processPurOrderBn.pOrderBase.reviewState.key]}"
+                                                   rendered="#{not empty processPurOrderBn.pOrderBase.reviewState}"
+                                                   style="font-weight: bold;color: #a52a2a;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td align="right">
+                                    <h:outputLabel value="#{msgs.orderResponsiblePerson}: "
+                                                   rendered="#{not empty processPurOrderBn.pOrderBase.responsiblePerson}"/>
+                                    <h:outputLabel value="#{processPurOrderBn.pOrderBase.responsiblePerson.name}"
+                                                   rendered="#{not empty processPurOrderBn.pOrderBase.responsiblePerson}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </h1>
+                    <p:messages id="messages" showDetail="true" showSummary="true"/>
+
+                    <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+                    <p:panel header="#{msgs.product_details}">
+                        <h:panelGrid columns="1" cellspacing="10px">
+                            <p:dataTable id="ordertable" var="order" value="#{processPurOrderBn.purProds}"
+                                         style="width:100%;">
+                                <!--                                            <p:commandButton value="#{msgs.global_add}" oncomplete="PF('orderdetailDlg').show()" rendered="#{empty pIPOrderBn.pipOrder.submitDate}"
+                                                                                             action="#{pIPOrderBn.initAddProd}" process="@this" update=":orderdetailfrm" />
+                                -->
+                                <p:column headerText="#{msgs.prod_no}">
+                                    <h:outputText value="#{order.productNo}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.prod_name}">
+                                    <h:outputText value="#{order.productName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.dos_strength}">
+                                    <h:outputText value="#{order.dosStrength}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.dos_unit}">
+                                    <h:outputText value="#{order.dosUnit.uom}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.dos_form}">
+                                    <h:outputText value="#{order.dosForm.dosForm}"/>
+                                </p:column>
+
+
+                                <p:column headerText="#{msgs.prod_presentation}">
+                                    <h:outputText value="#{order.productDesc}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.manuf_name}">
+                                    <h:outputText value="#{order.manufName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.applicant_country}">
+                                    <h:outputText value="#{order.country.countryName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.global_quantity}">
+                                    <h:outputText value="#{order.quantity}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.product_pricing}">
+                                    <h:outputText value="#{order.unitPrice}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                    </h:outputText>
+
+                                </p:column>
+
+                                <p:column headerText="#{msgs.total_price}">
+                                    <h:outputText value="#{order.totalPrice}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                    </h:outputText>
+
+                                </p:column>
+
+                                <p:summaryRow>
+                                    <p:column colspan="8" style="text-align:right">
+                                        <h:outputText value="Grand Total(including Freight):"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{processPurOrderBn.purOrder.totalPrice}">
+                                            <f:convertNumber type="currency"
+                                                             currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                        </h:outputText>
+                                    </p:column>
+                                </p:summaryRow>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+
+
+                    </p:panel>
+
+                    <div style="height:10px"/>
+
+                    <p:tabView id="appDetails" dynamic="true" cache="true">
+                        <p:ajax event="tabChange" listener="#{processPurOrderBn.onTabChange}" />
+                        <p:tab title="#{msgs.order_detail}" id="home">
+
+                            <p:panel header="#{msgs.general_info}">
+                                <h:panelGrid columns="4" cellspacing="10" columnClasses="col1, col2, col1, col2">
+                                    <p:outputLabel value="#{msgs.currency}" for="curr"/>
+                                    <p:outputLabel id="curr" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.currency.currName}"/>
+
+
+                                    <p:outputLabel value="#{msgs.ship_inst}" for="shipinst"/>
+                                    <p:outputLabel id="shipinst" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.shippingInstruction}"/>
+
+                                    <p:outputLabel value="#{msgs.portof_entry}" for="port"/>
+                                    <p:outputLabel id="port" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.entryPort}"/>
+
+                                    <p:outputLabel value="#{msgs.delivery}" for="delivery"/>
+                                    <p:outputLabel id="delivery" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.delivery}"/>
+
+                                    <p:outputLabel value="#{msgs.payment_info}" for="payinfo"/>
+                                    <p:outputLabel id="payinfo" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.paymentMethod}"/>
+
+                                    <p:outputLabel value="#{msgs.product_freight}" for="freight"/>
+                                    <p:outputLabel id="freight" required="true"
+                                                   value="#{processPurOrderBn.pOrderBase.freight}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol="#{processPurOrderBn.pOrderBase.currency.currSym}"/>
+                                    </p:outputLabel>
+
+
+                                    <p:outputLabel value="#{msgs.global_comment}" for="comment"/>
+                                    <p:outputLabel id="comment" value="#{processPurOrderBn.pOrderBase.comment}"/>
+
+                                </h:panelGrid>
+
+                            </p:panel>
+
+                            <div style="height:10px"/>
+
+
+                            <p:panel header="#{msgs.applicant_detail}">
+                                <ui:decorate template="/templates/applicantdetailtmpl.xhtml">
+                                    <ui:param name="applicantdata" value="#{processPurOrderBn.pOrderBase.applicant}"/>
+                                    <ui:param name="input" value="#{false}"/>
+                                </ui:decorate>
+
+                            </p:panel>
+
+                            <div style="height:10px"/>
+
+                            <p:panel header="#{msgs.person_responsible}">
+                                <ui:decorate template="/templates/userdetailtmpl.xhtml">
+                                    <ui:param name="userdata" value="#{processPurOrderBn.pOrderBase.createdBy}"/>
+                                    <ui:param name="input" value="#{false}"/>
+                                </ui:decorate>
+
+                            </p:panel>
+
+                            <div style="height:10px"/>
+                        </p:tab>
+
+                        <p:tab title="#{msgs.prod_screening}" id="screen">
+
+                            <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+                                <p:outputLabel value="#{msgs.fee_recieved}" styleClass="label" for="feerecieved"/>
+                                <p:outputLabel value="#{processPurOrderBn.pOrderBase.feeRecieved}" styleClass="label"
+                                               rendered="#{!processPurOrderBn.openAPP}"/>
+                                <p:selectBooleanButton id="feerecieved" rendered="#{processPurOrderBn.openAPP}"
+                                                       value="#{processPurOrderBn.pOrderBase.feeRecieved}"
+                                                       onLabel="#{msgs.global_yes}" offLabel="#{msgs.global_no}"
+                                                       onIcon="ui-icon-check"
+                                                       offIcon="ui-icon-close" style="width:60px">
+                                    <p:ajax update=":reghome:growl @form" process="@form"
+                                            listener="#{processPurOrderBn.feeRecievedListener}"/>
+                                </p:selectBooleanButton>
+                            </h:panelGrid>
+
+                            <div style="height:10px"/>
+
+
+                            <p:panel header="#{msgs.checklist}">
+                                <p:dataTable var="checkList" value="#{processPurOrderBn.pOrderChecklists}"
+                                             style="width:100%;">
+                                    <p:column colspan="3" rendered="#{checkList.pipOrderLookUp.header}"
+                                              style="background-color: bisque;font-weight: bolder;">
+                                        <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
+                                    </p:column>
+                                    <p:column rendered="#{!checkList.pipOrderLookUp.header}" headerText="#{msgs.global_document}">
+                                        <h:outputLabel value="#{checkList.pipOrderLookUp.name}"/>
+                                    </p:column>
+                                    <p:column headerText="#{msgs.applicant_value}">
+                                        <h:outputLabel value="#{msgs[checkList.value.key]}"/>
+                                    </p:column>
+                                    <p:column rendered="#{!checkList.pipOrderLookUp.header}" headerText="#{msgs.staff_value}">
+                                        <p:selectOneButton id="console" value="#{checkList.staffValue}"
+                                                           rendered="#{checkList.pipOrderLookUp.optional and !userSession.csd}">
+                                            <f:selectItems value="#{globalLists.yesNoNA}" var="value"
+                                                           itemLabel="#{msgs[value.key]}"/>
+                                        </p:selectOneButton>
+                                        <p:selectOneButton id="console2" value="#{checkList.staffValue}"
+                                                           rendered="#{!checkList.pipOrderLookUp.optional and !userSession.csd}">
+                                            <f:selectItems value="#{globalLists.yesNo}" var="value"
+                                                           itemLabel="#{msgs[value.key]}"/>
+                                        </p:selectOneButton>
+                                        <h:outputLabel value="#{msgs[checkList.staffValue.key]}"
+                                                       rendered="#{userSession.csd}"/>
+
+                                    </p:column>
+                                    <p:column headerText="Comments" rendered="#{!checkList.pipOrderLookUp.header}">
+                                        <p:inputText value="#{checkList.staffComment}" rendered="#{processPurOrderBn.displayReviewComment}"/>
+                                        <p:outputLabel value="#{checkList.staffComment}" rendered="#{!processPurOrderBn.displayReviewComment}"/>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:panel>
+
+                            <div style="height:10px"/>
+                        </p:tab>
+
+                        <p:tab title="#{msgs.attachments}" id="attach">
+
+                            <p:panel header="#{msgs.attachments}">
+                                <h:panelGrid columns="1">
+                                    <p:commandLink
+                                            value="Click here to see what documents need to be uploaded"
+                                            onclick="window.open('uploaddochint.xhtml')"
+                                            style="color: firebrick;"/>
+                                <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                                 oncomplete="PF('attachdlg').show()"
+                                                 action="#{processPurOrderBn.prepareUpload}"
+                                                 update=":attachdlg" id="addDocBtn"
+                                                 rendered="#{processPurOrderBn.openAPP}"/>
+
+                                <p:dataTable id="attachtable" value="#{processPurOrderBn.pOrderDocs}" var="doc">
+
+                                    <p:column headerText="#{msgs.title}">
+                                        <h:outputText value="#{doc.title}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.filename}">
+                                        <h:outputText value="#{doc.fileNameOnly}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploaddate}">
+                                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploadedby}">
+                                        <h:outputText value="#{doc.uploadedBy.name}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.application_status}">
+                                        <h:outputText value="#{msgs[doc.regState.key]}"/>
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandButton id="downloadLink" value="Download" ajax="false"
+                                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                         icon="ui-icon-arrowthichk-s">
+                                            <p:fileDownload value="#{processPurOrderBn.fileDownload(doc)}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <p:column rendered="#{processPurOrderBn.openAPP}">
+                                        <p:commandButton id="deleteattach"
+                                                         action="#{processPurOrderBn.deleteDoc(doc)}" ajax="false"
+                                                         icon="ui-icon-trash"
+                                                         update=":reghome:attachtab:attachtable"/>
+                                    </p:column>
+                                </p:dataTable>
+                                </h:panelGrid>
+
+                            </p:panel>
+
+
+                            <div style="height:10px"/>
+                        </p:tab>
+                        <p:tab title="#{msgs.global_comment}" id="commenttab">
+                            <p:dataTable id="commenttable" value="#{processPurOrderBn.pOrderComments}" var="it">
+                                <p:column style="width:120px;">
+                                    <p:outputLabel styleClass="ui-icon ui-icon-comment"
+                                                   style="display:inline-block;"/>
+                                    <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+                                    <div style="font-size: smaller;">
+                                        <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                                    </div>
+                                </p:column>
+
+                                <p:column>
+                                    <div style="padding-left:10px;padding-top:10px;">
+                                        <h:outputText value="#{it.comment}"
+                                                      escape="false"
+                                                      styleClass="text"/>
+                                    </div>
+                                </p:column>
+                                <p:column>
+                                    #{it.recomendType}
+                                </p:column>
+                            </p:dataTable>
+
+
+                        </p:tab>
+
+                    </p:tabView>
+
+
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:form>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                    <p:inputText id="attachtitle" value="#{processPurOrderBn.pOrderDoc.title}"/>
+                    <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="attachcomment" value="#{processPurOrderBn.pOrderDoc.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{processPurOrderBn.handleFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reghome:growl :reghome:messages"
+                              multiple="false"
+                              sizeLimit="10000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{processPurOrderBn.addDocument}"
+                                 oncomplete="PF('attachdlg').hide()"
+                                 update=":reghome:growl :reghome:messages :reghome"/>
+            </h:form>
+        </p:dialog>
+        <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" id="reviewDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb" styleClass="label"/>
+                    <p:selectOneMenu id="recomcb" value="#{processPurOrderBn.pOrderComment.recomendType}"
+                                     required="true"
+                                     requiredMessage="#{msgs.recommendation_valid}">
+                        <f:selectItem itemLabel="-"/>
+                        <f:selectItems value="#{processPurOrderBn.recommendTypes}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
+                    </p:selectOneMenu>
+                    <p:message for="recomcb"/>
+
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
+                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="revsummary"
+                              required="true"
+                              width="700"/>
+                    <p:message for="revsummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.submitComment}"
+                                 oncomplete="if (!args.validationFailed) PF('reviewDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.add_comment}" widgetVar="commentDlg" id="commentDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="addcomment" styleClass="label"/>
+                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="addcomment" required="true"
+                              width="700"/>
+                    <p:message for="addcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.addComment}"
+                                 oncomplete="if (!args.validationFailed) PF('commentDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.approve_review}" widgetVar="approveDlg" id="approveDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="approvecomment" styleClass="label"/>
+                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="approvecomment" required="true"
+                              width="700"/>
+                    <p:message for="approvecomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.approveOrder}"
+                                 oncomplete="if (!args.validationFailed) PF('approveDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.approve_review}" widgetVar="rejectDlg" id="rejectDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="rejectcomment" styleClass="label"/>
+                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="rejectcomment" required="true"
+                              width="700"/>
+                    <p:message for="rejectcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.rejectOrder}"
+                                 oncomplete="if (!args.validationFailed) PF('rejectDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.open_app}" widgetVar="withdrawDlg" id="withdrawdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+
+                    <p:outputLabel value="#{msgs.feedback_summary}" for="withdrawcomment" styleClass="label"/>
+                    <p:editor value="#{processPurOrderBn.pOrderComment.comment}" id="withdrawcomment" required="true"
+                              width="700"/>
+                    <p:message for="withdrawcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{processPurOrderBn.withdraw}"
+                                 oncomplete="if (!args.validationFailed) PF('withdrawDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+        <p:dialog header="#{msgs.chngOrderResponsiblePerson}" widgetVar="chngRespPerson" id="chngResponsiblePerson"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="10" cellspacing="10">
+                    <p:outputLabel value="#{msgs.orderResponsiblePerson}" for="chngResp"
+                                   escape="false" styleClass="label" />
+
+                    <p:autoComplete id="chngResp" value="#{processPurOrderBn.pOrderBase.responsiblePerson}"
+                                    cache="false"
+                                    completeMethod="#{globalEntityLists.completeCSOList}"
+                                    dropdown="true" required="true" var="responsiblePerson"
+                                    itemLabel="#{responsiblePerson.name}"
+                                    itemValue="#{responsiblePerson.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
+
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{processPurOrderBn.saveApp}"
+                                 oncomplete="PF('chngRespPerson').hide();" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

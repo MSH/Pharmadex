@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:outputLabel value="#{msgs.confirm_payment}" styleClass="label"/>
+
+    <h:panelGrid columns="2" cellspacing="10" columnClasses="label, value" styleClass="grid">
+
+        <p:outputLabel value="#{msgs.presreen_fee}" styleClass="label"/>
+        <p:outputLabel value="#{prodApp.prescreenfeeAmt}">
+            <f:convertNumber type="currency" currencySymbol="$"/>
+        </p:outputLabel>
+
+        <p:outputLabel value="#{msgs.bank_name}" for="bankname" styleClass="label"/>
+        <p:inputText id="bankname" value="#{prodApp.prescreenBankName}"/>
+
+        <p:outputLabel value="#{msgs.reciept_no}" for="receiptno" styleClass="label"/>
+        <p:inputText id="receiptno" value="#{prodApp.prescreenReceiptNo}"/>
+
+        <p:outputLabel value="#{msgs.fee_submit_date}" for="feesubmitdt" styleClass="label"/>
+        <p:calendar value="#{prodApp.prescreenfeeSubmittedDt}" id="feesubmitdt" showOn="button"/>
+
+    </h:panelGrid>
+
+
+</ui:composition>
