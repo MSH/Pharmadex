@@ -1,0 +1,81 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+        template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+
+    <p:messages id="messages" showDetail="true"/>
+        <h:form prependId="false">
+            <p:panel header="#{msgs.renew}">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <h:outputLabel value="#{msgs.search_prod}: " for="basicPojo"/>
+                    <p:autoComplete value="#{reRegListBean.prodTable}" id="basicPojo"
+                                    completeMethod="#{reRegListBean.completeProduct}"
+                                    var="p" itemLabel="#{p.prodName}" itemValue="#{p.id}"
+                                    converter="#{productConverter}" forceSelection="true"
+                    >
+                        <p:ajax event="itemSelect" listener="#{reRegListBean.onItemSelect}" update="@form" process="@form"/>
+                    </p:autoComplete>
+                    <p:commandButton value="#{msgs.global_submit}"
+                                     action="#{reNewBean.startReregistration(reNewBean.renewType)}"
+                                     ajax="false">
+                        <f:param name="prodAppID" value="#{reRegListBean.prodTable.id}"/>
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="#{msgs.product_list}">
+                <p:dataTable id="applicantions" var="eachprod" value="#{reRegListBean.reRegAppList}">
+                    <p:column filterBy="#{eachprod.prodApplications.product.prodName}"
+                              sortBy="#{eachprod.prodApplications.product.prodName}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.prod_name}"/>
+                        </f:facet>
+                        <p:commandLink id="viewLink" value="#{eachprod.prodApplications.product.prodName}"
+                                       action="/secure/prodrereg"
+                                       ajax="false"
+                        >
+                            <f:param name="ProcID" value="#{eachprod.id}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column filterBy="#{eachprod.prodApplications.product.genName}"
+                              sortBy="#{eachprod.prodApplications.product.genName}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.prodgenname}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.prodApplications.product.genName}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{eachprod.created}"
+                              sortBy="#{eachprod.created}">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.global_createdate}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.created}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.applicant}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.prodApplications.applicant.appName}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.manuf_name}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.prodApplications.product.manufName}"/>
+                    </p:column>
+                    <p:column >
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.prod_app_no}"/>
+                        </f:facet>
+                        <h:outputText value="#{eachprod.prodApplications.prodAppNo}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

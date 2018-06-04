@@ -1,0 +1,468 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Creates the table with passed in values of product -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="reviewHome" enctype="multipart/form-data">
+            <p:growl id="growl" showSummary="true"/>
+            <p:messages showDetail="true" showSummary="true" id="messages"/>
+
+            <div style="width:1054px">
+                <ui:decorate template="/templates/prodbannertempl.xhtml">
+                    <ui:param name="prodApp" value="#{suspendDetailBnET.prodApplications}"/>
+                </ui:decorate>
+            </div>
+
+            <div style="height: 10px;"/>
+
+
+
+            <div align="right">
+                <!-- submit for moderator before reviewing -->
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBnET.submitSuspend}"
+                                 ajax="false"
+                                 rendered="#{suspendDetailBnET.showSubmitButtonNo(1)}"/>
+                <!-- submit for moderator or head after reviewing-->
+                <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBnET.initApproval}"
+                                 oncomplete="PF('aproveDlg').show()"
+                                 ajax="true"
+                                 rendered="#{suspendDetailBnET.showSubmitButtonNo(2)}"/>
+                <!-- show product details -->
+                <p:commandButton value="#{msgs.product_details}" immediate="true"
+                                 action="#{suspendDetailBnET.showProductDetails}"
+                                 ajax="false">
+                    <f:param name="suspDetailID" value="#{suspendDetailBnET.suspDetail.id}"/>
+                    <f:param name="prodAppID" value="#{suspendDetailBnET.prodApplications.id}"/>
+                </p:commandButton>
+                <!-- return to list -->
+                <p:commandButton value="#{msgs.global_back}" immediate="true"
+                                 action="/internal/processcancellist" ajax="false">
+                </p:commandButton>
+
+            </div>
+
+            <div style="height: 10px;"/>
+
+            <p:tabView dynamic="true" id="detailtab" style="width: 99%;">
+                <p:tab title="#{msgs.susp_detail}">
+                    <p:panel value="Processing information">
+                        <p:commandButton value="#{msgs.assignmoderator}" icon="ui-icon-gear"
+                                         onclick="PF('moderatordlg').show()"
+                                         rendered="#{userSession.admin||userSession.head}" id="assignModMI"/>
+
+                        <p:commandButton value="#{msgs.assignprocessor}" icon="ui-icon-gear"
+                                         action="#{suspendDetailBnET.initAssignReviewer}" id="assignProMI"
+                                         oncomplete="PF('assignreviewdlg').show()"
+                                         rendered="#{(userSession.moderator||userSession.admin)and (suspendDetailBnET.showSubmitButtonNo(1))}"
+                                         update=":assignreviewdlg"/>
+
+
+                        <h:panelGrid columns="2" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <h:outputText value="#{msgs.global_curr_status}" styleClass="label"/>
+                            <h:outputText value="#{msgs[suspendDetailBnET.suspDetail.suspensionStatus.key]} (#{suspendDetailBnET.suspDetail.decision})"
+                                          styleClass="hint"/>
+
+                            <p:outputLabel value="#{msgs.moderator_name}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.moderator.name}"/>
+
+                            <p:outputLabel value="#{msgs.processor}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.reviewer.name}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel header="#{msgs.susp_detail}">
+                        <h:panelGrid columns="3" columnClasses="label value" cellpadding="10px" cellspacing="10px">
+                            <p:outputLabel value="#{msgs.susp_report_org}" for="orgReported"/>
+                            <p:inputText value="#{suspendDetailBnET.suspDetail.orgReported}" id="orgReported"
+                                         required="true"/>
+                            <p:message for="orgReported" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.susp_notif_recievedt}" for="notifrecdt"/>
+                            <p:calendar id="notifrecdt" value="#{suspendDetailBnET.suspDetail.notifRecieveDt}"
+                                        navigator="true"
+                                        style="width:100%" showButtonPanel="true" required="true"/>
+                            <p:message for="notifrecdt" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.susp_reason}" for="suspReason"/>
+                            <p:inputTextarea value="#{suspendDetailBnET.suspDetail.reason}" id="suspReason"
+                                             required="true" cols="100" rows="4"/>
+                            <p:message for="suspReason" showSummary="true"/>
+
+                            <p:outputLabel value="#{msgs.batch_no}*"/>
+                            <p:inputTextarea value="#{suspendDetailBnET.suspDetail.batchNo}" cols="100" rows="4"
+                                             required="true"/>
+                            <p:outputLabel/>
+
+                            <p:outputLabel value="#{msgs.updated_date}"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.updatedDate}"
+                                           converter="javax.faces.DateTime"/>
+                            <p:outputLabel/>
+
+                            <p:outputLabel value="#{msgs.global_duedate}*"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.dueDate}"
+                                           converter="javax.faces.DateTime"
+                                           rendered="#{not empty suspendDetailBnET.suspDetail.dueDate}"/>
+                            <p:calendar id="suspduedt" value="#{suspendDetailBnET.suspDetail.dueDate}"
+                                        rendered="#{empty suspendDetailBnET.suspDetail.dueDate}"
+                                        required="true"
+                                        requiredMessage="#{msgs.dueDateMissing}"
+                                        style="width:100%" showButtonPanel="true"/>
+                            <p:outputLabel/>
+
+                            <p:outputLabel value="#{msgs.decision_date}"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.decisionDate}"
+                                           converter="javax.faces.DateTime"
+                                           rendered="#{not empty suspendDetailBnET.suspDetail.decisionDate}"/>
+                            <p:calendar id="samplerecdt" value="#{suspendDetailBnET.suspDetail.decisionDate}"
+                                        rendered="#{empty suspendDetailBnET.suspDetail.decisionDate}"
+                                        style="width:100%" showButtonPanel="true"/>
+                            <p:outputLabel/>
+
+                            <p:outputLabel value="#{msgs.created_by}"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.createdBy.name}"/>
+                            <p:outputLabel/>
+
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="#{msgs.global_summary}">
+                        <h:panelGrid columns="2" cellspacing="5" cellpadding="5">
+                            <p:outputLabel value="#{msgs.recommendation}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.decision}" styleClass="label"/>
+                            <p:outputLabel value="#{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.moderatorSumm}" escape="false"/>
+                            <p:outputLabel value="Head #{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.suspDetail.finalSumm}" escape="false"/>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+
+                <p:tab title="#{msgs.global_comment}">
+                    <p:commandButton value="#{msgs.add_comment}" icon="ui-icon-document"
+                                     action="#{suspendDetailBnET.initComment}"
+                                     oncomplete="PF('addcommentDlg').show()" id="reviewcomment"
+                                     rendered="#{not suspendDetailBnET.closed}"
+                    />
+
+                    <p:dataTable id="commenttable" value="#{suspendDetailBnET.suspComments}" var="it">
+                        <p:column style="width:200px;">
+                            <p:outputLabel styleClass="ui-icon ui-icon-comment"
+                                           style="display:inline-block;"/>
+                            <p:outputLabel value="#{it.user.name}" styleClass="label"/>
+
+                            <div style="font-size: smaller;">
+                                <h:outputLabel converter="javax.faces.DateTime" value="#{it.date}"/>
+                            </div>
+                        </p:column>
+
+                        <p:column>
+                            <div style="padding-left:10px;padding-top:10px;">
+                                <h:outputText value="#{it.comment}"
+                                              escape="false"
+                                              styleClass="text"/>
+                            </div>
+                        </p:column>
+                     </p:dataTable>
+                </p:tab>
+
+                <p:tab title="#{msgs.attachments}">
+                    <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                     oncomplete="PF('attachdlg').show()"
+                                     action="#{suspendDetailBnET.prepareAttUpload}"
+                                     update=":attachdlg" id="addDocBtn"
+                                     rendered="#{userSession.head||userSession.moderator||userSession.reviewer}"/>
+
+                    <p:dataTable id="attachtable" value="#{suspendDetailBnET.attachments}" var="doc">
+                        <p:column headerText="#{msgs.title}">
+                            <h:outputText value="#{doc.title}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.filename}">
+                            <h:outputText value="#{doc.fileName}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploaddate}">
+                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploadedby}">
+                            <h:outputText value="#{doc.uploadedBy.name}"/>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandButton id="downloadLink" value="#{msgs.download_attach}!" ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                             icon="ui-icon-arrowthichk-n">
+                                <p:fileDownload value="#{suspendDetailBnET.fileDownload(doc)}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+                <p:tab title="#{msgs.letters}" rendered="#{userSession.head}">
+                    <p:dataTable id="suspletterstbl" value="#{suspendDetailBnET.letters}" var="doc">
+                        <p:column headerText="#{msgs.title}">
+                            <h:outputText value="#{doc.title}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.filename}">
+                            <h:outputText value="#{doc.fileName}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploaddate}">
+                            <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.uploadedby}">
+                            <h:outputText value="#{doc.uploadedBy.name}"/>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandButton id="leterdownloadlink" value="#{msgs.download_attach}" ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(start, stop)"
+                                             icon="ui-icon-arrowthichk-n">
+                                <p:fileDownload value="#{suspendDetailBnET.fileDownload(doc)}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:tab>
+
+                <p:tab title="#{msgs.assessment}">
+                    <p:dataTable id="reviewtbl" value="#{suspendDetailBnET.reviewInfo}" var="rev">
+                        <p:column headerText="#{msgs.processor}">
+                            <p:commandLink id="asmplink" value="#{rev.reviewer.name}"
+                                           action="/internal/reviewInfo.faces"
+                                           ajax="false">
+                                <f:param name="reviewInfoID" value="#{rev.id}"/>
+                                <f:param name="sourcePage" value="#{suspendDetailBnET.suspDetail.id}:/internal/suspenddetail.faces"/>
+                                <f:param name="parentSuspension" value="#{suspendDetailBnET.parentSuspension}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column headerText="#{msgs.review_status}">
+                            <h:outputText value="#{rev.reviewStatus}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs.recommendation}">
+                            <h:outputText value="#{rev.recomendType}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+                <p:tab title="#{msgs.history}" rendered="#{! empty suspendDetailBnET.parentSuspension}">
+                    <p:panel header="#{msgs.global_summary}">
+                        <h:panelGrid columns="2" cellspacing="5" cellpadding="5">
+                            <p:outputLabel value="#{msgs.recommendation}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.parentSuspension.decision}" styleClass="label"/>
+                            <p:outputLabel value="#{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.parentSuspension.moderatorSumm}" escape="false"/>
+                            <p:outputLabel value="Head #{msgs.global_summary}" styleClass="label"/>
+                            <p:outputLabel value="#{suspendDetailBnET.parentSuspension.finalSumm}" escape="false"/>
+                        </h:panelGrid>
+                        <p:dataTable id="reviewtblprev" value="#{suspendDetailBnET.getPrevReviewInfo()}" var="rev">
+                            <p:column headerText="#{msgs.processor}">
+                                <p:commandLink id="asmplink1" value="#{rev.reviewer.name}"
+                                               action="/internal/reviewInfo.faces"
+                                               ajax="false">
+                                    <f:param name="reviewInfoID" value="#{rev.id}"/>
+                                    <f:param name="sourcePage" value="#{suspendDetailBnET.suspDetail.id}:/internal/suspenddetail.faces"/>
+                                </p:commandLink>
+                            </p:column>
+                            <p:column headerText="#{msgs.review_status}">
+                                <h:outputText value="#{rev.reviewStatus}"/>
+                            </p:column>
+                            <p:column headerText="#{msgs.recommendation}">
+                                <h:outputText value="#{rev.recomendType}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                </p:tab>
+
+            </p:tabView>
+
+        </h:form>
+
+        <p:dialog header="#{msgs.assignmoderator}" widgetVar="moderatordlg" resizable="false"
+                  id="moderatordlg" modal="true" dynamic="true"
+                  rendered="#{userSession.head||userSession.admin}">
+            <h:form>
+
+                <p:panelGrid columns="2" columnClasses="label value">
+                    <h:outputText value="#{msgs.moderator_name}: "
+                                  escape="false"
+                                  styleClass="text"/>
+
+                    <p:autoComplete id="mod" value="#{suspendDetailBnET.moderator}"
+                                    completeMethod="#{globalEntityLists.completeModeratorList}" dropdown="true"
+                                    var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                    forceSelection="true"
+                                    converter="#{userConverter}">
+                    </p:autoComplete>
+
+                </p:panelGrid>
+
+
+                <p:commandButton id="submitmoderator" value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBnET.assignModerator}" update=":reviewHome"
+                                 oncomplete="if (!args.validationFailed) PF('moderatordlg').hide()"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.add_comment}" widgetVar="addcommentDlg" id="addcommentDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.global_comment}" for="addcomment" styleClass="label"/>
+                    <p:editor value="#{suspendDetailBnET.suspComment.comment}" id="addcomment" required="true"
+                              width="700"/>
+                    <p:message for="addcomment"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBnET.submitComment}"
+                                 oncomplete="PF('addcommentDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachdlg" resizable="false" id="attachdlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="2" style="margin-bottom:10px" columnClasses="label value">
+                    <p:outputLabel for="attachtitle" value="#{msgs.title}"/>
+                    <p:inputText id="attachtitle" value="#{suspendDetailBnET.attachment.title}"/>
+                    <h:outputLabel for="attachcomment" value="#{msgs.global_comment}"/>
+                    <p:inputTextarea id="attachcomment" value="#{suspendDetailBnET.attachment.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{suspendDetailBnET.handleAttFileUpload}"
+                              mode="advanced" auto="true"
+                              update=":reviewHome:growl :reviewHome:messages"
+                              multiple="false"
+                              sizeLimit="10000000">
+
+                </p:fileUpload>
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBnET.addDocument}"
+                                 oncomplete="PF('attachdlg').hide()" update=":reviewHome"/>
+            </h:form>
+        </p:dialog>
+
+        <!-- Moderator should choose decision: Register, Cancel,Suspend and type comment -->
+        <p:dialog header="#{msgs.global_decision}" widgetVar="aproveDlg" id="aproveDlg" modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.recommendation}" for="decis" styleClass="label"/>
+                    <p:selectOneMenu id="decis" value="#{suspendDetailBnET.curReviewComment.recomendType}" required="true"
+                                     requiredMessage="#{msgs.recommendation_valid}">
+                        <f:selectItem itemLabel="-"/>
+                        <f:selectItems value="#{suspendDetailBnET.getRevRecomendTypes()}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
+                    </p:selectOneMenu>
+                    <p:message for="recomcb"/>
+
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="decsummary" styleClass="label"/>
+                    <p:editor value="#{suspendDetailBnET.curReviewComment.comment}" id="decsummary" required="true"
+                              width="700"/>
+                    <p:message for="decsummary"/>
+                    </h:panelGrid>
+                    <p:commandButton value="#{msgs.global_submit}"
+                                 action="#{suspendDetailBnET.submitAproveDecision}"
+                                 update="@form :reviewHome"
+                                 oncomplete="if(!args.validationFailed) PF('aproveDlg').hide()" ajax="true"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.complete_review}" widgetVar="reviewDlg" id="reviewDlg"
+                  modal="true" dynamic="true">
+            <h:form prependId="false">
+                <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.recommendation}" for="recomcb" styleClass="label"/>
+                    <p:selectOneMenu id="recomcb" value="#{suspendDetailBnET.suspDetail.decision}" required="true"
+                                     requiredMessage="#{msgs.recommendation_valid}">
+                        <f:selectItem itemLabel="-"/>
+                        <f:selectItems value="#{suspendDetailBnET.decisionType}" var="type"
+                                       itemLabel="#{msgs[type.key]}"/>
+                    </p:selectOneMenu>
+                    <p:message for="recomcb"/>
+
+                    <p:outputLabel value="#{msgs.reviewer_summary}" for="revsummary" styleClass="label"/>
+                    <p:editor value="#{suspendDetailBnET.suspDetail.finalSumm}" id="revsummary" required="true"
+                              width="700"/>
+                    <p:message for="revsummary"/>
+                </h:panelGrid>
+                <p:commandButton value="#{msgs.global_submit}" action="#{suspendDetailBnET.submitSuspend}"
+                                 oncomplete="if (!args.validationFailed) PF('reviewDlg').hide()" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.assignreviewer}" widgetVar="assignreviewdlg" dynamic="true"
+                  id="assignreviewdlg" modal="true" rendered="#{userSession.moderator}">
+            <h:form prependId="false">
+                <p:panel>
+                    <h:panelGrid columns="2" columnClasses="label value" cellpadding="10" cellspacing="10">
+
+                        <h:outputText value="#{msgs.processor}"
+                                      escape="false"
+                                      styleClass="label"/>
+
+                        <p:autoComplete id="module3" value="#{suspendDetailBnET.reviewer}"
+                                        completeMethod="#{globalEntityLists.completeProcessorList}"
+                                        dropdown="true"
+                                        var="it" itemLabel="#{it.name}" itemValue="#{it.userId}"
+                                        forceSelection="true" required="true"
+                                        converter="#{userConverter}">
+                        </p:autoComplete>
+
+
+                        <p:outputLabel value="#{msgs.global_duedate}" for="duedt" styleClass="label"/>
+                        <p:calendar value="#{suspendDetailBnET.review.dueDate}" id="duedt" showOn="button"
+                                    pattern="#{userAccessMBean.workspace.datePattern}">
+                            <f:validator validatorId="futureDateValidator"/>
+                        </p:calendar>
+
+                    </h:panelGrid>
+
+
+                    <p:commandButton id="submitButton1" value="#{msgs.global_submit}"
+                                     update=":reviewHome"
+                                     oncomplete="if (!args.validationFailed) PF('assignreviewdlg').hide()"
+                                     action="#{suspendDetailBnET.assignReviewer}" ajax="true"/>
+                </p:panel>
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="#{msgs.suspend_info}" widgetVar="regDlg" resizable="false" id="regdlg" modal="true"
+                  dynamic="true">
+            <h:form id="regdatedlg">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.registration_date}"/>
+                    <p:calendar value="#{suspendDetailBnET.suspDetail.suspStDate}" id="regDate" showOn="button"
+                                required="true" pattern="#{userAccessMBean.workspace.datePattern}">
+                    </p:calendar>
+                    <p:outputLabel value="#{msgs.expiry_date}"/>
+                    <p:calendar value="#{suspendDetailBnET.suspDetail.suspEndDate}" id="expiryDate" showOn="button"
+                                pattern="#{userAccessMBean.workspace.datePattern}"/>
+
+                </h:panelGrid>
+
+                <p:commandButton id="regBtn" value="#{msgs.global_suspend}" action="#{suspendDetailBnET.suspendProduct}"
+                                 oncomplete="if (!args.validationFailed) regDlg.hide()" icon="ui-icon-gear"
+                                 ajax="false">
+                    <f:param name="prodAppID" value="#{suspendDetailBnET.prodApplications.id}"/>
+                </p:commandButton>
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

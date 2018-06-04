@@ -1,0 +1,103 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                template="../templates/registration_layout.xhtml">
+    <ui:define name="regcontent">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all">#{msgs.submitted_pur}</h1>
+        </div>
+
+        <h:form prependId="false">
+            <p:growl id="growl"/>
+            <p:messages id="messages" showDetail="true"/>
+            <h:panelGroup rendered="#{not empty purOrderListBn.purOrders}">
+                <p:dataTable id="purtable" var="eachprod" value="#{purOrderListBn.purOrders}"
+                             rendered="#{not empty purOrderListBn.purOrders}">
+
+                    <p:column style="width:16px">
+                        <p:rowToggler/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.application_no}">
+                        <p:commandLink id="viewLink" value="#{eachprod.pipNo}" ajax="false"
+                                       action="purorder">
+                            <f:param name="purOrderID" value="#{eachprod.id}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.applicant_name}">
+                        <p:outputLabel value="#{eachprod.applicant}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.global_curr_status}">
+                        <p:outputLabel value="#{msgs[eachprod.state.key]}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.submitted_by}">
+                        <p:outputLabel value="#{eachprod.createdBy.username}"/>
+                    </p:column>
+
+
+                    <p:column headerText="#{msgs.submitted_date}">
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.submitDate}"/>
+                    </p:column>
+
+                    <p:column headerText="#{msgs.dec_date}">
+                        <h:outputLabel converter="javax.faces.DateTime" value="#{eachprod.approvalDate}"/>
+                    </p:column>
+
+                    <p:rowExpansion>
+                        <p:dataTable id="ordertable" var="order" value="#{eachprod.purProds}" style="width:100%;">
+                            <f:facet name="header"> #{msgs.product_list}</f:facet>
+
+                            <p:column headerText="#{msgs.prod_number}">
+                                <h:outputText value="#{order.productNo}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.prod_name}">
+                                <h:outputText value="#{order.productName}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.manuf_name}">
+                                <h:outputText value="#{order.manufName}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.prod_desc}">
+                                <h:outputText value="#{order.productDesc}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.inn_unit}">
+                                <h:outputText value="#{order.dosForm}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.dos_strength}">
+                                <h:outputText value="#{order.dosStrength}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.dos_unit}">
+                                <h:outputText value="#{order.dosUnit}"/>
+                            </p:column>
+
+
+                            <p:column headerText="#{msgs.global_quantity}">
+                                <h:outputText value="#{order.quantity}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.product_pricing}">
+                                <h:outputText value="#{order.unitPrice}"/>
+                            </p:column>
+
+                            <p:column headerText="#{msgs.total_price}">
+                                <h:outputText value="#{order.totalPrice}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:rowExpansion>
+
+                </p:dataTable>
+                <p:separator/>
+            </h:panelGroup>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/layout.xhtml">
+    <ui:define name="content">
+
+        <h:form id="dev_test">
+            <p:panel header="">
+              <h:panelGrid id="content" columns="3" cellspacing="10" columnClasses="col1, col2,col3">
+                    <h:outputLabel value="Record Id" for="recId"/>
+                    <p:inputText value="#{testReportsBn.recId}" id="recId" required="true"
+                                 style="width:200px;"/>
+                    <p:message for="recId"/>
+
+                    <p:commandButton action="#{testReportsBn.startCheckingRegCertificate}"
+                                         value="Start cert" ajax="false">
+                    <p:message for="recId"/>
+                    </p:commandButton>
+                    <p:commandButton action="#{testReportsBn.createLetter}"
+                                   value="Create Letter" ajax="false">
+                    <p:message for="recId"/>
+                    </p:commandButton>
+                    <p:commandButton action="#{testReportsBn.testNotification}"
+                                   value="Notify" ajax="false">
+                        <p:message for="recId"/>
+                    </p:commandButton>
+                    <p:commandButton action="#{testReportsBn.testQuery}"
+                                   value="Test KPI" ajax="false">
+                      <p:message for="recId"/>
+                    </p:commandButton>
+            </h:panelGrid>
+        </p:panel>
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>

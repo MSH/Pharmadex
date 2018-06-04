@@ -1,0 +1,365 @@
+<!--
+  ~ Copyright (c) 2014. Management Sciences for Health. All Rights Reserved.
+  -->
+
+<!-- Renew page -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="../templates/process_reg_layout.xhtml">
+    <ui:define name="content">
+        <div class="post">
+            <h1 class="title ui-widget-header ui-corner-all"> #{msgs.product_renew}</h1>
+        </div>
+
+
+        <div style="width: 1054px;">
+            <h:form id="reghome" enctype="multipart/form-data">
+                <p:growl id="growl" showSummary="true"/>
+                <p:messages showSummary="true" id="messages"/>
+
+<!--
+                <div align="left">
+
+                    <p:commandButton value="#{msgs.generate_report}"
+                                     ajax="false" actionListener="#{prodDeficiencyBn.PDF}"/>
+                    <p:commandButton value="#{msgs.global_back}" immediate="true" action="#{prodDeficiencyBn.sendToHome}"
+                                     ajax="false"/>
+                </div>
+-->
+                <p:wizard widgetVar="wizard" id="wizardPnl" showNavBar="false"
+                          flowListener="#{renewalMbn.onFlowProcess}">
+                <pe:ajaxErrorHandler/>
+
+<!--
+                <p:tab id="prodreg" title="#{msgs.applicant_detail}">
+
+                    <ui:decorate template="../secure/appinfosub.xhtml">
+                        <ui:param name="regHomeData" value="#{renewalMbn}"/>
+                        <ui:param name="appSelectData" value="#{appSelectMBean}"/>
+                        <ui:param name="displayLH" value="#{userSession.ethiopia}"/>
+                    </ui:decorate>
+
+                    <div align="right">
+                        <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                         action="#{renewalMbn.cancel}"
+                                         ajax="false"/>
+                        <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="prodregSaveBtn"/>
+                    </div>
+
+                </p:tab>
+                <p:tab id="applicationStatus" title="#{msgs.appl_status_country}">
+                    <p:panel header="#{msgs.appl_status_country}" id="statusPnl">
+                        <p:messages/>
+                        <h:panelGrid columns="1" cellspacing="10" id="foreignstatusgrid" width="100%">
+
+                            <p:outputLabel value="#{msgs.foreign_country_status_txt}" styleClass="label"/>
+
+
+                            <p:dataTable id="foreignStatusTable" var="appstatus"
+                                         value="#{renewalMbn.foreignAppStatuses}"
+                                         style="width:100%;">
+                                <f:facet name="header">
+                                    <p:commandLink id="addStatusBtn" value="#{msgs.global_add}"
+                                                   oncomplete="PF('addForeignStatusDlg').show()"
+                                                   action="#{foreignAppStatusMBean.initAddCompany}"
+                                                   update=":addForeignStatus"
+                                            >
+                                    </p:commandLink>
+                                </f:facet>
+                                <p:column headerText="#{msgs.applicant_country}">
+                                    <h:outputText value="#{appstatus.country.countryName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.foreign_country_status_type}">
+                                    <h:outputText value="#{msgs[appstatus.foreignAppStatusType.key]}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.prod_name}">
+                                    <h:outputText value="#{appstatus.prodName}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_holder}">
+                                    <h:outputText value="#{appstatus.mktAuthHolder}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_cert}">
+                                    <h:outputText value="#{appstatus.mktAuthCert}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msgs.mkt_auth_date}">
+                                    <h:outputText value="#{appstatus.mktAuthDate}">
+                                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton action="#{renewalMbn.removeAppStatus(appstatus)}"
+                                                     value="#{msgs.global_delete}"
+                                                     update=":addForeignStatus :reghome:foreignStatusTable :reghome:growl"
+                                                     immediate="true"
+                                            >
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </h:panelGrid>
+
+                        <p:blockUI block="statusPnl" trigger=":reghome:foreignStatusTable:addStatusBtn">
+                            <p:graphicImage name="/resources/images/ajax-loader.gif"/>
+                        </p:blockUI>
+
+
+                        <div align="right">
+                            <p:commandButton value="#{msgs.global_save}" action="#{renewalMbn.saveApp}" ajax="true"
+                                             update=":reghome" id="appStatusSaveBtn"/>
+                            <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                             action="#{renewalMbn.cancel}"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="appStatusBackBtn"/>
+                            <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="appStatusNxtBtn"/>
+                        </div>
+                    </p:panel>
+
+                </p:tab>
+
+-->
+                    <p:tab id="payment" title="#{msgs.payment_info}">
+                        <p:panel header="#{msgs.payment_info}">
+                            <ui:decorate template="../secure/payment.xhtml">
+                                <ui:param name="prodApp" value="#{renewalMbn.prodApplications}"/>
+                            </ui:decorate>
+
+                            <div align="right">
+                                <p:commandButton value="#{msgs.global_save}" action="#{renewalMbn.saveApp}" ajax="true"
+                                                 update=":reghome" id="paySaveBtn"/>
+                                <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                                 action="#{renewalMbn.cancel}"
+                                                 ajax="false"/>
+                                <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="payBackBtn"/>
+                                <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="payNxtBtn"/>
+                            </div>
+
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab id="attach" title="#{msgs.attachments}">
+                        <p:panel>
+                            <h:panelGrid columns="1" cellpadding="5" cellspacing="5">
+                                <p:outputLabel
+                                        value="#{msgs.reg_form_attach_hint}"/>
+
+                                <p:commandButton icon="ui-icon-document" value="#{msgs.adddocument}"
+                                                 oncomplete="PF('attachDlg').show()" ajax="true"
+                                                 action="#{renewalMbn.prepareUpload}"
+                                                 update=":attachfrm" id="addDocBtn"/>
+
+                                <p:dataTable id="attachtable" value="#{renewalMbn.attachments}" var="doc">
+
+                                    <p:column headerText="#{msgs.title}">
+                                        <h:outputText value="#{doc.title}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.filename}">
+                                        <h:outputText value="#{doc.fileName}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploaddate}">
+                                        <h:outputText converter="javax.faces.DateTime" value="#{doc.createdDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.uploadedby}">
+                                        <h:outputText value="#{doc.uploadedBy.name}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msgs.registration_status}">
+                                        <h:outputText value="#{msgs[doc.regState.key]}"/>
+                                    </p:column>
+
+
+                                    <p:column>
+                                        <p:commandButton id="deleteattach"
+                                                         action="#{renewalMbn.deleteDoc(doc)}" ajax="false"
+                                                         icon="ui-icon-trash"
+                                                         update=":reghome:attachtab:attachtable"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+
+                            <div align="right">
+                                <p:commandButton value="#{msgs.global_save}" action="#{renewalMbn.saveApp}" ajax="true"
+                                                 update=":reghome" id="attachSaveBtn"/>
+                                <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                                 action="#{renewalMbn.cancel}"
+                                                 ajax="false"/>
+                                <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="attachBackBtn"/>
+                                <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="attachNxtBtn"/>
+                            </div>
+                        </p:panel>
+
+                    </p:tab>
+
+                    <p:tab id="prodAppChecklist" title="#{msgs.checklist}">
+                        <p:panel header="#{msgs.checklist}">
+                            <ui:decorate template="../secure/prodappchecklist.xhtml">
+                                    <ui:param name="prodAppChecklists" value="#{renewalMbn.prodAppChecklists}"/>
+                            </ui:decorate>
+
+                            <div align="right">
+                                <p:commandButton value="#{msgs.global_save}" action="#{renewalMbn.saveApp}" ajax="true"
+                                                 update=":reghome" id="chkSaveBtn"/>
+                                <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                                 action="#{renewalMbn.cancel}"
+                                                 ajax="false"/>
+                                <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="chkBackBtn"/>
+                                <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();" id="chkNxtBtn"/>
+                            </div>
+
+                        </p:panel>
+                    </p:tab>
+
+                    <!--
+            <p:tab id="appointment" title="#{msgs.appointment}" rendered="false">
+                <p:panel header="#{msgs.selappointment}">
+                    <div align="right">
+                        <p:commandButton value="#{msgs.global_save}" action="#{prodRegAppMbean.saveApp}" ajax="false"/>
+                        <p:commandButton value="#{msgs.global_cancel}" immediate="true" action="#{prodRegAppMbean.cancel}"
+                                         ajax="false"/>
+                        <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();"/>
+                        <p:commandButton value="#{msgs.next}" onclick="PF('wizard').next();"/>
+                    </div>
+                    <p:schedule value="#{prodRegAppMbean.eventModel}" widgetVar="myschedule">
+
+                        <p:ajax event="dateSelect" listener="#{prodRegAppMbean.onDateSelect}" update=":event:eventDetails"
+                                oncomplete="PF('eventDialog').show()"/>
+                        <p:ajax event="eventSelect" listener="#{prodRegAppMbean.onEventSelect}" update=":event:eventDetails"
+                                oncomplete="PF('eventDialog').show()"/>
+                        <p:ajax event="eventMove" listener="#{prodRegAppMbean.onEventMove}" update=":reghome:growl"/>
+                        <p:ajax event="eventResize" listener="#{prodRegAppMbean.onEventResize}" update=":reghome:growl"/>
+
+                    </p:schedule>
+
+                </p:panel>
+            </p:tab>
+            -->
+
+                    <p:tab id="summary" title="Summary">
+                        <p:panel header="Summary">
+                            <ui:decorate template="/templates/prodappsummarytmpl.xhtml">
+                                <ui:param name="prodAppData" value="#{renewalMbn.prodApplications}"/>
+                                <ui:param name="foreignAppStatus" value="#{renewalMbn.foreignAppStatuses}"/>
+                                <ui:param name="prodAppChecklists" value="#{renewalMbn.prodAppChecklists}"/>
+                                <ui:param name="showfull" value="#{renewalMbn.showfull}"/>
+                            </ui:decorate>
+
+                            <div align="right">
+                                <p:commandButton value="#{msgs.global_save}" ajax="true" update=":reghome"
+                                                 action="#{renewalMbn.saveApp}" id="sumSaveBtn"/>
+                                <p:commandButton value="#{msgs.global_cancel}" immediate="true"
+                                                 action="#{renewalMbn.cancel}"
+                                                 ajax="false"/>
+                                <p:commandButton value="#{msgs.prev}" onclick="PF('wizard').back();" id="sumBackBtn"/>
+                                <p:commandButton value="#{msgs.global_submit}" action="#{renewalMbn.validateApp}"
+                                                 ajax="false"/>
+                            </div>
+
+                        </p:panel>
+                    </p:tab>
+
+
+                </p:wizard>
+
+
+
+            </h:form>
+        </div>
+
+        <p:dialog header="#{msgs.adddocument}" widgetVar="attachDlg" resizable="false"
+                  dynamic="true">
+            <h:form id="attachfrm">
+                <h:panelGrid columns="2" style="margin-bottom:10px">
+                    <p:outputLabel value="#{msgs.title}"/>
+                    <p:inputText value="#{renewalMbn.attachment.title}"/>
+                    <p:outputLabel value="#{msgs.global_comment}"/>
+                    <p:inputTextarea value="#{renewalMbn.attachment.comment}"
+                                     rows="5" cols="50"/>
+                </h:panelGrid>
+
+                <p:fileUpload fileUploadListener="#{renewalMbn.handleFileUpload}"
+                              mode="advanced" process=":attachfrm" auto="true"
+                              update=":reghome:growl :reghome:messages"
+                              multiple="false"
+                              sizeLimit="10000000">
+
+                </p:fileUpload>
+
+                <!--<p:fileUpload value="#{prodRegAppMbean.file}" mode="simple" skinSimple="true"/>-->
+
+                <p:commandButton id="adddoc" value="#{msgs.global_submit}"
+                                 action="#{renewalMbn.addDocument}" process=":attachfrm"
+                                 oncomplete="PF('attachDlg').hide()"
+                                 update=":reghome:growl :reghome:messages :reghome :attachfrm"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="#{msgs.foreign_country_status_txt}" widgetVar="addForeignStatusDlg" id="addForeignStatusdlg"
+                  dynamic="true"
+                  resizable="true" modal="true">
+            <h:form id="addForeignStatus">
+                <p:messages showSummary="true"/>
+
+                <h:panelGrid id="foreignstatustable" columns="2" columnClasses="label value">
+                    <p:outputLabel value="#{msgs.foreign_country_status_type}" for="forStatuscb"
+                                   styleClass="fy-required-field"/>
+                    <p:selectOneMenu id="forStatuscb"
+                                     value="#{foreignAppStatusMBean.selForeignAppStatus.foreignAppStatusType}"
+                                     required="true">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalLists.foreignAppStatusType}" var="prodcat"
+                                       itemLabel="#{msgs[prodcat.key]}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="#{msgs.applicant_country}" for="statusCntry"/>
+                    <p:selectOneMenu value="#{foreignAppStatusMBean.selForeignAppStatus.country.id}" required="true"
+                                     id="statusCntry">
+                        <f:selectItem itemLabel="-" itemValue=""/>
+                        <f:selectItems value="#{globalEntityLists.countries}" var="cntry"
+                                       itemLabel="#{cntry.countryName}"
+                                       itemValue="#{cntry.id}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="otherprodname" value="#{msgs.prod_name}"/>
+                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.prodName}" required="true"
+                                 id="otherprodname"/>
+
+                    <p:outputLabel for="mktauthholder" value="#{msgs.mkt_auth_holder}"/>
+                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthHolder}" required="true"
+                                 id="mktauthholder"/>
+
+                    <p:outputLabel for="mktauthcert" value="#{msgs.mkt_auth_cert}"/>
+                    <p:inputText value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthCert}" id="mktauthcert"/>
+
+                    <h:outputLabel for="mktauthdate" value="#{msgs.mkt_auth_date}"/>
+                    <p:calendar value="#{foreignAppStatusMBean.selForeignAppStatus.mktAuthDate}" id="mktauthdate"
+                                showOn="button" pattern="#{userAccessMBean.workspace.datePattern}"/>
+                </h:panelGrid>
+
+                <h:panelGroup>
+                    <p:commandButton action="#{foreignAppStatusMBean.addForStatus()}" value="#{msgs.global_add}"
+                                     oncomplete="if (!args.validationFailed) PF('addForeignStatusDlg').hide()"
+                                     ajax="true"
+                                     update=":reghome:foreignstatusgrid :addForeignStatus" process="@form"/>
+                    <p:commandButton action="#{companyMBean.cancelAdd}" immediate="true" value="#{msgs.global_cancel}"
+                                     oncomplete="PF('addForeignStatusDlg').hide()" ajax="true" process="@form"
+                                     update=":reghome:foreignstatusgrid :addForeignStatus"/>
+                </h:panelGroup>
+                <h:outputLabel/>
+            </h:form>
+        </p:dialog>
+
+
+    </ui:define>
+</ui:composition>
