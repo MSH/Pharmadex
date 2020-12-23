@@ -49,9 +49,9 @@ public class DashboardDAO implements Serializable {
 	 * @return
 	 */
 	private String submittedSQL(){
-		return " FROM pdx_mz.prodapplications pa"
-				+" join pdx_mz.applicant ap on ap.applcntId = pa.APP_ID"
-				+" join pdx_mz.timeline tl on tl.PROD_APP_ID=pa.id and tl.regState='FEE'";
+		return " FROM prodapplications pa"
+				+" join applicant ap on ap.applcntId = pa.APP_ID"
+				+" join timeline tl on tl.PROD_APP_ID=pa.id and tl.regState='FEE'";
 	}
 	/**
 	 * Fetch submitted by year and month
@@ -103,9 +103,9 @@ public class DashboardDAO implements Serializable {
 	 */
 	public List<UsersPerformanceDTO> fetchReviewers() {
 		List<UsersPerformanceDTO> items = new ArrayList<UsersPerformanceDTO>();
-		String sql= "SELECT u.name, u.userId, sum(ri.reviewer_id=u.userId) as pri, sum(ri.sec_reviewer_id=u.userId) as sec FROM pdx_mz.user u "
-				+"join pdx_mz.review_info ri on ri.reviewer_id=u.userId or ri.sec_reviewer_id=u.userId "
-				+"join pdx_mz.prodapplications pa on pa.id=ri.prod_app_id " 
+		String sql= "SELECT u.name, u.userId, sum(ri.reviewer_id=u.userId) as pri, sum(ri.sec_reviewer_id=u.userId) as sec FROM user u "
+				+"join review_info ri on ri.reviewer_id=u.userId or ri.sec_reviewer_id=u.userId "
+				+"join prodapplications pa on pa.id=ri.prod_app_id " 
 				+"where pa.regState in ('FOLLOW_UP', 'REVIEW_BOARD', 'RECOMMENDED', 'NOT_RECOMMENDED') "
 				+"group by u.userId;";
 		List<Object[]> list = entityManager.createNativeQuery(sql).getResultList();
@@ -130,11 +130,11 @@ public class DashboardDAO implements Serializable {
 		if(!primaryNeed){
 			where = "where ri.sec_reviewer_id=:reviewerId and ";
 		}
-		String sql = "SELECT ri.id, ri.createdDate, ri.ctdModule, ri.reviewStatus, ap.appName, pr.prod_name, um.name as moder, DATEDIFF(now(),ri.createdDate) FROM pdx_mz.review_info ri "
-				+"join pdx_mz.prodapplications pa on pa.id=ri.prod_app_id "
-				+"join pdx_mz.applicant ap on pa.APP_ID=ap.applcntId "
-				+"join pdx_mz.product pr on pa.PROD_ID=pr.id "
-				+"join pdx_mz.user um on um.userId=pa.MODERATOR_ID "
+		String sql = "SELECT ri.id, ri.createdDate, ri.ctdModule, ri.reviewStatus, ap.appName, pr.prod_name, um.name as moder, DATEDIFF(now(),ri.createdDate) FROM review_info ri "
+				+"join prodapplications pa on pa.id=ri.prod_app_id "
+				+"join applicant ap on pa.APP_ID=ap.applcntId "
+				+"join product pr on pa.PROD_ID=pr.id "
+				+"join user um on um.userId=pa.MODERATOR_ID "
 				+where
 				+"pa.regState in ('FOLLOW_UP', 'REVIEW_BOARD', 'RECOMMENDED', 'NOT_RECOMMENDED') "
 				+"order by ri.createdDate desc;";
