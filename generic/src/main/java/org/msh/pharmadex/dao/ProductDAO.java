@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -20,7 +19,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Hibernate;
-import org.msh.pharmadex.dao.iface.DosageFormDAO;
 import org.msh.pharmadex.dao.iface.WorkspaceDAO;
 import org.msh.pharmadex.domain.Atc;
 import org.msh.pharmadex.domain.DosUom;
@@ -440,10 +438,10 @@ public class ProductDAO implements Serializable {
 	public List<ProdTable> findReadyToAssignReviewers(Long moderId) {
 		String q = "SELECT pa.id, p.prod_name, a.applcntId, a.appName, pa.updatedDate "
 				+"FROM prodapplications pa "
-				+"left join pdx_mz.review_info ri on ri.prod_app_id=pa.id "
-				+"join pdx_mz.product p on pa.PROD_ID=p.id "
-				+"join pdx_mz.applicant a on pa.APP_ID=a.applcntId "
-				+"where pa.MODERATOR_ID=:MODER "
+				+"left join review_info ri on ri.prod_app_id=pa.id "
+				+"join product p on pa.PROD_ID=p.id "
+				+"join applicant a on pa.APP_ID=a.applcntId "
+				+"where pa.MODERATOR_ID=:MODER and pa.RegState <> 'REGISTERED'"
 				+"group by pa.id "
 				+"having count(ri.id)=0 ;";
 				
@@ -503,9 +501,9 @@ public class ProductDAO implements Serializable {
 	 */
 	public List<ProdTable> findAboutToExpire(Long applId) {
 		String q = "SELECT pa.id, p.prod_name, a.applcntId, a.appName, pa.registrationDate, pa.regExpiryDate, datediff(pa.regExpiryDate, now()) "
-				+"FROM pdx_mz.prodapplications pa "
-				+"join pdx_mz.product p on pa.PROD_ID=p.id "
-				+"join pdx_mz.applicant a on pa.APP_ID=a.applcntId "
+				+"FROM prodapplications pa "
+				+"join product p on pa.PROD_ID=p.id "
+				+"join applicant a on pa.APP_ID=a.applcntId "
 				+"where pa.regState='REGISTERED' and datediff(pa.regExpiryDate, now())<45 and datediff(now(), pa.regExpiryDate)<0";
 		
 		if(applId != null){
@@ -538,9 +536,9 @@ public class ProductDAO implements Serializable {
 	 */
 	public List<ProdTable> findJustRegistered() {
 		String q = "SELECT pa.id, p.prod_name, a.applcntId, a.appName, pa.registrationDate, datediff(now(), pa.registrationDate) "
-				+"FROM pdx_mz.prodapplications pa "
-				+"join pdx_mz.product p on pa.PROD_ID=p.id "
-				+"join pdx_mz.applicant a on pa.APP_ID=a.applcntId "
+				+"FROM prodapplications pa "
+				+"join product p on pa.PROD_ID=p.id "
+				+"join applicant a on pa.APP_ID=a.applcntId "
 				+"where pa.regState='REGISTERED' and datediff(now(), pa.registrationDate)<45; ";
 		
 		List<Object[]> products = null;
@@ -566,9 +564,9 @@ public class ProductDAO implements Serializable {
 	 */
 	public List<ProdTable> findJustLost() {
 		String q = "SELECT pa.id, p.prod_name, a.applcntId, a.appName, pa.registrationDate, pa.regExpiryDate, datediff(now(), pa.registrationDate) "
-				+"FROM pdx_mz.prodapplications pa "
-				+"join pdx_mz.product p on pa.PROD_ID=p.id "
-				+"join pdx_mz.applicant a on pa.APP_ID=a.applcntId "
+				+"FROM prodapplications pa "
+				+"join product p on pa.PROD_ID=p.id "
+				+"join applicant a on pa.APP_ID=a.applcntId "
 				+"where pa.regState='REGISTERED' and datediff(now(), pa.regExpiryDate)<45 and datediff(now(), pa.regExpiryDate)>0; ";
 		
 		List<Object[]> products = null;
